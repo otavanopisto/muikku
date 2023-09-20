@@ -212,7 +212,7 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
         className="input-group__item-container"
         key={index}
         label={index.toString()}
-        name={`input-group-${name}`}
+        name={`input-group-${name.toString()}`}
         value={index}
         readOnly
         disabled
@@ -223,7 +223,7 @@ export const ScaleInputGroup = <T,>(props: ScaleInputGroupProps<T>) => {
         className="input-group__item-container"
         key={index}
         label={index.toString()}
-        name={`input-group-${name}`}
+        name={`input-group-${name.toString()}`}
         value={index}
         checked={index === value}
         onChange={handleScaleChange}

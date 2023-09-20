@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
 import { ProfileType } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
@@ -18,12 +17,13 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-sub-panel.scss";
 import { SimpleActionExecutor } from "~/actions/executor";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * ChatSettingsProps
  */
-interface ChatSettingsProps {
-  i18n: i18nType;
+interface ChatSettingsProps extends WithTranslation<["common"]> {
   profile: ProfileType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -49,7 +49,7 @@ class ChatSettings extends React.Component<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: ChatSettingsProps) {
     super(props);
@@ -70,9 +70,10 @@ class ChatSettings extends React.Component<
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ChatSettingsProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: ChatSettingsProps) {
     if (
       nextProps.profile.chatSettings &&
       nextProps.profile.chatSettings.visibility &&
@@ -130,7 +131,7 @@ class ChatSettings extends React.Component<
       )
       .onAllSucceed(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.saved"),
+          this.props.t("notifications.saveSuccess"),
           "success"
         );
 
@@ -138,7 +139,7 @@ class ChatSettings extends React.Component<
       })
       .onOneFails(() => {
         this.props.displayNotification(
-          this.props.i18n.text.get("plugin.profile.properties.failed"),
+          this.props.t("notifications.saveError"),
           "error"
         );
 
@@ -148,7 +149,7 @@ class ChatSettings extends React.Component<
 
   /**
    * onChatVisibilityChange
-   * @param e
+   * @param e e
    */
   onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setState({
@@ -158,7 +159,7 @@ class ChatSettings extends React.Component<
 
   /**
    * onChatNicknameChange
-   * @param e
+   * @param e e
    */
   onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
@@ -182,14 +183,14 @@ class ChatSettings extends React.Component<
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.profile.titles.chatSettings")}
+            {this.props.t("labels.chatSettings", { ns: "profile" })}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="chatVisibility">
-                    {this.props.i18n.text.get("plugin.profile.chat.visibility")}
+                    {this.props.t("labels.chatVisibility", { ns: "profile" })}
                   </label>
                   <select
                     id="chatVisibility"
@@ -202,12 +203,16 @@ class ChatSettings extends React.Component<
                     onChange={this.onChatVisibilityChange}
                   >
                     <option value="VISIBLE_TO_ALL">
-                      {this.props.i18n.text.get(
-                        "plugin.profile.chat.visibleToAll"
-                      )}
+                      {this.props.t("labels.chatVisibility", {
+                        ns: "profile",
+                        context: "all",
+                      })}
                     </option>
                     <option value="DISABLED">
-                      {this.props.i18n.text.get("plugin.profile.chat.disabled")}
+                      {this.props.t("labels.chatVisibility", {
+                        ns: "profile",
+                        context: "disabled",
+                      })}
                     </option>
                   </select>
                 </div>
@@ -215,7 +220,7 @@ class ChatSettings extends React.Component<
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="chatNickname">
-                    {this.props.i18n.text.get("plugin.profile.chat.setNick")}
+                    {this.props.t("labels.nick", { ns: "profile" })}
                   </label>
                   <input
                     id="chatNickname"
@@ -231,9 +236,7 @@ class ChatSettings extends React.Component<
                 </div>
 
                 <div className="form-element__description">
-                  {this.props.i18n.text.get(
-                    "plugin.profile.chat.setNickDescription"
-                  )}
+                  {this.props.t("content.nick", { ns: "profile" })}
                 </div>
               </div>
 
@@ -243,7 +246,7 @@ class ChatSettings extends React.Component<
                   onClick={this.save}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18n.text.get("plugin.profile.save.button")}
+                  {this.props.t("actions.save")}
                 </Button>
               </div>
             </div>
@@ -256,11 +259,10 @@ class ChatSettings extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     profile: state.profile,
     status: state.status,
   };
@@ -268,13 +270,15 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { saveProfileProperty, displayNotification, updateProfileChatSettings },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChatSettings);
+export default withTranslation(["profile"])(
+  connect(mapStateToProps, mapDispatchToProps)(ChatSettings)
+);

@@ -8,10 +8,10 @@ import { AnyActionType } from "../../../actions/index";
 import { StateType } from "../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { StatusType } from "../../../reducers/base/status";
-import { i18nType } from "../../../reducers/base/i18n";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
@@ -19,8 +19,7 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
 /**
  * RecorderProps
  */
-interface RecorderProps {
-  i18n: i18nType;
+interface RecorderProps extends WithTranslation {
   status: StatusType;
   /**
    * Handles changes is recording changes
@@ -111,14 +110,17 @@ function Recorder(props: RecorderProps) {
             trailColor="#f5f5f5"
             trailWidth={1}
             svgStyle={{ width: "100%", height: "4px" }}
-            text={props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.recordingAssessment.statusRecording",
-              moment("2015-01-01")
+            text={props.t("notifications.recording", {
+              ns: "materials",
+              currentLength: moment("2015-01-01")
                 .startOf("day")
                 .seconds(seconds)
                 .format("mm:ss"),
-              moment("2015-01-01").startOf("day").seconds(300).format("mm:ss")
-            )}
+              maxLength: moment("2015-01-01")
+                .startOf("day")
+                .seconds(300)
+                .format("mm:ss"),
+            })}
             progress={seconds / 300}
           />
         </span>
@@ -137,7 +139,6 @@ function Recorder(props: RecorderProps) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
@@ -150,4 +151,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Recorder);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(Recorder)
+);

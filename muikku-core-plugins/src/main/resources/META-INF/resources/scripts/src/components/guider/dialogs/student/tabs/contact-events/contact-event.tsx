@@ -1,7 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/contact-event.scss";
 import "~/sass/elements/rich-text.scss";
-import { i18nType } from "~/reducers/base/i18n";
 import CommentContactEvent from "./editors/new-comment";
 import EditContactEvent from "./editors/edit-event";
 import EditContactEventComment from "./editors/edit-comment";
@@ -13,6 +12,7 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
 import { ContactLogEvent } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * ContactEventProps
@@ -22,7 +22,6 @@ interface ContactEventProps {
   allPrivileges: boolean;
   studentId: number;
   modifier?: string;
-  i18n: i18nType;
   status: StatusType;
 }
 
@@ -42,10 +41,11 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
     creatorId,
     id,
   } = props.event;
-  const { modifier, studentId, i18n, allPrivileges, status } = props;
+  const { modifier, studentId, allPrivileges, status } = props;
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
   const [commentEditOpen, setCommentEditOpen] = React.useState<number[]>([]);
+  const { t } = useTranslation(["messaging", "common"]);
   return (
     <div
       className={`contact-event ${
@@ -62,7 +62,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
         <div className="contact-event__title">
           <div className="contact-event__creator">{creatorName}</div>
           <div className={`contact-event__type type-${type}`}>
-            {i18n.text.get("plugin.guider.contact.type." + type)}
+            {t("labels.type", { context: type })}
           </div>
           <div className="contact-event__date">
             {moment(entryDate).format("dddd, MMMM Do YYYY")}
@@ -89,20 +89,20 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           className="link link--contact-event-footer"
           onClick={() => setCreateCommentOpen(true)}
         >
-          {i18n.text.get("plugin.guider.user.contactLog.actions.comment")}
+          {t("actions.comment")}
         </Link>
         <Link
           className="link link--contact-event-footer"
           onClick={() => setEventEditOpen(true)}
         >
-          {i18n.text.get("plugin.guider.user.contactLog.actions.edit")}
+          {t("actions.edit")}
         </Link>
         <ContactEventDeletePrompt
           studentUserEntityId={studentId}
           contactLogEntryId={id}
         >
           <Link className="link link--contact-event-footer">
-            {i18n.text.get("plugin.guider.user.contactLog.actions.delete")}
+            {t("actions.remove")}
           </Link>
         </ContactEventDeletePrompt>
       </div>
@@ -162,9 +162,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                       setCommentEditOpen([...commentEditOpen, ...[comment.id]])
                     }
                   >
-                    {i18n.text.get(
-                      "plugin.guider.user.contactLog.actions.edit"
-                    )}
+                    {t("actions.edit")}
                   </Link>
                   <ContactEventDeletePrompt
                     studentUserEntityId={studentId}
@@ -172,9 +170,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     commentId={comment.id}
                   >
                     <Link className="link link--contact-event-footer">
-                      {i18n.text.get(
-                        "plugin.guider.user.contactLog.actions.delete"
-                      )}
+                      {t("actions.remove")}
                     </Link>
                   </ContactEventDeletePrompt>
                 </div>
@@ -194,7 +190,6 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }

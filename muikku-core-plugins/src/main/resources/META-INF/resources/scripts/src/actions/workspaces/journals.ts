@@ -18,6 +18,7 @@ import {
   JournalCommentDelete,
   JournalCommentUpdate,
 } from "~/@types/journal";
+import i18n from "~/locales/i18n";
 
 /**
  * JournalActionUpdate
@@ -304,11 +305,14 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.load.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "comments",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -361,11 +365,13 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.create.error"
-            ),
+            i18n.t("notifications.createError", {
+              ns: "journal",
+              context: "entry",
+            }),
             "error"
           )
         );
@@ -425,11 +431,13 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.update.error"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "journal",
+              context: "entry",
+            }),
             "error"
           )
         );
@@ -480,11 +488,14 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.delete.error"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "journal",
+              context: "entry",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -576,11 +587,14 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.load.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "comments",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -691,11 +705,14 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.create.error"
-            ),
+            i18n.t("notifications.createError", {
+              context: "comment",
+              ns: "journal",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -786,11 +803,13 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.update.error"
-            ),
+            i18n.t("notifications.updateError", {
+              context: "comment",
+              ns: "journal",
+            }),
             "error"
           )
         );
@@ -876,11 +895,14 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.delete.error"
-            ),
+            i18n.t("notifications.updateError", {
+              context: "comment",
+              ns: "journal",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -938,9 +960,11 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.feedback.notification.delete.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "feedback",
+              error: err,
+            }),
             "error"
           )
         );

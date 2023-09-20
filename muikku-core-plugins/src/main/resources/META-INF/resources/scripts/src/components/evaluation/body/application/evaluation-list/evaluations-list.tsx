@@ -15,15 +15,14 @@ import {
   updateEvaluationSortFunctionToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { UpdateImportanceObject } from "~/@types/evaluation";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * EvaluationListProps
  */
-interface EvaluationListProps {
-  i18n: i18nType;
+interface EvaluationListProps extends WithTranslation {
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   evaluations: EvaluationState;
   updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
@@ -380,6 +379,8 @@ export class EvaluationList extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const {
       evaluationRequests,
       importantRequests,
@@ -447,12 +448,10 @@ export class EvaluationList extends React.Component<
           <div className="empty">
             <span>
               {selectedWorkspaceId === undefined
-                ? this.props.i18n.text.get(
-                    "plugin.evaluation.cardlist.allrequesthandled"
-                  )
-                : this.props.i18n.text.get(
-                    "plugin.evaluation.cardlist.noStudentsAtWorkspace"
-                  )}
+                ? t("content.evaluationRequestsHandled", { ns: "evaluation" })
+                : t("content.notFound", {
+                    ns: "evaluation",
+                  })}
             </span>
           </div>
         );
@@ -496,7 +495,6 @@ const byDate =
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     evaluations: state.evaluations,
   };
 }
@@ -517,4 +515,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EvaluationList);
+export default withTranslation(["evaluation", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationList)
+);

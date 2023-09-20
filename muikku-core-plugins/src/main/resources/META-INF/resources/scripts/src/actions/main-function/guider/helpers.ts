@@ -10,6 +10,7 @@ import {
 import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
@@ -138,7 +139,11 @@ export async function loadStudentsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.guider.errorMessage.users"),
+        i18n.t("notifications.loadError", {
+          ns: "users",
+          count: 0,
+          context: "students",
+        }),
         "error"
       )
     );

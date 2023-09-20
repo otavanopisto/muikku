@@ -12,10 +12,11 @@ import {
   RecordWorkspaceActivityByLine,
   RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
-import { UserWithSchoolDataType } from "~/reducers/user-index";
+import i18n from "~/locales/i18n";
 import { Dispatch } from "react-redux";
 import MApi from "~/api/api";
 import { UserFile } from "~/generated/client";
+import { UserWithSchoolDataType } from "~/reducers/user-index";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
@@ -264,9 +265,10 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         }
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.records.errormessage.recordsLoadFailed "
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "studies",
+              context: "studies",
+            }),
             "error"
           )
         );

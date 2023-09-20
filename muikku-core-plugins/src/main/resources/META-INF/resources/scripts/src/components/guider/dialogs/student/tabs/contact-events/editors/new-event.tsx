@@ -8,15 +8,12 @@ import {
   CreateContactLogEventTriggerType,
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import DatePicker from "react-datepicker";
-import {
-  ContactTypes,
-  contactTypesArray,
-} from "~/reducers/main-function/guider";
+import { contactTypesArray } from "~/reducers/main-function/guider";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
@@ -24,14 +21,14 @@ import {
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
-import { Student } from "~/generated/client";
+import { ContactType, Student } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NewContactEventProps
  */
-interface NewContactEventProps {
+interface NewContactEventProps extends WithTranslation {
   children?: JSX.Element;
-  i18n: i18nType;
   createContactLogEvent: CreateContactLogEventTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
   logsPerPage: number;
@@ -40,7 +37,7 @@ interface NewContactEventProps {
   initialDate?: Date;
   initialSender?: string;
   initialMessage?: string;
-  initialType?: ContactTypes;
+  initialType?: ContactType;
   onOpen?: () => void;
   onClose?: () => void;
   isOpen?: boolean;
@@ -53,7 +50,7 @@ interface NewContactEventState {
   text: string;
   sender: string;
   date: Date;
-  type: ContactTypes;
+  type: ContactType;
   locked: boolean;
 }
 
@@ -81,8 +78,8 @@ class NewContactEvent extends SessionStateComponent<
         text: props.initialMessage || "",
         sender: props.initialSender || "",
         date:
-          props.i18n.time.getLocalizedMoment(props.initialDate).toDate() ||
-          props.i18n.time.getLocalizedMoment().toDate(),
+          localizeTime.getLocalizedMoment(props.initialDate).toDate() ||
+          localizeTime.getLocalizedMoment().toDate(),
         type: props.initialType || "OTHER",
         locked: false,
       },
@@ -99,9 +96,8 @@ class NewContactEvent extends SessionStateComponent<
         text: this.props.initialMessage || "",
         sender: this.props.initialSender || "",
         date:
-          this.props.i18n.time
-            .getLocalizedMoment(this.props.initialDate)
-            .toDate() || this.props.i18n.time.getLocalizedMoment().toDate(),
+          localizeTime.getLocalizedMoment(this.props.initialDate).toDate() ||
+          localizeTime.getLocalizedMoment().toDate(),
         type: this.props.initialType || "OTHER",
         locked: false,
       },
@@ -137,7 +133,7 @@ class NewContactEvent extends SessionStateComponent<
    */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
-      { type: e.target.value as ContactTypes },
+      { type: e.target.value as ContactType },
       this.nameSpace
     );
   };
@@ -186,9 +182,8 @@ class NewContactEvent extends SessionStateComponent<
         text: this.props.initialMessage || "",
         sender: this.props.initialSender || "",
         date:
-          this.props.i18n.time
-            .getLocalizedMoment(this.props.initialDate)
-            .toDate() || this.props.i18n.time.getLocalizedMoment().toDate(),
+          localizeTime.getLocalizedMoment(this.props.initialDate).toDate() ||
+          localizeTime.getLocalizedMoment().toDate(),
         type: this.props.initialType || "OTHER",
         locked: false,
       },
@@ -207,9 +202,10 @@ class NewContactEvent extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const editorTitle = this.props.i18n.text.get(
-      "plugin.guider.user.dialog.createContactEvent.title"
-    );
+    const editorTitle = this.props.i18n.t("labels.create", {
+      ns: "messaging",
+      context: "message",
+    });
 
     /**
      * content
@@ -220,26 +216,23 @@ class NewContactEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.dialog.createContactEvent.date"
-              )}
+              {this.props.i18n.t("labels.create", {
+                ns: "messaging",
+                context: "contactEvent",
+              })}
             </label>
             <DatePicker
               className="env-dialog__input"
               id="contactEventdate"
               onChange={this.onDateChange}
-              locale={outputCorrectDatePickerLocale(
-                this.props.i18n.time.getLocale()
-              )}
+              locale={outputCorrectDatePickerLocale(localizeTime.language)}
               selected={this.state.date}
               dateFormat="P"
             ></DatePicker>
           </div>
           <div className="env-dialog__form-element-container">
             <label htmlFor="contactEventTypes" className="env-dialog__label">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.dialog.createContactEvent.type"
-              )}
+              {this.props.i18n.t("labels.type")}
             </label>
             <select
               id="contactEventTypes"
@@ -247,11 +240,12 @@ class NewContactEvent extends SessionStateComponent<
               onChange={this.onTypeChange}
               value={this.state.type}
             >
-              {contactTypesArray.map((contactType) => (
-                <option key={contactType} value={contactType}>
-                  {this.props.i18n.text.get(
-                    "plugin.guider.contact.type." + contactType
-                  )}
+              {contactTypesArray.map((contactTyp) => (
+                <option key={contactTyp} value={contactTyp}>
+                  {this.props.i18n.t("labels.type", {
+                    context: contactTyp,
+                    ns: "messaging",
+                  })}
                 </option>
               ))}
             </select>
@@ -261,9 +255,7 @@ class NewContactEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--ckeditor">
           <div className="env-dialog__form-element-container">
             <label className="env-dialog__label">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.dialog.createContactEvent.text"
-              )}
+              {this.props.i18n.t("labels.message", { ns: "messaging" })}
             </label>
             <CKEditor
               editorTitle={editorTitle}
@@ -286,18 +278,14 @@ class NewContactEvent extends SessionStateComponent<
           onClick={this.saveContactEvent.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.send"
-          )}
+          {this.props.i18n.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.cancel"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -305,9 +293,7 @@ class NewContactEvent extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.button.clearDraft"
-            )}
+            {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -316,9 +302,10 @@ class NewContactEvent extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-contact-event"
-        title={this.props.i18n.text.get(
-          "plugin.guider.user.dialog.createContactEvent.title"
-        )}
+        title={this.props.i18n.t("labels.create", {
+          ns: "messaging",
+          context: "contactEvent",
+        })}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -340,7 +327,6 @@ NewContactEvent.contextType = contactLogsContext;
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     currentStudent: state.guider.currentStudent.basic,
   };
@@ -358,4 +344,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewContactEvent);
+export default withTranslation(["guider"])(
+  connect(mapStateToProps, mapDispatchToProps)(NewContactEvent)
+);

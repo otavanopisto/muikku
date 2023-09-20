@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
-import { i18nType } from "~/reducers/base/i18n";
 import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -34,12 +33,12 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
 import { Student } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderStudentsProps
  */
-interface GuiderStudentsProps {
-  i18n: i18nType;
+interface GuiderStudentsProps extends WithTranslation<["common"]> {
   guiderStudentsState: GuiderStudentsStateType;
   guiderStudentsHasMore: boolean;
   loadMoreStudents: LoadMoreStudentsTriggerType;
@@ -130,14 +129,20 @@ class GuiderStudents extends BodyScrollLoader<
     } else if (this.props.guiderStudentsState === "ERROR") {
       return (
         <div className="empty">
-          {this.props.i18n.text.get("plugin.guider.errorMessage.users")}
+          {this.props.i18n.t("notifications.loadError", {
+            ns: "orders",
+            context: "student",
+          })}
         </div>
       );
     } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.guider.errorMessage.nostudents")}
+            {this.props.i18n.t("content.empty", {
+              ns: "users",
+              context: "students",
+            })}
           </span>
         </div>
       );
@@ -207,7 +212,6 @@ class GuiderStudents extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guiderStudentsState: state.guider.studentsState,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,
@@ -230,4 +234,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GuiderStudents);
+export default withTranslation(["users"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderStudents)
+);
