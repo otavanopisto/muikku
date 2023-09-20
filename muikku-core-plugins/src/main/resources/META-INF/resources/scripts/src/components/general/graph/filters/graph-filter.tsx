@@ -1,14 +1,11 @@
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GraphFilterProps
  */
-interface GraphFilterProps {
-  i18n: i18nType;
+interface GraphFilterProps extends WithTranslation {
   graphs: string[];
   filteredGraphs: string[];
   handler: any;
@@ -57,7 +54,10 @@ class GraphFilter extends React.Component<GraphFilterProps> {
                   htmlFor={`filter-` + graph}
                   className="filter-item__label"
                 >
-                  {this.props.i18n.text.get("plugin.guider." + graph + "Label")}
+                  {this.props.t("labels.graph", {
+                    ns: "guider",
+                    context: graph,
+                  })}
                 </label>
               </div>
             );
@@ -104,7 +104,10 @@ class GraphFilter extends React.Component<GraphFilterProps> {
                   htmlFor={`filter-` + graph}
                   className="filter-item__label"
                 >
-                  {this.props.i18n.text.get("plugin.guider." + graph + "Label")}
+                  {this.props.t("labels.graph", {
+                    ns: "guider",
+                    context: graph,
+                  })}
                 </label>
               </div>
             );
@@ -128,15 +131,4 @@ class GraphFilter extends React.Component<GraphFilterProps> {
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-export default connect(mapStateToProps)(GraphFilter);
+export default withTranslation("guider")(GraphFilter);

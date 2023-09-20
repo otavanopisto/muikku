@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import { i18nType } from "reducers/base/i18n";
 import { StateType } from "~/reducers";
 import EvaluationToolbar from "./application/toolbar";
 import EvaluationList from "./application/evaluation-list/evaluations-list";
@@ -15,6 +14,7 @@ import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
 import { AnyActionType } from "~/actions";
+import { WithTranslation, withTranslation } from "react-i18next";
 import {
   GroupedOption,
   OptionDefault,
@@ -25,8 +25,7 @@ import "~/sass/elements/react-select-override.scss";
 /**
  * EvaluationApplicationProps
  */
-interface EvaluationApplicationProps {
-  i18n: i18nType;
+interface EvaluationApplicationProps extends WithTranslation {
   status: StatusType;
   currentWorkspace: WorkspaceType;
   evaluations: EvaluationState;
@@ -76,7 +75,9 @@ class EvaluationApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.evaluation.title");
+    const { t } = this.props;
+
+    const title = t("labels.evaluation", { ns: "evaluation" });
     const currentWorkspace = this.props.currentWorkspace;
 
     const workspaces = [...this.props.evaluations.evaluationWorkspaces];
@@ -98,7 +99,7 @@ class EvaluationApplication extends React.Component<
     workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
 
     const evaluationRequestOption = {
-      label: this.props.i18n.text.get("plugin.evaluation.allRequests"),
+      label: t("labels.evaluationRequest", { ns: "evaluation", count: 0 }),
       value: "",
     };
 
@@ -121,7 +122,7 @@ class EvaluationApplication extends React.Component<
     )[] = [
       evaluationRequestOption,
       {
-        label: this.props.i18n.text.get("plugin.evaluation.workspaces"),
+        label: t("labels.workspaces", { ns: "workspace" }),
         options: workspaceOptions,
       },
     ];
@@ -141,7 +142,7 @@ class EvaluationApplication extends React.Component<
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectCourses" className="visually-hidden">
-          {this.props.i18n.text.get("plugin.coursepicker.select.label")}
+          TODO: Kurssityyppien listaus valinta
         </label>
 
         <Select<OptionDefault<number> | OptionDefault<string>>
@@ -185,7 +186,6 @@ class EvaluationApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
     currentWorkspace: state.workspaces.currentWorkspace,
@@ -201,7 +201,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EvaluationApplication);
+export default withTranslation(["evaluation", "workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationApplication)
+);

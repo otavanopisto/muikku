@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import { i18nType } from "reducers/base/i18n";
 import Records from "./application/records";
 import Summary from "./application/summary";
 import Hops from "./application/hops";
@@ -24,6 +23,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
+import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
 import { FormState } from "~/@types/pedagogy-form";
 import promisify from "~/util/promisify";
@@ -32,8 +32,7 @@ import mApi from "~/lib/mApi";
 /**
  * StudiesApplicationProps
  */
-interface StudiesApplicationProps {
-  i18n: i18nType;
+interface StudiesApplicationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
   hops: HOPSType;
   status: StatusType;
@@ -208,12 +207,14 @@ class StudiesApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.records.pageTitle");
+    const { t } = this.props;
+
+    const title = t("labels.studies");
 
     let panelTabs: Tab[] = [
       {
         id: "SUMMARY",
-        name: this.props.i18n.text.get("plugin.records.category.summary"),
+        name: t("labels.summary", { ns: "studies" }),
         hash: "summary",
         type: "summary",
         /**
@@ -228,7 +229,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "RECORDS",
-        name: this.props.i18n.text.get("plugin.records.category.records"),
+        name: t("labels.records", { ns: "studies" }),
         hash: "records",
         type: "records",
         component: (
@@ -239,7 +240,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "HOPS",
-        name: this.props.i18n.text.get("plugin.records.category.hops"),
+        name: t("labels.hops", { ns: "studies" }),
         hash: "hops",
         type: "hops",
         component: (
@@ -250,7 +251,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "YO",
-        name: this.props.i18n.text.get("plugin.records.category.yo"),
+        name: t("labels.matriculationExams", { ns: "studies" }),
         hash: "yo",
         type: "yo",
         component: (
@@ -302,7 +303,6 @@ class StudiesApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     location: state.records.location,
     hops: state.hops,
     records: state.records,
@@ -318,4 +318,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudiesApplication);
+export default withTranslation(["studies", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudiesApplication)
+);

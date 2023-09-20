@@ -1,10 +1,8 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { Visibility } from "~/@types/pedagogy-form";
@@ -13,7 +11,6 @@ import { Visibility } from "~/@types/pedagogy-form";
  * VisibilityAndApprovalDialogProps
  */
 interface VisibilityAndApprovalDialogProps {
-  i18n: i18nType;
   formIsApproved: boolean;
   visibility: Visibility[];
   onVisibilityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -188,16 +185,6 @@ class VisibilityAndApprovalDialog extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -205,7 +192,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(VisibilityAndApprovalDialog);
+export default connect(null, mapDispatchToProps)(VisibilityAndApprovalDialog);

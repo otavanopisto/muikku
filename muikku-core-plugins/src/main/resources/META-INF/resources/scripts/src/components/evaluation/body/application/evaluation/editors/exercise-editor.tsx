@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
@@ -30,12 +29,12 @@ import {
   SaveWorkspaceAssigmentAssessmentRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AssignmentEditorProps
  */
-interface AssignmentEditorProps {
-  i18n: i18nType;
+interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: MaterialEvaluation;
   materialAssignment: MaterialAssignmentType;
@@ -205,10 +204,11 @@ class ExerciseEditor extends SessionStateComponent<
       }
 
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.evaluation.notifications.saveAssigmentGrade.error",
-          err.message
-        ),
+        this.props.t("notifications.saveError", {
+          ns: "evaluation",
+          error: err.message,
+          context: "assignmentEvaluation",
+        }),
         "error"
       );
 
@@ -317,9 +317,10 @@ class ExerciseEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.audioAssessments"
-              )}
+              {this.props.t("labels.verbalEvaluation", {
+                ns: "evaluation",
+                context: "assignment",
+              })}
             </label>
             <Recorder
               onIsRecordingChange={this.props.onIsRecordingChange}
@@ -335,9 +336,7 @@ class ExerciseEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {this.props.t("actions.save")}
           </Button>
           {this.state.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -345,9 +344,7 @@ class ExerciseEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-                )}
+                {this.props.t("actions.cancel")}
               </Button>
             </WarningDialog>
           ) : (
@@ -356,9 +353,7 @@ class ExerciseEditor extends SessionStateComponent<
               buttonModifiers="dialog-cancel"
               disabled={this.state.locked || this.props.isRecording}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-              )}
+              {this.props.t("actions.cancel")}
             </Button>
           )}
 
@@ -368,9 +363,7 @@ class ExerciseEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked || this.props.isRecording}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {this.props.t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>
@@ -378,9 +371,7 @@ class ExerciseEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="form__row form__row--evaluation-warning">
             <div className="recording-warning">
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
-              )}
+              {this.props.t("content.isRecording", { ns: "evaluation" })}
             </div>
           </div>
         )}
@@ -395,7 +386,6 @@ class ExerciseEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
   };
@@ -412,4 +402,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(ExerciseEditor)
+);

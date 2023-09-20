@@ -15,9 +15,11 @@ import {
   DiscussionAreaUpdateType,
   DiscussionSubscribedThread,
   DiscussionSubscribedArea,
+  DiscussionThreadLockEnum,
 } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -183,7 +185,7 @@ export interface loadDiscussionThreadsFromServerTriggerType {
 export interface CreateDiscussionThreadTriggerType {
   (data: {
     forumAreaId: number;
-    locked: boolean;
+    lock: DiscussionThreadLockEnum | null;
     message: string;
     sticky: boolean;
     title: string;
@@ -199,7 +201,7 @@ export interface CreateDiscussionThreadTriggerType {
 export interface ModifyDiscussionThreadTriggerType {
   (data: {
     thread: DiscussionThreadType;
-    locked: boolean;
+    lock: DiscussionThreadLockEnum | null;
     message: string;
     sticky: boolean;
     title: string;
@@ -677,9 +679,10 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title"
-            ),
+            i18n.t("validation.caption", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -687,9 +690,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content"
-            ),
+            i18n.t("validation.content", { ns: "messaging" }),
             "error"
           )
         );
@@ -699,7 +700,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         const discussion: DiscussionType = getState().discussion;
         const params = {
           forumAreaId: data.forumAreaId,
-          locked: data.locked,
+          lock: data.lock,
           message: data.message,
           sticky: data.sticky,
           title: data.title,
@@ -777,9 +778,10 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title"
-            ),
+            i18n.t("validation.caption", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -787,9 +789,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content"
-            ),
+            i18n.t("validation.content", { ns: "messaging" }),
             "error"
           )
         );
@@ -800,7 +800,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
           title: data.title,
           message: data.message,
           sticky: data.sticky,
-          locked: data.locked,
+          lock: data.lock,
         });
         const discussion: DiscussionType = getState().discussion;
         const newThread = <DiscussionThreadType>(
@@ -1135,9 +1135,10 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.deleteReply"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "reply",
+            }),
             "error"
           )
         );
@@ -1271,9 +1272,7 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName"
-            ),
+            i18n.t("validation.name", { ns: "messaging", context: "area" }),
             "error"
           )
         );
@@ -1350,9 +1349,7 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName"
-            ),
+            i18n.t("validation.name", { ns: "messaging", context: "area" }),
             "error"
           )
         );

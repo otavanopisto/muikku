@@ -5,7 +5,6 @@
  */
 
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
@@ -13,19 +12,19 @@ import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 
 /**
  * JournalProps
  */
-interface JournalFieldProps {
+interface JournalFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
   };
   usedAs: UsedAs;
-  i18n: i18nType;
   readOnly?: boolean;
   initialValue?: string;
   onChange?: (
@@ -122,7 +121,7 @@ function wordCount(rawText: string) {
 /**
  * Journal
  */
-export default class JournalField extends React.Component<
+class JournalField extends React.Component<
   JournalFieldProps,
   JournalFieldState
 > {
@@ -179,7 +178,6 @@ export default class JournalField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -212,6 +210,8 @@ export default class JournalField extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     if (this.props.invisible && !!this.props.readOnly) {
       let unloadedField;
       if (this.props.readOnly) {
@@ -251,9 +251,7 @@ export default class JournalField extends React.Component<
           <>
             <span className="material-page__taskfield-header">
               <span className="material-page__taskfield-title">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.journalMemoField.label"
-                )}
+                {t("labels.diaryEntry", { ns: "materials" })}
               </span>
               <Instructions
                 modifier="instructions"
@@ -265,9 +263,9 @@ export default class JournalField extends React.Component<
                 content={
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: this.props.i18n.text.get(
-                        "plugin.workspace.journalMemoField.instructions"
-                      ),
+                      __html: t("instructions.journalMemoField", {
+                        ns: "materials",
+                      }),
                     }}
                   />
                 }
@@ -310,7 +308,6 @@ export default class JournalField extends React.Component<
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           {field}
@@ -319,3 +316,5 @@ export default class JournalField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(JournalField);

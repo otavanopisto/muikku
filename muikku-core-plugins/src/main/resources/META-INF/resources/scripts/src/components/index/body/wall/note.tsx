@@ -7,7 +7,7 @@ import {
 import AnimateHeight from "react-animate-height";
 import { isOverdue } from "~/helper-functions/dates";
 import * as moment from "moment";
-import { i18nType } from "~/reducers/base/i18n";
+import { useTranslation } from "react-i18next";
 import NotesItemEdit from "~/components/general/notes/notes-item-edit";
 import Link from "~/components/general/link";
 import "~/sass/elements/note.scss";
@@ -20,7 +20,6 @@ interface NoteProps {
   onStatusUpdate: (id: number, status: NotesItemStatus) => void;
   onUpdate: (id: number, update: NotesItemUpdate) => void;
   note: NotesItemRead;
-  i18n: i18nType;
 }
 
 /**
@@ -29,13 +28,12 @@ interface NoteProps {
  * @returns JSX.Element
  */
 export const Note: React.FC<NoteProps> = (props) => {
-  const { modifier, note, i18n, isCreator, onStatusUpdate, onUpdate } = props;
+  const { modifier, note, isCreator, onStatusUpdate, onUpdate } = props;
+  const { t } = useTranslation("tasks");
   const overdue = isOverdue(note.dueDate);
   const [showDescription, setShowDescription] = React.useState(false);
 
-  const updateButtonLocale = isCreator
-    ? "plugin.records.tasks.action.markAsDone"
-    : "plugin.records.tasks.action.requestApproval";
+  const updateButtonLocale = isCreator ? "actions.approve" : "actions.send";
 
   /**
    * toggles description visibility
@@ -73,7 +71,7 @@ export const Note: React.FC<NoteProps> = (props) => {
         >
           {overdue ? (
             <span className="note__overdue-tag">
-              {i18n.text.get("plugin.records.tasks.status.overdue")}
+              {t("labels.status", { context: "overdue" })}
             </span>
           ) : null}
           {note.dueDate ? (
@@ -88,16 +86,14 @@ export const Note: React.FC<NoteProps> = (props) => {
         ></div>
         <div className="note__footer">
           <Link className="link link--index" onClick={handleStatusChange}>
-            {i18n.text.get(updateButtonLocale)}
+            {t(updateButtonLocale)}
           </Link>
           {isCreator && (
             <NotesItemEdit
               selectedNotesItem={note}
               onNotesItemSaveUpdateClick={onUpdate}
             >
-              <Link className="link link--index">
-                {i18n.text.get("plugin.records.tasks.editnote.topic")}
-              </Link>
+              <Link className="link link--index">{t("labels.edit")}</Link>
             </NotesItemEdit>
           )}
         </div>

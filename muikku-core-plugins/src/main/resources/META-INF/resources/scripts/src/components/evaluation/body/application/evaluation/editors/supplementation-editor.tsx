@@ -13,7 +13,6 @@ import {
   updateWorkspaceSupplementationToServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
@@ -22,12 +21,12 @@ import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { EvaluationAssessmentRequest } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SupplementationEditorProps
  */
-interface SupplementationEditorProps {
-  i18n: i18nType;
+interface SupplementationEditorProps extends WithTranslation {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
@@ -328,6 +327,8 @@ class SupplementationEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div className="form" role="form">
         <div className="form__row">
@@ -349,18 +350,14 @@ class SupplementationEditor extends SessionStateComponent<
             onClick={this.handleEvaluationSupplementationSave}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {t("actions.save")}
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
+            {t("actions.cancel")}
           </Button>
           {this.recovered && (
             <Button
@@ -368,9 +365,7 @@ class SupplementationEditor extends SessionStateComponent<
               disabled={this.state.locked}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>
@@ -385,7 +380,6 @@ class SupplementationEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,
@@ -406,7 +400,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SupplementationEditor);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(SupplementationEditor)
+);

@@ -8,11 +8,11 @@ import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 
@@ -27,7 +27,7 @@ interface SorterFieldItemType {
 /**
  * SorterFieldProps
  */
-interface SorterFieldProps {
+interface SorterFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -44,7 +44,6 @@ interface SorterFieldProps {
     name: string,
     newValue: any
   ) => any;
-  i18n: i18nType;
 
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -77,10 +76,7 @@ interface SorterFieldState {
 /**
  * SorterField
  */
-export default class SorterField extends React.Component<
-  SorterFieldProps,
-  SorterFieldState
-> {
+class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   /**
    * constructor
    * @param props props
@@ -157,7 +153,6 @@ export default class SorterField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -312,6 +307,8 @@ export default class SorterField extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.content) {
       return null;
     }
@@ -333,9 +330,7 @@ export default class SorterField extends React.Component<
       correctAnswersummaryComponent = (
         <span className="material-page__field-answer-examples material-page__field-answer-examples--sorterfield">
           <span className="material-page__field-answer-examples-title">
-            {this.props.i18n.text.get(
-              "plugin.workspace.assigment.checkAnswers.correctSummary.title"
-            )}
+            {t("labels.answer", { ns: "materials", context: "correct" })}:{" "}
           </span>
           {this.props.content.items.map((answer, index) => (
             <span
@@ -413,7 +408,6 @@ export default class SorterField extends React.Component<
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           <span className="material-page__taskfield-header">
@@ -428,9 +422,7 @@ export default class SorterField extends React.Component<
               content={
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: this.props.i18n.text.get(
-                      "plugin.workspace.sorterField.instructions"
-                    ),
+                    __html: t("instructions.sorterField", { ns: "materials" }),
                   }}
                 />
               }
@@ -512,3 +504,5 @@ export default class SorterField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(SorterField);

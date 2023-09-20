@@ -11,7 +11,6 @@ import { MaterialAssignmentType } from "~/reducers/workspaces/index";
 import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateCurrentStudentEvaluationCompositeRepliesData,
   updateCurrentStudentCompositeRepliesData,
@@ -23,6 +22,7 @@ import { CKEditorConfig } from "../evaluation";
 import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import WarningDialog from "../../../../dialogs/close-warning";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 import {
   AssessmentWithAudio,
@@ -39,8 +39,7 @@ import MApi, { isMApiError } from "~/api/api";
 /**
  * AssignmentEditorProps
  */
-interface AssignmentEditorProps {
-  i18n: i18nType;
+interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: MaterialEvaluation;
   materialAssignment: MaterialAssignmentType;
@@ -264,6 +263,8 @@ class AssignmentEditor extends SessionStateComponent<
       locked: true,
     });
 
+    const { t } = this.props;
+
     const { workspaceEntityId, userEntityId, workspaceMaterialId, dataToSave } =
       data;
 
@@ -323,10 +324,11 @@ class AssignmentEditor extends SessionStateComponent<
       }
 
       notificationActions.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.evaluation.notifications.saveAssigmentGrade.error",
-          err.message
-        ),
+        t("notifications.saveError", {
+          context: "assignmentEvaluation",
+          ns: "evaluation",
+          error: err.message,
+        }),
         "error"
       );
 
@@ -492,6 +494,8 @@ class AssignmentEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const renderGradingOptions = this.state.activeGradeSystems.map((gScale) => (
       <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
         {gScale.grades.map((grade) => (
@@ -541,9 +545,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.audioAssessments"
-              )}
+              {t("labels.verbalEvaluation", { ns: "evaluation" })}
             </label>
 
             <Recorder
@@ -555,11 +557,7 @@ class AssignmentEditor extends SessionStateComponent<
         </div>
         <div className="form__row">
           <fieldset className="form__fieldset">
-            <legend className="form__legend">
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"
-              )}
-            </legend>
+            <legend className="form__legend">{t("labels.evaluation")}</legend>
             <div className="form__fieldset-content form__fieldset-content--horizontal">
               <div className="form-element form-element--checkbox-radiobutton">
                 <input
@@ -571,9 +569,7 @@ class AssignmentEditor extends SessionStateComponent<
                   onChange={this.handleAssignmentEvaluationChange}
                 />
                 <label htmlFor="assignmentEvaluationTypeGRADED">
-                  {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-                  )}
+                  {t("labels.grade", { ns: "workspace" })}
                 </label>
               </div>
               <div className="form-element form-element--checkbox-radiobutton">
@@ -586,9 +582,7 @@ class AssignmentEditor extends SessionStateComponent<
                   onChange={this.handleAssignmentEvaluationChange}
                 />
                 <label htmlFor="assignmentEvaluationTypeINCOMPLETE">
-                  {this.props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"
-                  )}
+                  {t("labels.incomplete", { ns: "materials" })}
                 </label>
               </div>
             </div>
@@ -597,9 +591,7 @@ class AssignmentEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-              )}
+              {t("labels.grade", { ns: "workspace" })}
             </label>
 
             <div className="evaluation-modal__evaluate-drawer-row-data">
@@ -622,9 +614,7 @@ class AssignmentEditor extends SessionStateComponent<
             onClick={this.handleSaveAssignment}
             disabled={this.state.locked || this.props.isRecording}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {t("actions.save")}
           </Button>
           {this.state.showAudioAssessmentWarningOnClose ? (
             <WarningDialog onContinueClick={this.props.onClose}>
@@ -632,9 +622,7 @@ class AssignmentEditor extends SessionStateComponent<
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked || this.props.isRecording}
               >
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-                )}
+                {t("actions.cancel")}
               </Button>
             </WarningDialog>
           ) : (
@@ -643,9 +631,7 @@ class AssignmentEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               buttonModifiers="dialog-cancel"
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-              )}
+              {t("actions.cancel")}
             </Button>
           )}
 
@@ -655,9 +641,7 @@ class AssignmentEditor extends SessionStateComponent<
               disabled={this.state.locked || this.props.isRecording}
               onClick={this.handleDeleteEditorDraft}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>
@@ -665,9 +649,7 @@ class AssignmentEditor extends SessionStateComponent<
         {this.props.isRecording && (
           <div className="evaluation-modal__evaluate-drawer-row evaluation-modal__evaluate-drawer-row--recording-warning">
             <div className="recording-warning">
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.assignmentEvaluationForm.isRecordingWarning"
-              )}
+              {t("content.isRecording", { ns: "evaluation" })}
             </div>
           </div>
         )}
@@ -682,7 +664,6 @@ class AssignmentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,
@@ -702,4 +683,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssignmentEditor);
+export default withTranslation([
+  "evaluation",
+  "workspace",
+  "materials",
+  "common",
+])(connect(mapStateToProps, mapDispatchToProps)(AssignmentEditor));

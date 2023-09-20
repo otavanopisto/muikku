@@ -1,13 +1,9 @@
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import {
   WorkspaceType,
   Assessment,
   WorkspaceForumStatisticsType,
 } from "~/reducers/workspaces";
-import { Dispatch } from "redux";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
 import WorkspaceChart from "./workspace/workspace-chart";
 import "~/sass/elements/application-list.scss";
@@ -20,15 +16,15 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
-import { AnyActionType } from "~/actions";
 import { WorkspaceActivity } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
+import { useTranslation } from "react-i18next";
 
 /**
  * StudentWorkspaceProps
  */
-interface StudentWorkspaceProps {
-  /**Localization */
-  i18n: i18nType;
+interface StudentWorkspaceProps extends WithTranslation {
   workspace: WorkspaceType;
 }
 
@@ -91,25 +87,43 @@ class StudentWorkspace extends React.Component<
       case "pending":
       case "pending_pass":
       case "pending_fail":
-        stateText = "plugin.guider.assessmentState.PENDING";
+        stateText = this.props.i18n.t("labels.sent", {
+          context: "evaluationRequest",
+        });
         break;
       case "pass":
-        stateText = "plugin.guider.assessmentState.PASS";
+        stateText = this.props.i18n.t("labels.evaluationState", {
+          ns: "guider",
+          context: "pass",
+        });
         break;
       case "fail":
-        stateText = "plugin.guider.assessmentState.FAIL";
+        stateText = this.props.i18n.t("labels.evaluationState", {
+          ns: "guider",
+          context: "fail",
+        });
         break;
       case "incomplete":
-        stateText = "plugin.guider.assessmentState.INCOMPLETE";
+        stateText = this.props.i18n.t("labels.evaluationState", {
+          ns: "guider",
+          context: "incomplete",
+        });
         break;
       case "interim_evaluation_request":
-        stateText = "plugin.guider.assessmentState.PENDING_INTERIM_EVALUATION";
+        stateText = this.props.i18n.t("labels.sent", {
+          context: "interimEvaluation",
+        });
         break;
       case "interim_evaluation":
-        stateText = "plugin.guider.assessmentState.INTERIM_EVALUATION";
+        stateText = this.props.i18n.t("labels.evaluated", {
+          ns: "guider",
+          context: "interim",
+        });
         break;
       default:
-        stateText = "plugin.guider.assessmentState.UNASSESSED";
+        stateText = this.props.i18n.t("labels.notSent", {
+          context: "evaluationRequest",
+        });
         break;
     }
 
@@ -184,7 +198,7 @@ class StudentWorkspace extends React.Component<
                 {codeSubjectString}
               </span>
 
-              <GuiderAssessment i18n={this.props.i18n} assessment={a} />
+              <GuiderAssessment assessment={a} />
             </div>
           );
         })}
@@ -198,7 +212,9 @@ class StudentWorkspace extends React.Component<
     const renderCourseActivity = () => (
       <div className="application-sub-panel__item application-sub-panel__item--course-activity">
         <div className="application-sub-panel__item-title">
-          {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}
+          {this.props.i18n.t("labels.evaluationState", {
+            ns: "guider",
+          })}
         </div>
         <div className="application-sub-panel__item-data">
           {this.props.workspace.activity.assessmentState.map((a) => {
@@ -221,13 +237,13 @@ class StudentWorkspace extends React.Component<
             /**
              * State text by default
              */
-            let resultingStateText = this.props.i18n.text.get(stateText);
+            let resultingStateText = stateText;
 
             /**
              * Add date to string if date is present
              */
             if (a.date) {
-              resultingStateText += " - " + this.props.i18n.time.format(a.date);
+              resultingStateText += " - " + localizeTime.date(a.date);
             }
 
             return (
@@ -275,7 +291,6 @@ class StudentWorkspace extends React.Component<
               ) ? (
                 <span className="activity-badge activity-badge--percent">
                   <GuiderWorkspacePercents
-                    i18n={this.props.i18n}
                     activity={this.props.workspace.activity}
                   />
                 </span>
@@ -286,7 +301,6 @@ class StudentWorkspace extends React.Component<
                * Only show assessment in header line if its not combination workspace
                */
               <GuiderAssessment
-                i18n={this.props.i18n}
                 assessment={this.props.workspace.activity.assessmentState[0]}
               />
             ) : null}
@@ -313,9 +327,9 @@ class StudentWorkspace extends React.Component<
               {renderCourseActivity()}
 
               <CourseActivityRow<WorkspaceActivity>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits"
-                givenDateAttributeLocale="plugin.guider.user.details.lastVisit"
-                labelTranslationString="plugin.guider.visitedLabel"
+                conditionalAttributeLocale="content.numberOfVisits"
+                givenDateAttributeLocale="content.lastVisit"
+                labelTranslationString="labels.visits"
                 conditionalAttribute="numVisits"
                 givenDateAttribute="lastVisit"
                 mainAttribute="activity"
@@ -323,9 +337,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivity>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries"
-                givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry"
-                labelTranslationString="plugin.guider.journalEntriesLabel"
+                conditionalAttributeLocale="content.numberOfJournalEntries"
+                givenDateAttributeLocale="content.lastJournalEntry"
+                labelTranslationString="labels.entries"
                 conditionalAttribute="journalEntryCount"
                 givenDateAttribute="lastJournalEntry"
                 mainAttribute="activity"
@@ -333,9 +347,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceForumStatisticsType>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages"
-                givenDateAttributeLocale="plugin.guider.user.details.lastMessage"
-                labelTranslationString="plugin.guider.discussion-messagesLabel"
+                conditionalAttributeLocale="content.numberOfMessages"
+                givenDateAttributeLocale="content.lastMessage"
+                labelTranslationString="labels.discussionMessages"
                 conditionalAttribute="messageCount"
                 givenDateAttribute="latestMessage"
                 mainAttribute="forumStatistics"
@@ -343,20 +357,23 @@ class StudentWorkspace extends React.Component<
               />
 
               <h4 className="application-sub-panel__item-header">
-                {this.props.i18n.text.get("plugin.guider.assignmentsLabel")}
+                {this.props.i18n.t("labels.evaluables", {
+                  ns: "materials",
+                  count: 0,
+                })}
               </h4>
 
               <CourseActivityRow<WorkspaceActivity>
-                labelTranslationString="plugin.guider.unansweredAssignmentsLabel"
+                labelTranslationString="labels.unanswered"
                 conditionalAttribute="evaluablesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
               <CourseActivityRow<WorkspaceActivity>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredAssignments"
-                givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredAssignment"
-                labelTranslationString="plugin.guider.answeredAssignmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastAnswered"
+                labelTranslationString="labels.answered"
                 conditionalAttribute="evaluablesAnswered"
                 givenDateAttribute="evaluablesAnsweredLastDate"
                 mainAttribute="activity"
@@ -364,9 +381,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivity>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfSubmittedAssignments"
-                givenDateAttributeLocale="plugin.guider.user.details.lastSubmittedAssignment"
-                labelTranslationString="plugin.guider.submittedAssignmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastSubmittedAssignment"
+                labelTranslationString="labels.submittedAssignments"
                 conditionalAttribute="evaluablesSubmitted"
                 givenDateAttribute="evaluablesSubmittedLastDate"
                 mainAttribute="activity"
@@ -374,9 +391,9 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivity>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationFailed"
-                givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationFailed"
-                labelTranslationString="plugin.guider.failedAssingmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastEvaluationFailed"
+                labelTranslationString="labels.evaluatedWithNonPassingGrade"
                 conditionalAttribute="evaluablesFailed"
                 givenDateAttribute="evaluablesFailedLastDate"
                 mainAttribute="activity"
@@ -384,30 +401,32 @@ class StudentWorkspace extends React.Component<
               />
 
               <CourseActivityRow<WorkspaceActivity>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationPassed"
-                givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationPassed"
-                labelTranslationString="plugin.guider.passedAssingmentsLabel"
+                conditionalAttributeLocale="content.numberOfAssignments"
+                givenDateAttributeLocale="content.lastEvaluationPassed"
+                labelTranslationString="labels.evaluatedWithPassingGrade"
                 conditionalAttribute="evaluablesPassed"
                 givenDateAttribute="evaluablesPassedLastDate"
                 mainAttribute="activity"
                 {...this.props}
               />
-
               <h4 className="application-sub-panel__item-header">
-                {this.props.i18n.text.get("plugin.guider.exercisesLabel")}
+                {this.props.i18n.t("labels.exercises", {
+                  ns: "materials",
+                  count: 0,
+                })}
               </h4>
 
               <CourseActivityRow<WorkspaceActivity>
-                labelTranslationString="plugin.guider.unansweredExercisesLabel"
+                labelTranslationString="labels.unanswered"
                 conditionalAttribute="exercisesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
               <CourseActivityRow<WorkspaceActivity>
-                conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredExercises"
-                givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredExercise"
-                labelTranslationString="plugin.guider.answeredExercisesLabel"
+                conditionalAttributeLocale="content.numberOfExercises"
+                givenDateAttributeLocale="content.lastAnswered"
+                labelTranslationString="labels.answered"
                 conditionalAttribute="exercisesAnswered"
                 givenDateAttribute="exercisesAnsweredLastDate"
                 mainAttribute="activity"
@@ -421,25 +440,7 @@ class StudentWorkspace extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace);
+export default withTranslation(["guider"])(StudentWorkspace);
 
 // Other component used only by Workspace component
 
@@ -447,7 +448,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(StudentWorkspace);
  * CourseActivityRowProps
  */
 interface CourseActivityRowProps<C> {
-  i18n: i18nType;
   workspace: WorkspaceType;
   labelTranslationString: string;
   conditionalAttribute: keyof C;
@@ -466,25 +466,30 @@ interface CourseActivityRowProps<C> {
  * @returns JSX.Element
  */
 const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
-  let output = "-";
-
   const { mainAttribute, conditionalAttribute } = props;
+  const { t } = useTranslation("guider");
 
   const workspace = props.workspace;
+
+  let output = t("content.empty");
 
   /**
    * "Any" type should not be used and should be fixed. As now there currently is no better solution.
    * Tho more generic precise props still help use component more typescript precise
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (((workspace[mainAttribute] as any)[conditionalAttribute] as number) > 0) {
     if (props.conditionalAttributeLocale) {
-      output = props.i18n.text.get(
-        props.conditionalAttributeLocale,
-        (props.workspace[props.mainAttribute] as any)[
+      const locale = t(props.conditionalAttributeLocale, {
+        defaultValue: "Locale does not exist",
+        value: (props.workspace[props.mainAttribute] as any)[
           props.conditionalAttribute
-        ]
-      );
+        ],
+      });
+
+      output = locale;
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       output = (props.workspace as any)[props.mainAttribute][
         props.conditionalAttribute
       ];
@@ -494,16 +499,17 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
       output += ", ";
 
       if (props.givenDateAttributeLocale) {
-        output += props.i18n.text.get(
-          props.givenDateAttributeLocale,
-          props.i18n.time.format(
+        output += t(props.givenDateAttributeLocale, {
+          defaultValue: "Locale does not exist",
+          value: localizeTime.date(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
             ]
-          )
-        );
+          ),
+        });
       } else {
-        output += props.i18n.time.format(
+        output += localizeTime.date(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
           ]
@@ -514,7 +520,9 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   return (
     <div className="application-sub-panel__item application-sub-panel__item--course-activity">
       <div className="application-sub-panel__item-title">
-        {props.i18n.text.get(props.labelTranslationString)}
+        {t(props.labelTranslationString, {
+          defaultValue: "Locale does not exist",
+        })}
       </div>
       <div className="application-sub-panel__item-data">
         <span className="application-sub-panel__single-entry">{output}</span>
@@ -528,7 +536,6 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
  */
 interface GuiderAssessmentProps {
   assessment?: Assessment;
-  i18n: i18nType;
 }
 
 /**
@@ -537,7 +544,8 @@ interface GuiderAssessmentProps {
  * @returns JSX.Element
  */
 const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
-  const { assessment, i18n } = props;
+  const { assessment } = props;
+  const { t } = useTranslation(["workspace", "common"]);
 
   if (assessment) {
     // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
@@ -551,10 +559,11 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
       return (
         <span
           title={
-            i18n.text.get(
-              "plugin.guider.evaluated",
-              i18n.time.format(assessment.date)
-            ) + getShortenGradeExtension(assessment.grade)
+            t("labels.evaluated", {
+              ns: "workspace",
+              context: "in",
+              date: localizeTime.date(assessment.date),
+            }) + getShortenGradeExtension(assessment.grade)
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
         >
@@ -562,22 +571,21 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
         </span>
       );
     } else if (assessment.state === "incomplete") {
-      const status = i18n.text.get(
+      const status =
         assessment.state === "incomplete"
-          ? "plugin.guider.workspace.incomplete"
-          : "plugin.guider.workspace.failed"
-      );
-
+          ? t("labels.incomplete", { ns: "workspace" })
+          : t("labels.failed", { ns: "workspace" });
       const modifier =
         assessment.state === "incomplete" ? "state-INCOMPLETE" : "state-FAILED";
 
       return (
         <span
           title={
-            i18n.text.get(
-              "plugin.guider.evaluated",
-              i18n.time.format(assessment.date)
-            ) +
+            t("labels.evaluated", {
+              ns: "workspace",
+              context: "in",
+              date: localizeTime.date(assessment.date),
+            }) +
             " - " +
             status
           }
@@ -596,7 +604,6 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
  */
 interface GuiderWorkspacePercentsProps {
   activity?: WorkspaceActivity;
-  i18n: i18nType;
 }
 
 /**
@@ -608,25 +615,28 @@ const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
   props
 ) => {
   const { activity } = props;
+  const { t } = useTranslation(["materials", "common"]);
 
   return (
     <>
       <span
         className="activity-badge__item activity-badge__item--assignment-percent"
-        title={props.i18n.text.get(
-          "plugin.guider.headerEvaluatedTitle",
-          activity.evaluablesDonePercent
-        )}
+        title={t("labels.evaluables", {
+          ns: "materials",
+          context: "donePercent",
+          percent: activity.evaluablesDonePercent,
+        })}
       >
         {activity.evaluablesDonePercent}%
       </span>
       <span>/</span>
       <span
         className="activity-badge__item activity-badge__item--exercise-percent"
-        title={props.i18n.text.get(
-          "plugin.guider.headerExercisesTitle",
-          activity.exercisesDonePercent
-        )}
+        title={t("labels.exercises", {
+          ns: "materials",
+          context: "donePercent",
+          percent: activity.exercisesDonePercent,
+        })}
       >
         {activity.exercisesDonePercent}%
       </span>

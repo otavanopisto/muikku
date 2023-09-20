@@ -11,19 +11,20 @@ import {
   updateStaffmember,
   UpdateStaffmemberTriggerType,
 } from "~/actions/main-function/users";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { UserType } from "~/reducers/user-index";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * OrganizationUserProps
  */
-interface OrganizationUserProps {
+interface OrganizationUserProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  i18n: i18nType;
   status: StatusType;
   data?: UserType;
   studyprogrammes: StudyprogrammeTypes;
@@ -91,7 +92,7 @@ class OrganizationUser extends React.Component<
    * cancelDialog
    * @param closeDialog closeDialog
    */
-  cancelDialog(closeDialog: () => any) {
+  cancelDialog(closeDialog: () => void) {
     this.setState({
       firstNameValid: 2,
       lastNameValid: 2,
@@ -104,7 +105,7 @@ class OrganizationUser extends React.Component<
    * saveUser
    * @param closeDialog closeDialog
    */
-  saveUser(closeDialog: () => any) {
+  saveUser(closeDialog: () => void) {
     let valid = true;
     if (
       this.state.user.firstName == "" ||
@@ -168,32 +169,28 @@ class OrganizationUser extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <DialogRow modifiers="new-user">
           <SelectFormElement
             id="staffRole"
             name="role"
             modifiers="new-user"
-            label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.role"
-            )}
+            label={t("labels.role", { ns: "users" })}
             updateField={this.updateField}
             value={this.props.data.role}
           >
             <option value="MANAGER">
-              {this.props.i18n.text.get(
-                "plugin.organization.users.role.MANAGER"
-              )}
+              {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {this.props.i18n.text.get(
-                "plugin.organization.users.role.TEACHER"
-              )}
+              {t("labels.teacher", { ns: "users", count: 1 })}
             </option>
           </SelectFormElement>
         </DialogRow>
@@ -205,9 +202,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.firstNameValid}
             mandatory={true}
-            label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.firstName"
-            )}
+            label={t("labels.firstName", { ns: "users" })}
             updateField={this.updateField}
           />
           <InputFormElement
@@ -217,9 +212,7 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             valid={this.state.lastNameValid}
             mandatory={true}
-            label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.lastName"
-            )}
+            label={t("labels.lastName", { ns: "users" })}
             updateField={this.updateField}
           />
         </DialogRow>
@@ -230,9 +223,7 @@ class OrganizationUser extends React.Component<
             valid={this.state.emailValid}
             mandatory={true}
             updateField={this.updateField}
-            label={this.props.i18n.text.get(
-              "plugin.organization.users.addUser.label.email"
-            )}
+            label={t("labels.email", { ns: "users" })}
           />
         </DialogRow>
       </div>
@@ -242,15 +233,11 @@ class OrganizationUser extends React.Component<
      * footer
      * @param closePortal closePortal
      */
-    const footer = (closePortal: () => any) => (
+    const footer = (closePortal: () => void) => (
       <FormActionsElement
         locked={this.state.locked}
-        executeLabel={this.props.i18n.text.get(
-          "plugin.organization.users.editUser.execute"
-        )}
-        cancelLabel={this.props.i18n.text.get(
-          "plugin.organization.users.addUser.cancel"
-        )}
+        executeLabel={t("actions.save")}
+        cancelLabel={t("actions.cancel")}
         executeClick={this.saveUser.bind(this, closePortal)}
         cancelClick={this.cancelDialog.bind(this, closePortal)}
       />
@@ -259,9 +246,7 @@ class OrganizationUser extends React.Component<
     return (
       <Dialog
         modifier="new-user"
-        title={this.props.i18n.text.get(
-          "plugin.organization.users.editUser.title"
-        )}
+        title={t("labels.edit", { ns: "users" })}
         content={content}
         footer={footer}
       >
@@ -277,7 +262,6 @@ class OrganizationUser extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     studyprogrammes: state.studyprogrammes,
   };
@@ -287,8 +271,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ updateStaffmember }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationUser);
+export default withTranslation(["users", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(OrganizationUser)
+);
