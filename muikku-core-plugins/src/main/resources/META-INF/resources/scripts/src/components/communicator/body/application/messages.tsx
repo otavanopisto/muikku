@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { colorIntToHex, getName } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -35,6 +35,8 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 import InfoPopover from "~/components/general/info-popover";
 import Dropdown from "~/components/general/dropdown";
 import { MessageThread, MessageThreadExpanded } from "~/generated/client";
@@ -42,7 +44,7 @@ import { MessageThread, MessageThreadExpanded } from "~/generated/client";
 /**
  * CommunicatorMessagesProps
  */
-interface CommunicatorMessagesProps {
+interface CommunicatorMessagesProps extends WithTranslation {
   threads: MessageThread[];
   hasMore: boolean;
   state: MessagesStateType;
@@ -55,8 +57,6 @@ interface CommunicatorMessagesProps {
   loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType;
   removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType;
   addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType;
-
-  i18n: i18nType;
   status: StatusType;
 }
 
@@ -100,16 +100,12 @@ class CommunicatorMessages extends BodyScrollLoader<
   getThreadUserNames(thread: MessageThread, userId: number): any {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
-        return (
-          <span>
-            {this.props.i18n.text.get("plugin.communicator.sender.self")}
-          </span>
-        );
+        return <span>{this.props.t("labels.self")}</span>;
       }
       if (thread.sender.archived === true) {
         return (
           <span className="message__user-archived">
-            {this.props.i18n.text.get("plugin.communicator.sender.archived")}
+            {this.props.t("labels.archived")}
           </span>
         );
       }
@@ -139,15 +135,13 @@ class CommunicatorMessages extends BodyScrollLoader<
     const messageRecipientsList = thread.recipients.map((recipient) => {
       if (recipient.userEntityId === userId) {
         return (
-          <span key={recipient.recipientId}>
-            {this.props.i18n.text.get("plugin.communicator.sender.self")}
-          </span>
+          <span key={recipient.recipientId}>{this.props.t("labels.self")}</span>
         );
       }
       if (recipient.archived === true) {
         return (
           <span key={recipient.recipientId} className="message__user-archived">
-            {this.props.i18n.text.get("plugin.communicator.sender.archived")}
+            {this.props.t("labels.archived")}
           </span>
         );
       }
@@ -237,7 +231,10 @@ class CommunicatorMessages extends BodyScrollLoader<
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.communicator.empty.topic")}
+            {this.props.t("content.empty", {
+              ns: "messaging",
+              context: "messages",
+            })}
           </span>
         </div>
       );
@@ -248,20 +245,26 @@ class CommunicatorMessages extends BodyScrollLoader<
         <BodyScrollKeeper hidden={!!this.props.currentThread}>
           {this.props.searchMessages.map((message) => {
             // Lets set the correct messageFolder string based on which folrder the message belongs to
-            let messageFolder;
-            if (message.folder === "INBOX") {
-              messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.inbox"
-              );
-            } else if (message.folder === "SENT") {
-              messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.sent"
-              );
-            } else {
-              messageFolder = this.props.i18n.text.get(
-                "plugin.communicator.category.title.trash"
-              );
-            }
+            const messageFolder = this.props.t("labels.folder", {
+              ns: "messaging",
+              context: message.folder.toLowerCase(),
+            });
+            // if (message.folder === "INBOX") {-
+            //   messageFolder = this.props.t("labels.folder", {
+            //     ns: "messaging",
+            //     context: "inbox",
+            //   });
+            // } else if (message.folder === "SENT") {
+            //   messageFolder = this.props.t("labels.folder", {
+            //     ns: "messaging",
+            //     context: "sent",
+            //   });
+            // } else {
+            //   messageFolder = this.props.t("labels.folder", {
+            //     ns: "messaging",
+            //     context: "trash",
+            //   });
+            // }
 
             let senderName = `${message.sender.firstName} ${
               message.sender.nickName ? message.sender.nickName : ""
@@ -296,10 +299,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                           className="application-list__header-recipient"
                           key={recipient.userEntityId}
                         >
-                          {getName(
-                            recipient as any,
-                            !this.props.status.isStudent
-                          )}
+                          {getName(recipient, !this.props.status.isStudent)}
                         </span>
                       ))}
                       {message.userGroupRecipients.map((userGroupRecepient) => (
@@ -333,17 +333,14 @@ class CommunicatorMessages extends BodyScrollLoader<
                     openByHover
                     content={
                       <p>
-                        {`${this.props.i18n.time.format(
+                        {`${localizeTime.date(
                           message.created
-                        )} klo ${this.props.i18n.time.format(
-                          message.created,
-                          "LT"
-                        )}`}
+                        )} klo ${localizeTime.date(message.created, "h:mm")}`}
                       </p>
                     }
                   >
                     <div className="application-list__header-item-date">
-                      {this.props.i18n.time.format(message.created)}
+                      {localizeTime.date(message.created)}
                     </div>
                   </Dropdown>
                 </ApplicationListItemHeader>
@@ -422,15 +419,14 @@ class CommunicatorMessages extends BodyScrollLoader<
               isSelected,
               key: thread.communicatorMessageId,
               wcagLabel: thread.unreadMessagesInThread
-                ? this.props.i18n.text.get(
-                    "plugin.wcag.messageUnread.aria.label"
-                  )
+                ? this.props.t("wcag.unread", { ns: "messaging" })
                 : null,
               checkboxId: `messageSelect-${index}`,
               /**
                * contents
                * @param checkbox checkbox
                */
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               contents: (checkbox: React.ReactElement<any>) => (
                 <ApplicationListItemContentWrapper
                   aside={
@@ -439,9 +435,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                         htmlFor={`messageSelect-` + index}
                         className="visually-hidden"
                       >
-                        {this.props.i18n.text.get(
-                          "plugin.wcag.messageSelect.label"
-                        )}
+                        {this.props.t("wcag.setSelected", { ns: "messaging" })}
                       </label>
                       {checkbox}
                     </div>
@@ -457,9 +451,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     >
                       <span
                         className="message__recipients"
-                        aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageSender.aria.label"
-                        )}
+                        aria-label={this.props.t("wcag.sender", {
+                          ns: "messaging",
+                        })}
                       >
                         {this.getThreadUserNames(
                           thread,
@@ -470,9 +464,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     {thread.messageCountInThread > 1 ? (
                       <div
                         className="application-list__item-counter"
-                        aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageCount.aria.label"
-                        )}
+                        aria-label={this.props.t("wcag.replyCount", {
+                          ns: "messaging",
+                        })}
                       >
                         {thread.messageCountInThread}
                       </div>
@@ -483,33 +477,32 @@ class CommunicatorMessages extends BodyScrollLoader<
                       openByHover
                       content={
                         <p>
-                          {`${this.props.i18n.time.format(
+                          {`${localizeTime.date(
                             thread.threadLatestMessageDate
-                          )} klo ${this.props.i18n.time.format(
+                          )} klo ${localizeTime.date(
                             thread.threadLatestMessageDate,
-                            "LT"
+                            "h:mm"
                           )}`}
                         </p>
                       }
                     >
                       <div
                         className="application-list__header-item-date"
-                        aria-label={this.props.i18n.text.get(
-                          "plugin.wcag.messageSendDate.aria.label"
-                        )}
+                        aria-label={this.props.t("wcag.date", {
+                          ns: "messaging",
+                        })}
                       >
-                        {`${this.props.i18n.time.format(
-                          thread.threadLatestMessageDate
-                        )}`}
+                        {`${localizeTime.date(thread.threadLatestMessageDate)}`}
                       </div>
                     </Dropdown>
                   </ApplicationListItemHeader>
                   <ApplicationListItemBody modifiers="communicator-message">
                     <span
                       className="application-list__header-item-body"
-                      aria-label={this.props.i18n.text.get(
-                        "plugin.wcag.messageBody.aria.label"
-                      )}
+                      aria-label={this.props.t("wcag.content", {
+                        ns: "messaging",
+                        context: "truncated",
+                      })}
                     >
                       {thread.caption}
                     </span>
@@ -521,9 +514,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                           <span
                             className="label"
                             key={label.id}
-                            aria-label={this.props.i18n.text.get(
-                              "plugin.wcag.messageLabel.aria.label"
-                            )}
+                            aria-label={this.props.t("wcag.label", {
+                              ns: "messaging",
+                            })}
                           >
                             <span
                               className="label__icon icon-tag"
@@ -563,7 +556,6 @@ function mapStateToProps(state: StateType) {
     selectedThreadsIds: state.messages.selectedThreadsIds,
     currentThread: state.messages.currentThread,
     messages: state.messages,
-    i18n: state.i18n,
     status: state.status,
   };
 }
@@ -572,7 +564,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       loadMoreMessageThreads,
@@ -583,7 +575,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorMessages);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(CommunicatorMessages)
+);

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { getName } from "~/util/modifiers";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
@@ -48,12 +48,12 @@ import {
   DiscussionSubscribedThread,
   DiscussionThread,
 } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DiscussionSubscribedThreadsProps
  */
-interface DiscussionSubscriptionsProps {
-  i18n: i18nType;
+interface DiscussionSubscriptionsProps extends WithTranslation {
   discussion: DiscussionState;
   status: StatusType;
   workspaces: WorkspacesType;
@@ -463,7 +463,7 @@ class DiscussionSubscriptions extends React.Component<
           <Dropdown
             openByHover
             modifier="discussion-tooltip"
-            content={"Lopeta keskustelualueen tilaus"}
+            content={this.props.t("content.unsubscribe", { ns: "messaging" })}
           >
             <IconButton
               icon="bookmark-full"
@@ -497,7 +497,7 @@ class DiscussionSubscriptions extends React.Component<
           <div className="application-list__item-footer-content-aside">
             <div className="application-list__item-counter-container">
               <span className="application-list__item-counter-title">
-                Threadien määrä:{" "}
+                {this.props.t("labels.threadCount", { ns: "messaging" })}
               </span>
               <span className="application-list__item-counter">
                 {subscribedArea.numThreads}
@@ -538,9 +538,9 @@ class DiscussionSubscriptions extends React.Component<
           firstName={user.firstName}
           hasImage={user.hasImage}
           userCategory={userCategory}
-          avatarAriaLabel={this.props.i18n.text.get(
-            "plugin.wcag.userAvatar.label"
-          )}
+          avatarAriaLabel={this.props.t("wcag.OPUserAvatar", {
+            ns: "messaging",
+          })}
         />
       );
     }
@@ -569,9 +569,7 @@ class DiscussionSubscriptions extends React.Component<
           <Dropdown
             openByHover
             modifier="discussion-tooltip"
-            content={this.props.i18n.text.get(
-              "plugin.discussion.unsubscribe.thread"
-            )}
+            content={this.props.t("labels.unsubscribe", { ns: "messaging" })}
           >
             <IconButton
               icon="bookmark-full"
@@ -603,7 +601,7 @@ class DiscussionSubscriptions extends React.Component<
                   user,
                   this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                 )}
-              , {this.props.i18n.time.format(subscribredThread.created)}
+              , {localizeTime.date(subscribredThread.created)}
             </span>
 
             {sThreads.workspaceName && (
@@ -619,9 +617,7 @@ class DiscussionSubscriptions extends React.Component<
           <div className="application-list__item-footer-content-aside">
             <div className="application-list__item-counter-container">
               <span className="application-list__item-counter-title">
-                {this.props.i18n.text.get(
-                  "plugin.discussion.titleText.replyCount"
-                )}{" "}
+                {this.props.t("labels.replyCount", { ns: "messaging" })}
               </span>
               <span className="application-list__item-counter">
                 {subscribredThread.numReplies}
@@ -629,10 +625,10 @@ class DiscussionSubscriptions extends React.Component<
             </div>
             <div className="application-list__item-date">
               <span>
-                {this.props.i18n.text.get(
-                  "plugin.discussion.titleText.lastMessage"
-                )}{" "}
-                {this.props.i18n.time.format(subscribredThread.updated)}
+                {this.props.t("labels.lastMessage", {
+                  ns: "messaging",
+                  time: localizeTime.date(subscribredThread.updated),
+                })}
               </span>
             </div>
           </div>
@@ -668,9 +664,10 @@ class DiscussionSubscriptions extends React.Component<
         return (
           <div className="empty">
             <span>
-              {this.props.i18n.text.get(
-                "plugin.discussion.browseareas.subscribtions.empty.title"
-              )}
+              {this.props.t("content.empty", {
+                ns: "evaluation",
+                context: "subscriptions",
+              })}
             </span>
           </div>
         );
@@ -784,9 +781,10 @@ class DiscussionSubscriptions extends React.Component<
           ) : (
             <div className="empty">
               <span>
-                {this.props.i18n.text.get(
-                  "plugin.discussion.browseareas.subscribtions.empty.title"
-                )}
+                {this.props.t("content.empty", {
+                  ns: "evaluation",
+                  context: "subscriptions",
+                })}
               </span>
             </div>
           )}
@@ -802,7 +800,6 @@ class DiscussionSubscriptions extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
     status: state.status,
     workspaces: state.workspaces,
@@ -825,7 +822,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionSubscriptions);
+export default withTranslation("evaluation")(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionSubscriptions)
+);

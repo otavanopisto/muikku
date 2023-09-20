@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
@@ -20,13 +19,14 @@ import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
 import { AnyActionType } from "~/actions";
 import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
 import * as moment from "moment";
+import { localizeTime } from "~/locales/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DiscussionThreadReplyProps
  */
-interface DiscussionThreadReplyProps {
+interface DiscussionThreadReplyProps extends WithTranslation {
   discussionItem: DiscussionThreadReply;
-  i18n: i18nType;
   status: StatusType;
   user: DiscussionUser;
   avatar?: JSX.Element;
@@ -89,6 +89,7 @@ class DiscussionThreadReplyComponent extends React.Component<
 
   /**
    * render
+   * @returns JSX.Element
    */
   render() {
     const {
@@ -112,9 +113,7 @@ class DiscussionThreadReplyComponent extends React.Component<
         hidden={isHidden}
       >
         <DiscussionThreadHeader
-          aside={
-            <span>{this.props.i18n.time.format(discussionItem.created)}</span>
-          }
+          aside={<span>{localizeTime.date(discussionItem.created)}</span>}
         >
           <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">
             {getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}
@@ -131,21 +130,17 @@ class DiscussionThreadReplyComponent extends React.Component<
             {discussionItem.deleted ? (
               <DiscussionThreadBody>
                 <div className="rich-text">
-                  [
-                  {this.props.i18n.text.get(
-                    "plugin.discussion.infomessage.message.removed"
-                  )}
-                  ]
+                  {this.props.i18n.t("content.removed", { ns: "messaging" })}
                 </div>
 
                 {!moment(discussionItem.created).isSame(
                   discussionItem.lastModified
                 ) ? (
                   <div className="application-list__item-edited">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(discussionItem.lastModified)
-                    )}
+                    {this.props.i18n.t("labels.edited", {
+                      context: "in",
+                      time: localizeTime.date(discussionItem.lastModified),
+                    })}
                   </div>
                 ) : null}
               </DiscussionThreadBody>
@@ -155,10 +150,10 @@ class DiscussionThreadReplyComponent extends React.Component<
                   discussionItem.lastModified
                 ) ? (
                   <div className="application-list__item-edited">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(discussionItem.lastModified)
-                    )}
+                    {this.props.i18n.t("labels.edited", {
+                      context: "in",
+                      time: localizeTime.date(discussionItem.lastModified),
+                    })}
                   </div>
                 ) : null}
               </DiscussionThreadBody>
@@ -173,9 +168,7 @@ class DiscussionThreadReplyComponent extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("answer")}
                   >
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.reply.message"
-                    )}
+                    {this.props.i18n.t("actions.reply", { ns: "messaging" })}
                   </Link>
                 ) : null}
                 {!threadLocked || !isStudent ? (
@@ -185,7 +178,7 @@ class DiscussionThreadReplyComponent extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("quote")}
                   >
-                    {this.props.i18n.text.get("plugin.discussion.reply.quote")}
+                    {this.props.i18n.t("actions.quote")}
                   </Link>
                 ) : null}
                 {canEditMessage ? (
@@ -195,7 +188,7 @@ class DiscussionThreadReplyComponent extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("modify")}
                   >
-                    {this.props.i18n.text.get("plugin.discussion.reply.edit")}
+                    {this.props.i18n.t("actions.edit")}
                   </Link>
                 ) : null}
                 {canRemoveMessage ? (
@@ -205,9 +198,7 @@ class DiscussionThreadReplyComponent extends React.Component<
                       as="span"
                       className="link link--application-list"
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.delete"
-                      )}
+                      {this.props.i18n.t("actions.remove")}
                     </Link>
                   </DeleteThreadComponent>
                 ) : null}
@@ -219,12 +210,14 @@ class DiscussionThreadReplyComponent extends React.Component<
                     className="link link--application-list"
                   >
                     {parentHasHiddenSiblings
-                      ? this.props.i18n.text.get(
-                          "plugin.discussion.reply.showAllReplies"
-                        )
-                      : this.props.i18n.text.get(
-                          "plugin.discussion.reply.hideAllReplies"
-                        )}
+                      ? this.props.i18n.t("actions.show", {
+                          ns: "messaging",
+                          context: "comments",
+                        })
+                      : this.props.i18n.t("actions.hide", {
+                          ns: "messaging",
+                          context: "comments",
+                        })}
                   </Link>
                 ) : null}
               </DiscussionThreadFooter>
@@ -261,7 +254,6 @@ class DiscussionThreadReplyComponent extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
@@ -274,7 +266,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionThreadReplyComponent);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionThreadReplyComponent)
+);

@@ -9,7 +9,6 @@ import {
   flatten,
 } from "~/util/modifiers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   createGuiderFilterLabel,
   CreateGuiderFilterLabelTriggerType,
@@ -33,12 +32,12 @@ import { StateType } from "~/reducers";
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderToolbarLabelsProps
  */
-interface GuiderToolbarLabelsProps {
-  i18n: i18nType;
+interface GuiderToolbarLabelsProps extends WithTranslation<["common"]> {
   guider: GuiderType;
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType;
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType;
@@ -101,9 +100,9 @@ class GuiderToolbarLabels extends React.Component<
                 value={this.state.labelFilter}
                 onChange={this.updateLabelFilter}
                 type="text"
-                placeholder={this.props.i18n.text.get(
-                  "plugin.guider.flags.create.textfield.placeholder"
-                )}
+                placeholder={this.props.i18n.t("labels.createAndSearch", {
+                  ns: "flags",
+                })}
               />
             </div>,
             <Link
@@ -114,7 +113,7 @@ class GuiderToolbarLabels extends React.Component<
                 this.state.labelFilter
               )}
             >
-              {this.props.i18n.text.get("plugin.guider.flags.create")}
+              {this.props.i18n.t("actions.create", { ns: "flags" })}
             </Link>,
           ].concat(
             this.props.guider.availableFilters.labels
@@ -188,9 +187,9 @@ class GuiderToolbarLabels extends React.Component<
               value={this.state.labelFilter}
               onChange={this.updateLabelFilter}
               type="text"
-              placeholder={this.props.i18n.text.get(
-                "plugin.guider.flags.create.textfield.placeholder"
-              )}
+              placeholder={this.props.i18n.t("labels.createAndSearch", {
+                ns: "flags",
+              })}
             />
           </div>,
           <Link
@@ -202,7 +201,7 @@ class GuiderToolbarLabels extends React.Component<
               this.state.labelFilter
             )}
           >
-            {this.props.i18n.text.get("plugin.guider.flags.create")}
+            {this.props.i18n.t("actions.create", { ns: "flags" })}
           </Link>,
         ].concat(
           this.props.guider.availableFilters.labels
@@ -256,7 +255,6 @@ class GuiderToolbarLabels extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guider: state.guider,
   };
 }
@@ -278,7 +276,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuiderToolbarLabels);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderToolbarLabels)
+);

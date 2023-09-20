@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -12,6 +11,7 @@ import Synchronizer from "../base/synchronizer";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 // so we use the media recorder
@@ -28,12 +28,11 @@ if (!(window as any).MediaRecorder) {
 /**
  * AudioFieldProps
  */
-interface AudioFieldProps {
+interface AudioFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
   };
-  i18n: i18nType;
   status: StatusType;
 
   readOnly?: boolean;
@@ -87,10 +86,7 @@ const MAX_RECORDING_TIME_IN_SECONDS = 60 * 5;
 /**
  * AudioField
  */
-export default class AudioField extends React.Component<
-  AudioFieldProps,
-  AudioFieldState
-> {
+class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
   private interval: NodeJS.Timer;
   private recorder: any;
   private stream: MediaStream;
@@ -135,7 +131,7 @@ export default class AudioField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -145,9 +141,8 @@ export default class AudioField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: AudioFieldProps,
@@ -163,7 +158,6 @@ export default class AudioField extends React.Component<
 
   /**
    * getSupportsMediaAPI
-   * @returns
    */
   getSupportsMediaAPI() {
     // dang must be a fast AF browser for this to happen
@@ -184,7 +178,6 @@ export default class AudioField extends React.Component<
 
   /**
    * start - here we start the stream
-   * @returns
    */
   async start() {
     // we create it
@@ -271,7 +264,7 @@ export default class AudioField extends React.Component<
 
   /**
    * removeClipAt - Here we remote the clip
-   * @param index
+   * @param index index
    */
   removeClipAt(index: number) {
     const newValues = this.state.values.filter((a, i) => i !== index);
@@ -285,7 +278,7 @@ export default class AudioField extends React.Component<
 
   /**
    * onFileChanged - when the file changes (old method for bad browsers)
-   * @param e
+   * @param e e
    */
   onFileChanged(e: React.ChangeEvent<HTMLInputElement>) {
     // we do it similarly to the file field
@@ -310,7 +303,7 @@ export default class AudioField extends React.Component<
 
   /**
    * processFileAt - processing a file, this function doesn't care on whether it came from the local stream or a file element
-   * @param index
+   * @param index index
    */
   processFileAt(index: number) {
     // create the form data
@@ -397,7 +390,6 @@ export default class AudioField extends React.Component<
 
   /**
    * checkDoneAndRunOnChange
-   * @returns
    */
   checkDoneAndRunOnChange() {
     if (!this.props.content) {
@@ -433,9 +425,10 @@ export default class AudioField extends React.Component<
 
   /**
    * render
-   * @returns
    */
   render() {
+    const { t } = this.props;
+
     if (this.props.invisible) {
       let emptyData = null;
       if (this.state.values.length) {
@@ -494,9 +487,7 @@ export default class AudioField extends React.Component<
               />
               <Link
                 className="material-page__audiofield-download-file-button icon-download"
-                title={this.props.i18n.text.get(
-                  "plugin.workspace.audioField.downloadLink"
-                )}
+                title={t("actions.download", { count: 1 })}
                 href={value.url}
                 openInNewTab={value.name}
               />
@@ -507,9 +498,7 @@ export default class AudioField extends React.Component<
                 >
                   <Link
                     className="material-page__audiofield-remove-file-button icon-trash"
-                    title={this.props.i18n.text.get(
-                      "plugin.workspace.audioField.removeLink"
-                    )}
+                    title={t("actions.remove")}
                   />
                 </ConfirmRemoveDialog>
               ) : null}
@@ -520,9 +509,10 @@ export default class AudioField extends React.Component<
           return (
             <span className="material-page__audiofield-file-container">
               <span className="material-page__audiofield-file material-page__audiofield-file--FAILED-TO-UPLOAD">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.audioField.uploadFailed"
-                )}
+                {t("notifications.saveError", {
+                  ns: "materials",
+                  context: "audio",
+                })}
               </span>
             </span>
           );
@@ -558,10 +548,10 @@ export default class AudioField extends React.Component<
                   trailColor="#f5f5f5"
                   trailWidth={1}
                   svgStyle={{ width: "100%", height: "4px" }}
-                  text={this.props.i18n.text.get(
-                    "plugin.workspace.audioField.statusUploading",
-                    Math.round(value.progress * 100)
-                  )}
+                  text={t("notifications.uploading", {
+                    ns: "files",
+                    progress: Math.round(value.progress * 100),
+                  })}
                   progress={value.progress}
                 />
               </span>
@@ -600,17 +590,17 @@ export default class AudioField extends React.Component<
                   trailColor="#f5f5f5"
                   trailWidth={1}
                   svgStyle={{ width: "100%", height: "4px" }}
-                  text={this.props.i18n.text.get(
-                    "plugin.workspace.audioField.statusRecording",
-                    moment("2015-01-01")
+                  text={t("notifications.recording", {
+                    ns: "materials",
+                    currentLength: moment("2015-01-01")
                       .startOf("day")
                       .seconds(this.state.time)
                       .format("mm:ss"),
-                    moment("2015-01-01")
+                    maxLength: moment("2015-01-01")
                       .startOf("day")
                       .seconds(MAX_RECORDING_TIME_IN_SECONDS)
-                      .format("mm:ss")
-                  )}
+                      .format("mm:ss"),
+                  })}
                   progress={this.state.time / MAX_RECORDING_TIME_IN_SECONDS}
                 />
               </span>
@@ -639,7 +629,6 @@ export default class AudioField extends React.Component<
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           <span className={`material-page__audiofield ${ElementDisabledState}`}>
@@ -659,9 +648,7 @@ export default class AudioField extends React.Component<
                     onClick={this.start}
                   >
                     <span className="material-page__audiofield-start-record-label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.audioField.startLink"
-                      )}
+                      {t("actions.start", { ns: "materials" })}
                     </span>
                   </Link>
                 ) : (
@@ -670,23 +657,17 @@ export default class AudioField extends React.Component<
                     onClick={this.stop}
                   >
                     <span className="material-page__audiofield-stop-record-label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.audioField.stopLink"
-                      )}
+                      {t("actions.start", { ns: "materials" })}
                     </span>
                   </Link>
                 )}
                 {!this.state.recording ? (
                   <span className="material-page__audiofield-description material-page__audiofield-description--start-recording">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.startRecordingHint"
-                    )}
+                    {t("content.startRecording", { ns: "materials" })}
                   </span>
                 ) : (
                   <span className="material-page__audiofield-description material-page__audiofield-description--stop-recording">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.audioField.stopRecordingHint"
-                    )}
+                    {t("content.stopRecording", { ns: "materials" })}
                   </span>
                 )}
               </span>
@@ -699,9 +680,7 @@ export default class AudioField extends React.Component<
             ) : null}
             {this.props.readOnly && this.state.values.length == 0 ? (
               <span className="material-page__audiofield-files-container material-page__audiofield-files-container--empty">
-                {this.props.i18n.text.get(
-                  "plugin.workspace.audioField.noFiles"
-                )}
+                {t("content.noRecordings", { ns: "materials" })}
               </span>
             ) : null}
           </span>
@@ -710,3 +689,7 @@ export default class AudioField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "workspace", "files", "common"])(
+  AudioField
+);

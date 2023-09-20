@@ -1,10 +1,8 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { Visibility } from "~/@types/pedagogy-form";
@@ -13,7 +11,6 @@ import { Visibility } from "~/@types/pedagogy-form";
  * VisibilityDialogProps
  */
 interface VisibilityDialogProps {
-  i18n: i18nType;
   visibility: Visibility[];
   onVisibilityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -149,16 +146,6 @@ class VisibilityDialog extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -166,4 +153,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VisibilityDialog);
+export default connect(null, mapDispatchToProps)(VisibilityDialog);

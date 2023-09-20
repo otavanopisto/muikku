@@ -1,17 +1,14 @@
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 
 /**
  * ProfileProperty
  * @param props props
- * @param props.i18n i18n
  * @param props.label label
  * @param props.condition condition
  * @param props.modifier modifier
  * @param props.value value
  */
 export default function ProfileProperty(props: {
-  i18n: i18nType;
   label: string;
   condition: boolean;
   modifier?: string;
@@ -20,6 +17,7 @@ export default function ProfileProperty(props: {
     | Array<
         | string
         | {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             key: any;
             value: string;
           }
@@ -28,11 +26,12 @@ export default function ProfileProperty(props: {
   if (!props.condition) {
     return null;
   }
+
   return (
     <div className="application-sub-panel__item  application-sub-panel__item--profile">
       <div className="form__row">
         <div className="form-element">
-          <label>{props.i18n.text.get(props.label)}</label>
+          <label>{props.label}</label>
           <div
             className={`application-sub-panel__item-data ${
               props.modifier

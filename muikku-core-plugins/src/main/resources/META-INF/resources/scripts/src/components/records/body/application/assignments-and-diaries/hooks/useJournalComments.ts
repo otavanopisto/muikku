@@ -2,8 +2,8 @@ import * as React from "react";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { i18nType } from "~/reducers/base/i18n";
 import { JournalComment } from "~/@types/journal";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
@@ -32,10 +32,10 @@ const initialState: UseJournalCcmmentsState = {
 export const useJournalComments = (
   workspaceId: number,
   journalEntryId: number,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [journalComments, setJournalComments] = React.useState(initialState);
+  const { t } = useTranslation("journal");
 
   const isCancelled = React.useRef(false);
 
@@ -86,9 +86,9 @@ export const useJournalComments = (
     } catch (err) {
       if (!isCancelled.current) {
         displayNotification(
-          `${i18n.text.get(
-            "plugin.records.errormessage.workspaceDiaryCommentsLoadFailed"
-          )}, ${err.message}`,
+          `${t("notifications.loadError", { context: "comments" })}, ${
+            err.message
+          }`,
           "error"
         );
         setJournalComments((commentsData) => ({

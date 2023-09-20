@@ -12,6 +12,7 @@ import promisify from "~/util/promisify";
 import { displayNotification } from "../base/notifications";
 import { materialShowOrHideExtraTools } from "../workspaces/material";
 import update from "immutability-helper";
+import i18n from "~/locales/i18n";
 
 // Notebook actions
 
@@ -224,7 +225,10 @@ const loadNotebookEntries: LoadNotebookEntries =
 
           dispatch(
             displayNotification(
-              "Virhe ladattaessa työtilakohtaisia muistiinpanoja",
+              i18n.t("notifications.loadError", {
+                ns: "notebook",
+                context: "courseNotes",
+              }),
               "error"
             )
           );
@@ -254,7 +258,13 @@ const loadNotebookEntries: LoadNotebookEntries =
           });
 
           dispatch(
-            displayNotification("Virhe ladattaessa muistiinpanoja", "error")
+            displayNotification(
+              i18n.t("notifications.loadError", {
+                ns: "notebook",
+                context: "courseNotes",
+              }),
+              "error"
+            )
           );
         }
       }
@@ -321,7 +331,10 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
 
             dispatch(
               displayNotification(
-                "Virhe päivittäessä muistiinpanojen järjestystä",
+                i18n.t("notifications.updateError", {
+                  ns: "notebook",
+                  context: "noteOrder",
+                }),
                 "error"
               )
             );
@@ -444,7 +457,10 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         });
 
         dispatch(
-          displayNotification("Muistiinpano lisätty onnistuneesti", "success")
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
         );
 
         data.success && data.success();
@@ -456,7 +472,11 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
 
         dispatch(
           displayNotification(
-            `Virhe uuttaa muistiinpanoa tallentaessa: ${err}`,
+            i18n.t("notifications.saveError", {
+              ns: "notebook",
+              context: "note",
+              error: err,
+            }),
             "error"
           )
         );
@@ -509,7 +529,13 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
         });
 
         dispatch(
-          displayNotification("Virhe muistiinpanoa päivittäessä", "error")
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "notebook",
+              context: "note",
+            }),
+            "error"
+          )
         );
       }
     };
@@ -560,8 +586,15 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
         type: "NOTEBOOK_UPDATE_STATE",
         payload: "ERROR",
       });
-
-      dispatch(displayNotification("Virhe poistaessa muistiinpanoa", "error"));
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.removeError", {
+            ns: "notebook",
+            context: "note",
+          }),
+          "error"
+        )
+      );
     }
   };
 };
@@ -651,7 +684,13 @@ const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
         });
       } catch (error) {
         dispatch(
-          displayNotification("Virhe ladattaessa oletus sijaintia", "error")
+          displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "notebook",
+              context: "defaultLocation",
+            }),
+            "error"
+          )
         );
       }
     };

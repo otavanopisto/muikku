@@ -1,17 +1,14 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
-import { Dispatch, bindActionCreators } from "redux";
-import { StateType } from "~/reducers";
 import { SubjectEligibilityType } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/application-sub-panel.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { MatriculationSubjectCode } from "../matriculation-subjects/matriculation-subject-type";
 
 /**
  * MatriculationEligibilityRowProps
  */
-interface MatriculationEligibilityRowProps {
+interface MatriculationEligibilityRowProps extends WithTranslation {
   subject: SubjectEligibilityType;
-  i18n: i18nType;
 }
 
 /**
@@ -40,15 +37,15 @@ class MatriculationEligibilityRow extends React.Component<
    * getMatriculationSubjectNameByCode
    * @param code code
    */
-  getMatriculationSubjectNameByCode = (code: string): string =>
-    this.props.i18n.text.get(
-      `plugin.records.hops.matriculationSubject.${code}`
-    );
+  getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
+    this.props.t(`matriculationSubjects.${code}`, { ns: "hops" });
 
   /**
    * render
    */
   render() {
+    const { t } = this.props;
+
     return (
       <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility">
         <div
@@ -59,24 +56,22 @@ class MatriculationEligibilityRow extends React.Component<
           }`}
         >
           {this.props.subject.eligibility === "ELIGIBLE"
-            ? this.props.i18n.text.get(
-                "plugin.records.hops.matriculationEligibleText.true.short"
-              )
-            : this.props.i18n.text.get(
-                "plugin.records.hops.matriculationEligibleText.false.short"
-              )}
+            ? t("labels.yes")
+            : t("labels.no")}
         </div>
         <div className="application-sub-panel__summary-item-label">
-          {this.getMatriculationSubjectNameByCode(this.props.subject.code)}
+          {this.getMatriculationSubjectNameByCode(
+            this.props.subject.code as MatriculationSubjectCode
+          )}
         </div>
         <div
           className="application-sub-panel__summary-item-description"
           dangerouslySetInnerHTML={{
-            __html: this.props.i18n.text.get(
-              "plugin.records.hops.matriculationEligibleTooltip",
-              this.props.subject.acceptedCount,
-              this.props.subject.requiredCount
-            ),
+            __html: t("content.matriculationEligibility", {
+              ns: "hops",
+              acceptedCount: this.props.subject.acceptedCount,
+              requiredCount: this.props.subject.requiredCount,
+            }),
           }}
         />
       </div>
@@ -84,25 +79,6 @@ class MatriculationEligibilityRow extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MatriculationEligibilityRow);
+export default withTranslation(["studies", "hops", "common"])(
+  MatriculationEligibilityRow
+);

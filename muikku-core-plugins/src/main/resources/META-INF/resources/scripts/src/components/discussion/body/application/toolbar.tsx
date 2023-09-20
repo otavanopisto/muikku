@@ -7,7 +7,6 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import "~/sass/elements/react-select-override.scss";
-import { i18nType } from "~/reducers/base/i18n";
 import { DiscussionState } from "~/reducers/discussion";
 import NewArea from "../../dialogs/new-area";
 import ModifyArea from "../../dialogs/modify-area";
@@ -32,6 +31,7 @@ import {
   ShowOnlySubscribedThreads,
   showOnlySubscribedThreads,
 } from "~/actions/discussion/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { OptionWithExtraContent } from "~/components/general/react-select/types";
 import { OptionWithDescription } from "~/components/general/react-select/option";
 
@@ -42,8 +42,7 @@ type DiscussionAreaOptionWithExtraContent = OptionWithExtraContent<
 /**
  * DiscussionToolbarProps
  */
-interface DiscussionToolbarProps {
-  i18n: i18nType;
+interface DiscussionToolbarProps extends WithTranslation {
   discussion: DiscussionState;
   status: StatusType;
   showOnlySubscribedThreads: ShowOnlySubscribedThreads;
@@ -182,9 +181,9 @@ class DiscussionToolbar extends React.Component<
         let label = area.name;
 
         if (subscribed) {
-          label = `${area.name} (${this.props.i18n.text.get(
-            "plugin.discussion.subscribed.area.label"
-          )})`;
+          label = `${area.name} (${this.props.i18n.t("labels.subscribed", {
+            ns: "messaging",
+          })})`;
         }
 
         return {
@@ -197,11 +196,13 @@ class DiscussionToolbar extends React.Component<
     const options: DiscussionAreaOptionWithExtraContent[] = [
       {
         value: "",
-        label: this.props.i18n.text.get("plugin.discussion.browseareas.all"),
+        label: this.props.i18n.t("labels.allDiscussionAreas", {
+          ns: "messaging",
+        }),
       },
       {
         value: "subs",
-        label: "Tilatut keskustelut",
+        label: this.props.i18n.t("labels.subscriptions"),
       },
       ...otherOptions,
     ];
@@ -258,7 +259,7 @@ class DiscussionToolbar extends React.Component<
 
           <div className="form-element">
             <label htmlFor="discussionAreaSelect" className="visually-hidden">
-              {this.props.i18n.text.get("plugin.wcag.areaSelect.label")}
+              {this.props.i18n.t("wcag.selectArea", { ns: "messaging" })}
             </label>
             <Select<DiscussionAreaOptionWithExtraContent>
               className="react-select-override"
@@ -282,7 +283,6 @@ class DiscussionToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
     status: state.status,
   };
@@ -303,4 +303,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscussionToolbar);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionToolbar)
+);
