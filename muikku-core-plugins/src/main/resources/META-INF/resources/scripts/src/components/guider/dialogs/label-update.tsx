@@ -6,8 +6,6 @@ import { bindActionCreators } from "redux";
 import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
-
-import { GuiderUserLabelType } from "~/reducers/main-function/guider";
 import {
   UpdateGuiderFilterLabelTriggerType,
   RemoveGuiderFilterLabelTriggerType,
@@ -19,35 +17,18 @@ import Button from "~/components/general/button";
 import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
 import * as queryString from "query-string";
-import promisify from "../../../util/promisify";
-import mApi from "~/lib/mApi";
 import { ContactRecipientType } from "../../../reducers/user-index";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "../../../actions/base/notifications";
-
 import { getName } from "~/util/modifiers";
+import { UserFlag, UserSharedFlag } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
+
 const KEYCODES = {
   ENTER: 13,
 };
-
-/**
- * SharedFlagUser
- */
-interface SharedFlagUser {
-  flagId: number;
-  id: number;
-  user: {
-    firstName: string;
-    hasImage: boolean;
-    lastName: string;
-    nickName: string;
-    userEntityId: number;
-    userIdentifier: string;
-  };
-  userIdentifier: string;
-}
 
 /**
  * GuiderLabelUpdateDialogProps
@@ -55,7 +36,7 @@ interface SharedFlagUser {
 interface GuiderLabelUpdateDialogProps extends WithTranslation<["common"]> {
   // eslint-disable-next-line
   children: React.ReactElement<any>;
-  label: GuiderUserLabelType;
+  label: UserFlag;
   isOpen?: boolean;
   onClose?: () => void;
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType;
@@ -85,7 +66,7 @@ class GuiderLabelUpdateDialog extends React.Component<
   GuiderLabelUpdateDialogProps,
   GuiderLabelUpdateDialogState
 > {
-  sharesResult: SharedFlagUser[] | undefined;
+  sharesResult: UserSharedFlag[] | undefined;
 
   /**
    * constructor
@@ -148,7 +129,7 @@ class GuiderLabelUpdateDialog extends React.Component<
     this.setState({
       selectedItems: this.sharesResult
         .map(
-          (result: SharedFlagUser): ContactRecipientType => ({
+          (result: UserSharedFlag): ContactRecipientType => ({
             type: "staff",
             value: {
               id: result.user.userEntityId,
@@ -175,6 +156,8 @@ class GuiderLabelUpdateDialog extends React.Component<
    * @param onClose onClose
    */
   removeLabelLinking = (onClose: () => void) => {
+    const userApi = MApi.getUserApi();
+
     this.setState({ locked: true });
 
     /**
@@ -207,16 +190,17 @@ class GuiderLabelUpdateDialog extends React.Component<
           );
 
           try {
-            await promisify(
-              mApi().user.flags.shares.del(
-                this.props.label.id,
-                userItem.value.id
-              ),
-              "callback"
-            )();
+            await userApi.deleteFlagShare({
+              flagId: this.props.label.id,
+              shareId: userItem.value.id,
+            });
 
             this.setState({ locked: false });
           } catch (e) {
+            if (!isMApiError(e)) {
+              throw e;
+            }
+
             this.props.displayNotification(e.message, "error");
           }
         }
@@ -245,28 +229,36 @@ class GuiderLabelUpdateDialog extends React.Component<
    * Creates or delete flaks depending users selections
    */
   shareOrRemoveFlags = async () => {
+    const userApi = MApi.getUserApi();
+
     const promises1 = this.state.selectedItems.map(async (member) => {
       const wasAdded = !this.sharesResult.find(
-        (share: SharedFlagUser) =>
+        (share: UserSharedFlag) =>
           share.userIdentifier === member.value.identifier
       );
 
       if (wasAdded) {
-        await mApi().user.flags.shares.create(this.props.label.id, {
+        userApi.createFlagShare({
           flagId: this.props.label.id,
-          userIdentifier: member.value.identifier,
+          createFlagShareRequest: {
+            flagId: this.props.label.id,
+            userIdentifier: member.value.identifier,
+          },
         });
       }
     });
 
-    const promises2 = this.sharesResult.map(async (share: SharedFlagUser) => {
+    const promises2 = this.sharesResult.map(async (share: UserSharedFlag) => {
       const wasRemoved = !this.state.selectedItems.find(
         (member: ContactRecipientType) =>
           member.value.identifier === share.userIdentifier
       );
 
       if (wasRemoved) {
-        mApi().user.flags.shares.del(this.props.label.id, share.id);
+        userApi.deleteFlagShare({
+          flagId: this.props.label.id,
+          shareId: share.id,
+        });
       }
     });
 
@@ -288,13 +280,18 @@ class GuiderLabelUpdateDialog extends React.Component<
    * Fetch shared users for flaks
    */
   getShares = async () => {
+    const userApi = MApi.getUserApi();
+
     try {
-      this.sharesResult = (await promisify(
-        mApi().user.flags.shares.read(this.props.label.id),
-        "callback"
-      )()) as SharedFlagUser[];
+      this.sharesResult = await userApi.getFlagShares({
+        flagId: this.props.label.id,
+      });
+
       this.updateSharesState();
     } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
       this.props.displayNotification(e.message, "error");
     }
   };
@@ -509,7 +506,6 @@ class GuiderLabelUpdateDialog extends React.Component<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
      */
     const content = (closeDialog: () => void) => (
       <div

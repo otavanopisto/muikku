@@ -1,12 +1,12 @@
 import { ActionType } from "~/actions";
-import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
-import i18n from "~/locales/i18n";
 import {
   CommunicatorSignature,
   MessageThread,
   MessageThreadExpanded,
   MessageThreadLabel,
+  User,
+  UserGroup,
 } from "~/generated/client";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -46,7 +46,7 @@ export interface MessageSearchResult {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tags: any;
   recipients?: Array<MessageRecepientType>;
-  userGroupRecipients?: Array<UserGroupType>;
+  userGroupRecipients?: UserGroup[];
   workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
 }
 
@@ -75,7 +75,7 @@ export interface MessageThreadUpdateType {
   tags?: any;
   threadLatestMessageDate?: string;
   unreadMessagesInThread?: boolean;
-  sender?: UserType;
+  sender?: User;
   messageCountInThread?: number;
   labels?: MessageThreadLabel[];
 }

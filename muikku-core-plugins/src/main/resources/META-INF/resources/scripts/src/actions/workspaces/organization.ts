@@ -17,10 +17,6 @@ import { StateType } from "~/reducers";
 import promisify from "~/util/promisify";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import {
-  WorkspaceStaffListType,
-  WorkspaceStudentListType,
-} from "~/reducers/user-index";
-import {
   WorkspaceUpdateType,
   WorkspaceCurriculumFilterListType,
   WorkspaceStateFilterListType,
@@ -36,8 +32,13 @@ import {
   LoadUsersOfWorkspaceTriggerType,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "./index";
-import { WorkspaceDetails, WorkspaceEducationType } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
+import {
+  WorkspaceDetails,
+  WorkspaceEducationType,
+  WorkspaceStudentSearchResult,
+} from "~/generated/client";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -273,6 +274,8 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         dispatch({
           type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
@@ -282,15 +285,12 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
           },
         });
 
-        const staffMembers: WorkspaceStaffListType = <WorkspaceStaffListType>(
-          await promisify(
-            mApi().user.staffMembers.read({
-              ...data.payload,
-              workspaceEntityId: data.workspace.id,
-            }),
-            "callback"
-          )()
-        );
+        const staffMembers = await userApi.getStaffMembers({
+          firstResult: data.payload.firstResult,
+          maxResults: data.payload.maxResults,
+          q: data.payload.q,
+          workspaceEntityId: data.workspace.id,
+        });
 
         const update: WorkspaceUpdateType = {
           staffMembers,
@@ -304,7 +304,7 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
 
         data.success && data.success(staffMembers);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -344,7 +344,7 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
           },
         });
 
-        const students = <WorkspaceStudentListType>(
+        const students = <WorkspaceStudentSearchResult>(
           await promisify(
             mApi().workspace.workspaces.students.read(
               data.workspace.id,
@@ -397,6 +397,8 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationApi = MApi.getOrganizationApi();
+
       try {
         const originalWorkspace: WorkspaceType = data.workspace;
         const newDetails = data.update.details;
@@ -459,16 +461,15 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
             }
           });
 
-          await promisify(
-            mApi().organizationWorkspaceManagement.workspaces.students.create(
-              data.workspace.id,
-              {
-                studentIdentifiers: studentIdentifiers,
-                studentGroupIds: groupIdentifiers,
-              }
-            ),
-            "callback"
-          )().then(data.progress && data.progress("add-students"));
+          await organizationApi.addStudentsToWorkspace({
+            workspaceId: data.workspace.id,
+            addStudentsToWorkspaceRequest: {
+              studentIdentifiers: studentIdentifiers,
+              studentGroupIds: groupIdentifiers,
+            },
+          });
+
+          data.progress && data.progress("add-students");
         }
 
         if (data.addTeachers.length > 0) {
@@ -476,15 +477,14 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
             (teacher) => teacher.id
           );
 
-          await promisify(
-            mApi().organizationWorkspaceManagement.workspaces.staff.create(
-              data.workspace.id,
-              {
-                staffMemberIdentifiers: staffMemberIdentifiers,
-              }
-            ),
-            "callback"
-          )().then(data.progress && data.progress("add-teachers"));
+          await organizationApi.addStaffToWorkspace({
+            workspaceId: data.workspace.id,
+            addStaffToWorkspaceRequest: {
+              staffMemberIdentifiers: staffMemberIdentifiers,
+            },
+          });
+
+          data.progress && data.progress("add-teachers");
         }
 
         // if (data.removeStudents.length > 0) {
@@ -554,6 +554,8 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const organizationApi = MApi.getOrganizationApi();
+
     try {
       const workspace: WorkspaceType = <WorkspaceType>await promisify(
         mApi().workspace.workspaces.create(
@@ -600,30 +602,28 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
           }
         });
 
-        await promisify(
-          mApi().organizationWorkspaceManagement.workspaces.students.create(
-            workspace.id,
-            {
-              studentIdentifiers: studentIdentifiers,
-              studentGroupIds: groupIdentifiers,
-            }
-          ),
-          "callback"
-        )().then(data.progress && data.progress("add-students"));
+        await organizationApi.addStudentsToWorkspace({
+          workspaceId: workspace.id,
+          addStudentsToWorkspaceRequest: {
+            studentIdentifiers: studentIdentifiers,
+            studentGroupIds: groupIdentifiers,
+          },
+        });
+
+        data.progress && data.progress("add-students");
       }
 
       if (data.staff.length > 0) {
         const staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
-        await promisify(
-          mApi().organizationWorkspaceManagement.workspaces.staff.create(
-            workspace.id,
-            {
-              staffMemberIdentifiers: staffMemberIdentifiers,
-            }
-          ),
-          "callback"
-        )().then(data.progress && data.progress("add-teachers"));
+        await organizationApi.addStaffToWorkspace({
+          workspaceId: workspace.id,
+          addStaffToWorkspaceRequest: {
+            staffMemberIdentifiers: staffMemberIdentifiers,
+          },
+        });
+
+        data.progress && data.progress("add-teachers");
       }
 
       data.progress && data.progress("done");

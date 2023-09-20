@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
@@ -24,7 +24,7 @@ import { AnyActionType } from "~/actions";
  * ChatSettingsProps
  */
 interface ChatSettingsProps extends WithTranslation<["common"]> {
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
