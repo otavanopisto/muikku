@@ -3206,8 +3206,13 @@ paths:
           required: true
           schema:
             type: integer
+        - name: sourceWorkspaceEntityId
+          in: query
+          description: Source workspace id
+          schema:
+            type: integer
       requestBody:
-        $ref: "#/components/requestBodies/DiscussionAreaCreateRequestBody"
+        $ref: "#/components/requestBodies/DiscussionWorkspaceAreaCreateRequestBody"
       responses:
         "200":
           description: Workspace discussion area created successfully
@@ -7232,6 +7237,7 @@ paths:
         - name: subjects
           in: query
           description: Subjects
+          explode: true
           schema:
             type: array
             items:
@@ -7239,6 +7245,7 @@ paths:
         - name: educationTypes
           in: query
           description: Education types
+          explode: true
           schema:
             type: array
             items:
@@ -7246,6 +7253,7 @@ paths:
         - name: curriculums
           in: query
           description: Curriculums
+          explode: true
           schema:
             type: array
             items:
@@ -7253,6 +7261,7 @@ paths:
         - name: organizations
           in: query
           description: Organizations
+          explode: true
           schema:
             type: array
             items:
@@ -7279,6 +7288,7 @@ paths:
         - name: orderBy
           in: query
           description: Order by
+          explode: true
           schema:
             type: array
             items:
@@ -7320,9 +7330,13 @@ paths:
         - name: sourceWorkspaceEntityId
           in: query
           description: Source workspace entity id
-          required: true
           schema:
             type: integer
+        - name: sourceWorkspaceIdentifier
+          in: query
+          description: Source workspace identifier
+          schema:
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceCreateRequestBody"
       responses:
@@ -7548,34 +7562,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/materials/:
-    post:
-      operationId: createWorkspaceMaterial
-      summary: Create workspace material
-      description: Create workspace material
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        $ref: "#/components/requestBodies/WorkspaceMaterialCreateRequestBody"
-      responses:
-        "200":
-          description: Workspace material created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MaterialContentNode"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/workspace/workspaces/{urlName}/basicInfo:
     get:
       operationId: getWorkspaceBasicInfo
@@ -7649,6 +7635,12 @@ paths:
           schema:
             type: integer
       responses:
+        "200":
+          description: Workspace file copied successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyValue"
         "204":
           description: Workspace file copied successfully
         "400":
@@ -7700,6 +7692,11 @@ paths:
           in: path
           description: Workspace entity id
           required: true
+          schema:
+            type: integer
+        - name: userEntityId
+          in: query
+          description: User entity id
           schema:
             type: integer
       responses:
@@ -7862,6 +7859,70 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MaterialAssignment"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    post:
+      operationId: createWorkspaceMaterial
+      summary: Create workspace material
+      description: Create workspace material
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: sourceNodeId
+          in: query
+          description: Source node id
+          schema:
+            type: integer
+        - name: targetNodeId
+          in: query
+          description: Target node id
+          schema:
+            type: integer
+        - name: sourceWorkspaceEntityId
+          in: query
+          description: Source workspace entity id
+          schema:
+            type: integer
+        - name: targetWorkspaceEntityId
+          in: query
+          description: Target workspace entity id
+          schema:
+            type: integer
+        - name: copyOnlyChildren
+          in: query
+          description: Copy only children
+          schema:
+            type: boolean
+            default: false
+        - name: cloneMaterials
+          in: query
+          description: Clone materials
+          schema:
+            type: boolean
+            default: false
+        - name: updateLinkedMaterials
+          in: query
+          description: Update linked materials
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceMaterialCreateRequestBody"
+      responses:
+        "200":
+          description: Workspace material assignment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialContentNode"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8177,7 +8238,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserStudent"
+                $ref: "#/components/schemas/WorkspaceStudent"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8205,12 +8266,8 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceStudentUpdateRequestBody"
       responses:
-        "200":
+        "204":
           description: Workspace student updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserStudent"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9147,6 +9204,21 @@ components:
           schema:
             type: object
             description: DiscussionAreaCreateRequestBody object
+            required:
+              - name
+              - description
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+
+    DiscussionWorkspaceAreaCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: DiscussionWorkspaceAreaCreateRequestBody object
             required:
               - name
               - description
@@ -10212,6 +10284,7 @@ components:
             $ref: "#/components/schemas/AnyValue"
 
     WorkspaceCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10227,6 +10300,8 @@ components:
                 type: string
               description:
                 type: string
+              access:
+                $ref: "#/components/schemas/WorkspaceAccess"
 
     WorkspaceSignupGroupUpdateRequestBody:
       required: true
@@ -11773,6 +11848,17 @@ components:
         - materialId
         - value
         - workspaceMaterialId
+      properties:
+        embedId:
+          type: string
+        fieldName:
+          type: string
+        materialId:
+          type: integer
+        value:
+          type: string
+        workspaceMaterialId:
+          type: integer
 
     MaterialCompositeReplyStateType:
       type: string

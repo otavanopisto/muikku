@@ -25,8 +25,8 @@ import {
 } from "~/reducers/main-function/guider";
 import {
   WorkspaceListType,
-  WorkspaceForumStatisticsType,
   ActivityLogType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
@@ -127,7 +127,7 @@ export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-  GuiderWorkspaceListType
+  WorkspaceDataType[]
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
@@ -558,6 +558,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();
+    const workspaceApi = MApi.getWorkspaceApi();
+    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -712,15 +714,24 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             await Promise.all([
               Promise.all(
                 workspaces.map(async (workspace, index) => {
-                  const statistics: WorkspaceForumStatisticsType = <
-                    WorkspaceForumStatisticsType
+                  /* const statistics: DiscussionWorkspaceStatistic = <
+                    DiscussionWorkspaceStatistic
                   >await promisify(
                     mApi().workspace.workspaces.forumStatistics.read(
                       workspace.id,
                       { userIdentifier: id }
                     ),
                     "callback"
-                  )();
+                  )(); */
+
+                  const statistics =
+                    await workspaceDiscussionApi.getWorkspaceDiscussionStatistics(
+                      {
+                        workspaceEntityId: workspace.id,
+                        userIdentifier: id,
+                      }
+                    );
+
                   workspaces[index].forumStatistics = statistics;
                 })
               ),
@@ -808,6 +819,8 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
     try {
       const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
 
@@ -862,15 +875,24 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
               await Promise.all([
                 Promise.all(
                   workspaces.map(async (workspace, index) => {
-                    const statistics: WorkspaceForumStatisticsType = <
-                      WorkspaceForumStatisticsType
+                    /* const statistics: DiscussionWorkspaceStatistic = <
+                      DiscussionWorkspaceStatistic
                     >await promisify(
                       mApi().workspace.workspaces.forumStatistics.read(
                         workspace.id,
                         { userIdentifier: id }
                       ),
                       "callback"
-                    )();
+                    )(); */
+
+                    const statistics =
+                      await workspaceDiscussionApi.getWorkspaceDiscussionStatistics(
+                        {
+                          workspaceEntityId: workspace.id,
+                          userIdentifier: id,
+                        }
+                      );
+
                     workspaces[index].forumStatistics = statistics;
                   })
                 ),
@@ -1841,11 +1863,12 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
-        dispatch({
+        /* dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-          payload: <GuiderWorkspaceListType>await promisify(
+          payload: <WorkspaceDataType[]>await promisify(
               mApi().workspace.workspaces.read({
                 userIdentifier: currentUser,
                 includeInactiveWorkspaces: true,
@@ -1854,9 +1877,21 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
               }),
               "callback"
             )() || [],
+        }); */
+
+        const workspaces = (await workspaceApi.getWorkspaces({
+          userIdentifier: currentUser,
+          includeInactiveWorkspaces: true,
+          maxResults: 500,
+          orderBy: ["alphabet"],
+        })) as WorkspaceDataType[];
+
+        dispatch({
+          type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
+          payload: workspaces || [],
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

@@ -54,7 +54,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID =
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES =
   SpecificActionType<
     "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
-    MaterialCompositeRepliesListType
+    MaterialCompositeReply[]
   >;
 
 /**
@@ -1033,8 +1033,8 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
             payload: null,
           });
         }
-        const compositeReplies: MaterialCompositeRepliesListType = <
-          MaterialCompositeRepliesListType
+        const compositeReplies: MaterialCompositeReply[] = <
+          MaterialCompositeReply[]
         >await promisify(
           mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
           "callback"

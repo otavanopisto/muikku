@@ -6,8 +6,8 @@ import {
   WorkspaceCurriculumFilterListType,
   WorkspaceJournalListType,
   MaterialContentNodeListType,
-  MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
+import { MaterialCompositeReply } from "~/generated/client";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
 
@@ -92,7 +92,7 @@ export interface CurrentRecordType {
   workspace: WorkspaceDataType;
   journals: WorkspaceJournalListType;
   materials: MaterialContentNodeListType;
-  compositeReplies: MaterialCompositeRepliesType[];
+  compositeReplies: MaterialCompositeReply[];
 }
 
 export type AllStudentUsersDataStatusType =

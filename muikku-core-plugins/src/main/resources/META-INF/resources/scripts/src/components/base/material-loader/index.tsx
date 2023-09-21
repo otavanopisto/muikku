@@ -43,7 +43,10 @@ import {
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
-import { MaterialContentNode } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { AnyActionType } from "~/actions";
 
@@ -253,7 +256,7 @@ export interface MaterialLoaderProps {
    * used
    */
   loadCompositeReplies?: boolean;
-  compositeReplies?: MaterialCompositeRepliesType;
+  compositeReplies?: MaterialCompositeReply;
 
   readOnly?: boolean;
 
@@ -291,7 +294,7 @@ interface DefaultMaterialLoaderProps {
  */
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
-  compositeRepliesInState: MaterialCompositeRepliesType;
+  compositeRepliesInState: MaterialCompositeReply;
   compositeRepliesInStateLoaded: boolean;
 
   //whether the answers are visible and checked
@@ -307,8 +310,7 @@ interface MaterialLoaderState {
 
 //A cheap cache for material replies and composite replies used by the hack
 const materialRepliesCache: { [key: string]: any } = {};
-const compositeRepliesCache: { [key: string]: MaterialCompositeRepliesType } =
-  {};
+const compositeRepliesCache: { [key: string]: MaterialCompositeReply } = {};
 
 //Treat this class with care it uses a lot of hacks to be efficient
 //The compositeReplies which answers are ignored and only used for setting the initial replies
@@ -493,7 +495,7 @@ class MaterialLoader extends React.Component<
     //TODO maybe we should get rid of this way to load the composite replies
     //after all it's learned that this is part of the workspace
     if (this.props.loadCompositeReplies) {
-      let compositeRepliesInState: MaterialCompositeRepliesType =
+      let compositeRepliesInState: MaterialCompositeReply =
         compositeRepliesCache[
           this.props.workspace.id + "-" + this.props.material.assignment.id
         ];
@@ -505,7 +507,7 @@ class MaterialLoader extends React.Component<
             { userEntityId: userEntityIdToLoad }
           ),
           "callback"
-        )()) as MaterialCompositeRepliesType;
+        )()) as MaterialCompositeReply;
 
         materialRepliesCache[
           this.props.workspace.id + "-" + this.props.material.assignment.id

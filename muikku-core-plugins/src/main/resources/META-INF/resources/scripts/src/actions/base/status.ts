@@ -165,12 +165,19 @@ async function loadWorkspacePermissions(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   readyCb: () => void
 ) {
-  const permissions = <string[]>(
+  const workspaceApi = MApi.getWorkspaceApi();
+
+  /* const permissions = <string[]>(
     await promisify(
       mApi().workspace.workspaces.permissions.read(workspaceId),
       "callback"
     )()
-  );
+  ); */
+
+  const permissions = await workspaceApi.getWorkspacePermissions({
+    workspaceEntityId: workspaceId,
+  });
+
   const canCurrentWorkspaceSignup = <boolean>(
     await promisify(
       mApi().coursepicker.workspaces.canSignup.read(workspaceId),

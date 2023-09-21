@@ -10,7 +10,6 @@ import {
   AssessmentRequest,
   EvaluationEnum,
   EvaluationLatestSubjectEvaluationIndex,
-  EvaluationWorkspace,
   EvaluationWorkspaceSubject,
 } from "~/@types/evaluation";
 import WorkspaceEditor from "./editors/workspace-editor";
@@ -35,6 +34,7 @@ import {
 import EvaluationJournalEventList from "./evaluation-journal-event-list";
 import EvaluationAssessmentList from "./evaluation-assessment-list";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { MaterialCompositeReply } from "~/generated/client";
 
 /**
  * EvaluationDrawerProps
@@ -271,7 +271,7 @@ export class Evaluation extends React.Component<
    * @returns boolean whether to show assignment or not
    */
   showAsHiddenEvaluationAssignment = (
-    compositeReply?: MaterialCompositeRepliesType
+    compositeReply?: MaterialCompositeReply
   ): boolean => compositeReply && compositeReply.submitted !== null;
 
   /**
@@ -628,7 +628,7 @@ export class Evaluation extends React.Component<
     ) {
       workspaces.push({
         ...this.props.currentWorkspace,
-      } as EvaluationWorkspace);
+      } as WorkspaceDataType);
     }
 
     return (

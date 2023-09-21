@@ -2,12 +2,12 @@ import * as React from "react";
 import { Document, Page, Path, Svg, Text, View } from "@react-pdf/renderer";
 import { styles } from "./table-of-content-pdf-styles";
 import {
-  MaterialCompositeRepliesListType,
   MaterialContentNodeListType,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import {
+  MaterialCompositeReply,
   MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
@@ -29,7 +29,7 @@ interface TableOfContentPFDProps {
   assignmentTypeFilters: string[];
   workspaceName?: string;
   materials?: MaterialContentNodeListType;
-  compositeReplies: MaterialCompositeRepliesListType;
+  compositeReplies: MaterialCompositeReply[];
 }
 
 /**

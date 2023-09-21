@@ -19,7 +19,10 @@ import {
 } from "~/components/general/application-list";
 import AnimateHeight from "react-animate-height";
 import Dropdown from "~/components/general/dropdown";
-import { MaterialContentNode } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -29,7 +32,7 @@ interface MaterialProps extends WithTranslation {
   material: MaterialContentNode;
   workspace: WorkspaceDataType;
   status: StatusType;
-  compositeReply: MaterialCompositeRepliesType;
+  compositeReply: MaterialCompositeReply;
   open: boolean;
   onMaterialClick: (
     id: number,

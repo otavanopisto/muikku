@@ -29,7 +29,7 @@ export type GuiderWorkspaceListType = WorkspaceListType;
 export interface GuiderFiltersType {
   labels: UserFlag[];
   userGroups: GuiderUserGroupListType;
-  workspaces: GuiderWorkspaceListType;
+  workspaces: WorkspaceDataType[];
 }
 
 export type GuiderStudentsStateType =

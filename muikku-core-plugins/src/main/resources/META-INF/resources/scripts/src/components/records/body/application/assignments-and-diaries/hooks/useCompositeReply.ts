@@ -2,15 +2,15 @@ import * as React from "react";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces";
 import { useTranslation } from "react-i18next";
+import { MaterialCompositeReply } from "~/generated/client";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseCompositeReplyState {
   isLoading: boolean;
-  compositeReplies: MaterialCompositeRepliesType[];
+  compositeReplies: MaterialCompositeReply[];
 }
 
 /**
@@ -66,7 +66,7 @@ export const useCompositeReply = (
         const [compositeReplies] = await Promise.all([
           (async () => {
             const compositeRepliesList =
-              <MaterialCompositeRepliesType[]>await promisify(
+              <MaterialCompositeReply[]>await promisify(
                 mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
                   userEntityId,
                 }),

@@ -1,7 +1,5 @@
 import { ActionType } from "../../../actions/index";
-import { MaterialCompositeRepliesType } from "../../workspaces/index";
 import {
-  EvaluationWorkspace,
   EvaluationStateType,
   EvaluationGradeSystem,
   AssessmentRequest,
@@ -15,6 +13,8 @@ import {
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
 import { EvaluationJournalFeedback } from "../../../@types/evaluation";
+import { WorkspaceDataType } from "~/reducers/workspaces";
+import { MaterialCompositeReply } from "~/generated/client";
 
 /**
  * EvaluationStateAndData
@@ -33,7 +33,7 @@ export interface EvaluationState {
   unimportantRequests: number[];
   evaluationGradeSystem: EvaluationGradeSystem[];
   evaluationRequests: EvaluationStateAndData<AssessmentRequest[]>;
-  evaluationWorkspaces: EvaluationWorkspace[];
+  evaluationWorkspaces: WorkspaceDataType[];
   selectedWorkspaceId?: number;
   evaluationSearch: string;
   evaluationSort?: EvaluationSort;
@@ -47,9 +47,7 @@ export interface EvaluationState {
     commentsLoaded: number[];
   };
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
-  evaluationCompositeReplies?: EvaluationStateAndData<
-    MaterialCompositeRepliesType[]
-  >;
+  evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
   openedAssignmentEvaluationId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;

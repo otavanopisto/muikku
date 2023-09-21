@@ -11,11 +11,13 @@ import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-l
 import { StateType } from "~/reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import { bindActionCreators } from "redux";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
-import { MaterialContentNode } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -23,7 +25,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 export interface EvaluationMaterialProps extends WithTranslation {
   material: MaterialContentNode;
-  compositeReply?: MaterialCompositeRepliesType;
+  compositeReply?: MaterialCompositeReply;
   interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   workspace: WorkspaceDataType;
   userEntityId: number;

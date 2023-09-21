@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  MaterialEvaluationType,
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
-} from "~/reducers/workspaces/index";
+import { MaterialEvaluationType } from "~/reducers/workspaces/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -31,6 +27,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MaterialAssignment, MaterialCompositeReply } from "~/generated/client";
 
 /**
  * AssignmentEditorProps
@@ -38,8 +35,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialAssignment: MaterialAssignment;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   updateMaterialEvaluationData: (

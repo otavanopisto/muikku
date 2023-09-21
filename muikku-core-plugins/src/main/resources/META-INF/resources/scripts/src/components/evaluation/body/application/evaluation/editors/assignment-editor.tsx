@@ -7,11 +7,7 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import {
-  MaterialAssignmentType,
-  MaterialEvaluationType,
-} from "~/reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
+import { MaterialEvaluationType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -38,6 +34,7 @@ import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
+import { MaterialAssignment, MaterialCompositeReply } from "~/generated/client";
 
 /**
  * AssignmentEditorProps
@@ -45,8 +42,8 @@ import { RecordValue } from "~/@types/recorder";
 interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialAssignment: MaterialAssignment;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;

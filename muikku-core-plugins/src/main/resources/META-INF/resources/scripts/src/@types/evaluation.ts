@@ -3,9 +3,9 @@ import { JournalComment } from "~/@types/journal";
 import {
   WorkspaceDataType,
   MaterialContentNodeListType,
-  MaterialAssignmentType,
   WorkspaceSubject,
 } from "../reducers/workspaces/index";
+import { MaterialAssignment } from "~/generated/client";
 /**
  * EvaluationEnum
  */
@@ -400,7 +400,7 @@ export interface EvaluationData {
  * EvaluationAssigmentData
  */
 export interface EvaluationAssigmentData {
-  assigments: MaterialAssignmentType[];
+  assigments: MaterialAssignment[];
 }
 
 /**

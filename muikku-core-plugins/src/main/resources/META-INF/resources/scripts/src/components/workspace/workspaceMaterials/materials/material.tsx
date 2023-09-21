@@ -26,7 +26,10 @@ import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
-import { MaterialContentNode } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -37,7 +40,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   workspaceEditMode: WorkspaceEditModeStateType;
   materialContentNode: MaterialContentNode;
   folder: MaterialContentNode;
-  compositeReplies: MaterialCompositeRepliesType;
+  compositeReplies: MaterialCompositeReply;
   isViewRestricted: boolean;
   showEvenIfHidden: boolean;
   workspace: WorkspaceDataType;

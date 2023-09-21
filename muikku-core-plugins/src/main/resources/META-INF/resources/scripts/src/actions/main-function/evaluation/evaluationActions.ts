@@ -19,10 +19,7 @@ import {
   EvaluationJournalFeedback,
 } from "../../../@types/evaluation";
 import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceInterimEvaluationRequest,
-} from "../../../reducers/workspaces/index";
+import { WorkspaceInterimEvaluationRequest } from "../../../reducers/workspaces/index";
 import {
   WorkspaceUserEntity,
   AssignmentEvaluationSaveReturn,
@@ -31,7 +28,6 @@ import {
   WorkspaceEvaluationSaveRequest,
   WorkspaceSupplementationSaveRequest,
 } from "../../../@types/evaluation";
-import { MaterialAssignmentType } from "../../../reducers/workspaces/index";
 import { EvaluationStudyDiaryEvent } from "../../../@types/evaluation";
 import { Dispatch } from "react-redux";
 import {
@@ -42,10 +38,7 @@ import {
   EvaluationFilters,
   EvaluationImportance,
 } from "../../../@types/evaluation";
-import {
-  EvaluationWorkspace,
-  EvaluationSort,
-} from "../../../@types/evaluation";
+import { EvaluationSort } from "../../../@types/evaluation";
 import {
   AssessmentRequest,
   EvaluationStatus,
@@ -58,6 +51,8 @@ import {
 } from "~/@types/journal";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
+import { WorkspaceDataType } from "~/reducers/workspaces";
+import { MaterialCompositeReply } from "~/generated/client";
 
 //////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
@@ -122,7 +117,7 @@ export type EVALUATION_UNIMPORTANT_ASSESSMENTS_LOAD = SpecificActionType<
 
 export type EVALUATION_WORKSPACES_LOAD = SpecificActionType<
   "EVALUATION_WORKSPACES_LOAD",
-  EvaluationWorkspace[]
+  WorkspaceDataType[]
 >;
 
 export type EVALUATION_GRADE_SYSTEM_LOAD = SpecificActionType<
@@ -157,7 +152,7 @@ export type EVALUATION_SEARCH_CHANGE = SpecificActionType<
 
 export type EVALUATION_COMPOSITE_REPLIES_LOAD = SpecificActionType<
   "EVALUATION_COMPOSITE_REPLIES_LOAD",
-  MaterialCompositeRepliesType[]
+  MaterialCompositeReply[]
 >;
 
 export type EVALUATION_IMPORTANCE_UPDATE = SpecificActionType<
@@ -770,6 +765,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
       getState: () => StateType
     ) => {
       const state = getState();
+      const workspaceApi = MApi.getWorkspaceApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -778,15 +774,19 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
         });
       }
 
-      let evaluationWorkspaces: EvaluationWorkspace[] = [];
+      /* let evaluationWorkspaces: WorkspaceDataType[] = []; */
 
       try {
-        evaluationWorkspaces = (await promisify(
+        /* evaluationWorkspaces = (await promisify(
           mApi().workspace.workspaces.read({
             userId: state.status.userId,
           }),
           "callback"
-        )()) as EvaluationWorkspace[];
+        )()) as WorkspaceDataType[]; */
+
+        const evaluationWorkspaces = (await workspaceApi.getWorkspaces({
+          userId: state.status.userId,
+        })) as WorkspaceDataType[];
 
         dispatch({
           type: "EVALUATION_WORKSPACES_LOAD",
@@ -800,7 +800,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1363,20 +1363,28 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       dispatch({
         type: "EVALUATION_COMPOSITE_REPLIES_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
       });
 
-      let evaluationCompositeReplies: MaterialCompositeRepliesType[];
+      /* let evaluationCompositeReplies: MaterialCompositeReply[]; */
 
       try {
-        evaluationCompositeReplies = (await promisify(
+        /* evaluationCompositeReplies = (await promisify(
           mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
             userEntityId,
           }),
           "callback"
-        )()) as MaterialCompositeRepliesType[];
+        )()) as MaterialCompositeReply[]; */
+
+        const evaluationCompositeReplies =
+          await workspaceApi.getWorkspaceCompositeReplies({
+            workspaceEntityId: workspaceId,
+            userEntityId,
+          });
 
         dispatch({
           type: "EVALUATION_COMPOSITE_REPLIES_LOAD",
@@ -1849,6 +1857,8 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       dispatch({
         type: "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE",
         payload: "LOADING",
@@ -1857,29 +1867,45 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       try {
         const [assigments] = await Promise.all([
           (async () => {
-            const assignmentsInterim =
-              <MaterialAssignmentType[]>await promisify(
+            /* const assignmentsInterim =
+              <MaterialAssignment[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "INTERIM_EVALUATION",
                 }),
                 "callback"
-              )() || [];
+              )() || []; */
 
-            const assignmentsExercise =
-              <MaterialAssignmentType[]>await promisify(
+            const assignmentsInterim =
+              await workspaceApi.getWorkspaceMaterialAssignments({
+                workspaceEntityId: workspaceId,
+                assignmentType: "INTERIM_EVALUATION",
+              });
+
+            /* const assignmentsExercise = <MaterialAssignment[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EXERCISE",
                 }),
                 "callback"
-              )() || [];
+              )() || []; */
 
-            const assignmentsEvaluated =
-              <MaterialAssignmentType[]>await promisify(
+            const assignmentsExercise =
+              await workspaceApi.getWorkspaceMaterialAssignments({
+                workspaceEntityId: workspaceId,
+                assignmentType: "EXERCISE",
+              });
+
+            /* const assignmentsEvaluated = <MaterialAssignment[]>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "EVALUATED",
                 }),
                 "callback"
-              )() || [];
+              )() || []; */
+
+            const assignmentsEvaluated =
+              await workspaceApi.getWorkspaceMaterialAssignments({
+                workspaceEntityId: workspaceId,
+                assignmentType: "EVALUATED",
+              });
 
             const assignments = [
               ...assignmentsInterim,
@@ -1901,7 +1927,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
           payload: "READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1935,6 +1961,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       getState: () => StateType
     ) => {
       const state = getState();
+      const workspaceApi = MApi.getWorkspaceApi();
 
       /**
        * There is reason why update composite replies state is not changed here. Because
@@ -1946,18 +1973,25 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       /**
        * Get initial values that needs to be updated
        */
-      const updatedCompositeReplies: MaterialCompositeRepliesType[] =
+      const updatedCompositeReplies =
         state.evaluations.evaluationCompositeReplies.data;
 
       try {
-        const updatedCompositeReply = (await promisify(
+        /* const updatedCompositeReply = (await promisify(
           mApi().workspace.workspaces.user.workspacematerial.compositeReply.read(
             data.workspaceId,
             data.userEntityId,
             data.workspaceMaterialId
           ),
           "callback"
-        )()) as MaterialCompositeRepliesType;
+        )()) as MaterialCompositeReply; */
+
+        const updatedCompositeReply =
+          await workspaceApi.getWorkspaceUserCompositeReply({
+            workspaceEntityId: data.workspaceId,
+            workspaceMaterialId: data.workspaceMaterialId,
+            userEntityId: data.userEntityId,
+          });
 
         const index = updatedCompositeReplies.findIndex(
           (item) =>
@@ -1974,6 +2008,10 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
           payload: updatedCompositeReplies,
         });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
@@ -2303,8 +2341,10 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const workspaceApi = MApi.getWorkspaceApi();
+
     try {
-      await promisify(
+      /* await promisify(
         mApi().workspace.workspaces.students.read(
           workspaceEntityId,
           workspaceUserEntityId
@@ -2323,8 +2363,25 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
         )().then(() => {
           onSuccess && onSuccess();
         });
+      }); */
+
+      const student = await workspaceApi.getWorkspaceStudent({
+        workspaceEntityId: workspaceEntityId,
+        studentId: workspaceUserEntityId,
+      });
+
+      student.active = false;
+
+      await workspaceApi.updateWorkspaceStudent({
+        workspaceEntityId: workspaceEntityId,
+        studentId: workspaceUserEntityId,
+        updateWorkspaceStudentRequest: student,
       });
     } catch (error) {
+      if (!isMApiError(error)) {
+        throw error;
+      }
+
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.removeError", {

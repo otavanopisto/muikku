@@ -7,7 +7,6 @@ import {
   SummaryStatusType,
 } from "~/reducers/main-function/records/summary";
 import {
-  WorkspaceForumStatisticsType,
   ActivityLogType,
   WorkspaceActivityType,
   WorkspaceDataType,
@@ -41,6 +40,8 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();
+    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+    const workspaceApi = MApi.getWorkspaceApi();
 
     try {
       dispatch({
@@ -92,13 +93,18 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       });
 
       /* User workspaces */
-      const workspaces = <WorkspaceDataType[]>await promisify(
+      /* const workspaces = <WorkspaceDataType[]>await promisify(
         mApi().workspace.workspaces.read({
           userIdentifier: pyramusId,
           includeInactiveWorkspaces: true,
         }),
         "callback"
-      )();
+      )(); */
+
+      const workspaces = (await workspaceApi.getWorkspaces({
+        userIdentifier: pyramusId,
+        includeInactiveWorkspaces: true,
+      })) as WorkspaceDataType[];
 
       if (workspaces && workspaces.length) {
         await Promise.all([
@@ -118,14 +124,21 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           ),
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const statistics: WorkspaceForumStatisticsType = <
-                WorkspaceForumStatisticsType
+              /* const statistics: DiscussionWorkspaceStatistic = <
+                DiscussionWorkspaceStatistic
               >await promisify(
                 mApi().workspace.workspaces.forumStatistics.read(workspace.id, {
                   userIdentifier: pyramusId,
                 }),
                 "callback"
-              )();
+              )(); */
+
+              const statistics =
+                await workspaceDiscussionApi.getWorkspaceDiscussionStatistics({
+                  workspaceEntityId: workspace.id,
+                  userIdentifier: pyramusId,
+                });
+
               workspaces[index].forumStatistics = statistics;
             })
           ),

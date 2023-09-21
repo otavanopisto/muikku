@@ -11,7 +11,6 @@ import { Dispatch, connect } from "react-redux";
 import {
   WorkspaceDataType,
   MaterialContentNodeListType,
-  MaterialCompositeRepliesListType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 
@@ -45,6 +44,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import {
+  MaterialCompositeReply,
   MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
@@ -56,7 +56,7 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceDataType;
   materials: MaterialContentNodeListType;
-  materialReplies: MaterialCompositeRepliesListType;
+  materialReplies: MaterialCompositeReply[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;

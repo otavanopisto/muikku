@@ -44,6 +44,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import { withTranslation, WithTranslation } from "react-i18next";
 import TableOfContentPDFDialog from "./table-of-content-pdf-dialog";
 import {
+  MaterialCompositeReply,
   MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
@@ -54,7 +55,7 @@ import {
 interface ContentProps extends WithTranslation {
   status: StatusType;
   materials: MaterialContentNodeListType;
-  materialReplies: MaterialCompositeRepliesListType;
+  materialReplies: MaterialCompositeReply[];
   activeNodeId: number;
   workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;

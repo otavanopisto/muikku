@@ -3,7 +3,6 @@ import {
   WorkspaceDataType,
   Assessment,
   WorkspaceActivityType,
-  WorkspaceForumStatisticsType,
 } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
 import WorkspaceChart from "./workspace/workspace-chart";
@@ -20,6 +19,7 @@ import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localizeTime } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
+import { DiscussionWorkspaceStatistic } from "~/generated/client";
 
 /**
  * StudentWorkspaceProps
@@ -346,7 +346,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceForumStatisticsType>
+              <CourseActivityRow<DiscussionWorkspaceStatistic>
                 conditionalAttributeLocale="content.numberOfMessages"
                 givenDateAttributeLocale="content.lastMessage"
                 labelTranslationString="labels.discussionMessages"

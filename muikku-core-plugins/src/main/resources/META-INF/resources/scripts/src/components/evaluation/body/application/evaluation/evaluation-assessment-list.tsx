@@ -14,6 +14,7 @@ import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
 import { useTranslation } from "react-i18next";
+import { MaterialCompositeReply } from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
@@ -87,7 +88,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
    * @returns boolean whether to show assignment or not
    */
   const showAsHiddenEvaluationAssignment = (
-    compositeReply?: MaterialCompositeRepliesType
+    compositeReply?: MaterialCompositeReply
   ): boolean =>
     compositeReply &&
     (compositeReply.submitted !== null ||

@@ -15,6 +15,9 @@ import {
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
   WorkspaceType,
+  MaterialCompositeReply,
+  MaterialAssignment,
+  DiscussionWorkspaceStatistic,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 import {
@@ -441,7 +444,7 @@ export interface WorkspaceDataType {
   //These are optional addons, and are usually not available
   activity?: WorkspaceActivityType;
   studentActivity?: WorkspaceStudentActivityType;
-  forumStatistics?: WorkspaceForumStatisticsType;
+  forumStatistics?: DiscussionWorkspaceStatistic;
   studentAssessments?: WorkspaceStudentAssessmentsType;
   activityStatistics?: WorkspaceActivityStatisticsType;
   assessmentRequests?: AssessmentRequest[];
@@ -714,7 +717,7 @@ export interface MaterialContentNodeType {
   //Assigned fields
   childrenAttachments?: Array<MaterialContentNode>; // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType;
-  assignment?: MaterialAssignmentType;
+  assignment?: MaterialAssignment;
 }
 
 /**
@@ -775,8 +778,7 @@ export interface MaterialEvaluationInfo {
   audioAssessments: AudioAssessment[];
 }
 
-export type MaterialCompositeRepliesListType =
-  Array<MaterialCompositeRepliesType>;
+export type MaterialCompositeRepliesListType = Array<MaterialCompositeReply>;
 
 /**
  * MaterialEvaluationType
@@ -813,7 +815,7 @@ export interface WorkspacesState {
   currentHelp?: MaterialContentNodeListType;
   currentMaterials?: MaterialContentNodeListType;
   currentMaterialsActiveNodeId?: number;
-  currentMaterialsReplies?: MaterialCompositeRepliesListType;
+  currentMaterialsReplies?: MaterialCompositeReply[];
 
   // Curriculums
   availableCurriculums?: WorkspaceCurriculumFilterListType;
@@ -1074,7 +1076,7 @@ export const workspaces: Reducer<WorkspacesState> = (
     case "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER": {
       let wasUpdated = false;
       let newCurrentMaterialsReplies = state.currentMaterialsReplies.map(
-        (compositeReplies: MaterialCompositeRepliesType) => {
+        (compositeReplies: MaterialCompositeReply) => {
           if (
             compositeReplies.workspaceMaterialId ===
             action.payload.workspaceMaterialId
@@ -1087,7 +1089,7 @@ export const workspaces: Reducer<WorkspacesState> = (
       );
       if (!wasUpdated) {
         newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-          <MaterialCompositeRepliesType>{ ...action.payload },
+          <MaterialCompositeReply>{ ...action.payload },
         ]);
       }
       return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };

@@ -14,7 +14,6 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import { WorkspaceDataType } from "../../../reducers/workspaces/index";
-import { EvaluationWorkspace } from "~/@types/evaluation";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -76,7 +75,7 @@ class NavigationAside extends React.Component<
         .map((eWorkspace) => eWorkspace.id)
         .indexOf(currentWorkspace.id) === -1
     ) {
-      workspaces.push({ ...currentWorkspace } as EvaluationWorkspace);
+      workspaces.push({ ...currentWorkspace } as WorkspaceDataType);
     }
 
     workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));

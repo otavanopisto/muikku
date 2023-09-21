@@ -6,9 +6,6 @@ import {
 } from "~/@types/evaluation";
 import {
   WorkspaceDataType,
-  MaterialContentNodeType,
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
   MaterialEvaluationType,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
@@ -29,7 +26,11 @@ import {
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
 import ExerciseEditor from "./editors/exercise-editor";
-import { MaterialContentNode } from "~/generated/client";
+import {
+  MaterialAssignment,
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -37,13 +38,13 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface EvaluationAssessmentAssignmentProps extends WithTranslation {
   workspace: WorkspaceDataType;
-  assigment: MaterialAssignmentType;
+  assigment: MaterialAssignment;
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: AssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   showAsHidden: boolean;
-  compositeReply?: MaterialCompositeRepliesType;
+  compositeReply?: MaterialCompositeReply;
   onClickOpen?: (id: number) => void;
   onSave?: (materialId: number) => void;
 }
@@ -302,7 +303,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param compositeReply compositeReply
    * @returns Assignment function button class
    */
-  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
+  assignmentFunctionClass = (compositeReply?: MaterialCompositeReply) => {
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
@@ -329,7 +330,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param compositeReply compositeReply
    * @returns classMod
    */
-  assigmentGradeClass = (compositeReply?: MaterialCompositeRepliesType) => {
+  assigmentGradeClass = (compositeReply?: MaterialCompositeReply) => {
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
@@ -356,7 +357,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param compositeReply compositeReply
    * @returns JSX.Element
    */
-  renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
+  renderAssignmentMeta = (compositeReply?: MaterialCompositeReply) => {
     const { t } = this.props;
 
     if (compositeReply) {

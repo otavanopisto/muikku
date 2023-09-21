@@ -6,9 +6,6 @@ import {
 } from "~/@types/evaluation";
 import {
   WorkspaceDataType,
-  MaterialContentNodeType,
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
   MaterialEvaluationType,
   AssignmentType,
 } from "~/reducers/workspaces/index";
@@ -30,7 +27,11 @@ import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
 import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
 import { WorkspaceInterimEvaluationRequest } from "../../../../../reducers/workspaces/index";
-import { MaterialContentNode } from "~/generated/client";
+import {
+  MaterialAssignment,
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -39,13 +40,13 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface EvaluationAssessmentInterminEvaluationRequestProps
   extends WithTranslation {
   workspace: WorkspaceDataType;
-  assigment: MaterialAssignmentType;
+  assigment: MaterialAssignment;
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: AssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   showAsHidden: boolean;
-  compositeReply?: MaterialCompositeRepliesType;
+  compositeReply?: MaterialCompositeReply;
   onClickOpen?: (id: number) => void;
   onSave?: (materialId: number) => void;
 }
@@ -320,7 +321,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * @param compositeReply compositeReply
    * @returns Assignment function button class
    */
-  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) =>
+  assignmentFunctionClass = (compositeReply?: MaterialCompositeReply) =>
     compositeReply &&
     compositeReply.evaluationInfo &&
     compositeReply.evaluationInfo.date &&
@@ -331,7 +332,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * @param compositeReply compositeReply
    * @returns JSX.Element
    */
-  renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
+  renderAssignmentMeta = (compositeReply?: MaterialCompositeReply) => {
     const { t } = this.props;
 
     if (compositeReply) {

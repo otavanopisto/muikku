@@ -25,7 +25,6 @@ import {
 import { Dispatch } from "react-redux";
 import {
   WorkspaceJournalsType,
-  WorkspaceTypeType,
   WorkspaceStateFilterListType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -2510,7 +2509,7 @@ const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -2536,9 +2535,11 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const state: StateType = getState();
-        await Promise.all([
+        const state = getState();
+        /* await Promise.all([
           promisify(
             mApi().workspace.workspaces.workspacefile.del(
               state.workspaces.currentWorkspace.id,
@@ -2553,6 +2554,17 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
             ),
             "callback"
           )(),
+        ]); */
+
+        await Promise.all([
+          workspaceApi.deleteWorkspaceFile({
+            workspaceId: state.workspaces.currentWorkspace.id,
+            fileIdentifier: "workspace-frontpage-image-cropped",
+          }),
+          workspaceApi.deleteWorkspaceFile({
+            workspaceId: state.workspaces.currentWorkspace.id,
+            fileIdentifier: "workspace-frontpage-image-original",
+          }),
         ]);
 
         const currentWorkspace = getState().workspaces.currentWorkspace;
@@ -2567,7 +2579,7 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -2594,9 +2606,12 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       try {
         const currentWorkspace = getState().workspaces.currentWorkspace;
-        const cloneWorkspace: WorkspaceDataType = <WorkspaceDataType>(
+        /* const cloneWorkspace: WorkspaceDataType = <WorkspaceDataType>(
           await promisify(
             mApi().workspace.workspaces.create(
               {
@@ -2610,24 +2625,39 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
             ),
             "callback"
           )()
-        );
+        ); */
+
+        const cloneWorkspace = (await workspaceApi.createWorkspace({
+          sourceWorkspaceEntityId: currentWorkspace.id,
+          createWorkspaceRequest: {
+            name: data.name,
+            nameExtension: data.nameExtension,
+            description: data.description,
+          },
+        })) as WorkspaceDataType;
 
         data.success && data.success("initial-copy", cloneWorkspace);
 
         if (data.copyDiscussionAreas) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.forumAreas.create(
               cloneWorkspace.id,
               {},
               { sourceWorkspaceEntityId: currentWorkspace.id }
             ),
             "callback"
-          )();
+          )(); */
+
+          await workspaceDiscussionApi.createWorkspaceDiscussionArea({
+            workspaceentityId: cloneWorkspace.id,
+            sourceWorkspaceEntityId: currentWorkspace.id,
+          });
+
           data.success && data.success("copy-areas", cloneWorkspace);
         }
 
         if (data.copyMaterials !== "NO") {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.materials.create(
               cloneWorkspace.id,
               {},
@@ -2639,43 +2669,71 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
               }
             ),
             "callback"
-          )();
+          )(); */
+
+          await workspaceApi.createWorkspaceMaterial({
+            workspaceEntityId: cloneWorkspace.id,
+            sourceWorkspaceEntityId: currentWorkspace.id,
+            targetWorkspaceEntityId: cloneWorkspace.id,
+            copyOnlyChildren: true,
+            cloneMaterials: data.copyMaterials === "CLONE",
+          });
+
           data.success && data.success("copy-materials", cloneWorkspace);
         }
 
-        cloneWorkspace.details = <WorkspaceDetails>(
+        /* cloneWorkspace.details = <WorkspaceDetails>(
           await promisify(
             mApi().workspace.workspaces.details.read(cloneWorkspace.id),
             "callback"
           )()
-        );
+        ); */
 
-        cloneWorkspace.details = <WorkspaceDetails>await promisify(
+        cloneWorkspace.details = await workspaceApi.getWorkspaceDetails({
+          workspaceId: cloneWorkspace.id,
+        });
+
+        /* cloneWorkspace.details = <WorkspaceDetails>await promisify(
           mApi().workspace.workspaces.details.update(cloneWorkspace.id, {
             ...cloneWorkspace.details,
             beginDate: data.beginDate,
             endDate: data.endDate,
           }),
           "callback"
-        )();
+        )(); */
+
+        cloneWorkspace.details = await workspaceApi.updateWorkspaceDetails({
+          workspaceId: cloneWorkspace.id,
+          updateWorkspaceDetailsRequest: {
+            ...cloneWorkspace.details,
+            beginDate: data.beginDate,
+            endDate: data.endDate,
+          },
+        });
 
         data.success && data.success("change-date", cloneWorkspace);
 
         if (data.copyBackgroundPicture) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.workspacefilecopy.create(
               currentWorkspace.id,
               cloneWorkspace.id
             ),
             "callback"
-          )();
+          )(); */
+
+          await workspaceApi.copyWorkspaceFile({
+            workspaceEntityId: currentWorkspace.id,
+            toWorkspaceId: cloneWorkspace.id,
+          });
+
           data.success &&
             data.success("copy-background-picture", cloneWorkspace);
         }
 
         data.success && data.success("done", cloneWorkspace);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -2703,6 +2761,8 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         const currentWorkspace = getState().workspaces.currentWorkspace;
         const mimeTypeRegex = /data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/;
@@ -2712,15 +2772,20 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
           data.croppedB64 && data.croppedB64.match(mimeTypeRegex)[1];
 
         if (data.delete) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.workspacefile.del(
               currentWorkspace.id,
               "workspace-frontpage-image-cropped"
             ),
             "callback"
-          )();
+          )(); */
+
+          await workspaceApi.deleteWorkspaceFile({
+            workspaceId: currentWorkspace.id,
+            fileIdentifier: "workspace-frontpage-image-cropped",
+          });
         } else if (data.croppedB64) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.workspacefile.create(
               currentWorkspace.id,
               {
@@ -2730,19 +2795,33 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
               }
             ),
             "callback"
-          )();
+          )(); */
+
+          await workspaceApi.createWorkspaceFile({
+            workspaceId: currentWorkspace.id,
+            createWorkspaceFileRequest: {
+              fileIdentifier: "workspace-frontpage-image-cropped",
+              contentType: mimeTypeCropped,
+              base64Data: data.croppedB64,
+            },
+          });
         }
 
         if (data.delete) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.workspacefile.del(
               currentWorkspace.id,
               "workspace-frontpage-image-original"
             ),
             "callback"
-          )();
+          )(); */
+
+          await workspaceApi.deleteWorkspaceFile({
+            workspaceId: currentWorkspace.id,
+            fileIdentifier: "workspace-frontpage-image-original",
+          });
         } else if (data.originalB64) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.workspacefile.create(
               currentWorkspace.id,
               {
@@ -2752,12 +2831,21 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
               }
             ),
             "callback"
-          )();
+          )(); */
+
+          await workspaceApi.createWorkspaceFile({
+            workspaceId: currentWorkspace.id,
+            createWorkspaceFileRequest: {
+              fileIdentifier: "workspace-frontpage-image-original",
+              contentType: mimeTypeOriginal,
+              base64Data: data.originalB64,
+            },
+          });
         }
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -2785,16 +2873,22 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         const currentWorkspace = getState().workspaces.currentWorkspace;
-        const permissions: WorkspaceSignupGroup[] = <WorkspaceSignupGroup[]>(
+        /* const permissions: WorkspaceSignupGroup[] = <WorkspaceSignupGroup[]>(
           await promisify(
             mApi().workspace.workspaces.signupGroups.read(
               getState().workspaces.currentWorkspace.id
             ),
             "callback"
           )()
-        );
+        ); */
+
+        const permissions = await workspaceApi.getWorkspaceSignupGroups({
+          workspaceEntityId: getState().workspaces.currentWorkspace.id,
+        });
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -2806,7 +2900,7 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
