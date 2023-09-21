@@ -95,7 +95,6 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Inject
   private SessionController sessionController;
-//  private SearchResponse search;
 
   @Override
   public void init() {
