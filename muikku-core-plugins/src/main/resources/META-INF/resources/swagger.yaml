@@ -8067,6 +8067,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MaterialReply"
+        "204":
+          description: Workspace material reply updated successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10342,6 +10344,7 @@ components:
                 $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
     MaterialReplyUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:

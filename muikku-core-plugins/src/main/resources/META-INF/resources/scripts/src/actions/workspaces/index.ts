@@ -305,16 +305,6 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
 
       const userId = getState().status.userId;
       try {
-        /* dispatch({
-          type: "UPDATE_USER_WORKSPACES",
-          payload: <WorkspaceDataType[]>(
-            ((await promisify(
-              mApi().workspace.workspaces.read({ userId: userId }),
-              "callback"
-            )()) || 0)
-          ),
-        }); */
-
         const workspaces = (await workspaceApi.getWorkspaces({
           userId: userId,
         })) as WorkspaceDataType[];
@@ -600,11 +590,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           chatStatus,
         ] = (await Promise.all([
           reuseExistantValue(true, workspace, () =>
-            /* promisify(
-              mApi().workspace.workspaces.cacheClear().read(data.workspaceId),
-              "callback"
-            )() */
-
             workspaceApi.getWorkspace({
               workspaceId: data.workspaceId,
             })
@@ -614,15 +599,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             status.permissions.WORKSPACE_REQUEST_WORKSPACE_ASSESSMENT,
             workspace && workspace.assessmentRequests,
             () =>
-              /* promisify(
-                mApi()
-                  .assessmentrequest.workspace.assessmentRequests.cacheClear()
-                  .read(data.workspaceId, {
-                    studentIdentifier: state.status.userSchoolDataIdentifier,
-                  }),
-                "callback"
-              )() */
-
               assessmentRequestApi.getWorkspaceAssessmentRequests({
                 workspaceEntityId: data.workspaceId,
                 studentIdentifier: state.status.userSchoolDataIdentifier,
@@ -666,13 +642,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             : null,
 
           reuseExistantValue(true, workspace && workspace.additionalInfo, () =>
-            /* promisify(
-              mApi()
-                .workspace.workspaces.additionalInfo.cacheClear()
-                .read(data.workspaceId),
-              "callback"
-            )() */
-
             workspaceApi.getWorkspaceAdditionalInfo({
               workspaceId: data.workspaceId,
             })
@@ -682,26 +651,12 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             true,
             workspace && workspace.contentDescription,
             () =>
-              /* promisify(
-                mApi()
-                  .workspace.workspaces.description.cacheClear()
-                  .read(data.workspaceId),
-                "callback"
-              )() */
-
               workspaceApi.getWorkspaceDescription({
                 workspaceId: data.workspaceId,
               })
           ),
 
           reuseExistantValue(true, workspace && workspace.producers, () =>
-            /* promisify(
-              mApi()
-                .workspace.workspaces.materialProducers.cacheClear()
-                .read(data.workspaceId),
-              "callback"
-            )() */
-
             workspaceApi.getWorkspaceMaterialProducers({
               workspaceEntityId: data.workspaceId,
             })
@@ -714,13 +669,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                   typeof workspace.isCourseMember !== "undefined" &&
                   workspace.isCourseMember,
                 () =>
-                  /* promisify(
-                    mApi().workspace.workspaces.amIMember.read(
-                      data.workspaceId
-                    ),
-                    "callback"
-                  )() */
-
                   workspaceApi.amIMember({
                     workspaceEntityId: data.workspaceId,
                   })
@@ -731,11 +679,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
           data.loadDetails || (workspace && workspace.details)
             ? reuseExistantValue(true, workspace && workspace.details, () =>
-                /* promisify(
-                  mApi().workspace.workspaces.details.read(data.workspaceId),
-                  "callback"
-                )() */
-
                 workspaceApi.getWorkspaceDetails({
                   workspaceId: data.workspaceId,
                 })
@@ -744,11 +687,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
 
           state.status.loggedIn
             ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-                /* promisify(
-                  mApi().chat.workspaceChatSettings.read(data.workspaceId),
-                  "callback"
-                )() */
-
                 chatApi.getWorkspaceChatSettings({
                   workspaceEntityId: data.workspaceId,
                 })
@@ -908,15 +846,6 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
 
       if (state.status.loggedIn) {
         try {
-          /* const assessmentRequests = <AssessmentRequest[]>await promisify(
-            mApi()
-              .assessmentrequest.workspace.assessmentRequests.cacheClear()
-              .read(state.workspaces.currentWorkspace.id, {
-                studentIdentifier: state.status.userSchoolDataIdentifier,
-              }),
-            "callback"
-          )(); */
-
           const assessmentRequests =
             await assessmentRequestApi.getWorkspaceAssessmentRequests({
               workspaceEntityId: state.workspaces.currentWorkspace.id,
@@ -987,27 +916,12 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
       const assessmentRequestApi = MApi.getAssessmentApi();
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        /* const assessmentRequest: AssessmentRequest = <AssessmentRequest>(
-          await promisify(
-            mApi().assessmentrequest.workspace.assessmentRequests.create(
-              data.workspace.id,
-              {
-                requestText: data.text,
-              }
-            ),
-            "callback"
-          )()
-        ); */
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const assessmentRequest =
-          await assessmentRequestApi.createWorkspaceAssessmentRequest({
-            workspaceEntityId: data.workspace.id,
-            createWorkspaceAssessmentRequestRequest: {
-              requestText: data.text,
-            },
-          });
+        await assessmentRequestApi.createWorkspaceAssessmentRequest({
+          workspaceEntityId: data.workspace.id,
+          createWorkspaceAssessmentRequestRequest: {
+            requestText: data.text,
+          },
+        });
 
         // First finding current "assessmentState state" and depending what state it is assign new state
         // Will be changed when module specific evaluation assessment request functionality is implemented
@@ -1102,13 +1016,6 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
           data.fail && data.fail();
           return;
         }
-        /* await promisify(
-          mApi().assessmentrequest.workspace.assessmentRequests.del(
-            data.workspace.id,
-            assessmentRequest.id
-          ),
-          "callback"
-        )(); */
 
         await assessmentRequestApi.deleteWorkspaceAssessmentRequest({
           workspaceEntityId: data.workspace.id,
@@ -1343,16 +1250,6 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
 
       try {
         if (!loadOrganizationWorkspaceFilters) {
-          /* dispatch({
-            type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-            payload: <WorkspaceEducationType[]>(
-              await promisify(
-                mApi().workspace.educationTypes.read(),
-                "callback"
-              )()
-            ),
-          }); */
-
           const educationTypes = await workspaceApi.getEducationTypes();
 
           dispatch({
@@ -1360,16 +1257,6 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
             payload: educationTypes,
           });
         } else {
-          /* dispatch({
-            type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-            payload: <WorkspaceEducationType[]>(
-              await promisify(
-                mApi().workspace.educationTypes.read(),
-                "callback"
-              )()
-            ),
-          }); */
-
           const educationTypes = await workspaceApi.getEducationTypes();
 
           dispatch({
@@ -1534,14 +1421,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       delete data.update["chatStatus"];
 
       if (data.update) {
-        /* await promisify(
-          mApi().workspace.workspaces.update(
-            data.workspace.id,
-            Object.assign(actualOriginal, data.update)
-          ),
-          "callback"
-        )(); */
-
         await workspaceApi.updateWorkspace({
           workspaceId: data.workspace.id,
           body: Object.assign(actualOriginal, data.update),
@@ -1549,16 +1428,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       }
 
       // Then the details - if any
-
       if (newDetails) {
-        /* await promisify(
-          mApi().workspace.workspaces.details.update(
-            data.workspace.id,
-            newDetails
-          ),
-          "callback"
-        )(); */
-
         await workspaceApi.updateWorkspaceDetails({
           workspaceId: data.workspace.id,
           updateWorkspaceDetailsRequest: newDetails,
@@ -1568,16 +1438,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
         data.update.details = newDetails;
 
         // Details affect additionalInfo, so I guess we load that too. It's not a "single source of truth" when there's duplicates in the model, is it?
-
-        /* const additionalInfo = <WorkspaceAdditionalInfo>(
-          await promisify(
-            mApi()
-              .workspace.workspaces.additionalInfo.cacheClear()
-              .read(currentWorkspace.id),
-            "callback"
-          )()
-        ); */
-
         const additionalInfo = await workspaceApi.getWorkspaceAdditionalInfo({
           workspaceId: currentWorkspace.id,
         });
@@ -1587,14 +1447,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
       // Update workspace chat status (enabled/disabled)
       if (newChatStatus) {
-        /* await promisify(
-          mApi().chat.workspaceChatSettings.update(data.workspace.id, {
-            chatStatus: newChatStatus,
-            workspaceEntityId: data.workspace.id,
-          }),
-          "callback"
-        )(); */
-
         await chatApi.updateWorkspaceChatSettings({
           workspaceEntityId: data.workspace.id,
           updateWorkspaceChatSettingsRequest: {
@@ -1624,14 +1476,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
             const originalPermission = currentWorkspace.permissions.find(
               (p) => p.userGroupEntityId === permission.userGroupEntityId
             );
-            /* promisify(
-              mApi().workspace.workspaces.signupGroups.update(
-                currentWorkspace.id,
-                originalPermission.userGroupEntityId,
-                permission
-              ),
-              "callback"
-            )(); */
 
             workspaceApi.updateWorkspaceSignupGroup({
               workspaceEntityId: currentWorkspace.id,
@@ -1670,49 +1514,26 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
           }
         );
 
-        await Promise.all([
+        await Promise.all(
           workspaceProducersToAdd.map((p) =>
-            /* promisify(
-                mApi().workspace.workspaces.materialProducers.create(
-                  currentWorkspace.id,
-                  p
-                ),
-                "callback"
-              )() */
-
             workspaceApi.createWorkspaceMaterialProducer({
               workspaceEntityId: currentWorkspace.id,
               createWorkspaceMaterialProducerRequest: p,
             })
-          ),
-          workspaceProducersToDelete.map((p) =>
-            /* promisify(
-            mApi().workspace.workspaces.materialProducers.del(
-              currentWorkspace.id,
-              p.id
-            ),
-            "callback"
-          )() */
+          )
+        );
 
+        await Promise.all(
+          workspaceProducersToDelete.map((p) =>
             workspaceApi.deleteWorkspaceMaterialProducer({
               workspaceEntityId: currentWorkspace.id,
               producerId: p.id,
             })
-          ),
-        ]);
+          )
+        );
 
         // For some reason the results of the request don't give the new workspace producers
         // it's a mess but whatever
-
-        /* data.update.producers = <Array<WorkspaceMaterialProducer>>(
-          await promisify(
-            mApi()
-              .workspace.workspaces.materialProducers.cacheClear()
-              .read(currentWorkspace.id),
-            "callback"
-          )()
-        ); */
-
         data.update.producers =
           await workspaceApi.getWorkspaceMaterialProducers({
             workspaceEntityId: currentWorkspace.id,
@@ -1837,16 +1658,6 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
         if (data.payload && data.payload.active !== undefined) {
           request.active = data.payload.active;
         }
-
-        /* const students = <WorkspaceStudentSearchResult>(
-          await promisify(
-            mApi().workspace.workspaces.students.read(
-              data.workspace.id,
-              payload
-            ),
-            "callback"
-          )()
-        ); */
 
         const students = await workspaceApi.getWorkspaceStudents(request);
 
@@ -2015,26 +1826,6 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
       try {
         let replyId: number = existantReplyId;
         if (!avoidServerCall) {
-          /* const replyGenerated: any = await promisify(
-            existantReplyId
-              ? mApi().workspace.workspaces.materials.replies.update(
-                  workspaceId,
-                  workspaceMaterialId,
-                  existantReplyId,
-                  {
-                    state: successState,
-                  }
-                )
-              : mApi().workspace.workspaces.materials.replies.create(
-                  workspaceId,
-                  workspaceMaterialId,
-                  {
-                    state: successState,
-                  }
-                ),
-            "callback"
-          )(); */
-
           let replyGenerated: MaterialReply = null;
 
           if (existantReplyId) {
@@ -2042,6 +1833,9 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
               workspaceEntityId: workspaceId,
               workspaceMaterialId: workspaceMaterialId,
               replyId: existantReplyId,
+              updateWorkspaceMaterialReplyRequest: {
+                state: successState,
+              },
             });
           } else {
             replyGenerated = await workspaceApi.createWorkspaceMaterialReply({
@@ -2056,14 +1850,6 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
           replyId = replyGenerated ? replyGenerated.id : existantReplyId;
         }
         if (!replyId) {
-          /* const result: Array<{ id: number; state: string }> = (await promisify(
-            mApi().workspace.workspaces.materials.replies.read(
-              workspaceId,
-              workspaceMaterialId
-            ),
-            "callback"
-          )()) as Array<{ id: number; state: string }>; */
-
           const result = await workspaceApi.getWorkspaceMaterialReplies({
             workspaceEntityId: workspaceId,
             workspaceMaterialId: workspaceMaterialId,
@@ -2208,15 +1994,6 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
       const chatApi = MApi.getChatApi();
 
       try {
-        /* const chatStatus: WorkspaceChatStatusType = <WorkspaceChatStatusType>(
-          await promisify(
-            mApi().chat.workspaceChatSettings.read(
-              getState().workspaces.currentWorkspace.id
-            ),
-            "callback"
-          )()
-        ); */
-
         const chatStatus = await chatApi.getWorkspaceChatSettings({
           workspaceEntityId: getState().workspaces.currentWorkspace.id,
         });
@@ -2260,15 +2037,6 @@ const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorks
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
-        /* const details: WorkspaceDetails = <WorkspaceDetails>(
-          await promisify(
-            mApi().workspace.workspaces.details.read(
-              getState().workspaces.currentWorkspace.id
-            ),
-            "callback"
-          )()
-        ); */
-
         const details = await workspaceApi.getWorkspaceDetails({
           workspaceId: getState().workspaces.currentWorkspace.id,
         });
@@ -2397,56 +2165,26 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
           }
         );
 
-        /*  await Promise.all(
-          workspaceProducersToAdd
-            .map((p) =>
-              promisify(
-                mApi().workspace.workspaces.materialProducers.create(
-                  state.workspaces.currentWorkspace.id,
-                  p
-                ),
-                "callback"
-              )()
-            )
-            .concat(
-              workspaceProducersToDelete.map((p) =>
-                promisify(
-                  mApi().workspace.workspaces.materialProducers.del(
-                    state.workspaces.currentWorkspace.id,
-                    p.id
-                  ),
-                  "callback"
-                )()
-              )
-            )
-        ); */
-
-        await Promise.all([
+        await Promise.all(
           workspaceProducersToAdd.map((p) =>
             workspaceApi.createWorkspaceMaterialProducer({
               workspaceEntityId: state.workspaces.currentWorkspace.id,
               createWorkspaceMaterialProducerRequest: p,
             })
-          ),
+          )
+        );
+
+        await Promise.all(
           workspaceProducersToDelete.map((p) =>
             workspaceApi.deleteWorkspaceMaterialProducer({
               workspaceEntityId: state.workspaces.currentWorkspace.id,
               producerId: p.id,
             })
-          ),
-        ]);
+          )
+        );
 
         // For some reason the results of the request don't give the new workspace producers
         // it's a mess but whatever
-        /* const newActualWorkspaceProducers: Array<WorkspaceMaterialProducer> = <
-          Array<WorkspaceMaterialProducer>
-        >await promisify(
-          mApi()
-            .workspace.workspaces.materialProducers.cacheClear()
-            .read(state.workspaces.currentWorkspace.id),
-          "callback"
-        )(); */
-
         const newActualWorkspaceProducers =
           await workspaceApi.getWorkspaceMaterialProducers({
             workspaceEntityId: state.workspaces.currentWorkspace.id,
@@ -2496,10 +2234,6 @@ const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
-        /* const workspaceTypes: Array<WorkspaceType> = <
-          Array<WorkspaceType>
-        >await promisify(mApi().workspace.workspaceTypes.read(), "callback")(); */
-
         const workspaceTypes = await workspaceApi.getWorkspaceTypes();
 
         dispatch({
@@ -2611,21 +2345,6 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
 
       try {
         const currentWorkspace = getState().workspaces.currentWorkspace;
-        /* const cloneWorkspace: WorkspaceDataType = <WorkspaceDataType>(
-          await promisify(
-            mApi().workspace.workspaces.create(
-              {
-                name: data.name,
-                nameExtension: data.nameExtension,
-                description: data.description,
-              },
-              {
-                sourceWorkspaceEntityId: currentWorkspace.id,
-              }
-            ),
-            "callback"
-          )()
-        ); */
 
         const cloneWorkspace = (await workspaceApi.createWorkspace({
           sourceWorkspaceEntityId: currentWorkspace.id,
@@ -2639,15 +2358,6 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
         data.success && data.success("initial-copy", cloneWorkspace);
 
         if (data.copyDiscussionAreas) {
-          /* await promisify(
-            mApi().workspace.workspaces.forumAreas.create(
-              cloneWorkspace.id,
-              {},
-              { sourceWorkspaceEntityId: currentWorkspace.id }
-            ),
-            "callback"
-          )(); */
-
           await workspaceDiscussionApi.createWorkspaceDiscussionArea({
             workspaceentityId: cloneWorkspace.id,
             sourceWorkspaceEntityId: currentWorkspace.id,
@@ -2657,20 +2367,6 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
         }
 
         if (data.copyMaterials !== "NO") {
-          /* await promisify(
-            mApi().workspace.workspaces.materials.create(
-              cloneWorkspace.id,
-              {},
-              {
-                sourceWorkspaceEntityId: currentWorkspace.id,
-                targetWorkspaceEntityId: cloneWorkspace.id,
-                copyOnlyChildren: true,
-                cloneMaterials: data.copyMaterials === "CLONE",
-              }
-            ),
-            "callback"
-          )(); */
-
           await workspaceApi.createWorkspaceMaterial({
             workspaceEntityId: cloneWorkspace.id,
             sourceWorkspaceEntityId: currentWorkspace.id,
@@ -2682,26 +2378,12 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
           data.success && data.success("copy-materials", cloneWorkspace);
         }
 
-        /* cloneWorkspace.details = <WorkspaceDetails>(
-          await promisify(
-            mApi().workspace.workspaces.details.read(cloneWorkspace.id),
-            "callback"
-          )()
-        ); */
-
+        // Get the details again, because they are not included in the clone
         cloneWorkspace.details = await workspaceApi.getWorkspaceDetails({
           workspaceId: cloneWorkspace.id,
         });
 
-        /* cloneWorkspace.details = <WorkspaceDetails>await promisify(
-          mApi().workspace.workspaces.details.update(cloneWorkspace.id, {
-            ...cloneWorkspace.details,
-            beginDate: data.beginDate,
-            endDate: data.endDate,
-          }),
-          "callback"
-        )(); */
-
+        // Update the details to cloned workspace
         cloneWorkspace.details = await workspaceApi.updateWorkspaceDetails({
           workspaceId: cloneWorkspace.id,
           updateWorkspaceDetailsRequest: {
@@ -2714,14 +2396,6 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
         data.success && data.success("change-date", cloneWorkspace);
 
         if (data.copyBackgroundPicture) {
-          /* await promisify(
-            mApi().workspace.workspaces.workspacefilecopy.create(
-              currentWorkspace.id,
-              cloneWorkspace.id
-            ),
-            "callback"
-          )(); */
-
           await workspaceApi.copyWorkspaceFile({
             workspaceEntityId: currentWorkspace.id,
             toWorkspaceId: cloneWorkspace.id,
@@ -2877,14 +2551,6 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
 
       try {
         const currentWorkspace = getState().workspaces.currentWorkspace;
-        /* const permissions: WorkspaceSignupGroup[] = <WorkspaceSignupGroup[]>(
-          await promisify(
-            mApi().workspace.workspaces.signupGroups.read(
-              getState().workspaces.currentWorkspace.id
-            ),
-            "callback"
-          )()
-        ); */
 
         const permissions = await workspaceApi.getWorkspaceSignupGroups({
           workspaceEntityId: getState().workspaces.currentWorkspace.id,

@@ -9,10 +9,6 @@ import { localizeTime } from "~/locales/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
-import {
-  updateWorkspace,
-  UpdateWorkspaceTriggerType,
-} from "~/actions/workspaces";
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
@@ -26,7 +22,6 @@ interface WorkspaceHomeHeaderProps extends WithTranslation {
   workspace: WorkspaceDataType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
   status: StatusType;
-  updateWorkspace: UpdateWorkspaceTriggerType;
 }
 
 /**
@@ -339,7 +334,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ updateWorkspace }, dispatch);
+  return bindActionCreators({}, dispatch);
 }
 
 export default withTranslation(["workspace", "common"])(

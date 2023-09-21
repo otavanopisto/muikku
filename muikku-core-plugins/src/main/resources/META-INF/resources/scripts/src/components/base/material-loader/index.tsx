@@ -10,13 +10,8 @@
 //please remove it
 
 import * as React from "react";
-
 import mApi from "~/lib/mApi";
-import {
-  WorkspaceDataType,
-  MaterialContentNodeType,
-  MaterialCompositeRepliesType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
@@ -31,7 +26,6 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/material-page.scss";
 import { UsedAs } from "~/@types/shared";
@@ -47,7 +41,6 @@ import {
   MaterialCompositeReply,
   MaterialContentNode,
 } from "~/generated/client";
-import i18n from "~/locales/i18n";
 import { AnyActionType } from "~/actions";
 
 /* i18n.t("", { ns: "materials" }); */

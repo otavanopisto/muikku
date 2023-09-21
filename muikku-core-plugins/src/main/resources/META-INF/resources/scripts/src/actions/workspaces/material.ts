@@ -5,7 +5,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UploadingValue } from "~/@types/shared";
 import {
-  MaterialCompositeRepliesListType,
   MaterialContentNodeListType,
   WorkspaceMaterialEditorType,
   WorkspaceDataType,
@@ -18,6 +17,7 @@ import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
 import {
+  MaterialCompositeReply,
   MaterialContentNode,
   MaterialContentNodeProducer,
 } from "~/generated/client";
