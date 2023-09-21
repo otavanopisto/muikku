@@ -1404,7 +1404,7 @@
     },
     "labels": {
       "access": "Pääsy",
-      "acess_anyone": "Kuka tahansa",
+      "access_anyone": "Kuka tahansa",
       "access_loggedInUsers": "Kirjautuneet käyttäjät",
       "access_membersOnly": "Vain jäsenet",
       "addingDetails": "Lisätään tietoja kurssille",

@@ -624,7 +624,7 @@ class OrganizationNewWorkspace extends React.Component<
                     <label htmlFor="accessMembers">
                       {t("labels.access", {
                         ns: "workspace",
-                        context: "members",
+                        context: "membersOnly",
                       })}
                     </label>
                   </div>
@@ -639,7 +639,7 @@ class OrganizationNewWorkspace extends React.Component<
                     <label htmlFor="accessLoggedin">
                       {t("labels.access", {
                         ns: "workspace",
-                        context: "loggedIn",
+                        context: "loggedInUsers",
                       })}
                     </label>
                   </div>

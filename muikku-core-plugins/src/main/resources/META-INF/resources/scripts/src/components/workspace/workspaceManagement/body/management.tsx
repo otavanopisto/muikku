@@ -958,7 +958,7 @@ class ManagementPanel extends React.Component<
                           <label htmlFor="workspaceAccessMembers">
                             {t("labels.access", {
                               ns: "workspace",
-                              cotext: "membersOnly"
+                              context: "membersOnly"
                             })}
                           </label>
                         </div>
@@ -976,7 +976,7 @@ class ManagementPanel extends React.Component<
                           <label htmlFor="workspaceAccessLoggedin">
                             {t("labels.access", {
                               ns: "workspace",
-                              cotext: "loggedInUsers"
+                              context: "loggedInUsers"
                             })}
                           </label>
                         </div>
@@ -994,7 +994,7 @@ class ManagementPanel extends React.Component<
                           <label htmlFor="workspaceAccessAnyone">
                             {t("labels.access", {
                               ns: "workspace",
-                              cotext: "anyone"
+                              context: "anyone"
                             })}
                           </label>
                         </div>
