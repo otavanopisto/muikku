@@ -1,7 +1,10 @@
 package fi.otavanopisto.muikku.plugins.pedagogy;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,9 +47,6 @@ public class PedagogyController {
   @Inject
   private LocaleController localeController;
   
-  @Inject
-  private UserController userController;
-
   @Inject
   private UserEmailEntityController userEmailEntityController;
 
@@ -253,7 +253,15 @@ public class PedagogyController {
   }
   
   public void createViewHistory(PedagogyForm form, Long modifierId) {
-    pedagogyFormHistoryDAO.create(form, "Suunnitelmaa katsottiin", modifierId, PedagogyFormHistoryType.VIEW);
+    List<PedagogyFormHistory> historyList = pedagogyFormHistoryDAO.listByFormAndCreator(form, modifierId);
+    PedagogyFormHistory latestHistoryItem = historyList.get(0);
+    
+    Date lastCreated = latestHistoryItem.getCreated();
+    Instant now = new Date().toInstant();
+    
+    if (lastCreated.toInstant().isBefore(now.minus(3, ChronoUnit.HOURS))) {
+      pedagogyFormHistoryDAO.create(form, "Suunnitelmaa katsottiin", modifierId, PedagogyFormHistoryType.VIEW);
+    }
   }
 
 
