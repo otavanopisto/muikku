@@ -13,7 +13,7 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
-import { WorkspaceType } from "../../../reducers/workspaces/index";
+import { WorkspaceDataType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "~/@types/evaluation";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -24,7 +24,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface NavigationAsideProps extends WithTranslation {
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
 }
 
 /**

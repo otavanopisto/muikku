@@ -6,7 +6,7 @@ import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";
 import { AnyActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import WorkspaceJournalsListItem from "./workspace-journals-list-item";
 import ApplicationList from "~/components/general/application-list";
 import { JournalsState } from "~/reducers/workspaces/journals";
@@ -15,7 +15,7 @@ import { JournalsState } from "~/reducers/workspaces/journals";
  * MessageViewProps
  */
 interface WorkspaceJournalViewProps {
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   journalsState: JournalsState;
 }
 

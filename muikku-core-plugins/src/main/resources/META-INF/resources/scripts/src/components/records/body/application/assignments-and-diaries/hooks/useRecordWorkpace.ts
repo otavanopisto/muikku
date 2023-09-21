@@ -2,7 +2,7 @@ import * as React from "react";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { useTranslation } from "react-i18next";
 import workspace from "~/reducers/workspace";
 
@@ -11,7 +11,7 @@ import workspace from "~/reducers/workspace";
  */
 export interface UseAssignmentsState {
   isLoading: boolean;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**
@@ -59,7 +59,7 @@ export const useRecordWorkspace = (
             userIdentifier: userEntityId,
           }),
           "callback"
-        )()) as WorkspaceType;
+        )()) as WorkspaceDataType;
 
         if (!isCancelled) {
           setRecordWorkspace((recordWorkspaceData) => ({

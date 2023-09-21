@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import "~/sass/elements/producers.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -9,7 +9,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * ProducersProps
  */
 interface ProducersProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**

@@ -14,7 +14,7 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
   MaterialContentNodeListType,
-  WorkspaceType,
+  WorkspaceDataType,
   MaterialCompositeRepliesListType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -56,7 +56,7 @@ interface ContentProps extends WithTranslation {
   materials: MaterialContentNodeListType;
   materialReplies: MaterialCompositeRepliesListType;
   activeNodeId: number;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType;
   workspaceEditMode: WorkspaceEditModeStateType;

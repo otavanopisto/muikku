@@ -10,7 +10,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import Dropdown from "~/components/general/dropdown";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceAssessementStateType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -51,7 +51,7 @@ interface WorkspaceNavbarProps extends WithTranslation {
   status: StatusType;
   title: string;
   workspaceUrl: string;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   workspaceEditMode: WorkspaceEditModeStateType;
   updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType;
 }

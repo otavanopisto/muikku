@@ -9,7 +9,7 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
   MaterialContentNodeListType,
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import "~/sass/elements/buttons.scss";
@@ -40,7 +40,7 @@ interface ContentProps extends WithTranslation {
   status: StatusType;
   materials: MaterialContentNodeListType;
   activeNodeId: number;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType;
   workspaceEditMode: WorkspaceEditModeStateType;

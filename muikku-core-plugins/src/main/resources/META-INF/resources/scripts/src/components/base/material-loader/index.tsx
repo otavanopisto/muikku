@@ -13,7 +13,7 @@ import * as React from "react";
 
 import mApi from "~/lib/mApi";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   MaterialContentNodeType,
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
@@ -198,7 +198,7 @@ const STATES = [
 export interface MaterialLoaderProps {
   material: MaterialContentNode;
   folder?: MaterialContentNode;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
   modifiers?: string | Array<string>;
   id?: string;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   Assessment,
   WorkspaceActivityType,
   WorkspaceForumStatisticsType,
@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
  * StudentWorkspaceProps
  */
 interface StudentWorkspaceProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**
@@ -448,16 +448,16 @@ export default withTranslation(["guider"])(StudentWorkspace);
  * CourseActivityRowProps
  */
 interface CourseActivityRowProps<C> {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   labelTranslationString: string;
   conditionalAttribute: keyof C;
   conditionalAttributeLocale?: string;
   givenDateAttribute?: string;
   givenDateAttributeLocale?: string;
   /**
-   * mainAttribute is type as WorkspaceType as component is not used any where else
+   * mainAttribute is type as WorkspaceDataType as component is not used any where else
    */
-  mainAttribute: keyof WorkspaceType;
+  mainAttribute: keyof WorkspaceDataType;
 }
 
 /**

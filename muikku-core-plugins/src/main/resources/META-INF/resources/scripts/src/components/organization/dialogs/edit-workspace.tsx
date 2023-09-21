@@ -41,7 +41,7 @@ import { SelectItem } from "~/actions/workspaces/index";
 import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   WorkspaceUpdateType,
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceAccessType,
   WorkspacesActiveFiltersType,
 } from "~/reducers/workspaces";
@@ -74,8 +74,8 @@ interface OrganizationEditWorkspaceProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   users: UsersSelectState;
-  workspace: WorkspaceType;
-  currentWorkspace: WorkspaceType;
+  workspace: WorkspaceDataType;
+  currentWorkspace: WorkspaceDataType;
   activeFilters: WorkspacesActiveFiltersType;
   updateOrganizationWorkspace: UpdateWorkspaceTriggerType;
   setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType;
@@ -395,7 +395,7 @@ class OrganizationEditWorkspace extends React.Component<
        * success
        * @param workspace workspace
        */
-      success: (workspace: WorkspaceType) => {
+      success: (workspace: WorkspaceDataType) => {
         this.setState({
           workspaceAccess: workspace.access,
           beginDate: workspace.details.beginDate

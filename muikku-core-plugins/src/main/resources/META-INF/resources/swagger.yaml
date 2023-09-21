@@ -7924,11 +7924,6 @@ paths:
           required: true
           schema:
             type: integer
-        - name: userEntityId
-          in: query
-          description: User entity id
-          schema:
-            type: integer
       responses:
         "200":
           description: Workspace material replies results object
@@ -9960,11 +9955,12 @@ components:
                 type: integer
 
     WorkspaceStudentUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/UserStudent"
+              - $ref: "#/components/schemas/WorkspaceStudent"
 
     BilledPriceUpdateRequestBody:
       content:
@@ -10157,6 +10153,7 @@ components:
                 type: integer
 
     WorkspaceMaterialProducerCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10200,6 +10197,7 @@ components:
                 type: integer
 
     WorkspaceDetailsUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:

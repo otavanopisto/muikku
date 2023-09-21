@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as moment from "moment";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { MatriculationExaminationEnrollmentInfo as Step1 } from "./matriculation-examination-enrollment-info";
 import { MatriculationExaminationEnrollmentInformation as Step2 } from "./matriculation-examination-enrollment-information";
 import { MatriculationExaminationEnrollmentInformationNew as Step2New } from "./matriculation-examination-enrollment-information-new";
@@ -123,7 +123,7 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
  * MatriculationExaminationWizardProps
  */
 interface MatriculationExaminationWizardProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
   examId: number;
   compulsoryEducationEligible: boolean;

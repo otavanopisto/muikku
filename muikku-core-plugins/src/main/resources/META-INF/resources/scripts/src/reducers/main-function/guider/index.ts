@@ -1,7 +1,7 @@
 import { ActionType } from "~/actions";
 import { UserFileType } from "~/reducers/user-index";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceListType,
   ActivityLogType,
 } from "~/reducers/workspaces";
@@ -20,7 +20,7 @@ import {
 } from "~/generated/client";
 
 export type GuiderUserGroupListType = UserGroup[];
-export type GuiderWorkspaceType = WorkspaceType;
+export type GuiderWorkspaceType = WorkspaceDataType;
 export type GuiderWorkspaceListType = WorkspaceListType;
 
 /**

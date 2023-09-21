@@ -6,7 +6,7 @@ import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import {
   RequestAssessmentAtWorkspaceTriggerType,
   requestAssessmentAtWorkspace,
@@ -18,7 +18,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * EvaluationRequestDialogProps
  */
 interface EvaluationRequestDialogProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   isOpen: boolean;
   onClose: () => any;
   requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType;

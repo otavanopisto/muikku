@@ -14,6 +14,7 @@ import {
   UserStaff,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
+  WorkspaceType,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 import {
@@ -407,9 +408,9 @@ export const languageOptions = [
 export type Language = typeof languageOptions[number];
 
 /**
- * WorkspaceType
+ * WorkspaceDataType
  */
-export interface WorkspaceType {
+export interface WorkspaceDataType {
   archived: boolean;
   curriculumIdentifiers: Array<string>;
   description: string;
@@ -465,7 +466,7 @@ export interface WorkspaceType {
   studentCount?: number;
 }
 
-export type WorkspaceUpdateType = Partial<WorkspaceType>;
+export type WorkspaceUpdateType = Partial<WorkspaceDataType>;
 
 /**
  * WorkspaceMaterialReferenceType
@@ -477,7 +478,7 @@ export interface WorkspaceMaterialReferenceType {
   url: string;
 }
 
-export type WorkspaceListType = Array<WorkspaceType>;
+export type WorkspaceListType = Array<WorkspaceDataType>;
 
 /**
  * WorkspaceSignUpDetails
@@ -607,7 +608,7 @@ export interface WorkspaceEditModeStateType {
  * WorkspaceMaterialEditorType
  */
 export interface WorkspaceMaterialEditorType {
-  currentNodeWorkspace: WorkspaceType;
+  currentNodeWorkspace: WorkspaceDataType;
   currentNodeValue?: MaterialContentNode;
   currentDraftNodeValue?: MaterialContentNode;
   parentNodeValue?: MaterialContentNode;
@@ -640,8 +641,6 @@ export interface WorkspaceMaterialEditorType {
 export interface WorkspaceMaterialExtraTools {
   opened: boolean;
 }
-
-export type WorkspacesPatchType = Partial<WorkspacesType>;
 
 export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
 
@@ -802,15 +801,15 @@ export interface MaterialEvaluationType {
 export type MaterialContentNodeListType = Array<MaterialContentNode>;
 
 /**
- * WorkspacesType
+ * WorkspacesState
  */
-export interface WorkspacesType {
+export interface WorkspacesState {
   state: WorkspacesStateType;
   // Last workspace that was opened
   lastWorkspace?: WorkspaceMaterialReferenceType;
   lastWorkspaces?: WorkspaceMaterialReferenceType[];
   // Following is data related to current workspace
-  currentWorkspace?: WorkspaceType;
+  currentWorkspace?: WorkspaceDataType;
   currentHelp?: MaterialContentNodeListType;
   currentMaterials?: MaterialContentNodeListType;
   currentMaterialsActiveNodeId?: number;
@@ -829,7 +828,7 @@ export interface WorkspacesType {
 
   // Other workspace related data
   templateWorkspaces: TemplateWorkspaceType[];
-  types?: Array<WorkspaceTypeType>;
+  types?: WorkspaceType[];
   hasMore: boolean;
   toolbarLock: boolean;
 
@@ -839,10 +838,12 @@ export interface WorkspacesType {
   materialExtraTools?: WorkspaceMaterialExtraTools;
 }
 
+export type WorkspacesStatePatch = Partial<WorkspacesState>;
+
 /**
  * initialWorkspacesState
  */
-const initialWorkspacesState: WorkspacesType = {
+const initialWorkspacesState: WorkspacesState = {
   state: "LOADING",
   lastWorkspace: null,
   lastWorkspaces: [],
@@ -915,7 +916,7 @@ const initialWorkspacesState: WorkspacesType = {
  * @param action action
  * @returns State of workspaces
  */
-export const workspaces: Reducer<WorkspacesType> = (
+export const workspaces: Reducer<WorkspacesState> = (
   state = initialWorkspacesState,
   action: ActionType
 ) => {
@@ -1389,7 +1390,7 @@ export const workspaces: Reducer<WorkspacesType> = (
   date: string,
   assessmentRequestObject: AssessmentRequest,
   deleteAssessmentRequestObject: boolean,
-  workspace: WorkspaceType
+  workspace: WorkspaceDataType
 ) {
 
   let replacement =

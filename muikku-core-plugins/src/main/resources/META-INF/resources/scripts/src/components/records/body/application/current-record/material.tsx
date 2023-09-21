@@ -3,7 +3,7 @@ import { localizeTime } from "~/locales/i18n";
 import {
   AssignmentType,
   MaterialCompositeRepliesType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade } from "~/util/modifiers";
@@ -27,7 +27,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface MaterialProps extends WithTranslation {
   material: MaterialContentNode;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
   compositeReply: MaterialCompositeRepliesType;
   open: boolean;

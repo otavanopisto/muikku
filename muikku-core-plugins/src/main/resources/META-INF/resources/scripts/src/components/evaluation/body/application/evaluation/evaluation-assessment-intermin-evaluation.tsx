@@ -5,7 +5,7 @@ import {
   AssignmentEvaluationSaveReturn,
 } from "~/@types/evaluation";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   MaterialContentNodeType,
   MaterialAssignmentType,
   MaterialCompositeRepliesType,
@@ -38,7 +38,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface EvaluationAssessmentInterminEvaluationRequestProps
   extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   assigment: MaterialAssignmentType;
   open: boolean;
   evaluations: EvaluationState;

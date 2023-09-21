@@ -7,7 +7,7 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import NoteBookPDF from "./notebook-pdf";
 import { PDFViewer } from "@react-pdf/renderer";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 
 /**
  * NoteBookPDFProps
@@ -15,7 +15,7 @@ import { WorkspaceType } from "~/reducers/workspaces";
 interface NoteBookPDFDialogProps {
   children?: React.ReactElement<any>;
   notes: WorkspaceNote[];
-  workspace?: WorkspaceType;
+  workspace?: WorkspaceDataType;
   isOpen?: boolean;
   onClose?: () => void;
 }

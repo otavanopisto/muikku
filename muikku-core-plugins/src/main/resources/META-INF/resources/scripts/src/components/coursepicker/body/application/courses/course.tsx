@@ -16,7 +16,7 @@ import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import {
   WorkspaceCurriculumFilterListType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import mApi from "~/lib/mApi";
@@ -29,7 +29,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface CourseProps extends WithTranslation<["common"]> {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
 }
 

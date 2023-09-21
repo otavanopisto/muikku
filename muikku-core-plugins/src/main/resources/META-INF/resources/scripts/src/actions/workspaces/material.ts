@@ -8,7 +8,7 @@ import {
   MaterialCompositeRepliesListType,
   MaterialContentNodeListType,
   WorkspaceMaterialEditorType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "../index";
@@ -124,7 +124,7 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
       copyMaterialId?: number;
       title?: string;
       file?: File;
-      workspace: WorkspaceType;
+      workspace: WorkspaceDataType;
       success?: (newNode: MaterialContentNode) => void;
       fail?: () => void;
     },
@@ -138,7 +138,7 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
 export interface CreateWorkspaceMaterialAttachmentTriggerType {
   (
     data: {
-      workspace: WorkspaceType;
+      workspace: WorkspaceDataType;
       material: MaterialContentNode;
       files: File[];
       uploadingValues?: UploadingValue[];
@@ -153,7 +153,7 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
  * RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
  */
 export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
-  (workspace: WorkspaceType, material: MaterialContentNode): AnyActionType;
+  (workspace: WorkspaceDataType, material: MaterialContentNode): AnyActionType;
 }
 
 /**
@@ -161,7 +161,7 @@ export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
  */
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
-    workspace: WorkspaceType;
+    workspace: WorkspaceDataType;
     material: MaterialContentNode;
     update: Partial<MaterialContentNode>;
     isDraft?: boolean;
@@ -214,7 +214,7 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
     material: MaterialContentNode;
-    workspace: WorkspaceType;
+    workspace: WorkspaceDataType;
     removeAnswers?: boolean;
     success?: () => any;
     fail?: () => any;

@@ -17,7 +17,7 @@ import {
 import {
   WorkspacesStateType,
   WorkspaceListType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -85,7 +85,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
 
     return (
       <ApplicationList>
-        {this.props.workspaces.map((workspace: WorkspaceType) => (
+        {this.props.workspaces.map((workspace: WorkspaceDataType) => (
           <Course key={workspace.id} workspace={workspace} />
         ))}
         {this.props.workspacesState === "LOADING_MORE" ? (

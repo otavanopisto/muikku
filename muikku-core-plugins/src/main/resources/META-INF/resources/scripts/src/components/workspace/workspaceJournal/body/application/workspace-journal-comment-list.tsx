@@ -5,7 +5,7 @@ import {
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import AnimateHeight from "react-animate-height";
@@ -31,7 +31,7 @@ import { useTranslation } from "react-i18next";
 interface WorkspaceJournalCommentListProps {
   status: StatusType;
   journalsState: JournalsState;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   currentJournal: WorkspaceJournalWithComments;
   createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType;
   displayNotification: DisplayNotificationTriggerType;

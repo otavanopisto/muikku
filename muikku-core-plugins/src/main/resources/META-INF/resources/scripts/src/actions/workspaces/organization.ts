@@ -7,7 +7,7 @@ import {
 } from "./index";
 import { Dispatch } from "react-redux";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceOrganizationFilterListType,
 } from "../../reducers/workspaces/index";
 import { reuseExistantValue } from "./helpers";
@@ -21,7 +21,7 @@ import {
   WorkspaceCurriculumFilterListType,
   WorkspaceStateFilterListType,
   WorkspacesActiveFiltersType,
-  WorkspacesPatchType,
+  WorkspacesStatePatch,
   WorkspacesStateType,
   WorkspaceListType,
   UserSelectLoader,
@@ -87,7 +87,7 @@ export type UPDATE_ORGANIZATION_WORKSPACES_ACTIVE_FILTERS = SpecificActionType<
  */
 export type UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS = SpecificActionType<
   "UPDATE_ORGANIZATION_WORKSPACES_ALL_PROPS",
-  WorkspacesPatchType
+  WorkspacesStatePatch
 >;
 
 /**
@@ -174,7 +174,7 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
       const current = getState().organizationWorkspaces.currentWorkspace;
 
       try {
-        let workspace: WorkspaceType;
+        let workspace: WorkspaceDataType;
 
         if (current && current.id === data.workspaceId) {
           workspace = { ...current };
@@ -400,7 +400,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
       const organizationApi = MApi.getOrganizationApi();
 
       try {
-        const originalWorkspace: WorkspaceType = data.workspace;
+        const originalWorkspace: WorkspaceDataType = data.workspace;
         const newDetails = data.update.details;
 
         // Take off data that'll cramp the update
@@ -557,7 +557,7 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
     const organizationApi = MApi.getOrganizationApi();
 
     try {
-      const workspace: WorkspaceType = <WorkspaceType>await promisify(
+      const workspace: WorkspaceDataType = <WorkspaceDataType>await promisify(
         mApi().workspace.workspaces.create(
           {
             name: data.name,

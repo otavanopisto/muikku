@@ -8,7 +8,7 @@ import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
 import {
   MaterialCompositeRepliesType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
  */
 interface AssessmentListProps {
   evaluation: EvaluationState;
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
   selectedAssessment: AssessmentRequest;
 }
 

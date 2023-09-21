@@ -1,7 +1,7 @@
 import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/index";
 import { JournalComment } from "~/@types/journal";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   MaterialContentNodeListType,
   MaterialAssignmentType,
   WorkspaceSubject,
@@ -216,7 +216,7 @@ export interface EvaluationGrade {
 /**
  * Interface for workspace used in evaluation
  */
-export type EvaluationWorkspace = WorkspaceType;
+export type EvaluationWorkspace = WorkspaceDataType;
 
 /**
  * EvaluationStatus

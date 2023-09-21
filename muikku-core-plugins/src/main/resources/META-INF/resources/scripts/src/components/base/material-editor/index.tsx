@@ -7,7 +7,7 @@ import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
-  WorkspaceType,
+  WorkspaceDataType,
   AssignmentType,
   Language,
   languageOptions,
@@ -84,7 +84,7 @@ const CKEditorConfig = (
   /* eslint-disable camelcase */
   locale: string,
   contextPath: string,
-  workspace: WorkspaceType,
+  workspace: WorkspaceDataType,
   materialNode: MaterialContentNode,
   disablePlugins: boolean
 ) => ({

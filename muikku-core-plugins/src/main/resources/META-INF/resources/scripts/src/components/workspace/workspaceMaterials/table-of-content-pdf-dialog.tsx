@@ -9,7 +9,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import {
   MaterialCompositeRepliesListType,
   MaterialContentNodeListType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import TableOfContentPDF from "./table-of-content-pdf";
 import { StatusType } from "~/reducers/base/status";
@@ -22,7 +22,7 @@ interface TableOfContentPDFDialogProps {
   assignmentTypeFilters: string[];
   materials: MaterialContentNodeListType;
   compositeReplies: MaterialCompositeRepliesListType;
-  workspace?: WorkspaceType;
+  workspace?: WorkspaceDataType;
   isOpen?: boolean;
   onClose?: () => void;
   status: StatusType;

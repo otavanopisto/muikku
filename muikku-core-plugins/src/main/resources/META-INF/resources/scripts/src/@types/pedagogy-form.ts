@@ -1,4 +1,4 @@
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 
 const states = ["PENDING", "APPROVED", "ACTIVE", "INACTIVE"] as const;
 
@@ -112,7 +112,7 @@ export interface SupportActionImplementation {
   /**
    * The details of the action
    */
-  course?: WorkspaceType;
+  course?: WorkspaceDataType;
   /**
    * The extra information of the action
    */

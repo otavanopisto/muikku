@@ -42,7 +42,7 @@ import { SelectItem } from "~/actions/workspaces/index";
 import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   CreateWorkspaceType,
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceAccessType,
   WorkspacesActiveFiltersType,
 } from "~/reducers/workspaces";
@@ -69,7 +69,7 @@ interface OrganizationNewWorkspaceProps extends WithTranslation {
   children?: React.ReactElement<any>;
   data?: CreateWorkspaceType;
   users: UsersSelectState;
-  templates: WorkspaceType[];
+  templates: WorkspaceDataType[];
   activeFilters: WorkspacesActiveFiltersType;
   loadStudents: LoadUsersTriggerType;
   loadStaff: LoadUsersTriggerType;
@@ -194,7 +194,7 @@ class OrganizationNewWorkspace extends React.Component<
    * selectTemplateMobile
    * @param template template
    */
-  selectTemplateMobile = (template: WorkspaceType) => {
+  selectTemplateMobile = (template: WorkspaceDataType) => {
     const validation: ValidationType = Object.assign(this.state.validation, {
       templateSelected: true,
     });
@@ -476,7 +476,7 @@ class OrganizationNewWorkspace extends React.Component<
             <DialogRow modifiers="new-workspace">
               <ApplicationList modifiers="workspace-templates">
                 {this.props.templates.length > 0 ? (
-                  this.props.templates.map((template: WorkspaceType) => {
+                  this.props.templates.map((template: WorkspaceDataType) => {
                     const templateSelected =
                       this.state.template &&
                       this.state.template.id === template.id;

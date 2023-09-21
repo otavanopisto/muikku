@@ -3,7 +3,7 @@ import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import {
   WorkspaceCurriculumFilterListType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { localizeTime } from "~/locales/i18n";
 import ProgressData from "../progressData";
@@ -23,7 +23,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * WorkspaceHomeHeaderProps
  */
 interface WorkspaceHomeHeaderProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   availableCurriculums: WorkspaceCurriculumFilterListType;
   status: StatusType;
   updateWorkspace: UpdateWorkspaceTriggerType;

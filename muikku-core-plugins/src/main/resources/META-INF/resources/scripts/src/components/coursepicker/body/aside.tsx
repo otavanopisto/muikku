@@ -10,7 +10,7 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 import {
-  WorkspacesType,
+  WorkspacesState,
   WorkspaceCurriculumFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
@@ -22,7 +22,7 @@ import { WorkspaceEducationType } from "~/generated/client";
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
   status: StatusType;
 }
 

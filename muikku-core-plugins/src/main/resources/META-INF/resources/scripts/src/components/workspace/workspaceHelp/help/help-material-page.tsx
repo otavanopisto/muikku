@@ -3,7 +3,7 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import MaterialLoader from "~/components/base/material-loader";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import {
@@ -34,7 +34,7 @@ interface HelpMaterialProps extends WithTranslation {
   materialContentNode: MaterialContentNode;
   folder: MaterialContentNode;
   isViewRestricted: boolean;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
 }
 

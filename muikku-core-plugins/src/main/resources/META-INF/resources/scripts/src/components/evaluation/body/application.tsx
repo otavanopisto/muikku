@@ -12,7 +12,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
-import { WorkspaceType } from "../../../reducers/workspaces/index";
+import { WorkspaceDataType } from "../../../reducers/workspaces/index";
 import { EvaluationWorkspace } from "../../../@types/evaluation";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ import "~/sass/elements/react-select-override.scss";
  */
 interface EvaluationApplicationProps extends WithTranslation {
   status: StatusType;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
 }

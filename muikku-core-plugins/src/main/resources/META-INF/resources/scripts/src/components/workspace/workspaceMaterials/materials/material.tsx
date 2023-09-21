@@ -4,7 +4,7 @@ import { Dispatch, connect } from "react-redux";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   MaterialCompositeRepliesType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -40,7 +40,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   compositeReplies: MaterialCompositeRepliesType;
   isViewRestricted: boolean;
   showEvenIfHidden: boolean;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
   readspeakerComponent?: JSX.Element;
 }

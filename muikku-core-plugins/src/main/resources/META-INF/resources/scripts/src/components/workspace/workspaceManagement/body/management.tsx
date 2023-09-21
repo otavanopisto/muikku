@@ -2,9 +2,8 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceAccessType,
-  WorkspaceTypeType,
   WorkspaceUpdateType,
   Language,
   languageOptions,
@@ -54,6 +53,7 @@ import {
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
+  WorkspaceType,
 } from "~/generated/client";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -65,8 +65,8 @@ const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
  */
 interface ManagementPanelProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
-  workspaceTypes: Array<WorkspaceTypeType>;
+  workspace: WorkspaceDataType;
+  workspaceTypes: WorkspaceType[];
   updateWorkspace: UpdateWorkspaceTriggerType;
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType;
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;

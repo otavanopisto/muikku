@@ -13,7 +13,7 @@ import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/o
 
 import {
   WorkspacesStateType,
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceListType,
 } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
@@ -70,7 +70,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
   }
   return (
     <ApplicationList>
-      {workspaces.map((workspace: WorkspaceType, index) => {
+      {workspaces.map((workspace: WorkspaceDataType, index) => {
         if (workspaces.length === index + 1) {
           // This div wrapper exists because callback ref must return
           // an element and a class component returns a mounted instance

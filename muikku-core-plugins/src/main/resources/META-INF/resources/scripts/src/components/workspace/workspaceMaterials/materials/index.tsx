@@ -9,7 +9,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   MaterialContentNodeListType,
   MaterialCompositeRepliesListType,
   WorkspaceEditModeStateType,
@@ -54,7 +54,7 @@ import {
  */
 interface WorkspaceMaterialsProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   materials: MaterialContentNodeListType;
   materialReplies: MaterialCompositeRepliesListType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

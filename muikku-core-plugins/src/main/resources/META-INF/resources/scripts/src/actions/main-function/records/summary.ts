@@ -10,7 +10,7 @@ import {
   WorkspaceForumStatisticsType,
   ActivityLogType,
   WorkspaceActivityType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import MApi from "~/api/api";
@@ -92,7 +92,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       });
 
       /* User workspaces */
-      const workspaces = <WorkspaceType[]>await promisify(
+      const workspaces = <WorkspaceDataType[]>await promisify(
         mApi().workspace.workspaces.read({
           userIdentifier: pyramusId,
           includeInactiveWorkspaces: true,

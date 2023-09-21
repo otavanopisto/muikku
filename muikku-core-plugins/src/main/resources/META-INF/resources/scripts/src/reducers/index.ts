@@ -7,7 +7,7 @@ import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
 import { HOPSType } from "./main-function/hops";
 import { MessagesState } from "./main-function/messages";
-import { WorkspacesType } from "./workspaces";
+import { WorkspacesState } from "./workspaces";
 import {
   UsersState,
   UserGroupsState,
@@ -54,9 +54,9 @@ export interface StateType {
   userIndex?: UserIndexState;
   userSelect?: UsersSelectState;
   userGroups?: UserGroupsState;
-  workspaces?: WorkspacesType;
+  workspaces?: WorkspacesState;
   organizationSummary?: OrganizationSummaryType;
-  organizationWorkspaces?: WorkspacesType;
+  organizationWorkspaces?: WorkspacesState;
   organizationUsers?: UsersState;
   discussion?: DiscussionType;
   guider?: GuiderType;

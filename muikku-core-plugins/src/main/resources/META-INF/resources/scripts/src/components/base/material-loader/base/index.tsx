@@ -18,7 +18,7 @@ import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
 import MathField from "../fields/math-field";
 import {
   MaterialCompositeRepliesType,
-  WorkspaceType,
+  WorkspaceDataType,
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
 import { WebsocketStateType } from "~/reducers/util/websocket";
@@ -94,7 +94,7 @@ const answerCheckables: { [key: string]: (params: any) => boolean } = {
 interface BaseProps {
   material: MaterialContentNode;
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   websocketState: WebsocketStateType;
   answerable: boolean;
   compositeReplies?: MaterialCompositeRepliesType;

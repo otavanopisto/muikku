@@ -4,7 +4,7 @@ import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import {
-  WorkspacesType,
+  WorkspacesState,
   WorkspaceCurriculumFilterType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
@@ -19,7 +19,7 @@ import { WorkspaceEducationType } from "~/generated/client";
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
 }
 
 /**

@@ -30,7 +30,7 @@ import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
 import {
   MaterialCompositeRepliesType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import EvaluationJournalEventList from "./evaluation-journal-event-list";
 import EvaluationAssessmentList from "./evaluation-assessment-list";
@@ -43,7 +43,7 @@ interface EvaluationDrawerProps extends WithTranslation {
   status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   /**
    * Assessment that is opened
    */

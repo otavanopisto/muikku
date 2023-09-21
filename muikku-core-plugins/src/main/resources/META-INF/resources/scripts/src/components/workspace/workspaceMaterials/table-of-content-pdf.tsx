@@ -4,7 +4,7 @@ import { styles } from "./table-of-content-pdf-styles";
 import {
   MaterialCompositeRepliesListType,
   MaterialContentNodeListType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -25,7 +25,7 @@ interface ContentType {
  */
 interface TableOfContentPFDProps {
   status: StatusType;
-  workspace?: WorkspaceType;
+  workspace?: WorkspaceDataType;
   assignmentTypeFilters: string[];
   workspaceName?: string;
   materials?: MaterialContentNodeListType;
