@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -168,17 +169,21 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Path("/curriculums")
   @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
   public Response listCurriculums() {
+    Set<SchoolDataIdentifier> availableWorkspaceCurriculums = searchProviders.get().listDistinctWorkspaceCurriculums();
+
     schoolDataBridgeSessionController.startSystemSession();
     try {
       List<Curriculum> curriculums = courseMetaController.listCurriculums();
       List<CoursePickerCurriculum> restCurriculums = new ArrayList<CoursePickerCurriculum>();
       
-      for (Curriculum curriculum : curriculums)
-        restCurriculums.add(new CoursePickerCurriculum(curriculum.getIdentifier().toId(), curriculum.getName()));
+      for (Curriculum curriculum : curriculums) {
+        if (availableWorkspaceCurriculums == null || availableWorkspaceCurriculums.contains(curriculum.getIdentifier())) {
+          restCurriculums.add(new CoursePickerCurriculum(curriculum.getIdentifier().toId(), curriculum.getName()));
+        }
+      }
       
-      restCurriculums.sort((CoursePickerCurriculum a, CoursePickerCurriculum b)->{
+      restCurriculums.sort((CoursePickerCurriculum a, CoursePickerCurriculum b) -> {
         return b.getName().compareTo(a.getName());
-        
       });
       return Response.ok(restCurriculums).build();
     } finally {
@@ -186,6 +191,30 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
+  @GET
+  @Path("/educationTypes")
+  @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
+  public Response listEducationTypes() {
+    Set<SchoolDataIdentifier> availableWorkspaceEducationTypes = searchProviders.get().listDistinctWorkspaceEducationTypes();
+
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<EducationType> educationTypes = courseMetaController.listEducationTypes();
+  
+      List<fi.otavanopisto.muikku.plugins.workspace.rest.EducationType> restEducationTypes = new ArrayList<>();
+
+      for (EducationType educationType : educationTypes) {
+        if (availableWorkspaceEducationTypes == null || availableWorkspaceEducationTypes.contains(educationType.getIdentifier())) {
+          restEducationTypes.add(new fi.otavanopisto.muikku.plugins.workspace.rest.EducationType(educationType.getIdentifier().toId(), educationType.getName()));
+        }
+      }
+      
+      return Response.ok(restEducationTypes).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+
   @GET
   @Path("/organizations")
   @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
