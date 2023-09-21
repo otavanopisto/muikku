@@ -956,8 +956,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessMembers">
-                            {t("labels.membersOnly", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              cotext: "membersOnly"
                             })}
                           </label>
                         </div>
@@ -973,8 +974,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessLoggedin">
-                            {t("labels.loggedInUsers", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              cotext: "loggedInUsers"
                             })}
                           </label>
                         </div>
@@ -990,8 +992,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessAnyone">
-                            {t("labels.anyone", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              cotext: "anyone"
                             })}
                           </label>
                         </div>
