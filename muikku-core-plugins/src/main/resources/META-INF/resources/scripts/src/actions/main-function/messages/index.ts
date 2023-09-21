@@ -1189,7 +1189,8 @@ const loadMessageThread: LoadMessageThreadTriggerType =
           displayNotification(
             i18n.t("notifications.loadError", {
               ns: "messaging",
-              context: "messageThread",
+              // this is a temporary fix, will be further fixed in 6697
+              count: 0
             }),
             "error"
           )
