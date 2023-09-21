@@ -32,9 +32,12 @@ import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
@@ -62,6 +65,9 @@ public class MeRESTService {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
+  @Inject
+  private UserController userController;
+  
   @Inject
   private UserEntityController userEntityController;
   
@@ -198,4 +204,12 @@ public class MeRESTService {
     return Response.ok(staffMembers).build();
   }
   
+  @GET
+  @Path("/dependents")
+  @RESTPermit (MuikkuPermissions.STUDENT_PARENT)
+  public Response listGuardiansDependents() {
+    List<GuardiansDependent> guardiansDependents = userController.listGuardiansDependents(sessionController.getLoggedUser());
+
+    return Response.ok(guardiansDependents).build();
+  }
 }

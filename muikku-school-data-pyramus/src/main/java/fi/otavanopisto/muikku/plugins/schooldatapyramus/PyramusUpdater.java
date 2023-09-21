@@ -72,6 +72,7 @@ import fi.otavanopisto.pyramus.rest.model.Student;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.StudentParent;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -816,6 +817,7 @@ public class PyramusUpdater {
     Long userEntityId = null;
     
     final SchoolDataIdentifier studentRoleIdentifier = new SchoolDataIdentifier(identifierMapper.getEnvironmentRoleIdentifier(UserRole.STUDENT), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    final SchoolDataIdentifier studentParentRoleIdentifier = new SchoolDataIdentifier(identifierMapper.getEnvironmentRoleIdentifier(UserRole.STUDENT_PARENT), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     
     String defaultIdentifier = null;
     Long defaultUserId = person.getDefaultUserId();
@@ -830,6 +832,7 @@ public class PyramusUpdater {
     // List all person's students and staffMembers
     Student[] students = pyramusClient.get().get(String.format("/persons/persons/%d/students", person.getId()), Student[].class);
     StaffMember[] staffMembers = pyramusClient.get().get(String.format("/persons/persons/%d/staffMembers", person.getId()), StaffMember[].class);
+    StudentParent[] studentParents = pyramusClient.get().get(String.format("/persons/persons/%d/studentParents", person.getId()), StudentParent[].class);
     
     // If person does not have a defaultUserId specified, we try to guess something
     if (defaultUserId == null) {
@@ -878,24 +881,7 @@ public class PyramusUpdater {
           
           // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
           Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
-          if (studentEmails != null) {
-            for (Email studentEmail : studentEmails) {
-              ContactType contactType = studentEmail.getContactTypeId() != null ? pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class) : null;
-              if (contactType != null) {
-                UserEmail userEmail = identifierEmails.stream().filter(m -> m.getAddress().equals(studentEmail.getAddress())).findFirst().orElse(null);
-                if (!contactType.getNonUnique() && userEmail == null) {
-                  identifierEmails.add(new PyramusUserEmail(
-                      toIdentifier(identifierMapper.getEmailIdentifier(studentEmail.getId())),
-                      schoolDataIdentifier,
-                      studentEmail.getAddress(),
-                      null, // contact type; irrelevant for updater
-                      studentEmail.getDefaultAddress()));
-                }
-              } else {
-                logger.log(Level.WARNING, String.format("ContactType of email was not found by id (%d) - email is ignored", studentEmail.getContactTypeId()));
-              }
-            }
-          }
+          identifierEmails = pyramusEmailsToMuikkuEmails(studentEmails, schoolDataIdentifier);
         } else {
           // If the student instance if archived, we add it the the removed identifiers list
           removedIdentifiers.add(identifier);
@@ -910,7 +896,6 @@ public class PyramusUpdater {
         // Add staffMember identifier into the identifier list
         String identifier = identifierMapper.getStaffIdentifier(staffMember.getId()).getIdentifier();
         SchoolDataIdentifier schoolDataIdentifier = toIdentifier(identifier);
-        List<UserEmail> identifierEmails = new ArrayList<UserEmail>();
 
         identifiers.add(identifier);
 
@@ -931,26 +916,31 @@ public class PyramusUpdater {
       
         // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
         Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
-        if (staffMemberEmails != null) {
-          for (Email staffMemberEmail : staffMemberEmails) {
-            if (staffMemberEmail.getContactTypeId() != null) {
-              ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
-              UserEmail userEmail = identifierEmails.stream().filter(m -> m.getAddress().equals(staffMemberEmail.getAddress())).findFirst().orElse(null);
-              if (!contactType.getNonUnique() && userEmail == null) {
-                identifierEmails.add(new PyramusUserEmail(
-                    toIdentifier(identifierMapper.getEmailIdentifier(staffMemberEmail.getId())),
-                    schoolDataIdentifier,
-                    staffMemberEmail.getAddress(),
-                    null, // contact type; irrelevant for updater
-                    staffMemberEmail.getDefaultAddress()));
-              }
-            } else {
-              logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
-            }
-          }
-        }
+        emails.put(schoolDataIdentifier, pyramusEmailsToMuikkuEmails(staffMemberEmails, schoolDataIdentifier));
+      }
+    }
+    
+    if (studentParents != null) {
+      for (StudentParent studentParent : studentParents) {
+        // Add staffMember identifier into the identifier list
+        SchoolDataIdentifier schoolDataIdentifier = identifierMapper.getStudentParentIdentifier(studentParent.getId());
+        String identifier = schoolDataIdentifier.getIdentifier();
+
+        identifiers.add(identifier);
+
+        roles.put(schoolDataIdentifier, Arrays.asList(studentParentRoleIdentifier));
+
+//        SchoolDataIdentifier organizationIdentifier = staffMember.getOrganizationId() != null ? identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId()) : null;
+//        organizations.put(schoolDataIdentifier, organizationIdentifier);
         
-        emails.put(schoolDataIdentifier, identifierEmails);
+        // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
+        if ((defaultIdentifier == null) && studentParent.getId().equals(defaultUserId)) {
+          defaultIdentifier = identifier;
+        }
+      
+        // List emails and add all emails that are not specified non unique (e.g. contact persons) to the emails list
+        Email[] studentParentEmails = pyramusClient.get().get("/studentparents/studentparents/" + studentParent.getId() + "/emails", Email[].class);
+        emails.put(schoolDataIdentifier, pyramusEmailsToMuikkuEmails(studentParentEmails, schoolDataIdentifier));
       }
     }
     
@@ -994,6 +984,31 @@ public class PyramusUpdater {
     fireSchoolDataUserUpdated(userEntityId, defaultIdentifier, removedIdentifiers, updatedIdentifiers, discoveredIdentifiers, emails, roles, organizations);
   }
 
+  private List<UserEmail> pyramusEmailsToMuikkuEmails(Email[] pyramusEmails, SchoolDataIdentifier userIdentifier) {
+    List<UserEmail> identifierEmails = new ArrayList<UserEmail>();
+
+    if (pyramusEmails != null) {
+      for (Email pyramusEmail : pyramusEmails) {
+        ContactType contactType = pyramusEmail.getContactTypeId() != null ? pyramusClient.get().get("/common/contactTypes/" + pyramusEmail.getContactTypeId(), ContactType.class) : null;
+        if (contactType != null) {
+          boolean userEmailAlreadyInList = identifierEmails.stream().anyMatch(m -> m.getAddress().equals(pyramusEmail.getAddress()));
+          if (!contactType.getNonUnique() && !userEmailAlreadyInList) {
+            identifierEmails.add(new PyramusUserEmail(
+                toIdentifier(identifierMapper.getEmailIdentifier(pyramusEmail.getId())),
+                userIdentifier,
+                pyramusEmail.getAddress(),
+                null, // contact type; irrelevant for updater
+                pyramusEmail.getDefaultAddress()));
+          }
+        } else {
+          logger.log(Level.WARNING, String.format("ContactType of email was not found by id (%d) - email is ignored", pyramusEmail.getContactTypeId()));
+        }
+      }
+    }
+    
+    return identifierEmails;
+  }
+  
   private void fireSchoolDataUserUpdated(Long userEntityId, SchoolDataIdentifier defaultIdentifier, List<SchoolDataIdentifier> removedIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
       List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<UserEmail>> emails, Map<SchoolDataIdentifier, List<SchoolDataIdentifier>> roles, Map<SchoolDataIdentifier, SchoolDataIdentifier> organizations) {
 
@@ -1078,6 +1093,15 @@ public class PyramusUpdater {
       updatePerson(staffMember.getPersonId());
     } else {
       identifierRemoved(identifierMapper.getStaffIdentifier(staffMemberId));
+    }
+  }
+
+  public void updateStudentParent(Long studentParentId) {
+    StudentParent studentParent = pyramusClient.get().get(String.format("/studentparents/studentparents/%d", studentParentId), StudentParent.class);
+    if (studentParent != null) {
+      updatePerson(studentParent.getPersonId());
+    } else {
+      identifierRemoved(identifierMapper.getStudentParentIdentifier(studentParentId));
     }
   }
 
