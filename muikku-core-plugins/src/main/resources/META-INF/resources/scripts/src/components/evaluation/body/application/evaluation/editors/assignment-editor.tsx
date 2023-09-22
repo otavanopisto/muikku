@@ -539,11 +539,10 @@ class AssignmentEditor extends SessionStateComponent<
             </CKEditor>
           </div>
         </div>
-
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">
-              {t("labels.verbalEvaluation", { ns: "evaluation" })}
+              {t("labels.verbalEvaluation", { ns: "evaluation"})}
             </label>
 
             <Recorder
