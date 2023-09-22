@@ -329,7 +329,7 @@ class StudentWorkspace extends React.Component<
               <CourseActivityRow<WorkspaceActivityType>
                 conditionalAttributeLocale="content.numberOfVisits"
                 givenDateAttributeLocale="content.lastVisit"
-                labelTranslationString="labels.visits"
+                labelTranslationString="labels.workspaceVisits"
                 conditionalAttribute="numVisits"
                 givenDateAttribute="lastVisit"
                 mainAttribute="activity"
