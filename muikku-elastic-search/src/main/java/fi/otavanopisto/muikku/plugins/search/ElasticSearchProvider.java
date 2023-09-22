@@ -43,7 +43,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -813,18 +812,27 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums() {
-    return aggregateDistinctFieldIdentifiers(MUIKKU_WORKSPACE_INDEX, "curriculumIdentifiers");
+  public Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser) {
+    QueryBuilder query = prepareWorkspaceSearchQuery(null, null, null, null, organizationRestrictions, null, accesses, accessUser);
+    return aggregateDistinctFieldIdentifiers(query, MUIKKU_WORKSPACE_INDEX, "curriculumIdentifiers");
   }
 
   @Override
-  public Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes() {
-    return aggregateDistinctFieldIdentifiers(MUIKKU_WORKSPACE_INDEX, "educationTypeIdentifier");
+  public Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser) {
+    QueryBuilder query = prepareWorkspaceSearchQuery(null, null, null, null, organizationRestrictions, null, accesses, accessUser);
+    return aggregateDistinctFieldIdentifiers(query, MUIKKU_WORKSPACE_INDEX, "educationTypeIdentifier");
   }
   
-  public Set<SchoolDataIdentifier> aggregateDistinctFieldIdentifiers(final String index, final String aggregateField) {
-    MatchAllQueryBuilder query = QueryBuilders.matchAllQuery();
-    
+  /**
+   * Lists distinct SchoolDataIdentifiers from given aggregateField. Use query to limit 
+   * the scope of documents matched or use MatchAllQuery to match all documents.
+   * 
+   * @param query query to specify which documents are used from index
+   * @param index index where the documents are taken from
+   * @param aggregateField the field to be aggregated, these need to be stored in SchoolDataIdentifier.id format
+   * @return list of distinct identifiers
+   */
+  private Set<SchoolDataIdentifier> aggregateDistinctFieldIdentifiers(QueryBuilder query, final String index, final String aggregateField) {
     AggregationBuilder curriculumAggregation = AggregationBuilders
         .terms(aggregateField)
         .field(aggregateField)

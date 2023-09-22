@@ -34,14 +34,14 @@ public interface SearchProvider {
    * 
    * @return a list of distinct curriculums from workspaces
    */
-  Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums();
+  Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser);
 
   /**
    * List distinct education types from indexed workspaces.
    * 
    * @return a list of distinct education types from workspaces
    */
-  Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes();
+  Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser);
 
   public SearchResult findWorkspace(SchoolDataIdentifier identifier);
   public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId);
