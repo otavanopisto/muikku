@@ -836,11 +836,11 @@ public class ElasticSearchProvider implements SearchProvider {
     AggregationBuilder curriculumAggregation = AggregationBuilders
         .terms(aggregateField)
         .field(aggregateField)
-        .size(20);
+        .size(100);
     
     SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
         .query(query)
-        .size(0)
+        .size(0) // Size is 0 as we're not interesed in the documents itself, only the aggregations
         .aggregation(curriculumAggregation);
 
     SearchRequest searchRequest = Requests.searchRequest(index);
