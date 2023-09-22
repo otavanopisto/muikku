@@ -261,6 +261,7 @@ public class PedagogyController {
       Date lastCreated = latestHistoryItem.getCreated();
       Instant now = new Date().toInstant();
       
+      // Skip creation if latest history item (with same creator + form) is less than 3 hours old
       if (!lastCreated.toInstant().isBefore(now.minus(3, ChronoUnit.HOURS))) {
         return;
       }
