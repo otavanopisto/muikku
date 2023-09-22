@@ -21,7 +21,6 @@ import {
 
 export type GuiderUserGroupListType = UserGroup[];
 export type GuiderWorkspaceType = WorkspaceDataType;
-export type GuiderWorkspaceListType = WorkspaceListType;
 
 /**
  * GuiderFiltersType

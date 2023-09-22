@@ -27,10 +27,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceDataType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationJournalEventList from "./evaluation-journal-event-list";
 import EvaluationAssessmentList from "./evaluation-assessment-list";
 import { WithTranslation, withTranslation } from "react-i18next";

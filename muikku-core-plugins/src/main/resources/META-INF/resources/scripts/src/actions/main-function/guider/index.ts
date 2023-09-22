@@ -16,7 +16,6 @@ import promisify from "~/util/promisify";
 import { UserFileType } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import {
-  GuiderWorkspaceListType,
   GuiderUserGroupListType,
   ContactLogEvent,
   ContactLogData,
@@ -558,7 +557,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();
-    const workspaceApi = MApi.getWorkspaceApi();
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
     try {
@@ -1866,19 +1864,6 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
       const workspaceApi = MApi.getWorkspaceApi();
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
-        /* dispatch({
-          type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-          payload: <WorkspaceDataType[]>await promisify(
-              mApi().workspace.workspaces.read({
-                userIdentifier: currentUser,
-                includeInactiveWorkspaces: true,
-                maxResults: 500,
-                orderBy: "alphabet",
-              }),
-              "callback"
-            )() || [],
-        }); */
-
         const workspaces = (await workspaceApi.getWorkspaces({
           userIdentifier: currentUser,
           includeInactiveWorkspaces: true,

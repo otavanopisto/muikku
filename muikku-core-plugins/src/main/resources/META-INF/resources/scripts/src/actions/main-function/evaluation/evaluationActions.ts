@@ -20,10 +20,7 @@ import {
 } from "../../../@types/evaluation";
 import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
 import { WorkspaceInterimEvaluationRequest } from "../../../reducers/workspaces/index";
-import {
-  WorkspaceUserEntity,
-  AssignmentEvaluationSaveReturn,
-} from "../../../@types/evaluation";
+import { AssignmentEvaluationSaveReturn } from "../../../@types/evaluation";
 import {
   WorkspaceEvaluationSaveRequest,
   WorkspaceSupplementationSaveRequest,
@@ -774,16 +771,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
         });
       }
 
-      /* let evaluationWorkspaces: WorkspaceDataType[] = []; */
-
       try {
-        /* evaluationWorkspaces = (await promisify(
-          mApi().workspace.workspaces.read({
-            userId: state.status.userId,
-          }),
-          "callback"
-        )()) as WorkspaceDataType[]; */
-
         const evaluationWorkspaces = (await workspaceApi.getWorkspaces({
           userId: state.status.userId,
         })) as WorkspaceDataType[];

@@ -92,15 +92,6 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         });
       });
 
-      /* User workspaces */
-      /* const workspaces = <WorkspaceDataType[]>await promisify(
-        mApi().workspace.workspaces.read({
-          userIdentifier: pyramusId,
-          includeInactiveWorkspaces: true,
-        }),
-        "callback"
-      )(); */
-
       const workspaces = (await workspaceApi.getWorkspaces({
         userIdentifier: pyramusId,
         includeInactiveWorkspaces: true,

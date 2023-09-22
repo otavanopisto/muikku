@@ -6,10 +6,7 @@ import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceDataType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
