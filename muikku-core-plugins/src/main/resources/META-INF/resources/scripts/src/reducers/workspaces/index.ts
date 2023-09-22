@@ -3,7 +3,6 @@ import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
   AssessmentRequest,
-  MaterialViewRestriction,
   WorkspaceAdditionalInfo,
   WorkspaceChatStatus,
   WorkspaceDetails,
@@ -17,31 +16,30 @@ import {
   MaterialCompositeReply,
   MaterialContentNode,
   DiscussionWorkspaceStatistic,
+  WorkspaceSubject,
+  Language,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
-import {
-  AssignmentEvaluationType,
-  AudioAssessment,
-} from "../../@types/evaluation";
+import { AudioAssessment } from "../../@types/evaluation";
 
 /**
  * WorkspaceBasicInfo
  */
-export interface WorkspaceBasicInfo {
+/* export interface WorkspaceBasicInfo {
   id: number;
   name: string;
   urlName: string;
   nameExtension?: string | null;
-}
+} */
 
 /**
  * OrganizationCourseTeacherType
  */
-export interface OrganizationCourseTeacherType {
+/* export interface OrganizationCourseTeacherType {
   firstName: string;
   lastName: string;
   hasImage: boolean;
-}
+} */
 
 /**
  * CreateWorkspaceType
@@ -53,9 +51,9 @@ export interface CreateWorkspaceType {
 }
 
 export type UserSelectLoader = "WAIT" | "LOADING" | "READY" | "ERROR";
-export type LoadWorkspaceActionType =
+/* export type LoadWorkspaceActionType =
   | "UPDATE_WORKSPACE"
-  | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE";
+  | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE"; */
 export type WorkspaceAssessementStateType =
   | "transferred"
   | "unassessed"
@@ -112,7 +110,7 @@ export interface WorkspaceActivityType {
 /**
  * WorkspaceStudentActivityType
  */
-export interface WorkspaceStudentActivityType {
+/* export interface WorkspaceStudentActivityType {
   assessmentState: Assessment;
   evaluablesAnswered: number;
   evaluablesAnsweredLastDate: string;
@@ -136,7 +134,7 @@ export interface WorkspaceStudentActivityType {
   lastJournalEntry?: string;
   lastVisit?: string;
   numVisits: number;
-}
+} */
 
 /**
  * WorkspaceForumStatisticsType
@@ -242,7 +240,7 @@ export interface WorkspaceJournalsType {
 /**
  * WorkspaceAssessmentRequestType
  */
-export interface WorkspaceAssessmentRequestType {
+/* export interface WorkspaceAssessmentRequestType {
   id: string;
   userIdentifier: string;
   workspaceUserIdentifier: string;
@@ -250,7 +248,7 @@ export interface WorkspaceAssessmentRequestType {
   date: string;
   workspaceEntityId: number;
   userEntityId: number;
-}
+} */
 
 /**
  * WorkspaceInterminEvaluationRequest
@@ -289,18 +287,18 @@ export interface WorkspaceCourseLengthSymbolType {
 /**
  * WorkspaceSubject
  */
-export interface WorkspaceSubject {
+/* export interface WorkspaceSubject {
   identifier: string;
   subject?: WorkspaceSubjectType;
   courseNumber?: number;
   courseLength?: string;
   courseLengthSymbol?: WorkspaceCourseLengthSymbolType;
-}
+} */
 
 /**
  * WorkspaceAdditionalInfoType
  */
-export interface WorkspaceAdditionalInfoType {
+/* export interface WorkspaceAdditionalInfoType {
   beginDate: string;
   endDate: string;
   viewLink: string;
@@ -315,7 +313,7 @@ export interface WorkspaceAdditionalInfoType {
     schoolDataSource: string;
   };
   subjects: WorkspaceSubject[];
-}
+} */
 
 /**
  * WorkspaceProducerType
@@ -394,7 +392,8 @@ export interface TemplateWorkspaceType {
  * Language options for workspace
  * used as lang attribute jsx
  */
-export const languageOptions = [
+export const languageOptions = Object.values(Language);
+/* export const languageOptions = [
   "fi",
   "en",
   "sv",
@@ -402,12 +401,12 @@ export const languageOptions = [
   "ru",
   "ja",
   "es",
-] as const;
+] as const; */
 
 /**
  * Language
  */
-export type Language = typeof languageOptions[number];
+/* export type Language = typeof languageOptions[number]; */
 
 /**
  * WorkspaceDataType
@@ -442,7 +441,7 @@ export interface WorkspaceDataType {
 
   //These are optional addons, and are usually not available
   activity?: WorkspaceActivityType;
-  studentActivity?: WorkspaceStudentActivityType;
+  studentActivity?: WorkspaceActivityType;
   forumStatistics?: DiscussionWorkspaceStatistic;
   studentAssessments?: WorkspaceStudentAssessmentsType;
   activityStatistics?: WorkspaceActivityStatisticsType;
@@ -500,10 +499,10 @@ export type WorkspaceBaseFilterType =
 /**
  * WorkspaceEducationFilterType
  */
-export interface WorkspaceEducationFilterType {
+/* export interface WorkspaceEducationFilterType {
   identifier: string;
   name: string;
-}
+} */
 
 /* export type WorkspaceEducationFilterListType = Array<WorkspaceEducationType>; */
 
@@ -552,11 +551,11 @@ export interface WorkspacesavailableFiltersType {
 /**
  * OrganizationWorkspacesAvailableFiltersType
  */
-export interface OrganizationWorkspacesAvailableFiltersType {
+/* export interface OrganizationWorkspacesAvailableFiltersType {
   educationTypes: WorkspaceEducationType[];
   curriculums: WorkspaceCurriculumFilterListType;
   stateFilters?: WorkspaceStateFilterListType;
-}
+} */
 
 export type WorkspacesStateType =
   | "LOADING"
@@ -567,11 +566,11 @@ export type WorkspacesStateType =
 /**
  * OrganizationWorkspacesActiveFiltersType
  */
-export interface OrganizationWorkspacesActiveFiltersType {
+/* export interface OrganizationWorkspacesActiveFiltersType {
   educationFilters: Array<string>;
   curriculumFilters: Array<string>;
   query: string;
-}
+} */
 
 /**
  * WorkspacesActiveFiltersType
@@ -644,7 +643,7 @@ export interface WorkspaceMaterialExtraTools {
   opened: boolean;
 }
 
-export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
+/* export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER"; */
 
 /**
  * MaterialAssignmentType
@@ -664,11 +663,11 @@ export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
 /**
  * MaterialContentNodeProducerType
  */
-export interface MaterialContentNodeProducerType {
+/* export interface MaterialContentNodeProducerType {
   id: number;
   name: string;
   materialId: number;
-}
+} */
 
 /**
  * MaterialViewRestriction
@@ -679,16 +678,16 @@ export interface MaterialContentNodeProducerType {
   WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
 } */
 
-export type AssignmentType =
+/* export type AssignmentType =
   | "EXERCISE"
   | "EVALUATED"
   | "JOURNAL"
-  | "INTERIM_EVALUATION";
+  | "INTERIM_EVALUATION"; */
 
 /**
  * MaterialContentNodeType
  */
-export interface MaterialContentNodeType {
+/* export interface MaterialContentNodeType {
   title: string;
   titleLanguage?: Language | null;
   license: string;
@@ -717,18 +716,18 @@ export interface MaterialContentNodeType {
   childrenAttachments?: Array<MaterialContentNode>; // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType;
   assignment?: MaterialContentNode;
-}
+} */
 
 /**
  * MaterialAnswerType
  */
-export interface MaterialAnswerType {
+/* export interface MaterialAnswerType {
   embedId: string;
   fieldName: string;
   materialId: number;
   value: string;
   workspaceMaterialId: number;
-}
+} */
 
 /**
  * MaterialCompositeRepliesStateType
@@ -745,12 +744,10 @@ export type MaterialCompositeRepliesStateType =
 /**
  * MaterialCompositeRepliesType
  */
-export interface MaterialCompositeRepliesType {
+/* export interface MaterialCompositeRepliesType {
   answers: Array<MaterialAnswerType>;
   state: MaterialCompositeRepliesStateType;
-  /**
-   * evaluationInfo of the material assignments
-   */
+  // evaluationInfo of the material assignments
   evaluationInfo?: MaterialEvaluationInfo;
 
   //Available when loaded specifically (eg. via records)
@@ -762,12 +759,12 @@ export interface MaterialCompositeRepliesType {
   //Available when loaded generically (eg. via workspace material)
   workspaceMaterialId: number;
   workspaceMaterialReplyId: number;
-}
+} */
 
 /**
  * MaterialEvaluationInfo
  */
-export interface MaterialEvaluationInfo {
+/* export interface MaterialEvaluationInfo {
   id: number;
   type: MaterialCompositeRepliesStateType;
   evaluationType: AssignmentEvaluationType;
@@ -775,9 +772,9 @@ export interface MaterialEvaluationInfo {
   grade: string;
   date: string;
   audioAssessments: AudioAssessment[];
-}
+} */
 
-export type MaterialCompositeRepliesListType = Array<MaterialCompositeReply>;
+/* export type MaterialCompositeRepliesListType = Array<MaterialCompositeReply>; */
 
 /**
  * MaterialEvaluationType

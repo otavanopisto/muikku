@@ -10,9 +10,7 @@
 //please remove it
 
 import * as React from "react";
-import mApi from "~/lib/mApi";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
@@ -42,6 +40,7 @@ import {
   MaterialContentNode,
 } from "~/generated/client";
 import { AnyActionType } from "~/actions";
+import MApi from "~/api/api";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -479,6 +478,8 @@ class MaterialLoader extends React.Component<
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
+    const workspaceApi = MApi.getWorkspaceApi();
+
     let userEntityIdToLoad = this.props.status.userId;
 
     if (usedAs === "evaluationTool" && userEntityId) {
@@ -493,14 +494,21 @@ class MaterialLoader extends React.Component<
           this.props.workspace.id + "-" + this.props.material.assignment.id
         ];
       if (!compositeRepliesInState) {
-        compositeRepliesInState = (await promisify(
+        /* compositeRepliesInState = (await promisify(
           mApi().workspace.workspaces.materials.compositeMaterialReplies.read(
             this.props.workspace.id,
             this.props.material.assignment.id,
             { userEntityId: userEntityIdToLoad }
           ),
           "callback"
-        )()) as MaterialCompositeReply;
+        )()) as MaterialCompositeReply; */
+
+        compositeRepliesInState =
+          await workspaceApi.getWorkspaceCompositeMaterialReplies({
+            workspaceEntityId: this.props.workspace.id,
+            workspaceMaterialId: this.props.material.assignment.id,
+            userEntityId: userEntityIdToLoad,
+          });
 
         materialRepliesCache[
           this.props.workspace.id + "-" + this.props.material.assignment.id

@@ -1,10 +1,7 @@
 import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/index";
 import { JournalComment } from "~/@types/journal";
-import {
-  WorkspaceDataType,
-  WorkspaceSubject,
-} from "../reducers/workspaces/index";
-import { MaterialContentNode } from "~/generated/client";
+import { WorkspaceDataType } from "../reducers/workspaces/index";
+import { MaterialContentNode, WorkspaceSubject } from "~/generated/client";
 /**
  * EvaluationEnum
  */

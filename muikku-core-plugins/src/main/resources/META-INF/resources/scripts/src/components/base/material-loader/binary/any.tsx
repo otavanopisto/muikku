@@ -1,4 +1,3 @@
-import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
 import Link from "~/components/general/link";
 import { MaterialContentNode } from "~/generated/client";

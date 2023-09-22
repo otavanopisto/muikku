@@ -1,4 +1,3 @@
-import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
 import Zoom from "~/components/general/zoom";
 import { MaterialContentNode } from "~/generated/client";

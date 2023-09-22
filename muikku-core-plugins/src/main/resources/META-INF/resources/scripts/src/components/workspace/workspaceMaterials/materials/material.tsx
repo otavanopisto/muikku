@@ -5,7 +5,6 @@ import { Dispatch, connect } from "react-redux";
 import MaterialLoader from "~/components/base/material-loader";
 import {
   WorkspaceDataType,
-  MaterialCompositeRepliesType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import {

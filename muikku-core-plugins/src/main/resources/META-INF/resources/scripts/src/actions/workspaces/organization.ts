@@ -34,9 +34,9 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 import {
+  WorkspaceAccess,
   WorkspaceDetails,
   WorkspaceEducationType,
-  WorkspaceStudentSearchResult,
 } from "~/generated/client";
 
 /**
@@ -147,7 +147,7 @@ export interface CreateWorkspaceTriggerType {
   (data: {
     id: number;
     name?: string;
-    access?: string;
+    access?: WorkspaceAccess;
     beginDate?: string;
     endDate?: string;
     nameExtension?: string;
@@ -170,6 +170,8 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const current = getState().organizationWorkspaces.currentWorkspace;
 
       try {
@@ -179,11 +181,17 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
           workspace = { ...current };
         }
 
-        workspace = await reuseExistantValue(true, workspace, () =>
+        /* workspace = await reuseExistantValue(true, workspace, () =>
           promisify(
             mApi().workspace.workspaces.cacheClear().read(data.workspaceId),
             "callback"
           )()
+        ); */
+
+        workspace = await reuseExistantValue(true, workspace, () =>
+          workspaceApi.getWorkspace({
+            workspaceId: data.workspaceId,
+          })
         );
 
         (workspace.details =
@@ -192,10 +200,14 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
                 true,
                 workspace && workspace.details,
                 () =>
-                  promisify(
+                  /* promisify(
                     mApi().workspace.workspaces.details.read(data.workspaceId),
                     "callback"
-                  )()
+                  )() */
+
+                  workspaceApi.getWorkspaceDetails({
+                    workspaceId: data.workspaceId,
+                  })
               )
             : null),
           dispatch({
@@ -205,7 +217,7 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
 
         data.success && data.success(workspace);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -334,6 +346,8 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         dispatch({
           type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
@@ -343,7 +357,7 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
           },
         });
 
-        const students = <WorkspaceStudentSearchResult>(
+        /* const students = <WorkspaceStudentSearchResult>(
           await promisify(
             mApi().workspace.workspaces.students.read(
               data.workspace.id,
@@ -351,7 +365,15 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
             ),
             "callback"
           )()
-        );
+        ); */
+
+        const students = await workspaceApi.getWorkspaceStudents({
+          workspaceEntityId: data.workspace.id,
+          q: data.payload.q,
+          firstResult: data.payload.firstResult,
+          maxResults: data.payload.maxResults,
+          active: data.payload.active,
+        });
 
         const update: WorkspaceUpdateType = {
           students,
@@ -365,7 +387,7 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
 
         data.success && data.success(students);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -396,6 +418,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
       const organizationApi = MApi.getOrganizationApi();
 
       try {
@@ -428,23 +451,37 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         delete data.update["details"];
 
         if (data.update && Object.keys(data.update).length !== 0) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.update(
               data.workspace.id,
               Object.assign(data.workspace, data.update)
             ),
             "callback"
-          )().then(data.progress && data.progress("workspace-update"));
+          )().then(data.progress && data.progress("workspace-update")); */
+
+          await workspaceApi.updateWorkspace({
+            workspaceId: data.workspace.id,
+            body: Object.assign(data.workspace, data.update),
+          });
+
+          data.progress && data.progress("workspace-update");
         }
 
         if (newDetails) {
-          await promisify(
+          /* await promisify(
             mApi().workspace.workspaces.details.update(
               data.workspace.id,
               newDetails
             ),
             "callback"
-          )().then(data.progress && data.progress("add-details"));
+          )().then(data.progress && data.progress("add-details")); */
+
+          await workspaceApi.updateWorkspaceDetails({
+            workspaceId: data.workspace.id,
+            updateWorkspaceDetailsRequest: newDetails,
+          });
+
+          data.progress && data.progress("add-details");
         }
 
         if (data.addStudents.length > 0) {
@@ -553,10 +590,11 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const workspaceApi = MApi.getWorkspaceApi();
     const organizationApi = MApi.getOrganizationApi();
 
     try {
-      const workspace: WorkspaceDataType = <WorkspaceDataType>await promisify(
+      /* const workspace: WorkspaceDataType = <WorkspaceDataType>await promisify(
         mApi().workspace.workspaces.create(
           {
             name: data.name,
@@ -568,24 +606,50 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
           }
         ),
         "callback"
-      )().then(data.progress && data.progress("workspace-create"));
+      )().then(data.progress && data.progress("workspace-create")); */
+
+      const workspace = (await workspaceApi.createWorkspace({
+        sourceWorkspaceEntityId: data.id,
+        createWorkspaceRequest: {
+          name: data.name,
+          nameExtension: data.nameExtension,
+          access: data.access,
+        },
+      })) as WorkspaceDataType;
+
+      data.progress && data.progress("workspace-create");
 
       if (data.beginDate || data.endDate) {
-        workspace.details = <WorkspaceDetails>(
+        /* workspace.details = <WorkspaceDetails>(
           await promisify(
             mApi().workspace.workspaces.details.read(workspace.id),
             "callback"
           )()
-        );
+        ); */
 
-        workspace.details = <WorkspaceDetails>await promisify(
+        workspace.details = await workspaceApi.getWorkspaceDetails({
+          workspaceId: workspace.id,
+        });
+
+        /* workspace.details = <WorkspaceDetails>await promisify(
           mApi().workspace.workspaces.details.update(workspace.id, {
             ...workspace.details,
             beginDate: data.beginDate,
             endDate: data.endDate,
           }),
           "callback"
-        )().then(data.progress && data.progress("add-details"));
+        )().then(data.progress && data.progress("add-details")); */
+
+        workspace.details = await workspaceApi.updateWorkspaceDetails({
+          workspaceId: workspace.id,
+          updateWorkspaceDetailsRequest: {
+            ...workspace.details,
+            beginDate: data.beginDate,
+            endDate: data.endDate,
+          },
+        });
+
+        data.progress && data.progress("add-details");
       }
 
       if (data.students.length > 0) {
@@ -628,7 +692,7 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       data.progress && data.progress("done");
       data.success && data.success();
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
 

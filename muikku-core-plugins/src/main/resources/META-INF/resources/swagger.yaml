@@ -10460,7 +10460,6 @@ components:
             description: WorkspaceCreateRequestBody object
             required:
               - name
-              - description
             properties:
               name:
                 type: string

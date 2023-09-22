@@ -16,11 +16,7 @@ import WordDefinition from "../static/word-definition";
 import IFrame from "../static/iframe";
 import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
 import MathField from "../fields/math-field";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceDataType,
-  MaterialContentNodeType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import Link from "~/components/base/material-loader/static/link";
 import { HTMLtoReactComponent } from "~/util/modifiers";

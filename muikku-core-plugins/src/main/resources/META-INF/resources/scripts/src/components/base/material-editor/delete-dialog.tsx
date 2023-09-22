@@ -6,10 +6,7 @@ import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import {
-  MaterialContentNodeType,
-  WorkspaceMaterialEditorType,
-} from "~/reducers/workspaces";
+import { WorkspaceMaterialEditorType } from "~/reducers/workspaces";
 import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,

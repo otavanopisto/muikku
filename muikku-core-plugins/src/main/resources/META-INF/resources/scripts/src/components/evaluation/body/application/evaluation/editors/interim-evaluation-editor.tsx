@@ -198,8 +198,6 @@ class InterimEvaluationEditor extends SessionStateComponent<
         ),
         "callback"
       )().then(async (data: AssignmentEvaluationSaveReturn) => {
-        await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,

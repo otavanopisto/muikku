@@ -169,8 +169,6 @@ class ExerciseEditor extends SessionStateComponent<
         ),
         "callback"
       )().then(async (data: AssignmentEvaluationSaveReturn) => {
-        await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
         this.props.updateCurrentStudentCompositeRepliesData({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
@@ -247,8 +245,6 @@ class ExerciseEditor extends SessionStateComponent<
         ),
         "callback"
       )().then(async () => {
-        await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
         /**
          * Compositereplies needs to be updated by loading new values from server, just for
          * so data is surely right and updated correctly. So loading updated compositeReply and append it to compositereplies list

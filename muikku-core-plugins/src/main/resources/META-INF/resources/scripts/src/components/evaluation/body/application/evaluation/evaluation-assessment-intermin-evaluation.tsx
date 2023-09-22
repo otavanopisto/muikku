@@ -7,7 +7,6 @@ import {
 import {
   WorkspaceDataType,
   MaterialEvaluationType,
-  AssignmentType,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -28,6 +27,7 @@ import promisify from "~/util/promisify";
 import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
 import { WorkspaceInterimEvaluationRequest } from "../../../../../reducers/workspaces/index";
 import {
+  MaterialAssigmentType,
   MaterialCompositeReply,
   MaterialContentNode,
 } from "~/generated/client";
@@ -59,7 +59,7 @@ interface EvaluationAssessmentInterminEvaluationRequestState {
   materialNode?: MaterialContentNode;
   interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   isLoading: boolean;
-  openAssignmentType?: AssignmentType;
+  openAssignmentType?: MaterialAssigmentType;
   showCloseEditorWarning: boolean;
   isRecording: boolean;
 }
@@ -273,7 +273,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * @param assignmentType assignmentType
    */
   handleOpenSlideDrawer =
-    (assignmentId: number, assignmentType: AssignmentType) => () => {
+    (assignmentId: number, assignmentType: MaterialAssigmentType) => () => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
       ) {

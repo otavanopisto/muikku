@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  MaterialContentNodeType,
   WorkspaceInterimEvaluationRequest,
   WorkspaceDataType,
 } from "~/reducers/workspaces";

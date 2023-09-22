@@ -8,8 +8,6 @@ import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceDataType,
-  AssignmentType,
-  Language,
   languageOptions,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
@@ -44,6 +42,8 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import { langAttributeLocale } from "~/helper-functions/locale";
 import {
+  Language,
+  MaterialAssigmentType,
   MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
@@ -229,7 +229,7 @@ type PageTypeLocales =
  * MaterialPageTypeConfic
  */
 interface MaterialPageTypeConfic {
-  type: AssignmentType | null;
+  type: MaterialAssigmentType | null;
   classNameMod: string;
   text: PageTypeLocales;
 }
@@ -393,7 +393,7 @@ class MaterialEditor extends React.Component<
    * @param onClose onClose
    */
   handleChangeAssignmentType =
-    (type: AssignmentType, onClose: () => void) =>
+    (type: MaterialAssigmentType, onClose: () => void) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.props.updateWorkspaceMaterialContentNode({
         workspace: this.props.editorState.currentNodeWorkspace,

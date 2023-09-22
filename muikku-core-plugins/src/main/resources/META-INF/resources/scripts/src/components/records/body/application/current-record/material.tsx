@@ -1,10 +1,6 @@
 import * as React from "react";
 import { localizeTime } from "~/locales/i18n";
-import {
-  AssignmentType,
-  MaterialCompositeRepliesType,
-  WorkspaceDataType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
@@ -20,6 +16,7 @@ import {
 import AnimateHeight from "react-animate-height";
 import Dropdown from "~/components/general/dropdown";
 import {
+  MaterialAssigmentType,
   MaterialCompositeReply,
   MaterialContentNode,
 } from "~/generated/client";
@@ -36,7 +33,7 @@ interface MaterialProps extends WithTranslation {
   open: boolean;
   onMaterialClick: (
     id: number,
-    type: AssignmentType
+    type: MaterialAssigmentType
   ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 

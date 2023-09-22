@@ -5,7 +5,6 @@ import {
   WorkspaceDataType,
   WorkspaceAccessType,
   WorkspaceUpdateType,
-  Language,
   languageOptions,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
@@ -49,6 +48,7 @@ import {
 } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 import {
+  Language,
   WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
