@@ -1683,8 +1683,11 @@
   },
   "evaluation": {
     "actions": {
+      "archive": "$t(common:actions.archive)",
+      "archive_student": "Archive student",
       "askSupplementation": "Ask supplementation",
-      "archiveStudent": "Archive student",
+      "cancel": "$t(common:actions.cancel)",
+      "cancel_studentArchive": "Do not archive student",
       "confirmCancel": "I understand and wish to leave",
       "evaluateStudent": "Evaluate student",
       "evaluateAssignment": "Evaluate assignment",

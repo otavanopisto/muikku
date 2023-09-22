@@ -1683,8 +1683,11 @@
   },
   "evaluation": {
     "actions": {
+      "archive": "$t(common:actions.archive)",
+      "archive_student": "Arkistoi opiskelija",
       "askSupplementation": "Pyydä täydennystä",
-      "archiveStudent": "Arkistoi opiskelija",
+      "cancel": "$t(common:actions.cancel)",
+      "cancel_studentArchive": "Älä arkistoi opiskelijaa",
       "confirmCancel": "Ymmärrän ja haluan poistua",
       "evaluateStudent": "Arvioi opiskelija",
       "evaluateAssignment": "Arvioi tehtävä",

@@ -119,8 +119,10 @@ class ArchiveDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.archiveStudent.bind(this, closeDialog)}
         >
-          {/* {t("evaluation:actions.remove_student")} */}
-          {this.props.t("actions.archiveStudent", { ns: "evaluation" })}
+          {this.props.t("actions.archive", {
+            ns: "evaluation",
+            context: "student",
+          })}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
@@ -128,7 +130,10 @@ class ArchiveDialog extends React.Component<
         >
           {this.props.place === "card"
             ? this.props.t("actions.cancel")
-            : "Ei (TODO: Translate)"}{" "}
+            : this.props.t("actions.cancel", {
+                ns: "evaluation",
+                context: "studentArchive",
+              })}
         </Button>
       </div>
     );
