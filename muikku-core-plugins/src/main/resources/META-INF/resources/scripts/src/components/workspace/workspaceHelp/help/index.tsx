@@ -10,7 +10,6 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
   WorkspaceDataType,
-  MaterialContentNodeListType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import ContentPanel, {
@@ -44,7 +43,7 @@ import {
 interface HelpMaterialsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceDataType;
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;
@@ -72,7 +71,7 @@ const DEFAULT_OFFSET = 67;
  * Help
  */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
-  private flattenedMaterial: MaterialContentNodeListType;
+  private flattenedMaterial: MaterialContentNode[];
   /**
    * constructor
    * @param props props

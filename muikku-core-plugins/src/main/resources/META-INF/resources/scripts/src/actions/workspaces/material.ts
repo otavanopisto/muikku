@@ -5,13 +5,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UploadingValue } from "~/@types/shared";
 import {
-  MaterialContentNodeListType,
   WorkspaceMaterialEditorType,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "../index";
-import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
@@ -19,16 +16,16 @@ import equals = require("deep-equal");
 import {
   MaterialCompositeReply,
   MaterialContentNode,
-  MaterialContentNodeProducer,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
  */
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-  MaterialContentNodeListType
+  MaterialContentNode[]
 >;
 
 /**
@@ -36,7 +33,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<
  */
 export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-  MaterialContentNodeListType
+  MaterialContentNode[]
 >;
 
 /**
@@ -225,7 +222,7 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
  * SetWholeWorkspaceMaterialsTriggerType
  */
 export interface SetWholeWorkspaceMaterialsTriggerType {
-  (materials: MaterialContentNodeListType): AnyActionType;
+  (materials: MaterialContentNode[]): AnyActionType;
 }
 
 /**
@@ -257,6 +254,9 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+      const materialsApi = MApi.getMaterialsApi();
+
       try {
         const parentId = data.parentMaterial
           ? data.parentMaterial.workspaceMaterialId
@@ -268,13 +268,12 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
         let workspaceMaterialId: number = null;
 
         if (data.copyMaterialId) {
-          /**
-           * Reason why copying uses materials end point naming, is
-           * because it is shared end point for other workspaces functionality
-           * too
-           * Confusing yes, but this is how it works now
-           */
-          workspaceMaterialId = (
+          // Reason why copying uses materials end point naming, is
+          // because it is shared end point for other workspaces functionality
+          // too
+          // Confusing yes, but this is how it works now
+
+          /* workspaceMaterialId = (
             (await promisify(
               mApi().workspace.workspaces.materials.create(
                 data.workspace.id,
@@ -294,7 +293,25 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
               ),
               "callback"
             )()) as any
-          ).id;
+          ).id; */
+
+          const materialContentNode =
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              sourceNodeId: data.copyMaterialId,
+              targetNodeId: parentId,
+              sourceWorkspaceEntityId: data.workspace.id,
+              targetWorkspaceEntityId: data.copyWorkspaceId,
+              copyOnlyChildren: false,
+              cloneMaterials: true,
+              updateLinkedMaterials: true,
+              createWorkspaceMaterialRequest: {
+                parentId,
+                nextSiblingId,
+              },
+            });
+
+          workspaceMaterialId = materialContentNode.id;
         } else if (data.file) {
           const formData = new FormData();
           //we add it to the file
@@ -326,16 +343,24 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
             });
           });
 
-          const materialResult: any = await promisify(
+          /* const materialResult: any = await promisify(
             mApi().materials.binary.create({
               title: data.title,
               contentType: tempFileData.fileContentType || data.file.type,
               fileId: tempFileData.fileId,
             }),
             "callback"
-          )();
+          )(); */
 
-          workspaceMaterialId = (
+          const materialResult = await materialsApi.createBinaryMaterial({
+            createBinaryMaterialRequest: {
+              title: data.title,
+              contentType: tempFileData.fileContentType || data.file.type,
+              fileId: tempFileData.fileId,
+            },
+          });
+
+          /* workspaceMaterialId = (
             (await promisify(
               mApi().workspace.workspaces.materials.create(
                 data.workspace.id,
@@ -350,10 +375,23 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
               ),
               "callback"
             )()) as any
-          ).id;
+          ).id; */
+
+          const materialContentNode =
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              updateLinkedMaterials: true,
+              createWorkspaceMaterialRequest: {
+                materialId: materialResult.id,
+                parentId,
+                nextSiblingId,
+              },
+            });
+
+          workspaceMaterialId = materialContentNode.id;
         } else if (!data.makeFolder) {
           // Creating page for section !
-          const materialId = (
+          /* const materialId = (
             (await promisify(
               mApi().materials.html.create({
                 title: data.title,
@@ -361,9 +399,18 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
               }),
               "callback"
             )()) as any
-          ).id;
+          ).id; */
 
-          workspaceMaterialId = (
+          const htmlMaterial = await materialsApi.createHtmlMaterial({
+            createHtmlMaterialRequest: {
+              title: data.title,
+              contentType: "text/html;editor=CKEditor",
+            },
+          });
+
+          const materialId = htmlMaterial.id;
+
+          /* workspaceMaterialId = (
             (await promisify(
               mApi().workspace.workspaces.materials.create(data.workspace.id, {
                 materialId,
@@ -372,10 +419,22 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
               }),
               "callback"
             )()) as any
-          ).id;
+          ).id; */
+
+          const materialContentNode =
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              createWorkspaceMaterialRequest: {
+                materialId,
+                parentId,
+                nextSiblingId,
+              },
+            });
+
+          workspaceMaterialId = materialContentNode.id;
         } else {
           //Creating section
-          workspaceMaterialId = (
+          /* workspaceMaterialId = (
             (await promisify(
               mApi().workspace.workspaces.folders.create(data.workspace.id, {
                 parentId,
@@ -383,10 +442,20 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
               }),
               "callback"
             )()) as any
-          ).id;
+          ).id; */
+
+          const folderContentNode = await workspaceApi.createWorkspaceFolder({
+            workspaceId: data.workspace.id,
+            createWorkspaceFolderRequest: {
+              parentId,
+              nextSiblingId,
+            },
+          });
+
+          workspaceMaterialId = folderContentNode.id;
         }
 
-        const newContentNode: MaterialContentNode = <MaterialContentNode>(
+        /* const newContentNode: MaterialContentNode = <MaterialContentNode>(
           await promisify(
             mApi().workspace.workspaces.asContentNode.read(
               data.workspace.id,
@@ -394,7 +463,12 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
             ),
             "callback"
           )()
-        );
+        ); */
+
+        const newContentNode = await workspaceApi.getWorkspaceAsContentNode({
+          workspaceEntityId: data.workspace.id,
+          workspaceMaterialNodeId: workspaceMaterialId,
+        });
 
         dispatch({
           type: "INSERT_MATERIAL_CONTENT_NODE",
@@ -406,7 +480,7 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
 
         data.success && data.success(newContentNode);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -430,6 +504,9 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const materialsApi = MApi.getMaterialsApi();
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         /**
          * Up keep updated values when mapping them
@@ -515,7 +592,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 
         await Promise.all(
           tempFilesData.map(async (tempFileData: any, index) => {
-            const materialResult: any = await promisify(
+            /* const materialResult: any = await promisify(
               mApi().materials.binary.create({
                 title: data.files[index].name,
                 contentType:
@@ -523,9 +600,18 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
                 fileId: tempFileData.fileId,
               }),
               "callback"
-            )();
+            )(); */
 
-            await promisify(
+            const materialResult = await materialsApi.createBinaryMaterial({
+              createBinaryMaterialRequest: {
+                title: data.files[index].name,
+                contentType:
+                  tempFileData.fileContentType || data.files[index].type,
+                fileId: tempFileData.fileId,
+              },
+            });
+
+            /* await promisify(
               mApi().workspace.workspaces.materials.create(
                 data.workspace.id,
                 {
@@ -537,7 +623,16 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
                 }
               ),
               "callback"
-            )();
+            )(); */
+
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              updateLinkedMaterials: true,
+              createWorkspaceMaterialRequest: {
+                materialId: materialResult.id,
+                parentId: data.material.workspaceMaterialId,
+              },
+            });
           })
         );
 
@@ -552,6 +647,10 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
         );
         data.success && data.success();
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(actions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -573,8 +672,10 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
     return async (dispatch: (arg: AnyActionType) => any) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const childrenAttachments: MaterialContentNode[] =
+        /* const childrenAttachments: MaterialContentNode[] =
           ((await promisify(
             mApi()
               .workspace.workspaces.materials.cacheClear()
@@ -582,7 +683,12 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
                 parentId: material.workspaceMaterialId,
               }),
             "callback"
-          )()) as MaterialContentNode[]) || [];
+          )()) as MaterialContentNode[]) || []; */
+
+        const childrenAttachments = await workspaceApi.getWorkspaceMaterials({
+          workspaceEntityId: workspace.id,
+          parentId: material.workspaceMaterialId,
+        });
 
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -599,7 +705,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -616,6 +722,9 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const materialsApi = MApi.getMaterialsApi();
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         if (!data.dontTriggerReducerActions) {
           dispatch({
@@ -641,12 +750,16 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             data.material.materialId &&
             !data.dontTriggerReducerActions
           ) {
-            const materialsAnswer: any[] = (await promisify(
+            /* const materialsAnswer: any[] = (await promisify(
               mApi().materials.material.workspaceMaterials.read(
                 data.material.materialId
               ),
               "callback"
-            )()) as any;
+            )()) as any; */
+
+            const materialsAnswer = await materialsApi.getMaterialsByWorkspace({
+              materialId: data.material.materialId,
+            });
 
             if (materialsAnswer && materialsAnswer.length > 1) {
               dispatch({
@@ -670,13 +783,21 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.html !== "undefined" &&
             data.material.html !== data.update.html
           ) {
-            await promisify(
+            /* await promisify(
               mApi().materials.html.content.update(data.material.materialId, {
                 content: data.update.html,
                 removeAnswers: data.removeAnswers || false,
               }),
               "callback"
-            )();
+            )(); */
+
+            await materialsApi.updateHtmlMaterialContent({
+              materialid: data.material.materialId,
+              updateHtmlMaterialContentRequest: {
+                content: data.update.html,
+                removeAnswers: data.removeAnswers || false,
+              },
+            });
           }
 
           let newPath = data.material.path;
@@ -724,12 +845,26 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           });
 
           if (changed) {
-            let urlPath = "materials";
             if (data.material.type === "folder") {
-              urlPath = "folders";
+              const updatedFolder = await workspaceApi.updateWorkspaceFolder({
+                workspaceId: data.workspace.id,
+                folderId: data.material.materialId,
+                body: result,
+              });
+
+              newPath = updatedFolder.path;
+            } else {
+              const updatedMaterial =
+                await workspaceApi.updateWorkspaceMaterial({
+                  workspaceEntityId: data.workspace.id,
+                  materialId: data.material.materialId,
+                  body: result,
+                });
+
+              newPath = updatedMaterial.path;
             }
 
-            newPath = (
+            /* newPath = (
               (await promisify(
                 mApi().workspace.workspaces[urlPath].update(
                   data.workspace.id,
@@ -738,7 +873,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 ),
                 "callback"
               )()) as any
-            ).path;
+            ).path; */
           }
 
           const materialFields = ["id", "license", "viewRestrict"];
@@ -764,20 +899,25 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           });
 
           if (changed) {
-            await promisify(
+            /* await promisify(
               mApi().materials.material.update(
                 data.material.materialId,
                 materialResult
               ),
               "callback"
-            )();
+            )(); */
+
+            await materialsApi.updateMaterial({
+              materialId: data.material.materialId,
+              body: materialResult,
+            });
           }
 
           if (
             typeof data.update.producers !== "undefined" &&
             !equals(data.material.producers, data.update.producers)
           ) {
-            const newProducers: MaterialContentNodeProducer[] =
+            /* const newProducers: MaterialContentNodeProducer[] =
               await Promise.all<MaterialContentNodeProducer>(
                 data.update.producers.map((p) => {
                   if (p.id === null) {
@@ -793,7 +933,22 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                   }
                   return p;
                 })
-              );
+              ); */
+
+            const newProducers = await Promise.all(
+              data.update.producers.map((p) => {
+                if (p.id === null) {
+                  return materialsApi.createMaterialProducer({
+                    materialId: data.material.materialId,
+                    createMaterialProducerRequest: {
+                      name: p.name,
+                    },
+                  });
+                }
+                return p;
+              })
+            );
+
             if (!data.dontTriggerReducerActions) {
               dispatch({
                 type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -830,7 +985,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             const deletedProducers = data.material.producers.filter(
               (p) => !newProducers.find((p2) => p2.id === p.id)
             );
-            await Promise.all(
+            /* await Promise.all(
               deletedProducers.map((p) =>
                 promisify(
                   mApi().materials.material.producers.del(
@@ -839,6 +994,15 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                   ),
                   "callback"
                 )()
+              )
+            ); */
+
+            await Promise.all(
+              deletedProducers.map((p) =>
+                materialsApi.deleteMaterialProducer({
+                  materialId: data.material.materialId,
+                  producerId: p.id,
+                })
               )
             );
           }
@@ -897,7 +1061,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -974,21 +1138,30 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const contentNodes: Array<MaterialContentNode> =
+        /* const contentNodes: Array<MaterialContentNode> =
           <Array<MaterialContentNode>>await promisify(
             mApi().workspace.workspaces.materialContentNodes.read(workspaceId, {
               includeHidden,
             }),
             "callback"
-          )() || [];
+          )() || []; */
+
+        const materialContentNodes =
+          await workspaceApi.getWorkspaceMaterialContentNodes({
+            workspaceEntityId: workspaceId,
+            includeHidden,
+          });
+
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-          payload: contentNodes,
+          payload: materialContentNodes,
         });
-        callback && callback(contentNodes);
+        callback && callback(materialContentNodes);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1015,6 +1188,8 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         if (!getState().status.loggedIn) {
           dispatch({
@@ -1028,18 +1203,24 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
             payload: null,
           });
         }
-        const compositeReplies: MaterialCompositeReply[] = <
+        /* const compositeReplies: MaterialCompositeReply[] = <
           MaterialCompositeReply[]
         >await promisify(
           mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
           "callback"
-        )();
+        )(); */
+
+        const compositeReplies =
+          await workspaceApi.getWorkspaceCompositeReplies({
+            workspaceEntityId: id,
+          });
+
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
           payload: compositeReplies || [],
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1111,12 +1292,27 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        let urlPath = "materials";
+        /* let urlPath = "materials"; */
+
         if (data.material.type === "folder") {
-          urlPath = "folders";
+          /* urlPath = "folders"; */
+          await workspaceApi.deleteWorkspaceFolder({
+            workspaceId: data.workspace.id,
+            folderId: data.material.materialId,
+          });
+        } else {
+          await workspaceApi.deleteWorkspaceMaterial({
+            workspaceEntityId: data.workspace.id,
+            materialId: data.material.workspaceMaterialId || data.material.id,
+            removeAnswers: data.removeAnswers || false,
+            updateLinkedMaterials: true,
+          });
         }
-        await promisify(
+
+        /* await promisify(
           mApi().workspace.workspaces[urlPath].del(
             data.workspace.id,
             data.material.workspaceMaterialId || data.material.id,
@@ -1127,7 +1323,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
             }
           ),
           "callback"
-        )();
+        )(); */
 
         data.success && data.success();
 
@@ -1136,7 +1332,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
           payload: data.material,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1195,8 +1391,10 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const contentNodes: Array<MaterialContentNode> =
+        /* const contentNodes: Array<MaterialContentNode> =
           <Array<MaterialContentNode>>(
             await promisify(
               mApi()
@@ -1204,14 +1402,20 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
                 .read(workspaceId, { includeHidden }),
               "callback"
             )()
-          ) || [];
+          ) || []; */
+
+        const materialContentNodes = await workspaceApi.getWorkspaceHelp({
+          workspaceId: workspaceId,
+          includeHidden,
+        });
+
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-          payload: contentNodes,
+          payload: materialContentNodes,
         });
-        callback && callback(contentNodes);
+        callback && callback(materialContentNodes);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 

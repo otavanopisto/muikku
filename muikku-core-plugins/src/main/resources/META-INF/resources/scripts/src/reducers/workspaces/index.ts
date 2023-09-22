@@ -3,7 +3,6 @@ import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
   AssessmentRequest,
-  MaterialContentNode,
   MaterialViewRestriction,
   WorkspaceAdditionalInfo,
   WorkspaceChatStatus,
@@ -16,7 +15,7 @@ import {
   WorkspaceStudentSearchResult,
   WorkspaceType,
   MaterialCompositeReply,
-  MaterialAssignment,
+  MaterialContentNode,
   DiscussionWorkspaceStatistic,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
@@ -481,7 +480,7 @@ export interface WorkspaceMaterialReferenceType {
   url: string;
 }
 
-export type WorkspaceListType = Array<WorkspaceDataType>;
+/* export type WorkspaceListType = Array<WorkspaceDataType>; */
 
 /**
  * WorkspaceSignUpDetails
@@ -590,10 +589,10 @@ export interface WorkspacesActiveFiltersType {
 /**
  * WorkspaceTypeType
  */
-export interface WorkspaceTypeType {
+/* export interface WorkspaceTypeType {
   identifier: string;
   name: string;
-}
+} */
 
 /**
  * WorkspaceEditModeStateType
@@ -650,7 +649,7 @@ export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER";
 /**
  * MaterialAssignmentType
  */
-export interface MaterialAssignmentType {
+/* export interface MaterialAssignmentType {
   id: number;
   materialId: number;
   parentId: number;
@@ -660,7 +659,7 @@ export interface MaterialAssignmentType {
   correctAnswers: string;
   path: string;
   title: string;
-}
+} */
 
 /**
  * MaterialContentNodeProducerType
@@ -717,7 +716,7 @@ export interface MaterialContentNodeType {
   //Assigned fields
   childrenAttachments?: Array<MaterialContentNode>; // this is usually missing and has to be manually retrieved
   evaluation?: MaterialEvaluationType;
-  assignment?: MaterialAssignment;
+  assignment?: MaterialContentNode;
 }
 
 /**
@@ -800,7 +799,7 @@ export interface MaterialEvaluationType {
   audioAssessments: AudioAssessment[];
 }
 
-export type MaterialContentNodeListType = Array<MaterialContentNode>;
+/* export type MaterialContentNodeListType = Array<MaterialContentNode>; */
 
 /**
  * WorkspacesState
@@ -812,8 +811,8 @@ export interface WorkspacesState {
   lastWorkspaces?: WorkspaceMaterialReferenceType[];
   // Following is data related to current workspace
   currentWorkspace?: WorkspaceDataType;
-  currentHelp?: MaterialContentNodeListType;
-  currentMaterials?: MaterialContentNodeListType;
+  currentHelp?: MaterialContentNode[];
+  currentMaterials?: MaterialContentNode[];
   currentMaterialsActiveNodeId?: number;
   currentMaterialsReplies?: MaterialCompositeReply[];
 
@@ -825,8 +824,8 @@ export interface WorkspacesState {
   activeFilters: WorkspacesActiveFiltersType;
 
   // List of different workspaces. Used different places like workspace picker etc
-  availableWorkspaces: WorkspaceListType;
-  userWorkspaces?: WorkspaceListType;
+  availableWorkspaces: WorkspaceDataType[];
+  userWorkspaces?: WorkspaceDataType[];
 
   // Other workspace related data
   templateWorkspaces: TemplateWorkspaceType[];

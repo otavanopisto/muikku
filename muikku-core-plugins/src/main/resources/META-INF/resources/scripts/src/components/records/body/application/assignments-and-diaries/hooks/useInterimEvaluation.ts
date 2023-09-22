@@ -3,7 +3,7 @@ import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { AssignmentsTabType } from "../assignments-and-diaries";
-import { MaterialAssignment, MaterialContentNode } from "~/generated/client";
+import { MaterialContentNode } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -66,7 +66,7 @@ export const useInterimEvaluationAssigments = (
          */
         const [materials] = await Promise.all([
           (async () => {
-            const assignments = <Array<MaterialAssignment>>await promisify(
+            const assignments = <Array<MaterialContentNode>>await promisify(
                 mApi().workspace.workspaces.materials.read(workspaceId, {
                   assignmentType: "INTERIM_EVALUATION",
                 }),

@@ -6,13 +6,13 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { PDFViewer } from "@react-pdf/renderer";
-import {
-  MaterialContentNodeListType,
-  WorkspaceDataType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import TableOfContentPDF from "./table-of-content-pdf";
 import { StatusType } from "~/reducers/base/status";
-import { MaterialCompositeReply } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 
 /**
  * NoteBookPDFProps
@@ -20,7 +20,7 @@ import { MaterialCompositeReply } from "~/generated/client";
 interface TableOfContentPDFDialogProps {
   children?: React.ReactElement<any>;
   assignmentTypeFilters: string[];
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
   compositeReplies: MaterialCompositeReply[];
   workspace?: WorkspaceDataType;
   isOpen?: boolean;

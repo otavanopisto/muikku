@@ -8,7 +8,6 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
-  MaterialContentNodeListType,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -38,7 +37,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface ContentProps extends WithTranslation {
   status: StatusType;
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
   activeNodeId: number;
   workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -52,7 +51,7 @@ interface ContentProps extends WithTranslation {
  * ContentState
  */
 interface ContentState {
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
 }
 
 /**

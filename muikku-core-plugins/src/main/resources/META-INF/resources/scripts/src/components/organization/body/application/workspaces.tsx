@@ -10,12 +10,7 @@ import Workspace from "./workspaces/workspace";
 import "~/sass/elements/ref-wrapper.scss";
 import { LoadMoreWorkspacesFromServerTriggerType } from "~/actions/workspaces";
 import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/organization";
-
-import {
-  WorkspacesStateType,
-  WorkspaceDataType,
-  WorkspaceListType,
-} from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
 
@@ -26,7 +21,7 @@ interface OrganizationWorkspacesProps {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceDataType[];
 }
 
 /**

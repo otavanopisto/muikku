@@ -36,7 +36,7 @@ import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { LocaleState } from "~/reducers/base/locales";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { MaterialAssignment, MaterialCompositeReply } from "~/generated/client";
+import { MaterialCompositeReply, MaterialAssignment } from "~/generated/client";
 
 /**
  * AssignmentEditorProps

@@ -27,7 +27,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { MaterialAssignment, MaterialCompositeReply } from "~/generated/client";
+import { MaterialCompositeReply, MaterialAssignment } from "~/generated/client";
 
 /**
  * AssignmentEditorProps

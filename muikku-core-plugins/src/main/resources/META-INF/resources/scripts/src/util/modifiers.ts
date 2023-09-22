@@ -1,7 +1,6 @@
 import * as React from "react";
-import { User } from "~/generated/client";
+import { MaterialContentNode, User } from "~/generated/client";
 import $ from "~/lib/jquery";
-import { MaterialContentNodeListType } from "~/reducers/workspaces";
 
 /**
  * escapeRegExp
@@ -696,11 +695,11 @@ export function scrollToSection(
  * @param parentNodeId parentNodeId
  */
 export function repairContentNodes(
-  base: MaterialContentNodeListType,
+  base: MaterialContentNode[],
   pathRepair?: string,
   pathRepairId?: number,
   parentNodeId?: number
-): MaterialContentNodeListType {
+): MaterialContentNode[] {
   if (base === null) {
     return null;
   }

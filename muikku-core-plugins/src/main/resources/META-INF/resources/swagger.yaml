@@ -4673,7 +4673,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                $ref: "#/components/schemas/MaterialContentNode"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4694,7 +4694,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                $ref: "#/components/schemas/MaterialContentNode"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4726,7 +4726,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/materials/html/{id}/content:
+  /rest/materials/html/{materialid}/content:
     put:
       operationId: updateHtmlMaterialContent
       summary: Update html material content
@@ -4734,7 +4734,7 @@ paths:
       tags:
         - Materials
       parameters:
-        - name: id
+        - name: materialid
           in: path
           description: Html material id
           required: true
@@ -4767,6 +4767,12 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/MaterialUpdateRequestBody"
       responses:
+        "200":
+          description: Material updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialContentNode"
         "204":
           description: Material updated successfully
         "400":
@@ -4776,7 +4782,7 @@ paths:
 
   /rest/materials/material/{materialId}/workspaceMaterials:
     get:
-      operationId: getWorkspaceMaterials
+      operationId: getMaterialsByWorkspace
       summary: Get workspace materials
       description: Get workspace materials
       tags:
@@ -4796,7 +4802,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AnyValue"
+                  $ref: "#/components/schemas/MaterialContentNode"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7535,10 +7541,10 @@ paths:
           description: Internal server error
 
   /rest/workspace/workspaces/{workspaceId}/help:
-    post:
-      operationId: createWorkspaceHelpMaterial
-      summary: Create workspace help material
-      description: Create workspace help material
+    get:
+      operationId: getWorkspaceHelp
+      summary: Get workspace help
+      description: Get workspace help
       tags:
         - Workspace
       parameters:
@@ -7548,15 +7554,21 @@ paths:
           required: true
           schema:
             type: integer
-      requestBody:
-        $ref: "#/components/requestBodies/WorkspaceHelpCreateRequestBody"
+        - name: includeHidden # <-- ????
+          in: query
+          description: Include hidden
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
-          description: Workspace help material created successfully
+          description: Workspace help
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                type: array
+                items:
+                  $ref: "#/components/schemas/MaterialContentNode"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7832,7 +7844,7 @@ paths:
 
   /rest/workspace/workspaces/{workspaceEntityId}/materials/:
     get:
-      operationId: getWorkspaceMaterialAssignments
+      operationId: getWorkspaceMaterials
       summary: Get workspace materials
       description: Get workspace materials
       tags:
@@ -7844,10 +7856,14 @@ paths:
           required: true
           schema:
             type: integer
+        - name: parentId
+          in: query
+          description: Parent id
+          schema:
+            type: integer
         - name: assignmentType
           in: query
           description: Include hidden
-          required: true
           schema:
             $ref: "#/components/schemas/MaterialAssigmentType"
       responses:
@@ -7858,7 +7874,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MaterialAssignment"
+                  $ref: "#/components/schemas/MaterialContentNode"
         "204":
           description: No workspace materials found
         "400":
@@ -7925,6 +7941,78 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MaterialContentNode"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceEntityId}/materials/{materialId}:
+    put:
+      operationId: updateWorkspaceMaterial
+      summary: Update workspace material
+      description: Update workspace material
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: materialId
+          in: path
+          description: Material id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceMaterialUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace material updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialContentNode"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    delete:
+      operationId: deleteWorkspaceMaterial
+      summary: Delete workspace material
+      description: Delete workspace material
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: materialId
+          in: path
+          description: Material id
+          required: true
+          schema:
+            type: integer
+        - name: removeAnswers
+          in: query
+          description: Remove answers
+          schema:
+            type: boolean
+            default: false
+        - name: updateLinkedMaterials
+          in: query
+          description: Update linked materials
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "204":
+          description: Workspace material deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8341,6 +8429,66 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MaterialContentNode"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/folders/{folderId}:
+    put:
+      operationId: updateWorkspaceFolder
+      summary: Update workspace folder
+      description: Update workspace folder
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+        - name: folderId
+          in: path
+          description: Folder id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceFolderUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace folder updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialContentNode"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    delete:
+      operationId: deleteWorkspaceFolder
+      summary: Delete workspace folder
+      description: Delete workspace folder
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+        - name: folderId
+          in: path
+          description: Folder id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Workspace folder deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9488,6 +9636,7 @@ components:
                 type: integer
 
     BinaryMaterialCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9506,6 +9655,7 @@ components:
                 $ref: "#/components/schemas/AnyValue"
 
     HtmlMaterialCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9517,10 +9667,11 @@ components:
             properties:
               title:
                 type: string
-              content:
+              contentType:
                 type: string
 
     MaterialContentUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9539,10 +9690,10 @@ components:
       content:
         application/json:
           schema:
-            anyOf:
-              - $ref: "#/components/schemas/AnyValue"
+            $ref: "#/components/schemas/AnyValue"
 
     MaterialProducerCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10130,7 +10281,22 @@ components:
               billingNumber:
                 type: integer
 
+    WorkspaceMaterialUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AnyValue"
+
+    WorkspaceFolderUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AnyValue"
+
     WorkspaceFolderCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10261,9 +10427,7 @@ components:
             type: object
             description: WorkspaceMaterialCreateRequestBody object
             required:
-              - materialId
               - parentId
-              - nextSiblingId
             properties:
               materialId:
                 type: integer

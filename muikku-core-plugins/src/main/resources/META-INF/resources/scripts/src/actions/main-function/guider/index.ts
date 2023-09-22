@@ -22,11 +22,7 @@ import {
   ContactLogEventComment,
   ContactTypes,
 } from "~/reducers/main-function/guider";
-import {
-  WorkspaceListType,
-  ActivityLogType,
-  WorkspaceDataType,
-} from "~/reducers/workspaces";
+import { ActivityLogType, WorkspaceDataType } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { colorIntToHex } from "~/util/modifiers";
@@ -707,7 +703,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         promisify(
           mApi().guider.students.workspaces.read(id, { active: true }),
           "callback"
-        )().then(async (workspaces: WorkspaceListType) => {
+        )().then(async (workspaces: WorkspaceDataType[]) => {
           if (workspaces && workspaces.length) {
             await Promise.all([
               Promise.all(
@@ -868,7 +864,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
           promisify(
             mApi().guider.students.workspaces.read(id, { active: false }),
             "callback"
-          )().then(async (workspaces: WorkspaceListType) => {
+          )().then(async (workspaces: WorkspaceDataType[]) => {
             if (workspaces && workspaces.length) {
               await Promise.all([
                 Promise.all(

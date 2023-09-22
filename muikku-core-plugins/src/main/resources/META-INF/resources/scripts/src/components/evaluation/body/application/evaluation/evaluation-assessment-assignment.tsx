@@ -27,7 +27,6 @@ import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
 import ExerciseEditor from "./editors/exercise-editor";
 import {
-  MaterialAssignment,
   MaterialCompositeReply,
   MaterialContentNode,
 } from "~/generated/client";
@@ -38,7 +37,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface EvaluationAssessmentAssignmentProps extends WithTranslation {
   workspace: WorkspaceDataType;
-  assigment: MaterialAssignment;
+  assigment: MaterialContentNode;
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: AssessmentRequest;

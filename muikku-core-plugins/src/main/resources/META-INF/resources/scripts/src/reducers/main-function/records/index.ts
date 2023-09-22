@@ -5,9 +5,11 @@ import { Reducer } from "redux";
 import {
   WorkspaceCurriculumFilterListType,
   WorkspaceJournalListType,
-  MaterialContentNodeListType,
 } from "~/reducers/workspaces";
-import { MaterialCompositeReply } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
 
@@ -91,7 +93,7 @@ export interface RecordGroupType {
 export interface CurrentRecordType {
   workspace: WorkspaceDataType;
   journals: WorkspaceJournalListType;
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
   compositeReplies: MaterialCompositeReply[];
 }
 

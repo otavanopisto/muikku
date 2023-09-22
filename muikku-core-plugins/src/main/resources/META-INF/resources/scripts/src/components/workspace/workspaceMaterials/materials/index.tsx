@@ -10,7 +10,6 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
   WorkspaceDataType,
-  MaterialContentNodeListType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 
@@ -55,7 +54,7 @@ import {
 interface WorkspaceMaterialsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceDataType;
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
   materialReplies: MaterialCompositeReply[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
@@ -89,7 +88,7 @@ class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsProps,
   WorkspaceMaterialsState
 > {
-  private flattenedMaterial: MaterialContentNodeListType;
+  private flattenedMaterial: MaterialContentNode[];
   /**
    * constructor
    * @param props props

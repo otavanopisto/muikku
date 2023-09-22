@@ -28,7 +28,6 @@ import promisify from "~/util/promisify";
 import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
 import { WorkspaceInterimEvaluationRequest } from "../../../../../reducers/workspaces/index";
 import {
-  MaterialAssignment,
   MaterialCompositeReply,
   MaterialContentNode,
 } from "~/generated/client";
@@ -40,7 +39,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface EvaluationAssessmentInterminEvaluationRequestProps
   extends WithTranslation {
   workspace: WorkspaceDataType;
-  assigment: MaterialAssignment;
+  assigment: MaterialContentNode;
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: AssessmentRequest;

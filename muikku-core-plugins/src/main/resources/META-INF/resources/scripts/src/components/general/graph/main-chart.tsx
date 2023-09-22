@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import { WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
+import { ActivityLogType, WorkspaceDataType } from "~/reducers/workspaces";
 import WorkspaceFilter from "./filters/workspace-filter";
 import GraphFilter from "./filters/graph-filter";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ let AmCharts: any = null;
  */
 interface CurrentStudentStatisticsProps extends WithTranslation {
   activityLogs?: Array<ActivityLogType>;
-  workspaces?: WorkspaceListType;
+  workspaces?: WorkspaceDataType[];
 }
 
 /**

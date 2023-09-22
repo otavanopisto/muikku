@@ -23,7 +23,6 @@ import {
   WorkspacesActiveFiltersType,
   WorkspacesStatePatch,
   WorkspacesStateType,
-  WorkspaceListType,
   UserSelectLoader,
 } from "../../reducers/workspaces/index";
 import { loadWorkspacesHelper } from "~/actions/workspaces/helpers";
@@ -103,7 +102,7 @@ export type UPDATE_ORGANIZATION_WORKSPACES_STATE = SpecificActionType<
  */
 export type UPDATE_ORGANIZATION_TEMPLATES = SpecificActionType<
   "UPDATE_ORGANIZATION_TEMPLATES",
-  WorkspaceListType
+  WorkspaceDataType[]
 >;
 
 /**

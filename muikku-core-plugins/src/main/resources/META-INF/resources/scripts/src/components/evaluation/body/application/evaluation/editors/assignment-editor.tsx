@@ -34,7 +34,7 @@ import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
-import { MaterialAssignment, MaterialCompositeReply } from "~/generated/client";
+import { MaterialCompositeReply, MaterialAssignment } from "~/generated/client";
 
 /**
  * AssignmentEditorProps

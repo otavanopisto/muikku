@@ -1846,20 +1846,21 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       try {
         const [assigments] = await Promise.all([
           (async () => {
-            const assignmentsInterim =
-              await workspaceApi.getWorkspaceMaterialAssignments({
+            const assignmentsInterim = await workspaceApi.getWorkspaceMaterials(
+              {
                 workspaceEntityId: workspaceId,
                 assignmentType: "INTERIM_EVALUATION",
-              });
+              }
+            );
 
             const assignmentsExercise =
-              await workspaceApi.getWorkspaceMaterialAssignments({
+              await workspaceApi.getWorkspaceMaterials({
                 workspaceEntityId: workspaceId,
                 assignmentType: "EXERCISE",
               });
 
             const assignmentsEvaluated =
-              await workspaceApi.getWorkspaceMaterialAssignments({
+              await workspaceApi.getWorkspaceMaterials({
                 workspaceEntityId: workspaceId,
                 assignmentType: "EVALUATED",
               });

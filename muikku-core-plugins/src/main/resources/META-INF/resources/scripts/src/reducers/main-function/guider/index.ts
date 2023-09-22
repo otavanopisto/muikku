@@ -1,10 +1,6 @@
 import { ActionType } from "~/actions";
 import { UserFileType } from "~/reducers/user-index";
-import {
-  WorkspaceDataType,
-  WorkspaceListType,
-  ActivityLogType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType, ActivityLogType } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
@@ -157,8 +153,8 @@ export interface GuiderStudentUserProfileType {
   hops: HOPSDataType;
   notifications: GuiderNotificationStudentsDataType;
   contactLogs: ContactLogData;
-  currentWorkspaces: WorkspaceListType;
-  pastWorkspaces: WorkspaceListType;
+  currentWorkspaces: WorkspaceDataType[];
+  pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogType[];
   purchases: PurchaseType[];
   hopsPhase?: string;

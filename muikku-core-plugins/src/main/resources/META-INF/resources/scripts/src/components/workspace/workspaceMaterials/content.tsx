@@ -13,9 +13,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
-  MaterialContentNodeListType,
   WorkspaceDataType,
-  MaterialCompositeRepliesListType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 
@@ -54,7 +52,7 @@ import {
  */
 interface ContentProps extends WithTranslation {
   status: StatusType;
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
   materialReplies: MaterialCompositeReply[];
   activeNodeId: number;
   workspace: WorkspaceDataType;
@@ -69,7 +67,7 @@ interface ContentProps extends WithTranslation {
  * ContentState
  */
 interface ContentState {
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
   assignmentTypeFilters: string[];
   sessionId: string;
 }
@@ -106,7 +104,7 @@ class ContentComponent extends SessionStateComponent<
   ContentState
 > {
   private storedLastUpdateServerExecution: Function;
-  private originalMaterials: MaterialContentNodeListType;
+  private originalMaterials: MaterialContentNode[];
   private topicRefs: ToggleOpenHandle[];
 
   /**

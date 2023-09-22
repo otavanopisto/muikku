@@ -1833,7 +1833,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaceMaterials.isEmpty()) {
-      return Response.noContent().build();
+    	return Response.ok(Collections.emptyList()).build();
     }
 
     return Response.ok(workspaceMaterials).build();

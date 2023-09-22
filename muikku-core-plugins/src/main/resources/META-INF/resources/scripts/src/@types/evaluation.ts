@@ -2,10 +2,9 @@ import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/inde
 import { JournalComment } from "~/@types/journal";
 import {
   WorkspaceDataType,
-  MaterialContentNodeListType,
   WorkspaceSubject,
 } from "../reducers/workspaces/index";
-import { MaterialAssignment } from "~/generated/client";
+import { MaterialContentNode } from "~/generated/client";
 /**
  * EvaluationEnum
  */
@@ -393,14 +392,14 @@ export interface AssignmentInterminEvaluationRequest {
  * EvaluationData
  */
 export interface EvaluationData {
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNode[];
 }
 
 /**
  * EvaluationAssigmentData
  */
 export interface EvaluationAssigmentData {
-  assigments: MaterialAssignment[];
+  assigments: MaterialContentNode[];
 }
 
 /**
