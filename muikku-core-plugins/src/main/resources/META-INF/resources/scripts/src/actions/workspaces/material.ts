@@ -258,11 +258,6 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
       getState: () => StateType
     ) => {
       try {
-        const apiRef =
-          apiPath === "help"
-            ? mApi().workspace.workspaces.help
-            : mApi().workspace.workspaces.materials;
-
         const parentId = data.parentMaterial
           ? data.parentMaterial.workspaceMaterialId
           : data.rootParentId;
@@ -342,7 +337,7 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
 
           workspaceMaterialId = (
             (await promisify(
-              apiRef.create(
+              mApi().workspace.workspaces.materials.create(
                 data.workspace.id,
                 {
                   materialId: materialResult.id,
