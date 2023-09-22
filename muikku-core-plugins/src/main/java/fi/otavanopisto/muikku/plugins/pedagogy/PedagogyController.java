@@ -254,14 +254,20 @@ public class PedagogyController {
   
   public void createViewHistory(PedagogyForm form, Long modifierId) {
     List<PedagogyFormHistory> historyList = pedagogyFormHistoryDAO.listByFormAndCreator(form, modifierId);
-    PedagogyFormHistory latestHistoryItem = historyList.get(0);
     
-    Date lastCreated = latestHistoryItem.getCreated();
-    Instant now = new Date().toInstant();
-    
-    if (lastCreated.toInstant().isBefore(now.minus(3, ChronoUnit.HOURS))) {
-      pedagogyFormHistoryDAO.create(form, "Suunnitelmaa katsottiin", modifierId, PedagogyFormHistoryType.VIEW);
+    if (historyList != null) {
+      PedagogyFormHistory latestHistoryItem = historyList.get(0);
+      
+      Date lastCreated = latestHistoryItem.getCreated();
+      Instant now = new Date().toInstant();
+      
+      if (!lastCreated.toInstant().isBefore(now.minus(3, ChronoUnit.HOURS))) {
+        return;
+      }
     }
+    
+    pedagogyFormHistoryDAO.create(form, "Suunnitelmaa katsottiin", modifierId, PedagogyFormHistoryType.VIEW);
+
   }
 
 
