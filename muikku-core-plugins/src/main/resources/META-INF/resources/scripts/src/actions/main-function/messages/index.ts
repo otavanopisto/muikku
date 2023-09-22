@@ -745,7 +745,6 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
             i18n.t("notifications.locationError", { ns: "messaging" }),
