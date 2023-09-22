@@ -7859,6 +7859,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MaterialAssignment"
+        "204":
+          description: No workspace materials found
         "400":
           description: Invalid request was sent to the server
         "500":

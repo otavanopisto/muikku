@@ -1804,7 +1804,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaceMaterials.isEmpty()) {
-      return Response.noContent().build();
+      return Response.ok(Collections.emptyList()).build();
     }
 
     return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
@@ -1971,9 +1971,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         result.add(compositeReply);
       }
-
+      
       if (result.isEmpty()) {
-        return Response.noContent().build();
+        return Response.ok(Collections.emptyList()).build();
       }
     }
     catch (WorkspaceFieldIOException e) {

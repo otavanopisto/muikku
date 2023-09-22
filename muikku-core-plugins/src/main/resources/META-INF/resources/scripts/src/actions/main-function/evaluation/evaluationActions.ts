@@ -1358,16 +1358,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
         payload: <EvaluationStateType>"LOADING",
       });
 
-      /* let evaluationCompositeReplies: MaterialCompositeReply[]; */
-
       try {
-        /* evaluationCompositeReplies = (await promisify(
-          mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
-            userEntityId,
-          }),
-          "callback"
-        )()) as MaterialCompositeReply[]; */
-
         const evaluationCompositeReplies =
           await workspaceApi.getWorkspaceCompositeReplies({
             workspaceEntityId: workspaceId,
@@ -1855,39 +1846,17 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       try {
         const [assigments] = await Promise.all([
           (async () => {
-            /* const assignmentsInterim =
-              <MaterialAssignment[]>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "INTERIM_EVALUATION",
-                }),
-                "callback"
-              )() || []; */
-
             const assignmentsInterim =
               await workspaceApi.getWorkspaceMaterialAssignments({
                 workspaceEntityId: workspaceId,
                 assignmentType: "INTERIM_EVALUATION",
               });
 
-            /* const assignmentsExercise = <MaterialAssignment[]>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EXERCISE",
-                }),
-                "callback"
-              )() || []; */
-
             const assignmentsExercise =
               await workspaceApi.getWorkspaceMaterialAssignments({
                 workspaceEntityId: workspaceId,
                 assignmentType: "EXERCISE",
               });
-
-            /* const assignmentsEvaluated = <MaterialAssignment[]>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EVALUATED",
-                }),
-                "callback"
-              )() || []; */
 
             const assignmentsEvaluated =
               await workspaceApi.getWorkspaceMaterialAssignments({
@@ -1951,29 +1920,16 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
       const state = getState();
       const workspaceApi = MApi.getWorkspaceApi();
 
-      /**
-       * There is reason why update composite replies state is not changed here. Because
-       * we don't wan't to change ui to loading states that would re render materials. It should still have
-       * some indicator maybe specificilly to that component which compositereply is updating so there is
-       * indicating that tell if something is coming from backend. But currently this is how its working now
-       */
+      // There is reason why update composite replies state is not changed here. Because
+      // we don't wan't to change ui to loading states that would re render materials. It should still have
+      // some indicator maybe specificilly to that component which compositereply is updating so there is
+      // indicating that tell if something is coming from backend. But currently this is how its working now
 
-      /**
-       * Get initial values that needs to be updated
-       */
+      // Get initial values that needs to be updated
       const updatedCompositeReplies =
         state.evaluations.evaluationCompositeReplies.data;
 
       try {
-        /* const updatedCompositeReply = (await promisify(
-          mApi().workspace.workspaces.user.workspacematerial.compositeReply.read(
-            data.workspaceId,
-            data.userEntityId,
-            data.workspaceMaterialId
-          ),
-          "callback"
-        )()) as MaterialCompositeReply; */
-
         const updatedCompositeReply =
           await workspaceApi.getWorkspaceUserCompositeReply({
             workspaceEntityId: data.workspaceId,
@@ -2332,27 +2288,6 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
     const workspaceApi = MApi.getWorkspaceApi();
 
     try {
-      /* await promisify(
-        mApi().workspace.workspaces.students.read(
-          workspaceEntityId,
-          workspaceUserEntityId
-        ),
-        "callback"
-      )().then(async (workspaceUserEntity: WorkspaceUserEntity) => {
-        workspaceUserEntity.active = false;
-
-        await promisify(
-          mApi().workspace.workspaces.students.update(
-            workspaceEntityId,
-            workspaceUserEntityId,
-            workspaceUserEntity
-          ),
-          "callback"
-        )().then(() => {
-          onSuccess && onSuccess();
-        });
-      }); */
-
       const student = await workspaceApi.getWorkspaceStudent({
         workspaceEntityId: workspaceEntityId,
         studentId: workspaceUserEntityId,
@@ -2365,6 +2300,8 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
         studentId: workspaceUserEntityId,
         updateWorkspaceStudentRequest: student,
       });
+
+      onSuccess && onSuccess();
     } catch (error) {
       if (!isMApiError(error)) {
         throw error;
