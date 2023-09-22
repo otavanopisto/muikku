@@ -353,7 +353,7 @@
       "evaluated": "Evaluated {{date}}",
       "graph": "Graphs",
       "graph_assignments": "Assignments",
-      "graph_discussions": "Discussions",
+      "graph_discussionMessages": "Discussions",
       "graph_evaluationRequest": "Evaluation request sent",
       "graph_exercises": "Exercises",
       "graph_failed": "Evaluated as failed",
