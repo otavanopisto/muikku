@@ -47,7 +47,7 @@ public class PedagogyFormHistoryDAO extends CorePluginsDAO<PedagogyFormHistory> 
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<PedagogyFormHistory> listByFormAndCreator(PedagogyForm form, Long creatorId) {
+  public List<PedagogyFormHistory> listByFormAndCreatorAndType(PedagogyForm form, Long creatorId, PedagogyFormHistoryType type) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -56,7 +56,9 @@ public class PedagogyFormHistoryDAO extends CorePluginsDAO<PedagogyFormHistory> 
     criteria.select(root);
     criteria.where(
       criteriaBuilder.equal(root.get(PedagogyFormHistory_.form), form),
-      criteriaBuilder.equal(root.get(PedagogyFormHistory_.creator), creatorId)
+      criteriaBuilder.equal(root.get(PedagogyFormHistory_.creator), creatorId),
+      criteriaBuilder.equal(root.get(PedagogyFormHistory_.type), type)
+
     );
     
     criteria.orderBy(criteriaBuilder.desc(root.get(PedagogyFormHistory_.created)));

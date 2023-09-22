@@ -253,9 +253,9 @@ public class PedagogyController {
   }
   
   public void createViewHistory(PedagogyForm form, Long modifierId) {
-    List<PedagogyFormHistory> historyList = pedagogyFormHistoryDAO.listByFormAndCreator(form, modifierId);
+    List<PedagogyFormHistory> historyList = pedagogyFormHistoryDAO.listByFormAndCreatorAndType(form, modifierId, PedagogyFormHistoryType.VIEW);
     
-    if (historyList != null) {
+    if (!historyList.isEmpty()) {
       PedagogyFormHistory latestHistoryItem = historyList.get(0);
       
       Date lastCreated = latestHistoryItem.getCreated();
