@@ -708,16 +708,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             await Promise.all([
               Promise.all(
                 workspaces.map(async (workspace, index) => {
-                  /* const statistics: DiscussionWorkspaceStatistic = <
-                    DiscussionWorkspaceStatistic
-                  >await promisify(
-                    mApi().workspace.workspaces.forumStatistics.read(
-                      workspace.id,
-                      { userIdentifier: id }
-                    ),
-                    "callback"
-                  )(); */
-
                   const statistics =
                     await workspaceDiscussionApi.getWorkspaceDiscussionStatistics(
                       {
@@ -869,16 +859,6 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
               await Promise.all([
                 Promise.all(
                   workspaces.map(async (workspace, index) => {
-                    /* const statistics: DiscussionWorkspaceStatistic = <
-                      DiscussionWorkspaceStatistic
-                    >await promisify(
-                      mApi().workspace.workspaces.forumStatistics.read(
-                        workspace.id,
-                        { userIdentifier: id }
-                      ),
-                      "callback"
-                    )(); */
-
                     const statistics =
                       await workspaceDiscussionApi.getWorkspaceDiscussionStatistics(
                         {

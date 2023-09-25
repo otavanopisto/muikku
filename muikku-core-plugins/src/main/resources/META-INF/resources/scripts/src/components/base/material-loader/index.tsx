@@ -494,15 +494,6 @@ class MaterialLoader extends React.Component<
           this.props.workspace.id + "-" + this.props.material.assignment.id
         ];
       if (!compositeRepliesInState) {
-        /* compositeRepliesInState = (await promisify(
-          mApi().workspace.workspaces.materials.compositeMaterialReplies.read(
-            this.props.workspace.id,
-            this.props.material.assignment.id,
-            { userEntityId: userEntityIdToLoad }
-          ),
-          "callback"
-        )()) as MaterialCompositeReply; */
-
         compositeRepliesInState =
           await workspaceApi.getWorkspaceCompositeMaterialReplies({
             workspaceEntityId: this.props.workspace.id,

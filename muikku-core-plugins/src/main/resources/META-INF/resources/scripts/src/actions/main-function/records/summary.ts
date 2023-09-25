@@ -115,15 +115,6 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           ),
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              /* const statistics: DiscussionWorkspaceStatistic = <
-                DiscussionWorkspaceStatistic
-              >await promisify(
-                mApi().workspace.workspaces.forumStatistics.read(workspace.id, {
-                  userIdentifier: pyramusId,
-                }),
-                "callback"
-              )(); */
-
               const statistics =
                 await workspaceDiscussionApi.getWorkspaceDiscussionStatistics({
                   workspaceEntityId: workspace.id,

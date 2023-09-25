@@ -64,13 +64,6 @@ export const useEvaluatedAssignments = (
          */
         const [materials] = await Promise.all([
           (async () => {
-            /* const assignments = <Array<MaterialContentNode>>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EVALUATED",
-                }),
-                "callback"
-              )() || []; */
-
             const assignments = await workspaceApi.getWorkspaceMaterials({
               workspaceEntityId: workspaceId,
               assignmentType: "EVALUATED",
@@ -79,11 +72,6 @@ export const useEvaluatedAssignments = (
             const [materials] = await Promise.all([
               Promise.all(
                 assignments.map((assignment) =>
-                  /* promisify(
-                    mApi().materials.html.read(assignment.materialId),
-                    "callback"
-                  )().then((assignments: MaterialContentNode) => assignments) */
-
                   materialsApi.getHtmlMaterial({
                     id: assignment.materialId,
                   })

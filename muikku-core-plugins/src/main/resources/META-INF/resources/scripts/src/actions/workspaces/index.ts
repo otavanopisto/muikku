@@ -1734,18 +1734,6 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
           results: newStudents,
         };
 
-        /* await promisify(
-          mApi().workspace.workspaces.students.update(
-            data.workspace.id,
-            newStudent.workspaceUserEntityId,
-            {
-              workspaceUserEntityId: newStudent.workspaceUserEntityId,
-              active: newStudent.active,
-            }
-          ),
-          "callback"
-        )(); */
-
         await workspaceApi.updateWorkspaceStudent({
           workspaceEntityId: data.workspace.id,
           studentId: newStudent.workspaceUserEntityId,
@@ -2085,14 +2073,6 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
       try {
         const state = getState();
 
-        /* await promisify(
-          mApi().workspace.workspaces.details.update(
-            state.workspaces.currentWorkspace.id,
-            data.newDetails
-          ),
-          "callback"
-        )(); */
-
         await workspaceApi.updateWorkspaceDetails({
           workspaceId: state.workspaces.currentWorkspace.id,
           updateWorkspaceDetailsRequest: data.newDetails,
@@ -2273,22 +2253,6 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
 
       try {
         const state = getState();
-        /* await Promise.all([
-          promisify(
-            mApi().workspace.workspaces.workspacefile.del(
-              state.workspaces.currentWorkspace.id,
-              "workspace-frontpage-image-cropped"
-            ),
-            "callback"
-          )(),
-          promisify(
-            mApi().workspace.workspaces.del(
-              state.workspaces.currentWorkspace.id,
-              "workspace-frontpage-image-original"
-            ),
-            "callback"
-          )(),
-        ]); */
 
         await Promise.all([
           workspaceApi.deleteWorkspaceFile({
@@ -2446,31 +2410,11 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
           data.croppedB64 && data.croppedB64.match(mimeTypeRegex)[1];
 
         if (data.delete) {
-          /* await promisify(
-            mApi().workspace.workspaces.workspacefile.del(
-              currentWorkspace.id,
-              "workspace-frontpage-image-cropped"
-            ),
-            "callback"
-          )(); */
-
           await workspaceApi.deleteWorkspaceFile({
             workspaceId: currentWorkspace.id,
             fileIdentifier: "workspace-frontpage-image-cropped",
           });
         } else if (data.croppedB64) {
-          /* await promisify(
-            mApi().workspace.workspaces.workspacefile.create(
-              currentWorkspace.id,
-              {
-                fileIdentifier: "workspace-frontpage-image-cropped",
-                contentType: mimeTypeCropped,
-                base64Data: data.croppedB64,
-              }
-            ),
-            "callback"
-          )(); */
-
           await workspaceApi.createWorkspaceFile({
             workspaceId: currentWorkspace.id,
             createWorkspaceFileRequest: {
@@ -2482,31 +2426,11 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
         }
 
         if (data.delete) {
-          /* await promisify(
-            mApi().workspace.workspaces.workspacefile.del(
-              currentWorkspace.id,
-              "workspace-frontpage-image-original"
-            ),
-            "callback"
-          )(); */
-
           await workspaceApi.deleteWorkspaceFile({
             workspaceId: currentWorkspace.id,
             fileIdentifier: "workspace-frontpage-image-original",
           });
         } else if (data.originalB64) {
-          /* await promisify(
-            mApi().workspace.workspaces.workspacefile.create(
-              currentWorkspace.id,
-              {
-                fileIdentifier: "workspace-frontpage-image-original",
-                contentType: mimeTypeOriginal,
-                base64Data: data.originalB64,
-              }
-            ),
-            "callback"
-          )(); */
-
           await workspaceApi.createWorkspaceFile({
             workspaceId: currentWorkspace.id,
             createWorkspaceFileRequest: {

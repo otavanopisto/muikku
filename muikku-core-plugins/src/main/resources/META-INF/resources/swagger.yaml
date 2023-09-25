@@ -4720,7 +4720,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/MaterialHtml"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7874,7 +7874,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MaterialContentNode"
+                  $ref: "#/components/schemas/WorkspaceMaterial"
         "204":
           description: No workspace materials found
         "400":
@@ -11091,6 +11091,7 @@ components:
           type: integer
         latestMessage:
           type: string
+          nullable: true
 
     EvaluationJournalFeedback:
       type: object
@@ -12196,6 +12197,55 @@ components:
         materialId:
           type: integer
 
+    MaterialCorrectAnswerType:
+      type: string
+      enum:
+        - ALWAYS
+        - ON_REQUEST
+        - NEVER
+
+    MaterialHtml:
+      type: object
+      description: MaterialHtml object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        license:
+          type: string
+        viewRestrict:
+          $ref: "#/components/schemas/MaterialViewRestriction"
+        html:
+          type: string
+        contentType:
+          type: string
+
+    WorkspaceMaterial:
+      type: object
+      description: WorkspaceMaterial object
+      properties:
+        id:
+          type: integer
+        materialId:
+          type: integer
+        parentId:
+          type: integer
+        nextSiblingId:
+          type: integer
+        hidden:
+          type: boolean
+        assignmentType:
+          $ref: "#/components/schemas/MaterialAssigmentType"
+        correctAnswers:
+          $ref: "#/components/schemas/MaterialCorrectAnswerType"
+        path:
+          type: string
+        title:
+          type: string
+        titleLanguage:
+          $ref: "#/components/schemas/Language"
+
     MaterialContentNode:
       type: object
       description: HtmlMaterialContentNode object
@@ -12223,8 +12273,8 @@ components:
           #nullable: true
           allOf:
             - $ref: "#/components/schemas/Language"
-        id:
-          type: integer
+        #id:
+        #type: integer
         type:
           type: string
         children:
@@ -12253,14 +12303,14 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MaterialContentNodeProducer"
-        childrenAttachments:
-          type: array
-          items:
-            $ref: "#/components/schemas/MaterialContentNode"
-        evaluation:
-          $ref: "#/components/schemas/MaterialEvaluation"
-        assignment:
-          $ref: "#/components/schemas/MaterialAssignment"
+        # childrenAttachments:
+        #   type: array
+        #   items:
+        #     $ref: "#/components/schemas/MaterialContentNode"
+        # evaluation:
+        #   $ref: "#/components/schemas/MaterialEvaluation"
+        # assignment:
+        #   $ref: "#/components/schemas/MaterialAssignment"
 
     Message:
       type: object
@@ -13847,7 +13897,7 @@ components:
         - identifier
       properties:
         identifier:
-          type: integer
+          type: string
         subject:
           $ref: "#/components/schemas/Subject"
         courseNumber:

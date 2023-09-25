@@ -66,14 +66,6 @@ export const useCompositeReply = (
          */
         const [compositeReplies] = await Promise.all([
           (async () => {
-            /* const compositeRepliesList =
-              <MaterialCompositeReply[]>await promisify(
-                mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
-                  userEntityId,
-                }),
-                "callback"
-              )() || []; */
-
             const compositeRepliesList =
               await workspaceApi.getWorkspaceCompositeReplies({
                 workspaceEntityId: workspaceId,

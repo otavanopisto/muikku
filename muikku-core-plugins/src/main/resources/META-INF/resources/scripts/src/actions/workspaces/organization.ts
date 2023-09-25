@@ -33,11 +33,7 @@ import {
 } from "./index";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
-import {
-  WorkspaceAccess,
-  WorkspaceDetails,
-  WorkspaceEducationType,
-} from "~/generated/client";
+import { WorkspaceAccess, WorkspaceEducationType } from "~/generated/client";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -181,13 +177,6 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
           workspace = { ...current };
         }
 
-        /* workspace = await reuseExistantValue(true, workspace, () =>
-          promisify(
-            mApi().workspace.workspaces.cacheClear().read(data.workspaceId),
-            "callback"
-          )()
-        ); */
-
         workspace = await reuseExistantValue(true, workspace, () =>
           workspaceApi.getWorkspace({
             workspaceId: data.workspaceId,
@@ -200,11 +189,6 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
                 true,
                 workspace && workspace.details,
                 () =>
-                  /* promisify(
-                    mApi().workspace.workspaces.details.read(data.workspaceId),
-                    "callback"
-                  )() */
-
                   workspaceApi.getWorkspaceDetails({
                     workspaceId: data.workspaceId,
                   })
@@ -357,16 +341,6 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
           },
         });
 
-        /* const students = <WorkspaceStudentSearchResult>(
-          await promisify(
-            mApi().workspace.workspaces.students.read(
-              data.workspace.id,
-              data.payload
-            ),
-            "callback"
-          )()
-        ); */
-
         const students = await workspaceApi.getWorkspaceStudents({
           workspaceEntityId: data.workspace.id,
           q: data.payload.q,
@@ -451,14 +425,6 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         delete data.update["details"];
 
         if (data.update && Object.keys(data.update).length !== 0) {
-          /* await promisify(
-            mApi().workspace.workspaces.update(
-              data.workspace.id,
-              Object.assign(data.workspace, data.update)
-            ),
-            "callback"
-          )().then(data.progress && data.progress("workspace-update")); */
-
           await workspaceApi.updateWorkspace({
             workspaceId: data.workspace.id,
             body: Object.assign(data.workspace, data.update),
@@ -468,14 +434,6 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         }
 
         if (newDetails) {
-          /* await promisify(
-            mApi().workspace.workspaces.details.update(
-              data.workspace.id,
-              newDetails
-            ),
-            "callback"
-          )().then(data.progress && data.progress("add-details")); */
-
           await workspaceApi.updateWorkspaceDetails({
             workspaceId: data.workspace.id,
             updateWorkspaceDetailsRequest: newDetails,
@@ -594,20 +552,6 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
     const organizationApi = MApi.getOrganizationApi();
 
     try {
-      /* const workspace: WorkspaceDataType = <WorkspaceDataType>await promisify(
-        mApi().workspace.workspaces.create(
-          {
-            name: data.name,
-            nameExtension: data.nameExtension,
-            access: data.access,
-          },
-          {
-            sourceWorkspaceEntityId: data.id,
-          }
-        ),
-        "callback"
-      )().then(data.progress && data.progress("workspace-create")); */
-
       const workspace = (await workspaceApi.createWorkspace({
         sourceWorkspaceEntityId: data.id,
         createWorkspaceRequest: {
@@ -620,25 +564,9 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       data.progress && data.progress("workspace-create");
 
       if (data.beginDate || data.endDate) {
-        /* workspace.details = <WorkspaceDetails>(
-          await promisify(
-            mApi().workspace.workspaces.details.read(workspace.id),
-            "callback"
-          )()
-        ); */
-
         workspace.details = await workspaceApi.getWorkspaceDetails({
           workspaceId: workspace.id,
         });
-
-        /* workspace.details = <WorkspaceDetails>await promisify(
-          mApi().workspace.workspaces.details.update(workspace.id, {
-            ...workspace.details,
-            beginDate: data.beginDate,
-            endDate: data.endDate,
-          }),
-          "callback"
-        )().then(data.progress && data.progress("add-details")); */
 
         workspace.details = await workspaceApi.updateWorkspaceDetails({
           workspaceId: workspace.id,

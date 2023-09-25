@@ -1,10 +1,9 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { AssignmentsTabType } from "../assignments-and-diaries";
 import { MaterialContentNode } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import MApi from "~/api/api";
 
 /**
  * UseFollowUpGoalsState
@@ -21,6 +20,9 @@ const initialState: UseInterimEvaluationState = {
   isLoading: false,
   interimEvaluationAssignments: [],
 };
+
+const materialsApi = MApi.getMaterialsApi();
+const workspaceApi = MApi.getWorkspaceApi();
 
 /**
  * Custom hook for student study hours
@@ -66,20 +68,17 @@ export const useInterimEvaluationAssigments = (
          */
         const [materials] = await Promise.all([
           (async () => {
-            const assignments = <Array<MaterialContentNode>>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "INTERIM_EVALUATION",
-                }),
-                "callback"
-              )() || [];
+            const assignments = await workspaceApi.getWorkspaceMaterials({
+              workspaceEntityId: workspaceId,
+              assignmentType: "INTERIM_EVALUATION",
+            });
 
             const [materials] = await Promise.all([
               Promise.all(
                 assignments.map((assignment) =>
-                  promisify(
-                    mApi().materials.html.read(assignment.materialId),
-                    "callback"
-                  )().then((assignments: MaterialContentNode) => assignments)
+                  materialsApi.getHtmlMaterial({
+                    id: assignment.materialId,
+                  })
                 )
               ),
             ]);
