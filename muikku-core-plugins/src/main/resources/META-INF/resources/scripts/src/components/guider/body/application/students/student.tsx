@@ -1,9 +1,6 @@
 import * as React from "react";
 import { getName } from "~/util/modifiers";
-import {
-  GuiderStudentType,
-  GuiderStudentUserProfileLabelType,
-} from "~/reducers/main-function/guider";
+import { GuiderStudentType } from "~/reducers/main-function/guider";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -111,17 +108,15 @@ class Student extends React.Component<StudentProps, StudentState> {
               </div>
             ) : null}
             {this.props.student.flags.length
-              ? this.props.student.flags.map(
-                  (flag: GuiderStudentUserProfileLabelType) => (
-                    <div className="label" key={flag.id}>
-                      <span
-                        className="label__icon icon-flag"
-                        style={{ color: flag.flagColor }}
-                      ></span>
-                      <span className="label__text">{flag.flagName}</span>
-                    </div>
-                  )
-                )
+              ? this.props.student.flags.map((flag) => (
+                  <div className="label" key={flag.id}>
+                    <span
+                      className="label__icon icon-flag"
+                      style={{ color: flag.flagColor }}
+                    ></span>
+                    <span className="label__text">{flag.flagName}</span>
+                  </div>
+                ))
               : null}
           </div>
         </ApplicationListItemFooter>

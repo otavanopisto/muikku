@@ -2,7 +2,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import UploadImageDialog from "../../../dialogs/upload-image";
 import { getUserImageUrl } from "~/util/modifiers";
 import Button from "~/components/general/button";
@@ -16,7 +16,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface ProfilePictureProps extends WithTranslation<["common"]> {
   status: StatusType;
-  profile: ProfileType;
+  profile: ProfileState;
 }
 
 /**

@@ -10,7 +10,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
@@ -23,7 +23,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface UpdateAddressDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  profile: ProfileType;
+  profile: ProfileState;
 
   displayNotification: DisplayNotificationTriggerType;
   updateProfileAddress: UpdateProfileAddressTriggerType;
