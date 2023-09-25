@@ -12349,13 +12349,6 @@ components:
           type: string
           nullable: true
 
-    PublicityRestriction:
-      type: string
-      enum:
-        - LIST_ALL
-        - ONLY_PUBLISHED
-        - ONLY_UNPUBLISHED
-
     PedagogyForm:
       type: object
       description: PedagogyForm object
