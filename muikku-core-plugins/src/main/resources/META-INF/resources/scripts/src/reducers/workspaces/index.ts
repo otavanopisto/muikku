@@ -7,10 +7,10 @@ import {
   WorkspaceOrganization,
 } from "~/generated/client";
 import {
-  UserStaffType,
-  WorkspaceStaffListType,
-  WorkspaceStudentListType,
-} from "~/reducers/user-index";
+  UserStaff,
+  UserStaffSearchResult,
+  WorkspaceStudentSearchResult,
+} from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 import {
   AssignmentEvaluationType,
@@ -445,13 +445,13 @@ export interface WorkspaceType {
   assessmentRequests?: WorkspaceAssessmentRequestType[];
   interimEvaluationRequests?: WorkspaceInterimEvaluationRequest[];
   additionalInfo?: WorkspaceAdditionalInfoType;
-  staffMembers?: WorkspaceStaffListType;
+  staffMembers?: UserStaffSearchResult;
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceProducerType[];
   contentDescription?: MaterialContentNodeType;
   activityLogs?: ActivityLogType[];
-  students?: WorkspaceStudentListType;
-  inactiveStudents?: WorkspaceStudentListType;
+  students?: WorkspaceStudentSearchResult;
+  inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetailsType;
   permissions?: WorkspacePermissionsType[];
@@ -460,7 +460,7 @@ export interface WorkspaceType {
   journals?: WorkspaceJournalsType;
 
   // These are only in organizationlistings
-  teachers?: UserStaffType[];
+  teachers?: UserStaff[];
   studentCount?: number;
 }
 

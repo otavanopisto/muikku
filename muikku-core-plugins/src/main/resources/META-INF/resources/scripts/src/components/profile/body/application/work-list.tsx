@@ -9,7 +9,7 @@ import {
 } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
 import {
-  ProfileType,
+  ProfileState,
   WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
@@ -30,7 +30,7 @@ const currentMonthDayLimit = 10;
  * IWorkListProps
  */
 interface IWorkListProps extends WithTranslation<["common"]> {
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
   loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;

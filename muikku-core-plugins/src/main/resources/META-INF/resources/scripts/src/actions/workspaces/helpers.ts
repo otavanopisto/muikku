@@ -17,7 +17,7 @@ import {
 import { Dispatch } from "react";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -147,7 +147,7 @@ export async function loadWorkspacesHelper(
       firstResult,
       maxResults,
       orderBy: "alphabet",
-      templates: actualFilters.templates,
+      templates: actualFilters.templates || undefined,
       educationTypes: actualFilters.educationFilters.length
         ? actualFilters.educationFilters
         : undefined,
@@ -184,20 +184,14 @@ export async function loadWorkspacesHelper(
   }
 
   const coursepickerApi = MApi.getCoursepickerApi();
+  const organizationApi = MApi.getOrganizationApi();
 
   try {
     // NOTE: Still using old WorkspaceType for now, because frontend is not ready for the path
     // specific types yet. This will be changed in the future.
     let nWorkspaces: WorkspaceType[] = loadOrganizationWorkspaces
-      ? <WorkspaceType[]>(
-          await promisify(
-            mApi()
-              .organizationWorkspaceManagement.workspaces.cacheClear()
-              .read(params),
-            "callback"
-          )()
-        )
-      : <WorkspaceType[]>await coursepickerApi.getCoursepickerWorkspaces({
+      ? await organizationApi.getOrganizationWorkspaces(params)
+      : await coursepickerApi.getCoursepickerWorkspaces({
           ...params,
         });
 
@@ -236,7 +230,7 @@ export async function loadWorkspacesHelper(
       });
     }
   } catch (err) {
-    if (!(err instanceof MApiError)) {
+    if (!isMApiError(err)) {
       throw err;
     }
 

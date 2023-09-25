@@ -1,6 +1,7 @@
 import { ActionType } from "actions";
 import { ActivityLogType, WorkspaceType } from "~/reducers/workspaces";
 import { Reducer } from "redux";
+import { UserWithSchoolData } from "~/generated/client";
 
 export type SummaryStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type SummaryWorkspaceListType = WorkspaceType[];
@@ -46,7 +47,7 @@ export interface SummaryDataType {
   returnedExercises: number;
   graphData: GraphDataType;
   coursesDone: number;
-  studentsDetails: SummarStudentDetails;
+  studentsDetails: UserWithSchoolData;
 }
 
 /**

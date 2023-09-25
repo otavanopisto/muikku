@@ -18,11 +18,6 @@ import {
   WorkspaceActivityType,
   WorkspaceInterimEvaluationRequest,
 } from "~/reducers/workspaces";
-import {
-  ShortWorkspaceUserWithActiveStatusType,
-  WorkspaceStudentListType,
-  WorkspaceStaffListType,
-} from "~/reducers/user-index";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -42,8 +37,13 @@ import {
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import MApi, { isMApiError } from "~/api/api";
-import { Curriculum } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import {
+  Curriculum,
+  WorkspaceStudent,
+  UserStaffSearchResult,
+  WorkspaceStudentSearchResult,
+} from "~/generated/client";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -148,13 +148,6 @@ export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_ST
     }
   >;
 
-type WorkspaceQueryDataType = {
-  q?: string;
-  templates?: "LIST_ALL" | "ONLY_TEMPLATES" | "ONLY_WORKSPACES";
-  firstResult?: number;
-  maxResults?: number;
-};
-
 /**
  * SelectItem
  */
@@ -247,31 +240,26 @@ export interface LoadTemplatesFromServerTriggerType {
  */
 const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
   function loadTemplatesFromServer(query?: string) {
-    const data: WorkspaceQueryDataType = {
-      templates: "ONLY_TEMPLATES",
-      maxResults: 5,
-    };
-
-    if (query) {
-      data.q = query;
-    }
-
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationApi = MApi.getOrganizationApi();
+
       try {
+        const organizationWorkspaces =
+          (await organizationApi.getOrganizationWorkspaces({
+            templates: "ONLY_TEMPLATES",
+            maxResults: 5,
+            q: query || "",
+          })) as WorkspaceType[];
+
         dispatch({
           type: "UPDATE_ORGANIZATION_TEMPLATES",
-          payload: <WorkspaceType[]>(
-            ((await promisify(
-              mApi().organizationWorkspaceManagement.workspaces.read(data),
-              "callback"
-            )()) || 0)
-          ),
+          payload: organizationWorkspaces,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -350,22 +338,23 @@ const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
-        const lastWorkspaces: WorkspaceMaterialReferenceType[] = JSON.parse(
+        const lastWorkspaces = JSON.parse(
           (
-            (await promisify(
-              mApi().user.property.read("last-workspaces"),
-              "callback"
-            )()) as any
+            await userApi.getUserProperty({
+              key: "last-workspaces",
+            })
           ).value
-        );
-        // lastWorkspaces can never be null, or the update functionality does not work
+        ) as WorkspaceMaterialReferenceType[];
+
         dispatch({
           type: "UPDATE_LAST_WORKSPACES",
-          payload: lastWorkspaces ? lastWorkspaces : [],
+          payload: lastWorkspaces,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -399,6 +388,8 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         // Make a deep copy of the current state of last workspaces
         // Because lastWorkspaces can be null if the user has no last workspaces
@@ -425,20 +416,19 @@ const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
         // Place the new reference on the top of the array
         lastWorkspaces.unshift(newReference);
 
-        await promisify(
-          mApi().user.property.create({
+        await userApi.setUserProperty({
+          setUserPropertyRequest: {
             key: "last-workspaces",
             value: JSON.stringify(lastWorkspaces),
-          }),
-          "callback"
-        )();
+          },
+        });
 
         dispatch({
           type: "UPDATE_LAST_WORKSPACES",
           payload: lastWorkspaces,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -1201,7 +1191,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
       maxResults?: number;
     };
     success?: (
-      students: WorkspaceStudentListType | WorkspaceStaffListType
+      users: WorkspaceStudentSearchResult | UserStaffSearchResult
     ) => void;
     fail?: () => void;
   }): AnyActionType;
@@ -1213,7 +1203,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
 export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
   (data: {
     workspace: WorkspaceType;
-    student: ShortWorkspaceUserWithActiveStatusType;
+    student: WorkspaceStudent;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -1653,17 +1643,16 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
-        const staffMembers = <WorkspaceStaffListType>await promisify(
-          mApi().user.staffMembers.read({
-            workspaceEntityId: data.workspace.id,
-            properties:
-              "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end",
-            firstResult: data.payload ? data.payload.firstResult : 0,
-            maxResults: data.payload ? data.payload.maxResults : 10,
-          }),
-          "callback"
-        )();
+        const staffMembers = await userApi.getStaffMembers({
+          workspaceEntityId: data.workspace.id,
+          properties:
+            "profile-phone,profile-appointmentCalendar,profile-extraInfo,profile-whatsapp,profile-vacation-start,profile-vacation-end",
+          firstResult: data.payload ? data.payload.firstResult : 0,
+          maxResults: data.payload ? data.payload.maxResults : 10,
+        });
 
         const update: WorkspaceUpdateType = {
           staffMembers,
@@ -1677,7 +1666,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1721,7 +1710,7 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
           payload.active = data.payload.active;
         }
 
-        const students = <WorkspaceStudentListType>(
+        const students = <WorkspaceStudentSearchResult>(
           await promisify(
             mApi().workspace.workspaces.students.read(
               data.workspace.id,
@@ -1782,7 +1771,7 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
     ) => {
       const oldStudents = data.workspace.students;
       try {
-        const newStudent: ShortWorkspaceUserWithActiveStatusType = {
+        const newStudent = {
           ...data.student,
           active: !data.student.active,
         };
@@ -1797,7 +1786,7 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
             return student;
           });
 
-        const payload: WorkspaceStudentListType = {
+        const payload = {
           ...data.workspace.students,
           results: newStudents,
         };

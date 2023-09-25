@@ -3,14 +3,9 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import MApi from "~/api/api";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import {
-  ProfileStatusType,
-  StatusType,
-  WhoAmIType,
-} from "~/reducers/base/status";
+import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
-import { Role } from "../../reducers/base/status";
 import i18n from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
@@ -67,9 +62,9 @@ async function loadWhoAMI(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   whoAmIReadyCb: () => void
 ) {
-  const whoAmI = <WhoAmIType>(
-    await promisify(mApi().user.whoami.read(), "callback")()
-  );
+  const userApi = MApi.getUserApi();
+
+  const whoAmI = await userApi.getWhoAmI();
 
   dispatch({
     type: "UPDATE_STATUS",
@@ -80,7 +75,7 @@ async function loadWhoAMI(
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
       role: whoAmI.role,
-      isStudent: whoAmI.role === Role.STUDENT,
+      isStudent: whoAmI.role === "STUDENT",
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
       permissions: {
