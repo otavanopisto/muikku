@@ -2,13 +2,14 @@ import * as React from "react";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { MATHJAXSRC, MATHJAXCONFIG } from "~/lib/mathjax";
 import MathjaxReactLoader from "./mathjax-react-loader";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 const disableMathjax = localStorage.getItem("DISABLE_MATHJAX") === "true";
 
 /**
  * MathJaxProps
  */
-interface MathJaxProps {
+interface MathJaxProps extends WithTranslation {
   invisible?: boolean;
   children: React.ReactNode;
 }
@@ -16,10 +17,7 @@ interface MathJaxProps {
 /**
  * MathJAX
  */
-export default class MathJAX extends React.Component<
-  MathJaxProps,
-  Record<string, unknown>
-> {
+class MathJAX extends React.Component<MathJaxProps, Record<string, unknown>> {
   /**
    * constructor
    * @param props props
@@ -49,16 +47,24 @@ export default class MathJAX extends React.Component<
     if (this.props.invisible) {
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Matematiikkakaava" />
+          <ReadspeakerMessage
+            text={this.props.t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "mathJax",
+            })}
+          />
           <span className="math-tex rs_skip_always">{this.props.children}</span>
         </>
       );
     }
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Matematiikkakaava" />
+        <ReadspeakerMessage
+          text={this.props.t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "mathJax",
+          })}
+        />
         <span className="math-tex rs_skip_always">
           <MathjaxReactLoader
             script={MATHJAXSRC}
@@ -72,28 +78,4 @@ export default class MathJAX extends React.Component<
   }
 }
 
-/**
- * StrMathJAX
- * @param props props
- * @param props.children children
- * @param props.invisible invisible
- * @param props.html html
- */
-export function StrMathJAX(props: {
-  children: string;
-  invisible?: boolean;
-  html?: boolean;
-}) {
-  if (!props.children || typeof props.children !== "string") {
-    return null;
-  }
-  const trimmed = props.children.trim();
-  if (trimmed.indexOf("`") === 0 || trimmed.indexOf("\\(") === 0) {
-    return <MathJAX invisible={props.invisible}>{props.children}</MathJAX>;
-  }
-  if (props.html) {
-    return <span dangerouslySetInnerHTML={{ __html: trimmed }} />;
-  }
-
-  return <>{trimmed}</>;
-}
+export default withTranslation(["workspace", "readSpeaker"])(MathJAX);

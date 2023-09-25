@@ -21,6 +21,7 @@
       "hide": "Piilota",
       "hideAll": "Piilota kaikki",
       "hide_comments": "Piilota kommentit",
+      "lock": "Lukitse",
       "next": "Seuraava",
       "previous": "Edellinen",
       "openAll": "Avaa kaikki",
@@ -1918,5 +1919,24 @@
     "unspecifiedOptional": "Valinnainen",
     "unspecifiedOptional_lukioOPS2016": "Muu",
     "unspecifiedOptional_lukioOPS2021": "Paikallinen valinnainen"
+  },
+  "readSpeaker": {
+    "messages": {
+      "assignment": "Tehtävä",
+      "assignment_audio": "Äänitystehtävä",
+      "assignment_connect": "Yhdistelykenttä",
+      "assignment_file": "Tiedoston palautuslaatikko",
+      "assignment_journal": "Oppimispäiväkirjatehtävä",
+      "assignment_math": "Matematiikkatehtävä",
+      "assignment_memo": "Muistiokenttä",
+      "assignment_multiSelect": "Monivalintatehtävä",
+      "assignment_organizer": "Ryhmittelytehtävä",
+      "assignment_select": "Valintakenttä",
+      "assignment_sorter": "Järjestelytehtävä",
+      "assignment_text": "Tekstikenttä",
+      "iframe": "Iframe-upotus",
+      "image": "Kuva",
+      "mathJax": "Matematiikkakaava"
+    }
   }
 }
