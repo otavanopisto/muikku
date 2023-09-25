@@ -173,7 +173,6 @@ class EvaluationRequestDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <div>{t("content.requestEvaluation", { ns: "workspace" })}</div>
         {hasFees ? (
           <>
             {price > 0 ? (

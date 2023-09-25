@@ -1386,7 +1386,7 @@
       "empty_journals": "Kurssilla ei ole yhtään oppimispäiväkirjamerkintää",
       "empty_instructions": "Kurssilla ei ole ohjeita",
       "evaluationHasFee": "Tämän kurssin arviointi on maksullinen, mutta opiskelu on maksutonta.",
-      "evaluationFee": "Tämän kurssin arviointi maksaa sinulle {0} euroa.",
+      "evaluationFee": "Tämän kurssin arviointi maksaa sinulle {{price}} euroa.",
       "evaluationPaymentInfo": "Kun olet maksanut arvioinnin, opettaja saa automaattisesti tiedon arviointipyynnöstäsi.",
       "evaluationPaymentProcessor": "Maksu suoritetaan Mikkelin kaupungin verkkokaupassa. ",
       "logInGuidingInformation": "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.",
