@@ -12,10 +12,7 @@ import "~/sass/elements/tabs.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/avatar.scss";
 import { getName } from "~/util/modifiers";
-import {
-  ContactRecipientType,
-  ShortWorkspaceUserWithActiveStatusType,
-} from "~/reducers/user-index";
+import { ContactRecipientType } from "~/reducers/user-index";
 import { getWorkspaceMessage } from "~/components/workspace/workspaceHome/teachers";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
@@ -34,6 +31,7 @@ import {
   LoadUsersOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { MobileOnlyTabs } from "~/components/general/tabs";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -51,13 +49,13 @@ interface WorkspaceUsersProps extends WithTranslation {
  * WorkspaceUsersState
  */
 interface WorkspaceUsersState {
-  studentCurrentlyBeingSentMessage: ShortWorkspaceUserWithActiveStatusType;
+  studentCurrentlyBeingSentMessage: WorkspaceStudent;
   activeTab: "ACTIVE" | "INACTIVE";
   currentSearch: string;
   currentStaffPage: number;
   currentActiveStudentPage: number;
   currentInactiveStudentPage: number;
-  studentCurrentBeingToggledStatus: ShortWorkspaceUserWithActiveStatusType;
+  studentCurrentBeingToggledStatus: WorkspaceStudent;
 }
 
 /**
@@ -130,7 +128,7 @@ class WorkspaceUsers extends React.Component<
    * onSendMessageTo
    * @param student student
    */
-  onSendMessageTo(student: ShortWorkspaceUserWithActiveStatusType) {
+  onSendMessageTo(student: WorkspaceStudent) {
     this.setState({
       studentCurrentlyBeingSentMessage: student,
     });
@@ -201,9 +199,7 @@ class WorkspaceUsers extends React.Component<
    * setStudentBeingToggledStatus
    * @param student student object
    */
-  setStudentBeingToggledStatus(
-    student: ShortWorkspaceUserWithActiveStatusType
-  ) {
+  setStudentBeingToggledStatus(student: WorkspaceStudent) {
     this.setState({
       studentCurrentBeingToggledStatus: student,
     });

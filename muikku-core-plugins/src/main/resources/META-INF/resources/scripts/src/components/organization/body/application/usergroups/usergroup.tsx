@@ -10,14 +10,14 @@ import {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import { UserGroupType } from "~/reducers/user-index";
+import { UserGroup } from "~/generated/client";
 
 /**
  * CourseProps
  */
 interface CourseProps {
   status: StatusType;
-  usergroup: UserGroupType;
+  usergroup: UserGroup;
 }
 
 /**

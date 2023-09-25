@@ -15,7 +15,7 @@ import ApplicationList, {
   ApplicationListItemDate,
 } from "~/components/general/application-list";
 import { AnnouncementsState } from "~/reducers/announcements";
-import { UserIndexType } from "~/reducers/user-index";
+import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
 
 /**
@@ -23,7 +23,7 @@ import { AnyActionType } from "~/actions/index";
  */
 interface MessageViewProps {
   announcements: AnnouncementsState;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
 }
 
 /**

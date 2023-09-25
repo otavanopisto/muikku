@@ -5,7 +5,7 @@ import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { localizeTime } from "~/locales/i18n";
 import {
-  ProfileType,
+  ProfileState,
   PurchaseType,
   PurchaseStateType,
 } from "~/reducers/main-function/profile";
@@ -28,7 +28,7 @@ import { AnyActionType } from "~/actions";
  * IPurchasesProps
  */
 interface IPurchasesProps extends WithTranslation {
-  profile: ProfileType;
+  profile: ProfileState;
 }
 
 /**
