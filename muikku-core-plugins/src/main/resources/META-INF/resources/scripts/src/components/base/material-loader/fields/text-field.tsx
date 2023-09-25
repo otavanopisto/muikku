@@ -286,8 +286,12 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
     if (this.props.invisible) {
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Tekstikenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "text",
+            })}
+          />
           <span
             ref="base"
             className="material-page__textfield-wrapper rs_skip_always"
@@ -387,8 +391,12 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
       );
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Tekstikenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "text",
+            })}
+          />
           <span className="material-page__textfield-wrapper rs_skip_always">
             {component}
             {correctAnswersummaryComponent}
@@ -409,8 +417,12 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
 
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Tekstikenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "text",
+            })}
+          />
           <span className="material-page__textfield-wrapper rs_skip_always">
             {component}
             {correctAnswersummaryComponent}
@@ -440,8 +452,12 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
     } else {
       component = (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Tekstikenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "text",
+            })}
+          />
           <span
             className={`material-page__textfield ${fieldStateAfterCheck} rs_skip_always`}
           >
@@ -468,8 +484,12 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
     // Standard modifiable version
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Tekstikenttä" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "text",
+          })}
+        />
         <span
           className={`material-page__textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

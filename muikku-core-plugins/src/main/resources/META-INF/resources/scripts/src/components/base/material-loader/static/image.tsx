@@ -300,8 +300,12 @@ class Image extends React.Component<ImageProps, ImageState> {
 
         return (
           <>
-            {/* TODO: lokalisointi*/}
-            <ReadspeakerMessage text="Kuva" />
+            <ReadspeakerMessage
+              text={this.props.t("messages.assignment", {
+                ns: "readSpeaker",
+                context: "image",
+              })}
+            />
             <Zoom key={props.key} imgsrc={props.src}>
               <Tag {...props}>{children}</Tag>
             </Zoom>
@@ -314,4 +318,4 @@ class Image extends React.Component<ImageProps, ImageState> {
   }
 }
 
-export default withTranslation(["workspace", "common"])(Image);
+export default withTranslation(["workspace", "readSpeaker"])(Image);
