@@ -837,7 +837,7 @@
       "removeSuccess": "$t(common:notifications.removeSuccess)",
       "removeSuccess_message": "Deleting the message succeeded",
       "removeSuccess_room": "Deleting the room: {{room}} succeeded",
-      "removeSuccess_contactLog": "Deleting the the contact event succeeded",
+      "removeSuccess_contactLog": "Deleting the contact event succeeded",
       "restoreError": "$t(common:notifications.restoreError)",
       "restoreError_message": "Restoring from the draft failed",
       "restoreError_messageThread": "Restoring the thread failed",
@@ -939,7 +939,7 @@
       "unarchiveSuccess": "Unarchiving the task succeeded",
       "updateError": "Updating the task failed. Please try again. {{error}}",
       "updateError_state": "Updating the task state failed. Please try again. {{error}}",
-      "updateSuccess": "Updating the the task succeeded",
+      "updateSuccess": "Updating the task succeeded",
       "updateSuccess_state": "Updating the task sate succeeded",
       "ratingError": "Rating the task failed. Please try again. {{error}}"
     }
@@ -1011,8 +1011,8 @@
       "pick": "Pick course users {{stepInfo}}",
       "pick_workspaceStudents": "Select course students {{stepInfo}}",
       "pick_workspaceTeachers": "Select course teachers {{stepInfo}}",
-      "producer_one": "Producer",
-      "producer_other": "Producers",
+      "producer_one": "Course producer",
+      "producer_other": "Course producers",
       "role": "User role",
       "remove": "Remove users {{stepInfo}}",
       "remove_userGroupStudents": "Remove users from the user group {{stepInfo}}",
@@ -1206,7 +1206,7 @@
       "characterCount": "Character count",
       "close": "Close",
       "close_attachmentEditor": "Close attachment editor",
-      "close_lisenceEditor": "Close lisence editor",
+      "close_licenseEditor": "Close license editor",
       "close_producerEditor": "Close producer editor",
       "copy": "Copy to clipboard",
       "correctAnswers": "Correct answers",
@@ -1406,7 +1406,7 @@
     "labels": {
       "access": "Access",
       "access_anyone": "Anyone",
-      "access_loggedInUsers": "Logged users",
+      "access_loggedInUsers": "Logged in users",
       "access_membersOnly": "Members only",
       "addingDetails": "Adding details to the course",
       "additionalInfo": "Additional information",
@@ -1462,7 +1462,7 @@
       "length": "Length",
       "license": "License",
       "linkMaterials": "Link materials",
-      "localeCode": "Locale completed",
+      "localeCode": "Workspace locale code",
       "loading": "Loading. Please wait...",
       "mandatory": "Mandatory",
       "materialCopyType": "Material copy type",
@@ -1601,7 +1601,7 @@
       "materialLicense": "Material license",
       "workspaceDescription": "Course description",
       "workspaceImage": "Image of the course front page",
-      "workspaceLicense": "Course lisence"
+      "workspaceLicense": "Course license"
     }
   },
   "journal": {
