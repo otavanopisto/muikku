@@ -1042,11 +1042,9 @@
       "studentsToAdd": "Lisättävät opiskelijat",
       "studentsToRemove": "Poistettavat opiskelijat",
       "studyProgrammeLeader": "Linjanvetäjä",
-
       "studyEndDate": "Opintojen päättymispäivä",
       "studyStartDate": "Opintojen alkamispäivä",
       "studyTimeEnd": "Opinto-oikeuden päättymispäivä",
-
       "teacher_one": "Opettaja",
       "teacher_other": "Opettajat",
       "teacher_workspace_one": "Kurssin opettaja",
