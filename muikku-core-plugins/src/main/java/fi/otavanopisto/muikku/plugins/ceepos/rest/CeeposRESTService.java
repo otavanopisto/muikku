@@ -1090,17 +1090,30 @@ public class CeeposRESTService {
             order.getLastModifierId());
         return Response.ok().build(); // Our configuration problem
       }
-      WorkspaceAssessmentRequest workspaceAssessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(
-          workspaceUserEntity, assessmentRequestOrder.getRequestText());
-      if (workspaceAssessmentRequest == null) {
-        logger.severe("Workspace assessment request creation failed");
-        order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
-            order,
-            CeeposOrderState.ERRORED,
-            paymentConfirmation.getReference(),
-            order.getPaid(),
-            order.getLastModifierId());
-        return Response.ok().build(); // Our configuration problem
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        
+        // Create the assessment request
+        
+        WorkspaceAssessmentRequest workspaceAssessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(
+            workspaceUserEntity, assessmentRequestOrder.getRequestText());
+        if (workspaceAssessmentRequest == null) {
+          logger.severe("Workspace assessment request creation failed");
+          order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+              order,
+              CeeposOrderState.ERRORED,
+              paymentConfirmation.getReference(),
+              order.getPaid(),
+              order.getLastModifierId());
+          return Response.ok().build(); // Our configuration problem
+        }
+
+        // Message teachers about the assessment request
+        
+        communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceAssessmentRequest);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
       }
 
       // Mark the order as complete
@@ -1112,9 +1125,6 @@ public class CeeposRESTService {
           order.getPaid(),
           order.getLastModifierId());
       
-      // Message teachers about the assessment request
-      
-      communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceAssessmentRequest);
       break;
     }
     
