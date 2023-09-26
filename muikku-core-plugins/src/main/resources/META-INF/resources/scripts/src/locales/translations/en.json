@@ -340,7 +340,7 @@
     },
     "labels": {
       "answered": "Answered",
-      "evaluationState": "State of evaluation",
+      "evaluationState": "Evaluation state",
       "evaluationState_pass": "Evaluated as approved",
       "evaluationState_fail": "Evaluated as failed",
       "evaluationState_incomplete": "Evaluated as incomplete",
@@ -389,7 +389,7 @@
       "studyProgress": "Study progress",
       "submittedAssignments": "Returned",
       "unanswered": "Unanswered",
-      "workspaceVisits": "Workspace visits"
+      "workspaceVisits": "Visited the course"
     },
     "wcag": {
       "open": "Avaa opiskelijan ohjausnäkymä",
@@ -1043,8 +1043,9 @@
       "studentsToAdd": "Students to be added",
       "studentsToRemove": "Students to be removed",
       "studyProgrammeLeader": "Study programme leader",
-      "studyTimeEnd": "Study time end",
-      "studyTimeStart": "Study time start",
+      "studyEndDate": "End date of studies",
+      "studyStartDate": "Start date of studies",
+      "studyTimeEnd": "End date of study right",
       "teacher_one": "Teacher",
       "teacher_other": "Teachers",
       "teacher_workspace_one": "Course teacher",
