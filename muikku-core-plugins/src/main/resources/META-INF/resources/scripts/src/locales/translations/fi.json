@@ -320,7 +320,7 @@
       "openStudent": "Avaa opiskelijan ohjausnäkymä"
     },
     "content": {
-      "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee 'Odottaa käsittelyä'. Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (roskakorikuvake).</p>",
+      "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee \"Odottaa käsittelyä\". Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (roskakorikuvake).</p>",
       "addAttachmentInstruction": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän kenttään",
       "empty": "–",
       "lastVisit": "viimeisin: {{value}}",
@@ -618,7 +618,7 @@
       "checkContactInfo": "Ovatko seuraavat tiedot oikein?",
       "forgotPassword": "Syötä alla olevaan kenttään sähköpostiosoitteesi, niin lähetämme siihen linkin, jonka avulla voit palauttaa salasanasi.",
       "immigrantEducation": "Maahanmuuttajakoulutukset tarjoavat perusopetusta aikuisille. Otavan Opiston kampuksella Savo kohtaa koko maailman.",
-      "inactiveStudent": "Näkymäsi on rajoitettu, koska opintosi ovat päättyneet. Pääset edelleen suoritusrekisteriisi ja tutustumaan kursseihin.</p><p>Ongelmatilanteissa ota yhteyttä Helpdeskiin (<a href:'mailto:helpdesk@muikkuverkko.fi'>helpdesk@muikkuverkko.fi</a>).",
+      "inactiveStudent": "Näkymäsi on rajoitettu, koska opintosi ovat päättyneet. Pääset edelleen suoritusrekisteriisi ja tutustumaan kursseihin.</p><p>Ongelmatilanteissa ota yhteyttä Helpdeskiin (<a href:\"mailto:helpdesk@muikkuverkko.fi\">helpdesk@muikkuverkko.fi</a>).",
       "pointOfContinue": "Olit viimeksi kohdassa",
       "nettilukio": "Tavoitteena aikuislukion päättötodistus ja ylioppilaslakki.",
       "nettiperuskoulu": "Tavoitteena aikuisten perusopetuksen päättötodistus.",
@@ -1161,7 +1161,7 @@
       "removeDisabled_audio": "Äänityksen poistaminen ei ole mahdollista",
       "removing": "$t(common:content.removing)",
       "removing_page": "Oletko varma, että haluat poistaa sivun?",
-      "removing_attachment": "Oletko varma, että haluat poistaa liitteen '{{name}}'?",
+      "removing_attachment": "Oletko varma, että haluat poistaa liitteen \"{{name}}\"?",
       "removing_audio": "Oletko varma, että haluat poistaa tehtävään liitetyn äänitiedoston?",
       "removing_file": "Oletko varma, että haluat poistaa tehtävään liitetyn tiedoston?",
       "removing_section": "Oletko varma, että haluat poistaa osion?",

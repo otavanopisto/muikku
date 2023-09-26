@@ -904,7 +904,7 @@
       "empty": "$t(common:content.empty)",
       "empty_tasks": "No tasks",
       "empty_student": "There are no tasks given for you and you have not created any. You can create new tasks in the studies view.",
-      "instructions": "<p>Plus icon will open an editor, which you can use to create a new task. If you wish, you can schedule a task to begin and end on a certain day. You can also set only one date or no date at all. The set dates will not affect the task visibility.</p><p>The task you wrote can only be seen by yourself. Your counselor can also assign tasks to you and then oversee them until they are done. When you have finished the task, you can assign it done. Tasks given by a counselor can be send for approval. When the counselor sets the task done, the state will change to 'Done'. Tasks will not be archived automatically, but you need to do it yourself by clicking the trash can icon.</p>"
+      "instructions": "<p>Plus icon will open an editor, which you can use to create a new task. If you wish, you can schedule a task to begin and end on a certain day. You can also set only one date or no date at all. The set dates will not affect the task visibility.</p><p>The task you wrote can only be seen by yourself. Your counselor can also assign tasks to you and then oversee them until they are done. When you have finished the task, you can assign it done. Tasks given by a counselor can be send for approval. When the counselor sets the task done, the state will change to \"Done\". Tasks will not be archived automatically, but you need to do it yourself by clicking the trash can icon.</p>"
     },
     "labels": {
       "active": "Active",
@@ -1161,7 +1161,7 @@
       "removeDisabled_audio": "Deleting the recording failed",
       "removing": "$t(common:content.removing)",
       "removing_page": "Are you sure you wish to remove the page?",
-      "removing_attachment": "Are you sure you wish to remove the attachment:'{{name}}'?",
+      "removing_attachment": "Are you sure you wish to remove the attachment:\"{{name}}\"?",
       "removing_audio": "Are you sure you want to remove the attached recording?",
       "removing_file": "Are you sure you want to remove the attached file?",
       "removing_section": "Are you sure you want to remove the section?",
@@ -1738,7 +1738,7 @@
       "interimEvaluationRequest2": "interim evaluation request",
       "interimEvaluationRequestCancel1": "cancelled",
       "interimEvaluationRequestCancel2": "interim evaluation request",
-      "isRecording": "Recording. Press 'Stop recording' when you are ready.",
+      "isRecording": "Recording. Press \"Stop recording\" when you are ready.",
       "notFound": "There are no students with chosen filters",
       "removing": "$t(common:content.removing)",
       "removing_entry": "Are you sure you want to delete the entry from student: {{studentName}}?",
@@ -1871,7 +1871,7 @@
       "confirm": "Comfirm the order",
       "history": "Order history",
       "id": "Order id",
-      "info": "'Order info'",
+      "info": "Order info",
       "nonActiveUser": "Your studies have",
       "open": "Open orders",
       "order": "Order",
