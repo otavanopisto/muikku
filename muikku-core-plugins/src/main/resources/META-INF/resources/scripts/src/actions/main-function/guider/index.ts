@@ -1945,7 +1945,7 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
           payload: usergroups || [],
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
