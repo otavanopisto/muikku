@@ -4,13 +4,10 @@ import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import mApi from "~/lib/mApi";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
-import { GuiderUserLabelType } from "~/reducers/main-function/guider";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
-import { UserIndexType, ContactRecipientType } from "~/reducers/user-index";
-import promisify from "~/util/promisify";
+import { UserIndexState, ContactRecipientType } from "~/reducers/user-index";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -18,6 +15,8 @@ import {
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { getName } from "~/util/modifiers";
+import { UserFlag } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -26,12 +25,12 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface GuiderLabelShareDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  label: GuiderUserLabelType;
+  label: UserFlag;
   isOpen?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
   displayNotification: DisplayNotificationTriggerType;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
 }
 
 /**
@@ -105,13 +104,17 @@ class GuiderLabelShareDialog extends React.Component<
    */
   async getShares() {
     this.setState({ selectedItems: [] });
+    const userApi = MApi.getUserApi();
+
     try {
-      this.sharesResult = await promisify(
-        mApi().user.flags.shares.read(this.props.label.id),
-        "callback"
-      )();
+      this.sharesResult = await userApi.getFlagShares({
+        flagId: this.props.label.id,
+      });
       this.updateSharesState();
     } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
       this.props.displayNotification(e.message, "error");
     }
   }
@@ -121,6 +124,8 @@ class GuiderLabelShareDialog extends React.Component<
    * @param closeDialog closeDialog
    */
   share(closeDialog: () => void) {
+    const userApi = MApi.getUserApi();
+
     this.state.selectedItems.forEach(async (member: ContactRecipientType) => {
       const wasAdded = !this.sharesResult.find(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -128,14 +133,18 @@ class GuiderLabelShareDialog extends React.Component<
       );
       if (wasAdded) {
         try {
-          await promisify(
-            mApi().user.flags.shares.create(this.props.label.id, {
+          await userApi.createFlagShare({
+            flagId: this.props.label.id,
+            createFlagShareRequest: {
               flagId: this.props.label.id,
-              userIdentifier: member.value.id,
-            }),
-            "callback"
-          )();
+              userIdentifier: member.value.identifier,
+            },
+          });
         } catch (e) {
+          if (!isMApiError(e)) {
+            throw e;
+          }
+
           this.props.displayNotification(e.message, "error");
         }
       }
@@ -149,11 +158,15 @@ class GuiderLabelShareDialog extends React.Component<
       );
       if (wasRemoved) {
         try {
-          await promisify(
-            mApi().user.flags.shares.del(this.props.label.id, share.id),
-            "callback"
-          )();
+          await userApi.deleteFlagShare({
+            flagId: this.props.label.id,
+            shareId: share.id,
+          });
         } catch (e) {
+          if (!isMApiError(e)) {
+            throw e;
+          }
+
           this.props.displayNotification(e.message, "error");
         }
       }

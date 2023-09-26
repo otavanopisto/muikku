@@ -9,12 +9,12 @@ import { HOPSType } from "./main-function/hops";
 import { MessagesState } from "./main-function/messages";
 import { WorkspacesType } from "./workspaces";
 import {
-  UsersType,
-  UserGroupsType,
-  UsersSelectType,
+  UsersState,
+  UserGroupsState,
+  UsersSelectState,
   StudyprogrammeTypes,
 } from "./main-function/users";
-import { UserIndexType } from "./user-index";
+import { UserIndexState } from "./user-index";
 import { DiscussionType } from "./discussion";
 import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
@@ -24,7 +24,7 @@ import {
 } from "./main-function/records/yo";
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
-import { ProfileType } from "./main-function/profile";
+import { ProfileState } from "./main-function/profile";
 import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
@@ -51,18 +51,18 @@ export interface StateType {
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesState;
-  userIndex?: UserIndexType;
-  userSelect?: UsersSelectType;
-  userGroups?: UserGroupsType;
+  userIndex?: UserIndexState;
+  userSelect?: UsersSelectState;
+  userGroups?: UserGroupsState;
   workspaces?: WorkspacesType;
   organizationSummary?: OrganizationSummaryType;
   organizationWorkspaces?: WorkspacesType;
-  organizationUsers?: UsersType;
+  organizationUsers?: UsersState;
   discussion?: DiscussionType;
   guider?: GuiderState;
   records?: RecordsType;
   error?: ErrorType;
-  profile?: ProfileType;
+  profile?: ProfileState;
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
   calendar?: Calendar;

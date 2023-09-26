@@ -5,17 +5,14 @@ import User from "~/components/general/user";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList from "~/components/general/application-list";
 import "~/sass/elements/application-list.scss";
-import {
-  UserPanelUsersType,
-  UsersListType,
-} from "~/reducers/main-function/users";
+import { UserSearchResultWithExtraProperties } from "~/reducers/main-function/users";
 import PagerV2 from "~/components/general/pagerV2";
 
 /**
  * UserPanelProps
  */
 interface UserPanelProps {
-  users: UserPanelUsersType;
+  users: UserSearchResultWithExtraProperties;
   usersPerPage?: number;
   searchString?: string | null;
   pageChange?: (q: string, first: number, last: number) => any;
@@ -101,7 +98,7 @@ export default class UserPanel extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const results = this.props.users.results as UsersListType;
+    const results = this.props.users.results;
     return (
       <ApplicationSubPanel modifier="organization-users">
         <ApplicationSubPanel.Header modifier="organization-users">

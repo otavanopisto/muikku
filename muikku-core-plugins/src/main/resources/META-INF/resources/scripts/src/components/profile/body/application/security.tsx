@@ -4,7 +4,7 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import mApi from "~/lib/mApi";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
@@ -21,7 +21,7 @@ import { AnyActionType } from "~/actions";
  * SecurityProps
  */
 interface SecurityProps extends WithTranslation<["common"]> {
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   loadProfileUsername: LoadProfileUsernameTriggerType;

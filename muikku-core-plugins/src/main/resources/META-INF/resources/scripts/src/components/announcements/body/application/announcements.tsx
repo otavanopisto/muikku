@@ -7,7 +7,7 @@ import "~/sass/elements/article.scss";
 import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { UserIndexType } from "~/reducers/user-index";
+import { UserIndexState } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localizeTime } from "~/locales/i18n";
@@ -19,7 +19,7 @@ import { AnyActionType } from "~/actions";
  */
 interface AnnouncementsProps extends WithTranslation {
   announcement: Announcement;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
 }
 
 /**

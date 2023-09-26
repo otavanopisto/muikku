@@ -1,11 +1,5 @@
 import { ActionType } from "~/actions";
 import {
-  StudentUserProfileEmailType,
-  StudentUserProfilePhoneType,
-  StudentUserAddressType,
-  UserGroupType,
-} from "~/reducers/user-index";
-import {
   WorkspaceType,
   WorkspaceListType,
   ActivityLogType,
@@ -21,7 +15,14 @@ import {
   UserFile,
   UserStudentFlag,
   ContactType,
+  UserFlag,
+  UserGroup,
+  UserStudentAddress,
+  UserStudentEmail,
+  UserStudentPhoneNumber,
+  UserWithSchoolData,
 } from "~/generated/client";
+
 /**
  * GuiderUserLabelType
  */
@@ -33,8 +34,7 @@ export interface GuiderUserLabelType {
   ownerIdentifier: string;
 }
 
-export type GuiderUserLabelListType = Array<GuiderUserLabelType>;
-export type GuiderUserGroupListType = Array<UserGroupType>;
+export type GuiderUserGroupListType = UserGroup[];
 export type GuiderWorkspaceType = WorkspaceType;
 export type GuiderWorkspaceListType = WorkspaceListType;
 
@@ -42,7 +42,7 @@ export type GuiderWorkspaceListType = WorkspaceListType;
  * GuiderFiltersType
  */
 export interface GuiderFiltersType {
-  labels: GuiderUserLabelListType;
+  labels: UserFlag[];
   userGroups: GuiderUserGroupListType;
   workspaces: GuiderWorkspaceListType;
 }
@@ -63,6 +63,14 @@ export interface GuiderActiveFiltersType {
   userGroupFilters: Array<number>;
   query: string;
 }
+
+/**
+ * GuiderStudentType
+ */
+export interface GuiderStudentType extends UserWithSchoolData {
+  flags: UserStudentFlag[];
+}
+export type GuiderStudentListType = Array<GuiderStudentType>;
 
 //These are actually dates, might be present or not
 //studytime = Notification about study time ending
@@ -103,11 +111,11 @@ export interface GuiderStudentUserProfileType {
   activityLogState: LoadingState;
   basic: Student;
   labels: UserStudentFlag[];
-  emails: Array<StudentUserProfileEmailType>;
-  phoneNumbers: Array<StudentUserProfilePhoneType>;
-  addresses: Array<StudentUserAddressType>;
   files: UserFile[];
-  usergroups: Array<UserGroupType>;
+  emails: UserStudentEmail[];
+  phoneNumbers: UserStudentPhoneNumber[];
+  addresses: UserStudentAddress[];
+  usergroups: Array<UserGroup>;
   // Disabled until it really works
   //  vops: VOPSDataType,
   hops: HOPSDataType;
@@ -172,7 +180,7 @@ export interface GuiderStudentUserProfileLabelType {
  * @param labelA labelA
  * @param labelB labelB
  */
-function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
+function sortLabels(labelA: UserFlag, labelB: UserFlag) {
   const labelAUpperCase = labelA.name.toUpperCase();
   const labelBUpperCase = labelB.name.toUpperCase();
   return labelAUpperCase < labelBUpperCase
@@ -388,7 +396,10 @@ export const guider: Reducer<GuiderState> = (
     }
 
     case "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFnStudentLabel
+       * @param label label
+       */
       const mapFnStudentLabel = function (label: UserStudentFlag) {
         if (label.flagId === action.payload.labelId) {
           return Object.assign({}, label, action.payload.update);
@@ -418,7 +429,10 @@ export const guider: Reducer<GuiderState> = (
     }
 
     case "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * filterFnStudentLabel
+       * @param label label
+       */
       const filterFnStudentLabel = function (label: UserStudentFlag) {
         return label.flagId !== action.payload;
       };
