@@ -183,7 +183,6 @@ class EvaluationRequestDialog extends React.Component<
                       ns: "workspace",
                       price: price,
                     })}
-                    {t("content.evaluationHasFee", { ns: "workspace" })}
                   </p>
                 </div>
                 <div className="dialog__content-row">
