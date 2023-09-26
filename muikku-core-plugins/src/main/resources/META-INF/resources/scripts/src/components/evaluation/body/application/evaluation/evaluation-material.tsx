@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   WorkspaceInterimEvaluationRequest,
   WorkspaceDataType,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
@@ -23,7 +24,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * EvaluationMaterialProps
  */
 export interface EvaluationMaterialProps extends WithTranslation {
-  material: MaterialContentNode;
+  material: MaterialContentNodeWithIdAndLogic;
   compositeReply?: MaterialCompositeReply;
   interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   workspace: WorkspaceDataType;

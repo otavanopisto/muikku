@@ -16,7 +16,10 @@ import WordDefinition from "../static/word-definition";
 import IFrame from "../static/iframe";
 import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
 import MathField from "../fields/math-field";
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import Link from "~/components/base/material-loader/static/link";
 import { HTMLtoReactComponent } from "~/util/modifiers";
@@ -91,7 +94,7 @@ const answerCheckables: { [key: string]: (params: any) => boolean } = {
  * BaseProps
  */
 interface BaseProps {
-  material: MaterialContentNode;
+  material: MaterialContentNodeWithIdAndLogic;
   status: StatusType;
   workspace: WorkspaceDataType;
   websocketState: WebsocketStateType;

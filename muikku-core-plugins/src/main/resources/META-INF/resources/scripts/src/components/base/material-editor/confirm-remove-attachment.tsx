@@ -6,7 +6,10 @@ import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
-import { WorkspaceMaterialEditorType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceMaterialEditorType,
+} from "~/reducers/workspaces";
 import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
@@ -19,7 +22,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface ConfirmRemoveAttachmentProps extends WithTranslation {
   materialEditor: WorkspaceMaterialEditorType;
-  file: MaterialContentNode;
+  file: MaterialContentNodeWithIdAndLogic;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any;

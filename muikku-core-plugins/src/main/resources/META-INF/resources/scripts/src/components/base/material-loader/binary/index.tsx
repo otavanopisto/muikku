@@ -5,6 +5,7 @@ import Image from "./image";
 import Audio from "./audio";
 import * as React from "react";
 import { MaterialContentNode } from "~/generated/client";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 const registry = {
   "^image/": Image,
@@ -20,7 +21,7 @@ const registry = {
  * @param props.invisible invisible
  */
 export default function BinaryMaterialLoader(props: {
-  material: MaterialContentNode;
+  material: MaterialContentNodeWithIdAndLogic;
   invisible?: boolean;
 }) {
   let Element = Any;

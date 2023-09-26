@@ -9,6 +9,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -54,7 +55,7 @@ import {
 interface WorkspaceMaterialsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceDataType;
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
   materialReplies: MaterialCompositeReply[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
@@ -88,7 +89,7 @@ class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsProps,
   WorkspaceMaterialsState
 > {
-  private flattenedMaterial: MaterialContentNode[];
+  private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
   /**
    * constructor
    * @param props props
@@ -152,7 +153,7 @@ class WorkspaceMaterials extends React.Component<
    * toggleSectionHiddenStatus
    * @param section section
    */
-  toggleSectionHiddenStatus(section: MaterialContentNode) {
+  toggleSectionHiddenStatus(section: MaterialContentNodeWithIdAndLogic) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
       material: section,
@@ -171,9 +172,9 @@ class WorkspaceMaterials extends React.Component<
    * @param includesSection includesSection
    */
   getMaterialsOptionListDropdown(
-    section: MaterialContentNode,
-    nextSection: MaterialContentNode,
-    nextSibling: MaterialContentNode,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSection: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     includesSection: boolean
   ) {
     const { t } = this.props;
@@ -217,7 +218,7 @@ class WorkspaceMaterials extends React.Component<
    * startupEditor
    * @param section section
    */
-  startupEditor(section: MaterialContentNode) {
+  startupEditor(section: MaterialContentNodeWithIdAndLogic) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: section,
@@ -252,7 +253,10 @@ class WorkspaceMaterials extends React.Component<
    * @param section section
    * @param nextSibling nextSibling
    */
-  createPage(section: MaterialContentNode, nextSibling: MaterialContentNode) {
+  createPage(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
+  ) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -275,8 +279,8 @@ class WorkspaceMaterials extends React.Component<
    * @param e e
    */
   createPageFromBinary(
-    section: MaterialContentNode,
-    nextSibling: MaterialContentNode,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.props.createWorkspaceMaterialContentNode(
@@ -297,7 +301,7 @@ class WorkspaceMaterials extends React.Component<
    * createSection
    * @param nextSibling nextSibling
    */
-  createSection(nextSibling: MaterialContentNode) {
+  createSection(nextSibling: MaterialContentNodeWithIdAndLogic) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -317,7 +321,10 @@ class WorkspaceMaterials extends React.Component<
    * @param section section
    * @param nextSibling nextSibling
    */
-  pastePage(section: MaterialContentNode, nextSibling: MaterialContentNode) {
+  pastePage(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
+  ) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
     const workspaceCopiedId =

@@ -1,6 +1,9 @@
 import * as React from "react";
 import { localizeTime } from "~/locales/i18n";
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
@@ -26,7 +29,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * MaterialProps
  */
 interface MaterialProps extends WithTranslation {
-  material: MaterialContentNode;
+  material: MaterialContentNodeWithIdAndLogic;
   workspace: WorkspaceDataType;
   status: StatusType;
   compositeReply: MaterialCompositeReply;

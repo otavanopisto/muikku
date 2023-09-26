@@ -9,6 +9,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -43,7 +44,7 @@ import {
 interface HelpMaterialsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceDataType;
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;
@@ -71,7 +72,7 @@ const DEFAULT_OFFSET = 67;
  * Help
  */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
-  private flattenedMaterial: MaterialContentNode[];
+  private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
   /**
    * constructor
    * @param props props
@@ -135,7 +136,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * toggleSectionHiddenStatus
    * @param section section
    */
-  toggleSectionHiddenStatus(section: MaterialContentNode) {
+  toggleSectionHiddenStatus(section: MaterialContentNodeWithIdAndLogic) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
       material: section,
@@ -154,9 +155,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param includesSection includesSection
    */
   getMaterialsOptionListDropdown(
-    section: MaterialContentNode,
-    nextSection: MaterialContentNode,
-    nextSibling: MaterialContentNode,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSection: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     includesSection: boolean
   ) {
     const { t } = this.props;
@@ -200,7 +201,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * startupEditor
    * @param section section
    */
-  startupEditor(section: MaterialContentNode) {
+  startupEditor(section: MaterialContentNodeWithIdAndLogic) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: section,
@@ -235,7 +236,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param section section
    * @param nextSibling nextSibling
    */
-  createPage(section: MaterialContentNode, nextSibling: MaterialContentNode) {
+  createPage(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
+  ) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -258,8 +262,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param e e
    */
   createPageFromBinary(
-    section: MaterialContentNode,
-    nextSibling: MaterialContentNode,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.props.createWorkspaceMaterialContentNode(
@@ -280,7 +284,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * createSection
    * @param nextSibling nextSibling
    */
-  createSection(nextSibling: MaterialContentNode) {
+  createSection(nextSibling: MaterialContentNodeWithIdAndLogic) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -300,7 +304,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param section section
    * @param nextSibling nextSibling
    */
-  pastePage(section: MaterialContentNode, nextSibling: MaterialContentNode) {
+  pastePage(
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
+  ) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
     const workspaceCopiedId =

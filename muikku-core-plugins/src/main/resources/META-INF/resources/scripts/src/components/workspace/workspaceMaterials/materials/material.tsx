@@ -4,6 +4,7 @@ import { Dispatch, connect } from "react-redux";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -37,8 +38,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface WorkspaceMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialContentNode: MaterialContentNode;
-  folder: MaterialContentNode;
+  materialContentNode: MaterialContentNodeWithIdAndLogic;
+  folder: MaterialContentNodeWithIdAndLogic;
   compositeReplies: MaterialCompositeReply;
   isViewRestricted: boolean;
   showEvenIfHidden: boolean;

@@ -9,6 +9,7 @@ import {
   WorkspaceMaterialEditorType,
   WorkspaceDataType,
   languageOptions,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -85,7 +86,7 @@ const CKEditorConfig = (
   locale: string,
   contextPath: string,
   workspace: WorkspaceDataType,
-  materialNode: MaterialContentNode,
+  materialNode: MaterialContentNodeWithIdAndLogic,
   disablePlugins: boolean
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
@@ -853,10 +854,10 @@ class MaterialEditor extends React.Component<
       if (
         !equals(
           this.props.editorState.currentNodeValue[
-            point as keyof MaterialContentNode
+            point as keyof MaterialContentNodeWithIdAndLogic
           ],
           this.props.editorState.currentDraftNodeValue[
-            point as keyof MaterialContentNode
+            point as keyof MaterialContentNodeWithIdAndLogic
           ]
         )
       ) {

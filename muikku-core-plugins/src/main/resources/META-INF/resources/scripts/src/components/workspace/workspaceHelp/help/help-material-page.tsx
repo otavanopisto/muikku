@@ -3,6 +3,7 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import MaterialLoader from "~/components/base/material-loader";
 import {
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -31,8 +32,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface HelpMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialContentNode: MaterialContentNode;
-  folder: MaterialContentNode;
+  materialContentNode: MaterialContentNodeWithIdAndLogic;
+  folder: MaterialContentNodeWithIdAndLogic;
   isViewRestricted: boolean;
   workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;

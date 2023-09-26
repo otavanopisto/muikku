@@ -4673,7 +4673,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/MaterialBinary"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4694,7 +4694,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/MaterialHtml"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4751,6 +4751,33 @@ paths:
           description: Internal server error
 
   /rest/materials/material/{materialId}:
+    get:
+      operationId: getMaterial
+      summary: Get material
+      description: Get material
+      tags:
+        - Materials
+      parameters:
+        - name: materialId
+          in: path
+          description: Material id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Material
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Material"
+        "204":
+          description: Material not found
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateMaterial
       summary: Update material
@@ -4772,7 +4799,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/Material"
         "204":
           description: Material updated successfully
         "400":
@@ -4802,7 +4829,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MaterialContentNode"
+                  $ref: "#/components/schemas/WorkspaceMaterial"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4830,7 +4857,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNodeProducer"
+                $ref: "#/components/schemas/MaterialProducer"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7481,7 +7508,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/WorkspaceMaterial"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7940,7 +7967,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/WorkspaceMaterial"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7974,7 +8001,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/WorkspaceMaterial"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8428,7 +8455,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/WorkspaceFolder"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8462,7 +8489,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/WorkspaceFolder"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8745,7 +8772,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MaterialContentNode"
+                $ref: "#/components/schemas/WorkspaceEntityFile"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12099,39 +12126,6 @@ components:
         - ON_REQUEST
         - NEVER
 
-    MaterialAssignment:
-      type: object
-      description: MaterialAssignment object
-      required:
-        - id
-        - materialId
-        - parentId
-        - nextSiblingId
-        - hidden
-        - assignmentType
-        - correctAnswers
-        - path
-        - title
-      properties:
-        id:
-          type: integer
-        materialId:
-          type: integer
-        parentId:
-          type: integer
-        nextSiblingId:
-          type: integer
-        hidden:
-          type: boolean
-        assignmentType:
-          $ref: "#/components/schemas/MaterialAssigmentType"
-        correctAnswers:
-          type: string
-        path:
-          type: string
-        title:
-          type: string
-
     MaterialEvaluation:
       type: object
       description: MaterialEvaluation object
@@ -12182,9 +12176,9 @@ components:
           items:
             $ref: "#/components/schemas/AudioAssessment"
 
-    MaterialContentNodeProducer:
+    MaterialProducer:
       type: object
-      description: MaterialContentNodeProducer object
+      description: MaterialProducer object
       required:
         - id
         - name
@@ -12197,16 +12191,29 @@ components:
         materialId:
           type: integer
 
-    MaterialCorrectAnswerType:
-      type: string
-      enum:
-        - ALWAYS
-        - ON_REQUEST
-        - NEVER
+    Material:
+      type: object
+      description: Material is the representation of one Material
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        license:
+          type: string
+        viewRestrict:
+          $ref: "#/components/schemas/MaterialViewRestriction"
 
     MaterialHtml:
       type: object
-      description: MaterialHtml object
+      description: MaterialHtml is the representation of a Material content, that contains html
+      required:
+        - id
+        - title
+        - license
+        - viewRestrict
+        - html
+        - contentType
       properties:
         id:
           type: integer
@@ -12221,34 +12228,33 @@ components:
         contentType:
           type: string
 
-    WorkspaceMaterial:
+    MaterialBinary:
       type: object
-      description: WorkspaceMaterial object
+      description: MaterialBinary is the representation of a Material content, that contaings binary data
+      required:
+        - id
+        - title
+        - license
+        - viewRestrict
+        - fileId
+        - contentType
       properties:
         id:
           type: integer
-        materialId:
-          type: integer
-        parentId:
-          type: integer
-        nextSiblingId:
-          type: integer
-        hidden:
-          type: boolean
-        assignmentType:
-          $ref: "#/components/schemas/MaterialAssigmentType"
-        correctAnswers:
-          $ref: "#/components/schemas/MaterialCorrectAnswerType"
-        path:
-          type: string
         title:
           type: string
-        titleLanguage:
-          $ref: "#/components/schemas/Language"
+        license:
+          type: string
+        viewRestrict:
+          $ref: "#/components/schemas/MaterialViewRestriction"
+        fileId:
+          type: string
+        contentType:
+          type: string
 
     MaterialContentNode:
       type: object
-      description: HtmlMaterialContentNode object
+      description: Holds all the information about one material page.
       required:
         - title
         - license
@@ -12258,59 +12264,67 @@ components:
         - contentHiddenForUser
       properties:
         title:
+          description: The title of the material
           type: string
         license:
+          description: The license of the material
           type: string
         viewRestrict:
+          description: The view restriction of the material
           $ref: "#/components/schemas/MaterialViewRestriction"
         html:
+          description: HTML content of the page
           type: string
         contentType:
+          description: The content type of the page
           type: string
         contentHiddenForUser:
+          description: Is the content hidden for the user
           type: boolean
         titleLanguage:
-          #nullable: true
+          description: The language of the title
           allOf:
             - $ref: "#/components/schemas/Language"
-        #id:
-        #type: integer
         type:
+          description: The type of the page
           type: string
         children:
+          description: The children of the page.
           type: array
           items:
             $ref: "#/components/schemas/MaterialContentNode"
         workspaceMaterialId:
+          description: The id of the workspace material
           type: integer
         materialId:
+          description: The id of the material
           type: integer
         level:
+          description: The level of the node in the tree construct
           type: integer
         assignmentType:
+          description: The type of the assignment
           $ref: "#/components/schemas/MaterialAssigmentType"
         correctAnswers:
-          type: string
+          description: The correct answers of the assignment
+          $ref: "#/components/schemas/MaterialAnswersType"
         hidden:
+          description: Is the page hidden
           type: boolean
         parentId:
+          description: The id of the parent node
           type: integer
         nextSiblingId:
+          description: The id of the next sibling node
           type: integer
         path:
+          description: The path of the node
           type: string
         producers:
+          description: The producers of the material
           type: array
           items:
-            $ref: "#/components/schemas/MaterialContentNodeProducer"
-        # childrenAttachments:
-        #   type: array
-        #   items:
-        #     $ref: "#/components/schemas/MaterialContentNode"
-        # evaluation:
-        #   $ref: "#/components/schemas/MaterialEvaluation"
-        # assignment:
-        #   $ref: "#/components/schemas/MaterialAssignment"
+            $ref: "#/components/schemas/MaterialProducer"
 
     Message:
       type: object
@@ -14367,6 +14381,75 @@ components:
           description: Backend uses this to determine the order of the notes. This is not used in the frontend
           type: integer
           nullable: true
+
+    WorkspaceEntityFile:
+      type: object
+      description: WorkspaceEntityFile object
+      properties:
+        id:
+          type: integer
+        fileIdentifier:
+          type: string
+        tempFileId:
+          type: string
+        contentType:
+          type: string
+        workspaceEntityId:
+          type: integer
+        base64Data:
+          type: string
+
+    WorkspaceMaterial:
+      type: object
+      description: WorkspaceMaterial is the representation of a Material that is being used within that workspace.
+      required:
+        - id
+        - materialId
+        - parentId
+        - nextSiblingId
+        - hidden
+        - assignmentType
+        - correctAnswers
+        - path
+        - title
+      properties:
+        id:
+          type: integer
+        materialId:
+          type: integer
+        parentId:
+          type: integer
+        nextSiblingId:
+          type: integer
+        hidden:
+          type: boolean
+        assignmentType:
+          $ref: "#/components/schemas/MaterialAssigmentType"
+        correctAnswers:
+          $ref: "#/components/schemas/MaterialAnswersType"
+        path:
+          type: string
+        title:
+          type: string
+        titleLanguage:
+          $ref: "#/components/schemas/Language"
+
+    WorkspaceFolder:
+      type: object
+      description: WorkspaceFolder is the representation of a Material that is being used within that workspace.
+      properties:
+        id:
+          type: integer
+        hidden:
+          type: boolean
+        orderNumber:
+          type: integer
+        title:
+          type: string
+        urlName:
+          type: string
+        path:
+          type: string
 
     WorklistEditableFieldType:
       type: string

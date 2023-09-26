@@ -27,7 +27,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { MaterialCompositeReply, MaterialAssignment } from "~/generated/client";
+import { MaterialCompositeReply, WorkspaceMaterial } from "~/generated/client";
 
 /**
  * AssignmentEditorProps
@@ -35,7 +35,7 @@ import { MaterialCompositeReply, MaterialAssignment } from "~/generated/client";
 interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: AssessmentRequest;
   materialEvaluation?: MaterialEvaluationType;
-  materialAssignment: MaterialAssignment;
+  materialAssignment: WorkspaceMaterial;
   compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;

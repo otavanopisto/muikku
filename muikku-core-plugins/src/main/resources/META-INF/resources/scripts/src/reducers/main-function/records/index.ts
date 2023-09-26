@@ -1,5 +1,9 @@
 import { UserFileType } from "~/reducers/user-index";
-import { Assessment, WorkspaceDataType } from "~/reducers/workspaces";
+import {
+  Assessment,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
 import {
@@ -93,7 +97,7 @@ export interface RecordGroupType {
 export interface CurrentRecordType {
   workspace: WorkspaceDataType;
   journals: WorkspaceJournalListType;
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
   compositeReplies: MaterialCompositeReply[];
 }
 

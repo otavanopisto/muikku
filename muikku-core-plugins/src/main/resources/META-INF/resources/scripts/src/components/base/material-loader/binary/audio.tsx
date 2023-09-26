@@ -1,6 +1,7 @@
 import * as React from "react";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { MaterialContentNode } from "~/generated/client";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**
  * Audio
@@ -9,7 +10,7 @@ import { MaterialContentNode } from "~/generated/client";
  * @param props.invisible invisible
  */
 export default function Audio(props: {
-  material: MaterialContentNode;
+  material: MaterialContentNodeWithIdAndLogic;
   invisible?: boolean;
 }) {
   return (

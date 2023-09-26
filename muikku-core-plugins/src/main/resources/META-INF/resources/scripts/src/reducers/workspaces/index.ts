@@ -18,28 +18,10 @@ import {
   DiscussionWorkspaceStatistic,
   WorkspaceSubject,
   Language,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 import { AudioAssessment } from "../../@types/evaluation";
-
-/**
- * WorkspaceBasicInfo
- */
-/* export interface WorkspaceBasicInfo {
-  id: number;
-  name: string;
-  urlName: string;
-  nameExtension?: string | null;
-} */
-
-/**
- * OrganizationCourseTeacherType
- */
-/* export interface OrganizationCourseTeacherType {
-  firstName: string;
-  lastName: string;
-  hasImage: boolean;
-} */
 
 /**
  * CreateWorkspaceType
@@ -51,9 +33,7 @@ export interface CreateWorkspaceType {
 }
 
 export type UserSelectLoader = "WAIT" | "LOADING" | "READY" | "ERROR";
-/* export type LoadWorkspaceActionType =
-  | "UPDATE_WORKSPACE"
-  | "UPDATE_ORGANIZATION_SELECTED_WORKSPACE"; */
+
 export type WorkspaceAssessementStateType =
   | "transferred"
   | "unassessed"
@@ -106,35 +86,6 @@ export interface WorkspaceActivityType {
   lastVisit?: string;
   numVisits: number;
 }
-
-/**
- * WorkspaceStudentActivityType
- */
-/* export interface WorkspaceStudentActivityType {
-  assessmentState: Assessment;
-  evaluablesAnswered: number;
-  evaluablesAnsweredLastDate: string;
-  evaluablesDonePercent: number;
-  evaluablesFailed: number;
-  evaluablesFailedLastDate?: string;
-  evaluablesIncomplete: number;
-  evaluablesIncompleteLastDate?: string;
-  evaluablesPassed: number;
-  evaluablesPassedLastDate?: string;
-  evaluablesSubmitted: number;
-  evaluablesSubmittedLastDate?: string;
-  evaluablesTotal: number;
-  evaluablesUnanswered: number;
-  exercisesAnswered: number;
-  exercisesAnsweredLastDate: string;
-  exercisesDonePercent: number;
-  exercisesTotal: number;
-  exercisesUnanswered: number;
-  journalEntryCount: number;
-  lastJournalEntry?: string;
-  lastVisit?: string;
-  numVisits: number;
-} */
 
 /**
  * WorkspaceForumStatisticsType
@@ -238,19 +189,6 @@ export interface WorkspaceJournalsType {
 }
 
 /**
- * WorkspaceAssessmentRequestType
- */
-/* export interface WorkspaceAssessmentRequestType {
-  id: string;
-  userIdentifier: string;
-  workspaceUserIdentifier: string;
-  requestText: string;
-  date: string;
-  workspaceEntityId: number;
-  userEntityId: number;
-} */
-
-/**
  * WorkspaceInterminEvaluationRequest
  */
 export interface WorkspaceInterimEvaluationRequest {
@@ -285,37 +223,6 @@ export interface WorkspaceCourseLengthSymbolType {
 }
 
 /**
- * WorkspaceSubject
- */
-/* export interface WorkspaceSubject {
-  identifier: string;
-  subject?: WorkspaceSubjectType;
-  courseNumber?: number;
-  courseLength?: string;
-  courseLengthSymbol?: WorkspaceCourseLengthSymbolType;
-} */
-
-/**
- * WorkspaceAdditionalInfoType
- */
-/* export interface WorkspaceAdditionalInfoType {
-  beginDate: string;
-  endDate: string;
-  viewLink: string;
-  workspaceTypeId?: string;
-  workspaceType?: string;
-  educationType?: {
-    identifier: {
-      dataSource: string;
-      identifier: string;
-    };
-    name: string;
-    schoolDataSource: string;
-  };
-  subjects: WorkspaceSubject[];
-} */
-
-/**
  * WorkspaceProducerType
  */
 export interface WorkspaceProducerType {
@@ -330,21 +237,6 @@ export interface UserSelectType {
   users?: Array<SelectItem>;
   state?: UserSelectLoader;
 }
-
-/**
- * WorkspaceDetailsType
- */
-/* export interface WorkspaceDetailsType {
-  beginDate: string;
-  endDate: string;
-  signupStart: string;
-  signupEnd: string;
-  externalViewUrl: string;
-  typeId: string;
-  rootFolderId: number;
-  helpFolderId: number;
-  indexFolderId: number;
-} */
 
 export enum WorkspaceMandatority {
   MANDATORY = "MANDATORY",
@@ -365,18 +257,6 @@ export interface WorkspaceStudentAssessmentStateType {
   text?: string;
 }
 
-/* export type WorkspaceChatStatusType = "ENABLED" | "DISABLED"; */
-
-/**
- * WorkspacePermissionsType
- */
-/* export interface WorkspacePermissionsType {
-  workspaceEntityId: number;
-  userGroupEntityId: number;
-  userGroupName: string;
-  canSignup: boolean;
-} */
-
 export type TemplateWorkspaceListType = Array<TemplateWorkspaceType>;
 
 /**
@@ -393,20 +273,6 @@ export interface TemplateWorkspaceType {
  * used as lang attribute jsx
  */
 export const languageOptions = Object.values(Language);
-/* export const languageOptions = [
-  "fi",
-  "en",
-  "sv",
-  "de",
-  "ru",
-  "ja",
-  "es",
-] as const; */
-
-/**
- * Language
- */
-/* export type Language = typeof languageOptions[number]; */
 
 /**
  * WorkspaceDataType
@@ -451,7 +317,7 @@ export interface WorkspaceDataType {
   staffMembers?: UserStaffSearchResult;
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceMaterialProducer[];
-  contentDescription?: MaterialContentNode;
+  contentDescription?: MaterialContentNodeWithIdAndLogic;
   activityLogs?: ActivityLogType[];
   students?: WorkspaceStudentSearchResult;
   inactiveStudents?: WorkspaceStudentSearchResult;
@@ -479,8 +345,6 @@ export interface WorkspaceMaterialReferenceType {
   url: string;
 }
 
-/* export type WorkspaceListType = Array<WorkspaceDataType>; */
-
 /**
  * WorkspaceSignUpDetails
  */
@@ -495,16 +359,6 @@ export type WorkspaceBaseFilterType =
   | "ALL_COURSES"
   | "MY_COURSES"
   | "UNPUBLISHED";
-
-/**
- * WorkspaceEducationFilterType
- */
-/* export interface WorkspaceEducationFilterType {
-  identifier: string;
-  name: string;
-} */
-
-/* export type WorkspaceEducationFilterListType = Array<WorkspaceEducationType>; */
 
 /**
  * WorkspaceCurriculumFilterType
@@ -548,29 +402,11 @@ export interface WorkspacesavailableFiltersType {
   stateFilters?: WorkspaceStateFilterListType;
 }
 
-/**
- * OrganizationWorkspacesAvailableFiltersType
- */
-/* export interface OrganizationWorkspacesAvailableFiltersType {
-  educationTypes: WorkspaceEducationType[];
-  curriculums: WorkspaceCurriculumFilterListType;
-  stateFilters?: WorkspaceStateFilterListType;
-} */
-
 export type WorkspacesStateType =
   | "LOADING"
   | "LOADING_MORE"
   | "ERROR"
   | "READY";
-
-/**
- * OrganizationWorkspacesActiveFiltersType
- */
-/* export interface OrganizationWorkspacesActiveFiltersType {
-  educationFilters: Array<string>;
-  curriculumFilters: Array<string>;
-  query: string;
-} */
 
 /**
  * WorkspacesActiveFiltersType
@@ -586,14 +422,6 @@ export interface WorkspacesActiveFiltersType {
 }
 
 /**
- * WorkspaceTypeType
- */
-/* export interface WorkspaceTypeType {
-  identifier: string;
-  name: string;
-} */
-
-/**
  * WorkspaceEditModeStateType
  */
 export interface WorkspaceEditModeStateType {
@@ -601,18 +429,14 @@ export interface WorkspaceEditModeStateType {
   active: boolean;
 }
 
-//section = true && currentNodeValue = null && parentNodeValue = null   (new section)
-//section = false && currentNodeValue = null && parentNodeValue = x     (new material)
-//section = true && currentNodeValue = x && parentNodeValue = null      (edit section)
-//section = false && currentNodeValue = x && parentNodeValue = x        (edit material)
 /**
  * WorkspaceMaterialEditorType
  */
 export interface WorkspaceMaterialEditorType {
   currentNodeWorkspace: WorkspaceDataType;
-  currentNodeValue?: MaterialContentNode;
-  currentDraftNodeValue?: MaterialContentNode;
-  parentNodeValue?: MaterialContentNode;
+  currentNodeValue?: MaterialContentNodeWithIdAndLogic;
+  currentDraftNodeValue?: MaterialContentNodeWithIdAndLogic;
+  parentNodeValue?: MaterialContentNodeWithIdAndLogic;
   section: boolean;
   opened: boolean;
   canDelete: boolean;
@@ -643,91 +467,18 @@ export interface WorkspaceMaterialExtraTools {
   opened: boolean;
 }
 
-/* export type MaterialCorrectAnswersType = "ALWAYS" | "ON_REQUEST" | "NEVER"; */
-
 /**
- * MaterialAssignmentType
+ * MaterialContentNodeWithIdAndLogic is combination interface that includes
+ * both MaterialContentNode and some extra properties that are not always available
+ * or are needed for frontend logic
  */
-/* export interface MaterialAssignmentType {
-  id: number;
-  materialId: number;
-  parentId: number;
-  nextSiblingId: number;
-  hidden: boolean;
-  assignmentType: AssignmentType;
-  correctAnswers: string;
-  path: string;
-  title: string;
-} */
-
-/**
- * MaterialContentNodeProducerType
- */
-/* export interface MaterialContentNodeProducerType {
-  id: number;
-  name: string;
-  materialId: number;
-} */
-
-/**
- * MaterialViewRestriction
- */
-/* export enum MaterialViewRestriction {
-  NONE = "NONE",
-  LOGGED_IN = "LOGGED_IN",
-  WORKSPACE_MEMBERS = "WORKSPACE_MEMBERS",
-} */
-
-/* export type AssignmentType =
-  | "EXERCISE"
-  | "EVALUATED"
-  | "JOURNAL"
-  | "INTERIM_EVALUATION"; */
-
-/**
- * MaterialContentNodeType
- */
-/* export interface MaterialContentNodeType {
-  title: string;
-  titleLanguage?: Language | null;
-  license: string;
-  viewRestrict: MaterialViewRestriction;
-  html: string;
-  contentType: string;
-  contentHiddenForUser: boolean;
-  //Standard Fields (only available when loaded through materials rest endpoint)
+export interface MaterialContentNodeWithIdAndLogic extends MaterialContentNode {
   id?: number;
-
-  //Extended Fields (only available when loaded via content node rest endpoint)
-  type?: string;
-  children?: Array<MaterialContentNode>;
-  workspaceMaterialId?: number;
-  materialId?: number;
-  level?: number;
-  assignmentType?: AssignmentType;
-  correctAnswers?: MaterialCorrectAnswersType;
-  hidden?: boolean;
-  parentId?: number;
-  nextSiblingId?: number;
-  path?: string;
-  producers?: MaterialContentNodeProducerType[];
-
-  //Assigned fields
-  childrenAttachments?: Array<MaterialContentNode>; // this is usually missing and has to be manually retrieved
+  // this is usually missing and has to be manually retrieved
+  childrenAttachments?: MaterialContentNodeWithIdAndLogic[];
   evaluation?: MaterialEvaluationType;
-  assignment?: MaterialContentNode;
-} */
-
-/**
- * MaterialAnswerType
- */
-/* export interface MaterialAnswerType {
-  embedId: string;
-  fieldName: string;
-  materialId: number;
-  value: string;
-  workspaceMaterialId: number;
-} */
+  assignment?: WorkspaceMaterial;
+}
 
 /**
  * MaterialCompositeRepliesStateType
@@ -740,41 +491,6 @@ export type MaterialCompositeRepliesStateType =
   | "PASSED"
   | "FAILED"
   | "INCOMPLETE";
-
-/**
- * MaterialCompositeRepliesType
- */
-/* export interface MaterialCompositeRepliesType {
-  answers: Array<MaterialAnswerType>;
-  state: MaterialCompositeRepliesStateType;
-  // evaluationInfo of the material assignments
-  evaluationInfo?: MaterialEvaluationInfo;
-
-  //Available when loaded specifically (eg. via records)
-  created: string;
-  lastModified: string;
-  submitted: string;
-  withdrawn?: string;
-
-  //Available when loaded generically (eg. via workspace material)
-  workspaceMaterialId: number;
-  workspaceMaterialReplyId: number;
-} */
-
-/**
- * MaterialEvaluationInfo
- */
-/* export interface MaterialEvaluationInfo {
-  id: number;
-  type: MaterialCompositeRepliesStateType;
-  evaluationType: AssignmentEvaluationType;
-  text: string;
-  grade: string;
-  date: string;
-  audioAssessments: AudioAssessment[];
-} */
-
-/* export type MaterialCompositeRepliesListType = Array<MaterialCompositeReply>; */
 
 /**
  * MaterialEvaluationType
@@ -796,7 +512,7 @@ export interface MaterialEvaluationType {
   audioAssessments: AudioAssessment[];
 }
 
-/* export type MaterialContentNodeListType = Array<MaterialContentNode>; */
+/* export type MaterialContentNodeListType = Array<MaterialContentNodeWithIdAndLogic>; */
 
 /**
  * WorkspacesState
@@ -808,8 +524,8 @@ export interface WorkspacesState {
   lastWorkspaces?: WorkspaceMaterialReferenceType[];
   // Following is data related to current workspace
   currentWorkspace?: WorkspaceDataType;
-  currentHelp?: MaterialContentNode[];
-  currentMaterials?: MaterialContentNode[];
+  currentHelp?: MaterialContentNodeWithIdAndLogic[];
+  currentMaterials?: MaterialContentNodeWithIdAndLogic[];
   currentMaterialsActiveNodeId?: number;
   currentMaterialsReplies?: MaterialCompositeReply[];
 
@@ -961,38 +677,6 @@ export const workspaces: Reducer<WorkspacesState> = (
       };
     }
 
-    /* case "UPDATE_WORKSPACE_ASSESSMENT_STATE":
-      return {
-        ...state,
-        currentWorkspace: processWorkspaceToHaveNewAssessmentStateAndDate(
-          action.payload.workspace.id,
-          action.payload.newState,
-          action.payload.newDate,
-          action.payload.newAssessmentRequest ||
-            action.payload.oldAssessmentRequestToDelete,
-          !!action.payload.oldAssessmentRequestToDelete,
-          state.currentWorkspace
-        ),
-        availableWorkspaces: state.availableWorkspaces.map(
-          processWorkspaceToHaveNewAssessmentStateAndDate.bind(
-            this,
-            action.payload.workspace.id,
-            action.payload.newState,
-            action.payload.newDate,
-            action.payload.newAssessmentRequest
-          )
-        ),
-        userWorkspaces: state.userWorkspaces.map(
-          processWorkspaceToHaveNewAssessmentStateAndDate.bind(
-            this,
-            action.payload.workspace.id,
-            action.payload.newState,
-            action.payload.newDate,
-            action.payload.newAssessmentRequest
-          )
-        ),
-      }; */
-
     case "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES":
       return {
         ...state,
@@ -1112,7 +796,7 @@ export const workspaces: Reducer<WorkspacesState> = (
        * mapMaterial
        * @param m m
        */
-      const mapMaterial = (m: MaterialContentNode) => {
+      const mapMaterial = (m: MaterialContentNodeWithIdAndLogic) => {
         if (action.payload.isDraft) {
           return m;
         }
@@ -1128,7 +812,7 @@ export const workspaces: Reducer<WorkspacesState> = (
           return { ...m, ...action.payload.update };
         }
 
-        const newM: MaterialContentNode = {
+        const newM: MaterialContentNodeWithIdAndLogic = {
           ...m,
           children: m.children ? m.children.map(mapMaterial) : m.children,
         };
@@ -1203,7 +887,7 @@ export const workspaces: Reducer<WorkspacesState> = (
        * filterMaterial
        * @param m m
        */
-      const filterMaterial = (m: MaterialContentNode) => {
+      const filterMaterial = (m: MaterialContentNodeWithIdAndLogic) => {
         // Sometimes I get id sometimes workspaceMaterialId, super inconsistent
         if (
           typeof m.id !== "undefined" &&
@@ -1228,14 +912,14 @@ export const workspaces: Reducer<WorkspacesState> = (
        * @param arr arr
        */
       const mapMaterial = (
-        m: MaterialContentNode,
+        m: MaterialContentNodeWithIdAndLogic,
         index: number,
-        arr: Array<MaterialContentNode>
+        arr: Array<MaterialContentNodeWithIdAndLogic>
       ) => {
         const nextSiblingId = arr[index + 1]
           ? arr[index + 1].workspaceMaterialId
           : null;
-        const newM: MaterialContentNode = {
+        const newM: MaterialContentNodeWithIdAndLogic = {
           ...m,
           nextSiblingId,
           children: m.children
@@ -1290,7 +974,7 @@ export const workspaces: Reducer<WorkspacesState> = (
 
     case "INSERT_MATERIAL_CONTENT_NODE": {
       const apiPath = action.payload.apiPath;
-      const insertedContentNode: MaterialContentNode =
+      const insertedContentNode: MaterialContentNodeWithIdAndLogic =
         action.payload.nodeContent;
 
       const targetArray =

@@ -7,16 +7,14 @@ import { UploadingValue } from "~/@types/shared";
 import {
   WorkspaceMaterialEditorType,
   WorkspaceDataType,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import { AnyActionType, SpecificActionType } from "../index";
 import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
-import {
-  MaterialCompositeReply,
-  MaterialContentNode,
-} from "~/generated/client";
+import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 
@@ -25,7 +23,7 @@ import MApi, { isMApiError } from "~/api/api";
  */
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-  MaterialContentNode[]
+  MaterialContentNodeWithIdAndLogic[]
 >;
 
 /**
@@ -33,7 +31,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<
  */
 export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-  MaterialContentNode[]
+  MaterialContentNodeWithIdAndLogic[]
 >;
 
 /**
@@ -59,7 +57,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES =
  */
 export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<
   "INSERT_MATERIAL_CONTENT_NODE",
-  { nodeContent: MaterialContentNode; apiPath: ApiPath }
+  { nodeContent: MaterialContentNodeWithIdAndLogic; apiPath: ApiPath }
 >;
 
 /**
@@ -68,7 +66,7 @@ export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<
 export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<
   "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
   {
-    material: MaterialContentNode;
+    material: MaterialContentNodeWithIdAndLogic;
     newPath: string;
   }
 >;
@@ -83,8 +81,8 @@ export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
     showUpdateLinkedMaterialsDialogForPublish: boolean;
     showRemoveLinkedAnswersDialogForPublish: boolean;
     showUpdateLinkedMaterialsDialogForPublishCount: number;
-    material: MaterialContentNode;
-    update: Partial<MaterialContentNode>;
+    material: MaterialContentNodeWithIdAndLogic;
+    update: Partial<MaterialContentNodeWithIdAndLogic>;
     isDraft?: boolean;
   }
 >;
@@ -94,7 +92,7 @@ export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
  */
 export type DELETE_MATERIAL_CONTENT_NODE = SpecificActionType<
   "DELETE_MATERIAL_CONTENT_NODE",
-  MaterialContentNode
+  MaterialContentNodeWithIdAndLogic
 >;
 
 /**
@@ -113,16 +111,16 @@ type ApiPath = "materials" | "help";
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (
     data: {
-      parentMaterial?: MaterialContentNode;
+      parentMaterial?: MaterialContentNodeWithIdAndLogic;
       makeFolder: boolean;
       rootParentId: number;
-      nextSibling?: MaterialContentNode;
+      nextSibling?: MaterialContentNodeWithIdAndLogic;
       copyWorkspaceId?: number;
       copyMaterialId?: number;
       title?: string;
       file?: File;
       workspace: WorkspaceDataType;
-      success?: (newNode: MaterialContentNode) => void;
+      success?: (newNode: MaterialContentNodeWithIdAndLogic) => void;
       fail?: () => void;
     },
     apiPath: ApiPath
@@ -136,7 +134,7 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
   (
     data: {
       workspace: WorkspaceDataType;
-      material: MaterialContentNode;
+      material: MaterialContentNodeWithIdAndLogic;
       files: File[];
       uploadingValues?: UploadingValue[];
       success?: () => void;
@@ -150,7 +148,10 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
  * RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
  */
 export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
-  (workspace: WorkspaceDataType, material: MaterialContentNode): AnyActionType;
+  (
+    workspace: WorkspaceDataType,
+    material: MaterialContentNodeWithIdAndLogic
+  ): AnyActionType;
 }
 
 /**
@@ -159,8 +160,8 @@ export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
     workspace: WorkspaceDataType;
-    material: MaterialContentNode;
-    update: Partial<MaterialContentNode>;
+    material: MaterialContentNodeWithIdAndLogic;
+    update: Partial<MaterialContentNodeWithIdAndLogic>;
     isDraft?: boolean;
     updateLinked?: boolean;
     removeAnswers?: boolean;
@@ -177,7 +178,7 @@ export interface LoadWholeWorkspaceMaterialsTriggerType {
   (
     workspaceId: number,
     includeHidden: boolean,
-    callback?: (nodes: Array<MaterialContentNode>) => any
+    callback?: (nodes: Array<MaterialContentNodeWithIdAndLogic>) => any
   ): AnyActionType;
 }
 
@@ -210,7 +211,7 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
  */
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
-    material: MaterialContentNode;
+    material: MaterialContentNodeWithIdAndLogic;
     workspace: WorkspaceDataType;
     removeAnswers?: boolean;
     success?: () => any;
@@ -222,7 +223,7 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
  * SetWholeWorkspaceMaterialsTriggerType
  */
 export interface SetWholeWorkspaceMaterialsTriggerType {
-  (materials: MaterialContentNode[]): AnyActionType;
+  (materials: MaterialContentNodeWithIdAndLogic[]): AnyActionType;
 }
 
 /**
@@ -232,7 +233,7 @@ export interface LoadWholeWorkspaceHelpTriggerType {
   (
     workspaceId: number,
     includeHidden: boolean,
-    callback?: (nodes: Array<MaterialContentNode>) => any
+    callback?: (nodes: Array<MaterialContentNodeWithIdAndLogic>) => any
   ): AnyActionType;
 }
 
@@ -567,6 +568,13 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
           parentId: material.workspaceMaterialId,
         });
 
+        const attachments = childrenAttachments.map(
+          (attachment) =>
+            <MaterialContentNodeWithIdAndLogic>{
+              ...attachment,
+            }
+        );
+
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
           payload: {
@@ -576,7 +584,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
             showRemoveLinkedAnswersDialogForPublish: false,
             material: material,
             update: {
-              childrenAttachments,
+              childrenAttachments: attachments,
             },
             isDraft: false,
           },
@@ -660,14 +668,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.html !== "undefined" &&
             data.material.html !== data.update.html
           ) {
-            /* await promisify(
-              mApi().materials.html.content.update(data.material.materialId, {
-                content: data.update.html,
-                removeAnswers: data.removeAnswers || false,
-              }),
-              "callback"
-            )(); */
-
             await materialsApi.updateHtmlMaterialContent({
               materialid: data.material.materialId,
               updateHtmlMaterialContentRequest: {
@@ -765,14 +765,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           });
 
           if (changed) {
-            /* await promisify(
-              mApi().materials.material.update(
-                data.material.materialId,
-                materialResult
-              ),
-              "callback"
-            )(); */
-
             await materialsApi.updateMaterial({
               materialId: data.material.materialId,
               body: materialResult,
@@ -783,24 +775,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.producers !== "undefined" &&
             !equals(data.material.producers, data.update.producers)
           ) {
-            /* const newProducers: MaterialContentNodeProducer[] =
-              await Promise.all<MaterialContentNodeProducer>(
-                data.update.producers.map((p) => {
-                  if (p.id === null) {
-                    return <Promise<MaterialContentNodeProducer>>(
-                      promisify(
-                        mApi().materials.material.producers.create(
-                          data.material.materialId,
-                          { name: p.name }
-                        ),
-                        "callback"
-                      )()
-                    );
-                  }
-                  return p;
-                })
-              ); */
-
             const newProducers = await Promise.all(
               data.update.producers.map((p) => {
                 if (p.id === null) {
@@ -851,17 +825,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             const deletedProducers = data.material.producers.filter(
               (p) => !newProducers.find((p2) => p2.id === p.id)
             );
-            /* await Promise.all(
-              deletedProducers.map((p) =>
-                promisify(
-                  mApi().materials.material.producers.del(
-                    data.material.materialId,
-                    p.id
-                  ),
-                  "callback"
-                )()
-              )
-            ); */
 
             await Promise.all(
               deletedProducers.map((p) =>
@@ -1230,8 +1193,8 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
-        /* const contentNodes: Array<MaterialContentNode> =
-          <Array<MaterialContentNode>>(
+        /* const contentNodes: Array<MaterialContentNodeWithIdAndLogic> =
+          <Array<MaterialContentNodeWithIdAndLogic>>(
             await promisify(
               mApi()
                 .workspace.workspaces.help.cacheClear()

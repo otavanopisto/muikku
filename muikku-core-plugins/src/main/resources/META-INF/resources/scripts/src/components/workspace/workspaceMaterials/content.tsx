@@ -13,6 +13,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -52,7 +53,7 @@ import {
  */
 interface ContentProps extends WithTranslation {
   status: StatusType;
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
   materialReplies: MaterialCompositeReply[];
   activeNodeId: number;
   workspace: WorkspaceDataType;
@@ -67,7 +68,7 @@ interface ContentProps extends WithTranslation {
  * ContentState
  */
 interface ContentState {
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
   assignmentTypeFilters: string[];
   sessionId: string;
 }
@@ -104,7 +105,7 @@ class ContentComponent extends SessionStateComponent<
   ContentState
 > {
   private storedLastUpdateServerExecution: Function;
-  private originalMaterials: MaterialContentNode[];
+  private originalMaterials: MaterialContentNodeWithIdAndLogic[];
   private topicRefs: ToggleOpenHandle[];
 
   /**
@@ -285,7 +286,7 @@ class ContentComponent extends SessionStateComponent<
     const materialFromState = materialParentFromState.children[baseIndex];
     const workspaceId = materialFromState.workspaceMaterialId;
 
-    let material: MaterialContentNode;
+    let material: MaterialContentNodeWithIdAndLogic;
     this.originalMaterials.forEach((cn) => {
       cn.children.forEach((ccn) => {
         if (ccn.workspaceMaterialId === materialFromState.workspaceMaterialId) {
@@ -295,7 +296,7 @@ class ContentComponent extends SessionStateComponent<
     });
 
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
-      (cn: MaterialContentNode) =>
+      (cn: MaterialContentNodeWithIdAndLogic) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
     );
 
@@ -343,8 +344,8 @@ class ContentComponent extends SessionStateComponent<
    * @param target target
    */
   onInteractionBetweenSections(
-    base: MaterialContentNode,
-    target: MaterialContentNode
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic
   ) {
     this.hotInsertBeforeSection(
       this.state.materials.findIndex(
@@ -371,8 +372,8 @@ class ContentComponent extends SessionStateComponent<
    * @param target target
    */
   onInteractionBetweenSubnodes(
-    base: MaterialContentNode,
-    target: MaterialContentNode | number
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic | number
   ) {
     const parentBaseIndex = this.state.materials.findIndex(
       (m) => m.workspaceMaterialId === base.parentId
@@ -521,7 +522,7 @@ class ContentComponent extends SessionStateComponent<
    * @param section section
    * @returns boolean if section is active
    */
-  isSectionActive = (section: MaterialContentNode) => {
+  isSectionActive = (section: MaterialContentNodeWithIdAndLogic) => {
     const { activeNodeId } = this.props;
 
     for (const m of section.children) {

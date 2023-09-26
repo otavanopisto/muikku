@@ -15,6 +15,7 @@ import {
   WorkspaceCurriculumFilterType,
   WorkspaceActivityType,
   WorkspaceInterimEvaluationRequest,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -31,7 +32,6 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import {
   AssessmentRequest,
-  MaterialContentNode,
   WorkspaceAdditionalInfo,
   WorkspaceChatStatus,
   WorkspaceDetails,
@@ -558,7 +558,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let interimEvaluationRequests: WorkspaceInterimEvaluationRequest[];
         let activity: WorkspaceActivityType;
         let additionalInfo: WorkspaceAdditionalInfo;
-        let contentDescription: MaterialContentNode;
+        let contentDescription: MaterialContentNodeWithIdAndLogic;
         let producers: WorkspaceMaterialProducer[];
         let isCourseMember: boolean;
         let journals: WorkspaceJournalsType;

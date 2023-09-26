@@ -8,6 +8,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
@@ -37,7 +38,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface ContentProps extends WithTranslation {
   status: StatusType;
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
   activeNodeId: number;
   workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -51,7 +52,7 @@ interface ContentProps extends WithTranslation {
  * ContentState
  */
 interface ContentState {
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
 }
 
 /**
@@ -232,7 +233,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     const material = this.state.materials[parentBaseIndex].children[baseIndex];
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
-      (cn: MaterialContentNode) =>
+      (cn: MaterialContentNodeWithIdAndLogic) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
     );
 
@@ -274,8 +275,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * @param target target
    */
   onInteractionBetweenSections(
-    base: MaterialContentNode,
-    target: MaterialContentNode
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic
   ) {
     this.hotInsertBeforeSection(
       this.state.materials.findIndex(
@@ -293,8 +294,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * @param target target
    */
   onInteractionBetweenSubnodes(
-    base: MaterialContentNode,
-    target: MaterialContentNode | number
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic | number
   ) {
     const parentBaseIndex = this.state.materials.findIndex(
       (m) => m.workspaceMaterialId === base.parentId
@@ -391,7 +392,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * @param section section
    * @returns boolean if section is active
    */
-  isSectionActive = (section: MaterialContentNode) => {
+  isSectionActive = (section: MaterialContentNodeWithIdAndLogic) => {
     const { activeNodeId } = this.props;
 
     for (const m of section.children) {

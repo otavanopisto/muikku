@@ -6,7 +6,10 @@ import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { PDFViewer } from "@react-pdf/renderer";
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import TableOfContentPDF from "./table-of-content-pdf";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -20,7 +23,7 @@ import {
 interface TableOfContentPDFDialogProps {
   children?: React.ReactElement<any>;
   assignmentTypeFilters: string[];
-  materials: MaterialContentNode[];
+  materials: MaterialContentNodeWithIdAndLogic[];
   compositeReplies: MaterialCompositeReply[];
   workspace?: WorkspaceDataType;
   isOpen?: boolean;

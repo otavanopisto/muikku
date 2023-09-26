@@ -1,16 +1,16 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { AssignmentsTabType } from "../assignments-and-diaries";
-import { MaterialContentNode } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import MApi, { isMApiError } from "~/api/api";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseAssignmentsState {
   isLoading: boolean;
-  evaluatedAssignments: MaterialContentNode[];
+  evaluatedAssignments: MaterialContentNodeWithIdAndLogic[];
 }
 
 /**
@@ -80,13 +80,11 @@ export const useEvaluatedAssignments = (
             ]);
 
             return materials.map(
-              (material, index) => <MaterialContentNode>Object.assign(
-                  material,
-                  {
-                    assignment: assignments[index],
-                    path: assignments[index].path,
-                  }
-                )
+              (material, index) =>
+                <MaterialContentNodeWithIdAndLogic>Object.assign(material, {
+                  assignment: assignments[index],
+                  path: assignments[index].path,
+                })
             );
           })(),
         ]);

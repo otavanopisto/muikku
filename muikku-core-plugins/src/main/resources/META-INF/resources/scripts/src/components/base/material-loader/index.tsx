@@ -10,7 +10,10 @@
 //please remove it
 
 import * as React from "react";
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
@@ -191,8 +194,8 @@ const STATES = [
  * MaterialLoaderProps
  */
 export interface MaterialLoaderProps {
-  material: MaterialContentNode;
-  folder?: MaterialContentNode;
+  material: MaterialContentNodeWithIdAndLogic;
+  folder?: MaterialContentNodeWithIdAndLogic;
   workspace: WorkspaceDataType;
   status: StatusType;
   modifiers?: string | Array<string>;

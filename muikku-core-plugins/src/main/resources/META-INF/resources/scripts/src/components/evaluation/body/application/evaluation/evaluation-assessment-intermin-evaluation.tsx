@@ -7,6 +7,7 @@ import {
 import {
   WorkspaceDataType,
   MaterialEvaluationType,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -28,8 +29,8 @@ import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
 import { WorkspaceInterimEvaluationRequest } from "../../../../../reducers/workspaces/index";
 import {
   MaterialAssigmentType,
+  WorkspaceMaterial,
   MaterialCompositeReply,
-  MaterialContentNode,
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -39,7 +40,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface EvaluationAssessmentInterminEvaluationRequestProps
   extends WithTranslation {
   workspace: WorkspaceDataType;
-  assigment: MaterialContentNode;
+  assigment: WorkspaceMaterial;
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: AssessmentRequest;
@@ -56,7 +57,7 @@ interface EvaluationAssessmentInterminEvaluationRequestProps
 interface EvaluationAssessmentInterminEvaluationRequestState {
   openContent: boolean;
   openDrawer: boolean;
-  materialNode?: MaterialContentNode;
+  materialNode?: MaterialContentNodeWithIdAndLogic;
   interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
   isLoading: boolean;
   openAssignmentType?: MaterialAssigmentType;
@@ -157,7 +158,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
         const material = (await promisify(
           mApi().materials.html.read(assigment.materialId),
           "callback"
-        )()) as MaterialContentNode;
+        )()) as MaterialContentNodeWithIdAndLogic;
 
         const evaluation = (await promisify(
           mApi().evaluation.workspaces.materials.evaluations.read(
@@ -170,11 +171,14 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           "callback"
         )()) as MaterialEvaluationType[];
 
-        const loadedMaterial: MaterialContentNode = Object.assign(material, {
-          evaluation: evaluation[0],
-          assignment: this.props.assigment,
-          path: this.props.assigment.path,
-        });
+        const loadedMaterial: MaterialContentNodeWithIdAndLogic = Object.assign(
+          material,
+          {
+            evaluation: evaluation[0],
+            assignment: this.props.assigment,
+            path: this.props.assigment.path,
+          }
+        );
 
         return loadedMaterial;
       })(),
@@ -218,7 +222,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
     /**
      * Get initial values that needs to be updated
      */
-    const updatedMaterial: MaterialContentNode = {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
       ...this.state.materialNode,
     };
 

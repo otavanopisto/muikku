@@ -1,7 +1,10 @@
 import * as React from "react";
 import { Document, Page, Path, Svg, Text, View } from "@react-pdf/renderer";
 import { styles } from "./table-of-content-pdf-styles";
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import {
   MaterialCompositeReply,
@@ -14,7 +17,7 @@ import {
  */
 interface ContentType {
   type: "topic" | "element";
-  material: MaterialContentNode;
+  material: MaterialContentNodeWithIdAndLogic;
 }
 
 /**
@@ -25,7 +28,7 @@ interface TableOfContentPFDProps {
   workspace?: WorkspaceDataType;
   assignmentTypeFilters: string[];
   workspaceName?: string;
-  materials?: MaterialContentNode[];
+  materials?: MaterialContentNodeWithIdAndLogic[];
   compositeReplies: MaterialCompositeReply[];
 }
 
@@ -82,7 +85,7 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
    * @returns JSX.Element
    */
   const renderContentElement = (
-    mSubNode: MaterialContentNode,
+    mSubNode: MaterialContentNodeWithIdAndLogic,
     index: number
   ) => {
     const topicMaterial = materials.find((m) => m.id === mSubNode.parentId);
@@ -219,7 +222,10 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
    * @param index index
    * @returns JSX.Element
    */
-  const renderContentTopic = (mNode: MaterialContentNode, index: number) => {
+  const renderContentTopic = (
+    mNode: MaterialContentNodeWithIdAndLogic,
+    index: number
+  ) => {
     // Boolean if there is view Restriction for toc topic
     const isTocTopicViewRestricted =
       mNode.viewRestrict === MaterialViewRestriction.LoggedIn ||
