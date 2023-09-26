@@ -11,9 +11,10 @@ import { ButtonPill } from "~/components/general/button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import * as moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 // these are used to limit the date pickers, first the start of the current month
 // the previous month and the day of the current month
@@ -28,8 +29,7 @@ const dayOfCurrentMonth: number = moment(new Date()).date();
 /**
  * WorkListEditableProps
  */
-interface WorkListEditableProps {
-  i18n: i18nType;
+interface WorkListEditableProps extends WithTranslation {
   locales: LocaleState;
   onSubmit: (data: {
     description: string;
@@ -187,6 +187,7 @@ class WorkListEditable extends React.Component<
   public updateOne(which: string, e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       [which]: e.target.value,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
   }
 
@@ -223,9 +224,7 @@ class WorkListEditable extends React.Component<
         {this.props.children ? (
           <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-template form-element">
             <label className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.profile.worklist.template.label"
-              )}
+              {this.props.t("labels.template", { ns: "worklist" })}
             </label>
             <div className="application-sub-panel__item-data">
               {this.props.children}
@@ -235,9 +234,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-description form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18n.text.get(
-                "plugin.profile.worklist.description.label"
-              )}
+              {this.props.t("labels.description")}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -258,7 +255,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18n.text.get("plugin.profile.worklist.date.label")}
+              {this.props.t("labels.date")}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -272,9 +269,7 @@ class WorkListEditable extends React.Component<
               id={"date-" + (this.props.base && this.props.base.id)}
               className="form-element__input form-element__input--worklist-date"
               onChange={this.handleDateChange.bind(this)}
-              locale={outputCorrectDatePickerLocale(
-                this.props.i18n.time.getLocale()
-              )}
+              locale={outputCorrectDatePickerLocale(localizeTime.language)}
               selected={this.state.date}
               // the entry date min date allows us to pick the previous month within the limit, or otherwise
               // we can only choose from this month forwards
@@ -290,7 +285,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18n.text.get("plugin.profile.worklist.price.label")}
+              {this.props.t("labels.price", { ns: "worklist" })}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -309,7 +304,7 @@ class WorkListEditable extends React.Component<
         <div className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor form-element">
           {!this.props.isEditMode && (
             <label className="application-sub-panel__item-title">
-              {this.props.i18n.text.get("plugin.profile.worklist.factor.label")}
+              {this.props.t("labels.factor", { ns: "worklist" })}
             </label>
           )}
           <div className="application-sub-panel__item-data">
@@ -369,7 +364,6 @@ class WorkListEditable extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     locales: state.locales,
-    i18n: state.i18n,
   };
 }
 
@@ -380,4 +374,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkListEditable);
+export default withTranslation(["worklist"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkListEditable)
+);

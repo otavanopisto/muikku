@@ -6,8 +6,6 @@ import {
   StudentActivityCourse,
   Suggestion,
 } from "~/@types/shared";
-import { i18nType } from "~/reducers/base/i18n";
-import { StateType } from "~/reducers";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
@@ -21,7 +19,6 @@ import { useSuggestionList } from "./hooks/useSuggestedList";
  * SuggestionListProps
  */
 interface HopsSuggestionListProps {
-  i18n: i18nType;
   studentId: string;
   studentsUserEntityId: number;
   course: Course;
@@ -177,16 +174,6 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
 };
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -194,4 +181,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SuggestionList);
+export default connect(null, mapDispatchToProps)(SuggestionList);

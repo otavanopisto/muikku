@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import { Reducer } from "redux";
+import { Announcement } from "~/generated/client";
 
 /**
  * AnnouncerNavigationItemType
@@ -10,10 +10,7 @@ export interface AnnouncerNavigationItemType {
   id: string | number;
   icon: string;
   color?: string;
-  /**
-   * text
-   */
-  text(i18n: i18nType): string;
+  text: string;
 }
 
 export type AnnouncerNavigationItemListType =
@@ -24,111 +21,38 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "active",
     id: "active",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.active");
-    },
+    text: "active",
   },
   {
-    location: "past",
-    id: "past",
+    location: "expired",
+    id: "expired",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.past");
-    },
+    text: "expired",
   },
   {
-    location: "mine",
-    id: "mine",
+    location: "own",
+    id: "own",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.mine");
-    },
+    text: "own",
   },
   {
     location: "archived",
     id: "archived",
     icon: "trash-alt",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.announcer.cat.archived");
-    },
+    text: "archived",
   },
 ];
-
-/**
- * AnnouncementType
- */
-export interface AnnouncementType {
-  archived: boolean;
-  caption: string;
-  content: string;
-  created: string;
-  endDate: string;
-  id: number;
-  publiclyVisible: boolean;
-  publisherUserEntityId: number;
-  startDate: string;
-  temporalStatus: string;
-  userGroupEntityIds: Array<number>;
-  workspaceEntityIds: Array<number>;
-  workspaces: Array<{
-    id: number;
-    urlName: string;
-    name: string;
-    nameExtension: string;
-  }>;
-}
-
-/**
- * AnnouncementUpdateType
- */
-export interface AnnouncementUpdateType {
-  archived?: boolean;
-  caption?: string;
-  content?: string;
-  created?: string;
-  endDate?: string;
-  publiclyVisible?: boolean;
-  publisherUserEntityId?: number;
-  startDate?: string;
-  temporalStatus?: string;
-  userGroupEntityIds?: Array<number>;
-  workspaceEntityIds?: Array<number>;
-  workspaces?: Array<{
-    id: number;
-    urlName: string;
-    name: string;
-    nameExtension: string;
-  }>;
-}
-
-export type AnnouncementListType = Array<AnnouncementType>;
 
 export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
 
 /**
- * AnnouncementsType
+ * AnnouncementsState
  */
-export interface AnnouncementsType {
+export interface AnnouncementsState {
   state: AnnouncementsStateType;
-  announcements: AnnouncementListType;
-  current: AnnouncementType;
-  selected: AnnouncementListType;
+  announcements: Announcement[];
+  current: Announcement;
+  selected: Announcement[];
   selectedIds: Array<number>;
   location: string;
   toolbarLock: boolean;
@@ -137,13 +61,13 @@ export interface AnnouncementsType {
 }
 
 /**
- * AnnouncementsPatchType
+ * AnnouncementsStatePatch
  */
-export interface AnnouncementsPatchType {
+export interface AnnouncementsStatePatch {
   state?: AnnouncementsStateType;
-  announcements?: AnnouncementListType;
-  current?: AnnouncementType;
-  selected?: AnnouncementListType;
+  announcements?: Announcement[];
+  current?: Announcement;
+  selected?: Announcement[];
   selectedIds?: Array<number>;
   location?: string;
   toolbarLock?: boolean;
@@ -154,7 +78,7 @@ export interface AnnouncementsPatchType {
 /**
  * initialAnnouncementsState
  */
-const initialAnnouncementsState: AnnouncementsType = {
+const initialAnnouncementsState: AnnouncementsState = {
   state: "LOADING",
   announcements: [],
   current: null,
@@ -173,7 +97,7 @@ const initialAnnouncementsState: AnnouncementsType = {
  * @param action action
  * @returns State of announcements
  */
-export const announcements: Reducer<AnnouncementsType> = (
+export const announcements: Reducer<AnnouncementsState> = (
   state = initialAnnouncementsState,
   action: ActionType
 ) => {
@@ -185,7 +109,7 @@ export const announcements: Reducer<AnnouncementsType> = (
       return { ...state, state: action.payload };
 
     case "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES": {
-      const newAllProperties: AnnouncementsPatchType = action.payload;
+      const newAllProperties: AnnouncementsStatePatch = action.payload;
       return Object.assign({}, state, newAllProperties);
     }
 
@@ -193,7 +117,7 @@ export const announcements: Reducer<AnnouncementsType> = (
       return {
         ...state,
         selected: action.payload,
-        selectedIds: action.payload.map((s: AnnouncementType) => s.id),
+        selectedIds: action.payload.map((s: Announcement) => s.id),
       };
 
     case "ADD_TO_ANNOUNCEMENTS_SELECTED":
@@ -207,7 +131,7 @@ export const announcements: Reducer<AnnouncementsType> = (
       return {
         ...state,
         selected: state.selected.filter(
-          (selected: AnnouncementType) => selected.id !== action.payload.id
+          (selected: Announcement) => selected.id !== action.payload.id
         ),
         selectedIds: state.selectedIds.filter(
           (id: number) => id !== action.payload.id
@@ -215,13 +139,14 @@ export const announcements: Reducer<AnnouncementsType> = (
       };
 
     case "UPDATE_ONE_ANNOUNCEMENT": {
-      const update: AnnouncementUpdateType = action.payload.update;
-      const oldAnnouncement: AnnouncementType = action.payload.announcement;
-      const newAnnouncement: AnnouncementType = Object.assign(
+      const update = action.payload.update;
+      const oldAnnouncement = action.payload.announcement;
+      const newAnnouncement = Object.assign(
         {},
         oldAnnouncement,
         update
-      );
+      ) as Announcement;
+
       let newCurrent = state.current;
       if (newCurrent && newCurrent.id === newAnnouncement.id) {
         newCurrent = newAnnouncement;
@@ -229,20 +154,18 @@ export const announcements: Reducer<AnnouncementsType> = (
 
       return {
         ...state,
-        selected: state.selected.map((selected: AnnouncementType) => {
+        selected: state.selected.map((selected: Announcement) => {
           if (selected.id === oldAnnouncement.id) {
             return newAnnouncement;
           }
           return selected;
         }),
-        announcements: state.announcements.map(
-          (announcement: AnnouncementType) => {
-            if (announcement.id === oldAnnouncement.id) {
-              return newAnnouncement;
-            }
-            return announcement;
+        announcements: state.announcements.map((announcement: Announcement) => {
+          if (announcement.id === oldAnnouncement.id) {
+            return newAnnouncement;
           }
-        ),
+          return announcement;
+        }),
         current: newCurrent,
       };
     }
@@ -256,11 +179,10 @@ export const announcements: Reducer<AnnouncementsType> = (
       return {
         ...state,
         selected: state.selected.filter(
-          (selected: AnnouncementType) => selected.id !== action.payload.id
+          (selected: Announcement) => selected.id !== action.payload.id
         ),
         announcements: state.announcements.filter(
-          (announcement: AnnouncementType) =>
-            announcement.id !== action.payload.id
+          (announcement: Announcement) => announcement.id !== action.payload.id
         ),
         selectedIds: state.selectedIds.filter(
           (id: number) => id !== action.payload.id

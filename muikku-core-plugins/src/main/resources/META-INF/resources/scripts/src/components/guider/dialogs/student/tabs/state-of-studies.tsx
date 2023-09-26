@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/course.scss";
@@ -21,7 +21,6 @@ import {
 } from "~/actions/base/notifications";
 import {
   GuiderType,
-  GuiderStudentUserProfileLabelType,
   GuiderNotificationStudentsDataType,
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
@@ -42,12 +41,12 @@ import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
 import StudyProgress from "~/components/general/study-progress";
 import StudyProgressContextProvider from "~/components/general/study-progress/context";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * StateOfStudiesProps
  */
-interface StateOfStudiesProps {
-  i18n: i18nType;
+interface StateOfStudiesProps extends WithTranslation {
   guider: GuiderType;
   status: StatusType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
@@ -124,9 +123,7 @@ class StateOfStudies extends React.Component<
         title={getName(this.props.guider.currentStudent.basic, true)}
         titleDetail={
           (defaultEmailAddress && defaultEmailAddress.address) ||
-          this.props.i18n.text.get(
-            "plugin.guider.user.details.label.unknown.email"
-          )
+          this.props.i18n.t("labels.noEmail", { ns: "guider" })
         }
       >
         {this.props.guider.currentStudent.basic &&
@@ -156,54 +153,46 @@ class StateOfStudies extends React.Component<
 
     const studentLabels =
       this.props.guider.currentStudent.labels &&
-      this.props.guider.currentStudent.labels.map(
-        (label: GuiderStudentUserProfileLabelType) => (
-          <span className="label" key={label.id}>
-            <span
-              className="label__icon icon-flag"
-              style={{ color: label.flagColor }}
-            ></span>
-            <span className="label__text">{label.flagName}</span>
-          </span>
-        )
-      );
+      this.props.guider.currentStudent.labels.map((label) => (
+        <span className="label" key={label.id}>
+          <span
+            className="label__icon icon-flag"
+            style={{ color: label.flagColor }}
+          ></span>
+          <span className="label__text">{label.flagName}</span>
+        </span>
+      ));
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanel.Body>
         <ApplicationSubPanelItem
-          title={this.props.i18n.text.get(
-            "plugin.guider.user.details.label.studyStartDateTitle"
-          )}
+          title={this.props.i18n.t("labels.studyTimeStart", { ns: "users" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyStartDate
-              ? this.props.i18n.time.format(
+              ? localizeTime.date(
                   this.props.guider.currentStudent.basic.studyStartDate
                 )
               : "-"}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
         <ApplicationSubPanelItem
-          title={this.props.i18n.text.get(
-            "plugin.guider.user.details.label.studyEndDateTitle"
-          )}
+          title={this.props.i18n.t("labels.studyTimeEnd", { ns: "users" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyEndDate
-              ? this.props.i18n.time.format(
+              ? localizeTime.date(
                   this.props.guider.currentStudent.basic.studyEndDate
                 )
               : "-"}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
         <ApplicationSubPanelItem
-          title={this.props.i18n.text.get(
-            "plugin.guider.user.details.label.studyTimeEndTitle"
-          )}
+          title={this.props.i18n.t("labels.studyTimeEnd", { ns: "users" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyTimeEnd
-              ? this.props.i18n.time.format(
+              ? localizeTime.date(
                   this.props.guider.currentStudent.basic.studyTimeEnd
                 )
               : "-"}
@@ -211,9 +200,7 @@ class StateOfStudies extends React.Component<
         </ApplicationSubPanelItem>
         {this.props.guider.currentStudent.emails && (
           <ApplicationSubPanelItem
-            title={this.props.i18n.text.get(
-              "plugin.guider.user.details.label.email"
-            )}
+            title={this.props.i18n.t("labels.email", { ns: "users" })}
             modifier="currentstudent-emails-list"
           >
             {this.props.guider.currentStudent.emails.length ? (
@@ -233,18 +220,14 @@ class StateOfStudies extends React.Component<
               })
             ) : (
               <ApplicationSubPanelItem.Content>
-                {this.props.i18n.text.get(
-                  "plugin.guider.user.details.label.unknown.email"
-                )}
+                {this.props.i18n.t("labels.noEmail", { ns: "guider" })}
               </ApplicationSubPanelItem.Content>
             )}
           </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.phoneNumbers && (
           <ApplicationSubPanelItem
-            title={this.props.i18n.text.get(
-              "plugin.guider.user.details.label.phoneNumber"
-            )}
+            title={this.props.i18n.t("labels.phone")}
             modifier="currentstudent-phonenumbers-list"
           >
             {this.props.guider.currentStudent.phoneNumbers.length ? (
@@ -266,30 +249,22 @@ class StateOfStudies extends React.Component<
               )
             ) : (
               <ApplicationSubPanelItem.Content>
-                {this.props.i18n.text.get(
-                  "plugin.guider.user.details.label.unknown.phoneNumber"
-                )}
+                {this.props.i18n.t("labels.noPhone", { ns: "guider" })}
               </ApplicationSubPanelItem.Content>
             )}
           </ApplicationSubPanelItem>
         )}
         <ApplicationSubPanelItem
-          title={this.props.i18n.text.get(
-            "plugin.guider.user.details.label.school"
-          )}
+          title={this.props.i18n.t("labels.school", { ns: "guider" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.school ||
-              this.props.i18n.text.get(
-                "plugin.guider.user.details.label.unknown.school"
-              )}
+              this.props.i18n.t("labels.school", { ns: "guider" })}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
         {this.props.guider.currentStudent.usergroups && (
           <ApplicationSubPanelItem
-            title={this.props.i18n.text.get(
-              "plugin.guider.user.details.label.studentgroups"
-            )}
+            title={this.props.i18n.t("labels.studentGroups", { ns: "users" })}
             modifier="currentstudent-usergroups-list"
           >
             {this.props.guider.currentStudent.usergroups.length ? (
@@ -303,22 +278,21 @@ class StateOfStudies extends React.Component<
               ))
             ) : (
               <ApplicationSubPanelItem.Content>
-                {this.props.i18n.text.get(
-                  "plugin.guider.user.details.label.nostudentgroups"
-                )}
+                {this.props.i18n.t("content.empty", {
+                  ns: "users",
+                  context: "studentGroups",
+                })}
               </ApplicationSubPanelItem.Content>
             )}
           </ApplicationSubPanelItem>
         )}
         {this.props.guider.currentStudent.basic && (
           <ApplicationSubPanelItem
-            title={this.props.i18n.text.get(
-              "plugin.guider.user.details.label.lastLogin"
-            )}
+            title={this.props.i18n.t("labels.lastLogin", { ns: "guider" })}
           >
             <ApplicationSubPanelItem.Content>
               {this.props.guider.currentStudent.basic.lastLogin
-                ? this.props.i18n.time.format(
+                ? localizeTime.date(
                     this.props.guider.currentStudent.basic.lastLogin,
                     "LLL"
                   )
@@ -330,14 +304,15 @@ class StateOfStudies extends React.Component<
           Object.keys(this.props.guider.currentStudent.notifications).map(
             (notification: keyof GuiderNotificationStudentsDataType) => {
               <ApplicationSubPanelItem
-                title={this.props.i18n.text.get(
-                  "plugin.guider.user." + notification
-                )}
+                title={this.props.i18n.t("labels.studentNotification", {
+                  ns: "guider",
+                  context: notification,
+                })}
                 modifier="notification"
                 key={notification}
               >
                 <ApplicationSubPanelItem.Content>
-                  {this.props.i18n.time.format(
+                  {localizeTime.date(
                     this.props.guider.currentStudent.notifications[notification]
                   )}
                 </ApplicationSubPanelItem.Content>
@@ -382,9 +357,10 @@ class StateOfStudies extends React.Component<
                 this.props.guider.currentStudent.basic.ceeposLine !== null ? (
                   <ApplicationSubPanel>
                     <ApplicationSubPanel.Header>
-                      {this.props.i18n.text.get(
-                        "plugin.guider.user.details.purchases"
-                      )}
+                      {this.props.i18n.t("labels.orders", {
+                        ns: "orders",
+                        count: 0,
+                      })}
                     </ApplicationSubPanel.Header>
                     <ApplicationSubPanel.Body>
                       <Ceepos />
@@ -393,9 +369,7 @@ class StateOfStudies extends React.Component<
                 ) : null}
 
                 <ApplicationSubPanel.Header>
-                  {this.props.i18n.text.get(
-                    "plugin.guider.user.details.workspaces"
-                  )}
+                  {this.props.i18n.t("labels.workspaces", { ns: "workspace" })}
                 </ApplicationSubPanel.Header>
 
                 <ApplicationSubPanel.Body>
@@ -410,9 +384,9 @@ class StateOfStudies extends React.Component<
               <ApplicationSubPanel modifier="student-data-container">
                 <ApplicationSubPanel>
                   <ApplicationSubPanel.Header>
-                    {this.props.i18n.text.get(
-                      "plugin.guider.user.details.progressOfStudies"
-                    )}
+                    {this.props.i18n.t("labels.studyProgress", {
+                      ns: "guider",
+                    })}
                   </ApplicationSubPanel.Header>
                   <ApplicationSubPanel.Body>
                     <StudyProgressContextProvider
@@ -436,9 +410,9 @@ class StateOfStudies extends React.Component<
               <ApplicationSubPanel modifier="student-data-container">
                 <ApplicationSubPanel>
                   <ApplicationSubPanel.Header>
-                    {this.props.i18n.text.get(
-                      "plugin.guider.user.details.progressOfStudies"
-                    )}
+                    {this.props.i18n.t("labels.studyProgress", {
+                      ns: "guider",
+                    })}
                   </ApplicationSubPanel.Header>
                   <ApplicationSubPanel.Body>
                     <StudyProgressContextProvider
@@ -462,7 +436,7 @@ class StateOfStudies extends React.Component<
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
-                  {this.props.i18n.text.get("plugin.guider.user.details.tasks")}
+                  {this.props.i18n.t("labels.tasks", { ns: "tasks" })}
                   <Instructions
                     modifier="instructions"
                     alignSelfVertically="top"
@@ -473,8 +447,9 @@ class StateOfStudies extends React.Component<
                     content={
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: this.props.i18n.text.get(
-                            "plugin.guider.user.details.tasks.instructions"
+                          __html: this.props.i18n.t(
+                            "content.addTaskInstruction",
+                            { ns: "guider" }
                           ),
                         }}
                       />
@@ -506,7 +481,6 @@ class StateOfStudies extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guider: state.guider,
     status: state.status,
   };
@@ -526,4 +500,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StateOfStudies);
+export default withTranslation(["guider"])(
+  connect(mapStateToProps, mapDispatchToProps)(StateOfStudies)
+);

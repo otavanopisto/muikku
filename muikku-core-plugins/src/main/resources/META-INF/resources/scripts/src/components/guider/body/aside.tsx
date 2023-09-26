@@ -1,26 +1,24 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import {
-  GuiderUserLabelType,
   GuiderWorkspaceType,
   GuiderType,
 } from "~/reducers/main-function/guider";
-import { UserGroupType } from "~/reducers/user-index";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
+import { UserGroup } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
-  i18n: i18nType;
+interface NavigationProps extends WithTranslation<["common"]> {
   guider: GuiderType;
 }
 
@@ -48,54 +46,50 @@ class NavigationAside extends React.Component<
       <Navigation>
         {this.props.guider.availableFilters.labels.length > 0 && (
           <NavigationTopic
-            name={this.props.i18n.text.get("plugin.guider.filters.flags")}
+            name={this.props.i18n.t("labels.flags", { ns: "flags" })}
           >
-            {this.props.guider.availableFilters.labels.map(
-              (label: GuiderUserLabelType) => {
-                const isActive =
-                  this.props.guider.activeFilters.labelFilters.includes(
-                    label.id
+            {this.props.guider.availableFilters.labels.map((label) => {
+              const isActive =
+                this.props.guider.activeFilters.labelFilters.includes(label.id);
+              const hash = isActive
+                ? queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      l: (locationData.l || []).filter(
+                        (i: string) => parseInt(i) !== label.id
+                      ),
+                    }),
+                    { arrayFormat: "bracket" }
+                  )
+                : queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      l: (locationData.l || []).concat(label.id),
+                    }),
+                    { arrayFormat: "bracket" }
                   );
-                const hash = isActive
-                  ? queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        l: (locationData.l || []).filter(
-                          (i: string) => parseInt(i) !== label.id
-                        ),
-                      }),
-                      { arrayFormat: "bracket" }
-                    )
-                  : queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        l: (locationData.l || []).concat(label.id),
-                      }),
-                      { arrayFormat: "bracket" }
-                    );
-                return (
-                  <NavigationElement
-                    modifiers="aside-navigation-guider-flag"
-                    icon="flag"
-                    key={label.id}
-                    iconColor={label.color}
-                    isActive={isActive}
-                    hash={"?" + hash}
-                    editableWrapper={LabelUpdateDialog}
-                    editableWrapperArgs={{ label: label }}
-                    isEditable
-                  >
-                    {label.name}
-                  </NavigationElement>
-                );
-              }
-            )}
+              return (
+                <NavigationElement
+                  modifiers="aside-navigation-guider-flag"
+                  icon="flag"
+                  key={label.id}
+                  iconColor={label.color}
+                  isActive={isActive}
+                  hash={"?" + hash}
+                  editableWrapper={LabelUpdateDialog}
+                  editableWrapperArgs={{ label: label }}
+                  isEditable
+                >
+                  {label.name}
+                </NavigationElement>
+              );
+            })}
           </NavigationTopic>
         )}
 
         {this.props.guider.availableFilters.workspaces.length > 0 && (
           <NavigationTopic
-            name={this.props.i18n.text.get("plugin.guider.filters.workspaces")}
+            name={this.props.i18n.t("labels.workspaces", { ns: "workspace" })}
           >
             {this.props.guider.availableFilters.workspaces.map(
               (workspace: GuiderWorkspaceType) => {
@@ -141,10 +135,10 @@ class NavigationAside extends React.Component<
 
         {this.props.guider.availableFilters.userGroups.length > 0 && (
           <NavigationTopic
-            name={this.props.i18n.text.get("plugin.guider.filters.userGroups")}
+            name={this.props.i18n.t("labels.studentGroups", { ns: "users" })}
           >
             {this.props.guider.availableFilters.userGroups.map(
-              (userGroup: UserGroupType) => {
+              (userGroup: UserGroup) => {
                 const isActive =
                   this.props.guider.activeFilters.userGroupFilters.includes(
                     userGroup.id
@@ -192,7 +186,6 @@ class NavigationAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guider: state.guider,
   };
 }
@@ -204,4 +197,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationAside);
+export default withTranslation(["guider"])(
+  connect(mapStateToProps, mapDispatchToProps)(NavigationAside)
+);

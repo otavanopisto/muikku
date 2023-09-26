@@ -54,7 +54,6 @@ public class WorkspaceMaterialUploadBackingBean extends AbstractWorkspaceBacking
   private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
-  @Named
   private WorkspaceBackingBean workspaceBackingBean;
   
   @Inject

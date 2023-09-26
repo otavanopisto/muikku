@@ -1,5 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
@@ -87,7 +86,6 @@ export interface HopsBaseProps {
  * CompulsoryEducationHopsWizardProps
  */
 interface CompulsoryEducationHopsWizardProps extends HopsBaseProps {
-  i18n: i18nType;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -556,8 +554,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
    */
   render() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { i18n, status, displayNotification, children, ...baseProps } =
-      this.props;
+    const { status, displayNotification, children, ...baseProps } = this.props;
 
     /**
      * Default steps
@@ -774,7 +771,6 @@ class CompulsoryEducationHopsWizard extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }

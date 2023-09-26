@@ -12,7 +12,6 @@ import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceType } from "~/reducers/workspaces";
 import Select from "react-select";
@@ -25,12 +24,12 @@ import {
   UpdateEditNotebookEntry,
   updateEditedNotebookEntry,
 } from "../../../actions/notebook/notebook";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NoteBookProps
  */
-interface NoteEditorProps {
-  i18n: i18nType;
+interface NoteEditorProps extends WithTranslation {
   status: StatusType;
   /**
    * If used in workspace, this is the current workspace
@@ -336,10 +335,8 @@ class NoteEditor extends SessionStateComponent<
           <div className="form">
             <div className="form__row">
               <div className="form-element">
-                <label htmlFor="note-entry-title" className="">
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.entry.title.label"
-                  )}
+                <label htmlFor="note-entry-title">
+                  {this.props.t("labels.title")}
                 </label>
 
                 <input
@@ -354,11 +351,7 @@ class NoteEditor extends SessionStateComponent<
 
             <div className="form__row">
               <div className="form-element">
-                <label>
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.journal.entry.content.label"
-                  )}
-                </label>
+                <label>{this.props.t("labels.content")}</label>
 
                 <CKEditor
                   onChange={this.handleCkeditorChange}
@@ -373,8 +366,11 @@ class NoteEditor extends SessionStateComponent<
             {!this.props.note && (
               <div className="form__row">
                 <div className="form-element">
-                  {/* TODO: lokalisointi*/}
-                  <label>Oletus sijainti</label>
+                  <label>
+                    {this.props.t("labels.defaultPosition", {
+                      ns: "notebook",
+                    })}
+                  </label>
 
                   <Select
                     className="react-select-override"
@@ -393,41 +389,39 @@ class NoteEditor extends SessionStateComponent<
                       }),
                     }}
                   />
-
                   <div className="notebook__select-position-info">
-                    {/* TODO: lokalisointi*/}
                     {this.state.defaultLocation === "BOTTOM" ? (
                       <p>
-                        Oletuksena uusi muistiinpano luodaan listan viimeiseksi.
-                        Voit myös valita sijainnin listasta. Valintalaatikon
-                        valinta tallentuu muistiin
+                        {this.props.t("content.defaultPosition", {
+                          ns: "notebook",
+                          context: "bottom",
+                        })}
                       </p>
                     ) : (
                       <p>
-                        Oletuksena uusi muistiinpano luodaan listan
-                        ensimmäiseksi. Voit myös valita sijainnin listasta.
-                        Valintalaatikon valinta tallennetaan muistiin.
+                        {this.props.t("content.defaultPosition", {
+                          ns: "notebook",
+                        })}
                       </p>
                     )}
                   </div>
                 </div>
               </div>
             )}
-
-            {/* TODO: lokalisointi*/}
             <div className="form__buttons form__buttons--notebook">
               <Button
                 className="button button--dialog-execute"
                 disabled={this.state.locked}
                 onClick={this.handleSaveClick}
               >
-                Tallenna
+                {this.props.t("actions.save")}
               </Button>
               <Button
                 buttonModifiers="dialog-cancel"
                 disabled={this.state.locked}
                 onClick={this.handleCancelClick}
               >
+                {this.props.t("actions.cancel")}
                 Peruuta
               </Button>
 
@@ -437,6 +431,10 @@ class NoteEditor extends SessionStateComponent<
                   disabled={this.state.locked}
                   onClick={this.handleDeleteDraftClick}
                 >
+                  {this.props.t("actions.remove", {
+                    ns: "common",
+                    context: "draf",
+                  })}
                   Poista luonnos
                 </Button>
               )}
@@ -454,7 +452,6 @@ class NoteEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     note: state.notebook.noteInTheEditor,
     defaultLocation: state.notebook.noteDefaultLocation,
@@ -479,4 +476,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NoteEditor);
+export default withTranslation("notebook")(
+  connect(mapStateToProps, mapDispatchToProps)(NoteEditor)
+);
