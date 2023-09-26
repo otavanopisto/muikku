@@ -20,31 +20,15 @@ import {
   UserStudentAddress,
   UserStudentEmail,
   UserStudentPhoneNumber,
-  UserWithSchoolData,
 } from "~/generated/client";
-
-/**
- * GuiderUserLabelType
- */
-export interface GuiderUserLabelType {
-  id: number;
-  name: string;
-  color: string;
-  description: string;
-  ownerIdentifier: string;
-}
-
-export type GuiderUserGroupListType = UserGroup[];
-export type GuiderWorkspaceType = WorkspaceType;
-export type GuiderWorkspaceListType = WorkspaceListType;
 
 /**
  * GuiderFiltersType
  */
 export interface GuiderFiltersType {
   labels: UserFlag[];
-  userGroups: GuiderUserGroupListType;
-  workspaces: GuiderWorkspaceListType;
+  userGroups: UserGroup[];
+  workspaces: WorkspaceType[];
 }
 
 export type GuiderStudentsStateType =
@@ -63,14 +47,6 @@ export interface GuiderActiveFiltersType {
   userGroupFilters: Array<number>;
   query: string;
 }
-
-/**
- * GuiderStudentType
- */
-export interface GuiderStudentType extends UserWithSchoolData {
-  flags: UserStudentFlag[];
-}
-export type GuiderStudentListType = Array<GuiderStudentType>;
 
 //These are actually dates, might be present or not
 //studytime = Notification about study time ending

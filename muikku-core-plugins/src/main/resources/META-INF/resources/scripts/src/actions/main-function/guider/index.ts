@@ -14,10 +14,6 @@ import promisify from "~/util/promisify";
 import { UserFileType } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import {
-  GuiderWorkspaceListType,
-  GuiderUserGroupListType,
-} from "~/reducers/main-function/guider";
-import {
   WorkspaceForumStatisticsType,
   ActivityLogType,
   WorkspaceType,
@@ -128,11 +124,11 @@ export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-  GuiderWorkspaceListType
+  WorkspaceType[]
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
-  GuiderUserGroupListType
+  UserGroup[]
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL",
@@ -565,6 +561,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   ) => {
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
+    const usergroupApi = MApi.getUsergroupApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -643,15 +640,14 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             );
           }),
 
-        promisify(
-          mApi().usergroup.groups.read({ userIdentifier: id }),
-          "callback"
-        )().then((usergroups: UserGroup[]) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "usergroups", value: usergroups },
-          });
-        }),
+        usergroupApi
+          .getUsergroups({ userIdentifier: id })
+          .then((usergroups) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "usergroups", value: usergroups },
+            });
+          }),
 
         userApi
           .getStudentFlags({
@@ -1901,7 +1897,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
       try {
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-          payload: <GuiderWorkspaceListType>await promisify(
+          payload: <WorkspaceType[]>await promisify(
               mApi().workspace.workspaces.read({
                 userIdentifier: currentUser,
                 includeInactiveWorkspaces: true,
@@ -1935,17 +1931,18 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const usergroupApi = MApi.getUsergroupApi();
+
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
+        const usergroups = await usergroupApi.getUsergroups({
+          userIdentifier: currentUser,
+          maxResults: 500,
+        });
+
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
-          payload: <GuiderUserGroupListType>await promisify(
-              mApi().usergroup.groups.read({
-                userIdentifier: currentUser,
-                maxResults: 500,
-              }),
-              "callback"
-            )() || [],
+          payload: usergroups || [],
         });
       } catch (err) {
         if (!(err instanceof MApiError)) {

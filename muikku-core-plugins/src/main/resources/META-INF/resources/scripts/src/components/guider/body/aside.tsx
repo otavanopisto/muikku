@@ -2,10 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
-import {
-  GuiderWorkspaceType,
-  GuiderState,
-} from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
@@ -14,6 +11,7 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { UserGroup } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { WorkspaceType } from "~/reducers/workspaces";
 
 /**
  * NavigationProps
@@ -92,7 +90,7 @@ class NavigationAside extends React.Component<
             name={this.props.i18n.t("labels.workspaces", { ns: "workspace" })}
           >
             {this.props.guider.availableFilters.workspaces.map(
-              (workspace: GuiderWorkspaceType) => {
+              (workspace: WorkspaceType) => {
                 const isActive =
                   this.props.guider.activeFilters.workspaceFilters.includes(
                     workspace.id

@@ -6686,6 +6686,16 @@ paths:
       tags:
         - Usergroup
       parameters:
+        - name: userIdentifier
+          in: query
+          description: User identifier
+          schema:
+            type: string
+        - name: archetype
+          in: query
+          description: Archetype
+          schema:
+            type: string
         - name: q
           in: query
           description: Search string
