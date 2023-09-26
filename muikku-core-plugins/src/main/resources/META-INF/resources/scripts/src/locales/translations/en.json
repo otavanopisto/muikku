@@ -1385,7 +1385,7 @@
       "empty_intermin": " There are no interim evaluation assignments in the course",
       "empty_journals": "There are no journal entries in the course",
       "empty_instructions": "The course does not have instructions yet",
-      "evaluationHasFee": "Evaluation of this course has a fee, but the studying is free.",
+      "evaluationHasFee": "Evaluation of this course has a fee. If you have already paid, please disregard this notice.",
       "evaluationFee": "Evaluation fee for this course is {{price}} euros. When you have completed the payment, teacher will receive automatic notification of your evaluation request.",
       "evaluationPaymentProcessor": "The payment will be made at the Mikkeli city online store. ",
       "logInGuidingInformation": "Would you like to sign up for this course? See your options to do so on Muikku's front page.",
