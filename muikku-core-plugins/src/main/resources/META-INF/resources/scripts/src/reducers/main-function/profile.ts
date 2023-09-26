@@ -1,10 +1,7 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import {
-  StudentUserAddressType,
-  UserWithSchoolDataType,
-  UserChatSettingsType,
-} from "~/reducers/user-index";
+import { UserChatSettingsType } from "~/reducers/user-index";
+import { UserStudentAddress, UserWithSchoolData } from "~/generated/client";
 
 export enum EditableField {
   ENTRYDATE = "ENTRYDATE",
@@ -127,14 +124,14 @@ export interface ProfileProperty {
 }
 
 /**
- * ProfileType
+ * ProfileState
  */
-export interface ProfileType {
+export interface ProfileState {
   location: string;
   properties: ProfileProperty;
   username?: string;
-  addresses?: Array<StudentUserAddressType>;
-  student?: UserWithSchoolDataType;
+  addresses?: UserStudentAddress[];
+  student?: UserWithSchoolData;
   chatSettings?: UserChatSettingsType;
   worklistTemplates?: Array<WorklistTemplate>;
   worklist?: Array<WorklistSection>;
@@ -144,7 +141,7 @@ export interface ProfileType {
 /**
  * initialProfileState
  */
-const initialProfileState: ProfileType = {
+const initialProfileState: ProfileState = {
   properties: {},
   username: null,
   addresses: null,
@@ -162,7 +159,7 @@ const initialProfileState: ProfileType = {
  * @param action action
  * @returns State of profileReducer
  */
-export const profile: Reducer<ProfileType> = (
+export const profile: Reducer<ProfileState> = (
   state = initialProfileState,
   action: ActionType
 ) => {

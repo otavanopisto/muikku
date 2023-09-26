@@ -1,12 +1,5 @@
 import { ActionType } from "~/actions";
-import {
-  UserWithSchoolDataType,
-  UserFileType,
-  StudentUserProfileEmailType,
-  StudentUserProfilePhoneType,
-  StudentUserAddressType,
-  UserGroupType,
-} from "~/reducers/user-index";
+import { UserFileType } from "~/reducers/user-index";
 import {
   WorkspaceType,
   WorkspaceListType,
@@ -16,6 +9,16 @@ import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
 import { HopsUppersecondary } from "~/generated/client";
+import {
+  UserStudentFlag,
+  UserFlag,
+  UserGroup,
+  UserStudentAddress,
+  UserStudentEmail,
+  UserStudentPhoneNumber,
+  UserWithSchoolData,
+} from "~/generated/client";
+
 /**
  * GuiderUserLabelType
  */
@@ -27,8 +30,7 @@ export interface GuiderUserLabelType {
   ownerIdentifier: string;
 }
 
-export type GuiderUserLabelListType = Array<GuiderUserLabelType>;
-export type GuiderUserGroupListType = Array<UserGroupType>;
+export type GuiderUserGroupListType = UserGroup[];
 export type GuiderWorkspaceType = WorkspaceType;
 export type GuiderWorkspaceListType = WorkspaceListType;
 
@@ -36,7 +38,7 @@ export type GuiderWorkspaceListType = WorkspaceListType;
  * GuiderFiltersType
  */
 export interface GuiderFiltersType {
-  labels: GuiderUserLabelListType;
+  labels: UserFlag[];
   userGroups: GuiderUserGroupListType;
   workspaces: GuiderWorkspaceListType;
 }
@@ -61,8 +63,8 @@ export interface GuiderActiveFiltersType {
 /**
  * GuiderStudentType
  */
-export interface GuiderStudentType extends UserWithSchoolDataType {
-  flags: Array<GuiderStudentUserProfileLabelType>;
+export interface GuiderStudentType extends UserWithSchoolData {
+  flags: UserStudentFlag[];
 }
 export type GuiderStudentListType = Array<GuiderStudentType>;
 
@@ -156,12 +158,12 @@ export interface GuiderStudentUserProfileType {
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
   basic: GuiderStudentType;
-  labels: Array<GuiderStudentUserProfileLabelType>;
-  emails: Array<StudentUserProfileEmailType>;
-  phoneNumbers: Array<StudentUserProfilePhoneType>;
-  addresses: Array<StudentUserAddressType>;
+  labels: UserStudentFlag[];
+  emails: UserStudentEmail[];
+  phoneNumbers: UserStudentPhoneNumber[];
+  addresses: UserStudentAddress[];
   files: Array<UserFileType>;
-  usergroups: Array<UserGroupType>;
+  usergroups: Array<UserGroup>;
   // Disabled until it really works
   //  vops: VOPSDataType,
   hops: HopsUppersecondary;
@@ -227,7 +229,7 @@ export interface GuiderStudentUserProfileLabelType {
  * @param labelA labelA
  * @param labelB labelB
  */
-function sortLabels(labelA: GuiderUserLabelType, labelB: GuiderUserLabelType) {
+function sortLabels(labelA: UserFlag, labelB: UserFlag) {
   const labelAUpperCase = labelA.name.toUpperCase();
   const labelBUpperCase = labelB.name.toUpperCase();
   return labelAUpperCase < labelBUpperCase
@@ -393,7 +395,10 @@ export const guider: Reducer<GuiderType> = (
         newCurrent.labels = newCurrent.labels.concat([action.payload.label]);
       }
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
@@ -422,7 +427,10 @@ export const guider: Reducer<GuiderType> = (
         );
       }
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
@@ -443,17 +451,21 @@ export const guider: Reducer<GuiderType> = (
     }
 
     case "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
-      // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFnStudentLabel = function (
-        label: GuiderStudentUserProfileLabelType
-      ) {
+      /**
+       * mapFnStudentLabel
+       * @param label label
+       */
+      const mapFnStudentLabel = function (label: UserStudentFlag) {
         if (label.flagId === action.payload.labelId) {
           return Object.assign({}, label, action.payload.update);
         }
         return label;
       };
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         return Object.assign({}, student, {
           flags: student.flags.map(mapFnStudentLabel),
@@ -475,14 +487,18 @@ export const guider: Reducer<GuiderType> = (
     }
 
     case "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS": {
-      // eslint-disable-next-line jsdoc/require-jsdoc
-      const filterFnStudentLabel = function (
-        label: GuiderStudentUserProfileLabelType
-      ) {
+      /**
+       * filterFnStudentLabel
+       * @param label label
+       */
+      const filterFnStudentLabel = function (label: UserStudentFlag) {
         return label.flagId !== action.payload;
       };
 
-      // eslint-disable-next-line jsdoc/require-jsdoc
+      /**
+       * mapFn
+       * @param student student
+       */
       const mapFn = function (student: GuiderStudentType) {
         return Object.assign({}, student, {
           flags: student.flags.filter(filterFnStudentLabel),

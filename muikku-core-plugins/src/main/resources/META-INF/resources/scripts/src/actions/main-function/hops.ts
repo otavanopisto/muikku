@@ -45,6 +45,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
     getState: () => StateType
   ) => {
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
+    const userApi = MApi.getUserApi();
 
     try {
       if (getState().hops.status !== "WAIT") {
@@ -56,12 +57,10 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
         payload: <HOPSStatusType>"LOADING",
       });
 
-      const properties: any = await promisify(
-        mApi().user.properties.read(getState().status.userId, {
-          properties: "hopsPhase",
-        }),
-        "callback"
-      )();
+      const properties = await userApi.getUserProperties({
+        userEntityId: getState().status.userId,
+        properties: "hopsPhase",
+      });
 
       dispatch({
         type: "SET_HOPS_PHASE",

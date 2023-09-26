@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Button, { IconButton } from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import ProfileProperty from "./components/profile-property";
 import {
   saveProfileProperty,
@@ -26,7 +26,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * ContactInformationProps
  */
 interface ContactInformationProps extends WithTranslation<["common"]> {
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
