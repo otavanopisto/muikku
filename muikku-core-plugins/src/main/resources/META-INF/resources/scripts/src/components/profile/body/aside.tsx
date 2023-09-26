@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -8,12 +7,12 @@ import NavigationMenu, {
   NavigationElement,
 } from "~/components/general/navigation";
 import { StatusType } from "~/reducers/base/status";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NavigationProps
  */
-interface NavigationProps {
-  i18n: i18nType;
+interface NavigationProps extends WithTranslation<["common"]> {
   location: string;
   status: StatusType;
 }
@@ -58,36 +57,36 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 
   /**
-   *
+   * render
    */
   render() {
     const sections = [
       {
-        name: this.props.i18n.text.get("plugin.profile.category.general"),
+        name: this.props.t("labels.generalInfo", { ns: "profile" }),
         hash: "general",
       },
       {
-        name: this.props.i18n.text.get("plugin.profile.category.contact"),
+        name: this.props.t("labels.contactInfo"),
         hash: "contact",
       },
       {
-        name: this.props.i18n.text.get("plugin.profile.category.security"),
+        name: this.props.t("labels.signIn"),
         hash: "security",
       },
       {
-        name: this.props.i18n.text.get("plugin.profile.category.vacation"),
+        name: this.props.t("labels.vacationSettings", { ns: "profile" }),
         hash: "vacation",
       },
       {
-        name: this.props.i18n.text.get("plugin.profile.category.chat"),
+        name: this.props.t("labels.chatSettings", { ns: "profile" }),
         hash: "chat",
       },
       {
-        name: this.props.i18n.text.get("plugin.profile.category.work"),
+        name: this.props.t("labels.worklist", { ns: "profile" }),
         hash: "work",
       },
       {
-        name: this.props.i18n.text.get("plugin.profile.category.purchases"),
+        name: this.props.t("labels.orders", { ns: "orders" }),
         hash: "purchases",
       },
     ];
@@ -116,7 +115,6 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     location: state.profile.location,
     status: state.status,
   };
@@ -129,4 +127,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+export default withTranslation(["profile"])(
+  connect(mapStateToProps, mapDispatchToProps)(Navigation)
+);

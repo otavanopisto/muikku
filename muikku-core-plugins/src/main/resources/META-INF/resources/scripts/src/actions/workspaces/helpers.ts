@@ -8,14 +8,16 @@ import {
   WorkspacesType,
   WorkspacesStateType,
   WorkspacesPatchType,
-  WorkspaceListType,
+  WorkspaceType,
 } from "~/reducers/workspaces";
 import {
   ReducerStateType,
   WorkspaceJournalType,
 } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react";
+import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
+import MApi, { isMApiError } from "~/api/api";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -142,10 +144,16 @@ export async function loadWorkspacesHelper(
       firstResult,
       maxResults,
       orderBy: "alphabet",
-      templates: actualFilters.templates,
-      educationTypes: actualFilters.educationFilters,
-      curriculums: actualFilters.curriculumFilters,
-      organizations: actualFilters.organizationFilters,
+      templates: actualFilters.templates || undefined,
+      educationTypes: actualFilters.educationFilters.length
+        ? actualFilters.educationFilters
+        : undefined,
+      curriculums: actualFilters.curriculumFilters.length
+        ? actualFilters.curriculumFilters
+        : undefined,
+      organizations: actualFilters.organizationFilters.length
+        ? actualFilters.organizationFilters
+        : undefined,
       publicity,
     };
   } else {
@@ -154,9 +162,15 @@ export async function loadWorkspacesHelper(
       maxResults,
       orderBy: "alphabet",
       myWorkspaces,
-      educationTypes: actualFilters.educationFilters,
-      curriculums: actualFilters.curriculumFilters,
-      organizations: actualFilters.organizationFilters,
+      educationTypes: actualFilters.educationFilters.length
+        ? actualFilters.educationFilters
+        : undefined,
+      curriculums: actualFilters.curriculumFilters.length
+        ? actualFilters.curriculumFilters
+        : undefined,
+      organizations: actualFilters.organizationFilters.length
+        ? actualFilters.organizationFilters
+        : undefined,
       publicity,
     };
   }
@@ -167,16 +181,11 @@ export async function loadWorkspacesHelper(
   }
 
   try {
-    let nWorkspaces: WorkspaceListType = loadOrganizationWorkspaces
-      ? <WorkspaceListType>(
-          await promisify(
-            mApi()
-              .organizationWorkspaceManagement.workspaces.cacheClear()
-              .read(params),
-            "callback"
-          )()
-        )
-      : <WorkspaceListType>(
+    const organizationApi = MApi.getOrganizationApi();
+
+    let nWorkspaces = loadOrganizationWorkspaces
+      ? <WorkspaceType[]>await organizationApi.getOrganizationWorkspaces(params)
+      : <WorkspaceType[]>(
           await promisify(
             mApi().coursepicker.workspaces.cacheClear().read(params),
             "callback"
@@ -218,13 +227,14 @@ export async function loadWorkspacesHelper(
       });
     }
   } catch (err) {
-    if (!(err instanceof MApiError)) {
+    if (!isMApiError(err)) {
       throw err;
     }
+
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.coursepicker.errormessage.courseLoad"),
+        i18n.t("notifications.loadError", { count: 0, ns: "workspace" }),
         "error"
       )
     );
@@ -350,9 +360,10 @@ export async function loadCurrentWorkspaceJournalsHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.workspace.journal.notification.viewLoadError"
-        ),
+        i18n.t("notifications.loadError", {
+          ns: "journal",
+          context: "entries",
+        }),
         "error"
       )
     );

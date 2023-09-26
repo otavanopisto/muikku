@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 //This one also uses a hack to access the data in the dom
 //please replace it with the following procedure
 //1. Create a rest endpoint to get the permissions list
@@ -6,43 +7,7 @@
 //4. it works :D
 
 import { ActionType } from "~/actions";
-
-/**
- * WhoAmIType
- */
-export interface WhoAmIType {
-  studyTimeEnd: string;
-  studyTimeLeftStr: string;
-  studyStartDate: string;
-  studyEndDate: string;
-  phoneNumbers: any;
-  displayName: string;
-  curriculumIdentifier: string;
-  curriculumName: string;
-  firstName: string;
-  lastName: string;
-  hasEvaluationFees: boolean;
-  hasImage: boolean;
-  id: number;
-  /**
-   * Whether user is active
-   */
-  isActive: boolean;
-  /**
-   * PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
-   */
-  identifier: string;
-  organizationIdentifier: string;
-  locale: string;
-  nickName: string;
-  isDefaultOrganization: boolean;
-  permissions: string[];
-  role: Role;
-  studyProgrammeName: string;
-  studyProgrammeIdentifier: string;
-  addresses: string;
-  emails: string;
-}
+import { Role, UserWhoAmIServices } from "~/generated/client";
 
 /**
  * StatusType
@@ -58,6 +23,7 @@ export interface StatusType {
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
+  services: UserWhoAmIServices;
   currentWorkspaceInfo?: {
     id: number;
     organizationEntityId: number;
@@ -101,20 +67,6 @@ export interface ProfileStatusType {
   curriculumName: string;
 }
 
-export enum Role {
-  TEACHER = "TEACHER",
-  STUDENT = "STUDENT",
-  ADMINISTRATOR = "ADMINISTRATOR",
-  MANAGER = "MANAGER",
-  STUDY_PROGRAMME_LEADER = "STUDY_PROGRAMME_LEADER",
-  STUDY_GUIDER = "STUDY_GUIDER",
-  CUSTOM = "CUSTOM",
-}
-
-const workspaceIdNode = document.querySelector(
-  'meta[name="muikku:workspaceId"]'
-);
-
 // _MUIKKU_LOCALE should be taken from the html
 /**
  * status
@@ -123,32 +75,23 @@ const workspaceIdNode = document.querySelector(
  */
 export default function status(
   state: StatusType = {
-    loggedIn: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:loggedIn"]')
-        .getAttribute("value")
-    ), //whoami.id is checked if exists
+    loggedIn: false, //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
     role: undefined, // whoami.role
     permissions: {},
     contextPath: "", // always empty
-    isActiveUser: JSON.parse(
-      document
-        .querySelector('meta[name="muikku:activeUser"]')
-        .getAttribute("value")
-    ), // whoamI.isActive
+    isActiveUser: false, // whoamI.isActive
     hasFees: false, // whoami.hasEvaluationFees
     profile: null,
     isStudent: false, // check if role is STUDENT
     currentWorkspaceInfo: null,
     hasImage: false,
     imgVersion: new Date().getTime(),
-    currentWorkspaceId:
-      (workspaceIdNode && parseInt(workspaceIdNode.getAttribute("value"))) ||
-      null,
+    currentWorkspaceId: null,
     canCurrentWorkspaceSignup: false,
     hopsEnabled: false, // /user/property/hops.enabled
+    services: null,
   },
   action: ActionType
 ): StatusType {
@@ -194,9 +137,39 @@ export default function status(
       return {
         ...state,
         ...actionPayloadWoPermissions,
+        loggedIn: !!action.payload.userId,
+        isActiveUser: action.payload.isActiveUser,
         permissions: { ...state.permissions, ...action.payload.permissions },
       };
     }
+
+    case "UPDATE_STATUS_WORKSPACE_PERMISSIONS": {
+      const actionPayloadWoPermissions = { ...action.payload };
+      delete actionPayloadWoPermissions["permissions"];
+
+      // TODO remove when JSF removed
+      const stateBasedCloneWoPermissions: any = {};
+      Object.keys(actionPayloadWoPermissions).forEach((k) => {
+        stateBasedCloneWoPermissions[k] = (state as any)[k];
+      });
+
+      const permissionsBasedClone: any = {};
+      Object.keys(action.payload.permissions || {}).forEach((k) => {
+        permissionsBasedClone[k] = (state as any).permissions[k];
+      });
+
+      return {
+        ...state,
+        ...actionPayloadWoPermissions,
+        permissions: { ...state.permissions, ...action.payload.permissions },
+      };
+    }
+
+    case "UPDATE_STATUS_WORKSPACEID":
+      return {
+        ...state,
+        currentWorkspaceId: action.payload,
+      };
 
     default:
       return state;

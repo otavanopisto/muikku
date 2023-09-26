@@ -34,7 +34,8 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               String studyTimeLeftStr,
               OffsetDateTime studyStartDate,
               OffsetDateTime studyEndDate,
-              OffsetDateTime studyTimeEnd
+              OffsetDateTime studyTimeEnd,
+              UserWhoAmIInfoServices services
               ) {
     super(id, identifier, firstName, lastName, nickName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
@@ -56,6 +57,7 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.setStudyStartDate(studyStartDate);
     this.setStudyEndDate(studyEndDate);
     this.setStudyTimeEnd(studyTimeEnd);
+    this.setServices(services);
   }
 
   public String getStudyProgrammeName() {
@@ -210,6 +212,14 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.role = role;
   }
 
+  public UserWhoAmIInfoServices getServices() {
+    return services;
+  }
+
+  public void setServices(UserWhoAmIInfoServices services) {
+    this.services = services;
+  }
+
   private String studyProgrammeName;
   private String studyProgrammeIdentifier;
   private boolean hasEvaluationFees;
@@ -229,5 +239,6 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private OffsetDateTime studyTimeEnd;
   private String locale;
   private EnvironmentRoleArchetype role;
+  private UserWhoAmIInfoServices services;
 
 }

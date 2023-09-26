@@ -1,20 +1,22 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
-import { i18nType } from "~/reducers/base/i18n";
-import { AnnouncementType, AnnouncementsType } from "~/reducers/announcements";
+import { AnnouncementsState } from "~/reducers/announcements";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
+import { localizeTime } from "~/locales/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
+import { AnyActionType } from "~/actions";
 
 /**
  * AnnouncementsAsideProps
  */
-interface AnnouncementsAsideProps {
-  i18n: i18nType;
-  announcements: AnnouncementsType;
+interface AnnouncementsAsideProps extends WithTranslation {
+  announcements: AnnouncementsState;
 }
 
 /**
@@ -39,7 +41,7 @@ class AnnouncementsAside extends React.Component<
         {this.props.announcements.announcements.length !== 0 ? (
           <div className="item-list item-list--panel-announcements">
             {this.props.announcements.announcements.map(
-              (announcement: AnnouncementType) => {
+              (announcement: Announcement) => {
                 const extraWorkspaces =
                   announcement.workspaces && announcement.workspaces.length
                     ? announcement.workspaces.length - 1
@@ -60,7 +62,7 @@ class AnnouncementsAside extends React.Component<
                         {announcement.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {this.props.i18n.time.format(announcement.startDate)}
+                        {localizeTime.date(announcement.startDate)}
                       </span>
                       {announcement.workspaces &&
                       announcement.workspaces.length ? (
@@ -90,7 +92,9 @@ class AnnouncementsAside extends React.Component<
             )}
           </div>
         ) : (
-          <div>{this.props.i18n.text.get("plugin.announcer.empty.title")}</div>
+          <div>
+            {this.props.i18n.t("content.empty", { context: "announcements" })}
+          </div>
         )}
       </>
     );
@@ -104,7 +108,6 @@ class AnnouncementsAside extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     announcements: state.announcements,
   };
 }
@@ -114,8 +117,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncementsAside);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncementsAside)
+);

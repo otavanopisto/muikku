@@ -1,14 +1,12 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
+import MApi from "~/api/api";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import {
-  ProfileStatusType,
-  StatusType,
-  WhoAmIType,
-} from "~/reducers/base/status";
+import { ProfileStatusType, StatusType } from "~/reducers/base/status";
+import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
-import { Role } from "../../reducers/base/status";
+import i18n from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -22,6 +20,16 @@ export type UPDATE_STATUS_HAS_IMAGE = SpecificActionType<
 export type UPDATE_STATUS = SpecificActionType<
   "UPDATE_STATUS",
   Partial<StatusType>
+>;
+
+export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
+  Partial<StatusType>
+>;
+
+export type UPDATE_STATUS_WORKSPACEID = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACEID",
+  number
 >;
 
 /**
@@ -39,6 +47,13 @@ export interface LoadWorkspaceStatusInfoType {
 }
 
 /**
+ * LoadWorkspaceStatusInfoType
+ */
+export interface LoadEnviromentalForumAreaPermissionsType {
+  (): AnyActionType;
+}
+
+/**
  * loadWhoAMI
  * @param dispatch dispatch
  * @param whoAmIReadyCb whoAmIReadyCb
@@ -47,9 +62,9 @@ async function loadWhoAMI(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   whoAmIReadyCb: () => void
 ) {
-  const whoAmI = <WhoAmIType>(
-    await promisify(mApi().user.whoami.read(), "callback")()
-  );
+  const userApi = MApi.getUserApi();
+
+  const whoAmI = await userApi.getWhoAmI();
 
   dispatch({
     type: "UPDATE_STATUS",
@@ -60,8 +75,9 @@ async function loadWhoAMI(
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
       role: whoAmI.role,
-      isStudent: whoAmI.role === Role.STUDENT,
+      isStudent: whoAmI.role === "STUDENT",
       userSchoolDataIdentifier: whoAmI.identifier,
+      services: whoAmI.services,
       permissions: {
         ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
           "CREATE_ANNOUNCEMENT"
@@ -96,6 +112,18 @@ async function loadWhoAMI(
         PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
         LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
+        CHAT_ACTIVE: whoAmI.services.chat.isActive,
+        CHAT_AVAILABLE: whoAmI.services.chat.isAvailable,
+        FORUM_ACCESSENVIRONMENTFORUM:
+          whoAmI.services.environmentForum.isAvailable &&
+          whoAmI.permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
+        FORUM_CREATEENVIRONMENTFORUM:
+          whoAmI.services.environmentForum.isAvailable &&
+          whoAmI.permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
+        FORUM_DELETEENVIRONMENTFORUM:
+          whoAmI.services.environmentForum.isAvailable &&
+          whoAmI.permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
+        WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {
         addresses: (whoAmI.addresses && JSON.parse(whoAmI.addresses)) || [],
@@ -116,115 +144,14 @@ async function loadWhoAMI(
     },
   });
 
+  i18n.changeLanguage(whoAmI.locale);
+
   dispatch({
     type: "LOCALE_UPDATE",
     payload: whoAmI.locale,
   });
 
   whoAmIReadyCb();
-}
-
-// User has set nickname for chat and activated the chat funtionality via profile view
-/**
- * loadChatActive
- * @param dispatch dispatch
- */
-async function loadChatActive(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
-) {
-  const isActive = <boolean>(
-    await promisify(mApi().chat.isActive.read(), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        CHAT_ACTIVE: isActive,
-      },
-    },
-  });
-}
-
-// User is loggedin and is part of default organization that has access to chat
-/**
- * loadChatAvailable
- * @param dispatch dispatch
- */
-async function loadChatAvailable(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
-) {
-  const isAvailable = <boolean>(
-    await promisify(mApi().chat.isAvailable.read(), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        CHAT_AVAILABLE: isAvailable,
-      },
-    },
-  });
-}
-
-/**
- * loadWorklistAvailable
- * @param dispatch dispatch
- */
-async function loadWorklistAvailable(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
-) {
-  const isAvailable = <boolean>(
-    await promisify(mApi().worklist.isAvailable.read(), "callback")()
-  );
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        WORKLIST_AVAILABLE: isAvailable,
-      },
-    },
-  });
-}
-
-/**
- * loadForumIsAvailable
- * @param dispatch dispatch
- * @param permissions permissions
- */
-async function loadForumIsAvailable(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-  permissions: string[]
-) {
-  const isAvailable = <boolean>(
-    await promisify(mApi().forum.isAvailable.read(), "callback")()
-  );
-  const areaPermissions = isAvailable
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      <any>(
-        await promisify(
-          mApi().forum.environmentAreaPermissions.read(),
-          "callback"
-        )()
-      )
-    : null;
-
-  dispatch({
-    type: "UPDATE_STATUS",
-    payload: {
-      permissions: {
-        FORUM_ACCESSENVIRONMENTFORUM:
-          isAvailable && permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
-        FORUM_CREATEENVIRONMENTFORUM:
-          isAvailable && permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
-        FORUM_DELETEENVIRONMENTFORUM:
-          isAvailable && permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
-        AREA_PERMISSIONS: areaPermissions,
-      },
-    },
-  });
 }
 
 /**
@@ -252,7 +179,7 @@ async function loadWorkspacePermissions(
   );
 
   dispatch({
-    type: "UPDATE_STATUS",
+    type: "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
     payload: {
       permissions: {
         WORKSPACE_ACCESS_EVALUATION: permissions.includes(
@@ -328,15 +255,7 @@ const loadStatus: LoadStatusType = function loadStatus(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    if (getState().status.loggedIn) {
-      await loadWhoAMI(dispatch, whoAmIReadyCb);
-      loadChatActive(dispatch);
-      loadChatAvailable(dispatch);
-      loadWorklistAvailable(dispatch);
-      loadForumIsAvailable(dispatch, getState().status.profile.permissions);
-    } else {
-      loadWhoAMI(dispatch, whoAmIReadyCb);
-    }
+    loadWhoAMI(dispatch, whoAmIReadyCb);
   };
 };
 
@@ -350,8 +269,58 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const worspaceId = getState().status.currentWorkspaceId;
-      loadWorkspacePermissions(worspaceId, dispatch, readyCb);
+      const workspaceUrlName = window.location.pathname.split("/")[2];
+
+      let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
+
+      if (workspaceUrlName) {
+        workspaceBasicInfo = <WorkspaceBasicInfo>(
+          await promisify(
+            mApi().workspace.workspaces.basicInfo.read(workspaceUrlName),
+            "callback"
+          )()
+        );
+      }
+
+      dispatch({
+        type: "UPDATE_STATUS_WORKSPACEID",
+        payload: workspaceBasicInfo.id,
+      });
+
+      loadWorkspacePermissions(workspaceBasicInfo.id, dispatch, readyCb);
+    };
+  };
+
+/**
+ * loadWorkspaceStatus
+ */
+const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissionsType =
+  function loadEnviromentalForumAreaPermissions() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      const areaPermissions = state.status.services.environmentForum.isAvailable
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          <any>(
+            await promisify(
+              mApi().forum.environmentAreaPermissions.read(),
+              "callback"
+            )()
+          )
+        : null;
+
+      dispatch({
+        type: "UPDATE_STATUS",
+        payload: {
+          ...state.status,
+          permissions: {
+            AREA_PERMISSIONS: areaPermissions,
+          },
+        },
+      });
     };
   };
 
@@ -416,6 +385,7 @@ export default {
   updateStatusHasImage,
   loadStatus,
   loadWorkspaceStatus,
+  loadEnviromentalForumAreaPermissions,
 };
 export {
   logout,
@@ -423,4 +393,5 @@ export {
   updateStatusHasImage,
   loadStatus,
   loadWorkspaceStatus,
+  loadEnviromentalForumAreaPermissions,
 };

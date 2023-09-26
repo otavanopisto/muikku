@@ -1,12 +1,10 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FrontpageInstagramProps
  */
-interface FrontpageInstagramProps {
-  i18n: i18nType;
-}
+interface FrontpageInstagramProps extends WithTranslation {}
 
 /**
  * FrontpageInstagramState
@@ -16,7 +14,7 @@ interface FrontpageInstagramState {}
 /**
  * FrontpageInstagram
  */
-export default class FrontpageInstagram extends React.Component<
+class FrontpageInstagram extends React.Component<
   FrontpageInstagramProps,
   FrontpageInstagramState
 > {
@@ -28,12 +26,10 @@ export default class FrontpageInstagram extends React.Component<
       <section
         id="instagram"
         className="screen-container__section"
-        aria-label={this.props.i18n.text.get(
-          "plugin.wcag.frontPageSectionInstagramLabel"
-        )}
+        aria-label={this.props.t("wcag.instagram", { ns: "frontPage" })}
       >
         <h2 className="screen-container__header">
-          {this.props.i18n.text.get("plugin.sectionTitle.instagram")}
+          {this.props.t("labels.instagram", { ns: "frontPage" })}
         </h2>
         <div className="ordered-container ordered-container--frontpage-instagram">
           <div className="ordered-container__item ordered-container__item--frontpage-instagram">
@@ -51,9 +47,7 @@ export default class FrontpageInstagram extends React.Component<
                           Instagram muikkuofficial
                         </span>
                         <span className="visually-hidden">
-                          {this.props.i18n.text.get(
-                            "plugin.wcag.externalLink.label"
-                          )}
+                          {this.props.t("wcag.externalLink")}
                         </span>
                       </span>
                     </a>
@@ -69,9 +63,7 @@ export default class FrontpageInstagram extends React.Component<
                         <span className="visually-hidden">Instagram </span>
                         muikkuofficial
                         <span className="visually-hidden">
-                          {this.props.i18n.text.get(
-                            "plugin.wcag.externalLink.label"
-                          )}
+                          {this.props.t("wcag.externalLink")}
                         </span>
                         <span
                           role="presentation"
@@ -80,13 +72,10 @@ export default class FrontpageInstagram extends React.Component<
                       </a>
                     </div>
                     <div className="card__meta-body-description">
-                      {this.props.i18n.text.get(
-                        "plugin.studying.nettilukio.title"
-                      )}{" "}
-                      /{" "}
-                      {this.props.i18n.text.get(
-                        "plugin.studying.nettiperuskoulu.title"
-                      )}
+                      {this.props.t("labels.nettilukio", { ns: "frontPage" })} /{" "}
+                      {this.props.t("labels.nettiperuskoulu", {
+                        ns: "frontPage",
+                      })}
                     </div>
                   </div>
                 </div>
@@ -98,3 +87,5 @@ export default class FrontpageInstagram extends React.Component<
     );
   }
 }
+
+export default withTranslation(["frontPage"])(FrontpageInstagram);

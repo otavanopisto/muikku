@@ -1,5 +1,6 @@
 import * as React from "react";
 import Link from "./link";
+import { useTranslation } from "react-i18next";
 
 /**
  * GuiderStudentLinkProps
@@ -15,7 +16,7 @@ interface GuiderStudentLinkProps {
  */
 export const GuiderStudentLink: React.FC<GuiderStudentLinkProps> = (props) => {
   const { schoolDataIdentifier } = props;
-
+  const { t } = useTranslation("guider");
   /**
    * handleOpenLinkClick
    */
@@ -34,14 +35,13 @@ export const GuiderStudentLink: React.FC<GuiderStudentLinkProps> = (props) => {
 
   return (
     <Link
-      aria-label="Avaa opiskelijan ohjausnäkymä"
+      aria-label={t("wcag.openStudent")}
       onClick={handleOpenLinkClick}
       className="link link--to-student-guider"
       href={`https://${window.location.hostname}/guider#?c=${schoolDataIdentifier}`}
       openInNewTab="_blank"
     >
-      {/* TODO: lokalisointi*/}
-      Avaa opiskelijan ohjausnäkymä
+      {t("actions.openStudent")}
     </Link>
   );
 };

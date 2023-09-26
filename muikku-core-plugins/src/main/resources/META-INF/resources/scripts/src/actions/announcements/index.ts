@@ -1,19 +1,23 @@
 import notificationActions from "~/actions/base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
+import { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   AnnouncementsStateType,
-  AnnouncementsPatchType,
-  AnnouncementListType,
-  AnnouncementType,
-  AnnouncementUpdateType,
-  AnnouncementsType,
+  AnnouncementsStatePatch,
+  AnnouncementsState,
 } from "~/reducers/announcements";
 import { loadAnnouncementsHelper } from "./helpers";
 import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
+import i18n from "~/locales/i18n";
+import {
+  Announcement,
+  CreateAnnouncementRequest,
+  GetAnnouncementsRequest,
+} from "~/generated/client";
+import MApi from "~/api/api";
+import { Dispatch } from "react-redux";
 
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",
@@ -21,38 +25,38 @@ export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
 >;
 export type UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
-  AnnouncementsPatchType
+  AnnouncementsStatePatch
 >;
 export type UPDATE_SELECTED_ANNOUNCEMENTS = SpecificActionType<
   "UPDATE_SELECTED_ANNOUNCEMENTS",
-  AnnouncementListType
+  Announcement[]
 >;
 export type ADD_TO_ANNOUNCEMENTS_SELECTED = SpecificActionType<
   "ADD_TO_ANNOUNCEMENTS_SELECTED",
-  AnnouncementType
+  Announcement
 >;
 export type REMOVE_FROM_ANNOUNCEMENTS_SELECTED = SpecificActionType<
   "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
-  AnnouncementType
+  Announcement
 >;
 export type SET_CURRENT_ANNOUNCEMENT = SpecificActionType<
   "SET_CURRENT_ANNOUNCEMENT",
-  AnnouncementType
+  Announcement
 >;
 export type UPDATE_ONE_ANNOUNCEMENT = SpecificActionType<
   "UPDATE_ONE_ANNOUNCEMENT",
   {
-    update: AnnouncementUpdateType;
-    announcement: AnnouncementType;
+    update: Partial<Announcement>;
+    announcement: Announcement;
   }
 >;
 export type DELETE_ANNOUNCEMENT = SpecificActionType<
   "DELETE_ANNOUNCEMENT",
-  AnnouncementType
+  Announcement
 >;
 export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS",
-  AnnouncementListType
+  Announcement[]
 >;
 
 /**
@@ -60,8 +64,9 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
  */
 export interface LoadAnnouncementsAsAClientTriggerType {
   (
+    fetchParams: GetAnnouncementsRequest,
     options?: any,
-    callback?: (announcements: AnnouncementListType) => any
+    callback?: (announcements: Announcement[]) => any
   ): AnyActionType;
 }
 
@@ -93,14 +98,14 @@ export interface LoadAnnouncementTriggerType {
  * AddToAnnouncementsSelectedTriggerType
  */
 export interface AddToAnnouncementsSelectedTriggerType {
-  (announcement: AnnouncementType): AnyActionType;
+  (announcement: Announcement): AnyActionType;
 }
 
 /**
  * RemoveFromAnnouncementsSelectedTriggerType
  */
 export interface RemoveFromAnnouncementsSelectedTriggerType {
-  (announcement: AnnouncementType): AnyActionType;
+  (announcement: Announcement): AnyActionType;
 }
 
 /**
@@ -108,8 +113,8 @@ export interface RemoveFromAnnouncementsSelectedTriggerType {
  */
 export interface UpdateAnnouncementTriggerType {
   (data: {
-    announcement: AnnouncementType;
-    update: AnnouncementUpdateType;
+    announcement: Announcement;
+    update: Partial<Announcement>;
     success?: () => any;
     fail?: () => any;
     cancelRedirect?: boolean;
@@ -121,7 +126,7 @@ export interface UpdateAnnouncementTriggerType {
  */
 export interface DeleteAnnouncementTriggerType {
   (data: {
-    announcement: AnnouncementType;
+    announcement: Announcement;
     success: () => any;
     fail: () => any;
   }): AnyActionType;
@@ -135,24 +140,11 @@ export interface DeleteSelectedAnnouncementsTriggerType {
 }
 
 /**
- * AnnouncementGeneratorType
- */
-interface AnnouncementGeneratorType {
-  caption: string;
-  content: string;
-  endDate: string;
-  publiclyVisible: boolean;
-  startDate: string;
-  userGroupEntityIds: Array<number>;
-  workspaceEntityIds: Array<number>;
-}
-
-/**
  * CreateAnnouncementTriggerType
  */
 export interface CreateAnnouncementTriggerType {
   (data: {
-    announcement: AnnouncementGeneratorType;
+    announcement: CreateAnnouncementRequest;
     success: () => any;
     fail: () => any;
   }): AnyActionType;
@@ -165,16 +157,17 @@ export interface CreateAnnouncementTriggerType {
  * @param announcement announcement
  */
 function validateAnnouncement(
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType,
-  announcement: AnnouncementGeneratorType
+  announcement: CreateAnnouncementRequest
 ) {
   if (!announcement.caption) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.caption"
-        ),
+        i18n.t("validation.caption", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -182,9 +175,10 @@ function validateAnnouncement(
   } else if (!announcement.content) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.content"
-        ),
+        i18n.t("validation.content", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -192,9 +186,10 @@ function validateAnnouncement(
   } else if (!announcement.endDate) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.endDate"
-        ),
+        i18n.t("validation.endDate", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -202,9 +197,10 @@ function validateAnnouncement(
   } else if (!announcement.startDate) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.startDate"
-        ),
+        i18n.t("validation.beginDate", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -244,27 +240,25 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
   workspaceId
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     const state = getState();
 
-    let announcement: AnnouncementType = state.announcements.announcements.find(
-      (a: AnnouncementType) => a.id === announcementId
+    let announcement: Announcement = state.announcements.announcements.find(
+      (a: Announcement) => a.id === announcementId
     );
     try {
       if (!announcement) {
-        /**
-         * There is chance that user will try url with id that is not (anymore) available, then this try catch will take
-         * care of it if that happens
-         */
+        const announcerApi = MApi.getAnnouncerApi();
+
+        // There is chance that user will try url with id that is not (anymore) available, then this try catch will take
+        // care of it if that happens
         try {
-          announcement = <AnnouncementType>(
-            await promisify(
-              mApi().announcer.announcements.read(announcementId),
-              "callback"
-            )()
-          );
+          announcement = await announcerApi.getAnnouncement({
+            announcementId,
+          });
+
           announcement.userGroupEntityIds.forEach((id) =>
             dispatch(loadUserGroupIndex(id))
           );
@@ -276,9 +270,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
-              getState().i18n.text.get(
-                "plugin.announcer.errormessage.announcementNotAvailable"
-              ),
+              i18n.t("notifications.availableError", { ns: "messaging" }),
               "error"
             )
           );
@@ -304,9 +296,11 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.announcer.errormessage.loadAnnouncement"
-          ),
+          i18n.t("notifications.loadError", {
+            ns: "messaging",
+            context: "announcements",
+            count: 0,
+          }),
           "error"
         )
       );
@@ -345,29 +339,29 @@ const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerTyp
 const updateAnnouncement: UpdateAnnouncementTriggerType =
   function updateAnnouncement(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const announcements: AnnouncementsType = state.announcements;
+      const announcements: AnnouncementsState = state.announcements;
 
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
 
+      const announcerApi = MApi.getAnnouncerApi();
+
       try {
-        const nAnnouncement: AnnouncementType = Object.assign(
+        const nAnnouncement: Announcement = Object.assign(
           {},
           data.announcement,
           data.update
         );
-        await promisify(
-          mApi().announcer.announcements.update(
-            data.announcement.id,
-            nAnnouncement
-          ),
-          "callback"
-        )();
+
+        await announcerApi.updateAnnouncement({
+          announcementId: data.announcement.id,
+          updateAnnouncementRequest: nAnnouncement,
+        });
 
         const diff = moment(nAnnouncement.endDate).diff(moment(), "days");
         if (announcements.location !== "active" && diff >= 0) {
@@ -379,7 +373,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
             return;
           }
           location.hash = "#active";
-        } else if (announcements.location !== "past" && diff < 0) {
+        } else if (announcements.location !== "expired" && diff < 0) {
           if (data.cancelRedirect) {
             dispatch({
               type: "DELETE_ANNOUNCEMENT",
@@ -387,17 +381,14 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
             });
             return;
           }
-          location.hash = "#past";
+          location.hash = "#expired";
         } else {
           dispatch({
             type: "UPDATE_ONE_ANNOUNCEMENT",
             payload: {
-              update: <AnnouncementUpdateType>(
-                await promisify(
-                  mApi().announcer.announcements.read(data.announcement.id),
-                  "callback"
-                )()
-              ),
+              update: await announcerApi.getAnnouncement({
+                announcementId: data.announcement.id,
+              }),
               announcement: data.announcement,
             },
           });
@@ -409,9 +400,10 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.announcer.errormessage.updateAnnouncement"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "messaging",
+              context: "announcement",
+            }),
             "error"
           )
         );
@@ -427,14 +419,16 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
 const deleteAnnouncement: DeleteAnnouncementTriggerType =
   function deleteAnnouncement(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
-        await promisify(
-          mApi().announcer.announcements.del(data.announcement.id),
-          "callback"
-        )();
+        const announcerApi = MApi.getAnnouncerApi();
+
+        await announcerApi.deleteAnnouncement({
+          announcementId: data.announcement.id,
+        });
+
         dispatch({
           type: "DELETE_ANNOUNCEMENT",
           payload: data.announcement,
@@ -455,19 +449,20 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
 const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
   function deleteSelectedAnnouncements() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const announcements: AnnouncementsType = state.announcements;
+      const announcements: AnnouncementsState = state.announcements;
+      const announcerApi = MApi.getAnnouncerApi();
 
       await Promise.all(
         announcements.selected.map(async (announcement) => {
           try {
-            await promisify(
-              mApi().announcer.announcements.del(announcement.id),
-              "callback"
-            )();
+            await announcerApi.deleteAnnouncement({
+              announcementId: announcement.id,
+            });
+
             dispatch({
               type: "DELETE_ANNOUNCEMENT",
               payload: announcement,
@@ -478,9 +473,10 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
             }
             dispatch(
               notificationActions.displayNotification(
-                getState().i18n.text.get(
-                  "plugin.announcer.errormessage.deleteAnnouncement"
-                ),
+                i18n.t("notifications.removeError", {
+                  ns: "messaging",
+                  context: "announcement",
+                }),
                 "error"
               )
             );
@@ -497,27 +493,28 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
 const createAnnouncement: CreateAnnouncementTriggerType =
   function createAnnouncement(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const announcements: AnnouncementsType = state.announcements;
+      const announcements: AnnouncementsState = state.announcements;
 
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
 
+      const announcerApi = MApi.getAnnouncerApi();
+
       try {
-        await promisify(
-          mApi().announcer.announcements.create(data.announcement),
-          "callback"
-        )();
+        await announcerApi.createAnnouncement({
+          createAnnouncementRequest: data.announcement,
+        });
 
         const diff = moment(data.announcement.endDate).diff(moment(), "days");
         if (announcements.location !== "active" && diff >= 0) {
           location.hash = "#active";
-        } else if (announcements.location !== "past" && diff < 0) {
-          location.hash = "#past";
+        } else if (announcements.location !== "expired" && diff < 0) {
+          location.hash = "#expired";
         } else {
           //TODO why in the world the request to create the announcement does not return the created object?
           //I am forced to reload all the announcements due to being unable to know what was created
@@ -537,9 +534,10 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.announcer.errormessage.createAnnouncement"
-            ),
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "announcement",
+            }),
             "error"
           )
         );
@@ -550,16 +548,18 @@ const createAnnouncement: CreateAnnouncementTriggerType =
 
 /**
  * loadAnnouncementsAsAClient
+ * @param fetchParams fetchParams
  * @param options options
  * @param callback callback
  */
 const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
   function loadAnnouncementsFromServer(
-    options = { hideWorkspaceAnnouncements: "false", loadUserGroups: true },
+    fetchParams,
+    options = { loadUserGroups: true },
     callback
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       try {
@@ -571,12 +571,9 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         const loadUserGroups = options.loadUserGroups;
         delete options.loadUserGroups;
 
-        const announcements: AnnouncementListType = <AnnouncementListType>(
-          await promisify(
-            mApi().announcer.announcements.read(options),
-            "callback"
-          )()
-        );
+        const announcerApi = MApi.getAnnouncerApi();
+        const announcements = await announcerApi.getAnnouncements(fetchParams);
+
         if (loadUserGroups) {
           announcements.forEach((a) =>
             a.userGroupEntityIds.forEach((id) =>
@@ -585,7 +582,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
           );
         }
 
-        const payload: AnnouncementsPatchType = {
+        const payload: AnnouncementsStatePatch = {
           state: "READY",
           announcements,
           location: null,
@@ -606,9 +603,11 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.announcer.errormessage.loadAnnouncements"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              context: "announcements",
+              count: 0,
+            }),
             "error"
           )
         );

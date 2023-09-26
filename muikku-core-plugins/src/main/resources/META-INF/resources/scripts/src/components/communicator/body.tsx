@@ -17,12 +17,17 @@ export default class CommunicatorBody extends React.Component<
   Record<string, unknown>,
   Record<string, unknown>
 > {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  myRef: any;
+
   /**
    * constructor
    * @param props props
    */
   constructor(props: Record<string, unknown>) {
     super(props);
+
+    this.myRef = React.createRef();
 
     this.openSignatureDialog = this.openSignatureDialog.bind(this);
   }
@@ -31,9 +36,7 @@ export default class CommunicatorBody extends React.Component<
    * openSignatureDialog
    */
   openSignatureDialog() {
-    return (this.refs["application"] as any)
-      .getWrappedInstance()
-      .openDialogSignature();
+    this.myRef.current.getWrappedInstance().openDialogSignature();
   }
 
   /**
@@ -44,7 +47,7 @@ export default class CommunicatorBody extends React.Component<
     return (
       <div>
         <MainFunctionNavbar activeTrail="communicator" navigation={aside} />
-        <Application aside={aside} ref="application" />
+        <Application aside={aside} ref={this.myRef} />
       </div>
     );
   }

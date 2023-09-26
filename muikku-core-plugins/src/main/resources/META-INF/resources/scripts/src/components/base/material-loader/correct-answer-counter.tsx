@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 
 /**
@@ -16,6 +17,8 @@ interface MaterialLoaderCorrectAnswerCounterProps extends MaterialLoaderProps {
 export function MaterialLoaderCorrectAnswerCounter(
   props: MaterialLoaderCorrectAnswerCounterProps
 ) {
+  const { t } = useTranslation(["materials", "common"]);
+
   if (!props.answersChecked || !Object.keys(props.answerRegistry).length) {
     return null;
   }
@@ -23,9 +26,7 @@ export function MaterialLoaderCorrectAnswerCounter(
   return (
     <div className="material-page__correct-answers">
       <span className="material-page__correct-answers-label">
-        {props.i18n.text.get(
-          "plugin.workspace.materialsLoader.correctAnswersCountLabel"
-        )}
+        {t("labels.correctAnswers", { ns: "materials" })}
       </span>
       <span className="material-page__correct-answers-data">
         {

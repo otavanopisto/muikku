@@ -7,17 +7,18 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/form.scss";
 import ContentPanel from "~/components/general/content-panel";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { bindActionCreators } from "redux";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * PermissionsByUsergroupsProps
  */
-interface PermissionsByUsergroupsProps {
-  i18n: i18nType;
+interface PermissionsByUsergroupsProps extends WithTranslation<["common"]> {
   workspace: WorkspaceType;
 }
 
@@ -54,23 +55,18 @@ class PermissionsByUsergroups extends React.Component<
     return (
       <ContentPanel
         modifier="permissions-by-usergroup"
-        title={this.props.i18n.text.get(
-          "plugin.workspace.permissions.viewTitle"
-        )}
+        title={this.props.t("labels.signUpRights", { ns: "workspace" })}
         ref="content-panel"
       >
         <div className="">
           <div>
-            <div>
-              {this.props.i18n.text.get(
-                "plugin.workspace.permissions.usergroupsColumn.label"
-              )}
-            </div>
+            <div>{this.props.t("labels.userGroups", { ns: "users" })}</div>
             {PERMISSIONS_TO_EXTRACT.map((pte) => (
               <div key={pte}>
-                {this.props.i18n.text.get(
-                  "plugin.workspace.permissions.label." + pte
-                )}
+                {this.props.t("labels.permission", {
+                  ns: "workspace",
+                  context: pte,
+                })}
               </div>
             ))}
           </div>
@@ -107,20 +103,10 @@ class PermissionsByUsergroups extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
   };
 }
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
-  return bindActionCreators({}, dispatch);
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PermissionsByUsergroups);
+export default withTranslation(["common"])(
+  connect(mapStateToProps)(PermissionsByUsergroups)
+);

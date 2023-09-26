@@ -1,18 +1,16 @@
 import { AnyActionType } from "~/actions";
 import {
-  AnnouncementsType,
   AnnouncementsStateType,
-  AnnouncementListType,
-  AnnouncementsPatchType,
-  AnnouncerNavigationItemListType,
+  AnnouncementsStatePatch,
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
-import { StatusType } from "~/reducers/base/status";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
+import i18n from "~/locales/i18n";
+import { GetAnnouncementsRequest } from "~/generated/client";
+import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * loadAnnouncementsHelper
@@ -28,7 +26,7 @@ export async function loadAnnouncementsHelper(
   workspaceId: number,
   notOverrideCurrent: boolean,
   force: boolean,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   if (!notOverrideCurrent) {
@@ -40,10 +38,9 @@ export async function loadAnnouncementsHelper(
   }
 
   const state = getState();
-  const navigation: AnnouncerNavigationItemListType =
-    state.announcements.navigation;
-  const announcements: AnnouncementsType = state.announcements;
-  const status: StatusType = state.status;
+  const navigation = state.announcements.navigation;
+  const announcements = state.announcements;
+  const status = state.status;
   const actualLocation: string = location || announcements.location;
 
   const isForceDefined = typeof force === "boolean";
@@ -75,7 +72,7 @@ export async function loadAnnouncementsHelper(
     });
   }
 
-  const params: any = {
+  const params: GetAnnouncementsRequest = {
     onlyEditable: true,
     hideEnvironmentAnnouncements:
       !status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT,
@@ -84,14 +81,14 @@ export async function loadAnnouncementsHelper(
     params.workspaceEntityId = workspaceId;
   }
   switch (item.id) {
-    case "past":
+    case "expired":
       params.timeFrame = "EXPIRED";
       break;
     case "archived":
       params.timeFrame = "ALL";
       params.onlyArchived = true;
       break;
-    case "mine":
+    case "own":
       params.timeFrame = "ALL";
       params.onlyMine = true;
       break;
@@ -100,17 +97,18 @@ export async function loadAnnouncementsHelper(
       break;
   }
 
+  const announcerApi = MApi.getAnnouncerApi();
+
   try {
-    const announcements: AnnouncementListType = <AnnouncementListType>(
-      await promisify(mApi().announcer.announcements.read(params), "callback")()
-    );
+    const announcements = await announcerApi.getAnnouncements(params);
+
     announcements.forEach((a) =>
       a.userGroupEntityIds.forEach((id) => dispatch(loadUserGroupIndex(id)))
     );
 
     //Create the payload for updating all the announcer properties
     const properLocation = location || item.location;
-    const payload: AnnouncementsPatchType = {
+    const payload: AnnouncementsStatePatch = {
       state: "READY",
       announcements,
       location: properLocation,
@@ -125,15 +123,17 @@ export async function loadAnnouncementsHelper(
       payload,
     });
   } catch (err) {
-    if (!(err instanceof MApiError)) {
+    if (!isMApiError(err)) {
       throw err;
     }
+
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.loadAnnouncements"
-        ),
+        i18n.t("notifications.loadError", {
+          context: "announcements",
+          count: 0,
+        }),
         "error"
       )
     );

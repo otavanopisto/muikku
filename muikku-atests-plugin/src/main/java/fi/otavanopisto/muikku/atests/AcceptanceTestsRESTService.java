@@ -687,7 +687,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
     
-    return Response.ok(createRestEntity(forumController.createForumThread(discussion, payload.getTitle(), payload.getMessage(), payload.getSticky(), payload.getLocked()))).build();
+    return Response.ok(createRestEntity(forumController.createForumThread(discussion, payload.getTitle(), payload.getMessage(), payload.getSticky(), null))).build();
   }
 
   @DELETE
@@ -1064,7 +1064,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
     
-    return Response.ok(createRestEntity(forumController.createForumThread(discussion, payload.getTitle(), payload.getMessage(), payload.getSticky(), payload.getLocked()))).build();
+    return Response.ok(createRestEntity(forumController.createForumThread(discussion, payload.getTitle(), payload.getMessage(), payload.getSticky(), null))).build();
   }
   
   @DELETE
@@ -1211,7 +1211,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         entity.getTitle(), 
         entity.getMessage(), 
         entity.getSticky(), 
-        entity.getLocked());
+        null);
   }
   
   private fi.otavanopisto.muikku.atests.Flag createRestEntity(Flag entity) {

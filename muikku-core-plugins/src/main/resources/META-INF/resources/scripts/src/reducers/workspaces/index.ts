@@ -2,15 +2,25 @@ import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
-  UserStaffType,
-  WorkspaceStaffListType,
-  WorkspaceStudentListType,
-} from "~/reducers/user-index";
+  UserStaff,
+  UserStaffSearchResult,
+  WorkspaceStudentSearchResult,
+} from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 import {
   AssignmentEvaluationType,
   AudioAssessment,
 } from "../../@types/evaluation";
+
+/**
+ * WorkspaceBasicInfo
+ */
+export interface WorkspaceBasicInfo {
+  id: number;
+  name: string;
+  urlName: string;
+  nameExtension?: string | null;
+}
 
 /**
  * OrganizationCourseTeacherType
@@ -372,7 +382,15 @@ export interface TemplateWorkspaceType {
  * Language options for workspace
  * used as lang attribute jsx
  */
-export const languageOptions = ["fi", "en", "sw", "ge", "ru", "ja"] as const;
+export const languageOptions = [
+  "fi",
+  "en",
+  "sv",
+  "de",
+  "ru",
+  "ja",
+  "es",
+] as const;
 
 /**
  * Language
@@ -419,13 +437,13 @@ export interface WorkspaceType {
   assessmentRequests?: WorkspaceAssessmentRequestType[];
   interimEvaluationRequests?: WorkspaceInterimEvaluationRequest[];
   additionalInfo?: WorkspaceAdditionalInfoType;
-  staffMembers?: WorkspaceStaffListType;
+  staffMembers?: UserStaffSearchResult;
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceProducerType[];
   contentDescription?: MaterialContentNodeType;
   activityLogs?: ActivityLogType[];
-  students?: WorkspaceStudentListType;
-  inactiveStudents?: WorkspaceStudentListType;
+  students?: WorkspaceStudentSearchResult;
+  inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetailsType;
   permissions?: WorkspacePermissionsType[];
@@ -434,7 +452,7 @@ export interface WorkspaceType {
   journals?: WorkspaceJournalsType;
 
   // These are only in organizationlistings
-  teachers?: UserStaffType[];
+  teachers?: UserStaff[];
   studentCount?: number;
 }
 

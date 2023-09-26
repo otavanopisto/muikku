@@ -1,10 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import Websocket from "~/util/websocket";
 import mApi from "~/lib/mApi";
 import { Action } from "redux";
 import { updateUnreadMessageThreadsCount } from "~/actions/main-function/messages";
 import { StateType } from "~/reducers";
 import { Store } from "redux";
-import { loadStatus, loadWorkspaceStatus } from "~/actions/base/status";
+import {
+  loadEnviromentalForumAreaPermissions,
+  loadStatus,
+  loadWorkspaceStatus,
+} from "~/actions/base/status";
 
 /**
  * getOptionValue
@@ -18,6 +24,7 @@ function getOptionValue(option: boolean) {
 }
 
 /**
+ * Main function to be called when initializing the app
  * @param store store
  * @param options options
  * @param options.setupMessages setupMessages
@@ -30,8 +37,6 @@ export default async function (
     setupWorkspacePermissions?: boolean;
   } = {}
 ) {
-  const state: StateType = store.getState();
-
   let actionsAndCallbacks = {};
   if (getOptionValue(options.setupMessages)) {
     actionsAndCallbacks = {
@@ -50,36 +55,57 @@ export default async function (
     };
   }
 
-  let websocket: any = null;
-  if (state.status.loggedIn) {
-    websocket = new Websocket(store, actionsAndCallbacks);
-  }
+  /**
+   * Actions to intialize websocket when user is logged in
+   *
+   * @param actionsAndCallbacks actionsAndCallbacks
+   */
+  const initializeWebsocket = (actionsAndCallbacks: any) => {
+    let websocket: any = null;
 
-  if (state.status.isActiveUser) {
+    if (store.getState().status.loggedIn) {
+      websocket = new Websocket(store, actionsAndCallbacks);
+    }
+
+    return websocket;
+  };
+
+  /**
+   * Updates unread thread messages count
+   */
+  const updateUnreadThreadMessagesCount = () =>
     getOptionValue(options.setupMessages) &&
-      store.dispatch(<Action>updateUnreadMessageThreadsCount());
-  }
+    store.dispatch(<Action>updateUnreadMessageThreadsCount());
+
+  /**
+   * Loads area permissions for environmental forum
+   * after logging status has been resolved by loadStatus action.
+   */
+  const loadAreaPermissions = () =>
+    store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
 
   if (!options.setupWorkspacePermissions) {
     return new Promise((resolve) => {
-      /**
-       * resolveFn
-       */
+      // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {
-        resolve(websocket);
+        loadAreaPermissions();
+        updateUnreadThreadMessagesCount();
+        resolve(initializeWebsocket(actionsAndCallbacks));
       };
       store.dispatch(<Action>loadStatus(resolveFn));
     });
   } else {
     return new Promise((resolve) => {
       let loadedTotal = 0;
-      /**
-       * resolveFn
-       */
+
+      // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {
         loadedTotal++;
+
         if (loadedTotal === 2) {
-          resolve(websocket);
+          loadAreaPermissions();
+          updateUnreadThreadMessagesCount();
+          resolve(initializeWebsocket(actionsAndCallbacks));
         }
       };
       store.dispatch(<Action>loadStatus(resolveFn));
