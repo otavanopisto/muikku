@@ -12,6 +12,7 @@ import promisify from "~/util/promisify";
 import { displayNotification } from "../base/notifications";
 import { materialShowOrHideExtraTools } from "../workspaces/material";
 import update from "immutability-helper";
+import MApi from "~/api/api";
 import i18n from "~/locales/i18n";
 
 // Notebook actions
@@ -369,6 +370,7 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
         const dataToSave = {
@@ -399,15 +401,12 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         // we need to update default position to server
         // Selected new default value is updated anyways even if user has selected position from the list
         if (state.notebook.noteDefaultLocation !== data.defaultPosition) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const properties: any = await promisify(
-            mApi().user.property.create({
+          const properties = await userApi.setUserProperty({
+            setUserPropertyRequest: {
               key: "note-default-position",
               value: data.defaultPosition,
-              userEntityId: state.status.userId,
-            }),
-            "callback"
-          )();
+            },
+          });
 
           dispatch({
             type: "NOTEBOOK_UPDATE_DEFAULT_POSITION",
@@ -668,15 +667,13 @@ const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const properties: any = await promisify(
-          mApi().user.properties.read(state.status.userId, {
-            properties: "note-default-position",
-          }),
-          "callback"
-        )();
+        const properties = await userApi.getUserProperties({
+          userEntityId: state.status.userId,
+          properties: "note-default-position",
+        });
 
         dispatch({
           type: "NOTEBOOK_LOAD_DEFAULT_POSITION",

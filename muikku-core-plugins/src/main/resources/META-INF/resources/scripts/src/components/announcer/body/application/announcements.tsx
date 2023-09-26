@@ -32,7 +32,7 @@ import ApplicationList, {
   ApplicationListHeaderPrimary,
   ApplicationListItemDate,
 } from "~/components/general/application-list";
-import { UserIndexType } from "~/reducers/user-index";
+import { UserIndexState } from "~/reducers/user-index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 
@@ -41,7 +41,7 @@ import { Announcement } from "~/generated/client";
  */
 interface AnnouncementsProps extends WithTranslation {
   announcements: AnnouncementsStateType;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
