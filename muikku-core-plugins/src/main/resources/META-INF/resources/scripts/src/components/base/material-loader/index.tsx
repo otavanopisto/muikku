@@ -38,10 +38,7 @@ import {
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
-import {
-  MaterialCompositeReply,
-  MaterialContentNode,
-} from "~/generated/client";
+import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
 

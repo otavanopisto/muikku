@@ -7199,8 +7199,7 @@ paths:
   /rest/workspace/educationTypes:
     get:
       operationId: getEducationTypes
-      summary: Get education types
-      description: Get education types
+      summary: Returns list of education types
       tags:
         - Workspace
       responses:
@@ -7220,8 +7219,7 @@ paths:
   /rest/workspace/workspaceTypes:
     get:
       operationId: getWorkspaceTypes
-      summary: Get workspace types
-      description: Get workspace types
+      summary: Returns list of workspace types
       tags:
         - Workspace
       responses:
@@ -7241,8 +7239,7 @@ paths:
   /rest/workspace/workspaces/:
     get:
       operationId: getWorkspaces
-      summary: Get workspaces
-      description: Get workspaces
+      summary: Returns list of workspaces. Note returned items are typed as any.
       tags:
         - Workspace
       parameters:
@@ -7355,8 +7352,7 @@ paths:
 
     post:
       operationId: createWorkspace
-      summary: Create workspace
-      description: Create workspace
+      summary: Create and returns workspace
       tags:
         - Workspace
       parameters:
@@ -7387,8 +7383,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}:
     get:
       operationId: getWorkspace
-      summary: Get workspace
-      description: Get workspace
+      summary: Returns workspace by id. Note returned item is typed as any.
       tags:
         - Workspace
       parameters:
@@ -7411,8 +7406,7 @@ paths:
           description: Internal server error
     put:
       operationId: updateWorkspace
-      summary: Update workspace
-      description: Update workspace
+      summary: Update and returns workspace
       tags:
         - Workspace
       parameters:
@@ -7437,8 +7431,7 @@ paths:
           description: Internal server error
     delete:
       operationId: deleteWorkspace
-      summary: Delete workspace
-      description: Delete workspace
+      summary: Deletes workspace
       tags:
         - Workspace
       parameters:
@@ -7465,8 +7458,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/additionalInfo:
     get:
       operationId: getWorkspaceAdditionalInfo
-      summary: Get workspace additional info
-      description: Get workspace additional info
+      summary: Returns workspace additional info
       tags:
         - Workspace
       parameters:
@@ -7491,8 +7483,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/description:
     get:
       operationId: getWorkspaceDescription
-      summary: Get workspace description
-      description: Get workspace description
+      summary: Returns workspace description
       tags:
         - Workspace
       parameters:
@@ -7517,8 +7508,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/details:
     get:
       operationId: getWorkspaceDetails
-      summary: Get workspace details
-      description: Get workspace details
+      summary: Returns workspace details
       tags:
         - Workspace
       parameters:
@@ -7542,8 +7532,7 @@ paths:
 
     put:
       operationId: updateWorkspaceDetails
-      summary: Update workspace details
-      description: Update workspace details
+      summary: Update and returns workspace details
       tags:
         - Workspace
       parameters:
@@ -7570,8 +7559,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/help:
     get:
       operationId: getWorkspaceHelp
-      summary: Get workspace help
-      description: Get workspace help
+      summary: Returns material content nodes of workspace help
       tags:
         - Workspace
       parameters:
@@ -7604,8 +7592,7 @@ paths:
   /rest/workspace/workspaces/{urlName}/basicInfo:
     get:
       operationId: getWorkspaceBasicInfo
-      summary: Get workspace basic info
-      description: Get workspace basic info
+      summary: Returns workspace basic info
       tags:
         - Workspace
       parameters:
@@ -7630,8 +7617,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/amIMember:
     get:
       operationId: amIMember
-      summary: Am I member
-      description: Am I member
+      summary: Returns boolean value indicating whether user is member of workspace
       tags:
         - Workspace
       parameters:
@@ -7656,8 +7642,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/workspacefilecopy/{toWorkspaceId}:
     post:
       operationId: copyWorkspaceFile
-      summary: Copy workspace file
-      description: Copy workspace file
+      summary: Copies workspace file to another workspace
       tags:
         - Workspace
       parameters:
@@ -7690,8 +7675,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/asContentNode/{workspaceMaterialNodeId}:
     get:
       operationId: getWorkspaceAsContentNode
-      summary: Get workspace as content node
-      description: Get workspace as content node
+      summary: Returns workspace material node as content node
       tags:
         - Workspace
       parameters:
@@ -7722,7 +7706,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/compositeReplies:
     get:
       operationId: getWorkspaceCompositeReplies
-      summary: Get workspace composite replies
+      summary: Returns list of workspace composite replies
       description: Get workspace composite replies
       tags:
         - Workspace
@@ -7755,8 +7739,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materialContentNodes/:
     get:
       operationId: getWorkspaceMaterialContentNodes
-      summary: Get workspace material content nodes
-      description: Get workspace material content nodes
+      summary: Returns list of workspace material content nodes
       tags:
         - Workspace
       parameters:
@@ -7789,8 +7772,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materialProducers:
     get:
       operationId: getWorkspaceMaterialProducers
-      summary: Get workspace material producers
-      description: Get workspace material producers
+      summary: Returns list of workspace material producers
       tags:
         - Workspace
       parameters:
@@ -7816,8 +7798,7 @@ paths:
 
     post:
       operationId: createWorkspaceMaterialProducer
-      summary: Create workspace material producer
-      description: Create workspace material producer
+      summary: Creates and returns workspace material producer
       tags:
         - Workspace
       parameters:
@@ -7844,8 +7825,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materialProducers/{producerId}:
     delete:
       operationId: deleteWorkspaceMaterialProducer
-      summary: Delete workspace material producer
-      description: Delete workspace material producer
+      summary: Deletes workspace material producer
       tags:
         - Workspace
       parameters:
@@ -7872,8 +7852,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materials/:
     get:
       operationId: getWorkspaceMaterials
-      summary: Get workspace materials
-      description: Get workspace materials
+      summary: Returns list of workspace materials
       tags:
         - Workspace
       parameters:
@@ -7910,8 +7889,7 @@ paths:
           description: Internal server error
     post:
       operationId: createWorkspaceMaterial
-      summary: Create workspace material
-      description: Create workspace material
+      summary: Creates and returns workspace material
       tags:
         - Workspace
       parameters:
@@ -7976,8 +7954,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materials/{materialId}:
     put:
       operationId: updateWorkspaceMaterial
-      summary: Update workspace material
-      description: Update workspace material
+      summary: Updates workspace material and returns updated workspace material
       tags:
         - Workspace
       parameters:
@@ -8008,8 +7985,7 @@ paths:
           description: Internal server error
     delete:
       operationId: deleteWorkspaceMaterial
-      summary: Delete workspace material
-      description: Delete workspace material
+      summary: Deletes workspace material
       tags:
         - Workspace
       parameters:
@@ -8048,8 +8024,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/compositeMaterialReplies:
     get:
       operationId: getWorkspaceCompositeMaterialReplies
-      summary: Get workspace composite material replies
-      description: Get workspace composite material replies
+      summary: Returns one workspace composite material reply
       tags:
         - Workspace
       parameters:
@@ -8085,8 +8060,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/replies:
     get:
       operationId: getWorkspaceMaterialReplies
-      summary: Get workspace material replies
-      description: Get workspace material replies
+      summary: Returns list of workspace material replies
       tags:
         - Workspace
       parameters:
@@ -8118,8 +8092,7 @@ paths:
 
     post:
       operationId: createWorkspaceMaterialReply
-      summary: Create workspace material reply
-      description: Create workspace material reply
+      summary: Create and returns workspace material reply
       tags:
         - Workspace
       parameters:
@@ -8152,8 +8125,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/replies/{replyId}:
     put:
       operationId: updateWorkspaceMaterialReply
-      summary: Update workspace material reply
-      description: Update workspace material reply
+      summary: Updates and returns workspace material reply
       tags:
         - Workspace
       parameters:
@@ -8194,8 +8166,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/permissions:
     get:
       operationId: getWorkspacePermissions
-      summary: Get workspace permissions
-      description: Get workspace permissions
+      summary: Returns list of workspace permissions
       tags:
         - Workspace
       parameters:
@@ -8222,8 +8193,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/signupGroups:
     get:
       operationId: getWorkspaceSignupGroups
-      summary: Get workspace signup groups
-      description: Get workspace signup groups
+      summary: Returns list of workspace signup groups
       tags:
         - Workspace
       parameters:
@@ -8250,8 +8220,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/signupGroups/{userGroupId}:
     put:
       operationId: updateWorkspaceSignupGroup
-      summary: Update workspace signup group
-      description: Update workspace signup group
+      summary: Updates and returns workspace signup group
       tags:
         - Workspace
       parameters:
@@ -8284,8 +8253,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/students:
     get:
       operationId: getWorkspaceStudents
-      summary: Get workspace students
-      description: Get workspace students
+      summary: Returns search result of workspace students
       tags:
         - Workspace
       parameters:
@@ -8334,8 +8302,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/students/{studentId}:
     get:
       operationId: getWorkspaceStudent
-      summary: Get workspace student
-      description: Get workspace student
+      summary: Returns workspace student
       tags:
         - Workspace
       parameters:
@@ -8366,7 +8333,6 @@ paths:
     put:
       operationId: updateWorkspaceStudent
       summary: Update workspace student
-      description: Update workspace student
       tags:
         - Workspace
       parameters:
@@ -8392,14 +8358,10 @@ paths:
         "500":
           description: Internal server error
 
-  #???
-  #/rest/workspace/workspaces/{workspaceEntityId}/students/{workspaceUserEntityId} (GET) (PUT):
-
   /rest/workspace/workspaces/{workspaceEntityId}/user/{userEntityId}/workspacematerial/{workspaceMaterialId}/compositeReply:
     get:
       operationId: getWorkspaceUserCompositeReply
-      summary: Get workspace user composite reply
-      description: Get workspace user composite reply
+      summary: Returns workspace material composite reply by user
       tags:
         - Workspace
       parameters:
@@ -8436,8 +8398,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/folders/:
     post:
       operationId: createWorkspaceFolder
-      summary: Create workspace folder
-      description: Create workspace folder
+      summary: Creates and returns workspace folder
       tags:
         - Workspace
       parameters:
@@ -8464,8 +8425,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/folders/{folderId}:
     put:
       operationId: updateWorkspaceFolder
-      summary: Update workspace folder
-      description: Update workspace folder
+      summary: Updates and returns workspace folder
       tags:
         - Workspace
       parameters:
@@ -8496,8 +8456,7 @@ paths:
           description: Internal server error
     delete:
       operationId: deleteWorkspaceFolder
-      summary: Delete workspace folder
-      description: Delete workspace folder
+      summary: Deletes workspace folder
       tags:
         - Workspace
       parameters:
@@ -8524,8 +8483,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/forumLatest:
     get:
       operationId: getWorkspaceForumLatest
-      summary: Get workspace forum latest
-      description: Get workspace forum latest
+      summary: Returns list of latest workspace discussion threads
       tags:
         - Workspace
       parameters:
@@ -8553,7 +8511,6 @@ paths:
     get:
       operationId: getWorkspaceJournal
       summary: Get workspace journal
-      description: Get workspace journal
       tags:
         - Workspace
       parameters:
@@ -8753,8 +8710,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/workspacefile/:
     post:
       operationId: createWorkspaceFile
-      summary: Create workspace file
-      description: Create workspace file
+      summary: Create and returns workspace file
       tags:
         - Workspace
       parameters:
@@ -8782,7 +8738,6 @@ paths:
     delete:
       operationId: deleteWorkspaceFile
       summary: Delete workspace file
-      description: Delete workspace file
       tags:
         - Workspace
       parameters:
@@ -13853,18 +13808,24 @@ components:
         - subjects
       properties:
         beginDate:
+          description: The date when the workspace begins
           type: string
           format: date-time
         endDate:
+          description: The date when the workspace ends
           type: string
           format: date-time
         viewLink:
+          description: Link to the workspace
           type: string
         workspaceTypeId:
+          description: The id of the workspace type
           type: integer
         workspaceType:
+          description: Workspace type of the workspace
           type: string
         educationType:
+          description: Education type of the workspace
           type: object
           properties:
             identifier:
@@ -13879,6 +13840,7 @@ components:
             schoolDataSource:
               type: string
         subjects:
+          description: Subjectlist of the workspace
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceSubject"
@@ -13903,46 +13865,64 @@ components:
         - language
       properties:
         id:
+          description: The id of the workspace
           type: integer
         name:
+          description: The name of the workspace
           type: string
         nameExtension:
+          description: The name extension of the workspace
           type: string
           nullable: true
         description:
+          description: The description of the workspace
           type: string
         published:
+          description: If the workspace is published
           type: boolean
         numVisits:
+          description: The number of visits
           type: integer
         subjectIdentifier:
+          description: The identifier of the subject
           type: string
         materialDefaultLicense:
+          description: The default license of the workspace
           type: string
         lastVisit:
+          description: The date of the last visit
           type: string
         hasCustomImage:
+          description: If the workspace has a custom image
           type: boolean
         curriculumIdentifiers:
+          description: The identifiers of the curriculums
           type: array
           items:
             type: string
         archived:
+          description: If the workspace is archived
           type: boolean
         organizationEntityId:
+          description: The id of the organization
           type: integer
         urlName:
+          description: The url name of the workspace
           type: string
         language:
+          description: Main language of the workspace
           $ref: "#/components/schemas/Language"
         mandatority:
+          description: Mandatority value of the workspace
           allOf:
             - $ref: "#/components/schemas/WorkspaceMandatority"
           nullable: true
         access:
+          description: Access level of the workspace
           $ref: "#/components/schemas/WorkspaceAccess"
 
     WorkspaceWithAddons:
+      description: WorkspaceWithAddons object
       allOf:
         - $ref: "#/components/schemas/Workspace"
         - type: object
@@ -13959,30 +13939,39 @@ components:
         - urlName
       properties:
         id:
+          description: The id of the workspace
           type: integer
         name:
+          description: The name of the workspace
           type: string
         urlName:
+          description: The url name of the workspace
           type: string
         nameExtension:
+          description: The name extension of the workspace
           type: string
           nullable: true
 
     WorkspaceSubject:
       type: object
-      description: WorkspaceSubject object
+      description: Information about the subject of the workspace
       required:
         - identifier
       properties:
         identifier:
+          description: The identifier of the subject
           type: string
         subject:
+          description: Subject data
           $ref: "#/components/schemas/Subject"
         courseNumber:
+          description: The number of the course
           type: integer
         courseLength:
+          description: The length value of the course
           type: string
         courseLengthSymbol:
+          description: The symbol data related to course length
           $ref: "#/components/schemas/WorkspaceLengthSymbol"
 
     WorkspaceLengthSymbol:
@@ -13994,15 +13983,18 @@ components:
         - symbol
       properties:
         id:
+          description: The id of the length
           type: string
         name:
+          description: The name of the length
           type: string
         symbol:
+          description: The symbol of the length
           type: string
 
     WorkspaceActivity:
       type: object
-      description: WorkspaceActivity object
+      description: Contains activity information of the workspace
       required:
         - assessmentState
         - evaluablesAnswered
@@ -14023,52 +14015,75 @@ components:
         - numVisits
       properties:
         assessmentState:
+          description: Assessment states of the workspace
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceAssessment"
         evaluablesAnswered:
+          description: The number of answered evaluables
           type: integer
         evaluablesAnsweredLastDate:
+          description: The date of the last answered evaluable
           type: string
         evaluablesDonePercent:
+          description: The percentage of answered evaluables
           type: integer
         evaluablesFailed:
+          description: The number of failed evaluables
           type: integer
         evaluablesFailedLastDate:
+          description: The date of the last failed evaluable
           type: string
         evaluablesIncomplete:
+          description: The number of incomplete evaluables
           type: integer
         evaluablesIncompleteLastDate:
+          description: The date of the last incomplete evaluable
           type: string
         evaluablesPassed:
+          description: The number of passed evaluables
           type: integer
         evaluablesPassedLastDate:
+          description: The date of the last passed evaluable
           type: string
         evaluablesSubmitted:
+          description: The number of submitted evaluables
           type: integer
         evaluablesSubmittedLastDate:
+          description: The date of the last submitted evaluable
           type: string
         evaluablesTotal:
+          description: The number of evaluables
           type: integer
         evaluablesUnanswered:
+          description: The number of unanswered evaluables
           type: integer
         exercisesAnswered:
+          description: The number of answered exercises
           type: integer
         exercisesAnsweredLastDate:
+          description: The date of the last answered exercise
           type: string
         exercisesDonePercent:
+          description: The percentage of answered exercises
           type: integer
         exercisesTotal:
+          description: The number of exercises
           type: integer
         exercisesUnanswered:
+          description: The number of unanswered exercises
           type: integer
         journalEntryCount:
+          description: The number of journal entries
           type: integer
         lastJournalEntry:
+          description: The date of the last journal entry
           type: string
         lastVisit:
+          description: The date of the last visit to the workspace
           type: string
         numVisits:
+          description: The number of visits to the workspace
           type: integer
 
     WorkspaceAssessment:
@@ -14083,16 +14098,22 @@ components:
         - workspaceSubjectIdentifier
       properties:
         date:
+          description: The date of the assessment
           type: string
         state:
+          description: The state of the assessment
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
         grade:
+          description: The grade of the assessment
           type: string
         passingGrade:
+          description: If the assessment has a passing grade
           type: boolean
         text:
+          description: The text (description) of the assessment
           type: string
         workspaceSubjectIdentifier:
+          description: The identifier of the workspace subject
           type: string
           nullable: true
 
