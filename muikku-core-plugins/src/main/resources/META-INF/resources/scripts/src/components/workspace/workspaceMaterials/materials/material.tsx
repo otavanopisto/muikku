@@ -150,9 +150,10 @@ class WorkspaceMaterial extends React.Component<
         }
       });
 
+      // there must be at least one assessmentState and
       // If all modules are passed, materials are disabled.
       // This is to prevent students from changing their answers after passing grades are given
-      if (passValueCount === valueToCheck) {
+      if (valueToCheck > 0 && passValueCount === valueToCheck) {
         isDisabled = true;
       }
     }
