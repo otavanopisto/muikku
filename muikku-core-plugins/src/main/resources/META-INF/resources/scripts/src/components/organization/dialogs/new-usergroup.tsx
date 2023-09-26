@@ -26,7 +26,7 @@ import { SelectItem } from "~/actions/workspaces/index";
 import {
   CreateUserGroupType,
   UpdateUserGroupStateType,
-  UsersSelectType,
+  UsersSelectState,
 } from "~/reducers/main-function/users";
 import { TagItem } from "~/components/general/tag-input";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -45,7 +45,7 @@ interface ValidationType {
 interface OrganizationNewUserGroupProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  users: UsersSelectType;
+  users: UsersSelectState;
   createOrganizationUsergroup: CreateUsergroupTriggerType;
   loadStudents: LoadUsersTriggerType;
   loadStaff: LoadUsersTriggerType;

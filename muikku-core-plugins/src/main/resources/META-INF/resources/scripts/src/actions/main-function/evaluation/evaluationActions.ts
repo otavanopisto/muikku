@@ -791,6 +791,7 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -799,13 +800,11 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
         });
       }
 
-      let evaluationImportantAssessmentRequests: EvaluationStatus;
-
       try {
-        evaluationImportantAssessmentRequests = (await promisify(
-          mApi().user.property.read("important-evaluation-requests"),
-          "callback"
-        )()) as EvaluationStatus;
+        const evaluationImportantAssessmentRequests =
+          (await userApi.getUserProperty({
+            key: "important-evaluation-requests",
+          })) as EvaluationStatus;
 
         dispatch({
           type: "EVALUATION_IMPORTANT_ASSESSMENTS_LOAD",
@@ -851,6 +850,7 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -859,13 +859,11 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
         });
       }
 
-      let evaluationUnimportantAssessmentRequests: EvaluationStatus;
-
       try {
-        evaluationUnimportantAssessmentRequests = (await promisify(
-          mApi().user.property.read("unimportant-evaluation-requests"),
-          "callback"
-        )()) as EvaluationStatus;
+        const evaluationUnimportantAssessmentRequests =
+          (await userApi.getUserProperty({
+            key: "unimportant-evaluation-requests",
+          })) as EvaluationStatus;
 
         dispatch({
           type: "EVALUATION_UNIMPORTANT_ASSESSMENTS_LOAD",
@@ -879,7 +877,7 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -910,6 +908,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -918,8 +917,6 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
         });
       }
 
-      let evaluationSortFunction: EvaluationSort;
-
       try {
         let sortFunction = "evaluation-default-sort";
 
@@ -927,10 +924,9 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
           sortFunction = "evaluation-workspace-sort";
         }
 
-        evaluationSortFunction = (await promisify(
-          mApi().user.property.read(sortFunction),
-          "callback"
-        )()) as EvaluationSort;
+        const evaluationSortFunction = (await userApi.getUserProperty({
+          key: sortFunction,
+        })) as EvaluationSort;
 
         dispatch({
           type: "EVALUATION_SORT_FUNCTION_CHANGE",
@@ -944,7 +940,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1392,6 +1388,7 @@ const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -1400,13 +1397,13 @@ const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
         });
       }
 
-      let evaluationSortFunction: EvaluationSort;
-
       try {
-        evaluationSortFunction = (await promisify(
-          mApi().user.property.create(data.sortFunction),
-          "callback"
-        )()) as EvaluationSort;
+        const evaluationSortFunction = (await userApi.setUserProperty({
+          setUserPropertyRequest: {
+            key: data.sortFunction.key,
+            value: data.sortFunction.value,
+          },
+        })) as EvaluationSort;
 
         dispatch({
           type: "EVALUATION_SORT_FUNCTION_CHANGE",
@@ -1418,7 +1415,7 @@ const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
           payload: <EvaluationStateType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -2119,9 +2116,8 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    let updateImportanceObject: UpdateImportanceObject;
-
     const state = getState();
+    const userApi = MApi.getUserApi();
 
     if (state.evaluations.status !== "LOADING") {
       dispatch({
@@ -2131,26 +2127,24 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
     }
 
     try {
-      const importance = (await promisify(
-        mApi().user.property.create({
+      const importance = (await userApi.setUserProperty({
+        setUserPropertyRequest: {
           key: data.importantAssessments.key,
           value: data.importantAssessments.value,
-        }),
-        "callback"
-      )()) as EvaluationImportance;
+        },
+      })) as EvaluationImportance;
 
-      const unimportance = (await promisify(
-        mApi().user.property.create({
+      const unimportance = (await userApi.setUserProperty({
+        setUserPropertyRequest: {
           key: data.unimportantAssessments.key,
           value: data.unimportantAssessments.value,
-        }),
-        "callback"
-      )()) as EvaluationImportance;
+        },
+      })) as EvaluationImportance;
 
-      updateImportanceObject = {
+      const updateImportanceObject = {
         importantAssessments: importance,
         unimportantAssessments: unimportance,
-      };
+      } as UpdateImportanceObject;
 
       dispatch({
         type: "EVALUATION_IMPORTANCE_UPDATE",
@@ -2164,7 +2158,7 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
         });
       }
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
 

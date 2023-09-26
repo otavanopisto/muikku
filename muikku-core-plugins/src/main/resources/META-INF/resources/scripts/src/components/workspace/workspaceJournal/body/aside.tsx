@@ -12,7 +12,6 @@ import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { loadStudentsOfWorkspace } from "~/actions/workspaces";
 import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
-import { WorkspaceStudentListType } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions";
 import {
   JournalsState,
@@ -27,6 +26,7 @@ import {
   loadCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces/journals";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { WorkspaceStudentSearchResult } from "~/generated/client";
 
 /**
  * NavigationAsideProps
@@ -44,7 +44,7 @@ interface NavigationAsideProps extends WithTranslation {
  * NavigationAsideState
  */
 interface NavigationAsideState {
-  students: WorkspaceStudentListType | null;
+  students: WorkspaceStudentSearchResult | null;
 }
 
 /**
@@ -94,7 +94,7 @@ class NavigationAside extends React.Component<
    * @param students students
    * @returns array of students or empty array
    */
-  filterStudents = (students: WorkspaceStudentListType | null) => {
+  filterStudents = (students: WorkspaceStudentSearchResult | null) => {
     if (students !== null) {
       return !this.props.status.isStudent && students
         ? students.results.filter(

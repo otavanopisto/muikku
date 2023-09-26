@@ -1,5 +1,4 @@
 import * as React from "react";
-import { UserType } from "~/reducers/user-index";
 import { getName } from "~/util/modifiers";
 import Avatar from "~/components/general/avatar";
 import {
@@ -7,12 +6,13 @@ import {
   ApplicationListItemContentWrapper,
   ApplicationListItemContentData,
 } from "~/components/general/application-list";
+import { User } from "~/generated/client";
 
 /**
  * UserProps
  */
 interface UserProps {
-  user: UserType;
+  user: User;
   actions: React.ReactElement<any>;
 }
 

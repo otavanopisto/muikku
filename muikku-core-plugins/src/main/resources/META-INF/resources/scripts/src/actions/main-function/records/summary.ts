@@ -3,7 +3,6 @@ import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
-  SummarStudentDetails,
   SummaryDataType,
   SummaryStatusType,
 } from "~/reducers/main-function/records/summary";
@@ -41,6 +40,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     getState: () => StateType
   ) => {
     const evaluationApi = MApi.getEvaluationApi();
+    const userApi = MApi.getUserApi();
 
     try {
       dispatch({
@@ -71,9 +71,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const coursesDone: Record<string, unknown>[] = [];
 
       /* Student's study time */
-      const studentsDetails = <SummarStudentDetails>(
-        await promisify(mApi().user.students.read(pyramusId), "callback")()
-      );
+      const studentsDetails = await userApi.getStudent({
+        studentId: pyramusId,
+      });
 
       /* Getting past the object with keys */
       const activityArrays: Record<string, unknown>[] = Object.keys(

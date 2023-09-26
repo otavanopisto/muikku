@@ -38,12 +38,7 @@ import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
-import {
-  ShortWorkspaceUserWithActiveStatusType,
-  WorkspaceStudentListType,
-  WorkspaceStaffListType,
-} from "~/reducers/user-index";
-import { UsersSelectType } from "~/reducers/main-function/users";
+import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   WorkspaceUpdateType,
   WorkspaceType,
@@ -52,10 +47,15 @@ import {
   WorkspaceDetailsType,
 } from "~/reducers/workspaces";
 import { TagItem } from "~/components/general/tag-input";
-import { UserStaffType } from "~/reducers/user-index";
 import * as moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import {
+  UserStaff,
+  UserStaffSearchResult,
+  WorkspaceStudentSearchResult,
+} from "~/generated/client";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -73,7 +73,7 @@ type UserCategoryType = "students" | "staff";
 interface OrganizationEditWorkspaceProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  users: UsersSelectType;
+  users: UsersSelectState;
   workspace: WorkspaceType;
   currentWorkspace: WorkspaceType;
   activeFilters: WorkspacesActiveFiltersType;
@@ -289,7 +289,9 @@ class OrganizationEditWorkspace extends React.Component<
        * success
        * @param users users
        */
-      success: (users: WorkspaceStudentListType | WorkspaceStaffListType) => {
+      success: (
+        users: WorkspaceStudentSearchResult | UserStaffSearchResult
+      ) => {
         this.setState({
           pages: {
             ...this.state.pages,
@@ -504,7 +506,7 @@ class OrganizationEditWorkspace extends React.Component<
    * turnStudentsToSelectItems
    * @param users users
    */
-  turnStudentsToSelectItems(users: ShortWorkspaceUserWithActiveStatusType[]) {
+  turnStudentsToSelectItems(users: WorkspaceStudent[]) {
     const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {
@@ -526,7 +528,7 @@ class OrganizationEditWorkspace extends React.Component<
    * turnStaffToSelectItems
    * @param users users
    */
-  turnStaffToSelectItems(users: UserStaffType[]) {
+  turnStaffToSelectItems(users: UserStaff[]) {
     const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {
