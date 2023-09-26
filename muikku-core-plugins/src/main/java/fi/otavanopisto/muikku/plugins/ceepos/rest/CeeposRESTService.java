@@ -1110,7 +1110,7 @@ public class CeeposRESTService {
 
         // Message teachers about the assessment request
         
-        communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceAssessmentRequest);
+        communicatorAssessmentRequestController.sendAssessmentRequestMessage(new Locale("fi"), workspaceAssessmentRequest);
       }
       finally {
         schoolDataBridgeSessionController.endSystemSession();
