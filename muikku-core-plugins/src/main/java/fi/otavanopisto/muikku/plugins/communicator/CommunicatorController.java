@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.communicator;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +26,6 @@ import org.jsoup.safety.Whitelist;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
@@ -336,8 +334,8 @@ public class CommunicatorController {
               return true;
             } else {
               UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-              EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
-              return recipientRole != null && !EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype());
+              UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+              return userSchoolDataIdentifier != null && userSchoolDataIdentifier.isStaff();
             }
           })
           .collect(Collectors.toList());
@@ -740,16 +738,15 @@ public class CommunicatorController {
   }
   
   private boolean isActiveUser(UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    EnvironmentRoleArchetype role = userSchoolDataIdentifier.getRole() != null ? userSchoolDataIdentifier.getRole().getArchetype() : null;
-
-    EnumSet<EnvironmentRoleArchetype> staffRoles = EnumSet.of(
+    EnvironmentRoleArchetype[] staffRoles = {
         EnvironmentRoleArchetype.ADMINISTRATOR, 
         EnvironmentRoleArchetype.MANAGER, 
         EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
         EnvironmentRoleArchetype.STUDY_GUIDER,
-        EnvironmentRoleArchetype.TEACHER);
-
-    if (!staffRoles.contains(role)) {
+        EnvironmentRoleArchetype.TEACHER
+    };
+    
+    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
       SearchProvider searchProvider = getProvider("elastic-search");
       if (searchProvider != null) {
         SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
