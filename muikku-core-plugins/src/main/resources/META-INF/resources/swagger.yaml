@@ -10927,27 +10927,6 @@ components:
         role:
           type: string
 
-    UserStudentFlag:
-      type: object
-      description: UserStudentFlag object
-      required:
-        - id
-        - flagId
-        - flagName
-        - flagColor
-        - studentIdentifier
-      properties:
-        id:
-          type: integer
-        flagId:
-          type: integer
-        flagName:
-          type: string
-        flagColor:
-          type: string
-        studentIdentifier:
-          type: string
-
     GuiderStudentNotification:
       type: object
       description: GuiderStudentNotification object
