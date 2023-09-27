@@ -1,5 +1,4 @@
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -11,8 +10,8 @@ import {
 } from "~/actions/discussion";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-
 import "~/sass/elements/form.scss";
+import { DiscussionThreadReply } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -21,7 +20,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface ModifyThreadReplyProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  reply?: DiscussionThreadReplyType;
+  reply?: DiscussionThreadReply;
   modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType;
 }
 

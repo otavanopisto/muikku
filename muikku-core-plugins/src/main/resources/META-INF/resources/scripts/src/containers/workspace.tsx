@@ -64,7 +64,7 @@ import { registerLocale } from "react-datepicker";
 import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
-import { DiscussionPatchType } from "~/reducers/discussion";
+import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
 import {
   loadWholeWorkspaceHelp,
@@ -675,7 +675,7 @@ export default class Workspace extends React.Component<
 
     if (location.includes("subs")) {
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           current: state.discussion.current && undefined,
           areaId: undefined,
         };
@@ -704,7 +704,7 @@ export default class Workspace extends React.Component<
         );
 
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           areaId: undefined,
         };
 

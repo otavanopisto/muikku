@@ -6,18 +6,14 @@ import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/discussion.scss";
 import "~/sass/elements/avatar.scss";
-import {
-  DiscussionType,
-  DiscussionThreadType,
-  DiscussionUserType,
-} from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
 import OverflowDetector from "~/components/general/overflow-detector";
 import Dropdown from "~/components/general/dropdown";
 import {
   DiscussionThreads,
-  DiscussionThread,
+  DiscussionThread as DiscussionThreadComponent,
   DiscussionThreadHeader,
   DiscussionThreadBody,
   DiscussionThreadFooter,
@@ -34,6 +30,7 @@ import {
   SubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { DiscussionThread } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { localizeTime } from "~/locales/i18n";
 
@@ -41,7 +38,7 @@ import { localizeTime } from "~/locales/i18n";
  * DiscussionThreadsProps
  */
 interface DiscussionThreadsProps extends WithTranslation {
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   status: StatusType;
   subscribeDiscussionThread: SubscribeDiscussionThread;
   unsubscribeDiscussionThread: UnsubscribeDiscustionThread;
@@ -103,7 +100,7 @@ class DDiscussionThreads extends React.Component<
    * @param isSubscribed isSubscribed
    */
   handleSubscribeOrUnsubscribeClick =
-    (thread: DiscussionThreadType, isSubscribed: boolean) =>
+    (thread: DiscussionThread, isSubscribed: boolean) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e.stopPropagation();
       if (isSubscribed) {
@@ -123,7 +120,7 @@ class DDiscussionThreads extends React.Component<
    * getToThread
    * @param thread thread
    */
-  getToThread(thread: DiscussionThreadType) {
+  getToThread(thread: DiscussionThread) {
     const areaId = this.props.discussion.areaId
       ? this.props.discussion.areaId
       : 0;
@@ -171,13 +168,13 @@ class DDiscussionThreads extends React.Component<
     }
 
     const threads = this.props.discussion.threads.map(
-      (thread: DiscussionThreadType, index: number) => {
+      (thread, index: number) => {
         const isSubscribed =
           this.props.discussion.subscribedThreads.findIndex(
             (sThread) => sThread.threadId === thread.id
           ) !== -1;
 
-        const user: DiscussionUserType = thread.creator;
+        const user = thread.creator;
 
         const userCategory =
           thread.creator.id > 10
@@ -207,7 +204,7 @@ class DDiscussionThreads extends React.Component<
           );
         }
         return (
-          <DiscussionThread
+          <DiscussionThreadComponent
             key={thread.id}
             onClick={this.getToThread.bind(this, thread)}
             avatar={avatar}
@@ -307,7 +304,7 @@ class DDiscussionThreads extends React.Component<
                 </div>
               </div>
             </DiscussionThreadFooter>
-          </DiscussionThread>
+          </DiscussionThreadComponent>
         );
       }
     );
