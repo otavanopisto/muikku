@@ -22,12 +22,11 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -72,16 +71,9 @@ public class NotesRESTService extends PluginRESTService {
   @Path("/note")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createNote(NoteRestModel note) {
-    
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
-    
-    if (loggedUserRole == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
     Note newNote = null;
     
-    if (EnvironmentRoleArchetype.STUDENT.equals(loggedUserRole)) {
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), sessionController.getLoggedUserEntity().getId(), note.getStartDate(), note.getDueDate());
     } else {
       newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getPinned(), note.getOwner(), note.getStartDate(), note.getDueDate());
@@ -105,17 +97,16 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-    EnvironmentRoleArchetype creatorRole = getUserRoleArchetype(creator.defaultSchoolDataIdentifier());
+    UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(creator);
     Note updatedNote = null;
     
-    if (loggedUserRole == null || creatorRole == null) {
+    if (creatorUSDI == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
     // Student can edit only 'pinned' field if note is created by someone else
-    if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && sessionController.getLoggedUserEntity().getId().equals(note.getOwner()) && !creatorRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && sessionController.getLoggedUserEntity().getId().equals(note.getOwner()) && !creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       updatedNote = notesController.updateNote(note, note.getTitle(), note.getDescription(), note.getPriority(), restModel.getPinned(), note.getStartDate(), note.getDueDate(), restModel.getStatus());
     } // Otherwise editing happens only if logged user equals with creator
     else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
@@ -162,17 +153,16 @@ public class NotesRESTService extends PluginRESTService {
     List<Note> notes = notesController.listByOwner(owner, listArchived);
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
-    if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && !owner.equals(sessionController.getLoggedUserEntity().getId())) {
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && !owner.equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
     for (Note note : notes) {
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-      EnvironmentRoleArchetype creatorUserRole = getUserRoleArchetype(creator.defaultSchoolDataIdentifier());
+      UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(creator);
       
-      if (loggedUserRole == null || creatorUserRole == null) {
+      if (creatorUSDI == null) {
         return Response.status(Status.BAD_REQUEST).build();
       }
 
@@ -182,7 +172,7 @@ public class NotesRESTService extends PluginRESTService {
       }
       
       // Do not return students' personal notes to staff 
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && creatorUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         continue;
       }
 
@@ -191,12 +181,6 @@ public class NotesRESTService extends PluginRESTService {
     }
     
     return Response.ok(notesList).build();
-  }
-  
-  private EnvironmentRoleArchetype getUserRoleArchetype(SchoolDataIdentifier userSchoolDataIdentifier) {
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
-    EnvironmentRoleArchetype userRoleArchetype = roleEntity != null ? roleEntity.getArchetype() : null;
-    return userRoleArchetype;
   }
   
   // mApi() call (mApi().notes.note.toggleArchived.update(noteId))
@@ -212,8 +196,7 @@ public class NotesRESTService extends PluginRESTService {
     }
     
     // Students can only archive their own notes
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
-    if (loggedUserRole == EnvironmentRoleArchetype.STUDENT && !note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && !note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build(); 
     }
     

@@ -536,7 +536,7 @@ public class GuiderTestsBase extends AbstractUITest {
           mockBuilder.build();
           assertVisible(".navbar .button-pill--profile");
           navigate("/profile#general", false);
-          assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.addMonths(monthsToIncrease).format(DateTimeFormatter.ofPattern("dd.M.yyyy")));
+          assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.addMonths(monthsToIncrease).format(DateTimeFormatter.ofPattern("d.M.yyyy")));
           navigate("/profile#purchases", false);
           assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Tilauksesi on maksettu ja käsitelty.");
         }else {
@@ -688,7 +688,7 @@ public class GuiderTestsBase extends AbstractUITest {
           mockBuilder.build();
           assertVisible(".navbar .button-pill--profile");
           navigate("/profile#general", false);
-          assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.getNextWeek().format(DateTimeFormatter.ofPattern("dd.M.yyyy")));
+          assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.getNextWeek().format(DateTimeFormatter.ofPattern("d.M.yyyy")));
           navigate("/profile#purchases", false);
           assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Peruutit tilauksen.");
           logout();
