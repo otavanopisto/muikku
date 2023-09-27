@@ -139,6 +139,9 @@ export async function loadWorkspacesHelper(
 
   // If we are loading workspaces within organization management
   // then we use different set of params so front-end follows back-end's specs
+
+  // NOTE: empty arrays as parameters are not supported by the backend, so we need to
+  // send undefined instead of empty array. Empty array is resolved as ERROR by the backend.
   if (loadOrganizationWorkspaces) {
     params = {
       firstResult,
@@ -180,19 +183,17 @@ export async function loadWorkspacesHelper(
     (params as any).q = actualFilters.query;
   }
 
-  try {
-    const organizationApi = MApi.getOrganizationApi();
+  const coursepickerApi = MApi.getCoursepickerApi();
+  const organizationApi = MApi.getOrganizationApi();
 
-    let nWorkspaces = loadOrganizationWorkspaces
-      ? <WorkspaceDataType[]>(
-          await organizationApi.getOrganizationWorkspaces(params)
-        )
-      : <WorkspaceDataType[]>(
-          await promisify(
-            mApi().coursepicker.workspaces.cacheClear().read(params),
-            "callback"
-          )()
-        );
+  try {
+    // NOTE: Still using old WorkspaceType for now, because frontend is not ready for the path
+    // specific types yet. This will be changed in the future.
+    let nWorkspaces: WorkspaceDataType[] = loadOrganizationWorkspaces
+      ? await organizationApi.getOrganizationWorkspaces(params)
+      : await coursepickerApi.getCoursepickerWorkspaces({
+          ...params,
+        });
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side

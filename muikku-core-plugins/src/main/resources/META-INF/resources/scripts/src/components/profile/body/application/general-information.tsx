@@ -82,12 +82,11 @@ class GeneralInformation extends React.Component<
               <ProfileProperty
                 modifier="study-start-date"
                 condition={!!this.props.status.profile.studyStartDate}
-                label={this.props.t("labels.studyTimeStart", { ns: "users" })}
+                label={this.props.t("labels.studyStartDate", { ns: "users" })}
                 value={localizeTime.date(
                   this.props.status.profile.studyStartDate
                 )}
               />
-
               <ProfileProperty
                 modifier="study-end-date"
                 condition={!!this.props.status.profile.studyTimeEnd}

@@ -9,6 +9,11 @@ import {
   WorkspaceEducationType,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
+  Curriculum,
+  Organization,
+  WorkspaceOrganization,
+} from "~/generated/client";
+import {
   UserStaff,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
@@ -309,6 +314,7 @@ export interface WorkspaceDataType {
   activity?: WorkspaceActivityType;
   studentActivity?: WorkspaceActivityType;
   forumStatistics?: DiscussionWorkspaceStatistic;
+  organization?: Organization;
   studentAssessments?: WorkspaceStudentAssessmentsType;
   activityStatistics?: WorkspaceActivityStatisticsType;
   assessmentRequests?: AssessmentRequest[];
@@ -384,10 +390,6 @@ export interface WorkspaceStateFilterType {
   name: string;
 }
 
-export type WorkspaceCurriculumFilterListType =
-  Array<WorkspaceCurriculumFilterType>;
-export type WorkspaceOrganizationFilterListType =
-  Array<WorkspaceOrganizationFilterType>;
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
 
@@ -396,8 +398,8 @@ export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
  */
 export interface WorkspacesavailableFiltersType {
   educationTypes: WorkspaceEducationType[];
-  curriculums: WorkspaceCurriculumFilterListType;
-  organizations?: WorkspaceOrganizationFilterListType;
+  curriculums: Curriculum[];
+  organizations?: WorkspaceOrganization[];
   baseFilters?: WorkspaceBaseFilterListType;
   stateFilters?: WorkspaceStateFilterListType;
 }
@@ -530,7 +532,7 @@ export interface WorkspacesState {
   currentMaterialsReplies?: MaterialCompositeReply[];
 
   // Curriculums
-  availableCurriculums?: WorkspaceCurriculumFilterListType;
+  availableCurriculums?: Curriculum[];
 
   // Filters related to workspaces
   availableFilters: WorkspacesavailableFiltersType;

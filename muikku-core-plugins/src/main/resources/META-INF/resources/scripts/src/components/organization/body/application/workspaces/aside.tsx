@@ -3,10 +3,7 @@ import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
-import {
-  WorkspacesState,
-  WorkspaceCurriculumFilterType,
-} from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
@@ -104,7 +101,7 @@ class WorkspacesAside extends React.Component<
         </NavigationTopic>
         <NavigationTopic name={t("labels.curriculum", { ns: "workspace" })}>
           {this.props.workspaces.availableFilters.curriculums.map(
-            (curriculum: WorkspaceCurriculumFilterType) => {
+            (curriculum) => {
               const isActive =
                 this.props.workspaces.activeFilters.curriculumFilters.includes(
                   curriculum.identifier

@@ -50,7 +50,6 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
@@ -270,22 +269,14 @@ public class UserRESTService extends AbstractRESTService {
     Map<String, String> result = new HashMap<String, String>();
     
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    EnvironmentRoleArchetype loggedUserRole = null;
-    if (loggedUser.defaultSchoolDataIdentifier() != null) {
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
-          findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser.defaultSchoolDataIdentifier());
-      loggedUserRole = userSchoolDataIdentifier.getRole().getArchetype();
-    } else {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
     Boolean isStudent = userEntityController.isStudent(userEntity);
 
-    if (!loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT)) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       
       // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
-      if (loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         result.put("moreInfoForLoggedUser", "true");
-      } else if (loggedUserRole.equals(EnvironmentRoleArchetype.TEACHER)) {
+      } else if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
         UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
         UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
 
@@ -312,7 +303,7 @@ public class UserRESTService extends AbstractRESTService {
       }
     }
     
-    if (loggedUserRole.equals(EnvironmentRoleArchetype.STUDENT) && isStudent) {
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && isStudent) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -675,8 +666,7 @@ public class UserRESTService extends AbstractRESTService {
     }
 
     // Bug fix #2966: REST endpoint should only return students
-    EnvironmentRoleEntity userRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
-    if (userRole == null || userRole.getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+    if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.NOT_FOUND).build();
     }
 

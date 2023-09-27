@@ -7,9 +7,7 @@
 import * as React from "react";
 import Autocomplete from "~/components/general/autocomplete";
 import TagInput from "~/components/general/tag-input";
-import promisify from "~/util/promisify";
 import { filterHighlight, getName } from "~/util/modifiers";
-import mApi from "~/lib/mApi";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { ContactRecipientType } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
@@ -19,8 +17,8 @@ import {
   UserGroup,
   UserStaff,
   WorkspaceBasicInfo,
+  UserStaffSearchResult,
 } from "~/generated/client";
-import { UserStaffSearchResult } from "~/generated/client/models/UserStaffSearchResult";
 import MApi from "~/api/api";
 
 /**
@@ -243,16 +241,14 @@ export default class c extends React.Component<
     const getWorkspacesLoader = () =>
       loaders.workspacesLoader
         ? loaders.workspacesLoader(textInput)
-        : promisify(
-            mApi().coursepicker.workspaces.read({
+        : () =>
+            MApi.getCoursepickerApi().getCoursepickerWorkspaces({
               q: textInput,
               maxResults: 20,
               myWorkspaces: checkHasPermission(
                 this.props.workspacePermissionIsOnlyMyWorkspaces
               ),
-            }),
-            "callback"
-          );
+            });
 
     /**
      * getStaffLoader

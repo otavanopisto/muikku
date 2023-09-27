@@ -24,8 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
@@ -103,9 +103,8 @@ public class ChatSyncController {
 
           // If the user is admin or study programme leader, simply add them as owners of every room...
 
-          SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
-          EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserIdentifier);
-          if (role.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR || role.getArchetype() == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(muikkuUserEntity);
+          if (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
             Map<String, String> params = new HashMap<>();
             params.put("type", "all");
             List<MUCRoomEntity> rooms = client.getChatRooms(params).getMucRooms();
@@ -276,8 +275,8 @@ public class ChatSyncController {
     if (client != null) {
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
   
-      EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserEntity.defaultSchoolDataIdentifier());
-      if (role.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(muikkuUserEntity);
+      if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         client.addMember("workspace-chat-" + workspace.getIdentifier(), getOpenfireUserIdentifier(muikkuUserEntity));
       }
       else {
@@ -403,9 +402,8 @@ public class ChatSyncController {
   
   private void ensureUserHasMembership(RestApiClient client, WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.model.users.UserEntity muikkuUserEntity) {
     String openfireUserIdentifier = getOpenfireUserIdentifier(muikkuUserEntity);
-    SchoolDataIdentifier muikkuUserIdentifier = muikkuUserEntity.defaultSchoolDataIdentifier();
-    EnvironmentRoleEntity role = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(muikkuUserIdentifier);
-    if (role.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(muikkuUserEntity);
+    if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       client.addMember("workspace-chat-" + workspaceEntity.getIdentifier(), openfireUserIdentifier);
     }
     else {
@@ -471,8 +469,8 @@ public class ChatSyncController {
   }
 
   private boolean isStudent(fi.otavanopisto.muikku.model.users.UserEntity userEntity) {
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
-    return roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT;
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+    return userSchoolDataIdentifier == null || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT);
   }
   
   private void addAdminsAsRoomOwners(RestApiClient client, MUCRoomEntity mucRoomEntity, List<OrganizationEntity> organizations) {

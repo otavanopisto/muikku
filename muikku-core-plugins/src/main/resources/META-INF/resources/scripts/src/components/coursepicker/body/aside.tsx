@@ -11,7 +11,6 @@ import Navigation, {
 } from "~/components/general/navigation";
 import {
   WorkspacesState,
-  WorkspaceCurriculumFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
@@ -94,7 +93,7 @@ class NavigationAside extends React.Component<
           name={this.props.t("labels.curriculum", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
-            (curriculum: WorkspaceCurriculumFilterType) => {
+            (curriculum) => {
               const isActive =
                 this.props.workspaces.activeFilters.curriculumFilters.includes(
                   curriculum.identifier

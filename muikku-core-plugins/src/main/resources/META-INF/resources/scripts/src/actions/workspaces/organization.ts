@@ -6,19 +6,13 @@ import {
   UpdateWorkspaceTriggerType,
 } from "./index";
 import { Dispatch } from "react-redux";
-import {
-  WorkspaceDataType,
-  WorkspaceOrganizationFilterListType,
-} from "../../reducers/workspaces/index";
+import { WorkspaceDataType } from "../../reducers/workspaces/index";
 import { reuseExistantValue } from "./helpers";
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import promisify from "~/util/promisify";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import {
   WorkspaceUpdateType,
-  WorkspaceCurriculumFilterListType,
   WorkspaceStateFilterListType,
   WorkspacesActiveFiltersType,
   WorkspacesStatePatch,
@@ -33,7 +27,12 @@ import {
 } from "./index";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
-import { WorkspaceAccess, WorkspaceEducationType } from "~/generated/client";
+import {
+  WorkspaceAccess,
+  WorkspaceEducationType,
+  Curriculum,
+  WorkspaceOrganization,
+} from "~/generated/client";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -41,7 +40,7 @@ import { WorkspaceAccess, WorkspaceEducationType } from "~/generated/client";
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS =
   SpecificActionType<
     "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
-    WorkspaceOrganizationFilterListType
+    WorkspaceOrganization[]
   >;
 /**
  * UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES
@@ -57,7 +56,7 @@ export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
   SpecificActionType<
     "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-    WorkspaceCurriculumFilterListType
+    Curriculum[]
   >;
 
 /**
@@ -131,9 +130,7 @@ export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE =
  * LoadUserWorkspaceOrganizationFiltersFromServerTriggerType
  */
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
-  (
-    callback?: (organizations: WorkspaceOrganizationFilterListType) => void
-  ): AnyActionType;
+  (callback?: (organizations: WorkspaceOrganization[]) => void): AnyActionType;
 }
 
 /**
@@ -229,20 +226,19 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        const organizations = <WorkspaceOrganizationFilterListType>(
-          await promisify(
-            mApi().coursepicker.organizations.read(),
-            "callback"
-          )()
-        );
+        const organizations =
+          await coursepickerApi.getCoursepickerOrganizations();
+
         dispatch({
           type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
           payload: organizations,
         });
         callback && callback(organizations);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -510,7 +506,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         data.progress && data.progress("done");
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 

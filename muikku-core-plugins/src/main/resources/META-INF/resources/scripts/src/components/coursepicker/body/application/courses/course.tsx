@@ -14,14 +14,11 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
-import {
-  WorkspaceCurriculumFilterListType,
-  WorkspaceDataType,
-} from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { suitabilityMap } from "~/@shared/suitability";
+import { Curriculum } from "~/generated/client";
+import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -30,7 +27,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface CourseProps extends WithTranslation<["common"]> {
   status: StatusType;
   workspace: WorkspaceDataType;
-  availableCurriculums: WorkspaceCurriculumFilterListType;
+  availableCurriculums: Curriculum[];
 }
 
 /**
@@ -178,13 +175,15 @@ class Course extends React.Component<CourseProps, CourseState> {
    * user can signUp for course or is already member of
    * the course
    *
-   * @returns Requirements object
+   * @returns boolean whether user can signUp or not
    */
-  checkSignUpStatus = async (): Promise<boolean> =>
-    (await promisify(
-      mApi().coursepicker.workspaces.canSignup.read(this.props.workspace.id),
-      "callback"
-    )()) as boolean;
+  checkSignUpStatus = () => {
+    const coursepickerApi = MApi.getCoursepickerApi();
+
+    return coursepickerApi.workspaceCanSignUp({
+      workspaceId: this.props.workspace.id,
+    });
+  };
 
   /**
    * render
