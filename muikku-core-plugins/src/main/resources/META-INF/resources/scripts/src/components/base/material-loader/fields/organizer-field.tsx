@@ -3,7 +3,7 @@ import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
@@ -434,8 +434,12 @@ class OrganizerField extends React.Component<
     if (this.props.invisible) {
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Järjestelytehtävä" />
+          <ReadspeakerMessage
+            text={this.props.t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "organizer",
+            })}
+          />
           <span className="material-page__organizerfield-wrapper rs_skip_always">
             <span className="material-page__organizerfield">
               <span className="material-page__organizerfield-terms">
@@ -501,8 +505,12 @@ class OrganizerField extends React.Component<
     // we add that class name in our component
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Järjestelytehtävä" />
+        <ReadspeakerMessage
+          text={this.props.t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "organizer",
+          })}
+        />
         <span
           className={`material-page__organizerfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

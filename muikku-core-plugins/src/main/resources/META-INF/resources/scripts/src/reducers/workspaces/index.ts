@@ -6,6 +6,9 @@ import {
   EvaluationType,
   MaterialEvaluation,
   WorkspaceActivity,
+  Curriculum,
+  Organization,
+  WorkspaceOrganization,
   UserStaff,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
@@ -398,7 +401,9 @@ export const languageOptions = [
 export type Language = typeof languageOptions[number];
 
 /**
- * WorkspaceType
+ * WorkspaceType. This is the main type for workspaces created for the frontend. It is combined from multiple backend types.
+ * that is why it is not a direct copy of the backend model. It is also used in multiple places in the frontend. This will be
+ * refactored in the future to be more specific.
  */
 export interface WorkspaceType {
   archived: boolean;
@@ -430,6 +435,7 @@ export interface WorkspaceType {
 
   //These are optional addons, and are usually not available
   activity?: WorkspaceActivity;
+  organization?: Organization;
   studentActivity?: WorkspaceStudentActivityType;
   forumStatistics?: WorkspaceForumStatisticsType;
   studentAssessments?: WorkspaceStudentAssessmentsType;
@@ -468,8 +474,6 @@ export interface WorkspaceMaterialReferenceType {
   url: string;
 }
 
-export type WorkspaceListType = Array<WorkspaceType>;
-
 /**
  * WorkspaceSignUpDetails
  */
@@ -497,14 +501,6 @@ export type WorkspaceEducationFilterListType =
   Array<WorkspaceEducationFilterType>;
 
 /**
- * WorkspaceCurriculumFilterType
- */
-export interface WorkspaceCurriculumFilterType {
-  identifier: string;
-  name: string;
-}
-
-/**
  * WorkspaceOrganizationFilterType
  */
 export interface WorkspaceOrganizationFilterType {
@@ -520,10 +516,6 @@ export interface WorkspaceStateFilterType {
   name: string;
 }
 
-export type WorkspaceCurriculumFilterListType =
-  Array<WorkspaceCurriculumFilterType>;
-export type WorkspaceOrganizationFilterListType =
-  Array<WorkspaceOrganizationFilterType>;
 export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
 export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
 
@@ -532,8 +524,8 @@ export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
  */
 export interface WorkspacesavailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType;
-  curriculums: WorkspaceCurriculumFilterListType;
-  organizations?: WorkspaceOrganizationFilterListType;
+  curriculums: Curriculum[];
+  organizations?: WorkspaceOrganization[];
   baseFilters?: WorkspaceBaseFilterListType;
   stateFilters?: WorkspaceStateFilterListType;
 }
@@ -543,7 +535,7 @@ export interface WorkspacesavailableFiltersType {
  */
 export interface OrganizationWorkspacesAvailableFiltersType {
   educationTypes: WorkspaceEducationFilterListType;
-  curriculums: WorkspaceCurriculumFilterListType;
+  curriculums: Curriculum[];
   stateFilters?: WorkspaceStateFilterListType;
 }
 
@@ -809,15 +801,15 @@ export interface WorkspacesType {
   currentMaterialsReplies?: MaterialCompositeRepliesListType;
 
   // Curriculums
-  availableCurriculums?: WorkspaceCurriculumFilterListType;
+  availableCurriculums?: Curriculum[];
 
   // Filters related to workspaces
   availableFilters: WorkspacesavailableFiltersType;
   activeFilters: WorkspacesActiveFiltersType;
 
   // List of different workspaces. Used different places like workspace picker etc
-  availableWorkspaces: WorkspaceListType;
-  userWorkspaces?: WorkspaceListType;
+  availableWorkspaces: WorkspaceType[];
+  userWorkspaces?: WorkspaceType[];
 
   // Other workspace related data
   templateWorkspaces: TemplateWorkspaceType[];

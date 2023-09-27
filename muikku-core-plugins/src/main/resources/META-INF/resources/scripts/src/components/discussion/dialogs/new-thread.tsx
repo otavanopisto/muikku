@@ -4,10 +4,7 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import {
-  DiscussionThreadLockEnum,
-  DiscussionType,
-} from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import {
   createDiscussionThread,
   CreateDiscussionThreadTriggerType,
@@ -17,6 +14,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
+import { DiscussionThreadLock } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -25,7 +23,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface DicussionNewThreadProps extends WithTranslation<["common"]> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   createDiscussionThread: CreateDiscussionThreadTriggerType;
   status: StatusType;
 }
@@ -38,7 +36,7 @@ interface DicussionNewThreadState {
   title: string;
   locked: boolean;
   threadPinned: boolean;
-  threadLock: DiscussionThreadLockEnum | null;
+  threadLock: DiscussionThreadLock | null;
   threadSubscribed: boolean;
   selectedAreaId: number;
 }
@@ -230,7 +228,7 @@ class DicussionNewThread extends SessionStateComponent<
    */
   onLockChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setStateAndStore(
-      { threadLock: e.target.value as DiscussionThreadLockEnum },
+      { threadLock: e.target.value as DiscussionThreadLock },
       this.state.selectedAreaId
     );
   }
@@ -268,12 +266,12 @@ class DicussionNewThread extends SessionStateComponent<
   render() {
     const options = [
       {
-        value: DiscussionThreadLockEnum.ALL,
+        value: DiscussionThreadLock.All,
         // TODO: localization
         label: "Kaikilta",
       },
       {
-        value: DiscussionThreadLockEnum.STUDENTS,
+        value: DiscussionThreadLock.Students,
         // TODO: localization
         label: "Opiskelijoilta",
       },

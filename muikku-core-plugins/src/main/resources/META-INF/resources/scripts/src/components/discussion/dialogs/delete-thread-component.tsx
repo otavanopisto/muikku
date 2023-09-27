@@ -1,12 +1,10 @@
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
-
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import {
@@ -15,13 +13,14 @@ import {
   deleteCurrentDiscussionThread,
   deleteDiscussionThreadReplyFromCurrent,
 } from "~/actions/discussion";
+import { DiscussionThreadReply } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * DiscussionDeleteThreadComponentProps
  */
 interface DiscussionDeleteThreadComponentProps extends WithTranslation {
-  reply?: DiscussionThreadReplyType;
+  reply?: DiscussionThreadReply;
   deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType;
   deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

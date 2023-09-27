@@ -3,21 +3,18 @@ import actions, { displayNotification } from "../base/notifications";
 import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import {
-  WorkspaceListType,
   WorkspaceMaterialReferenceType,
   WorkspaceType,
   WorkspaceChatStatusType,
   WorkspaceAssessementStateType,
   WorkspaceAssessmentRequestType,
   WorkspaceEducationFilterListType,
-  WorkspaceCurriculumFilterListType,
   WorkspacesActiveFiltersType,
   WorkspacesStateType,
   WorkspacesPatchType,
   WorkspaceAdditionalInfoType,
   WorkspaceUpdateType,
   WorkspaceSignUpDetails,
-  WorkspaceCurriculumFilterType,
   WorkspaceInterimEvaluationRequest,
 } from "~/reducers/workspaces";
 import { AnyActionType, SpecificActionType } from "~/actions";
@@ -42,6 +39,7 @@ import { WorkspaceActivity } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 import {
+  Curriculum,
   WorkspaceStudent,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
@@ -49,12 +47,12 @@ import {
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
-  WorkspaceCurriculumFilterType[]
+  Curriculum[]
 >;
 
 export type UPDATE_USER_WORKSPACES = SpecificActionType<
   "UPDATE_USER_WORKSPACES",
-  WorkspaceListType
+  WorkspaceType[]
 >;
 
 export type UPDATE_LAST_WORKSPACES = SpecificActionType<
@@ -108,7 +106,7 @@ export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
   SpecificActionType<
     "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-    WorkspaceCurriculumFilterListType
+    Curriculum[]
   >;
 
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES =
@@ -149,13 +147,6 @@ export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_ST
       workspaceMaterialReplyId: number;
     }
   >;
-
-type WorkspaceQueryDataType = {
-  q?: string;
-  templates?: "LIST_ALL" | "ONLY_TEMPLATES" | "ONLY_WORKSPACES";
-  firstResult?: number;
-  maxResults?: number;
-};
 
 /**
  * SelectItem
@@ -268,7 +259,7 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
           payload: organizationWorkspaces,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -305,7 +296,7 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
       try {
         dispatch({
           type: "UPDATE_USER_WORKSPACES",
-          payload: <WorkspaceListType>(
+          payload: <WorkspaceType[]>(
             ((await promisify(
               mApi().workspace.workspaces.read({ userId: userId }),
               "callback"
@@ -754,10 +745,10 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        const curriculums = <WorkspaceCurriculumFilterListType>(
-          await promisify(mApi().coursepicker.curriculums.read(), "callback")()
-        );
+        const curriculums = await coursepickerApi.getCoursepickerCurriculums();
 
         dispatch({
           type: "UPDATE_AVAILABLE_CURRICULUMS",
@@ -1162,7 +1153,7 @@ export interface setFiltersTriggerType {
 export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
-    callback?: (curriculums: WorkspaceCurriculumFilterListType) => void
+    callback?: (curriculums: Curriculum[]) => void
   ): AnyActionType;
 }
 
@@ -1329,10 +1320,11 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        const curriculums = <WorkspaceCurriculumFilterListType>(
-          await promisify(mApi().coursepicker.curriculums.read(), "callback")()
-        );
+        const curriculums = await coursepickerApi.getCoursepickerCurriculums();
+
         if (!loadOrganizationWorkspaceFilters) {
           dispatch({
             type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
@@ -1346,7 +1338,7 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
         }
         callback && callback(curriculums);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1373,13 +1365,16 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        await promisify(
-          mApi().coursepicker.workspaces.signup.create(data.workspace.id, {
+        await coursepickerApi.workspaceSignUp({
+          workspaceId: data.workspace.id,
+          workspaceSignUpRequest: {
             message: data.message,
-          }),
-          "callback"
-        )();
+          },
+        });
+
         window.location.href = `${getState().status.contextPath}/workspace/${
           data.workspace.urlName
         }`;

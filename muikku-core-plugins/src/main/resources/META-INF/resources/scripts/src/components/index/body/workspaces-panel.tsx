@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
-import { WorkspaceListType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * WorkspacesPanelProps
  */
 interface WorkspacesPanelProps extends WithTranslation {
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceType[];
 }
 
 /**

@@ -2,10 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
-import {
-  GuiderWorkspaceType,
-  GuiderType,
-} from "~/reducers/main-function/guider";
+import { GuiderType } from "~/reducers/main-function/guider";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
@@ -91,45 +88,43 @@ class NavigationAside extends React.Component<
           <NavigationTopic
             name={this.props.i18n.t("labels.workspaces", { ns: "workspace" })}
           >
-            {this.props.guider.availableFilters.workspaces.map(
-              (workspace: GuiderWorkspaceType) => {
-                const isActive =
-                  this.props.guider.activeFilters.workspaceFilters.includes(
-                    workspace.id
-                  );
-                const hash = isActive
-                  ? queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        w: (locationData.w || []).filter(
-                          (w: string) => parseInt(w) !== workspace.id
-                        ),
-                      }),
-                      { arrayFormat: "bracket" }
-                    )
-                  : queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        w: (locationData.w || []).concat(workspace.id),
-                      }),
-                      { arrayFormat: "bracket" }
-                    );
-                return (
-                  <NavigationElement
-                    modifiers="aside-navigation-guider-course"
-                    icon="books"
-                    key={workspace.id}
-                    isActive={isActive}
-                    hash={"?" + hash}
-                  >
-                    {workspace.name +
-                      (workspace.nameExtension
-                        ? " (" + workspace.nameExtension + ")"
-                        : "")}
-                  </NavigationElement>
+            {this.props.guider.availableFilters.workspaces.map((workspace) => {
+              const isActive =
+                this.props.guider.activeFilters.workspaceFilters.includes(
+                  workspace.id
                 );
-              }
-            )}
+              const hash = isActive
+                ? queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      w: (locationData.w || []).filter(
+                        (w: string) => parseInt(w) !== workspace.id
+                      ),
+                    }),
+                    { arrayFormat: "bracket" }
+                  )
+                : queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      w: (locationData.w || []).concat(workspace.id),
+                    }),
+                    { arrayFormat: "bracket" }
+                  );
+              return (
+                <NavigationElement
+                  modifiers="aside-navigation-guider-course"
+                  icon="books"
+                  key={workspace.id}
+                  isActive={isActive}
+                  hash={"?" + hash}
+                >
+                  {workspace.name +
+                    (workspace.nameExtension
+                      ? " (" + workspace.nameExtension + ")"
+                      : "")}
+                </NavigationElement>
+              );
+            })}
           </NavigationTopic>
         )}
 

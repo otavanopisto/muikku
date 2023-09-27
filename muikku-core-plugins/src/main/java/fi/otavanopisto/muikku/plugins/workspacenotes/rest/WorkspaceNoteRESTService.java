@@ -52,9 +52,6 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   @Inject
   private UserEntityController userEntityController;
   
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
 
   /*
    * mApi() call (mApi().workspacenotes.workspacenote.create(workspaceEntityId, workspaceNoteRestModel)
@@ -218,10 +215,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     }
     
     // non-admins can only list their own notes
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
     if (!owner.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -264,10 +260,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     }
     
     // users can only edit their own notes
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
     if (!owner.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -316,9 +311,4 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
 
   }
   
-  private EnvironmentRoleArchetype getUserRoleArchetype(SchoolDataIdentifier userSchoolDataIdentifier) {
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
-    EnvironmentRoleArchetype userRoleArchetype = roleEntity != null ? roleEntity.getArchetype() : null;
-    return userRoleArchetype;
-  }
 } 
