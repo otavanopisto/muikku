@@ -3,7 +3,7 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
@@ -565,8 +565,12 @@ class ConnectField extends React.Component<
 
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Yhdistelykenttä" />
+        <ReadspeakerMessage
+          text={this.props.t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "connect",
+          })}
+        />
 
         <span
           className={`material-page__connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}

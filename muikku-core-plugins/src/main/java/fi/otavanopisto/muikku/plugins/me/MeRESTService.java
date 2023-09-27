@@ -136,7 +136,7 @@ public class MeRESTService {
     }
 
     UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    if (loggedUser == null || loggedUser.getRole() == null || loggedUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
