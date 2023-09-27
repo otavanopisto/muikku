@@ -122,10 +122,13 @@ class EvaluationRequestDialog extends React.Component<
       )().then((link: { url: string }) => link.url)) as string;
       window.location.href = link;
     } catch (e) {
-      this.props.t("notifications.createError", {
-        ns: "orders",
-        context: "paymentLocation",
-      });
+      this.props.displayNotification(
+        this.props.t("notifications.createError", {
+          ns: "orders",
+          context: "paymentLocation",
+        }),
+        "error"
+      );
     }
   };
 
