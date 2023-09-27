@@ -402,26 +402,16 @@ public class AnnouncerRESTService extends PluginRESTService {
   private boolean hasOrganizationAccess(Announcement announcement, UserSchoolDataIdentifier userSchoolDataIdentifier) {
     Long announcementOrganizationId = announcement.getOrganizationEntityId();
     Long userOrganizationId = userSchoolDataIdentifier.getOrganization() != null ? userSchoolDataIdentifier.getOrganization().getId() : null;
-    EnvironmentRoleArchetype role = userSchoolDataIdentifier.getRole() != null ? userSchoolDataIdentifier.getRole().getArchetype() : null;
 
-    if (announcementOrganizationId != null) {
-      if (userOrganizationId != null && !Objects.equals(announcementOrganizationId, userOrganizationId)) {
-        // Both ids present but don't match
-        return false;
-      }
-      
-      if (userOrganizationId == null && role != EnvironmentRoleArchetype.ADMINISTRATOR) {
-        // User has no organization, but we give a pass for administrators
-        return false;
-      }
-    } else {
-      // Announcements without organization can only be found by administrators
-      if (role != EnvironmentRoleArchetype.ADMINISTRATOR) {
-        return false;
-      }
+    if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return true;
     }
     
-    return true;
+    if (announcementOrganizationId == null || userOrganizationId == null) {
+      return false;
+    }
+    
+    return Objects.equals(announcementOrganizationId, userOrganizationId);
   }
 
   private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces) {

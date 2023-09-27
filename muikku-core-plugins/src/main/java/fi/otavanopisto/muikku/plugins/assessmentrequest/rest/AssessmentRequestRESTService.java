@@ -147,7 +147,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     try {
       assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
-      communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
+      communicatorAssessmentRequestController.sendAssessmentRequestMessage(sessionController.getLocale(), assessmentRequest);
       return Response.ok(restModel(assessmentRequest)).build();
     }
     catch (Exception e) {
@@ -306,7 +306,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       SchoolDataIdentifier assessmentRequestWorkspaceUserIdentifier = new SchoolDataIdentifier(assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getSchoolDataSource());
       if (assessmentRequestWorkspaceUserIdentifier.equals(workspaceStudentIdentifier)) {
         assessmentRequestController.archiveWorkspaceAssessmentRequest(assessmentRequest, workspaceEntity, studentEntity);
-        communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(workspaceUserEntity);
+        communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(sessionController.getLocale(), workspaceUserEntity);
         evaluationController.createAssessmentRequestCancellation(studentEntity.getId(), workspaceEntityId, new Date());
       } else {
         return Response.status(Status.FORBIDDEN).build();
