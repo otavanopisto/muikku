@@ -4,11 +4,7 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import {
-  DiscussionType,
-  DiscussionThreadType,
-  DiscussionThreadLockEnum,
-} from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import {
   modifyDiscussionThread,
   ModifyDiscussionThreadTriggerType,
@@ -18,6 +14,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
+import { DiscussionThread, DiscussionThreadLock } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -26,8 +23,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface ModifyThreadProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  discussion: DiscussionType;
-  thread: DiscussionThreadType;
+  discussion: DiscussionState;
+  thread: DiscussionThread;
   modifyDiscussionThread: ModifyDiscussionThreadTriggerType;
   status: StatusType;
 }
@@ -40,7 +37,7 @@ interface ModifyThreadState {
   title: string;
   locked: boolean;
   threadPinned: boolean;
-  threadLock: DiscussionThreadLockEnum | null;
+  threadLock: DiscussionThreadLock | null;
 }
 
 /**
@@ -196,7 +193,7 @@ class ModifyThread extends SessionStateComponent<
    */
   onLockChange(e: React.ChangeEvent<HTMLSelectElement>) {
     this.setStateAndStore(
-      { threadLock: e.target.value as DiscussionThreadLockEnum },
+      { threadLock: e.target.value as DiscussionThreadLock },
       this.props.thread.id
     );
   }
@@ -207,13 +204,13 @@ class ModifyThread extends SessionStateComponent<
   render() {
     const options = [
       {
-        value: DiscussionThreadLockEnum.ALL,
+        value: DiscussionThreadLock.All,
         label: this.props.i18n.t("labels.fromAll", {
           ns: "messaging",
         }),
       },
       {
-        value: DiscussionThreadLockEnum.STUDENTS,
+        value: DiscussionThreadLock.Students,
         label: this.props.i18n.t("labels.fromStudents", {
           ns: "messaging",
         }),

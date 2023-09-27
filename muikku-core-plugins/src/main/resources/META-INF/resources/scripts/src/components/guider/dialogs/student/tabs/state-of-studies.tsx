@@ -165,7 +165,7 @@ class StateOfStudies extends React.Component<
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanel.Body>
         <ApplicationSubPanelItem
-          title={this.props.i18n.t("labels.studyTimeStart", { ns: "users" })}
+          title={this.props.i18n.t("labels.studyStartDate", { ns: "users" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyStartDate
@@ -176,7 +176,7 @@ class StateOfStudies extends React.Component<
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
         <ApplicationSubPanelItem
-          title={this.props.i18n.t("labels.studyTimeEnd", { ns: "users" })}
+          title={this.props.i18n.t("labels.studyEndDate", { ns: "users" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyEndDate

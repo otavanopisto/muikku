@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -102,11 +101,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
         OrganizationEntity userOrganization = userSchoolDataIdentifier.getOrganization();
         OrganizationEntity contextOrganization = ((OrganizationalEntity) contextReference).getOrganizationEntity();
         if (userOrganization != null && contextOrganization != null && !Objects.equals(userOrganization.getId(), contextOrganization.getId())) {
-          EnvironmentRoleEntity roleEntity = userSchoolDataIdentifier.getRole();
-          EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
-          hasPermission = loggedUserRole == EnvironmentRoleArchetype.ADMINISTRATOR ||
-              loggedUserRole == EnvironmentRoleArchetype.STUDENT ||
-              loggedUserRole == EnvironmentRoleArchetype.CUSTOM;
+          hasPermission = userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.CUSTOM);
         }
       }
     }
@@ -135,12 +130,14 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   }
 
   private boolean hasEnvironmentAccess(SchoolDataIdentifier userIdentifier, Permission permission) {
-    EnvironmentRoleEntity defaultIdentifierRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier);
-    if (defaultIdentifierRole != null) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    if (userSchoolDataIdentifier != null) {
       // Environment access as an individual
-      if (permissionController.hasPermission(defaultIdentifierRole, permission)) {
-        // TODO Override rules for environment users
-        return true;
+      if (userSchoolDataIdentifier.getRole() != null) {
+        if (permissionController.hasPermission(userSchoolDataIdentifier.getRole(), permission)) {
+          // TODO Override rules for environment users
+          return true;
+        }
       }
     }
     

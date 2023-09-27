@@ -383,13 +383,11 @@ public class PyramusIdentifierMapper {
     switch (role) {
       case COURSE_TEACHER:
         return WorkspaceRoleArchetype.TEACHER;
-        
-      // The following are not currently in use in Muikku
       case COURSE_TUTOR:
+        return WorkspaceRoleArchetype.TUTOR;
       case COURSE_ORGANIZER:
-        return null;
+        return WorkspaceRoleArchetype.ORGANIZER;
     }
-    
     return null;
   }
   
@@ -397,11 +395,13 @@ public class PyramusIdentifierMapper {
     switch (archetype) {
       case TEACHER:
         return CourseStaffMemberRoleEnum.COURSE_TEACHER;
-      case STUDENT:
+      case TUTOR:
+        return CourseStaffMemberRoleEnum.COURSE_TUTOR;
+      case ORGANIZER:
+        return CourseStaffMemberRoleEnum.COURSE_ORGANIZER;
+      default:
         return null;
     }
-    
-    return null;
   }
   
 }

@@ -11,7 +11,6 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { UserGroup } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { WorkspaceType } from "~/reducers/workspaces";
 
 /**
  * NavigationProps
@@ -89,45 +88,43 @@ class NavigationAside extends React.Component<
           <NavigationTopic
             name={this.props.i18n.t("labels.workspaces", { ns: "workspace" })}
           >
-            {this.props.guider.availableFilters.workspaces.map(
-              (workspace: WorkspaceType) => {
-                const isActive =
-                  this.props.guider.activeFilters.workspaceFilters.includes(
-                    workspace.id
-                  );
-                const hash = isActive
-                  ? queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        w: (locationData.w || []).filter(
-                          (w: string) => parseInt(w) !== workspace.id
-                        ),
-                      }),
-                      { arrayFormat: "bracket" }
-                    )
-                  : queryString.stringify(
-                      Object.assign({}, locationData, {
-                        c: "",
-                        w: (locationData.w || []).concat(workspace.id),
-                      }),
-                      { arrayFormat: "bracket" }
-                    );
-                return (
-                  <NavigationElement
-                    modifiers="aside-navigation-guider-course"
-                    icon="books"
-                    key={workspace.id}
-                    isActive={isActive}
-                    hash={"?" + hash}
-                  >
-                    {workspace.name +
-                      (workspace.nameExtension
-                        ? " (" + workspace.nameExtension + ")"
-                        : "")}
-                  </NavigationElement>
+            {this.props.guider.availableFilters.workspaces.map((workspace) => {
+              const isActive =
+                this.props.guider.activeFilters.workspaceFilters.includes(
+                  workspace.id
                 );
-              }
-            )}
+              const hash = isActive
+                ? queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      w: (locationData.w || []).filter(
+                        (w: string) => parseInt(w) !== workspace.id
+                      ),
+                    }),
+                    { arrayFormat: "bracket" }
+                  )
+                : queryString.stringify(
+                    Object.assign({}, locationData, {
+                      c: "",
+                      w: (locationData.w || []).concat(workspace.id),
+                    }),
+                    { arrayFormat: "bracket" }
+                  );
+              return (
+                <NavigationElement
+                  modifiers="aside-navigation-guider-course"
+                  icon="books"
+                  key={workspace.id}
+                  isActive={isActive}
+                  hash={"?" + hash}
+                >
+                  {workspace.name +
+                    (workspace.nameExtension
+                      ? " (" + workspace.nameExtension + ")"
+                      : "")}
+                </NavigationElement>
+              );
+            })}
           </NavigationTopic>
         )}
 
