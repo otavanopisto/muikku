@@ -1370,7 +1370,7 @@
     },
     "content": {
       "addDetails": "Please note that the course must be published before it appears in the Coursepicker - regardless of the set start date. The dates are not mandatory.",
-      "archiveStudent": "Are you sure that you want to archive user {{studentName}} from the course??",
+      "archiveStudent": "Do you want to archive the course student {{studentName}}?",
       "cancel_evaluationRequest": "Cancel the evaluation request you sent earlier. Your teacher will be notified automatically.",
       "cannotSignUpWarning": "You are exploring this course, but you cannot sign up for it. You can answer assignments, but you cannot request a course evaluation. If you want to sign up for this course, contact your study guide.",
       "changeImage": "Click image to change it",
@@ -1452,7 +1452,7 @@
       "evaluationRequestMessage": "Additional Message to the course teacher",
       "failed": "Failed",
       "goto": "Go to course",
-      "grade": "grade",
+      "grade": "Grade",
       "hasEvaluationFee": "Course evaluation has a fee",
       "home": "Course front page",
       "incomplete": "Incomplete",

@@ -386,15 +386,12 @@ class Message extends React.Component<MessageProps, MessageState> {
               </span>
             </div>
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
-              <span
-                // TODO: use i18next
-                aria-label={this.props.t("wcag.date", { ns: "messaging" })}
-              >
+              <span aria-label={this.props.t("wcag.date", { ns: "messaging" })}>
                 {`${localizeTime.date(
                   this.props.message.created
                 )} klo ${localizeTime.date(
                   this.props.message.created,
-                  "h:mm"
+                  "HH:mm"
                 )}`}
               </span>
             </div>
