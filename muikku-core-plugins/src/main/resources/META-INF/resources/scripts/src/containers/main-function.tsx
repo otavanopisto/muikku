@@ -111,7 +111,7 @@ import {
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
-import { DiscussionPatchType } from "~/reducers/discussion";
+import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
@@ -412,7 +412,7 @@ export default class MainFunction extends React.Component<
     this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
     if (location.includes("subs")) {
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           current: state.discussion.current && undefined,
           areaId: undefined,
         };
@@ -441,7 +441,7 @@ export default class MainFunction extends React.Component<
         );
 
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           areaId: undefined,
         };
 

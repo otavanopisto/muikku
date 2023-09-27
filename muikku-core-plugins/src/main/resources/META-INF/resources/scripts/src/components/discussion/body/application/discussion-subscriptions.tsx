@@ -8,19 +8,13 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/discussion.scss";
 import "~/sass/elements/avatar.scss";
 import "~/sass/elements/label.scss";
-import {
-  DiscussionType,
-  DiscussionThreadType,
-  DiscussionUserType,
-  DiscussionSubscribedThread,
-  DiscussionSubscribedArea,
-} from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import { StateType } from "~/reducers";
 import OverflowDetector from "~/components/general/overflow-detector";
 import {
   DiscussionThreads,
-  DiscussionThread,
+  DiscussionThread as DiscussionThreadComponent,
   DiscussionThreadHeader,
   DiscussionThreadBody,
   DiscussionThreadFooter,
@@ -43,19 +37,24 @@ import {
   unsubscribeDiscussionArea,
 } from "~/actions/discussion/index";
 import { WorkspacesState } from "~/reducers/workspaces";
-import { DiscussionArea } from "./threads/area";
+import { DiscussionArea as DiscussionAreaComponent } from "./threads/area";
 import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
+import {
+  DiscussionSubscribedArea,
+  DiscussionSubscribedThread,
+  DiscussionThread,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DiscussionSubscribedThreadsProps
  */
 interface DiscussionSubscriptionsProps extends WithTranslation {
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   status: StatusType;
   workspaces: WorkspacesState;
   /**
@@ -112,7 +111,7 @@ class DiscussionSubscriptions extends React.Component<
    * @param isSubscribed isSubscribed
    */
   handleSubscribeOrUnsubscribeClick =
-    (thread: DiscussionThreadType, isSubscribed: boolean) =>
+    (thread: DiscussionThread, isSubscribed: boolean) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e.stopPropagation();
       if (isSubscribed) {
@@ -449,7 +448,7 @@ class DiscussionSubscriptions extends React.Component<
       subscribedArea.id > 10 ? (subscribedArea.id % 10) + 1 : subscribedArea.id;
 
     return (
-      <DiscussionArea
+      <DiscussionAreaComponent
         key={subscribedArea.id}
         onClick={this.getToArea.bind(this, area)}
       >
@@ -506,7 +505,7 @@ class DiscussionSubscriptions extends React.Component<
             </div>
           </div>
         </ApplicationListItemFooter>
-      </DiscussionArea>
+      </DiscussionAreaComponent>
     );
   };
 
@@ -519,7 +518,7 @@ class DiscussionSubscriptions extends React.Component<
   renderThreadItem = (sThreads: DiscussionSubscribedThread) => {
     const subscribredThread = sThreads.thread;
 
-    const user: DiscussionUserType = subscribredThread.creator;
+    const user = subscribredThread.creator;
 
     const userCategory = user.id > 10 ? (user.id % 10) + 1 : user.id;
     const threadCategory =
@@ -547,7 +546,7 @@ class DiscussionSubscriptions extends React.Component<
     }
 
     return (
-      <DiscussionThread
+      <DiscussionThreadComponent
         key={subscribredThread.id}
         onClick={this.getToThread.bind(this, sThreads)}
         avatar={avatar}
@@ -634,7 +633,7 @@ class DiscussionSubscriptions extends React.Component<
             </div>
           </div>
         </DiscussionThreadFooter>
-      </DiscussionThread>
+      </DiscussionThreadComponent>
     );
   };
 

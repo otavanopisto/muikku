@@ -1,8 +1,4 @@
 import * as React from "react";
-import {
-  DiscussionUserType,
-  DiscussionThreadReplyType,
-} from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
@@ -21,6 +17,8 @@ import {
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
 import { AnyActionType } from "~/actions";
+import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
+import * as moment from "moment";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -28,9 +26,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * DiscussionThreadReplyProps
  */
 interface DiscussionThreadReplyProps extends WithTranslation {
-  discussionItem: DiscussionThreadReplyType;
+  discussionItem: DiscussionThreadReply;
   status: StatusType;
-  user: DiscussionUserType;
+  user: DiscussionUser;
   avatar?: JSX.Element;
   isStudent: boolean;
   isHidden: boolean;
@@ -54,7 +52,7 @@ interface DiscussionThreadReplyState {
 /**
  * DiscussionThreadReply
  */
-class DiscussionThreadReply extends React.Component<
+class DiscussionThreadReplyComponent extends React.Component<
   DiscussionThreadReplyProps,
   DiscussionThreadReplyState
 > {
@@ -134,7 +132,10 @@ class DiscussionThreadReply extends React.Component<
                 <div className="rich-text">
                   {this.props.i18n.t("content.removed", { ns: "messaging" })}
                 </div>
-                {discussionItem.created !== discussionItem.lastModified ? (
+
+                {!moment(discussionItem.created).isSame(
+                  discussionItem.lastModified
+                ) ? (
                   <div className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
@@ -145,7 +146,9 @@ class DiscussionThreadReply extends React.Component<
               </DiscussionThreadBody>
             ) : (
               <DiscussionThreadBody html={discussionItem.message}>
-                {discussionItem.created !== discussionItem.lastModified ? (
+                {!moment(discussionItem.created).isSame(
+                  discussionItem.lastModified
+                ) ? (
                   <div className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
@@ -264,5 +267,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(DiscussionThreadReply)
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionThreadReplyComponent)
 );
