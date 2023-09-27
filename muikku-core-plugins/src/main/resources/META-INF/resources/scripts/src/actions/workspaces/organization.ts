@@ -6,10 +6,7 @@ import {
   UpdateWorkspaceTriggerType,
 } from "./index";
 import { Dispatch } from "react-redux";
-import {
-  WorkspaceType,
-  WorkspaceOrganizationFilterListType,
-} from "../../reducers/workspaces/index";
+import { WorkspaceType } from "../../reducers/workspaces/index";
 import { reuseExistantValue } from "./helpers";
 import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
@@ -17,18 +14,12 @@ import { StateType } from "~/reducers";
 import promisify from "~/util/promisify";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import {
-  WorkspaceStaffListType,
-  WorkspaceStudentListType,
-} from "~/reducers/user-index";
-import {
   WorkspaceUpdateType,
   WorkspaceEducationFilterListType,
-  WorkspaceCurriculumFilterListType,
   WorkspaceStateFilterListType,
   WorkspacesActiveFiltersType,
   WorkspacesPatchType,
   WorkspacesStateType,
-  WorkspaceListType,
   UserSelectLoader,
 } from "../../reducers/workspaces/index";
 import { loadWorkspacesHelper } from "~/actions/workspaces/helpers";
@@ -38,6 +29,13 @@ import {
   LoadUsersOfWorkspaceTriggerType,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "./index";
+import MApi, { isMApiError } from "~/api/api";
+import i18n from "~/locales/i18n";
+import {
+  Curriculum,
+  WorkspaceOrganization,
+  WorkspaceStudentSearchResult,
+} from "~/generated/client";
 
 /**
  * UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS
@@ -45,7 +43,7 @@ import {
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS =
   SpecificActionType<
     "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
-    WorkspaceOrganizationFilterListType
+    WorkspaceOrganization[]
   >;
 /**
  * UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES
@@ -61,7 +59,7 @@ export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
   SpecificActionType<
     "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS",
-    WorkspaceCurriculumFilterListType
+    Curriculum[]
   >;
 
 /**
@@ -102,7 +100,7 @@ export type UPDATE_ORGANIZATION_WORKSPACES_STATE = SpecificActionType<
  */
 export type UPDATE_ORGANIZATION_TEMPLATES = SpecificActionType<
   "UPDATE_ORGANIZATION_TEMPLATES",
-  WorkspaceListType
+  WorkspaceType[]
 >;
 
 /**
@@ -135,9 +133,7 @@ export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE =
  * LoadUserWorkspaceOrganizationFiltersFromServerTriggerType
  */
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
-  (
-    callback?: (organizations: WorkspaceOrganizationFilterListType) => void
-  ): AnyActionType;
+  (callback?: (organizations: WorkspaceOrganization[]) => void): AnyActionType;
 }
 
 /**
@@ -208,11 +204,13 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.errormessage.workspaceLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              count: 1,
+            }),
             "error"
           )
         );
@@ -231,27 +229,28 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        const organizations = <WorkspaceOrganizationFilterListType>(
-          await promisify(
-            mApi().coursepicker.organizations.read(),
-            "callback"
-          )()
-        );
+        const organizations =
+          await coursepickerApi.getCoursepickerOrganizations();
+
         dispatch({
           type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS",
           payload: organizations,
         });
         callback && callback(organizations);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.coursepicker.errormessage.curriculumFilters"
-            ),
+            i18n.t("notifications.loadError", {
+              context: "curriculumFilters",
+              ns: "workspace",
+            }),
             "error"
           )
         );
@@ -269,6 +268,8 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         dispatch({
           type: "UPDATE_ORGANIZATION_SELECTED_WORKSPACE",
@@ -278,15 +279,12 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
           },
         });
 
-        const staffMembers: WorkspaceStaffListType = <WorkspaceStaffListType>(
-          await promisify(
-            mApi().user.staffMembers.read({
-              ...data.payload,
-              workspaceEntityId: data.workspace.id,
-            }),
-            "callback"
-          )()
-        );
+        const staffMembers = await userApi.getStaffMembers({
+          firstResult: data.payload.firstResult,
+          maxResults: data.payload.maxResults,
+          q: data.payload.q,
+          workspaceEntityId: data.workspace.id,
+        });
 
         const update: WorkspaceUpdateType = {
           staffMembers,
@@ -300,14 +298,16 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
 
         data.success && data.success(staffMembers);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.organization.workspaces.notification.selectStaff.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "teachers",
+            }),
             "error"
           )
         );
@@ -338,7 +338,7 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
           },
         });
 
-        const students = <WorkspaceStudentListType>(
+        const students = <WorkspaceStudentSearchResult>(
           await promisify(
             mApi().workspace.workspaces.students.read(
               data.workspace.id,
@@ -363,11 +363,13 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.organization.workspaces.notification.selectStudents.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "students",
+            }),
             "error"
           )
         );
@@ -389,6 +391,8 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationApi = MApi.getOrganizationApi();
+
       try {
         const originalWorkspace: WorkspaceType = data.workspace;
         const newDetails = data.update.details;
@@ -451,16 +455,15 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
             }
           });
 
-          await promisify(
-            mApi().organizationWorkspaceManagement.workspaces.students.create(
-              data.workspace.id,
-              {
-                studentIdentifiers: studentIdentifiers,
-                studentGroupIds: groupIdentifiers,
-              }
-            ),
-            "callback"
-          )().then(data.progress && data.progress("add-students"));
+          await organizationApi.addStudentsToWorkspace({
+            workspaceId: data.workspace.id,
+            addStudentsToWorkspaceRequest: {
+              studentIdentifiers: studentIdentifiers,
+              studentGroupIds: groupIdentifiers,
+            },
+          });
+
+          data.progress && data.progress("add-students");
         }
 
         if (data.addTeachers.length > 0) {
@@ -468,15 +471,14 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
             (teacher) => teacher.id
           );
 
-          await promisify(
-            mApi().organizationWorkspaceManagement.workspaces.staff.create(
-              data.workspace.id,
-              {
-                staffMemberIdentifiers: staffMemberIdentifiers,
-              }
-            ),
-            "callback"
-          )().then(data.progress && data.progress("add-teachers"));
+          await organizationApi.addStaffToWorkspace({
+            workspaceId: data.workspace.id,
+            addStaffToWorkspaceRequest: {
+              staffMemberIdentifiers: staffMemberIdentifiers,
+            },
+          });
+
+          data.progress && data.progress("add-teachers");
         }
 
         // if (data.removeStudents.length > 0) {
@@ -511,11 +513,13 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.save.error"
-            ),
+            i18n.t("notifications.saveError", {
+              ns: "workspace",
+              context: "data",
+            }),
             "error"
           )
         );
@@ -544,6 +548,8 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const organizationApi = MApi.getOrganizationApi();
+
     try {
       const workspace: WorkspaceType = <WorkspaceType>await promisify(
         mApi().workspace.workspaces.create(
@@ -590,30 +596,28 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
           }
         });
 
-        await promisify(
-          mApi().organizationWorkspaceManagement.workspaces.students.create(
-            workspace.id,
-            {
-              studentIdentifiers: studentIdentifiers,
-              studentGroupIds: groupIdentifiers,
-            }
-          ),
-          "callback"
-        )().then(data.progress && data.progress("add-students"));
+        await organizationApi.addStudentsToWorkspace({
+          workspaceId: workspace.id,
+          addStudentsToWorkspaceRequest: {
+            studentIdentifiers: studentIdentifiers,
+            studentGroupIds: groupIdentifiers,
+          },
+        });
+
+        data.progress && data.progress("add-students");
       }
 
       if (data.staff.length > 0) {
         const staffMemberIdentifiers = data.staff.map((staff) => staff.id);
 
-        await promisify(
-          mApi().organizationWorkspaceManagement.workspaces.staff.create(
-            workspace.id,
-            {
-              staffMemberIdentifiers: staffMemberIdentifiers,
-            }
-          ),
-          "callback"
-        )().then(data.progress && data.progress("add-teachers"));
+        await organizationApi.addStaffToWorkspace({
+          workspaceId: workspace.id,
+          addStaffToWorkspaceRequest: {
+            staffMemberIdentifiers: staffMemberIdentifiers,
+          },
+        });
+
+        data.progress && data.progress("add-teachers");
       }
 
       data.progress && data.progress("done");
@@ -622,11 +626,10 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
       if (!(err instanceof MApiError)) {
         throw err;
       }
+
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.workspaces.notification.workspace.create.error"
-          ),
+          i18n.t("notifications.createError", { ns: "workspace" }),
           "error"
         )
       );

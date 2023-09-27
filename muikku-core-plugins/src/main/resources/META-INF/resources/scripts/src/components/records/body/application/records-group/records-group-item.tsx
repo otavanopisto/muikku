@@ -1,5 +1,6 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
+import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import {
@@ -10,7 +11,7 @@ import {
 import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { localizeTime } from "~/locales/i18n";
 import { RecordWorkspaceActivityByLine } from "~/reducers/main-function/records";
 import { Assessment } from "~/reducers/workspaces";
 import ActivityIndicator from "../records-indicators/activity-indicator";
@@ -21,7 +22,6 @@ import RecordsAssessmentIndicator from "../records-indicators/records-assessment
  * RecordsGroupItemProps
  */
 interface RecordsGroupItemProps {
-  i18n: i18nType;
   credit: RecordWorkspaceActivityByLine;
   isCombinationWorkspace: boolean;
 }
@@ -33,6 +33,14 @@ interface RecordsGroupItemProps {
  */
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { credit, isCombinationWorkspace } = props;
+
+  const { t } = useTranslation([
+    "studies",
+    "evaluation",
+    "materials",
+    "workspace",
+    "common",
+  ]);
 
   const [showE, setShowE] = React.useState(false);
 
@@ -105,7 +113,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns JSX.Element
    */
   const renderAssessmentsInformations = () => {
-    const { i18n, credit } = props;
+    const { credit } = props;
 
     return (
       <>
@@ -148,24 +156,21 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 ></div>
                 <div className="workspace-assessment__date">
                   <span className="workspace-assessment__date-label">
-                    {i18n.text.get(
-                      "plugin.records.workspace.assessment.date.label"
-                    )}
-                    :
+                    {t("labels.date", { count: 0 })}:
                   </span>
                   <span className="workspace-assessment__date-data">
-                    {i18n.time.format(a.date)}
+                    {localizeTime.date(a.date)}
                   </span>
                 </div>
                 <div className="workspace-assessment__literal">
                   <div className="workspace-assessment__literal-label">
                     {assessmentIsPending
-                      ? i18n.text.get(
-                          "plugin.records.workspace.assessment.interimEvaluationrequest.label"
-                        )
-                      : i18n.text.get(
-                          "plugin.records.workspace.assessment.interimEvaluation"
-                        )}
+                      ? t("labels.interimEvaluationRequest", {
+                          ns: "evaluation",
+                        })
+                      : t("labels.interimEvaluation", {
+                          ns: "materials",
+                        })}
                     :
                   </div>
                   <div
@@ -199,38 +204,36 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label"
-                      )}
-                      :
+                      {t("labels.date", { count: 1 })}:
                     </span>
 
                     <span className="workspace-assessment__date-data">
-                      {i18n.time.format(a.date)}
+                      {localizeTime.date(a.date)}
                     </span>
                   </div>
 
                   <div className="workspace-assessment__grade">
                     <span className="workspace-assessment__grade-label">
-                      {i18n.text.get(
-                        "plugin.records.workspace.assessment.grade.label"
-                      )}
+                      {t("labels.grade", {
+                        ns: "workspace",
+                      })}
                       :
                     </span>
                     <span className="workspace-assessment__grade-data">
                       {assessmentIsIncomplete
-                        ? i18n.text.get(
-                            "plugin.records.workspace.assessment.grade.incomplete.data"
-                          )
+                        ? t("labels.incomplete", {
+                            ns: "workspace",
+                          })
                         : a.grade}
                     </span>
                   </div>
 
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
-                      {i18n.text.get(
-                        "plugin.records.workspace.assessment.literal.label"
-                      )}
+                      {t("labels.evaluation", {
+                        ns: "evaluation",
+                        context: "literal",
+                      })}
                       :
                     </div>
                     <div
@@ -251,20 +254,18 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   ></div>
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {i18n.text.get(
-                        "plugin.records.workspace.assessment.date.label"
-                      )}
-                      :
+                      {t("labels.date", { count: 1 })}:
                     </span>
                     <span className="workspace-assessment__date-data">
-                      {i18n.time.format(a.date)}
+                      {localizeTime.date(a.date)}
                     </span>
                   </div>
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
-                      {i18n.text.get(
-                        "plugin.records.workspace.assessment.request.label"
-                      )}
+                      {t("labels.evaluationRequest", {
+                        ns: "evaluation",
+                        count: 1,
+                      })}
                       :
                     </div>
                     <div
@@ -326,9 +327,9 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               credit={credit.activity}
             >
               <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
-                {props.i18n.text.get(
-                  "plugin.records.assignmentsAndExercisesButton.label"
-                )}
+                {t("actions.assignments", {
+                  ns: "studies",
+                })}
               </Button>
             </WorkspaceAssignmentsAndDiaryDialog>
           </span>
@@ -400,21 +401,4 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(mapStateToProps, mapDispatchToProps)(RecordsGroupItem);
+export default RecordsGroupItem;

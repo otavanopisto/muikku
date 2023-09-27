@@ -620,7 +620,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
     
-    String studentLink = String.format("<a href=\"%s/guider#userprofile/%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
+    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
     String content;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");

@@ -647,17 +647,44 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/communicator/messages/{messageId}:
+  /rest/communicator/messages/{messageThreadId}:
+    get:
+      operationId: getCommunicatorMessageThread
+      summary: Get communicator message thread
+      description: Get communicator message thread
+      tags:
+        - Communicator
+      parameters:
+        - name: messageThreadId
+          in: path
+          description: Communicator message thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
+        "400":
+          description: Invalid request was sent to the server
+        "404":
+          description: Communicator message thread not found
+        "500":
+          description: Internal server error
+
     post:
-      operationId: updateCommunicatorMessage
+      operationId: createCommunicatorMessageToThread
       summary: Update communicator message
       description: Update communicator message
       tags:
         - Communicator
       parameters:
-        - name: messageId
+        - name: messageThreadId
           in: path
-          description: Communicator message id
+          description: Communicator message thread id
           required: true
           schema:
             type: integer
@@ -676,6 +703,68 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
+
+  /rest/communicator/messages/{messageId}/labels:
+    post:
+      operationId: addCommunicatorMessageLabel
+      summary: Add communicator message label
+      description: Add communicator message label
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/CommunicatorMessageLabelRequestBody"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadLabel"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Communicator message not found
+        "500":
+          description: Internal server error
+
+  /rest/communicator/messages/{messageId}/labels/{labelId}:
+    delete:
+      operationId: deleteCommunicatorMessageLabel
+      summary: Delete communicator message label
+      description: Delete communicator message label
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+        - name: labelId
+          in: path
+          description: Communicator message label id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: "Communicator message label deleted successfully"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Communicator message not found
 
   /rest/communicator/receiveditemscount:
     get:
@@ -698,7 +787,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/communicator/recipientsUserSearch:
+  /rest/communicator/recipientsUsersSearch:
     get:
       operationId: getCommunicatorRecipientsUserSearch
       summary: Get communicator recipients user search
@@ -732,7 +821,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MessageRecipient"
+                  $ref: "#/components/schemas/User"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -774,7 +863,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MessageRecipientWorkspace"
+                  $ref: "#/components/schemas/WorkspaceBasicInfo"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -790,6 +879,11 @@ paths:
       tags:
         - Communicator
       parameters:
+        - name: labelId
+          in: query
+          description: Label id
+          schema:
+            type: integer
         - name: firstResult
           in: query
           description: First result
@@ -803,6 +897,12 @@ paths:
           schema:
             type: integer
             default: 10
+        - name: onlyUnread
+          in: query
+          description: Only unread
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: "Communicator threads"
@@ -929,6 +1029,31 @@ paths:
           description: Internal server error
 
   /rest/communicator/sentitems/{messageId}:
+    get:
+      operationId: getCommunicatorSentItem
+      summary: Get communicator sent item
+      description: Get communicator sent item
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Communicator sent item"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     delete:
       operationId: deleteCommunicatorSentItem
       summary: Delete communicator sent item
@@ -990,6 +1115,31 @@ paths:
           description: Internal server error
 
   /rest/communicator/trash/{messageId}:
+    get:
+      operationId: getCommunicatorTrashItem
+      summary: Get communicator trash item
+      description: Get communicator trash item
+      tags:
+        - Communicator
+      parameters:
+        - name: messageId
+          in: path
+          description: Communicator message id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Communicator trash item"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     delete:
       operationId: deleteCommunicatorTrashItem
       summary: Delete communicator trash item
@@ -1086,10 +1236,10 @@ paths:
           description: Internal server error
 
   /rest/communicator/unread/{messageId}:
-    delete:
-      operationId: deleteCommunicatorUnreadItem
-      summary: Delete communicator unread item
-      description: Delete communicator unread item
+    get:
+      operationId: getCommunicatorUnread
+      summary: Get communicator unread
+      description: Get communicator unread
       tags:
         - Communicator
       parameters:
@@ -1100,12 +1250,14 @@ paths:
           schema:
             type: integer
       responses:
-        "204":
-          description: "Communicator unread item deleted successfully"
+        "200":
+          description: "Communicator unread"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageThreadExpanded"
         "400":
           description: Invalid request was sent to the server
-        "403":
-          description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
 
@@ -1146,10 +1298,28 @@ paths:
                   $ref: "#/components/schemas/MessageSearchResult"
         "400":
           description: Invalid request was sent to the server
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
         "403":
           description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
         "500":
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "502":
+          description: Bad gateway
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
 
   /rest/communicator/signatures:
     get:
@@ -1166,7 +1336,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AnyValue"
+                  $ref: "#/components/schemas/CommunicatorSignature"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1211,10 +1381,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CommunicatorSignature"
+        $ref: "#/components/requestBodies/CommunicatorSignatureUpdateRequestBody"
       responses:
         "200":
           description: Communicator signature updated successfully
@@ -1274,6 +1441,7 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
+
     post:
       operationId: createCommunicatorUserLabel
       summary: Create communicator user label
@@ -1311,10 +1479,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Label"
+        $ref: "#/components/requestBodies/CommunicatorUpdateLabelRequestBody"
       responses:
         "200":
           description: Communicator user label updated successfully
@@ -1328,6 +1493,7 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
+
     delete:
       operationId: deleteCommunicatorUserLabel
       summary: Delete communicator user label
@@ -1429,7 +1595,7 @@ paths:
   #COURSEPICKER
   /rest/coursepicker/curriculums:
     get:
-      operationId: getCoursePickerCurriculums
+      operationId: getCoursepickerCurriculums
       summary: Get course picker curriculums
       description: Get course picker curriculums
       tags:
@@ -1450,7 +1616,7 @@ paths:
 
   /rest/coursepicker/organizations:
     get:
-      operationId: getCoursePickerOrganizations
+      operationId: getCoursepickerOrganizations
       summary: Get course picker organizations
       description: Get course picker organizations
       tags:
@@ -1463,7 +1629,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Organization"
+                  $ref: "#/components/schemas/WorkspaceOrganization"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1471,7 +1637,7 @@ paths:
 
   /rest/coursepicker/workspaces:
     get:
-      operationId: getCoursePickerWorkspaces
+      operationId: getCoursepickerWorkspaces
       summary: Get course picker workspaces
       description: Get course picker workspaces
       tags:
@@ -1482,6 +1648,66 @@ paths:
           description: Search string
           schema:
             type: string
+        - name: subjects
+          in: query
+          description: Subject ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: educationTypes
+          in: query
+          description: Education type ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: curriculums
+          in: query
+          description: Curriculum ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: organizations
+          in: query
+          description: Organization ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: minVisits
+          in: query
+          description: Minimum visits
+          schema:
+            type: integer
+        - name: publicity
+          in: query
+          description: Publicity restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/PublicityRestriction"
+            default: ONLY_PUBLISHED
+        - name: myWorkspaces
+          in: query
+          description: My workspaces
+          schema:
+            type: boolean
+            default: false
+        - name: templates
+          in: query
+          description: Template restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/TemplateRestriction"
+            default: ONLY_WORKSPACES
+        - name: orderBy
+          in: query
+          description: Order by
+          schema:
+            type: array
+            items:
+              type: string
         - name: firstResult
           in: query
           description: First result
@@ -1511,7 +1737,7 @@ paths:
 
   /rest/coursepicker/workspaces/{workspaceId}:
     get:
-      operationId: getCoursePickerWorkspace
+      operationId: getCoursepickerWorkspace
       summary: Get course picker workspace
       description: Get course picker workspace
       tags:
@@ -1575,6 +1801,8 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignUpRequestBody"
       responses:
         "204":
           description: User signed up to workspace successfully
@@ -2495,6 +2723,37 @@ paths:
           description: Internal server error
 
   /rest/forum/areas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getDiscussionThread
+      summary: Get discussion thread
+      description: Get discussion thread
+      tags:
+        - Discussion
+      parameters:
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateDiscussionThread
       summary: Update discussion thread
@@ -2734,6 +2993,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DiscussionSubscribedThread"
+        "204":
+          description: Discussion thread subscription untoggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3090,6 +3351,43 @@ paths:
           description: Internal server error
 
   /rest/workspace/workspaces/{workspaceentityId}/forumAreas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getWorkspaceDiscussionThread
+      summary: Get workspace discussion thread
+      description: Get workspace discussion thread
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceentityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateWorkspaceDiscussionThread
       summary: Update workspace discussion thread
@@ -3364,6 +3662,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DiscussionWorkspaceStatistic"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/forumLatest:
+    get:
+      operationId: getWorkspaceForumLatest
+      summary: Get workspace forum latest
+      description: Get workspace forum latest
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Workspace forum latest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DiscussionThread"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4865,9 +5203,9 @@ paths:
           description: Internal server error
 
   #ORGANIZATION
-  /rest//organizationUserManagement/contactPersons:
+  /rest/organizationUserManagement/contactPersons:
     get:
-      operationId: getContactPerson
+      operationId: getContactPersons
       summary: Get contact persons
       description: Get contact persons
       tags:
@@ -4878,38 +5216,58 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrganizationContact"
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrganizationContact"
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
-  /rest//organizationUserManagement/staffMembers:
+  /rest/organizationUserManagement/staffMembers:
     get:
       operationId: getOrganizationStaffMembers
       summary: Get staff member
       description: Get staff member
       tags:
         - Organization
+      parameters:
+        - name: q
+          in: query
+          description: query string
+          schema:
+            type: string
+        - name: properties
+          in: query
+          description: Properties
+          schema:
+            type: string
+        - name: userGroupIds
+          in: query
+          description: User group ids
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: Staff members object
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/User"
-                  totalHitCount:
-                    type: integer
-                  searchString:
-                    type: string
+                $ref: "#/components/schemas/UserSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4922,25 +5280,38 @@ paths:
       description: Get students
       tags:
         - Organization
+      parameters:
+        - name: q
+          in: query
+          description: query string
+          schema:
+            type: string
+        - name: userGroupIds
+          in: query
+          description: User group ids
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: Students object
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/User"
-                  totalHitCount:
-                    type: integer
-                  searchString:
-                    type: string
+                $ref: "#/components/schemas/UserSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4991,6 +5362,66 @@ paths:
       description: Get organization workspaces
       tags:
         - Organization
+      parameters:
+        - name: q
+          in: query
+          description: query string
+          schema:
+            type: string
+        - name: subjects
+          in: query
+          description: Subject ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: educationTypes
+          in: query
+          description: Education type ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: curriculums
+          in: query
+          description: Curriculum ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: publicity
+          in: query
+          description: Publicity restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/PublicityRestriction"
+            default: ONLY_PUBLISHED
+        - name: templates
+          in: query
+          description: Template restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/TemplateRestriction"
+            default: ONLY_WORKSPACES
+        - name: orderBy
+          in: query
+          description: Order by
+          schema:
+            type: array
+            items:
+              type: string
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 50
       responses:
         "200":
           description: Organization workspaces
@@ -4999,7 +5430,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Workspace"
+                  $ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5470,13 +5901,34 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Workspace"
+                $ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
   #USER
+  /rest/user/files/:
+    post:
+      operationId: createFile
+      summary: Create file
+      description: Create file
+      tags:
+        - User
+      requestBody:
+        $ref: "#/components/requestBodies/UserFileCreateRequestBody"
+      responses:
+        "200":
+          description: File created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserEntityFile"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/user/files/{userEntityId}/identifier/{identifier}:
     delete:
       operationId: deleteFile
@@ -5526,7 +5978,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderUserFlag"
+                  $ref: "#/components/schemas/UserFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5539,14 +5991,14 @@ paths:
       tags:
         - User
       requestBody:
-        $ref: "#/components/requestBodies/GuiderUserFlagCreateRequestBody"
+        $ref: "#/components/requestBodies/UserFlagCreateRequestBody"
       responses:
         "200":
           description: Flag created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderUserFlag"
+                $ref: "#/components/schemas/UserFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5567,7 +6019,7 @@ paths:
           schema:
             type: integer
       requestBody:
-        $ref: "#/components/requestBodies/GuiderUserFlagUpdateRequestBody"
+        $ref: "#/components/requestBodies/UserFlagUpdateRequestBody"
 
       responses:
         "200":
@@ -5575,7 +6027,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderUserFlag"
+                $ref: "#/components/schemas/UserFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5624,7 +6076,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderUserSharedFlag"
+                  $ref: "#/components/schemas/UserSharedFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5644,14 +6096,14 @@ paths:
           schema:
             type: integer
       requestBody:
-        $ref: "#/components/requestBodies/GuiderUserSharedFlagCreateRequestBody"
+        $ref: "#/components/requestBodies/UserSharedFlagCreateRequestBody"
       responses:
         "200":
           description: Flag share created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderUserSharedFlag"
+                $ref: "#/components/schemas/UserSharedFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5742,25 +6194,22 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/user/property:
     post:
       operationId: setUserProperty
       summary: Set user property
       description: Set user property
       tags:
         - User
-      parameters:
-        - name: key
-          in: path
-          description: Key
-          required: true
-          schema:
-            type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AnyValue"
+        $ref: "#/components/requestBodies/SetUserPropertyValueRequestBody"
       responses:
+        "200":
+          description: User property set successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyValue"
         "204":
           description: User property set successfully
         "400":
@@ -5779,15 +6228,13 @@ paths:
         - name: q
           in: query
           description: Search string
-          required: true
           schema:
             type: string
-        - name: active
+        - name: properties
           in: query
-          description: Active
+          description: Properties
           schema:
-            type: boolean
-            default: false
+            type: string
         - name: firstResult
           in: query
           description: First result
@@ -5803,7 +6250,6 @@ paths:
         - name: workspaceEntityId
           in: query
           description: Workspace entity id
-          required: true
           schema:
             type: integer
       responses:
@@ -5812,21 +6258,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/UserStaff"
-                  totalHitCount:
-                    type: integer
-                  firstResult:
-                    type: integer
-                  maxResults:
-                    type: integer
+                $ref: "#/components/schemas/UserStaffSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6129,6 +6561,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: ownerIdentifier
+          in: query
+          description: Owner identifier
+          schema:
+            type: string
       responses:
         "200":
           description: Student flags
@@ -6137,7 +6574,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderStudentFlag"
+                  $ref: "#/components/schemas/UserStudentFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6164,7 +6601,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderStudentFlag"
+                $ref: "#/components/schemas/UserStudentFlag"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6319,7 +6756,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AnyValue"
+                  $ref: "#/components/schemas/User"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6338,7 +6775,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WhoAmI"
+                $ref: "#/components/schemas/UserWhoAmI"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6347,13 +6784,13 @@ paths:
   #USERGROUP
   /rest/usergroup/addusers:
     put:
-      operationId: updateUserToUserGroup
+      operationId: updateUsergroupAddUsers
       summary: Add user to user group
       description: Add user to user group
       tags:
         - Usergroup
       requestBody:
-        $ref: "#/components/requestBodies/UserGroupUpdateRequestBody"
+        $ref: "#/components/requestBodies/UsergroupUpdateAddUsersRequestBody"
       responses:
         "204":
           description: User added to user group successfully
@@ -6362,9 +6799,39 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/usergroup/removeusers:
+    post:
+      operationId: removeUserFromUserGroup
+      summary: Remove user from user group
+      description: Remove user from user group
+      tags:
+        - Usergroup
+      responses:
+        "204":
+          description: User removed from user group successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateUsergroupRemoveUsers
+      summary: Remove user from user group
+      description: Remove user from user group
+      tags:
+        - Usergroup
+      requestBody:
+        $ref: "#/components/requestBodies/UsergroupUpdateRemoveUsersRequestBody"
+      responses:
+        "204":
+          description: User removed from user group successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/usergroup/groups:
     get:
-      operationId: getUserGroups
+      operationId: getUsergroups
       summary: Get user groups
       description: Get user groups
       tags:
@@ -6373,7 +6840,6 @@ paths:
         - name: q
           in: query
           description: Search string
-          required: true
           schema:
             type: string
         - name: firstResult
@@ -6410,13 +6876,13 @@ paths:
           description: Internal server error
 
     post:
-      operationId: createUserGroup
+      operationId: createUsergroup
       summary: Create user group
       description: Create user group
       tags:
         - Usergroup
       requestBody:
-        $ref: "#/components/requestBodies/UserGroupCreateRequestBody"
+        $ref: "#/components/requestBodies/UsergroupCreateRequestBody"
       responses:
         "200":
           description: User group created successfully
@@ -6424,6 +6890,21 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserGroup"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateUsergroup
+      summary: Update user group
+      description: Update user group
+      tags:
+        - Usergroup
+      requestBody:
+        $ref: "#/components/requestBodies/UsergroupUpdateRequestBody"
+      responses:
+        "204":
+          description: User group updated successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6450,23 +6931,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserGroup"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/usergroup/removeusers:
-    post:
-      operationId: removeUserFromUserGroup
-      summary: Remove user from user group
-      description: Remove user from user group
-      tags:
-        - Usergroup
-      requestBody:
-        $ref: "#/components/requestBodies/UserGroupUpdateRequestBody"
-      responses:
-        "204":
-          description: User removed from user group successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6837,7 +7301,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Workspace"
+                  $ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6864,7 +7328,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Workspace"
+                $ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7055,7 +7519,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Workspace"
+                $ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7582,21 +8046,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                required:
-                  - results
-                  - totalHitCount
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/UserStudent"
-                  totalHitCount:
-                    type: integer
-                  firstResult:
-                    type: integer
-                  maxResults:
-                    type: integer
+                $ref: "#/components/schemas/WorkspaceStudentSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7731,34 +8181,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MaterialContentNode"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/workspace/workspaces/{workspaceId}/forumLatest:
-    get:
-      operationId: getWorkspaceForumLatest
-      summary: Get workspace forum latest
-      description: Get workspace forum latest
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Workspace forum latest
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DiscussionThread"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8310,6 +8732,18 @@ components:
                 items:
                   type: integer
 
+    CommunicatorMessageLabelRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CommunicatorMessageLabelRequestBody object
+            required:
+              - labelId
+            properties:
+              labelId:
+                type: integer
+
     CommunicatorSignatureCreateRequestBody:
       content:
         application/json:
@@ -8325,6 +8759,24 @@ components:
               signature:
                 type: string
 
+    CommunicatorSignatureUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CommunicatorSignatureUpdateRequestBody object
+            required:
+              - id
+              - name
+              - signature
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              signature:
+                type: string
+
     CommunicatorCreateLabelRequestBody:
       content:
         application/json:
@@ -8335,9 +8787,27 @@ components:
               - color
               - name
             properties:
-              labelName:
+              name:
                 type: string
-              labelColor:
+              color:
+                type: integer
+
+    CommunicatorUpdateLabelRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: CommunicatorUpdateLabelRequestBody object
+            required:
+              - id
+              - color
+              - name
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              color:
                 type: integer
 
     InterimEvaluationRequestCreateRequestBody:
@@ -8545,6 +9015,7 @@ components:
                 type: string
 
     DiscussionAreaCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8560,6 +9031,7 @@ components:
                 type: string
 
     DiscussionAreaUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8575,6 +9047,7 @@ components:
                 type: string
 
     DiscussionThreadCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8599,6 +9072,7 @@ components:
                 type: integer
 
     DiscussionThreadUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8606,6 +9080,7 @@ components:
               - $ref: "#/components/schemas/DiscussionThread"
 
     DiscussionThreadReplyCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8616,18 +9091,16 @@ components:
             properties:
               message:
                 type: string
+              parentReplyId:
+                type: integer
 
     DiscussionThreadReplyUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
-            type: object
-            description: DiscussionThreadReplyUpdateRequestBody object
-            required:
-              - message
-            properties:
-              message:
-                type: string
+            allOf:
+              - $ref: "#/components/schemas/DiscussionThreadReply"
 
     ContactLogCreateEventRequestBody:
       content:
@@ -8966,15 +9439,11 @@ components:
           schema:
             type: object
             description: OrganizationAddStaffToWorkspaceRequestBody object
-            required:
-              - staffMemberIdentifiers
             properties:
-              staffIds:
+              staffMemberIdentifiers:
                 type: array
                 items:
-                  anyOf:
-                    - type: integer
-                    - type: string
+                  $ref: "#/components/schemas/AnyValue"
 
     OrganizationAddStudentsToWorkspaceRequestBody:
       content:
@@ -9062,12 +9531,12 @@ components:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondaryData"
 
-    GuiderUserFlagCreateRequestBody:
+    UserFlagCreateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: GuiderUserFlagCreateRequestBody object
+            description: UserFlagCreateRequestBody object
             required:
               - name
               - color
@@ -9077,25 +9546,25 @@ components:
               name:
                 type: string
               color:
-                type: integer
+                type: string
               description:
                 type: string
               ownerIdentifier:
                 type: string
 
-    GuiderUserFlagUpdateRequestBody:
+    UserFlagUpdateRequestBody:
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/GuiderUserFlag"
+              - $ref: "#/components/schemas/UserFlag"
 
-    GuiderUserSharedFlagCreateRequestBody:
+    UserSharedFlagCreateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: GuiderUserSharedFlagCreateRequestBody object
+            description: UserSharedFlagCreateRequestBody object
             required:
               - flagId
               - userIdentifier
@@ -9103,6 +9572,23 @@ components:
               flagId:
                 type: integer
               userIdentifier:
+                type: string
+
+    SetUserPropertyValueRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: SetUserPropertyValueRequestBody object
+            required:
+              - key
+              - value
+            properties:
+              key:
+                type: string
+              value:
+                $ref: "#/components/schemas/AnyValue"
+              userEntityId:
                 type: integer
 
     UserStaffCreateRequestBody:
@@ -9115,7 +9601,6 @@ components:
               - firstName
               - lastName
               - email
-              - studyProgrammeIdentifier
             properties:
               firstName:
                 type: string
@@ -9238,12 +9723,36 @@ components:
               studentIdentifier:
                 type: string
 
-    UserGroupCreateRequestBody:
+    UserFileCreateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: UserGroupCreateRequestBody object
+            description: UserFileCreateRequestBody object
+            required:
+              - name
+              - contentType
+              - base64Data
+              - identifier
+              - visibility
+            properties:
+              name:
+                type: string
+              contentType:
+                type: string
+              base64Data:
+                type: string
+              identifier:
+                type: string
+              visibility:
+                $ref: "#/components/schemas/UserEntityFileVisibility"
+
+    UsergroupCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: UsergroupCreateRequestBody object
             required:
               - name
               - isGuidanceGroup
@@ -9253,20 +9762,65 @@ components:
               isGuidanceGroup:
                 type: boolean
 
-    UserGroupUpdateRequestBody:
+    UsergroupUpdateRequestBody:
       content:
         application/json:
           schema:
             type: object
-            description: UserGroupUpdateRequestBody object
+            description: UsergroupUpdateRequestBody object
             required:
+              - identifier
+              - name
+              - isGuidanceGroup
+            properties:
+              identifier:
+                type: string
+              name:
+                type: string
+              isGuidanceGroup:
+                type: boolean
+
+    UsergroupUpdateAddUsersRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: UsergroupUpdateAddUsersRequestBody object
+            required:
+              - groupIdentifier
               - userIdentifiers
             properties:
+              groupIdentifier:
+                type: string
               userIdentifiers:
                 type: array
                 items:
                   type: string
+
+    UsergroupUpdateRemoveUsersRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: UsergroupUpdateRemoveUsersRequestBody object
+            required:
+              - groupIdentifier
+              - userIdentifiers
+            properties:
               groupIdentifier:
+                type: string
+              userIdentifiers:
+                type: array
+                items:
+                  type: string
+
+    WorkspaceSignUpRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
                 type: string
 
     WorkspaceStudentUpdateRequestBody:
@@ -9874,7 +10428,7 @@ components:
           type: integer
         name:
           type: string
-        content:
+        signature:
           type: string
 
     ContactType:
@@ -9978,7 +10532,7 @@ components:
 
     DiscussionArea:
       type: object
-      description: DiscussionArea object
+      description: DiscussionArea area information
       required:
         - id
         - name
@@ -9999,7 +10553,7 @@ components:
 
     DiscussionThread:
       type: object
-      description: DiscussionThread object
+      description: Thread information
       required:
         - id
         - message
@@ -10027,14 +10581,16 @@ components:
           type: string
         lastModified:
           type: string
+          format: date-time
         forumAreaId:
           type: integer
         entryPoint:
           type: boolean
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         created:
           type: string
+          format: date-time
         lock:
           $ref: "#/components/schemas/DiscussionThreadLock"
         lockBy:
@@ -10045,6 +10601,7 @@ components:
           description: Date when the thread was locked. Backend updates this field
           nullable: true
           type: string
+          format: date-time
 
     DiscussionThreadReply:
       type: object
@@ -10064,8 +10621,9 @@ components:
           type: integer
         created:
           type: string
+          format: date-time
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         childReplyCount:
           type: integer
         deleted:
@@ -10074,6 +10632,7 @@ components:
           type: integer
         lastModified:
           type: string
+          format: date-time
         message:
           type: string
         parentReplyId:
@@ -10088,11 +10647,22 @@ components:
         - thread
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         threadId:
+          description: Id of the thread
           type: integer
         thread:
           $ref: "#/components/schemas/DiscussionThread"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedThread:
       allOf:
@@ -10119,11 +10689,22 @@ components:
         - area
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         areaId:
+          description: Id of the area
           type: integer
         area:
           $ref: "#/components/schemas/DiscussionArea"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace. Includes the name extension if it has one.
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedArea:
       allOf:
@@ -10140,6 +10721,27 @@ components:
               type: string
             workspaceUrlName:
               type: string
+
+    DiscussionUser:
+      type: object
+      description: DiscussionUser object
+      required:
+        - id
+        - firstName
+        - lastName
+        - nickname
+        - hasImage
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickname:
+          type: string
+        hasImage:
+          type: boolean
 
     DiscussionThreadLock:
       type: string
@@ -10379,9 +10981,9 @@ components:
         - ASSESSMENT
         - SUPPLEMENTATIONREQUEST
 
-    GuiderStudentFlag:
+    UserStudentFlag:
       type: object
-      description: GuiderStudentFlag object
+      description: UserStudentFlag object
       required:
         - id
         - flagId
@@ -10396,13 +10998,13 @@ components:
         flagName:
           type: string
         flagColor:
-          type: integer
+          type: string
         studentIdentifier:
           type: string
 
-    GuiderUserFlag:
+    UserFlag:
       type: object
-      description: GuiderUserFlag object
+      description: UserFlag object
       required:
         - id
         - name
@@ -10421,9 +11023,9 @@ components:
         ownerIdentifier:
           type: string
 
-    GuiderUserSharedFlag:
+    UserSharedFlag:
       type: object
-      description: GuiderUserSharedFlag object
+      description: UserSharedFlag object
       required:
         - flagId
         - id
@@ -11354,7 +11956,7 @@ components:
           items:
             $ref: "#/components/schemas/MessageRecipient"
         sender:
-          type: string
+          $ref: "#/components/schemas/User"
         tags:
           $ref: "#/components/schemas/AnyValue"
         userGroupRecipients:
@@ -11399,7 +12001,7 @@ components:
         created:
           type: string
         sender:
-          type: string
+          $ref: "#/components/schemas/User"
         tags:
           $ref: "#/components/schemas/AnyValue"
         unreadMessagesInThread:
@@ -11492,6 +12094,10 @@ components:
         nickname:
           type: string
           nullable: true
+        archived:
+          type: boolean
+        studiesEnded:
+          type: boolean
 
     MessageRecipientWorkspace:
       type: object
@@ -11696,11 +12302,11 @@ components:
       type: object
       description: Organization object
       required:
-        - identifier
+        - id
         - name
       properties:
-        identifier:
-          type: string
+        id:
+          type: integer
         name:
           type: string
 
@@ -11931,6 +12537,13 @@ components:
           description: The date when the form was created
           type: string
 
+    PublicityRestriction:
+      type: string
+      enum:
+        - LIST_ALL
+        - ONLY_PUBLISHED
+        - ONLY_UNPUBLISHED
+
     RecordWorkspaceActivity:
       type: object
       description: RecordWorkspaceActivity object
@@ -12135,6 +12748,30 @@ components:
         name:
           type: string
 
+    TemplateRestriction:
+      type: string
+      enum:
+        - LIST_ALL,
+        - ONLY_TEMPLATES
+        - ONLY_WORKSPACES
+
+    UserSearchResult:
+      description: StaffSearchResult object. Holding the search results of staff search and the total hit count.
+      type: object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
+
     UserInfo:
       type: object
       description: Info data. Some of the fields are boolean, but are returned as string by the API. Everyvalue is optional and can be null. Values are returned if they are defined in the API call.
@@ -12220,7 +12857,7 @@ components:
         - defaultAddress
       properties:
         identifier:
-          type: integer
+          type: string
         studentIdentifier:
           type: string
         street:
@@ -12319,9 +12956,10 @@ components:
         - properties
         - userEntityId
         - hasImage
+        - role
       properties:
         id:
-          type: integer
+          type: string
         email:
           type: string
         firstName:
@@ -12334,6 +12972,8 @@ components:
           type: integer
         hasImage:
           type: boolean
+        role:
+          $ref: "#/components/schemas/Role"
 
     UserGroup:
       type: object
@@ -12352,14 +12992,39 @@ components:
         identifier:
           type: string
         organization:
-          type: object
-          properties:
-            id:
-              type: integer
-            name:
-              type: string
+          $ref: "#/components/schemas/Organization"
         isGuidanceGroup:
           type: boolean
+
+    UserEntityFile:
+      type: object
+      description: UserEntityFile object
+      required:
+        - id
+        - name
+        - contentType
+        - fileId
+        - base64Data
+        - identifier
+        - userEntityId
+        - visibility
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        contentType:
+          type: string
+        fileId:
+          type: string
+        base64Data:
+          type: string
+        identifier:
+          type: string
+        userEntityId:
+          type: integer
+        visibility:
+          $ref: "#/components/schemas/UserEntityFileVisibility"
 
     UserFile:
       type: object
@@ -12387,6 +13052,32 @@ components:
           type: string
         archived:
           type: boolean
+        size:
+          type: integer
+
+    UserEntityFileVisibility:
+      type: string
+      enum:
+        - PUBLIC
+        - PRIVATE
+        - STAFF
+
+    UserStaffSearchResult:
+      type: object
+      description: UserStaffSearchResult object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserStaff"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
 
     User:
       type: object
@@ -12466,7 +13157,7 @@ components:
         - ceeposLine
       properties:
         id:
-          type: integer
+          type: string
         userEntityId:
           type: integer
         firstName:
@@ -12506,6 +13197,152 @@ components:
           type: string
         studyProgrammeName:
           type: string
+
+    UserWhoAmI:
+      type: object
+      description: This is whoAmI object returned by whoAmI endpoint. It contains basic information about the user.
+      required:
+        - id
+        - identifier
+        - organizationIdentifier
+        - isActive
+        - firstName
+        - lastName
+        - displayName
+        - nickName
+        - phoneNumbers
+        - addresses
+        - emails
+        - hasImage
+        - role
+        - permissions
+        - curriculumName
+        - curriculumIdentifier
+        - studyTimeEnd
+        - studyTimeLeftStr
+        - studyStartDate
+        - studyEndDate
+        - studyProgrammeName
+        - studyProgrammeIdentifier
+        - locale
+        - hasEvaluationFees
+        - isDefaultOrganization
+        - services
+      properties:
+        id:
+          type: integer
+          nullable: true
+        identifier:
+          type: string
+          description: PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
+          nullable: true
+        organizationIdentifier:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+          description: Whether user is active
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        nickName:
+          type: string
+          nullable: true
+        phoneNumbers:
+          type: string
+          nullable: true
+        addresses:
+          type: string
+          nullable: true
+        emails:
+          type: string
+          nullable: true
+        hasImage:
+          type: boolean
+          nullable: true
+        role:
+          nullable: true
+          $ref: "#/components/schemas/Role"
+        permissions:
+          type: array
+          nullable: true
+          items:
+            type: string
+        curriculumName:
+          type: string
+          nullable: true
+        curriculumIdentifier:
+          type: string
+          nullable: true
+        studyTimeEnd:
+          type: string
+          nullable: true
+        studyTimeLeftStr:
+          type: string
+          nullable: true
+        studyStartDate:
+          type: string
+          nullable: true
+        studyEndDate:
+          type: string
+          nullable: true
+        studyProgrammeName:
+          type: string
+          nullable: true
+        studyProgrammeIdentifier:
+          type: string
+          nullable: true
+        locale:
+          type: string
+          nullable: true
+        hasEvaluationFees:
+          type: boolean
+          nullable: true
+        isDefaultOrganization:
+          type: boolean
+          nullable: true
+        services:
+          $ref: "#/components/schemas/UserWhoAmIServices"
+
+    UserWhoAmIServices:
+      type: object
+      description: WhoAmIServices object
+      required:
+        - chat
+        - environmentForum
+        - worklist
+      properties:
+        chat:
+          type: object
+          required:
+            - isActive
+            - isAvailable
+          properties:
+            isActive:
+              type: boolean
+            isAvailable:
+              type: boolean
+        environmentForum:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+        worklist:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
 
     Language:
       type: string
@@ -12585,12 +13422,133 @@ components:
           type: string
         language:
           $ref: "#/components/schemas/Language"
-        mandatority:
-          allOf:
-            - $ref: "#/components/schemas/WorkspaceMandatority"
+
+    # NOTE: this is for WorkspaceCoursepicker. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceCoursepicker:
+      type: object
+      description: WorkspaceCoursepicker object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - hasCustomImage
+        - mandatority
+        - educationTypeName
+        - isCourseMember
+        - organization
+        - lastVisit
+        - numVisits
+        - urlName
+        - curriculumIdentifiers
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
           nullable: true
-        access:
-          $ref: "#/components/schemas/WorkspaceAccess"
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        hasCustomImage:
+          type: boolean
+        mandatority:
+          $ref: "#/components/schemas/WorkspaceMandatority"
+        educationTypeName:
+          type: string
+        isCourseMember:
+          type: boolean
+        organization:
+          $ref: "#/components/schemas/Organization"
+        lastVisit:
+          type: string
+        numVisits:
+          type: integer
+        urlName:
+          type: string
+        curriculumIdentifiers:
+          type: array
+          items:
+            type: string
+
+    # NOTE: this is for Organization. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceOrganizationManager:
+      type: object
+      description: WorkspaceOrganizationManager object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - studentCount
+        - teachers
+        - educationTypeName
+        - hasCustomImage
+        - urlName
+        - organization
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
+          nullable: true
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        studentCount:
+          type: integer
+        teachers:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceOrganizationManagerTeacher"
+        educationTypeName:
+          type: string
+        hasCustomImage:
+          type: boolean
+        urlName:
+          type: string
+        organization:
+          $ref: "#/components/schemas/Organization"
+
+    WorkspaceOrganizationManagerTeacher:
+      type: object
+      description: WorkspaceOrganizationManagerTeacher object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+
+    WorkspaceOrganization:
+      type: object
+      description: WorkspaceOrganization object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
 
     WorkspaceWithAddons:
       allOf:
@@ -12809,6 +13767,64 @@ components:
           type: string
           nullable: true
 
+    WorkspaceStudentSearchResult:
+      type: object
+      description: WorkspaceStudentSearchResult object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceStudent"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
+
+    WorkspaceStudent:
+      allOf: #extends WorkspaceUserBase object
+        - $ref: "#/components/schemas/WorkspaceUserBase"
+        - type: object
+          description: WorkspaceUserRestModel object
+          required:
+            - nickname
+            - studyProgrammeName
+            - active
+          properties:
+            nickname:
+              type: string
+            studyProgrammeName:
+              type: string
+            active:
+              type: boolean
+
+    WorkspaceUserBase:
+      type: object
+      description: WorkspaceUserBase object
+      required:
+        - workspaceUserEntityId
+        - userIdentifier
+        - userEntityId
+        - firstName
+        - lastName
+        - hasImage
+      properties:
+        workspaceUserEntityId:
+          type: integer
+        userIdentifier:
+          type: string
+        userEntityId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        hasImage:
+          type: boolean
+
     WorkspaceType:
       type: object
       description: WorkspaceType object
@@ -12820,6 +13836,13 @@ components:
           type: string
         name:
           type: string
+
+    WorkspaceChatStatusType:
+      type: string
+      description: WorkspaceChatStatusType enum
+      enum:
+        - ENABLED
+        - DISABLED
 
     WorkspaceEducationType:
       type: object
@@ -13037,116 +14060,6 @@ components:
         nextSiblingId:
           description: Backend uses this to determine the order of the notes. This is not used in the frontend
           type: integer
-          nullable: true
-
-    WhoAmI:
-      type: object
-      description: This is whoAmI object returned by whoAmI endpoint. It contains basic information about the user.
-      required:
-        - id
-        - identifier
-        - organizationIdentifier
-        - isActive
-        - firstName
-        - lastName
-        - displayName
-        - nickName
-        - phoneNumbers
-        - address
-        - emails
-        - hasImage
-        - roles
-        - permissions
-        - curriculumName
-        - curriculumIdentifier
-        - studyTimeEnd
-        - studyTimeLeftStr
-        - studyStartDate
-        - studyEndDate
-        - studyProgrammeName
-        - studyProgrammeIdentifier
-        - locale
-        - hasEvaluationFees
-        - isDefaultOrganization
-      properties:
-        id:
-          type: integer
-          nullable: true
-        identifier:
-          type: string
-          description: PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
-          nullable: true
-        organizationIdentifier:
-          type: string
-          nullable: true
-        isActive:
-          type: boolean
-          description: Whether user is active
-          nullable: true
-        firstName:
-          type: string
-          nullable: true
-        lastName:
-          type: string
-          nullable: true
-        displayName:
-          type: string
-          nullable: true
-        nickName:
-          type: string
-          nullable: true
-        phoneNumbers:
-          type: string
-          nullable: true
-        address:
-          type: string
-          nullable: true
-        emails:
-          type: string
-          nullable: true
-        hasImage:
-          type: boolean
-          nullable: true
-        roles:
-          nullable: true
-          $ref: "#/components/schemas/Role"
-        permissions:
-          type: array
-          nullable: true
-          items:
-            type: string
-        curriculumName:
-          type: string
-          nullable: true
-        curriculumIdentifier:
-          type: string
-          nullable: true
-        studyTimeEnd:
-          type: string
-          nullable: true
-        studyTimeLeftStr:
-          type: string
-          nullable: true
-        studyStartDate:
-          type: string
-          nullable: true
-        studyEndDate:
-          type: string
-          nullable: true
-        studyProgrammeName:
-          type: string
-          nullable: true
-        studyProgrammeIdentifier:
-          type: string
-          nullable: true
-        locale:
-          type: string
-          nullable: true
-        hasEvaluationFees:
-          type: boolean
-          nullable: true
-        isDefaultOrganization:
-          type: boolean
           nullable: true
 
     WorklistEditableFieldType:

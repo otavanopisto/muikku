@@ -1,5 +1,4 @@
 import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
-import { i18nType } from "./base/i18n";
 import { LocaleState } from "./base/locales";
 import { NotificationState } from "./base/notifications";
 import { CredentialsType } from "./base/credentials";
@@ -7,16 +6,16 @@ import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
 import { HOPSType } from "./main-function/hops";
-import { MessagesType } from "./main-function/messages";
+import { MessagesState } from "./main-function/messages";
 import { WorkspacesType } from "./workspaces";
 import {
-  UsersType,
-  UserGroupsType,
-  UsersSelectType,
+  UsersState,
+  UserGroupsState,
+  UsersSelectState,
   StudyprogrammeTypes,
 } from "./main-function/users";
-import { UserIndexType } from "./user-index";
-import { DiscussionType } from "./discussion";
+import { DiscussionState } from "./discussion";
+import { UserIndexState } from "./user-index";
 import { GuiderType } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
 import {
@@ -25,7 +24,7 @@ import {
 } from "./main-function/records/yo";
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
-import { ProfileType } from "./main-function/profile";
+import { ProfileState } from "./main-function/profile";
 import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
@@ -39,7 +38,6 @@ import { NoteBookState } from "./notebook/notebook";
  */
 export interface StateType {
   notifications: NotificationState;
-  i18n: i18nType;
   locales: LocaleState;
   status: StatusType;
   contacts: Contacts;
@@ -52,19 +50,19 @@ export interface StateType {
   hops?: HOPSType;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
-  messages?: MessagesType;
-  userIndex?: UserIndexType;
-  userSelect?: UsersSelectType;
-  userGroups?: UserGroupsType;
+  messages?: MessagesState;
+  userIndex?: UserIndexState;
+  userSelect?: UsersSelectState;
+  userGroups?: UserGroupsState;
   workspaces?: WorkspacesType;
   organizationSummary?: OrganizationSummaryType;
   organizationWorkspaces?: WorkspacesType;
-  organizationUsers?: UsersType;
-  discussion?: DiscussionType;
+  discussion?: DiscussionState;
+  organizationUsers?: UsersState;
   guider?: GuiderType;
   records?: RecordsType;
   error?: ErrorType;
-  profile?: ProfileType;
+  profile?: ProfileState;
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
   calendar?: Calendar;

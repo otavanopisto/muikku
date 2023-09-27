@@ -1,23 +1,22 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import UploadImageDialog from "../../../dialogs/upload-image";
 import { getUserImageUrl } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import DeleteImageDialog from "../../../dialogs/delete-image";
 import "~/sass/elements/change-image.scss";
 import "~/sass/elements/wcag.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ProfilePictureProps
  */
-interface ProfilePictureProps {
-  i18n: i18nType;
+interface ProfilePictureProps extends WithTranslation<["common"]> {
   status: StatusType;
-  profile: ProfileType;
+  profile: ProfileState;
 }
 
 /**
@@ -122,7 +121,7 @@ class ProfilePicture extends React.Component<
   render() {
     return (
       <div className="form-element">
-        <label>{this.props.i18n.text.get("plugin.profile.image.label")}</label>
+        <label>{this.props.t("labels.profileImage", { ns: "profile" })}</label>
         <div className="application-sub-panel__item-data form-element">
           {!this.props.status.hasImage ? (
             <div className="change-image">
@@ -153,9 +152,7 @@ class ProfilePicture extends React.Component<
                   className="visually-hidden"
                   htmlFor="profilePictureUpload"
                 >
-                  {this.props.i18n.text.get(
-                    "plugin.wcag.profile.uploadPicture.label"
-                  )}
+                  {this.props.t("wcag.uploadPicture")}
                 </label>
                 <input
                   id="profilePictureUpload"
@@ -170,14 +167,14 @@ class ProfilePicture extends React.Component<
                     onClick={this.editCurrentImage}
                   >
                     <span className="icon icon-pencil" />
-                    {this.props.i18n.text.get("plugin.profile.editImage")}
+                    {this.props.t("actions.edit")}
                   </Button>
                   <Button
                     buttonModifiers="change-image-delete"
                     onClick={this.deleteCurrentImage}
                   >
                     <span className="icon icon-trash" />
-                    {this.props.i18n.text.get("plugin.profile.deleteImage")}
+                    {this.props.t("actions.remove")}
                   </Button>
                 </div>
               </div>
@@ -206,17 +203,11 @@ class ProfilePicture extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     profile: state.profile,
   };
 }
 
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilePicture);
+export default withTranslation(["common"])(
+  connect(mapStateToProps)(ProfilePicture)
+);

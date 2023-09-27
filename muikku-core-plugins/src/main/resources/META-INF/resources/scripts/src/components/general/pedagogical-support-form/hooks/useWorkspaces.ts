@@ -1,10 +1,9 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
 import { WorkspaceType } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi from "~/api/api";
 
 /**
  * useWorkspaces
@@ -27,19 +26,18 @@ export const useWorkspaces = (
     const loadWorkspaces = async () => {
       setLoadingWorkspaces(true);
 
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
-        const workspace = (await promisify(
-          mApi().coursepicker.workspaces.read({
-            q: textInput,
-            maxResults: 20,
-            myWorkspaces: true,
-          }),
-          "callback"
-        )()) as WorkspaceType[];
+        const workspaces = (await coursepickerApi.getCoursepickerWorkspaces({
+          q: textInput,
+          maxResults: 20,
+          myWorkspaces: true,
+        })) as WorkspaceType[];
 
         if (componentMounted.current) {
           unstable_batchedUpdates(() => {
-            setWorkspaces(workspace);
+            setWorkspaces(workspaces);
             setLoadingWorkspaces(false);
           });
         }

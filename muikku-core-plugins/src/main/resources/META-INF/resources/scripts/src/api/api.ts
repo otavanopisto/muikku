@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import {
   AnnouncerApi,
   CeeposApi,
@@ -25,10 +26,76 @@ import {
   WorkspaceApi,
   WorkspaceDiscussionApi,
   WorkspaceNotesApi,
+  ResponseError,
+  FetchError,
+  RequiredError,
+  Middleware,
+  ResponseContext,
 } from "../generated/client";
+
+/**
+ * Handles 204 No Content responses
+ * This is needed because the generated code will try to parse value even it doesn't exist.
+ * This happens specifically when endpoint returns 200 with possibility of 204 No Content too.
+ * Setting value to null or undefined values will skip this parsing and so SyntaxError won't be thrown
+ * This is openapi-generator issue and hopefully will be fixed in the future
+ */
+class NoContentMiddleware implements Middleware {
+  public post?(context: ResponseContext): Promise<Response | void> {
+    if (context.response.status === 204) {
+      // change response json to null.
+      context.response.json = () => Promise.resolve(null);
+
+      return Promise.resolve(context.response);
+    }
+
+    return Promise.resolve(context.response);
+  }
+}
+
+/**
+ * Checks if the given error is a ResponseError
+ * @param error error
+ * @returns error
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isResponseError(error: any): error is ResponseError {
+  return (error as ResponseError).name === "ResponseError";
+}
+
+/**
+ * Checks if the given error is a FetchError
+ * @param error error
+ * @returns error
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isFetchError(error: any): error is FetchError {
+  return (error as FetchError).name === "FetchError";
+}
+
+/**
+ * Checks if the given error is a RequiredError
+ * @param error error
+ * @returns error
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isRequiredError(error: any): error is RequiredError {
+  return (error as RequiredError).name === "RequiredError";
+}
+
+/**
+ * Checks and returns whether error is Api related
+ * @param error error
+ * @returns error
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isMApiError(error: any): error is ResponseError | FetchError {
+  return isFetchError(error) || isResponseError(error);
+}
 
 const configuration = new Configuration({
   basePath: window.location.origin,
+  middleware: [new NoContentMiddleware()],
 });
 
 /**

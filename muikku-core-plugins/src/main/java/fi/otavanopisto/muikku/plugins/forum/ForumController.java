@@ -19,9 +19,9 @@ import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
+import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -98,8 +98,7 @@ public class ForumController {
   
   public boolean isEnvironmentForumActive() {
     if (sessionController.isLoggedIn()) {
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
+      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return true;
       }
       
@@ -195,9 +194,15 @@ public class ForumController {
     return forumAreaGroupDAO.findById(groupId);
   }
 
-  public ForumThread createForumThread(ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
+  public ForumThread createForumThread(ForumArea forumArea, String title, String message, Boolean sticky, LockForumThread lock) {
     activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWTHREAD);
-    return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, locked);
+    Date lockDate = null;
+    Long lockBy = null;
+    if (lock != null) {
+      lockDate = new Date();
+      lockBy = sessionController.getLoggedUserEntity().getId();
+    }
+    return forumThreadDAO.create(forumArea, title, clean(message), sessionController.getLoggedUserEntity(), sticky, lock, lockDate, lockBy);
   }
 
   public void archiveThread(ForumThread thread) {
@@ -224,15 +229,18 @@ public class ForumController {
   }
 
   public ForumThreadReply createForumThreadReply(ForumThread thread, String message, ForumThreadReply parentReply) {
-    if (thread.getLocked()) {
-      logger.severe("Tried to create a forum thread reply for locked thread");
-      return null;
-    } else {
-      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), parentReply);
-      forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
-      activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWMESSAGE);
-      return reply;
-    }
+    if (thread.getLocked() != null) {
+      if (thread.getLocked() == LockForumThread.ALL || (thread.getLocked() == LockForumThread.STUDENTS && userEntityController.isStudent(sessionController.getLoggedUserEntity()))) {
+        logger.severe("Tried to create a forum thread reply for locked thread");
+        return null;
+      }
+    } 
+      
+    ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, clean(message), sessionController.getLoggedUserEntity(), parentReply);
+    forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
+    activityLogController.createActivityLog(sessionController.getLoggedUserEntity().getId(), ActivityLogType.FORUM_NEWMESSAGE);
+    return reply;
+    
   }
 
   public void archiveReply(ForumThreadReply reply) {
@@ -368,9 +376,16 @@ public class ForumController {
     }
   }
   
-  public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, Boolean locked) {
+  public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, LockForumThread lock) {
     UserEntity user = sessionController.getLoggedUserEntity();
-    forumThreadDAO.update(thread, title, clean(message), sticky, locked, new Date(), user);
+    Date lockDate = new Date();
+    Long lockBy = sessionController.getLoggedUserEntity().getId();
+    if (thread.getLocked() == lock) {
+      lockDate = thread.getLockDate();
+      lockBy = thread.getLockBy();
+    }
+    
+    forumThreadDAO.update(thread, title, clean(message), sticky, lock, new Date(), user, lockDate, lockBy);
   }
 
   public void updateForumThreadReply(ForumThreadReply reply, String message) {
@@ -435,4 +450,7 @@ public class ForumController {
     return null;
   }
   
+  public ForumThread toggleLock(ForumThread thread, LockForumThread lock, Long userEntityId) {
+    return forumThreadDAO.toggleLock(thread, lock, userEntityId);
+  }
 }

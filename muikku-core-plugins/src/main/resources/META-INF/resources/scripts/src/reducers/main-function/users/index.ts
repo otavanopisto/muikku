@@ -1,14 +1,14 @@
 import { ActionType } from "~/actions";
-import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
+import {
+  UserSearchResult,
+  User,
+  UserGroup,
+  StudyProgramme,
+} from "~/generated/client";
+
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
-export type StudyprogrammeTypeStatusType =
-  | "WAIT"
-  | "LOADING"
-  | "READY"
-  | "ERROR";
-export type UsersListType = Array<UserType>;
-export type StudyprogrammeListType = Array<StudyprogrammeType>;
+export type StudyprogrammeStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
 export type UserGroupsStateType =
   | "LOADING"
@@ -44,25 +44,18 @@ export interface PagingUserListType {
 }
 
 /**
- * PagingEnvironmentUserListType
- */
-export interface PagingEnvironmentUserListType extends PagingUserListType {
-  results: UsersListType;
-}
-
-/**
  * UserGroupListType
  */
 export interface UserGroupListType {
-  list: UserGroupType[];
+  list: UserGroup[];
 }
 
 /**
  * StudyprogrammeTypes
  */
 export interface StudyprogrammeTypes {
-  list: StudyprogrammeListType;
-  status: StudyprogrammeTypeStatusType;
+  list: StudyProgramme[];
+  status: StudyprogrammeStatusType;
 }
 
 /**
@@ -76,27 +69,8 @@ export interface StudyprogrammeType {
 /**
  * UserPanelUsersType
  */
-export interface UserPanelUsersType {
-  results: UsersListType;
-  totalHitCount: number;
+export interface UserSearchResultWithExtraProperties extends UserSearchResult {
   searchString?: string;
-}
-
-/**
- * UsersType
- */
-export interface UsersType {
-  students?: UserPanelUsersType;
-  staff?: UserPanelUsersType;
-}
-
-/**
- * UsersSelectType
- */
-export interface UsersSelectType {
-  students: UsersListType;
-  staff: UsersListType;
-  userGroups: Array<UserGroupType>;
 }
 
 /**
@@ -104,23 +78,41 @@ export interface UsersSelectType {
  */
 export interface CurrentUserGroupType {
   id: number | null;
-  students: PagingEnvironmentUserListType;
-  staff: PagingEnvironmentUserListType;
+  students: UserSearchResult;
+  staff: UserSearchResult;
+}
+
+export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>;
+
+/**
+ * UsersSelectState
+ */
+export interface UsersSelectState {
+  students: User[];
+  staff: User[];
+  userGroups: UserGroup[];
 }
 
 /**
- * UserGroupsType
+ * Redux state interface.
+ * Object that combines the results of the student and staff search
  */
-export interface UserGroupsType {
-  list: UserGroupType[];
+export interface UsersState {
+  students?: UserSearchResultWithExtraProperties;
+  staff?: UserSearchResultWithExtraProperties;
+}
+
+/**
+ * UserGroupsState
+ */
+export interface UserGroupsState {
+  list: UserGroup[];
   currentUserGroup?: CurrentUserGroupType;
   state: UserGroupsStateType;
   hasMore: boolean;
   searchString: string;
   currentPayload: UserPayloadType;
 }
-
-export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>;
 
 /**
  * CreateUserGroupType
@@ -156,12 +148,14 @@ export type UpdateUserGroupStateType =
 /**
  * initializeUsersState
  */
-const initializeUsersState: UsersType = {
+const initializeUsersState: UsersState = {
   students: {
+    firstResult: null,
     results: [],
     totalHitCount: null,
   },
   staff: {
+    firstResult: null,
     results: [],
     totalHitCount: null,
   },
@@ -174,7 +168,7 @@ const initializeUsersState: UsersType = {
  * @param action action
  * @returns State of users
  */
-export const organizationUsers: Reducer<UsersType> = (
+export const organizationUsers: Reducer<UsersState> = (
   state = initializeUsersState,
   action: ActionType
 ) => {
@@ -202,7 +196,7 @@ export const organizationUsers: Reducer<UsersType> = (
  * @param action action
  */
 /* export default function users(
-  state: UsersType = {
+  state: UsersState = {
     students: {
       results: [],
       totalHitCount: null,
@@ -213,7 +207,7 @@ export const organizationUsers: Reducer<UsersType> = (
     },
   },
   action: ActionType
-): UsersType {
+): UsersState {
   if (action.type === "UPDATE_STUDENT_USERS") {
     return Object.assign({}, state, {
       students: action.payload,
@@ -229,7 +223,7 @@ export const organizationUsers: Reducer<UsersType> = (
 /**
  * initialUserGroupsState
  */
-const initialUserGroupsState: UserGroupsType = {
+const initialUserGroupsState: UserGroupsState = {
   list: [],
   currentUserGroup: null,
   state: "LOADING",
@@ -245,7 +239,7 @@ const initialUserGroupsState: UserGroupsType = {
  * @param action action
  * @returns State of user groups
  */
-export const userGroups: Reducer<UserGroupsType> = (
+export const userGroups: Reducer<UserGroupsState> = (
   state = initialUserGroupsState,
   action: ActionType
 ) => {
@@ -297,7 +291,7 @@ export const userGroups: Reducer<UserGroupsType> = (
  * @param action action
  */
 /* export function userGroups(
-  state: UserGroupsType = {
+  state: UserGroupsState = {
     list: [],
     currentUserGroup: null,
     state: "LOADING",
@@ -306,7 +300,7 @@ export const userGroups: Reducer<UserGroupsType> = (
     currentPayload: null,
   },
   action: ActionType
-): UserGroupsType {
+): UserGroupsState {
   if (action.type === "UPDATE_USER_GROUPS") {
     return Object.assign({}, state, {
       list: action.payload,
@@ -338,7 +332,7 @@ export const userGroups: Reducer<UserGroupsType> = (
 /**
  * initialUserSelectState
  */
-const initialUserSelectState: UsersSelectType = {
+const initialUserSelectState: UsersSelectState = {
   students: [],
   staff: [],
   userGroups: [],
@@ -351,7 +345,7 @@ const initialUserSelectState: UsersSelectType = {
  * @param action action
  * @returns State of user Select
  */
-export const userSelect: Reducer<UsersSelectType> = (
+export const userSelect: Reducer<UsersSelectState> = (
   state = initialUserSelectState,
   action: ActionType
 ) => {
@@ -388,13 +382,13 @@ export const userSelect: Reducer<UsersSelectType> = (
  * @param action action
  */
 /* export function userSelect(
-  state: UsersSelectType = {
+  state: UsersSelectState = {
     students: [],
     staff: [],
     userGroups: [],
   },
   action: ActionType
-): UsersSelectType {
+): UsersSelectState {
   if (action.type === "UPDATE_STUDENT_SELECTOR") {
     return Object.assign({}, state, {
       students: action.payload,

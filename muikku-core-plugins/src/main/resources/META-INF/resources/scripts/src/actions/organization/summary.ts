@@ -1,13 +1,15 @@
 import actions from "../base/notifications";
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
+import { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
+import MApi from "~/api/api";
 import {
-  OrganizationSummaryWorkspaceDataType,
-  OrganizationSummaryStudentsDataType,
-  OrganizationSummaryContactDataType,
-} from "~/reducers/organization/summary";
+  OrganizationContact,
+  OrganizationStudentsSummary,
+  OrganizationWorkspaceSummary,
+} from "~/generated/client";
+import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 /**
  * LoadSummaryTriggerType
@@ -24,15 +26,15 @@ export type OrganizationSummaryStatusType =
 
 export type LOAD_WORKSPACE_SUMMARY = SpecificActionType<
   "LOAD_WORKSPACE_SUMMARY",
-  OrganizationSummaryWorkspaceDataType
+  OrganizationWorkspaceSummary
 >;
 export type LOAD_STUDENT_SUMMARY = SpecificActionType<
   "LOAD_STUDENT_SUMMARY",
-  OrganizationSummaryStudentsDataType
+  OrganizationStudentsSummary
 >;
 export type LOAD_ORGANIZATION_CONTACTS = SpecificActionType<
   "LOAD_ORGANIZATION_CONTACTS",
-  OrganizationSummaryContactDataType
+  OrganizationContact[]
 >;
 export type UPDATE_SUMMARY_STATUS = SpecificActionType<
   "UPDATE_SUMMARY_STATUS",
@@ -54,40 +56,30 @@ export type UPDATE_SUMMARY_STATUS = SpecificActionType<
 const loadOrganizationSummary: LoadSummaryTriggerType =
   function loadOrganizationSummary() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationtApi = MApi.getOrganizationApi();
+
       try {
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",
           payload: <OrganizationSummaryStatusType>"LOADING",
         });
+
         dispatch({
           type: "LOAD_WORKSPACE_SUMMARY",
-          payload: <OrganizationSummaryWorkspaceDataType>(
-            await promisify(
-              mApi().organizationWorkspaceManagement.overview.read(),
-              "callback"
-            )()
-          ),
+          payload: await organizationtApi.getOrganizationWorkspaceOverview(),
         });
+
         dispatch({
           type: "LOAD_STUDENT_SUMMARY",
-          payload: <OrganizationSummaryStudentsDataType>(
-            await promisify(
-              mApi().organizationUserManagement.studentsSummary.read(),
-              "callback"
-            )()
-          ),
+          payload: await organizationtApi.getOrganizationStudentsSummary(),
         });
+
         dispatch({
           type: "LOAD_ORGANIZATION_CONTACTS",
-          payload: <OrganizationSummaryContactDataType>(
-            await promisify(
-              mApi().organizationUserManagement.contactPersons.read(),
-              "callback"
-            )()
-          ),
+          payload: await organizationtApi.getContactPersons(),
         });
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",
@@ -98,7 +90,13 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           throw err;
         }
         dispatch(
-          actions.displayNotification(getState().i18n.text.get("todo"), "error")
+          actions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "organization",
+              context: "summary",
+            }),
+            "error"
+          )
         );
         dispatch({
           type: "UPDATE_SUMMARY_STATUS",

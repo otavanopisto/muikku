@@ -11,6 +11,8 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import javax.validation.constraints.NotEmpty;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
@@ -77,6 +79,33 @@ public class UserSchoolDataIdentifier {
     this.organization = organization;
   }
 
+  @Transient
+  public boolean hasRole(EnvironmentRoleArchetype role) {
+    return hasAnyRole(role);
+  }
+  
+  @Transient
+  public boolean hasAnyRole(EnvironmentRoleArchetype ... roles) {
+    if (getRole() != null) {
+      EnvironmentRoleArchetype userRole = getRole().getArchetype();
+      
+      return userRole != null && ArrayUtils.contains(roles, userRole);
+    }
+    
+    return false;
+  }
+  
+  @Transient
+  public boolean isStaff() {
+    return hasAnyRole(
+        EnvironmentRoleArchetype.TEACHER,
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER
+    );
+  }
+  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;

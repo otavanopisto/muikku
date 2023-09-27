@@ -4,7 +4,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import HoverButton from "~/components/general/hover-button";
 import Toolbar from "./application/workspace-journals-toolbar";
 import WorkspaceJournalsList from "./application/workspace-journals-list";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
@@ -23,22 +22,20 @@ import {
 } from "~/actions/workspaces/journals";
 import WorkspaceJournalView from "./application/workspace-journal-view";
 import { JournalsState } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
 import Select from "react-select";
-
-type JournalStudentFilterOption = OptionDefault<
-  ShortWorkspaceUserWithActiveStatusType | string
->;
 import WorkspaceJournalFeedback from "./application/workspace-journal-feedback";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
+
+type JournalStudentFilterOption = OptionDefault<WorkspaceStudent | string>;
 
 /**
  * WorkspaceJournalApplicationProps
  */
-interface WorkspaceJournalApplicationProps {
+interface WorkspaceJournalApplicationProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside?: React.ReactElement<any>;
-  i18n: i18nType;
   workspace: WorkspaceType;
   journalsState: JournalsState;
   status: StatusType;
@@ -70,7 +67,7 @@ class WorkspaceJournalApplication extends React.Component<
 
   /**
    * Handles workspace journal filter change
-   * @param selectedOption selectedOption which can be either a string or a ShortWorkspaceUserWithActiveStatusType
+   * @param selectedOption selectedOption which can be either a string or a WorkspaceStudent
    */
   handleWorkspaceJournalFilterChange(
     selectedOption: JournalStudentFilterOption
@@ -86,17 +83,15 @@ class WorkspaceJournalApplication extends React.Component<
    * render
    */
   render() {
-    const title = this.props.i18n.text.get(
-      "plugin.workspace.journal.pageTitle"
-    );
+    const { t } = this.props;
+
+    const title = t("labels.journal", { ns: "journal" });
     const toolbar = <Toolbar />;
 
     let primaryOption = (
       <NewJournal>
         <Button buttonModifiers="primary-function">
-          {this.props.i18n.text.get(
-            "plugin.workspace.journal.newEntryButton.label"
-          )}
+          {t("actions.create", { ns: "workspace", context: "journal" })}{" "}
         </Button>
       </NewJournal>
     );
@@ -127,9 +122,7 @@ class WorkspaceJournalApplication extends React.Component<
       const allOptions = [
         {
           value: "",
-          label: this.props.i18n.text.get(
-            "plugin.workspace.journal.studentFilter.showAll"
-          ),
+          label: t("actions.showAll"),
         } as JournalStudentFilterOption,
         ...studentFilterOptions,
       ];
@@ -147,7 +140,7 @@ class WorkspaceJournalApplication extends React.Component<
       primaryOption = (
         <div className="form-element form-element--main-action">
           <label htmlFor="selectJournal" className="visually-hidden">
-            {this.props.i18n.text.get("plugin.wcag.journalSelect.label")}
+            {t("wcag.journalSelect", { ns: "workspace" })}
           </label>
           <Select
             className="react-select-override"
@@ -180,7 +173,6 @@ class WorkspaceJournalApplication extends React.Component<
 
           {this.props.journalsState.journalFeedback && (
             <WorkspaceJournalFeedback
-              i18n={this.props.i18n}
               journalFeedback={this.props.journalsState.journalFeedback}
             />
           )}
@@ -203,7 +195,6 @@ class WorkspaceJournalApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     journalsState: state.journals,
     status: state.status,
@@ -221,7 +212,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalApplication);
+export default withTranslation(["journal", "workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalApplication)
+);
