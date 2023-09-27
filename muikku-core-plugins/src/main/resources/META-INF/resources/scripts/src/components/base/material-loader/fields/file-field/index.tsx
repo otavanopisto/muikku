@@ -205,8 +205,12 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
     // and this is the container
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Tiedoston palautuslaatikko" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "file",
+          })}
+        />
         <span
           className={`material-page__filefield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

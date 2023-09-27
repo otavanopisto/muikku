@@ -9,7 +9,7 @@ import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -361,8 +361,12 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
       });
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Järjestelytehtävä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "sorter",
+            })}
+          />
           <span
             ref="base"
             className="material-page__sorterfield-wrapper rs_skip_always"
@@ -400,8 +404,12 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
     // we use that element and the class to create the field
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Järjestelytehtävä" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "sorter",
+          })}
+        />
         <span
           className={`material-page__sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

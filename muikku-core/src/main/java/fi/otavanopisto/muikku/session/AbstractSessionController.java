@@ -11,7 +11,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.ArrayUtils;
 
 import fi.otavanopisto.muikku.dao.users.SuperUserDAO;
+import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.util.ResourceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -27,6 +30,9 @@ public abstract class AbstractSessionController implements SessionController {
 
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
 
   @Override
   public boolean isSuperuser() {
@@ -49,6 +55,22 @@ public abstract class AbstractSessionController implements SessionController {
     this.locale = resolveLocale(locale);
   }
 
+  @Override
+  public boolean hasRole(EnvironmentRoleArchetype role) {
+    return hasAnyRole(role);
+  }
+  
+  @Override
+  public boolean hasAnyRole(EnvironmentRoleArchetype ... roles) {
+    if (getLoggedUser() != null) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(getLoggedUser());
+      if (userSchoolDataIdentifier != null) {
+        return userSchoolDataIdentifier.hasAnyRole(roles);
+      }
+    }
+    return false;
+  }
+  
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference) {
     return hasPermissionImpl(permission, contextReference);
