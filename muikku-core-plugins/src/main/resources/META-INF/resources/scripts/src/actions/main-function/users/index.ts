@@ -1,30 +1,35 @@
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import promisify from "~/util/promisify";
 import {
-  UsersListType,
   UpdateUserGroupStateType,
-  CreateUserGroupType,
-  ModifyUserGroupUsersType,
   CurrentUserGroupType,
-  UserPanelUsersType,
-  PagingEnvironmentUserListType,
-  UsersSelectType,
+  UsersSelectState,
   UserStatusType,
-  StudyprogrammeListType,
-  UpdateUserGroupType,
   UserGroupsStateType,
-  StudyprogrammeTypeStatusType,
+  StudyprogrammeStatusType,
   UserPayloadType,
   UsergroupPayloadType,
+  UserSearchResultWithExtraProperties,
 } from "reducers/main-function/users";
-import {
-  UserGroupType,
-  UpdateUserType,
-  CreateUserType,
-} from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
+import MApi, { isMApiError } from "~/api/api";
+import { Dispatch } from "react-redux";
+import {
+  CreateStaffMemberRequest,
+  CreateStudentRequest,
+  CreateUsergroupRequest,
+  StudyProgramme,
+  UpdateStaffMemberRequest,
+  UpdateStudentBasicInfoRequest,
+  UpdateUsergroupAddUsersRequest,
+  UpdateUsergroupRemoveUsersRequest,
+  UpdateUsergroupRequest,
+  User,
+  UserGroup,
+  UserSearchResult,
+} from "~/generated/client";
+import i18n from "~/locales/i18n";
+
 export type SET_CURRENT_PAYLOAD = SpecificActionType<
   "SET_CURRENT_PAYLOAD",
   UserPayloadType
@@ -39,19 +44,19 @@ export type UPDATE_HAS_MORE_USERGROUPS = SpecificActionType<
 >;
 export type UPDATE_STUDENT_USERS = SpecificActionType<
   "UPDATE_STUDENT_USERS",
-  UserPanelUsersType
+  UserSearchResultWithExtraProperties
 >;
 export type UPDATE_STAFF_USERS = SpecificActionType<
   "UPDATE_STAFF_USERS",
-  UserPanelUsersType
+  UserSearchResultWithExtraProperties
 >;
 export type LOAD_MORE_USER_GROUPS = SpecificActionType<
   "LOAD_MORE_USER_GROUPS",
-  Array<UserGroupType>
+  UserGroup[]
 >;
 export type UPDATE_USER_GROUPS = SpecificActionType<
   "UPDATE_USER_GROUPS",
-  Array<UserGroupType>
+  UserGroup[]
 >;
 export type UPDATE_CURRENT_USER_GROUP = SpecificActionType<
   "UPDATE_CURRENT_USER_GROUP",
@@ -59,15 +64,15 @@ export type UPDATE_CURRENT_USER_GROUP = SpecificActionType<
 >;
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<
   "UPDATE_STUDENT_SELECTOR",
-  UsersListType
+  User[]
 >;
 export type UPDATE_STAFF_SELECTOR = SpecificActionType<
   "UPDATE_STAFF_SELECTOR",
-  UsersListType
+  User[]
 >;
 export type UPDATE_GROUP_SELECTOR = SpecificActionType<
   "UPDATE_GROUP_SELECTOR",
-  Array<UserGroupType>
+  UserGroup[]
 >;
 export type UPDATE_USERS_STATE = SpecificActionType<
   "UPDATE_USERS_STATE",
@@ -75,15 +80,15 @@ export type UPDATE_USERS_STATE = SpecificActionType<
 >;
 export type UPDATE_STUDYPROGRAMME_TYPES = SpecificActionType<
   "UPDATE_STUDYPROGRAMME_TYPES",
-  StudyprogrammeListType
+  StudyProgramme[]
 >;
 export type UPDATE_STUDYPROGRAMME_STATUS_TYPE = SpecificActionType<
   "UPDATE_STUDYPROGRAMME_STATUS_TYPE",
-  StudyprogrammeTypeStatusType
+  StudyprogrammeStatusType
 >;
 export type CLEAR_USER_SELECTOR = SpecificActionType<
   "CLEAR_USER_SELECTOR",
-  Partial<UsersSelectType>
+  Partial<UsersSelectState>
 >;
 
 /**
@@ -91,7 +96,7 @@ export type CLEAR_USER_SELECTOR = SpecificActionType<
  */
 export interface CreateStudentTriggerType {
   (data: {
-    student: CreateUserType;
+    student: CreateStudentRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -102,7 +107,7 @@ export interface CreateStudentTriggerType {
  */
 export interface CreateStaffmemberTriggerType {
   (data: {
-    staffmember: CreateUserType;
+    staffmember: CreateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -113,7 +118,7 @@ export interface CreateStaffmemberTriggerType {
  */
 export interface UpdateStudentTriggerType {
   (data: {
-    student: UpdateUserType;
+    student: UpdateStudentBasicInfoRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -124,7 +129,7 @@ export interface UpdateStudentTriggerType {
  */
 export interface UpdateStaffmemberTriggerType {
   (data: {
-    staffmember: UpdateUserType;
+    staffmember: UpdateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -135,9 +140,9 @@ export interface UpdateStaffmemberTriggerType {
  */
 export interface UpdateUsergroupTriggerType {
   (data: {
-    update: UpdateUserGroupType;
-    addUsers?: ModifyUserGroupUsersType;
-    removeUsers?: ModifyUserGroupUsersType;
+    update: UpdateUsergroupRequest;
+    addUsers?: UpdateUsergroupAddUsersRequest;
+    removeUsers?: UpdateUsergroupRemoveUsersRequest;
     progress?: (state: UpdateUserGroupStateType) => any;
     success?: () => any;
     fail?: () => any;
@@ -149,7 +154,7 @@ export interface UpdateUsergroupTriggerType {
  */
 export interface CreateUsergroupTriggerType {
   (data: {
-    payload: CreateUserGroupType;
+    payload: CreateUsergroupRequest;
     addUsers?: string[];
     progress?: (state: UpdateUserGroupStateType) => any;
     success?: () => any;
@@ -170,7 +175,7 @@ export interface LoadStudyprogrammesTriggerType {
 export interface LoadUsersTriggerType {
   (data: {
     payload: UserPayloadType;
-    success?: (result: PagingEnvironmentUserListType) => any;
+    success?: (result: UserSearchResult) => any;
     fail?: () => any;
   }): AnyActionType;
 }
@@ -181,7 +186,7 @@ export interface LoadUsersTriggerType {
 export interface LoadUsergroupsTriggerType {
   (data: {
     payload: UsergroupPayloadType;
-    success?: (result: PagingEnvironmentUserListType) => any;
+    success?: (result: UserSearchResult) => any;
     fail?: () => any;
   }): AnyActionType;
 }
@@ -202,7 +207,7 @@ export interface SetCurrentUserGroupTriggerType {
 
 /**
  * delay
- * @param ms
+ * @param ms ms
  */
 function delay(ms: number) {
   return new Promise((resolve) => {
@@ -216,22 +221,20 @@ function delay(ms: number) {
  */
 const createStudent: CreateStudentTriggerType = function createStudent(data) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const userApi = MApi.getUserApi();
+    const organizationApi = MApi.getOrganizationApi();
+
     try {
-      await promisify(
-        mApi().user.students.create(data.student),
-        "callback"
-      )().then(() => {
-        mApi().organizationUserManagement.students.cacheClear();
+      await userApi.createStudent({
+        createStudentRequest: data.student,
       });
 
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.create.student.success"
-          ),
+          i18n.t("notifications.createSuccess", { ns: "users" }),
           "success"
         )
       );
@@ -239,25 +242,23 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
 
       await delay(2000);
 
-      const users: UserPanelUsersType = (await promisify(
-        mApi().organizationUserManagement.students.read(),
-        "callback"
-      )()) as UserPanelUsersType;
+      const users = await organizationApi.getOrganizationStudents();
 
       dispatch({
         type: "UPDATE_STUDENT_USERS",
         payload: users,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.create.student.error",
-            err as any as string
-          ),
+          i18n.t("notifications.createError", {
+            ns: "users",
+            error: err,
+            context: "student",
+          }),
           "error"
         )
       );
@@ -272,47 +273,46 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
  */
 const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const userApi = MApi.getUserApi();
+    const organizationApi = MApi.getOrganizationApi();
+
     try {
-      await promisify(
-        mApi().user.students.basicInfo.update(
-          data.student.identifier,
-          data.student
-        ),
-        "callback"
-      )().then(() => {
-        mApi().organizationUserManagement.students.cacheClear();
+      await userApi.updateStudentBasicInfo({
+        studentId: data.student.identifier,
+        updateStudentBasicInfoRequest: data.student,
       });
 
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.update.student.success"
-          ),
+          i18n.t("notifications.updateSuccess", {
+            ns: "users",
+            context: "student",
+          }),
           "success"
         )
       );
       data.success && data.success();
       await delay(2000);
 
-      const users: UserPanelUsersType = (await promisify(
-        mApi().organizationUserManagement.students.read(),
-        "callback"
-      )()) as UserPanelUsersType;
+      const users = await organizationApi.getOrganizationStudents();
 
       dispatch({
         type: "UPDATE_STUDENT_USERS",
         payload: users,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.organization.update.student.error"),
+          i18n.t("notifications.updateError", {
+            ns: "users",
+            context: "student",
+          }),
           "error"
         )
       );
@@ -328,21 +328,23 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
 const createStaffmember: CreateStaffmemberTriggerType =
   function createStaffmember(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+      const organizationApi = MApi.getOrganizationApi();
+
       try {
-        await promisify(
-          mApi().user.staffMembers.create(data.staffmember),
-          "callback"
-        )().then(() => {
-          mApi().organizationUserManagement.staffMembers.cacheClear();
+        await userApi.createStaffMember({
+          createStaffMemberRequest: data.staffmember,
         });
+
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.organization.create.staff.success"
-            ),
+            i18n.t("notifications.createSuccess", {
+              ns: "users",
+              context: "student",
+            }),
             "success"
           )
         );
@@ -350,21 +352,23 @@ const createStaffmember: CreateStaffmemberTriggerType =
 
         await delay(2000);
 
-        const users: UserPanelUsersType = (await promisify(
-          mApi().organizationUserManagement.staffMembers.read(),
-          "callback"
-        )()) as UserPanelUsersType;
+        const users = await organizationApi.getOrganizationStaffMembers();
+
         dispatch({
           type: "UPDATE_STAFF_USERS",
           payload: users,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.organization.create.staff.error"),
+            i18n.t("notifications.createError", {
+              ns: "users",
+              error: err.message,
+              context: "student",
+            }),
             "error"
           )
         );
@@ -380,24 +384,24 @@ const createStaffmember: CreateStaffmemberTriggerType =
 const updateStaffmember: UpdateStaffmemberTriggerType =
   function updateStaffmember(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+      const organizationApi = MApi.getOrganizationApi();
+
       try {
-        await promisify(
-          mApi().user.staffMembers.update(
-            data.staffmember.identifier,
-            data.staffmember
-          ),
-          "callback"
-        )().then(() => {
-          mApi().organizationUserManagement.staffMembers.cacheClear();
+        await userApi.updateStaffMember({
+          staffMemberId: data.staffmember.identifier,
+          updateStaffMemberRequest: data.staffmember,
         });
+
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.organization.update.staff.success"
-            ),
+            i18n.t("notifications.updateSuccess", {
+              ns: "users",
+              context: "staff",
+            }),
             "success"
           )
         );
@@ -405,21 +409,22 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
 
         await delay(2000);
 
-        const users: UserPanelUsersType = (await promisify(
-          mApi().organizationUserManagement.staffMembers.read(),
-          "callback"
-        )()) as UserPanelUsersType;
+        const users = await organizationApi.getOrganizationStaffMembers();
+
         dispatch({
           type: "UPDATE_STAFF_USERS",
           payload: users,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.organization.update.staff.error"),
+            i18n.t("notifications.updateError", {
+              ns: "users",
+              context: "student",
+            }),
             "error"
           )
         );
@@ -436,47 +441,54 @@ const updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const usergroupApi = MApi.getUsergroupApi();
+
     try {
       if (data.update) {
-        await promisify(
-          mApi().usergroup.groups.update(data.update),
-          "callback"
-        )();
+        await usergroupApi.updateUsergroup({
+          updateUsergroupRequest: data.update,
+        });
+
         data.progress && data.progress("update-group");
       }
       if (data.addUsers) {
-        await promisify(
-          mApi().usergroup.addusers.update(data.addUsers),
-          "callback"
-        )();
+        await usergroupApi.updateUsergroupAddUsers({
+          updateUsergroupAddUsersRequest: data.addUsers,
+        });
+
         data.progress && data.progress("add-users");
       }
       if (data.removeUsers) {
-        await promisify(
-          mApi().usergroup.removeusers.update(data.removeUsers),
-          "callback"
-        )();
+        await usergroupApi.updateUsergroupRemoveUsers({
+          updateUsergroupRemoveUsersRequest: data.removeUsers,
+        });
+
         data.progress && data.progress("remove-users");
       }
       data.progress && data.progress("done");
       data.success && data.success();
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.update.usergroup.success"
-          ),
+          i18n.t("notifications.updateSuccess", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "success"
         )
       );
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.update.usergroup.error"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "error"
         )
       );
@@ -493,27 +505,26 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const usergroupApi = MApi.getUsergroupApi();
+
     try {
-      const userGroup: UserGroupType = (await promisify(
-        mApi().usergroup.groups.create(data.payload),
-        "callback"
-      )()) as UserGroupType;
+      const userGroup = await usergroupApi.createUsergroup({
+        createUsergroupRequest: data.payload,
+      });
 
       data.progress && data.progress("update-group");
 
-      const userPayload: ModifyUserGroupUsersType = {
-        groupIdentifier: userGroup.identifier,
-        userIdentifiers: data.addUsers,
-      };
-
       if (data.addUsers && data.addUsers.length > 0) {
-        await promisify(
-          mApi().usergroup.addusers.update(userPayload),
-          "callback"
-        )();
+        await usergroupApi.updateUsergroupAddUsers({
+          updateUsergroupAddUsersRequest: {
+            groupIdentifier: userGroup.identifier,
+            userIdentifiers: data.addUsers,
+          },
+        });
+
         data.progress && data.progress("add-users");
       }
 
@@ -521,18 +532,23 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
       data.success && data.success();
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.create.usergroup.success"
-          ),
+          i18n.t("notifications.createSuccess", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "success"
         )
       );
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.organization.create.usergroup.error"
-          ),
+          i18n.t("notifications.createError", {
+            ns: "users",
+            context: "userGroup",
+          }),
           "error"
         )
       );
@@ -547,31 +563,35 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
 const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
   function loadStudyprogrammes() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const userApi = MApi.getUserApi();
+
       try {
         dispatch({
           type: "UPDATE_STUDYPROGRAMME_TYPES",
-          payload: <StudyprogrammeListType>(
-            await promisify(mApi().user.studyProgrammes.read(), "callback")()
-          ),
+          payload: await userApi.getStudyProgrammes(),
         });
+
         dispatch({
           type: "UPDATE_STUDYPROGRAMME_STATUS_TYPE",
-          payload: <StudyprogrammeTypeStatusType>"READY",
+          payload: <StudyprogrammeStatusType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch({
           type: "UPDATE_STUDYPROGRAMME_STATUS_TYPE",
-          payload: <StudyprogrammeTypeStatusType>"ERROR",
+          payload: <StudyprogrammeStatusType>"ERROR",
         });
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO: Error"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "studyProgrammes",
+            }),
             "error"
           )
         );
@@ -585,24 +605,30 @@ const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
  */
 const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const organizationApi = MApi.getOrganizationApi();
+
     try {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
       });
 
-      await promisify(
-        mApi().organizationUserManagement.students.read(data.payload),
-        "callback"
-      )().then((users: UserPanelUsersType) => {
-        const payload = { ...users, searchString: data.payload.q };
-        dispatch({
-          type: "UPDATE_STUDENT_USERS",
-          payload: payload,
-        });
+      const users = await organizationApi.getOrganizationStudents({
+        q: data.payload.q || "",
+        firstResult: data.payload.firstResult,
+        maxResults: data.payload.maxResults,
+        userGroupIds: data.payload.userGroupIds,
+      });
+
+      dispatch({
+        type: "UPDATE_STUDENT_USERS",
+        payload: {
+          ...users,
+          searchString: data.payload.q,
+        },
       });
 
       dispatch({
@@ -610,12 +636,16 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "students",
+            count: 0,
+          }),
           "error"
         )
       );
@@ -638,36 +668,43 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
  */
 const loadStaff: LoadUsersTriggerType = function loadStaff(data) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const organizationApi = MApi.getOrganizationApi();
+
     try {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
       });
-      await promisify(
-        mApi().organizationUserManagement.staffMembers.read(data.payload),
-        "callback"
-      )().then((users: UserPanelUsersType) => {
-        const payload = { ...users, searchString: data.payload.q };
 
-        dispatch({
-          type: "UPDATE_STAFF_USERS",
-          payload: payload,
-        });
+      const users = await organizationApi.getOrganizationStaffMembers({
+        q: data.payload.q || "",
+        firstResult: data.payload.firstResult,
+        maxResults: data.payload.maxResults,
+        userGroupIds: data.payload.userGroupIds,
       });
+
+      dispatch({
+        type: "UPDATE_STAFF_USERS",
+        payload: {
+          ...users,
+          searchString: data.payload.q,
+        },
+      });
+
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", { ns: "users", context: "staff" }),
           "error"
         )
       );
@@ -690,29 +727,35 @@ const loadStaff: LoadUsersTriggerType = function loadStaff(data) {
 const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
   data
 ) {
-  const maxResults = data.payload.maxResults ? data.payload.maxResults + 1 : 26;
-
-  data.payload.maxResults = maxResults;
-  data.payload.archetype = "USERGROUP";
-
-  if (!data.payload.firstResult) {
-    data.payload.firstResult = 0;
-  }
-
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const usergroupApi = MApi.getUsergroupApi();
+
+    const maxResults = data.payload.maxResults
+      ? data.payload.maxResults + 1
+      : 26;
+
+    data.payload.maxResults = maxResults;
+    data.payload.archetype = "USERGROUP";
+
+    if (!data.payload.firstResult) {
+      data.payload.firstResult = 0;
+    }
+
     try {
       dispatch({
         type: "UPDATE_HAS_MORE_USERGROUPS",
         payload: false,
       });
 
-      const userGroups: UserGroupType[] = (await promisify(
-        mApi().usergroup.groups.read(data.payload),
-        "callback"
-      )()) as UserGroupType[];
+      const userGroups = await usergroupApi.getUsergroups({
+        q: data.payload.q || "",
+        firstResult: data.payload.firstResult,
+        maxResults: data.payload.maxResults,
+        userGroupIds: data.payload.userGroupIds,
+      });
 
       dispatch({
         type: "SET_CURRENT_PAYLOAD",
@@ -742,12 +785,15 @@ const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
         payload: "READY",
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("Load failed"),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "userGroups",
+          }),
           "error"
         )
       );
@@ -768,17 +814,22 @@ const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
  */
 const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const usergroupApi = MApi.getUsergroupApi();
+
     try {
       const currentState = getState().userGroups;
       const payload = currentState.currentPayload;
       payload.firstResult = payload.firstResult + payload.maxResults - 1;
-      const userGroups: UserGroupType[] = (await promisify(
-        mApi().usergroup.groups.read(payload),
-        "callback"
-      )()) as UserGroupType[];
+
+      const userGroups = await usergroupApi.getUsergroups({
+        q: payload.q,
+        firstResult: payload.firstResult,
+        maxResults: payload.maxResults,
+        userGroupIds: payload.userGroupIds,
+      });
 
       dispatch({
         type: "LOAD_MORE_USER_GROUPS",
@@ -803,12 +854,15 @@ const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
         payload: "READY",
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("Loadmore failed"),
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "userGroups",
+          }),
           "error"
         )
       );
@@ -829,9 +883,9 @@ const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
  * @param id id
  */
 const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
-  function loadCurrentUserGroup(id: number) {
+  function setCurrentUserGroup(id: number) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const current: CurrentUserGroupType = getState().userGroups
@@ -851,12 +905,12 @@ const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
           payload: payload,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("TODO"),
+            i18n.t("notifications.setError", { ns: "users" }),
             "error"
           )
         );
@@ -871,9 +925,11 @@ const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
 const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
   function loadAllCurrentUserGroupUsers(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationApi = MApi.getOrganizationApi();
+
       const current = getState().userGroups.currentUserGroup
         ? getState().userGroups.currentUserGroup
         : null;
@@ -885,25 +941,34 @@ const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
       };
 
       try {
-        await promisify(
-          mApi().organizationUserManagement.staffMembers.read(data.payload),
-          "callback"
-        )().then((result: PagingEnvironmentUserListType) => {
-          payload.staff = result;
-        }),
-          dispatch({
-            type: "UPDATE_CURRENT_USER_GROUP",
-            payload: payload,
-          });
+        const users = await organizationApi.getOrganizationStaffMembers({
+          q: data.payload.q || "",
+          userGroupIds: data.payload.userGroupIds,
+          firstResult: data.payload.firstResult,
+          maxResults: data.payload.maxResults,
+        });
+
+        payload.staff = users;
+
+        dispatch({
+          type: "UPDATE_CURRENT_USER_GROUP",
+          payload: {
+            ...payload,
+            staff: users,
+          },
+        });
 
         data.success && data.success(payload.staff);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "userGroupStaff",
+            }),
             "error"
           )
         );
@@ -918,9 +983,11 @@ const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
 const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
   function loadAllCurrentUserGroupUsers(data) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationApi = MApi.getOrganizationApi();
+
       const current = getState().userGroups.currentUserGroup
         ? getState().userGroups.currentUserGroup
         : null;
@@ -932,25 +999,31 @@ const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
       };
 
       try {
-        await promisify(
-          mApi().organizationUserManagement.students.read(data.payload),
-          "callback"
-        )().then((result: PagingEnvironmentUserListType) => {
-          payload.students = result;
-        }),
-          dispatch({
-            type: "UPDATE_CURRENT_USER_GROUP",
-            payload: payload,
-          });
+        const users = await organizationApi.getOrganizationStudents({
+          q: data.payload.q,
+          userGroupIds: data.payload.userGroupIds,
+          firstResult: data.payload.firstResult,
+          maxResults: data.payload.maxResults,
+        });
+
+        payload.students = users;
+
+        dispatch({
+          type: "UPDATE_CURRENT_USER_GROUP",
+          payload: payload,
+        });
 
         data.success && data.success(payload.students);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "userGroupStudents",
+            }),
             "error"
           )
         );
@@ -963,19 +1036,25 @@ const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
  * @param data data
  */
 const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
-  const getStudents = promisify(
-    mApi().organizationUserManagement.students.read(data.payload),
-    "callback"
-  )();
-  const getStaffmembers = promisify(
-    mApi().organizationUserManagement.staffMembers.read(data.payload),
-    "callback"
-  )();
-
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const organizationApi = MApi.getOrganizationApi();
+
+    const getStudents = organizationApi.getOrganizationStudents({
+      q: data.payload.q,
+      userGroupIds: data.payload.userGroupIds,
+      firstResult: data.payload.firstResult,
+      maxResults: data.payload.maxResults,
+    });
+    const getStaffmembers = organizationApi.getOrganizationStaffMembers({
+      q: data.payload.q,
+      userGroupIds: data.payload.userGroupIds,
+      firstResult: data.payload.firstResult,
+      maxResults: data.payload.maxResults,
+    });
+
     try {
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -983,7 +1062,7 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
       });
 
       await Promise.all([
-        getStudents.then((users: UserPanelUsersType) => {
+        getStudents.then((users) => {
           const payload = { ...users, searchString: data.payload.q };
 
           dispatch({
@@ -991,7 +1070,7 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
             payload: payload,
           });
         }),
-        getStaffmembers.then((users: UserPanelUsersType) => {
+        getStaffmembers.then((users) => {
           const payload = { ...users, searchString: data.payload.q };
 
           dispatch({
@@ -1009,12 +1088,12 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", { ns: "users" }),
           "error"
         )
       );
@@ -1037,30 +1116,35 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
  */
 const loadSelectorStudents: LoadUsersTriggerType =
   function loadSelectorStudents(data) {
-    const getStudents = data.payload.q
-      ? mApi().organizationUserManagement.students.read(data.payload)
-      : null;
-
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const organizationApi = MApi.getOrganizationApi();
+
+      const getStudents = data.payload.q
+        ? organizationApi.getOrganizationStudents({
+            q: data.payload.q,
+            userGroupIds: data.payload.userGroupIds,
+            firstResult: data.payload.firstResult,
+            maxResults: data.payload.maxResults,
+          })
+        : null;
+
       try {
         dispatch({
           type: "LOCK_TOOLBAR",
           payload: null,
         });
         if (getStudents !== null) {
-          await promisify(getStudents, "callback")().then(
-            (users: PagingEnvironmentUserListType) => {
-              dispatch({
-                type: "UPDATE_STUDENT_SELECTOR",
-                payload: users.results,
-              });
-            }
-          );
+          const usersResult = await getStudents;
+
+          dispatch({
+            type: "UPDATE_STUDENT_SELECTOR",
+            payload: usersResult.results,
+          });
         } else {
-          const payload: Partial<UsersSelectType> = { students: [] };
+          const payload: Partial<UsersSelectState> = { students: [] };
           dispatch({
             type: "CLEAR_USER_SELECTOR",
             payload,
@@ -1071,12 +1155,16 @@ const loadSelectorStudents: LoadUsersTriggerType =
           payload: null,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "students",
+              count: 0,
+            }),
             "error"
           )
         );
@@ -1100,30 +1188,35 @@ const loadSelectorStudents: LoadUsersTriggerType =
 const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
   data
 ) {
-  const getStaff = data.payload.q
-    ? mApi().organizationUserManagement.staffMembers.read(data.payload)
-    : null;
-
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const organizationApi = MApi.getOrganizationApi();
+
+    const getStaff = data.payload.q
+      ? organizationApi.getOrganizationStaffMembers({
+          q: data.payload.q,
+          userGroupIds: data.payload.userGroupIds,
+          firstResult: data.payload.firstResult,
+          maxResults: data.payload.maxResults,
+        })
+      : null;
+
     try {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
       });
       if (getStaff !== null) {
-        await promisify(getStaff, "callback")().then(
-          (users: PagingEnvironmentUserListType) => {
-            dispatch({
-              type: "UPDATE_STAFF_SELECTOR",
-              payload: users.results,
-            });
-          }
-        );
+        const userResult = await getStaff;
+
+        dispatch({
+          type: "UPDATE_STAFF_SELECTOR",
+          payload: userResult.results,
+        });
       } else {
-        const payload: Partial<UsersSelectType> = { staff: [] };
+        const payload: Partial<UsersSelectState> = { staff: [] };
         dispatch({
           type: "CLEAR_USER_SELECTOR",
           payload,
@@ -1134,12 +1227,12 @@ const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get("plugin.guider.errormessage.user"),
+          i18n.t("notifications.loadError", { ns: "users", context: "staff" }),
           "error"
         )
       );
@@ -1162,30 +1255,35 @@ const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
  */
 const loadSelectorUserGroups: LoadUsersTriggerType =
   function loadSelectorUserGroups(data) {
-    const getUserGroups = data.payload.q
-      ? mApi().usergroup.groups.read(data.payload)
-      : null;
-
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const usergroupApi = MApi.getUsergroupApi();
+
+      const getUserGroups = data.payload.q
+        ? usergroupApi.getUsergroups({
+            q: data.payload.q || "",
+            userGroupIds: data.payload.userGroupIds,
+            firstResult: data.payload.firstResult,
+            maxResults: data.payload.maxResults,
+          })
+        : null;
+
       try {
         dispatch({
           type: "LOCK_TOOLBAR",
           payload: null,
         });
         if (getUserGroups !== null) {
-          await promisify(getUserGroups, "callback")().then(
-            (usergGroups: UserGroupType[]) => {
-              dispatch({
-                type: "UPDATE_GROUP_SELECTOR",
-                payload: usergGroups,
-              });
-            }
-          );
+          const userGroups = await getUserGroups;
+
+          dispatch({
+            type: "UPDATE_GROUP_SELECTOR",
+            payload: userGroups,
+          });
         } else {
-          const payload: Partial<UsersSelectType> = { userGroups: [] };
+          const payload: Partial<UsersSelectState> = { userGroups: [] };
           dispatch({
             type: "CLEAR_USER_SELECTOR",
             payload,
@@ -1196,12 +1294,15 @@ const loadSelectorUserGroups: LoadUsersTriggerType =
           payload: null,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get("plugin.guider.errormessage.user"),
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "userGroups",
+            }),
             "error"
           )
         );

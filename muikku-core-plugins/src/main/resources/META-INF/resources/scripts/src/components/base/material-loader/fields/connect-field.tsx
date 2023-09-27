@@ -2,13 +2,13 @@ import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FieldType
@@ -21,7 +21,7 @@ interface FieldType {
 /**
  * ConnectFieldProps
  */
-interface ConnectFieldProps {
+interface ConnectFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -40,7 +40,6 @@ interface ConnectFieldProps {
     name: string,
     newValue: any
   ) => any;
-  i18n: i18nType;
 
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -77,7 +76,7 @@ interface ConnectFieldState {
 /**
  * ConnectField
  */
-export default class ConnectField extends React.Component<
+class ConnectField extends React.Component<
   ConnectFieldProps,
   ConnectFieldState
 > {
@@ -191,7 +190,6 @@ export default class ConnectField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -367,7 +365,7 @@ export default class ConnectField extends React.Component<
    * @param executeTriggerChangeFunction
    * @param fielda
    * @param fieldb
-   * @returns
+   * @returns fieldType
    */
   swapCounterpart(
     executeTriggerChangeFunction: boolean,
@@ -567,8 +565,12 @@ export default class ConnectField extends React.Component<
 
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Yhdistelykenttä" />
+        <ReadspeakerMessage
+          text={this.props.t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "connect",
+          })}
+        />
 
         <span
           className={`material-page__connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
@@ -576,7 +578,6 @@ export default class ConnectField extends React.Component<
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           <span className="material-page__taskfield-header">
@@ -591,9 +592,9 @@ export default class ConnectField extends React.Component<
               content={
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: this.props.i18n.text.get(
-                      "plugin.workspace.connectField.instructions"
-                    ),
+                    __html: this.props.t("instructions.connectField", {
+                      ns: "materials",
+                    }),
                   }}
                 />
               }
@@ -777,3 +778,5 @@ export default class ConnectField extends React.Component<
     );
   }
 }
+
+export default withTranslation("materials")(ConnectField);

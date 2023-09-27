@@ -17,16 +17,12 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 @Named
 @Stateful
@@ -41,13 +37,7 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   private String workspaceUrlName;
 
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
-  @Inject
   private WorkspaceController workspaceController;
-
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -113,8 +103,6 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
     }
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
-    maySignUp = resolveMaySignUp();
-    canSignUp = workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity);
     workspaceVisitController.visit(workspaceEntity);
     
     return null;
@@ -163,25 +151,6 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   public String getMaterialsBaseUrl() {
     return materialsBaseUrl;
   }
-  
-  public Boolean getMaySignUp() {
-    return maySignUp;
-  }
-  
-  public Boolean getCanSignUp() {
-    return canSignUp;
-  }
-
-  private Boolean resolveMaySignUp() {
-    if (sessionController.isLoggedIn()) {
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-      if (roleEntity != null) {
-        return EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype());
-      }
-    }
-    
-    return false;
-  }
 
   private WorkspaceRootFolder rootFolder;
   private List<ContentNode> contentNodes;
@@ -189,6 +158,4 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   private String workspaceNameExtension;
   private Long workspaceEntityId;
   private String materialsBaseUrl;
-  private Boolean maySignUp;
-  private Boolean canSignUp;
 }

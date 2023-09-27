@@ -9,22 +9,24 @@ interface SavingDraftErrorProps {
 
 /**
  * Shows draft saving error
- * @param root0.draftSaveErrorMsg draftSaveErrorMsg
+ * @param props props
  * @returns JSX.Element
  */
-export const SavingDraftError: React.FC<SavingDraftErrorProps> = ({
-  draftSaveErrorMsg,
-}) => (
-  <div
-    className={`matriculation__saving-draft matriculation__saving-draft--error ${
-      draftSaveErrorMsg
-        ? "matriculation__saving-draft--fade-in"
-        : "matriculation__saving-draft--fade-out"
-    }`}
-  >
-    <h3 className="matriculation__saving-draft-title">
-      Luonnoksen tallentaminen epäonnistui!
-    </h3>
-    <p>{draftSaveErrorMsg}</p>
-  </div>
-);
+export const SavingDraftError: React.FC<SavingDraftErrorProps> = (props) => {
+  const { draftSaveErrorMsg } = props;
+
+  return (
+    <div
+      className={`matriculation__saving-draft matriculation__saving-draft--error ${
+        draftSaveErrorMsg
+          ? "matriculation__saving-draft--fade-in"
+          : "matriculation__saving-draft--fade-out"
+      }`}
+    >
+      <h3 className="matriculation__saving-draft-title">
+        Luonnoksen tallentaminen epäonnistui!
+      </h3>
+      <p>{draftSaveErrorMsg}</p>
+    </div>
+  );
+};

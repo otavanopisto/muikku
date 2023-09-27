@@ -1,8 +1,5 @@
 import FrontpageNavbar from "./body/navbar";
 import * as React from "react";
-import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
-
 import FrontpageHero from "./body/header";
 import FrontpageStudying from "./body/studying";
 import FrontpageVideos from "./body/videos";
@@ -25,14 +22,11 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/screen-container.scss";
 
 import ScreenContainer from "~/components/general/screen-container";
-import { StateType } from "~/reducers";
 
 /**
  * FrontpageBodyProps
  */
-interface FrontpageBodyProps {
-  i18n: i18nType;
-}
+interface FrontpageBodyProps {}
 
 /**
  * FrontpageBodyState
@@ -53,36 +47,19 @@ class FrontpageBody extends React.Component<
     return (
       <div>
         <FrontpageNavbar />
-        <FrontpageHero i18n={this.props.i18n} />
+        <FrontpageHero />
         <ScreenContainer viewModifiers="frontpage">
-          <FrontpageStudying i18n={this.props.i18n} />
-          <FrontpageVideos i18n={this.props.i18n} />
-          <FrontpageNews i18n={this.props.i18n} />
-          <FrontpageInstagram i18n={this.props.i18n} />
-          <FrontpageOrganization i18n={this.props.i18n} />
+          <FrontpageStudying />
+          <FrontpageVideos />
+          <FrontpageNews />
+          <FrontpageInstagram />
+          <FrontpageOrganization />
         </ScreenContainer>
 
-        <FrontpageFooter i18n={this.props.i18n} />
+        <FrontpageFooter />
       </div>
     );
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(FrontpageBody);
+export default FrontpageBody;

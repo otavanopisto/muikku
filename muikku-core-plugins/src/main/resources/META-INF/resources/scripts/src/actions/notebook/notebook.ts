@@ -12,6 +12,8 @@ import promisify from "~/util/promisify";
 import { displayNotification } from "../base/notifications";
 import { materialShowOrHideExtraTools } from "../workspaces/material";
 import update from "immutability-helper";
+import MApi from "~/api/api";
+import i18n from "~/locales/i18n";
 
 // Notebook actions
 
@@ -224,7 +226,10 @@ const loadNotebookEntries: LoadNotebookEntries =
 
           dispatch(
             displayNotification(
-              "Virhe ladattaessa työtilakohtaisia muistiinpanoja",
+              i18n.t("notifications.loadError", {
+                ns: "notebook",
+                context: "courseNotes",
+              }),
               "error"
             )
           );
@@ -254,7 +259,13 @@ const loadNotebookEntries: LoadNotebookEntries =
           });
 
           dispatch(
-            displayNotification("Virhe ladattaessa muistiinpanoja", "error")
+            displayNotification(
+              i18n.t("notifications.loadError", {
+                ns: "notebook",
+                context: "courseNotes",
+              }),
+              "error"
+            )
           );
         }
       }
@@ -321,7 +332,10 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
 
             dispatch(
               displayNotification(
-                "Virhe päivittäessä muistiinpanojen järjestystä",
+                i18n.t("notifications.updateError", {
+                  ns: "notebook",
+                  context: "noteOrder",
+                }),
                 "error"
               )
             );
@@ -356,6 +370,7 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
         const dataToSave = {
@@ -386,15 +401,12 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         // we need to update default position to server
         // Selected new default value is updated anyways even if user has selected position from the list
         if (state.notebook.noteDefaultLocation !== data.defaultPosition) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const properties: any = await promisify(
-            mApi().user.property.create({
+          const properties = await userApi.setUserProperty({
+            setUserPropertyRequest: {
               key: "note-default-position",
               value: data.defaultPosition,
-              userEntityId: state.status.userId,
-            }),
-            "callback"
-          )();
+            },
+          });
 
           dispatch({
             type: "NOTEBOOK_UPDATE_DEFAULT_POSITION",
@@ -444,7 +456,10 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         });
 
         dispatch(
-          displayNotification("Muistiinpano lisätty onnistuneesti", "success")
+          displayNotification(
+            i18n.t("notifications.saveSuccess", { ns: "notebook" }),
+            "success"
+          )
         );
 
         data.success && data.success();
@@ -456,7 +471,11 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
 
         dispatch(
           displayNotification(
-            `Virhe uuttaa muistiinpanoa tallentaessa: ${err}`,
+            i18n.t("notifications.saveError", {
+              ns: "notebook",
+              context: "note",
+              error: err,
+            }),
             "error"
           )
         );
@@ -509,7 +528,13 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
         });
 
         dispatch(
-          displayNotification("Virhe muistiinpanoa päivittäessä", "error")
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "notebook",
+              context: "note",
+            }),
+            "error"
+          )
         );
       }
     };
@@ -560,8 +585,15 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
         type: "NOTEBOOK_UPDATE_STATE",
         payload: "ERROR",
       });
-
-      dispatch(displayNotification("Virhe poistaessa muistiinpanoa", "error"));
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.removeError", {
+            ns: "notebook",
+            context: "note",
+          }),
+          "error"
+        )
+      );
     }
   };
 };
@@ -635,15 +667,13 @@ const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const properties: any = await promisify(
-          mApi().user.properties.read(state.status.userId, {
-            properties: "note-default-position",
-          }),
-          "callback"
-        )();
+        const properties = await userApi.getUserProperties({
+          userEntityId: state.status.userId,
+          properties: "note-default-position",
+        });
 
         dispatch({
           type: "NOTEBOOK_LOAD_DEFAULT_POSITION",
@@ -651,7 +681,13 @@ const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
         });
       } catch (error) {
         dispatch(
-          displayNotification("Virhe ladattaessa oletus sijaintia", "error")
+          displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "notebook",
+              context: "defaultLocation",
+            }),
+            "error"
+          )
         );
       }
     };

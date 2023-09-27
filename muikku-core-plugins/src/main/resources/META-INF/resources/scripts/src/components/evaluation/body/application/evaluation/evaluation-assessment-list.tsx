@@ -4,7 +4,6 @@ import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
 import {
@@ -14,12 +13,12 @@ import {
 import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
+import { useTranslation } from "react-i18next";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface AssessmentListProps {
-  i18n: i18nType;
   evaluation: EvaluationState;
   workspaces: WorkspaceType[];
   selectedAssessment: AssessmentRequest;
@@ -32,7 +31,9 @@ interface AssessmentListProps {
  * @returns JSX.Element
  */
 const AssessmentList: React.FC<AssessmentListProps> = (props) => {
-  const { evaluation, i18n, workspaces, selectedAssessment } = props;
+  const { evaluation, workspaces, selectedAssessment } = props;
+
+  const { t } = useTranslation(["evaluation", "materials", "common"]);
 
   const [listOfAssignmentIds, setListOfAssignmentIds] = React.useState<
     number[]
@@ -197,9 +198,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
     ) : (
       <div className="empty">
         <span>
-          {i18n.text.get(
-            "plugin.evaluation.evaluationModal.noAssignmentsTitle"
-          )}
+          {t("content.empty", { ns: "evaluation", context: "assignments" })}
         </span>
       </div>
     );
@@ -208,7 +207,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
         <>
-          {i18n.text.get("plugin.evaluation.evaluationModal.assignmentsTitle")}
+          {t("labels.assignments", { ns: "materials" })}
           {evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
           evaluation.evaluationCompositeReplies.state === "READY" ? (
             <div className="evaluation-modal__content-actions">
@@ -216,13 +215,13 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
                 className="link link--evaluation link--evaluation-open-close"
                 onClick={handleCloseAllMaterialContentClick}
               >
-                {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
+                {t("actions.hideAll")}
               </Link>
               <Link
                 className="link link--evaluation link--evaluation-open-close"
                 onClick={handleOpenAllMaterialContentClick}
               >
-                {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}
+                {t("actions.openAll", { ns: "evaluation" })}
               </Link>
             </div>
           ) : null}
@@ -246,7 +245,6 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     evaluation: state.evaluations,
   };
 }

@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -33,12 +32,12 @@ public class WorklistController {
       
       // Worklist functionality is always available for admins, never for students
       
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
-        return true;
-      }
-      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      if (userSchoolDataIdentifier == null || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         return false;
+      }
+      if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+        return true;
       }
       
       // Plugin setting worklist.enabledOrganizations (if not defined, worklist functionality is not available)
@@ -49,7 +48,6 @@ public class WorklistController {
             .map(identifier -> SchoolDataIdentifier.fromId(identifier))
             .collect(Collectors.toSet());
 
-        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
         if (userSchoolDataIdentifier != null) {
           OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
           if (organization != null) {

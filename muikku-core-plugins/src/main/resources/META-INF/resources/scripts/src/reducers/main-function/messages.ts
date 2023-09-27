@@ -1,7 +1,13 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
-import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
+import {
+  CommunicatorSignature,
+  MessageThread,
+  MessageThreadExpanded,
+  MessageThreadLabel,
+  User,
+  UserGroup,
+} from "~/generated/client";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
@@ -40,20 +46,8 @@ export interface MessageSearchResult {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tags: any;
   recipients?: Array<MessageRecepientType>;
-  userGroupRecipients?: Array<UserGroupType>;
+  userGroupRecipients?: UserGroup[];
   workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
-}
-
-/**
- * MessageThreadLabelType
- */
-export interface MessageThreadLabelType {
-  id: number;
-  labelColor: number;
-  labelId: number;
-  labelName: string;
-  messageThreadId: number;
-  userEntityId: number;
 }
 
 /**
@@ -66,36 +60,6 @@ export interface MessageThreadLabelUpdateType {
   labelName?: string;
   messageThreadId?: number;
   userEntityId?: number;
-}
-
-export type MessageThreadLabelListType = Array<MessageThreadLabelType>;
-
-/**
- * MessageThreadType
- */
-export interface MessageThreadType {
-  caption: string;
-  categoryName: "message";
-  communicatorMessageId: number;
-  created: string;
-  id: number;
-  labels: MessageThreadLabelListType;
-  messageCountInThread: number;
-  recipientCount?: number;
-  recipients?: Array<MessageRecepientType>;
-  sender: UserType;
-  senderId: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tags: any;
-  threadLatestMessageDate: string;
-  unreadMessagesInThread: boolean;
-  userGroupRecipients?: Array<UserGroupType>;
-  workspaceRecipients?: Array<{
-    archetype: string;
-    workspaceEntityId: number;
-    workspaceExtension?: string;
-    workspaceName: string;
-  }>;
 }
 
 /**
@@ -111,39 +75,9 @@ export interface MessageThreadUpdateType {
   tags?: any;
   threadLatestMessageDate?: string;
   unreadMessagesInThread?: boolean;
-  sender?: UserType;
+  sender?: User;
   messageCountInThread?: number;
-  labels?: MessageThreadLabelListType;
-}
-
-/**
- * MessageThreadExpandedType
- */
-export interface MessageThreadExpandedType {
-  olderThreadId?: number;
-  newerThreadId?: number;
-  messages: Array<MessageType>;
-  labels: MessageThreadLabelListType;
-}
-
-/**
- * MessageType
- */
-export interface MessageType {
-  caption: string;
-  categoryName: "message";
-  communicatorMessageId: number;
-  content: string;
-  created: string;
-  id: number;
-  recipientCount: number;
-  recipients: Array<MessageRecepientType>;
-  sender: UserType;
-  senderId: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tags: any;
-  userGroupRecipients: Array<UserGroupType>;
-  workspaceRecipients: Array<MessageWorkspaceRecipientType>;
+  labels?: MessageThreadLabel[];
 }
 
 /**
@@ -169,7 +103,7 @@ export interface MessageWorkspaceRecipientType {
   workspaceExtension?: string;
   workspaceName: string;
 }
-export type MessageThreadListType = Array<MessageThreadType>;
+/* export type MessageThread[] = Array<MessageThread>; */
 
 /**
  * MessagesNavigationItemUpdateType
@@ -180,25 +114,27 @@ export interface MessagesNavigationItemUpdateType {
   id?: string | number;
   icon?: string;
   color?: string;
-  /**
-   *
-   */
-  text?(i18n: i18nType): string;
+  text: string;
 }
 
+export type NavigationItemTypes = "folder" | "label";
+
 /**
- * MessagesNavigationItemType
+ * MessagesNavigationItem
  */
-export interface MessagesNavigationItemType {
-  location: string;
-  type: string;
+export interface MessagesNavigationItem {
+  /**
+   * First four are common location types and the rest are labels created by user (type string)
+   */
+  location: "inbox" | "unread" | "sent" | "trash" | string;
+  /**
+   * Type of navigation item. "folder" or "label" if it is user created label
+   */
+  type: "folder" | "label";
   id: string | number;
   icon: string;
   color?: string;
-  /**
-   *
-   */
-  text(i18n: i18nType): string;
+  text: string;
 }
 
 /**
@@ -212,98 +148,72 @@ export interface LabelType {
 
 export type LabelListType = Array<LabelType>;
 
-export type MessagesNavigationItemListType = Array<MessagesNavigationItemType>;
-
-const defaultNavigation: MessagesNavigationItemListType = [
+const defaultNavigation: MessagesNavigationItem[] = [
   {
     location: "inbox",
     type: "folder",
     id: "inbox",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.inbox");
-    },
+    text: "inbox",
   },
   {
     location: "unread",
     type: "folder",
     id: "unread",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.unread");
-    },
+    text: "unread",
   },
   {
     location: "sent",
     type: "folder",
     id: "sent",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.sent");
-    },
+    text: "sent",
   },
   {
     location: "trash",
     type: "folder",
     id: "trash",
     icon: "trash-alt",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.trash");
-    },
+    text: "trash",
   },
 ];
 
 /**
- * MessagesType
+ * MessagesState
  */
-export interface MessagesType {
+export interface MessagesState {
   state: MessagesStateType;
   searchMessages: MessageSearchResult[];
-  threads: MessageThreadListType;
-  selectedThreads: MessageThreadListType;
-  selectedThreadsIds: Array<number>;
+  threads: MessageThread[];
+  selectedThreads: MessageThread[];
+  selectedThreadsIds: number[];
   toggleSelectAllMessageItemsActive: boolean;
   hasMore: boolean;
   location: string;
   query: string;
   toolbarLock: boolean;
-  currentThread?: MessageThreadExpandedType;
-  signature?: MessageSignatureType;
-  navigation: MessagesNavigationItemListType;
+  currentThread?: MessageThreadExpanded;
+  signature?: CommunicatorSignature;
+  navigation: MessagesNavigationItem[];
   unreadThreadCount: number;
 }
 
 /**
- * MessagesPatchType
+ * MessagesStatePatch
  */
-export interface MessagesPatchType {
+export interface MessagesStatePatch {
   state?: MessagesStateType;
   searchMessages?: MessageSearchResult[];
-  threads?: MessageThreadListType;
-  selectedThreads?: MessageThreadListType;
+  threads?: MessageThread[];
+  selectedThreads?: MessageThread[];
   selectedThreadsIds?: Array<number>;
   hasMore?: boolean;
   location?: string;
   toolbarLock?: boolean;
-  currentThread?: MessageThreadExpandedType;
-  signature?: MessageSignatureType;
-  navigation?: MessagesNavigationItemListType;
+  currentThread?: MessageThreadExpanded;
+  signature?: CommunicatorSignature;
+  navigation?: MessagesNavigationItem[];
   unreadThreadCount?: number;
   query?: string;
 }
@@ -314,8 +224,8 @@ export interface MessagesPatchType {
  * @param itemB itemB
  */
 function sortNavigationItems(
-  itemA: MessagesNavigationItemType,
-  itemB: MessagesNavigationItemType
+  itemA: MessagesNavigationItem,
+  itemB: MessagesNavigationItem
 ) {
   if (itemA.type !== "label" && itemB.type !== "label") {
     return 0;
@@ -325,8 +235,8 @@ function sortNavigationItems(
     return -1;
   }
 
-  const labelAUpperCase = itemA.text(null).toUpperCase();
-  const labelBUpperCase = itemB.text(null).toUpperCase();
+  const labelAUpperCase = itemA.text.toUpperCase();
+  const labelBUpperCase = itemB.text.toUpperCase();
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase
@@ -334,7 +244,7 @@ function sortNavigationItems(
     : 0;
 }
 
-const initialMessagesState: MessagesType = {
+const initialMessagesState: MessagesState = {
   state: "LOADING",
   searchMessages: null,
   threads: [],
@@ -358,7 +268,7 @@ const initialMessagesState: MessagesType = {
  * @param action action
  * @returns State of messages
  */
-export const messages: Reducer<MessagesType> = (
+export const messages: Reducer<MessagesState> = (
   state = initialMessagesState,
   action: ActionType
 ) => {
@@ -471,7 +381,7 @@ export const messages: Reducer<MessagesType> = (
       return {
         ...state,
         selectedThreads: state.selectedThreads.map(
-          (selectedThread: MessageThreadType) => {
+          (selectedThread: MessageThread) => {
             if (
               selectedThread.communicatorMessageId ===
               oldThread.communicatorMessageId
@@ -481,7 +391,7 @@ export const messages: Reducer<MessagesType> = (
             return selectedThread;
           }
         ),
-        threads: state.threads.map((thread: MessageThreadType) => {
+        threads: state.threads.map((thread: MessageThread) => {
           if (
             thread.communicatorMessageId === oldThread.communicatorMessageId
           ) {
@@ -642,7 +552,7 @@ export const messages: Reducer<MessagesType> = (
           }),
         })),
 
-        threads: state.threads.map((thread: MessageThreadType) => ({
+        threads: state.threads.map((thread: MessageThread) => ({
           ...thread,
           labels: thread.labels.map((label) => {
             if (label.labelId === action.payload.labelId) {

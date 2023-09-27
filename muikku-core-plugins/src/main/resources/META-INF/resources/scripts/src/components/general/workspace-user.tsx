@@ -1,9 +1,7 @@
 import * as React from "react";
 import Avatar from "~/components/general/avatar";
-import { ShortWorkspaceUserWithActiveStatusType } from "~/reducers/user-index";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
-import { i18nType } from "~/reducers/base/i18n";
 import LazyLoader from "~/components/general/lazy-loader";
 import { IconButton } from "~/components/general/button";
 import { getName, filterHighlight } from "~/util/modifiers";
@@ -12,14 +10,14 @@ import {
   ApplicationListItemContentWrapper,
   ApplicationListItemContentActions,
 } from "~/components/general/application-list";
+import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 
 /**
  * workspaceUserProps
  */
 interface workspaceUserProps {
-  student: ShortWorkspaceUserWithActiveStatusType;
+  student: WorkspaceStudent;
   workspace: WorkspaceType;
-  i18n: i18nType;
   status: StatusType;
   highlight: string;
   onSendMessage?: () => any;

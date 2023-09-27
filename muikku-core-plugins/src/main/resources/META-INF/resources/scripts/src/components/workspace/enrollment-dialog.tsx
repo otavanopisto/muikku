@@ -3,15 +3,15 @@ import Dialog from "~/components/general/dialog";
 import { StateType } from "reducers";
 import { connect } from "react-redux";
 import Button from "~/components/general/button";
-import { i18nType } from "~/reducers/base/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * EnrollmentDialogProps
  */
-interface EnrollmentDialogProps {
+interface EnrollmentDialogProps extends WithTranslation {
   isOpen?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
-  i18n: i18nType;
 }
 
 /**
@@ -30,13 +30,15 @@ class EnrollmentDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * footer
      */
     const footer = () => (
       <div className="dialog__button-set">
         <Button href="/" buttonModifiers={["info", "standard-ok"]}>
-          {this.props.i18n.text.get("plugin.workspace.logInGuidingLink")}
+          {t("actions.readMore", { ns: "workspace" })}
         </Button>
       </div>
     );
@@ -44,7 +46,7 @@ class EnrollmentDialog extends React.Component<
      * content
      * @param closeDialog  closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div className="dialog__content-row dialog__content-row--label">
         <img
           src="/gfx/icons/64x64/certificate.png"
@@ -53,7 +55,7 @@ class EnrollmentDialog extends React.Component<
           className="logo--enrollment-logo"
         />
         <div className="dialog__content-column">
-          {this.props.i18n.text.get("plugin.workspace.logInGuidingInformation")}
+          {t("content.logInGuidingInformation", { ns: "workspace" })}
         </div>
       </div>
     );
@@ -63,7 +65,7 @@ class EnrollmentDialog extends React.Component<
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="enrollment"
-        title={this.props.i18n.text.get("plugin.workspace.logInGuidingTitle")}
+        title={t("labels.guidance", { ns: "materials" })}
         content={content}
         footer={footer}
       />
@@ -76,9 +78,7 @@ class EnrollmentDialog extends React.Component<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
+  return {};
 }
 
 /**
@@ -88,4 +88,6 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EnrollmentDialog);
+export default withTranslation(["users", "workspace", "materials", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EnrollmentDialog)
+);
