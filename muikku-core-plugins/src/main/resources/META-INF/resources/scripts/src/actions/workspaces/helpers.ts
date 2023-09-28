@@ -10,10 +10,7 @@ import {
   WorkspacesStatePatch,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
-import {
-  ReducerStateType,
-  WorkspaceJournalType,
-} from "~/reducers/workspaces/journals";
+import { ReducerStateType } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
@@ -261,8 +258,9 @@ export async function loadCurrentWorkspaceJournalsHelper(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
-  const state: StateType = getState();
+  const workspaceApi = MApi.getWorkspaceApi();
 
+  const state = getState();
   const currentWorkspace = state.workspaces.currentWorkspace;
 
   let currentJournalState = state.journals;
@@ -312,10 +310,12 @@ export async function loadCurrentWorkspaceJournalsHelper(
   }
 
   try {
-    const journals = (await promisify(
-      mApi().workspace.workspaces.journal.read(currentWorkspace.id, params),
-      "callback"
-    )()) as WorkspaceJournalType[];
+    const journals = await workspaceApi.getWorkspaceJournals({
+      workspaceId: currentWorkspace.id,
+      firstResult: params.firstResult,
+      maxResults: params.maxResults,
+      userEntityId: params.userEntityId,
+    });
 
     //update current workspace again in case
     currentJournalState = getState().journals;
@@ -354,7 +354,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
         })
       );
   } catch (err) {
-    if (!(err instanceof MApiError)) {
+    if (!isMApiError(err)) {
       throw err;
     }
     //update current workspace again in case

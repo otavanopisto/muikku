@@ -6,7 +6,6 @@ import {
   EvaluationSort,
   EvaluationAssigmentData,
   EvaluationEvent,
-  EvaluationStudyDiaryEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
   EvaluationJournalCommentsByJournal,
@@ -14,7 +13,7 @@ import {
 import { Reducer } from "redux";
 import { EvaluationJournalFeedback } from "../../../@types/evaluation";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { MaterialCompositeReply } from "~/generated/client";
+import { MaterialCompositeReply, WorkspaceJournal } from "~/generated/client";
 
 /**
  * EvaluationStateAndData
@@ -41,7 +40,7 @@ export interface EvaluationState {
   evaluationSelectedAssessmentId?: AssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationJournalFeedback?: EvaluationStateAndData<EvaluationJournalFeedback>;
-  evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
+  evaluationDiaryEntries?: EvaluationStateAndData<WorkspaceJournal[]>;
   evaluationJournalComments: {
     comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];

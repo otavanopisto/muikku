@@ -1,6 +1,7 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
+import { WorkspaceJournal } from "~/generated/client";
 import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
@@ -166,28 +167,11 @@ export interface WorkspaceActivityStatisticsType {
 }
 
 /**
- * WorkspaceJournalType
- */
-export interface WorkspaceJournalType {
-  id: number;
-  workspaceEntityId: number;
-  userEntityId: number;
-  firstName: string;
-  lastName: string;
-  content: string;
-  title: string;
-  created: string;
-  commentCount: number;
-}
-
-export type WorkspaceJournalListType = Array<WorkspaceJournalType>;
-
-/**
  * WorkspaceJournalsType
  */
 export interface WorkspaceJournalsType {
-  journals: WorkspaceJournalListType;
-  currentJournal?: WorkspaceJournalType;
+  journals: WorkspaceJournal[];
+  currentJournal?: WorkspaceJournal;
   hasMore: boolean;
   userEntityId?: number;
   state: WorkspacesStateType;

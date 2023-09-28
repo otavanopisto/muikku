@@ -1,10 +1,13 @@
 import {
   MaterialCompositeRepliesStateType,
   MaterialContentNodeWithIdAndLogic,
-} from "./../reducers/workspaces/index";
-import { JournalComment } from "~/@types/journal";
-import { WorkspaceDataType } from "../reducers/workspaces/index";
-import { WorkspaceMaterial, WorkspaceSubject } from "~/generated/client";
+  WorkspaceDataType,
+} from "../reducers/workspaces/index";
+import {
+  WorkspaceJournalComment,
+  WorkspaceMaterial,
+  WorkspaceSubject,
+} from "~/generated/client";
 /**
  * EvaluationEnum
  */
@@ -139,7 +142,7 @@ export interface EvaluationStudyDiaryEvent {
  * EvaluationJournalCommentsByJournal
  */
 export interface EvaluationJournalCommentsByJournal {
-  [journalEntryId: number]: JournalComment[];
+  [journalEntryId: number]: WorkspaceJournalComment[];
 }
 
 /**
