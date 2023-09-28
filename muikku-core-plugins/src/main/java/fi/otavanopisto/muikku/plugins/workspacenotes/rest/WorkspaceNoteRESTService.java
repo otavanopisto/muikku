@@ -102,7 +102,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   }
   
   /*
-   * mApi() call mApi().workspacenotes.workspacenote.update(WorkspaceNoteRestModel) 
+   * mApi() call mApi().workspacenotes.workspacenote.update(123, WorkspaceNoteRestModel) 
    *  
    *  Parameter rest model must contain owner, workspaceEntityId & nextSiblingId. 
    *  
@@ -124,15 +124,19 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    *  
    *  Errors:
    *  404 Not found if workspaceNote not found
-   *  400 Bad request if userEntityId is null
+   *  400 Bad request if userEntityId is null or note id doesn't match payload
    *  403 Forbidden if userEntityId does not match with logged user
    */
   @PUT
-  @Path ("/workspacenote")
+  @Path ("/workspacenote/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateWorkspaceNote(WorkspaceNoteRestModel restModel) {
+  public Response updateWorkspaceNote(@PathParam("ID") Long workspaceNoteId, WorkspaceNoteRestModel restModel) {
     
-    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getId());
+    if (!workspaceNoteId.equals(restModel.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Id mismatch").build();
+    }
+    
+    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
     
     if (workspaceNote == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -285,7 +289,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    * */
   
   @DELETE
-  @Path ("/archive/{ID}")
+  @Path ("/workspacenote/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response archive(@PathParam("ID") Long workspaceNoteId) {
     WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
