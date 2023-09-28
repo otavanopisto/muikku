@@ -350,15 +350,6 @@ export interface WorkspaceSupplementationSaveRequest {
   requestText: string;
 }
 
-/**
- * BilledPrice
- */
-export interface BilledPrice {
-  assessmentIdentifier: string;
-  editable: boolean;
-  price: number;
-}
-
 export enum AssignmentEvaluationType {
   ASSESSMENT = "ASSESSMENT",
   SUPPLEMENTATIONREQUEST = "SUPPLEMENTATIONREQUEST",
@@ -401,14 +392,6 @@ export interface EvaluationData {
  */
 export interface EvaluationAssigmentData {
   assigments: MaterialAssignmentType[];
-}
-
-/**
- * BilledPriceRequest
- */
-export interface BilledPriceRequest {
-  assessmentIdentifier: string;
-  price: string;
 }
 
 /**

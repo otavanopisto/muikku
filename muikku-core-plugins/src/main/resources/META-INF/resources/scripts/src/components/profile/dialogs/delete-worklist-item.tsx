@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import {
   deleteProfileWorklistItem,
@@ -9,9 +8,9 @@ import {
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
-import { StoredWorklistItem } from "~/reducers/main-function/profile";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { WorklistItem } from "~/generated/client";
 
 /**
  * DeleteWorklistItemDialogProps
@@ -21,7 +20,7 @@ interface DeleteWorklistItemDialogProps extends WithTranslation<["common"]> {
   isOpen: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: () => any;
-  item: StoredWorklistItem;
+  item: WorklistItem;
 }
 
 /**

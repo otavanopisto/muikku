@@ -18,7 +18,7 @@ import {
   EvaluationAssigmentData,
   EvaluationJournalFeedback,
 } from "../../../@types/evaluation";
-import { EvaluationEnum, BilledPriceRequest } from "../../../@types/evaluation";
+import { EvaluationEnum } from "../../../@types/evaluation";
 import {
   MaterialCompositeRepliesType,
   WorkspaceInterimEvaluationRequest,
@@ -58,6 +58,7 @@ import {
 } from "~/@types/journal";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
+import { UpdateBilledPriceRequest } from "~/generated/client";
 
 //////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
@@ -407,7 +408,7 @@ export interface UpdateWorkspaceEvaluation {
  * UpdateEvaluationEvent
  */
 export interface UpdateEvaluationEvent {
-  (data: BilledPriceRequest): AnyActionType;
+  (data: UpdateBilledPriceRequest): AnyActionType;
 }
 
 /**
@@ -1302,51 +1303,6 @@ const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJou
   };
 
 /**
- * Loads billed price information
- * @param data data
- */
-const LoadBilledPriceFromServer: LoadBilledPrice =
-  function LoadBilledPriceFromServer(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
-    ) => {
-      dispatch({
-        type: "EVALUATION_STATE_UPDATE",
-        payload: <EvaluationStateType>"LOADING",
-      });
-
-      try {
-        const basePrice = (await promisify(
-          mApi().worklist.basePrice.read({
-            workspaceEntityId: data.workspaceEntityId,
-          }),
-          "callback"
-        )()) as number;
-
-        dispatch({
-          type: "EVALUATION_BILLED_PRICE_LOAD",
-          payload: basePrice > 0 ? basePrice : undefined,
-        });
-
-        dispatch({
-          type: "EVALUATION_STATE_UPDATE",
-          payload: <EvaluationStateType>"READY",
-        });
-      } catch (error) {
-        dispatch({
-          type: "EVALUATION_BILLED_PRICE_LOAD",
-          payload: undefined,
-        });
-
-        dispatch({
-          type: "EVALUATION_STATE_UPDATE",
-          payload: <EvaluationStateType>"ERROR",
-        });
-      }
-    };
-  };
-
-/**
  * Loads composite replies
  * @param data data
  * @param data.userEntityId data.userEntityId
@@ -2034,28 +1990,26 @@ const updateBillingToServer: UpdateEvaluationEvent =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       try {
-        await promisify(
-          mApi().worklist.billedPrice.update(
-            {
-              ...data,
-            },
-            {
-              workspaceEntityId:
-                state.evaluations.evaluationSelectedAssessmentId
-                  .workspaceEntityId,
-            }
-          ),
-          "callback"
-        )();
+        await worklistApi.updateBilledPrice({
+          workspaceEntityId:
+            state.evaluations.evaluationSelectedAssessmentId.workspaceEntityId,
+          updateBilledPriceRequest: data,
+        });
 
         dispatch({
           type: "EVALUATION_STATE_UPDATE",
           payload: <EvaluationStateType>"READY",
         });
       } catch (error) {
+        if (!isMApiError(error)) {
+          throw error;
+        }
+
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.updateError", {
@@ -2350,6 +2304,8 @@ const loadBasePriceFromServer: LoadBasePrice =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       let basePrice: EvaluationBasePriceById | undefined = undefined;
 
       dispatch({
@@ -2357,19 +2313,18 @@ const loadBasePriceFromServer: LoadBasePrice =
         payload: <EvaluationStateType>"LOADING",
       });
 
-      await promisify(
-        mApi().worklist.basePrice.cacheClear().read({
+      await worklistApi
+        .getBasePrice({
           workspaceEntityId: workspaceEntityId,
-        }),
-        "callback"
-      )().then(
-        (data) => {
-          basePrice = data as EvaluationBasePriceById;
-        },
-        () => {
-          basePrice = undefined;
-        }
-      );
+        })
+        .then(
+          (data) => {
+            basePrice = data as EvaluationBasePriceById;
+          },
+          () => {
+            basePrice = undefined;
+          }
+        );
 
       dispatch({
         type: "EVALUATION_BASE_PRICE_LOAD",
@@ -2732,7 +2687,6 @@ export {
   loadListOfUnimportantAssessmentIdsFromServer,
   loadEvaluationGradingSystemFromServer,
   loadEvaluationSortFunctionFromServer,
-  LoadBilledPriceFromServer,
   loadEvaluationCompositeRepliesFromServer,
   updateEvaluationSortFunctionToServer,
   updateWorkspaceEvaluationToServer,

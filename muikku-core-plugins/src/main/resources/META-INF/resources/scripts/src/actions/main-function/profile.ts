@@ -12,16 +12,19 @@ import {
 import {
   ProfileProperty,
   PurchaseType,
-  StoredWorklistItem,
-  WorklistBillingState,
-  WorklistItemsSummary,
   WorklistSection,
-  WorklistTemplate,
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
-import { UserStudentAddress, UserWithSchoolData } from "~/generated/client";
+import {
+  UserStudentAddress,
+  UserWithSchoolData,
+  WorklistBillingStateType,
+  WorklistItem,
+  WorklistSummary,
+  WorklistTemplate,
+} from "~/generated/client";
 import i18n, { localizeTime } from "~/locales/i18n";
 
 /**
@@ -168,7 +171,7 @@ export interface InsertProfileWorklistItemTriggerType {
  */
 export interface DeleteProfileWorklistItemTriggerType {
   (data: {
-    item: StoredWorklistItem;
+    item: WorklistItem;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -179,7 +182,7 @@ export interface DeleteProfileWorklistItemTriggerType {
  */
 export interface EditProfileWorklistItemTriggerType {
   (data: {
-    item: StoredWorklistItem;
+    item: WorklistItem;
     description: string;
     entryDate: string;
     price: number;
@@ -197,7 +200,7 @@ export interface UpdateProfileWorklistItemsStateTriggerType {
   (data: {
     beginDate: string;
     endDate: string;
-    state: WorklistBillingState;
+    state: WorklistBillingStateType;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -232,7 +235,7 @@ export type SET_PROFILE_CHAT_SETTINGS = SpecificActionType<
 >;
 export type SET_WORKLIST_TEMPLATES = SpecificActionType<
   "SET_WORKLIST_TEMPLATES",
-  Array<WorklistTemplate>
+  WorklistTemplate[]
 >;
 export type SET_WORKLIST = SpecificActionType<
   "SET_WORKLIST",
@@ -693,6 +696,8 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
@@ -700,10 +705,16 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
       }
 
       try {
-        const worklistItem: StoredWorklistItem = (await promisify(
-          mApi().worklist.worklistItems.create(data),
-          "callback"
-        )()) as StoredWorklistItem;
+        const worklistItem = await worklistApi.createWorklistItem({
+          createWorklistItemRequest: {
+            templateId: data.templateId,
+            billingNumber: data.billingNumber,
+            description: data.description,
+            entryDate: data.entryDate,
+            factor: data.factor,
+            price: data.price,
+          },
+        });
 
         let displayName = localizeTime.date(
           worklistItem.entryDate,
@@ -711,7 +722,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
         );
         displayName = displayName[0].toUpperCase() + displayName.substr(1);
 
-        const expectedSummary: WorklistItemsSummary = {
+        const expectedSummary: WorklistSummary = {
           beginDate: moment(worklistItem.entryDate)
             .startOf("month")
             .format("YYYY-MM-DD"),
@@ -781,7 +792,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
         }
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         data.fail && data.fail();
@@ -805,6 +816,8 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
@@ -812,10 +825,9 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
       }
 
       try {
-        await promisify(
-          mApi().worklist.worklistItems.del(data.item),
-          "callback"
-        )();
+        await worklistApi.deleteWorklistItem({
+          worklistItemId: data.item.id,
+        });
         const expectedSummaryBeginDate = moment(data.item.entryDate)
           .startOf("month")
           .format("YYYY-MM-DD");
@@ -851,7 +863,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
         }
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         data.fail && data.fail();
@@ -871,21 +883,23 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
  */
 const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
-    if (
-      data.description === data.item.description &&
-      data.entryDate === data.item.entryDate &&
-      data.factor === data.item.factor &&
-      data.price === data.item.price &&
-      data.billingNumber === data.item.billingNumber
-    ) {
-      data.success && data.success();
-      return;
-    }
-
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      if (
+        data.description === data.item.description &&
+        data.entryDate === data.item.entryDate &&
+        data.factor === data.item.factor &&
+        data.price === data.item.price &&
+        data.billingNumber === data.item.billingNumber
+      ) {
+        data.success && data.success();
+        return;
+      }
+
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
@@ -893,19 +907,19 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
       }
 
       try {
-        const newWorklistItem: StoredWorklistItem = (await promisify(
-          mApi().worklist.worklistItems.update({
+        const updatedWorklistItem = await worklistApi.updateWorklistItem({
+          worklistItemId: data.item.id,
+          updateWorklistItemRequest: {
             id: data.item.id,
             entryDate: data.entryDate,
             description: data.description,
             price: data.price,
             factor: data.factor,
             billingNumber: data.billingNumber,
-          }),
-          "callback"
-        )()) as StoredWorklistItem;
+          },
+        });
 
-        const expectedSummaryBeginDate = moment(newWorklistItem.entryDate)
+        const expectedSummaryBeginDate = moment(updatedWorklistItem.entryDate)
           .startOf("month")
           .format("YYYY-MM-DD");
 
@@ -928,13 +942,13 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
           });
 
           const itemWithMoreIndex = newItems.findIndex((p) =>
-            moment(p.entryDate).isAfter(newWorklistItem.entryDate)
+            moment(p.entryDate).isAfter(updatedWorklistItem.entryDate)
           );
 
           if (itemWithMoreIndex === -1) {
-            newItems = [...newItems, newWorklistItem];
+            newItems = [...newItems, updatedWorklistItem];
           } else {
-            newItems.splice(itemWithMoreIndex, 0, newWorklistItem);
+            newItems.splice(itemWithMoreIndex, 0, updatedWorklistItem);
           }
 
           newSummary.items = newItems;
@@ -949,7 +963,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
         }
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         data.fail && data.fail();
@@ -972,6 +986,8 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       if (state.profile && state.profile.worklistTemplates) {
@@ -979,16 +995,14 @@ const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
       }
 
       try {
-        const templates = await promisify(
-          mApi().worklist.templates.read(),
-          "callback"
-        )();
+        const templates = await worklistApi.getWorklistTemplates();
+
         dispatch({
           type: "SET_WORKLIST_TEMPLATES",
-          payload: <Array<WorklistTemplate>>templates,
+          payload: templates,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1016,6 +1030,8 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       if (state.profile && state.profile.worklist) {
@@ -1023,12 +1039,10 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
       }
 
       try {
-        const summaries: Array<WorklistItemsSummary> = (await promisify(
-          mApi().worklist.worklistSummary.read({
-            owner: state.status.userSchoolDataIdentifier,
-          }),
-          "callback"
-        )()) as any;
+        const summaries = await worklistApi.getWorklistSummary({
+          owner: state.status.userSchoolDataIdentifier,
+        });
+
         const payload = summaries.map((s) => ({
           summary: s,
           items: null,
@@ -1039,7 +1053,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
         });
         cb && cb(payload);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1066,6 +1080,8 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       if (
@@ -1079,14 +1095,13 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
 
       try {
         const summary = state.profile.worklist[index].summary;
-        const items: Array<StoredWorklistItem> = (await promisify(
-          mApi().worklist.worklistItems.read({
-            owner: state.status.userSchoolDataIdentifier,
-            beginDate: summary.beginDate,
-            endDate: summary.endDate,
-          }),
-          "callback"
-        )()) as any;
+
+        const items = await worklistApi.getWorklistItems({
+          owner: state.status.userSchoolDataIdentifier,
+          beginDate: summary.beginDate,
+          endDate: summary.endDate,
+        });
+
         const newWorkList = [...getState().profile.worklist];
         newWorkList[index] = { ...newWorkList[index], items };
 
@@ -1095,7 +1110,7 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
           payload: newWorkList,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1121,6 +1136,8 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const worklistApi = MApi.getWorklistApi();
+
       const state = getState();
 
       if (!state.profile || !state.profile.worklist) {
@@ -1128,15 +1145,14 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
       }
 
       try {
-        const updatedItems: Array<StoredWorklistItem> = (await promisify(
-          mApi().worklist.updateWorklistItemsState.update({
+        const updatedItems = await worklistApi.updateWorklistItemsState({
+          updateWorklistItemsStateRequest: {
             userIdentifier: state.status.userSchoolDataIdentifier,
             beginDate: data.beginDate,
             endDate: data.endDate,
             state: data.state,
-          }),
-          "callback"
-        )()) as any;
+          },
+        });
 
         // create a new worklist where we would replace the old worklist items with
         const newWorkList = getState().profile.worklist.map((worklistGroup) => {
@@ -1161,7 +1177,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

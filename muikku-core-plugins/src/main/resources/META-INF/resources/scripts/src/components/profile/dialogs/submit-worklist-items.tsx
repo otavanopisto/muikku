@@ -1,26 +1,22 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
-import {
-  WorklistBillingState,
-  WorklistItemsSummary,
-} from "~/reducers/main-function/profile";
 import {
   UpdateProfileWorklistItemsStateTriggerType,
   updateProfileWorklistItemsState,
 } from "~/actions/main-function/profile";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { WorklistBillingStateType, WorklistSummary } from "~/generated/client";
 
 /**
  * SubmitWorklistItemsDialogProps
  */
 interface SubmitWorklistItemsDialogProps extends WithTranslation {
-  summary: WorklistItemsSummary;
+  summary: WorklistSummary;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType;
@@ -56,7 +52,7 @@ class SubmitWorklistItemsDialog extends React.Component<
     this.props.updateProfileWorklistItemsState({
       beginDate: this.props.summary.beginDate,
       endDate: this.props.summary.endDate,
-      state: WorklistBillingState.PROPOSED,
+      state: WorklistBillingStateType.Proposed,
       success: closeDialog,
     });
   }
