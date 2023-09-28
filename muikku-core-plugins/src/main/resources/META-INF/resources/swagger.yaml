@@ -8188,7 +8188,7 @@ paths:
 
   /rest/workspace/workspaces/{workspaceId}/journal:
     get:
-      operationId: getWorkspaceJournal
+      operationId: getWorkspaceJournals
       summary: Get workspace journal
       description: Get workspace journal
       tags:
@@ -8200,6 +8200,28 @@ paths:
           required: true
           schema:
             type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 25
+        - name: userEntityId
+          in: query
+          description: User entity id
+          schema:
+            type: integer
+        - name: workspaceStudentId
+          in: query
+          description: Workspace student id
+          schema:
+            type: string
       responses:
         "200":
           description: Workspace journal
@@ -8214,7 +8236,34 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/journal/{journalEntryID}:
+    post:
+      operationId: createWorkspaceJournal
+      summary: Create workspace journal
+      description: Create workspace journal
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceJournalCreateRequestBody"
+      responses:
+        "200":
+          description: Workspace journal created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceJournal"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/journal/{journalEntryId}:
     put:
       operationId: updateWorkspaceJournal
       summary: Update workspace journal
@@ -8228,7 +8277,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: journalEntryID
+        - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
@@ -8243,6 +8292,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WorkspaceJournal"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    delete:
+      operationId: deleteWorkspaceJournal
+      summary: Delete workspace journal
+      description: Delete workspace journal
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: journalEntryId
+          in: path
+          description: Journal entry id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Workspace journal deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9965,6 +10041,21 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/WorkspaceNote"
+
+    WorkspaceJournalCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: WorkspaceJournalCreateRequestBody object
+            required:
+              - title
+              - content
+            properties:
+              title:
+                type: string
+              content:
+                type: string
 
     WorkspaceJournalCommentCreateRequestBody:
       content:
@@ -13988,9 +14079,11 @@ components:
           type: string
         created:
           type: string
+          format: date-time
         commentCount:
           type: integer
         isMaterialField:
+          description: Whether journal is "mandatory" assignment and material field
           type: boolean
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"

@@ -1,11 +1,11 @@
 import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/index";
-import { JournalComment } from "~/@types/journal";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
   MaterialAssignmentType,
   WorkspaceSubject,
 } from "../reducers/workspaces/index";
+import { WorkspaceJournalComment } from "~/generated/client";
 /**
  * EvaluationEnum
  */
@@ -140,7 +140,7 @@ export interface EvaluationStudyDiaryEvent {
  * EvaluationJournalCommentsByJournal
  */
 export interface EvaluationJournalCommentsByJournal {
-  [journalEntryId: number]: JournalComment[];
+  [journalEntryId: number]: WorkspaceJournalComment[];
 }
 
 /**

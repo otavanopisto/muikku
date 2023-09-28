@@ -10,7 +10,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
-import { JournalComment } from "~/@types/journal";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -19,7 +19,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface WorkspaceJournalCommentEditorProps extends WithTranslation {
   status: StatusType;
   locale: LocaleState;
-  journalComment?: JournalComment;
+  journalComment?: WorkspaceJournalComment;
   locked: boolean;
   diaryEventId: number;
   userEntityId: number;
