@@ -17,17 +17,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNote;
 import fi.otavanopisto.muikku.plugins.workspacenotes.WorkspaceNoteController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -288,13 +285,13 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    * */
   
   @DELETE
-  @Path ("/archive")
+  @Path ("/archive/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response archive(WorkspaceNoteRestModel payload) {
-    WorkspaceNote workspaceNote= workspaceNoteController.findWorkspaceNoteById(payload.getId());
+  public Response archive(@PathParam("ID") Long workspaceNoteId) {
+    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
     
     if (workspaceNote == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceNote(%d) not found", payload.getId())).build();
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceNote(%d) not found", workspaceNoteId)).build();
     }
     
     // Archiving is only allowed if you're the owner of the workspace note
