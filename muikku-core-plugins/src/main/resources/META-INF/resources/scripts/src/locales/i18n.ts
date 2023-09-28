@@ -15,7 +15,7 @@ export const defaultNS = "common";
 const lang = document.querySelector("html").lang;
 
 i18n.use(initReactI18next).init({
-  debug: true,
+  debug: false,
   resources,
   lng: "fi",
   defaultNS: defaultNS,

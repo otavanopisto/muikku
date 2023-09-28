@@ -1595,7 +1595,7 @@ paths:
   #COURSEPICKER
   /rest/coursepicker/curriculums:
     get:
-      operationId: getCoursePickerCurriculums
+      operationId: getCoursepickerCurriculums
       summary: Get course picker curriculums
       description: Get course picker curriculums
       tags:
@@ -1616,7 +1616,7 @@ paths:
 
   /rest/coursepicker/organizations:
     get:
-      operationId: getCoursePickerOrganizations
+      operationId: getCoursepickerOrganizations
       summary: Get course picker organizations
       description: Get course picker organizations
       tags:
@@ -1629,7 +1629,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Organization"
+                  $ref: "#/components/schemas/WorkspaceOrganization"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1637,7 +1637,7 @@ paths:
 
   /rest/coursepicker/workspaces:
     get:
-      operationId: getCoursePickerWorkspaces
+      operationId: getCoursepickerWorkspaces
       summary: Get course picker workspaces
       description: Get course picker workspaces
       tags:
@@ -1648,6 +1648,66 @@ paths:
           description: Search string
           schema:
             type: string
+        - name: subjects
+          in: query
+          description: Subject ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: educationTypes
+          in: query
+          description: Education type ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: curriculums
+          in: query
+          description: Curriculum ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: organizations
+          in: query
+          description: Organization ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: minVisits
+          in: query
+          description: Minimum visits
+          schema:
+            type: integer
+        - name: publicity
+          in: query
+          description: Publicity restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/PublicityRestriction"
+            default: ONLY_PUBLISHED
+        - name: myWorkspaces
+          in: query
+          description: My workspaces
+          schema:
+            type: boolean
+            default: false
+        - name: templates
+          in: query
+          description: Template restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/TemplateRestriction"
+            default: ONLY_WORKSPACES
+        - name: orderBy
+          in: query
+          description: Order by
+          schema:
+            type: array
+            items:
+              type: string
         - name: firstResult
           in: query
           description: First result
@@ -1669,7 +1729,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Workspace"
+                  $ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1677,7 +1737,7 @@ paths:
 
   /rest/coursepicker/workspaces/{workspaceId}:
     get:
-      operationId: getCoursePickerWorkspace
+      operationId: getCoursepickerWorkspace
       summary: Get course picker workspace
       description: Get course picker workspace
       tags:
@@ -1741,6 +1801,8 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignUpRequestBody"
       responses:
         "204":
           description: User signed up to workspace successfully
@@ -2661,6 +2723,37 @@ paths:
           description: Internal server error
 
   /rest/forum/areas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getDiscussionThread
+      summary: Get discussion thread
+      description: Get discussion thread
+      tags:
+        - Discussion
+      parameters:
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateDiscussionThread
       summary: Update discussion thread
@@ -2900,6 +2993,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DiscussionSubscribedThread"
+        "204":
+          description: Discussion thread subscription untoggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3256,6 +3351,43 @@ paths:
           description: Internal server error
 
   /rest/workspace/workspaces/{workspaceentityId}/forumAreas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getWorkspaceDiscussionThread
+      summary: Get workspace discussion thread
+      description: Get workspace discussion thread
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceentityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateWorkspaceDiscussionThread
       summary: Update workspace discussion thread
@@ -3530,6 +3662,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DiscussionWorkspaceStatistic"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/forumLatest:
+    get:
+      operationId: getWorkspaceForumLatest
+      summary: Get workspace forum latest
+      description: Get workspace forum latest
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Workspace forum latest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DiscussionThread"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8014,37 +8186,9 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/forumLatest:
-    get:
-      operationId: getWorkspaceForumLatest
-      summary: Get workspace forum latest
-      description: Get workspace forum latest
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Workspace forum latest
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DiscussionThread"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/workspace/workspaces/{workspaceId}/journal:
     get:
-      operationId: getWorkspaceJournal
+      operationId: getWorkspaceJournals
       summary: Get workspace journal
       description: Get workspace journal
       tags:
@@ -8056,6 +8200,28 @@ paths:
           required: true
           schema:
             type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 25
+        - name: userEntityId
+          in: query
+          description: User entity id
+          schema:
+            type: integer
+        - name: workspaceStudentId
+          in: query
+          description: Workspace student id
+          schema:
+            type: string
       responses:
         "200":
           description: Workspace journal
@@ -8070,7 +8236,34 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/journal/{journalEntryID}:
+    post:
+      operationId: createWorkspaceJournal
+      summary: Create workspace journal
+      description: Create workspace journal
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceJournalCreateRequestBody"
+      responses:
+        "200":
+          description: Workspace journal created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceJournal"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/journal/{journalEntryId}:
     put:
       operationId: updateWorkspaceJournal
       summary: Update workspace journal
@@ -8084,7 +8277,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: journalEntryID
+        - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
@@ -8099,6 +8292,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WorkspaceJournal"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    delete:
+      operationId: deleteWorkspaceJournal
+      summary: Delete workspace journal
+      description: Delete workspace journal
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: journalEntryId
+          in: path
+          description: Journal entry id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Workspace journal deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8871,6 +9091,7 @@ components:
                 type: string
 
     DiscussionAreaCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8886,6 +9107,7 @@ components:
                 type: string
 
     DiscussionAreaUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8901,6 +9123,7 @@ components:
                 type: string
 
     DiscussionThreadCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8925,6 +9148,7 @@ components:
                 type: integer
 
     DiscussionThreadUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8932,6 +9156,7 @@ components:
               - $ref: "#/components/schemas/DiscussionThread"
 
     DiscussionThreadReplyCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8942,18 +9167,16 @@ components:
             properties:
               message:
                 type: string
+              parentReplyId:
+                type: integer
 
     DiscussionThreadReplyUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
-            type: object
-            description: DiscussionThreadReplyUpdateRequestBody object
-            required:
-              - message
-            properties:
-              message:
-                type: string
+            allOf:
+              - $ref: "#/components/schemas/DiscussionThreadReply"
 
     ContactLogCreateEventRequestBody:
       content:
@@ -9667,6 +9890,15 @@ components:
                 items:
                   type: string
 
+    WorkspaceSignUpRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
     WorkspaceStudentUpdateRequestBody:
       content:
         application/json:
@@ -9809,6 +10041,21 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/WorkspaceNote"
+
+    WorkspaceJournalCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: WorkspaceJournalCreateRequestBody object
+            required:
+              - title
+              - content
+            properties:
+              title:
+                type: string
+              content:
+                type: string
 
     WorkspaceJournalCommentCreateRequestBody:
       content:
@@ -10376,7 +10623,7 @@ components:
 
     DiscussionArea:
       type: object
-      description: DiscussionArea object
+      description: DiscussionArea area information
       required:
         - id
         - name
@@ -10397,7 +10644,7 @@ components:
 
     DiscussionThread:
       type: object
-      description: DiscussionThread object
+      description: Thread information
       required:
         - id
         - message
@@ -10425,14 +10672,16 @@ components:
           type: string
         lastModified:
           type: string
+          format: date-time
         forumAreaId:
           type: integer
         entryPoint:
           type: boolean
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         created:
           type: string
+          format: date-time
         lock:
           $ref: "#/components/schemas/DiscussionThreadLock"
         lockBy:
@@ -10443,6 +10692,7 @@ components:
           description: Date when the thread was locked. Backend updates this field
           nullable: true
           type: string
+          format: date-time
 
     DiscussionThreadReply:
       type: object
@@ -10462,8 +10712,9 @@ components:
           type: integer
         created:
           type: string
+          format: date-time
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         childReplyCount:
           type: integer
         deleted:
@@ -10472,6 +10723,7 @@ components:
           type: integer
         lastModified:
           type: string
+          format: date-time
         message:
           type: string
         parentReplyId:
@@ -10486,11 +10738,22 @@ components:
         - thread
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         threadId:
+          description: Id of the thread
           type: integer
         thread:
           $ref: "#/components/schemas/DiscussionThread"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedThread:
       allOf:
@@ -10517,11 +10780,22 @@ components:
         - area
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         areaId:
+          description: Id of the area
           type: integer
         area:
           $ref: "#/components/schemas/DiscussionArea"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace. Includes the name extension if it has one.
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedArea:
       allOf:
@@ -10538,6 +10812,27 @@ components:
               type: string
             workspaceUrlName:
               type: string
+
+    DiscussionUser:
+      type: object
+      description: DiscussionUser object
+      required:
+        - id
+        - firstName
+        - lastName
+        - nickname
+        - hasImage
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickname:
+          type: string
+        hasImage:
+          type: boolean
 
     DiscussionThreadLock:
       type: string
@@ -12278,13 +12573,6 @@ components:
           type: string
           nullable: true
 
-    PublicityRestriction:
-      type: string
-      enum:
-        - LIST_ALL
-        - ONLY_PUBLISHED
-        - ONLY_UNPUBLISHED
-
     PedagogyForm:
       type: object
       description: PedagogyForm object
@@ -12339,6 +12627,13 @@ components:
         created:
           description: The date when the form was created
           type: string
+
+    PublicityRestriction:
+      type: string
+      enum:
+        - LIST_ALL
+        - ONLY_PUBLISHED
+        - ONLY_UNPUBLISHED
 
     RecordWorkspaceActivity:
       type: object
@@ -13218,12 +13513,133 @@ components:
           type: string
         language:
           $ref: "#/components/schemas/Language"
-        mandatority:
-          allOf:
-            - $ref: "#/components/schemas/WorkspaceMandatority"
+
+    # NOTE: this is for WorkspaceCoursepicker. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceCoursepicker:
+      type: object
+      description: WorkspaceCoursepicker object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - hasCustomImage
+        - mandatority
+        - educationTypeName
+        - isCourseMember
+        - organization
+        - lastVisit
+        - numVisits
+        - urlName
+        - curriculumIdentifiers
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
           nullable: true
-        access:
-          $ref: "#/components/schemas/WorkspaceAccess"
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        hasCustomImage:
+          type: boolean
+        mandatority:
+          $ref: "#/components/schemas/WorkspaceMandatority"
+        educationTypeName:
+          type: string
+        isCourseMember:
+          type: boolean
+        organization:
+          $ref: "#/components/schemas/Organization"
+        lastVisit:
+          type: string
+        numVisits:
+          type: integer
+        urlName:
+          type: string
+        curriculumIdentifiers:
+          type: array
+          items:
+            type: string
+
+    # NOTE: this is for Organization. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceOrganizationManager:
+      type: object
+      description: WorkspaceOrganizationManager object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - studentCount
+        - teachers
+        - educationTypeName
+        - hasCustomImage
+        - urlName
+        - organization
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
+          nullable: true
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        studentCount:
+          type: integer
+        teachers:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceOrganizationManagerTeacher"
+        educationTypeName:
+          type: string
+        hasCustomImage:
+          type: boolean
+        urlName:
+          type: string
+        organization:
+          $ref: "#/components/schemas/Organization"
+
+    WorkspaceOrganizationManagerTeacher:
+      type: object
+      description: WorkspaceOrganizationManagerTeacher object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+
+    WorkspaceOrganization:
+      type: object
+      description: WorkspaceOrganization object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
 
     WorkspaceWithAddons:
       allOf:
@@ -13512,6 +13928,13 @@ components:
         name:
           type: string
 
+    WorkspaceChatStatusType:
+      type: string
+      description: WorkspaceChatStatusType enum
+      enum:
+        - ENABLED
+        - DISABLED
+
     WorkspaceEducationType:
       type: object
       description: WorkspaceEducationType object
@@ -13656,9 +14079,11 @@ components:
           type: string
         created:
           type: string
+          format: date-time
         commentCount:
           type: integer
         isMaterialField:
+          description: Whether journal is "mandatory" assignment and material field
           type: boolean
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"

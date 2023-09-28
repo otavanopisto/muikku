@@ -168,7 +168,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent("span.item-list__latest-message-caption");
         assertText("span.item-list__latest-message-caption", "Test caption");
         LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.M.yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
         String dateText = date.format(formatter);
         waitForPresent("span.item-list__latest-message-date");
         assertText("span.item-list__latest-message-date", dateText);

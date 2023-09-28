@@ -7,12 +7,11 @@ import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
-
 import {
   deleteDiscussionArea,
   DeleteDiscussionAreaTriggerType,
 } from "~/actions/discussion";
-import { DiscussionType } from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -20,7 +19,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * DiscussionDeleteAreaProps
  */
 interface DiscussionDeleteAreaProps extends WithTranslation<["common"]> {
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   deleteDiscussionArea: DeleteDiscussionAreaTriggerType;

@@ -1,13 +1,6 @@
 import * as React from "react";
+import { DiscussionState } from "~/reducers/discussion";
 import { localizeTime } from "~/locales/i18n";
-import {
-  DiscussionType,
-  DiscussionUserType,
-  DiscussionThreadReplyType,
-  DiscussionThreadReplyListType,
-  DiscussionThreadType,
-  DiscussionThreadLockEnum,
-} from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
 import { IconButton } from "~/components/general/button";
@@ -39,13 +32,15 @@ import {
   unsubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { DiscussionThread } from "~/generated/client";
+import * as moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CurrentThreadProps
  */
 interface DiscussionCurrentThreadProps extends WithTranslation {
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   userId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
@@ -88,12 +83,12 @@ class DiscussionCurrentThread extends React.Component<
    * @param thread thread
    * @returns boolean
    */
-  isThreadLocked = (thread: DiscussionThreadType) => {
+  isThreadLocked = (thread: DiscussionThread) => {
     switch (thread.lock) {
-      case DiscussionThreadLockEnum.ALL:
+      case "ALL":
         return true;
 
-      case DiscussionThreadLockEnum.STUDENTS:
+      case "STUDENTS":
         return this.props.status.isStudent;
 
       default:
@@ -185,7 +180,7 @@ class DiscussionCurrentThread extends React.Component<
    * @param isSubscribed isSubscribed
    */
   handleSubscribeOrUnsubscribeClick =
-    (thread: DiscussionThreadType, isSubscribed: boolean) =>
+    (thread: DiscussionThread, isSubscribed: boolean) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e.stopPropagation();
       if (isSubscribed) {
@@ -220,8 +215,7 @@ class DiscussionCurrentThread extends React.Component<
         this.props.discussion.current.forumAreaId
       ] || {};
 
-    const userCreator: DiscussionUserType =
-      this.props.discussion.current.creator;
+    const userCreator = this.props.discussion.current.creator;
 
     const userCategory =
       this.props.discussion.current.creator.id > 10
@@ -271,8 +265,7 @@ class DiscussionCurrentThread extends React.Component<
       areaPermissions.removeThread ||
       this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
 
-    const replies: DiscussionThreadReplyListType =
-      this.props.discussion.currentReplies;
+    const replies = this.props.discussion.currentReplies;
 
     // student can remove thread if student is thread owner
     let studentCanRemoveThread: boolean = threadOwner;
@@ -367,8 +360,9 @@ class DiscussionCurrentThread extends React.Component<
               <DiscussionThreadBody
                 html={this.props.discussion.current.message}
               >
-                {this.props.discussion.current.created !==
-                this.props.discussion.current.lastModified ? (
+                {!moment(this.props.discussion.current.created).isSame(
+                  this.props.discussion.current.lastModified
+                ) ? (
                   <div className="application-list__item-edited">
                     {this.props.i18n.t(
                       "labels.edited",
@@ -438,73 +432,71 @@ class DiscussionCurrentThread extends React.Component<
           ) : null}
         </DiscussionCurrentThreadElement>
 
-        {this.props.discussion.currentReplies.map(
-          (reply: DiscussionThreadReplyType) => {
-            // user can be null in situtations where whole user is removed completely
-            // from muikku. Then there is no reply.creator to use.
-            const user: DiscussionUserType = reply.creator;
+        {this.props.discussion.currentReplies.map((reply) => {
+          // user can be null in situtations where whole user is removed completely
+          // from muikku. Then there is no reply.creator to use.
+          const user = reply.creator;
 
-            // By default setting remove message is false
-            let canRemoveMessage = false;
+          // By default setting remove message is false
+          let canRemoveMessage = false;
 
-            // By default setting edit message is false
-            let canEditMessage = false;
-            let avatar;
+          // By default setting edit message is false
+          let canEditMessage = false;
+          let avatar;
 
-            if (!user) {
-              // This is what it shows when the user is not ready
-              // Also if reply creator is null aka deleted
-              // These situtations don't allow changing user specific color, so
-              // color is same for all of those cases
-              avatar = <div className="avatar avatar--category-1"></div>;
-            } else {
-              const userCategory =
-                reply.creator.id > 10
-                  ? (reply.creator.id % 10) + 1
-                  : reply.creator.id;
-              canRemoveMessage =
-                this.props.userId === reply.creator.id ||
-                areaPermissions.removeThread;
-              canEditMessage =
-                this.props.userId === reply.creator.id ||
-                areaPermissions.editMessages;
-              avatar = (
-                <Avatar
-                  key={reply.id}
-                  id={user.id}
-                  firstName={user.firstName}
-                  hasImage={user.hasImage}
-                  userCategory={userCategory}
-                />
-              );
-            }
-
-            // Checks if element parent has hide its siblings
-            const isHiddenElement = this.state.hiddenParentsLists.includes(
-              reply.parentReplyId
-            );
-
-            // Checks if element has siblings that are hidden
-            const parentHasHiddenSiblings =
-              this.state.hiddenParentsLists.includes(reply.id);
-
-            return (
-              <DiscussionThreadReply
+          if (!user) {
+            // This is what it shows when the user is not ready
+            // Also if reply creator is null aka deleted
+            // These situtations don't allow changing user specific color, so
+            // color is same for all of those cases
+            avatar = <div className="avatar avatar--category-1"></div>;
+          } else {
+            const userCategory =
+              reply.creator.id > 10
+                ? (reply.creator.id % 10) + 1
+                : reply.creator.id;
+            canRemoveMessage =
+              this.props.userId === reply.creator.id ||
+              areaPermissions.removeThread;
+            canEditMessage =
+              this.props.userId === reply.creator.id ||
+              areaPermissions.editMessages;
+            avatar = (
+              <Avatar
                 key={reply.id}
-                discussionItem={reply}
-                user={user}
-                isStudent={student}
-                avatar={avatar}
-                isHidden={isHiddenElement}
-                parentHasHiddenSiblings={parentHasHiddenSiblings}
-                canEditMessage={canEditMessage}
-                canRemoveMessage={canRemoveMessage}
-                threadLocked={threadLocked}
-                onHideShowSubRepliesClick={this.onHideShowSubRepliesClick}
+                id={user.id}
+                firstName={user.firstName}
+                hasImage={user.hasImage}
+                userCategory={userCategory}
               />
             );
           }
-        )}
+
+          // Checks if element parent has hide its siblings
+          const isHiddenElement = this.state.hiddenParentsLists.includes(
+            reply.parentReplyId
+          );
+
+          // Checks if element has siblings that are hidden
+          const parentHasHiddenSiblings =
+            this.state.hiddenParentsLists.includes(reply.id);
+
+          return (
+            <DiscussionThreadReply
+              key={reply.id}
+              discussionItem={reply}
+              user={user}
+              isStudent={student}
+              avatar={avatar}
+              isHidden={isHiddenElement}
+              parentHasHiddenSiblings={parentHasHiddenSiblings}
+              canEditMessage={canEditMessage}
+              canRemoveMessage={canRemoveMessage}
+              threadLocked={threadLocked}
+              onHideShowSubRepliesClick={this.onHideShowSubRepliesClick}
+            />
+          );
+        })}
 
         <PagerV2
           previousLabel=""

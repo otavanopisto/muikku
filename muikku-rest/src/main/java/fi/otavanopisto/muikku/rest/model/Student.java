@@ -38,13 +38,16 @@ public class Student {
     this.setFlags(flags);
     this.organization = organization;
     
-    // #6472: Hard-coded lines to determine whether student is eligible for Ceepos study time orders :|
+    // #6472, #6473: Hard-coded lines to determine whether student is eligible for Ceepos payments :|
     
     if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Nettilukio/yksityisopiskelu (aineopintoina)") || StringUtils.equalsIgnoreCase(studyProgrammeName, "Aineopiskelu/yo-tutkinto")) {
       this.ceeposLine = "nettilukio";
     }
     else if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Nettiperuskoulu/yksityisopiskelu")) {
       this.ceeposLine = "nettipk";
+    }
+    else if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Aineopiskelu/lukio")) {
+      this.ceeposLine = "aineopiskelu";
     }
   }
 

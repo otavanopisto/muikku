@@ -13,17 +13,11 @@ import SlideDrawer from "./slide-drawer";
 import EvaluationJournalEventComment from "./evaluation-journal-event-comment";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import {
-  JournalComment,
-  JournalCommentCreate,
-  JournalCommentUpdate,
-} from "~/@types/journal";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import {
   LoadEvaluationJournalCommentsFromServerTriggerType,
   loadEvaluationJournalCommentsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { EvaluationStudyDiaryEvent } from "~/@types/evaluation";
 import { useTranslation } from "react-i18next";
 import {
   UpdateEvaluationJournalCommentTriggerType,
@@ -33,11 +27,12 @@ import {
   CreateEvaluationJournalCommentTriggerType,
   createEvaluationJournalComment,
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
+import { WorkspaceJournal, WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
  */
-interface EvaluationDiaryEventProps extends EvaluationStudyDiaryEvent {
+interface EvaluationDiaryEventProps extends WorkspaceJournal {
   open: boolean;
   onClickOpen?: (diaryId: number) => void;
   evaluation: EvaluationState;
@@ -74,7 +69,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const [createNewActive, setCreateNewActive] = React.useState(false);
   const [commentToEdit, setCommentToEdit] = React.useState<
-    JournalComment | undefined
+    WorkspaceJournalComment | undefined
   >(undefined);
   const [editorLocked, setEditorLocked] = React.useState(false);
 
@@ -162,7 +157,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * If there is existing new comment editor open -> closes it
    * @param diaryComment diaryComment
    */
-  const handleEditComment = (diaryComment: JournalComment) => {
+  const handleEditComment = (diaryComment: WorkspaceJournalComment) => {
     unstable_batchedUpdates(() => {
       setCommentToEdit(diaryComment);
       createNewActive && setCreateNewActive(false);
@@ -195,13 +190,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const handleNewCommentSave = (comment: string, callback?: () => void) => {
     setEditorLocked(true);
 
-    const newComment: JournalCommentCreate = {
-      journalEntryId: id,
-      comment: comment,
-    };
-
     createEvaluationJournalComment({
-      newCommentPayload: newComment,
+      newCommentPayload: {
+        journalEntryId: id,
+        comment: comment,
+      },
       journalEntryId: id,
       workspaceEntityId: workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
@@ -224,14 +217,12 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const handleCommentEditSave = (comment: string, callback?: () => void) => {
     setEditorLocked(true);
 
-    const updatedComment: JournalCommentUpdate = {
-      id: commentToEdit.id,
-      journalEntryId: commentToEdit.journalEntryId,
-      comment: comment,
-    };
-
     updateEvaluationJournalComment({
-      updatedCommentPayload: updatedComment,
+      updatedCommentPayload: {
+        id: commentToEdit.id,
+        journalEntryId: commentToEdit.journalEntryId,
+        comment: comment,
+      },
       journalEntryId: id,
       workspaceEntityId: workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc

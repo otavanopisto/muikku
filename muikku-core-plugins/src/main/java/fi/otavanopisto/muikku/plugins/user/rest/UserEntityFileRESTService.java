@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityFile;
 import fi.otavanopisto.muikku.model.users.UserEntityFileVisibility;
@@ -136,8 +135,8 @@ public class UserEntityFileRESTService extends PluginRESTService {
       }
       else if (!userEntityFile.getUserEntity().getId().equals(loggedUserEntity.getId())) {
         if (userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF) {
-          EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-          if (roleEntity == null || roleEntity.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+          if (userSchoolDataIdentifier == null || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
             return Response.status(Status.NOT_FOUND).build();
           }
         }
@@ -188,10 +187,9 @@ public class UserEntityFileRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
     boolean isOwnerOfTheFile = userEntity.getId().equals(loggedUserEntity.getId());
-    boolean isAdministrator = roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR;
-    boolean isStaff = roleEntity != null && roleEntity.getArchetype() != EnvironmentRoleArchetype.STUDENT;
+    boolean isAdministrator = userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
+    boolean isStaff = userSchoolDataIdentifier.isStaff();
     boolean isStaffAndFileIsAccessibleByStaff = isStaff && (
         userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF || userEntityFile.getVisibility() == UserEntityFileVisibility.PUBLIC);
     if (!isOwnerOfTheFile && !isAdministrator && !isStaffAndFileIsAccessibleByStaff) {

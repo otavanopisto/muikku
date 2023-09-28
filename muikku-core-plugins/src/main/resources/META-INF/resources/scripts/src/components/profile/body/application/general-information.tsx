@@ -87,7 +87,6 @@ class GeneralInformation extends React.Component<
                   this.props.status.profile.studyStartDate
                 )}
               />
-
               <ProfileProperty
                 modifier="study-end-date"
                 condition={!!this.props.status.profile.studyTimeEnd}
