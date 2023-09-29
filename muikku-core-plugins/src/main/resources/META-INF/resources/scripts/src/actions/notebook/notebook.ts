@@ -238,11 +238,6 @@ const loadNotebookEntries: LoadNotebookEntries =
       // Load all entries for user
       else {
         try {
-          /* const entries = (await promisify(
-            mApi().workspace.journal.read(status.userId),
-            "callback"
-          )()) as WorkspaceNote[]; */
-
           const entries = await workspaceNotesApi.getAllWorkspaceNotes({
             owner: status.userId,
           });
