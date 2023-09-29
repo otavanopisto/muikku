@@ -12,6 +12,12 @@ import {
   requestAssessmentAtWorkspace,
 } from "~/actions/workspaces";
 import { StatusType } from "~/reducers/base/status";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -22,6 +28,7 @@ interface EvaluationRequestDialogProps extends WithTranslation {
   isOpen: boolean;
   onClose: () => any;
   requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
 }
 
@@ -31,6 +38,7 @@ interface EvaluationRequestDialogProps extends WithTranslation {
 interface EvaluationRequestDialogState {
   locked: boolean;
   message: string;
+  price: number;
 }
 
 /**
@@ -48,11 +56,13 @@ class EvaluationRequestDialog extends React.Component<
     super(props);
     this.state = {
       locked: false,
+      price: 0,
       message: "",
     };
 
     this.updateMessage = this.updateMessage.bind(this);
     this.request = this.request.bind(this);
+    this.proceedToPay = this.proceedToPay.bind(this);
   }
 
   /**
@@ -95,13 +105,70 @@ class EvaluationRequestDialog extends React.Component<
   }
 
   /**
+   * proceedToPay creates the payment link and
+   * @param closeDialog closeDialog
+   */
+  proceedToPay = async (closeDialog: () => any) => {
+    try {
+      closeDialog();
+      const link: string = (await promisify(
+        mApi().assessmentrequest.workspace.paidAssessmentRequest.create(
+          this.props.workspace.id,
+          {
+            requestText: this.state.message,
+          }
+        ),
+        "callback"
+      )().then((link: { url: string }) => link.url)) as string;
+      window.location.href = link;
+    } catch (e) {
+      this.props.displayNotification(
+        this.props.t("notifications.createError", {
+          ns: "orders",
+          context: "paymentLocation",
+        }),
+        "error"
+      );
+    }
+  };
+
+  /**
+   * loadPriceInfo loads the assessment prices from backend
+   */
+  loadPriceInfo = async () => {
+    try {
+      const price: number = (await promisify(
+        mApi().assessmentrequest.workspace.assessmentPrice.read(
+          this.props.workspace.id
+        ),
+        "callback"
+      )().then(
+        (assessmentPrice: { price: number }) => assessmentPrice.price
+      )) as number;
+
+      this.setState({
+        price,
+      });
+      // eslint-disable-next-line no-empty
+    } catch (e) {
+      this.props.displayNotification(
+        this.props.t("notifications.loadError", {
+          ns: "orders",
+          error: e,
+        }),
+        "error"
+      );
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     const { t } = this.props;
-
     const hasFees = this.props.status.hasFees;
+    const price = this.state.price;
 
     /**
      * content
@@ -109,18 +176,64 @@ class EvaluationRequestDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <div className="dialog__content-row">
-          {t("content.requestEvaluation", { ns: "workspace" })}
-        </div>
         {hasFees ? (
+          <>
+            {price > 0 ? (
+              <>
+                <div className="dialog__content-row">
+                  <p>
+                    {t("content.evaluationFee", {
+                      ns: "workspace",
+                      price: price,
+                    })}
+                  </p>
+                </div>
+                <div className="dialog__content-row">
+                  <p>
+                    {t("content.evaluationPaymentProcessor", {
+                      ns: "workspace",
+                    })}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="dialog__content-row">
+                  {t("content.requestEvaluation", {
+                    ns: "workspace",
+                  })}
+                </div>
+                <div className="dialog__content-row">
+                  <label>
+                    {t("labels.evaluationHasFee", {
+                      ns: "workspace",
+                    })}
+                  </label>
+                  <p>
+                    {t("content.evaluationHasFee", {
+                      ns: "workspace",
+                    })}
+                  </p>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
           <div className="dialog__content-row">
-            <label>{t("labels.evaluationHasFee", { ns: "workspace" })}</label>
-            <p>{t("content.evaluationHasFee", { ns: "workspace" })}</p>
+            {t("content.requestEvaluation", {
+              ns: "workspace",
+            })}
           </div>
-        ) : null}
+        )}
         <div className="form-element dialog__content-row">
           <p>
+            <label htmlFor="messageForTeacher">
+              {t("labels.evaluationRequestMessage", {
+                ns: "workspace",
+              })}
+            </label>
             <textarea
+              id="messageForTeacher"
               className="form-element__textarea"
               value={this.state.message}
               onChange={this.updateMessage}
@@ -136,13 +249,26 @@ class EvaluationRequestDialog extends React.Component<
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
-        <Button
-          buttonModifiers={["standard-ok", "execute"]}
-          onClick={this.request.bind(this, closeDialog)}
-          disabled={this.state.locked}
-        >
-          {t("actions.send", { context: "evaluationRequest" })}
-        </Button>
+        {price > 0 ? (
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            buttonAs="div"
+            onClick={() => this.proceedToPay(closeDialog)}
+            disabled={this.state.locked}
+          >
+            {t("actions.pay", {
+              ns: "workspace",
+            })}
+          </Button>
+        ) : (
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            onClick={this.request.bind(this, closeDialog)}
+            disabled={this.state.locked}
+          >
+            {t("actions.send", { context: "evaluationRequest" })}
+          </Button>
+        )}
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
@@ -157,6 +283,7 @@ class EvaluationRequestDialog extends React.Component<
       <Dialog
         modifier="evaluation-request-dialog"
         title={t("labels.requestEvaluation", { ns: "workspace" })}
+        executeOnOpen={this.loadPriceInfo}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -182,7 +309,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ requestAssessmentAtWorkspace }, dispatch);
+  return bindActionCreators(
+    { requestAssessmentAtWorkspace, displayNotification },
+    dispatch
+  );
 }
 
 export default withTranslation(["workspace", "common"])(

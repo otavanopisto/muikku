@@ -9,6 +9,7 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct_;
 
 public class CeeposProductDAO extends CorePluginsDAO<CeeposProduct> {
@@ -38,6 +39,20 @@ public class CeeposProductDAO extends CorePluginsDAO<CeeposProduct> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.equal(root.get(CeeposProduct_.line), line)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<CeeposProduct> listByType(CeeposProductType type ) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CeeposProduct> criteria = criteriaBuilder.createQuery(CeeposProduct.class);
+    Root<CeeposProduct> root = criteria.from(CeeposProduct.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(CeeposProduct_.type), type)
     );
 
     return entityManager.createQuery(criteria).getResultList();

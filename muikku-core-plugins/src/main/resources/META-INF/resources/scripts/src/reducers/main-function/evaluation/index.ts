@@ -7,7 +7,6 @@ import {
   EvaluationStateType,
   EvaluationSort,
   EvaluationAssigmentData,
-  EvaluationStudyDiaryEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
   EvaluationJournalCommentsByJournal,
@@ -18,6 +17,7 @@ import {
   EvaluationEvent,
   EvaluationGradeScale,
   EvaluationJournalFeedback,
+  WorkspaceJournal,
 } from "~/generated/client";
 
 /**
@@ -45,7 +45,7 @@ export interface EvaluationState {
   evaluationSelectedAssessmentId?: EvaluationAssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationJournalFeedback?: EvaluationStateAndData<EvaluationJournalFeedback>;
-  evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
+  evaluationDiaryEntries?: EvaluationStateAndData<WorkspaceJournal[]>;
   evaluationJournalComments: {
     comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];

@@ -1,6 +1,5 @@
-import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/index";
-import { JournalComment } from "~/@types/journal";
 import { MaterialAssignmentType } from "../reducers/workspaces/index";
+import { WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * EvaluationJournalFilters
@@ -11,34 +10,10 @@ export interface EvaluationJournalFilters {
 }
 
 /**
- * Interface for evaluation study diary event
- */
-export interface EvaluationStudyDiaryEvent {
-  commentCount: number;
-  content: string;
-  created: string;
-  firstName: string;
-  id: number;
-  lastName: string;
-  title: string;
-  userEntityId: number;
-  workspaceEntityId: number;
-  /**
-   * Whether journal is "mandatory" assignment and material field
-   */
-  isMaterialField: boolean;
-  /**
-   * Material field reply status. ANSWERED | "SUBMITTED" are only ones
-   * that matters
-   */
-  workspaceMaterialReplyState: MaterialCompositeRepliesStateType | null;
-}
-
-/**
  * EvaluationJournalCommentsByJournal
  */
 export interface EvaluationJournalCommentsByJournal {
-  [journalEntryId: number]: JournalComment[];
+  [journalEntryId: number]: WorkspaceJournalComment[];
 }
 
 /**
@@ -47,12 +22,6 @@ export interface EvaluationJournalCommentsByJournal {
 export interface EvaluationLatestSubjectEvaluationIndex {
   [subjectIdentifier: string]: number;
 }
-
-/**
- * Interface for last evaluation per subject
- */
-export interface EvaluationLastSubjectEvaluationIndex
-  extends EvaluationLatestSubjectEvaluationIndex {}
 
 /**
  * EvaluationStatus

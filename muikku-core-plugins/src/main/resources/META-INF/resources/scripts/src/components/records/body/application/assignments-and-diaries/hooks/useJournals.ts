@@ -1,19 +1,17 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
+import { WorkspaceJournal } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { EvaluationJournalFeedback } from "~/generated/client";
 import { useTranslation } from "react-i18next";
-import { WorkspaceJournalType } from "~/reducers/workspaces/journals";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseDiariesState {
   isLoading: boolean;
-  journals: WorkspaceJournalType[];
-  journalFeedback: EvaluationJournalFeedback | null;
+  journals: WorkspaceJournal[];
+  journalFeedback: WorkspaceJournalFeedback | null;
 }
 
 /**
@@ -26,6 +24,7 @@ const initialState: UseDiariesState = {
 };
 
 const evaluationApi = MApi.getEvaluationApi();
+const workspaceApi = MApi.getWorkspaceApi();
 
 /**
  * Custom hook for student study hours
@@ -69,14 +68,12 @@ export const useJournals = (
          */
         const [journals, journalFeedback] = await Promise.all([
           (async () => {
-            const journals = <WorkspaceJournalType[]>await promisify(
-              mApi().workspace.workspaces.journal.read(workspaceId, {
-                userEntityId,
-                firstResult: 0,
-                maxResults: 512,
-              }),
-              "callback"
-            )();
+            const journals = await workspaceApi.getWorkspaceJournals({
+              workspaceId,
+              userEntityId,
+              firstResult: 0,
+              maxResults: 512,
+            });
             return journals;
           })(),
           (async () => {

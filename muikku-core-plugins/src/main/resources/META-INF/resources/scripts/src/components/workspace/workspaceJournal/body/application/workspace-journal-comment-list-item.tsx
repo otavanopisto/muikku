@@ -17,20 +17,20 @@ import {
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
 import { bindActionCreators } from "redux";
-import { JournalComment } from "~/@types/journal";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
   UpdateWorkspaceJournalCommentTriggerType,
   updatedWorkspaceJournalComment,
 } from "../../../../../actions/workspaces/journals";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListItemProps {
-  journalComment: JournalComment;
+  journalComment: WorkspaceJournalComment;
   workspaceEntityId: number;
   status: StatusType;
   updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType;
