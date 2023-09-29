@@ -109,6 +109,5 @@ module.exports = {
     jquery: "jQuery",
     mApi: "mApi",
     moment: "moment",
-    getLocaleText: "getLocaleText",
   },
 };
