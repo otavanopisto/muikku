@@ -6959,17 +6959,23 @@ paths:
   /rest/worklist/basePrice:
     get:
       operationId: getBasePrice
-      summary: Get base price
-      description: Get base price
+      description: Returns base price object for the given workspace. Values in the object use pattern (key-value) where key is the assessment identifier and value is the base price. Depending how many modules there is, so many key-value pairs are returned.
       tags:
         - Worklist
+      parameters:
+        - name: workspaceEntityId
+          in: query
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Base price
           content:
             application/json:
               schema:
-                type: integer
+                type: object # <--Should use patternProperties when it is supported by generator
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6979,19 +6985,18 @@ paths:
     get:
       operationId: getBilledPrice
       summary: Get billed price
-      description: Get billed price
       tags:
         - Worklist
       parameters:
         - name: workspaceEntityId
           in: query
-          description: Worklist item id
+          description: Workspace id
           required: true
           schema:
             type: integer
         - name: assessmentIdentifier
           in: query
-          description: Worklist item id
+          description: Assessment identifier
           required: true
           schema:
             type: string
@@ -7009,8 +7014,7 @@ paths:
 
     put:
       operationId: updateBilledPrice
-      summary: Update billed price
-      description: Update billed price
+      summary: Updates billed price
       tags:
         - Worklist
       parameters:
@@ -7034,7 +7038,6 @@ paths:
     get:
       operationId: isAvailable
       summary: Is available
-      description: Is available
       tags:
         - Worklist
       responses:
@@ -7052,8 +7055,7 @@ paths:
   /rest/worklist/templates:
     get:
       operationId: getWorklistTemplates
-      summary: Get worklist templates
-      description: Get worklist templates
+      summary: Returns list of worklist templates
       tags:
         - Worklist
       responses:
@@ -7073,8 +7075,7 @@ paths:
   /rest/worklist/updateWorklistItemsState:
     put:
       operationId: updateWorklistItemsState
-      summary: Update worklist items state
-      description: Update worklist items state
+      summary: Updates worklist items state
       tags:
         - Worklist
       requestBody:
@@ -7097,29 +7098,26 @@ paths:
   /rest/worklist/worklistItems:
     get:
       operationId: getWorklistItems
-      summary: Get worklist items
-      description: Get worklist items
+      summary: Returns list of worklist items
       tags:
         - Worklist
       parameters:
         - name: owner
           in: query
-          description: Search string
+          description: Owner identifier
           required: true
           schema:
             type: string
         - name: beginDate
           in: query
-          description: Begin date
+          description: Local date in ISO format (YYYY-MM-DD)
           schema:
             type: string
-            format: date-time
         - name: endDate
           in: query
-          description: End date
+          description: Local date in ISO format (YYYY-MM-DD)
           schema:
             type: string
-            format: date-time
       responses:
         "200":
           description: Worklist items results object
@@ -7137,7 +7135,6 @@ paths:
     post:
       operationId: createWorklistItem
       summary: Create worklist item
-      description: Create worklist item
       tags:
         - Worklist
       requestBody:
@@ -7154,12 +7151,19 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/worklist/worklistItems/{worklistItemId}:
     put:
       operationId: updateWorklistItem
-      summary: Update worklist item
-      description: Update worklist item
+      summary: Updates worklist item
       tags:
         - Worklist
+      parameters:
+        - name: worklistItemId
+          in: path
+          description: Worklist item id
+          required: true
+          schema:
+            type: integer
       requestBody:
         $ref: "#/components/requestBodies/WorklistItemUpdateRequestBody"
       responses:
@@ -7174,16 +7178,14 @@ paths:
         "500":
           description: Internal server error
 
-    #FIX
     delete:
       operationId: deleteWorklistItem
-      summary: Delete worklist item
-      description: Delete worklist item
+      summary: Deletes worklist item
       tags:
         - Worklist
       parameters:
         - name: worklistItemId
-          in: query
+          in: path
           description: Worklist item id
           required: true
           schema:
@@ -7199,8 +7201,7 @@ paths:
   /rest/worklist/worklistSummary:
     get:
       operationId: getWorklistSummary
-      summary: Get worklist summary
-      description: Get worklist summary
+      summary: Returns list of worklist summary items
       tags:
         - Worklist
       parameters:
@@ -8520,23 +8521,28 @@ paths:
           description: Internal server error
 
   #WORKSPACENOTES
-  /rest/workspacenotes/archive:
-    delete:
-      operationId: archiveWorkspaceNote
-      summary: Archive workspace note
-      description: Archive workspace note
+  /rest/workspacenotes/owner/{owner}:
+    get:
+      operationId: getAllWorkspaceNotes
+      summary: Returns all notes from every workspace
       tags:
         - WorkspaceNotes
       parameters:
-        - name: id
-          in: query
-          description: Workspace note id
+        - name: owner
+          in: path
+          description: Owner identifier
           required: true
           schema:
             type: integer
       responses:
-        "204":
-          description: Workspace note archived successfully
+        "200":
+          description: Workspace notes results object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkspaceNote"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8545,8 +8551,7 @@ paths:
   /rest/workspacenotes/workspace/{workspaceId}/owner/{owner}:
     get:
       operationId: getWorkspaceNotes
-      summary: Get workspace notes
-      description: Get workspace notes
+      summary: Returns all notes from selected workspace
       tags:
         - WorkspaceNotes
       parameters:
@@ -8558,10 +8563,10 @@ paths:
             type: integer
         - name: owner
           in: path
-          description: Owner
+          description: Owner identifier
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         "200":
           description: Workspace notes results object
@@ -8579,8 +8584,7 @@ paths:
   /rest/workspacenotes/workspacenote:
     post:
       operationId: createWorkspaceNote
-      summary: Create workspace note
-      description: Create workspace note
+      summary: Creates new workspace note
       tags:
         - WorkspaceNotes
       requestBody:
@@ -8597,12 +8601,19 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/workspacenotes/workspacenote/{id}:
     put:
       operationId: updateWorkspaceNote
-      summary: Update workspace note
-      description: Update workspace note
+      summary: Updates workspace note
       tags:
         - WorkspaceNotes
+      parameters:
+        - name: id
+          in: path
+          description: Workspace note id
+          required: true
+          schema:
+            type: integer
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceNoteUpdateRequestBody"
       responses:
@@ -8612,6 +8623,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WorkspaceNote"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Bad request if userEntityId is null
+        "404":
+          description: Workspace note not found
+        "500":
+          description: Internal server error
+    delete:
+      operationId: archiveWorkspaceNote
+      summary: Archives selected workspace note
+      tags:
+        - WorkspaceNotes
+      parameters:
+        - name: id
+          in: path
+          description: Workspace note id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Workspace note deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9907,6 +9941,7 @@ components:
               - $ref: "#/components/schemas/UserStudent"
 
     BilledPriceUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9935,8 +9970,10 @@ components:
               userIdentifier:
                 type: string
               beginDate:
+                description: Local date in ISO format (YYYY-MM-DD)
                 type: string
               endDate:
+                description: Local date in ISO format (YYYY-MM-DD)
                 type: string
               state:
                 $ref: "#/components/schemas/WorklistBillingStateType"
@@ -9987,8 +10024,8 @@ components:
               templateId:
                 type: integer
               entryDate:
+                description: Local date in ISO format (YYYY-MM-DD)
                 type: string
-                format: date-time
               description:
                 type: string
               price:
@@ -10014,6 +10051,7 @@ components:
                 type: integer
 
     WorkspaceNoteCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10036,6 +10074,7 @@ components:
                 nullable: true
 
     WorkspaceNoteUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -14192,6 +14231,7 @@ components:
         factor:
           type: integer
         billingNumber:
+          nullable: true
           type: integer
         editableFields:
           type: array
@@ -14260,11 +14300,11 @@ components:
         displayName:
           type: string
         beginDate:
+          description: Local date in ISO format (YYYY-MM-DD)
           type: string
-          format: date-time
         endDate:
+          description: Local date in ISO format (YYYY-MM-DD)
           type: string
-          format: date-time
         count:
           type: integer
 
