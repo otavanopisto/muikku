@@ -109,7 +109,10 @@ class EvaluationSorters extends React.Component<
         <Dropdown
           openByHover
           key="amount-asc"
-          content={t("labels.sortAscending", { ns: "evaluation", context: "date" })}
+          content={t("labels.sortAscending", {
+            ns: "evaluation",
+            context: "date",
+          })}
         >
           <ButtonPill
             aria-label={t("labels.sortAscending", {
@@ -175,7 +178,9 @@ class EvaluationSorters extends React.Component<
           content={t("labels.sortDescending_lastName", { ns: "evaluation" })}
         >
           <ButtonPill
-            aria-label={t("labels.sortDescending_lastName", { ns: "evaluation" })}
+            aria-label={t("labels.sortDescending_lastName", {
+              ns: "evaluation",
+            })}
             onClick={this.handleClickSorter("sort-alpha-desc")}
             buttonModifiers={[
               "sorter",
