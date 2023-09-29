@@ -1257,7 +1257,10 @@ public class EvaluationRESTService extends PluginRESTService {
           ? Collections.emptyList()
           : evaluationController.listInterimEvaluationRequests(workspaceEntityIds, Boolean.FALSE);
       for (InterimEvaluationRequest interimEvaluationRequest : interimEvaluationRequests) {
-        restAssessmentRequests.add(toRestAssessmentRequest(interimEvaluationRequest));
+        RestAssessmentRequest request = toRestAssessmentRequest(interimEvaluationRequest); 
+        if (request != null) {
+          restAssessmentRequests.add(request);
+        }
       }
     }
     else {
@@ -1683,6 +1686,13 @@ public class EvaluationRESTService extends PluginRESTService {
     UserEntityName userEntityName = userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
         workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+    
+    // Bug fix for non-course students having been able to request interim evaluation...
+    
+    if (workspaceUserEntity == null) {
+      return null;
+    }
+    
     WorkspaceUser workspaceUser = workspaceUserEntity == null
         ? null
         : workspaceController.findWorkspaceUser(workspaceUserEntity); // unavoidable Pyramus call just for enrollment date :'(
@@ -1703,8 +1713,8 @@ public class EvaluationRESTService extends PluginRESTService {
 
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
     restAssessmentRequest.setId(interimEvaluationRequest.getId());
-    restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
-    restAssessmentRequest.setWorkspaceUserIdentifier(userEntity.getDefaultIdentifier());
+    restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity.getId());
+    restAssessmentRequest.setWorkspaceUserIdentifier(workspaceUserEntity.getIdentifier());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
     restAssessmentRequest.setEvaluationDate(null);
