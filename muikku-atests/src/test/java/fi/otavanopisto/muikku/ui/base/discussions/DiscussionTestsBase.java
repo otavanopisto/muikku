@@ -363,7 +363,7 @@ public class DiscussionTestsBase extends AbstractUITest {
           addToEndCKEditor("ing");
           waitAndClick(".button--dialog-execute");
           waitForVisible(".application-list__title");
-          assertText(".application-list__title-main", "Testinging");
+          assertText(".application-list__title-main", "Testing");
           waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");
           assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body .rich-text>p", "Testing testing daa daaing");
           waitForPresent(".application-list__item-edited");
