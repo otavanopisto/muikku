@@ -202,17 +202,13 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     return persist(reply);
   }
   
-  public ForumThreadReply updateDeleted(ForumThreadReply reply, boolean deleted, UserEntity lastModifier) {
+  public ForumThreadReply updateDeleted(ForumThreadReply reply, boolean deleted) {
     reply.setDeleted(deleted);
-    reply.setLastModifier(lastModifier.getId());
-    reply.setLastModified(new Date());
     return persist(reply);
   }
   
-  public ForumThreadReply updateArchived(ForumThreadReply reply, Boolean archived, UserEntity lastModifier) {
+  public ForumThreadReply updateArchived(ForumThreadReply reply, Boolean archived){
     reply.setArchived(archived);
-    reply.setLastModifier(lastModifier.getId());
-    reply.setLastModified(new Date());
     return persist(reply);
   }
 
