@@ -208,7 +208,7 @@ public class ForumController {
   public void archiveThread(ForumThread thread) {
     List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
     for (ForumThreadReply reply : replies) {
-      forumThreadReplyDAO.updateArchived(reply, true);
+      forumThreadReplyDAO.updateArchived(reply, true, sessionController.getLoggedUserEntity());
     }
     
     forumThreadDAO.updateArchived(thread, true);
@@ -244,11 +244,11 @@ public class ForumController {
   }
 
   public void archiveReply(ForumThreadReply reply) {
-    forumThreadReplyDAO.updateArchived(reply, true);
+    forumThreadReplyDAO.updateArchived(reply, true, sessionController.getLoggedUserEntity());
   }
   
   public void updateReplyDeleted(ForumThreadReply reply, boolean deleted) {
-    forumThreadReplyDAO.updateDeleted(reply, deleted);
+    forumThreadReplyDAO.updateDeleted(reply, deleted, sessionController.getLoggedUserEntity());
   }
   
   public void deleteReply(ForumThreadReply reply) {
@@ -362,7 +362,7 @@ public class ForumController {
   }
   
   public void archiveMessage(ForumMessage message) {
-    forumMessageDAO.archive(message);
+    forumMessageDAO.archive(message, sessionController.getLoggedUserEntity());
     
     if (message instanceof ForumThreadReply) {
       ForumThreadReply reply = (ForumThreadReply) message;
