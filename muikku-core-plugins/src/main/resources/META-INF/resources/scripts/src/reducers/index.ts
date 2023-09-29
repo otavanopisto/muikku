@@ -1,7 +1,7 @@
 import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
 import { LocaleState } from "./base/locales";
 import { NotificationState } from "./base/notifications";
-import { CredentialsType } from "./base/credentials";
+import { CredentialsState } from "./base/credentials";
 import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
@@ -30,7 +30,7 @@ import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
-import { Contacts } from "./base/contacts";
+import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
 
 /**
@@ -40,12 +40,12 @@ export interface StateType {
   notifications: NotificationState;
   locales: LocaleState;
   status: StatusType;
-  contacts: Contacts;
+  contacts: ContactsState;
   title: string;
   websocket?: WebsocketStateType;
   yo?: YOType;
   eligibilitySubjects?: SubjectEligibilitySubjectsType;
-  credentials?: CredentialsType;
+  credentials?: CredentialsState;
   announcements?: AnnouncementsState;
   hops?: HOPSType;
   summary?: SummaryType;

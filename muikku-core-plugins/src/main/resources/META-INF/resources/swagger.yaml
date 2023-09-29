@@ -2505,12 +2505,11 @@ paths:
   /rest/forgotpassword/credentialReset:
     post:
       operationId: updateCredentials
-      summary: Reset password
-      description: Reset password
+      description: Changes the username and password of the account corresponding to the credential reset hashcode.
       tags:
         - Credentials
       requestBody:
-        $ref: "#/components/requestBodies/ResetPasswordRequestBody"
+        $ref: "#/components/requestBodies/UpdateCredentialsBody"
       responses:
         "204":
           description: Password reset successfully
@@ -2522,14 +2521,13 @@ paths:
   /rest/forgotpassword/credentialReset/{hash}:
     get:
       operationId: loadCredentials
-      summary: Get reset password
-      description: Get reset password
+      description: For a valid credential reset hashcode, returns a credential reset entity containing the current username of the user requesting credential reset.
       tags:
         - Credentials
       parameters:
         - name: hash
           in: path
-          description: Reset password hash
+          description: Hashcode of the reset request
           required: true
           schema:
             type: string
@@ -2539,25 +2537,27 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  username:
-                    type: string
+                $ref: "#/components/schemas/Credentials"
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
   /rest/forgotpassword/reset:
-    post:
+    get:
       operationId: resetCredentials
-      summary: Reset password
-      description: Reset password
+      description: Used to request a credential reset for the account corresponding to the given email address. 204 for a successful reset request; user receives an email with a link to change the credentials
       tags:
         - Credentials
-      requestBody:
-        $ref: "#/components/requestBodies/ResetPasswordRequestBody"
+      parameters:
+        - name: email
+          in: query
+          description: the email address of the user requesting a password reset
+          required: true
+          schema:
+            type: string
       responses:
-        "200":
+        "204":
           description: Password reset successfully
         "400":
           description: Invalid request was sent to the server
@@ -5041,7 +5041,7 @@ paths:
       parameters:
         - name: properties
           in: query
-          description: Properties
+          description: Properties as string divided by comma
           schema:
             type: string
       responses:
@@ -9078,18 +9078,6 @@ components:
               workspaceSubjectIdentifier:
                 type: string
 
-    ResetPasswordRequestBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            description: ResetPasswordRequestBody object
-            required:
-              - email
-            properties:
-              email:
-                type: string
-
     DiscussionAreaCreateRequestBody:
       required: true
       content:
@@ -9438,6 +9426,7 @@ components:
             type: string
 
     LocalizationSetRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9606,6 +9595,14 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondaryData"
+
+    UpdateCredentialsBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/Credentials"
 
     UserFlagCreateRequestBody:
       content:
@@ -10619,6 +10616,24 @@ components:
         identifier:
           type: string
         name:
+          type: string
+
+    Credentials:
+      type: object
+      description: Credentials object
+      required:
+        - secret
+        - username
+        - password
+      properties:
+        secret:
+          nullable: true
+          type: string
+        username:
+          nullable: true
+          type: string
+        password:
+          nullable: true
           type: string
 
     DiscussionArea:
@@ -13391,8 +13406,9 @@ components:
           type: string
           nullable: true
         locale:
-          type: string
           nullable: true
+          allOf:
+            - $ref: "#/components/schemas/LocaleType"
         hasEvaluationFees:
           type: boolean
           nullable: true
