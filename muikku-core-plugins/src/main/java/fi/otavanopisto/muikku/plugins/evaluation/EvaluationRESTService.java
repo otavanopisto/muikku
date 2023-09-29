@@ -806,7 +806,7 @@ public class EvaluationRESTService extends PluginRESTService {
    *  archived: false}
    *  
    * Errors:
-   * 400 Workspace material id not given, material not found, request text not given
+   * 400 Workspace material id not given, material not found, request text not given, workspace not found, not workspace user
    */
   @POST
   @Path("/interimEvaluationRequest")
@@ -824,6 +824,14 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     if (StringUtils.isBlank(payload.getRequestText())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing requestText").build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getWorkspaceEntityId());
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unknown workspace").build();
+    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unknown workspace user").build();
     }
     
     // Interim evaluation request creation
