@@ -17,9 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import fi.otavanopisto.security.ContextReference;
 
@@ -118,6 +117,14 @@ public class CommunicatorMessage implements ContextReference {
     this.trashedBySender = trashedBySender;
   }
 
+  public Date getTrashedBySenderTimestamp() {
+    return trashedBySenderTimestamp;
+  }
+
+  public void setTrashedBySenderTimestamp(Date trashedBySenderTimestamp) {
+    this.trashedBySenderTimestamp = trashedBySenderTimestamp;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -154,6 +161,10 @@ public class CommunicatorMessage implements ContextReference {
   @NotNull
   @Column(nullable = false)
   private Boolean trashedBySender;
+  
+  @Column
+  @Temporal (value = TemporalType.TIMESTAMP)
+  private Date trashedBySenderTimestamp;
   
   @ElementCollection
   @CollectionTable (name="communicatormessage_tags", joinColumns=@JoinColumn(name="communicatorMessage_id"))

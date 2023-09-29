@@ -1,21 +1,23 @@
 package fi.otavanopisto.muikku.plugins.communicator.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientGroup;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage_;
 
 
 public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<CommunicatorMessageRecipient> {
@@ -31,6 +33,7 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     msg.setReadByReceiver(false);
     msg.setArchivedByReceiver(false);
     msg.setTrashedByReceiver(false);
+    msg.setTrashedByReceiverTimestamp(null);
     
     getEntityManager().persist(msg);
     
@@ -165,12 +168,41 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
 
   public CommunicatorMessageRecipient updateTrashedByReceiver(CommunicatorMessageRecipient recipient, boolean value) {
     recipient.setTrashedByReceiver(value);
+    recipient.setTrashedByReceiverTimestamp(value ? new Date() : null);
     
     getEntityManager().persist(recipient);
     
     return recipient;
   }
 
+  /**
+   * Sets archivedByReceiver field to true for CommunicatorMessageRecipients that have
+   * - archivedByReceiver = false                   (avoid unnecessary updates)
+   * - trashedByReceiver = true                     (update rows that are in trash folder)
+   * - trashedByReceiverTimestamp < expireThreshold (update rows that have been trashed before given threshold)
+   * 
+   * @param expireThreshold messages trashed before the threshold are archived
+   * @return number of rows affected
+   */
+  public int timedArchiveRecipientMessagesInTrash(Date expireThreshold) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaUpdate<CommunicatorMessageRecipient> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(CommunicatorMessageRecipient.class);
+    Root<CommunicatorMessageRecipient> root = criteriaUpdate.from(CommunicatorMessageRecipient.class);
+    
+    criteriaUpdate.set(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.TRUE);
+    criteriaUpdate.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.TRUE),
+            criteriaBuilder.lessThan(root.get(CommunicatorMessageRecipient_.trashedByReceiverTimestamp), expireThreshold)
+        )
+    );
+    
+    return entityManager.createQuery(criteriaUpdate).executeUpdate();
+  }
+  
   @Override
   public void delete(CommunicatorMessageRecipient e) {
     super.delete(e);

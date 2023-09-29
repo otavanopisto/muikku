@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -59,6 +60,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     msg.setTags(tagIds);
     msg.setArchivedBySender(false);
     msg.setTrashedBySender(false);
+    msg.setTrashedBySenderTimestamp(null);
     
     getEntityManager().persist(msg);
     
@@ -568,6 +570,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
 
   public CommunicatorMessage updateTrashedBySender(CommunicatorMessage msg, boolean trashed) {
     msg.setTrashedBySender(trashed);
+    msg.setTrashedBySenderTimestamp(trashed ? new Date() : null);
     
     getEntityManager().persist(msg);
     
@@ -582,6 +585,34 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     return msg;
   }
 
+  /**
+   * Sets archivedBySender field to true for CommunicatorMessages that have
+   * - archivedBySender = false                   (avoid unnecessary updates)
+   * - trashedBySender = true                     (update rows that are in trash folder)
+   * - trashedBySenderTimestamp < expireThreshold (update rows that have been trashed before given threshold)
+   * 
+   * @param expireThreshold messages trashed before the threshold are archived
+   * @return number of rows affected
+   */
+  public int timedArchiveSenderMessagesInTrash(Date expireThreshold) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaUpdate<CommunicatorMessage> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(CommunicatorMessage.class);
+    Root<CommunicatorMessage> root = criteriaUpdate.from(CommunicatorMessage.class);
+    
+    criteriaUpdate.set(root.get(CommunicatorMessage_.archivedBySender), Boolean.TRUE);
+    criteriaUpdate.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.trashedBySender), Boolean.TRUE),
+            criteriaBuilder.lessThan(root.get(CommunicatorMessage_.trashedBySenderTimestamp), expireThreshold)
+        )
+    );
+    
+    return entityManager.createQuery(criteriaUpdate).executeUpdate();
+  }
+  
   @Override
   public void delete(CommunicatorMessage e) {
     super.delete(e);
