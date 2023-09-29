@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Document, Page, Text, View } from "@react-pdf/renderer";
 import Html from "react-pdf-html";
-import { WorkspaceNote } from "~/reducers/notebook/notebook";
 import { styles, htmlStyles } from "./notebook-pdf-styles";
+import { WorkspaceNote } from "~/generated/client";
 
 /**
  * NoteBookPDFProps

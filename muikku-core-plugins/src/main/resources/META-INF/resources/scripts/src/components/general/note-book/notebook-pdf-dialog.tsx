@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-import { WorkspaceNote } from "~/reducers/notebook/notebook";
 import Dialog from "~/components/general/dialog";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
@@ -8,6 +7,7 @@ import { AnyActionType } from "~/actions";
 import NoteBookPDF from "./notebook-pdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceNote } from "~/generated/client";
 
 /**
  * NoteBookPDFProps
