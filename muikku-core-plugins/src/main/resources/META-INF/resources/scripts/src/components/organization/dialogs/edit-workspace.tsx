@@ -792,7 +792,7 @@ class OrganizationEditWorkspace extends React.Component<
                     <label htmlFor="accessAnyone">
                       {t("labels.access", {
                         ns: "workspace",
-                        context: "anyone"
+                        context: "anyone",
                       })}
                     </label>
                   </div>
