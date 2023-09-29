@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -366,9 +365,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long id = Long.parseLong(identifier);
     
     if ((courseId != null) && (studentId != null) && (id != null)) {
-      return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), CourseAssessmentRequest.class));
-    } else {
-      logger.log(Level.SEVERE, String.format("Could not find WorkspaceAssessmentRequest for courseId %d, studentId %d, id %d", courseId, studentId, id));
+      CourseAssessmentRequest request = pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), CourseAssessmentRequest.class);
+      return request == null ? null : entityFactory.createEntity(request);
+    }
+    else {
       return null;
     }
   }
@@ -380,9 +380,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     
     if ((courseId != null) && (studentId != null)) {
-      return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/latest", studentId, courseId), CourseAssessmentRequest.class));
-    } else {
-      logger.log(Level.SEVERE, String.format("Could not find WorkspaceAssessmentRequest for courseId %d, studentId %d", courseId, studentId));
+      CourseAssessmentRequest request = pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/latest", studentId, courseId), CourseAssessmentRequest.class);
+      return request == null ? null : entityFactory.createEntity(request);
+    }
+    else {
       return null;
     }
   }

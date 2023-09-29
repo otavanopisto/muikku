@@ -1,6 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { Dispatch, bindActionCreators } from "redux";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { localizeTime } from "~/locales/i18n";
 import { CeeposState } from "~/reducers/main-function/ceepos";
@@ -17,19 +23,77 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 
+/**
+ * CeeposDoneProps
+ */
 interface CeeposDoneProps extends WithTranslation {
   pay?: boolean;
   done?: boolean;
   status?: number;
   ceepos: CeeposState;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
-interface CeeposDoneState {}
+/**
+ * ReturnLink
+ */
+export interface ReturnLink {
+  path: string;
+  text: string;
+}
 
+/**
+ * CeeposDoneState
+ */
+interface CeeposDoneState {
+  returnLink: ReturnLink;
+}
+
+/**
+ * CeeposDone
+ */
 class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
   /**
+   * Class constructor
+   * @param props props
+   */
+  constructor(props: CeeposDoneProps) {
+    super(props);
+    this.state = {
+      returnLink: {
+        text: this.props.i18n.t("actions.returnHome"),
+        path: "/",
+      },
+    };
+  }
+
+  /**
+   * componentDidMount
+   */
+  async componentDidMount() {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+
+      const returnLink: ReturnLink = (await promisify(
+        mApi().ceepos.order.returnLink.read(searchParams.get("Id")),
+        "callback"
+      )()) as ReturnLink;
+      this.setState({ returnLink });
+    } catch (e) {
+      this.props.displayNotification(
+        this.props.t("notifications.loadError", {
+          context: "link",
+          ns: "orders",
+          error: e,
+        }),
+        "error"
+      );
+    }
+  }
+
+  /**
    * render
-   * @returns
+   * @returns JSX component
    */
   render() {
     // Create product data
@@ -138,9 +202,9 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
               <Button
                 icon="forward"
                 buttonModifiers={["back-to-muikku", "info"]}
-                href="/"
+                href={this.state.returnLink.path}
               >
-                {this.props.i18n.t("actions.returnHome")}
+                {this.state.returnLink.text}
               </Button>
             ) : null}
 
@@ -149,9 +213,9 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                 <Button
                   icon="forward"
                   buttonModifiers={["back-to-muikku", "info"]}
-                  href="/"
+                  href={this.state.returnLink.path}
                 >
-                  {this.props.i18n.t("actions.returnHome")}
+                  {this.state.returnLink.text}
                 </Button>
 
                 <CommunicatorNewMessage
@@ -207,14 +271,22 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     ceepos: state.ceepos,
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default withTranslation("orders")(

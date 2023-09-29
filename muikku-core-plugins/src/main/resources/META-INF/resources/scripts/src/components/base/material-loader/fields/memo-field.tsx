@@ -11,7 +11,7 @@ import $ from "~/lib/jquery";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import TextareaAutosize from "react-textarea-autosize";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -370,8 +370,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // and here the element itself
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Muistiokenttä" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "memo",
+          })}
+        />
         <span
           className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

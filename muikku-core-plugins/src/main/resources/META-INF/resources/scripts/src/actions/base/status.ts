@@ -165,18 +165,18 @@ async function loadWorkspacePermissions(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   readyCb: () => void
 ) {
+  const coursepickerApi = MApi.getCoursepickerApi();
+
   const permissions = <string[]>(
     await promisify(
       mApi().workspace.workspaces.permissions.read(workspaceId),
       "callback"
     )()
   );
-  const canCurrentWorkspaceSignup = <boolean>(
-    await promisify(
-      mApi().coursepicker.workspaces.canSignup.read(workspaceId),
-      "callback"
-    )()
-  );
+
+  const canCurrentWorkspaceSignup = await coursepickerApi.workspaceCanSignUp({
+    workspaceId,
+  });
 
   dispatch({
     type: "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
@@ -302,14 +302,10 @@ const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissions
     ) => {
       const state = getState();
 
+      const discussionApi = MApi.getDiscussionApi();
+
       const areaPermissions = state.status.services.environmentForum.isAvailable
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          <any>(
-            await promisify(
-              mApi().forum.environmentAreaPermissions.read(),
-              "callback"
-            )()
-          )
+        ? await discussionApi.getDiscussionEnvironmentAreaPermissions()
         : null;
 
       dispatch({

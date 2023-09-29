@@ -87,7 +87,7 @@ public class CeeposPayViewBackingBean {
       return NavigationRules.INTERNAL_ERROR;
     }
     
-    // Order must beglong to the current user
+    // Order must belong to the current user
     
     SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(ceeposOrder.getUserIdentifier());
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);

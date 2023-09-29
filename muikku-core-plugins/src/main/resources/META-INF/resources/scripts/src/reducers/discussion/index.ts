@@ -1,164 +1,21 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
+import {
+  DiscussionArea,
+  DiscussionSubscribedArea,
+  DiscussionSubscribedThread,
+  DiscussionThread,
+  DiscussionThreadReply,
+} from "~/generated/client";
+
+export type DiscussionStateType = "LOADING" | "ERROR" | "WAIT" | "READY";
 
 /**
- * DiscussionUserType
+ * DiscussionState
  */
-export interface DiscussionUserType {
-  id: number;
-  firstName: string;
-  lastName: string;
-  nickname: string;
-  hasImage: boolean;
-}
-
-/**
- * DiscussionSubscribedArea
- */
-export interface DiscussionSubscribedArea {
-  /**
-   * Area id
-   */
-  areaId: number;
-  /**
-   * Users id
-   */
-  userEntityId: number;
-  /**
-   * Area information
-   */
-  area: DiscussionAreaType;
-  /**
-   * Id of workspace.
-   */
-  workspaceId?: number;
-  /**
-   * Includes name extension
-   */
-  workspaceUrlName?: string;
-  /**
-   * url of workspace
-   */
-  workspaceName?: string;
-}
-
-/**
- * DiscussionSubscribedThread
- */
-export interface DiscussionSubscribedThread {
-  /**
-   * Users id
-   */
-  userEntityId: number;
-  /**
-   * Thread id
-   */
-  threadId: number;
-  /**
-   * Thread information
-   */
-  thread: DiscussionThreadType;
-  /**
-   * Id of workspace.
-   */
-  workspaceId?: number;
-  /**
-   * Includes name extension
-   */
-  workspaceName?: string;
-  /**
-   * url of workspace
-   */
-  workspaceUrlName?: string;
-}
-
-/**
- * DiscussionThreadLockEnum
- */
-export enum DiscussionThreadLockEnum {
-  ALL = "ALL",
-  STUDENTS = "STUDENTS",
-}
-
-/**
- * DiscussionThreadType
- */
-export interface DiscussionThreadType {
-  created: string;
-  creator: DiscussionUserType;
-  entryPoint: number[];
-  forumAreaId: number;
-  id: number;
-  lastModified: string;
-  /**
-   * Lock type of the thread
-   */
-  lock?: DiscussionThreadLockEnum | null;
-  /**
-   * User id of the user who locked the thread.
-   */
-  lockBy?: number | null;
-  /**
-   * Date when the thread was locked. Backend updates this field.
-   */
-  lockDate?: string | null;
-  message: string;
-  numReplies: number;
-  sticky: boolean;
-  title: string;
-  updated: string;
-}
-
-/**
- * DiscussionThreadReplyType
- */
-export interface DiscussionThreadReplyType {
-  childReplyCount: number;
-  created: string;
-  creator: DiscussionUserType;
-  deleted: boolean;
-  forumAreaId: number;
-  id: number;
-  lastModified: string;
-  message: string;
-  parentReplyId: number;
-}
-
-export type DiscussionThreadReplyListType = Array<DiscussionThreadReplyType>;
-export type DiscussionThreadListType = Array<DiscussionThreadType>;
-
-export type DiscussionStateType = "LOADING" | "ERROR" | "READY";
-
-/**
- * DiscussionAreaType
- */
-export interface DiscussionAreaType {
-  id: number;
-  name: string;
-  description: string;
-  groupId: number;
-  numThreads: number;
-}
-
-/**
- * DiscussionAreaUpdateType
- */
-export interface DiscussionAreaUpdateType {
-  id?: number;
-  name?: string;
-  description?: string;
-  groupId?: number;
-  numThreads?: number;
-}
-
-export type DiscussionAreaListType = Array<DiscussionAreaType>;
-
-/**
- * DiscussionType
- */
-export interface DiscussionType {
+export interface DiscussionState {
   state: DiscussionStateType;
-  threads: DiscussionThreadListType;
+  threads: DiscussionThread[];
   subscribedAreas: DiscussionSubscribedArea[];
   subscribedThreads: DiscussionSubscribedThread[];
   subscribedThreadOnly: boolean;
@@ -166,36 +23,36 @@ export interface DiscussionType {
   areaId: number;
   workspaceId?: number;
   totalPages: number;
-  current: DiscussionThreadType;
+  current: DiscussionThread;
   currentState: DiscussionStateType;
-  currentReplies: DiscussionThreadReplyListType;
+  currentReplies: DiscussionThreadReply[];
   currentPage: number;
   currentTotalPages: number;
-  areas: DiscussionAreaListType;
+  areas: DiscussionArea[];
 }
 
 /**
- * DiscussionPatchType
+ * DiscussionStatePatch
  */
-export interface DiscussionPatchType {
+export interface DiscussionStatePatch {
   state?: DiscussionStateType;
-  threads?: DiscussionThreadListType;
+  threads?: DiscussionThread[];
   page?: number;
   areaId?: number;
   workspaceId?: number;
   totalPages?: number;
-  current?: DiscussionThreadType;
+  current?: DiscussionThread;
   currentState?: DiscussionStateType;
-  currentReplies?: DiscussionThreadReplyListType;
+  currentReplies?: DiscussionThreadReply[];
   currentPage?: number;
   currentTotalPages?: number;
-  areas?: DiscussionAreaListType;
+  areas?: DiscussionArea[];
 }
 
 /**
  * initialDiscussionState
  */
-const initialDiscussionState: DiscussionType = {
+const initialDiscussionState: DiscussionState = {
   state: "LOADING",
   areas: [],
   subscribedAreas: [],
@@ -220,7 +77,7 @@ const initialDiscussionState: DiscussionType = {
  * @param action action
  * @returns State of discussion
  */
-export const discussion: Reducer<DiscussionType> = (
+export const discussion: Reducer<DiscussionState> = (
   state = initialDiscussionState,
   action: ActionType
 ) => {
@@ -255,7 +112,7 @@ export const discussion: Reducer<DiscussionType> = (
       return {
         ...state,
         current: newCurrent,
-        threads: state.threads.map((thread: DiscussionThreadType) => {
+        threads: state.threads.map((thread: DiscussionThread) => {
           if (thread.id !== action.payload.id) {
             return thread;
           }
@@ -267,23 +124,19 @@ export const discussion: Reducer<DiscussionType> = (
     case "UPDATE_DISCUSSION_THREAD_REPLY":
       return {
         ...state,
-        currentReplies: state.currentReplies.map(
-          (reply: DiscussionThreadReplyType) => {
-            if (reply.id !== action.payload.id) {
-              return reply;
-            }
-            return action.payload;
+        currentReplies: state.currentReplies.map((reply) => {
+          if (reply.id !== action.payload.id) {
+            return reply;
           }
-        ),
+          return action.payload;
+        }),
       };
 
     case "UPDATE_DISCUSSION_AREAS":
       return { ...state, areas: action.payload };
 
     case "PUSH_DISCUSSION_AREA_LAST": {
-      const newAreas: DiscussionAreaListType = state.areas.concat([
-        action.payload,
-      ]);
+      const newAreas = state.areas.concat([action.payload]);
 
       return { ...state, areas: newAreas };
     }
