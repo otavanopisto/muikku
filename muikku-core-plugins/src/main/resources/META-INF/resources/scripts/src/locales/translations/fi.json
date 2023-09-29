@@ -337,7 +337,7 @@
       "numberOfExercises": "{{value}} harjoitustehtävää",
       "numberOfJournalEntries": "{{value}} oppimispäiväkirjamerkintää",
       "numberOfMessages": "{{value}} viestiä",
-      "numberOfVisits": " {{value}} käyntiä",
+      "numberOfVisits": "{{value}} käyntiä",
       "removing_attachment": "Oletko varma, että haluat poistaa valitsemasi liitetiedoston?"
     },
     "labels": {
@@ -1753,7 +1753,7 @@
       "removing_verbalEvaluation": "Oletko varma, että haluat poistaa äänitetyn palautteen?",
       "supplementationRequest1": "pyysi",
       "supplementationRequest2": "täydennystä",
-      "unsavedverbalEvaluations": "Tehtävän arvioinnissa on tallentamattomia äänitettyjä palautteita. Kaikki äänitteet menetetään, jos arviointia ei tallenneta. Oletko varma, että haluat poistua tehtävän arvioinnista?"
+      "unsavedverbalEvaluations": "Tehnumtävän arvioinnissa on tallentamattomia äänitettyjä palautteita. Kaikki äänitteet menetetään, jos arviointia ei tallenneta. Oletko varma, että haluat poistua tehtävän arvioinnista?"
     },
     "labels": {
       "assignmentEvaluation": "Palaute",
