@@ -44,11 +44,6 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
     const credentialsApi = MApi.getCredentialsApi();
 
     try {
-      /* const data: any = await promisify(
-        mApi().forgotpassword.credentialReset.read(secret),
-        "callback"
-      )(); */
-
       const data = await credentialsApi.loadCredentials({
         hash: secret,
       });
@@ -94,11 +89,6 @@ const updateCredentials: UpdateCredentialsTriggerType =
       const credentialsApi = MApi.getCredentialsApi();
 
       try {
-        /* mApi()
-          .forgotpassword.credentialReset.create(credentials)
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .callback(() => {}); */
-
         await credentialsApi.updateCredentials({
           updateCredentialsRequest: credentials,
         });

@@ -88,11 +88,6 @@ class ForgotPasswordDialog extends React.Component<
     }
 
     try {
-      /* const result = await promisify(
-        mApi().forgotpassword.reset.read({ email: this.state.email }),
-        "callback"
-      )(); */
-
       await credentialsApi.resetCredentials({
         email: this.state.email,
       });
