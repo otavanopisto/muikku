@@ -1,6 +1,8 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { LoadingState } from "~/@types/shared";
+import { GuidanceCouncelorContact } from "~/generated/client";
+
 export type ContactState = "WAITING" | "LOADING" | "READY" | "ERROR";
 
 /**
@@ -8,39 +10,22 @@ export type ContactState = "WAITING" | "LOADING" | "READY" | "ERROR";
  */
 export interface ContactGroup {
   state: LoadingState;
-  list: Contact[];
+  list: GuidanceCouncelorContact[];
 }
 
 /**
- * Contact
+ * CredentialsState
  */
-export interface Contact {
-  email: string;
-  chatAvailable: boolean;
-  firstName: string;
-  hasImage: true;
-  id: string;
-  lastName: string;
-  organization: { id: number; name: string };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  properties: any;
-  role: string;
-  userEntityId: number;
-}
-
-/**
- * CredentialsType
- */
-export interface Contacts {
+export interface ContactsState {
   counselors: ContactGroup;
 }
 
-export type ContactGroupNames = keyof Contacts;
+export type ContactGroupNames = keyof ContactsState;
 
 /**
  * initialContactsState
  */
-const initialContactsState: Contacts = {
+const initialContactsState: ContactsState = {
   counselors: {
     state: "WAITING",
     list: [],
@@ -48,25 +33,25 @@ const initialContactsState: Contacts = {
 };
 
 /**
- * Contacts reducer function
+ * ContactsState reducer function
  *
  * @param state state
  * @param action action
  * @returns State of credentials
  */
-export const contacts: Reducer<Contacts> = (
+export const contacts: Reducer<ContactsState> = (
   state = initialContactsState,
   action: ActionType
 ) => {
   switch (action.type) {
     case "CONTACT_LOAD_GROUP": {
-      const groupName: ContactGroupNames = action.payload.groupName;
+      const groupName = action.payload.groupName;
 
       return { ...state, [groupName]: { ...action.payload.data } };
     }
 
     case "CONTACT_UPDATE_GROUP_STATE": {
-      const groupName: ContactGroupNames = action.payload.groupName;
+      const groupName = action.payload.groupName;
       const group = state[groupName];
       // const newGroup = JSON.parse(JSON.stringify(currentGroup)) as ContactGroup;
 
