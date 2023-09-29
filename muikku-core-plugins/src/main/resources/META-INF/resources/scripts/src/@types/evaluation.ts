@@ -98,27 +98,10 @@ export type EvaluationImportantStatus =
 export type EvaluationStateType = "LOADING" | "READY" | "ERROR";
 
 /**
- * BilledPrice
- */
-export interface BilledPrice {
-  assessmentIdentifier: string;
-  editable: boolean;
-  price: number;
-}
-
-/**
  * EvaluationAssigmentData
  */
 export interface EvaluationAssigmentData {
   assigments: MaterialAssignmentType[];
-}
-
-/**
- * BilledPriceRequest
- */
-export interface BilledPriceRequest {
-  assessmentIdentifier: string;
-  price: string;
 }
 
 /**
