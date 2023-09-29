@@ -1,5 +1,4 @@
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -12,6 +11,7 @@ import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
+import { DiscussionThreadReply } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -24,7 +24,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * ReplyThreadDrawerProps
  */
 interface ReplyThreadDrawerProps extends WithTranslation {
-  reply?: DiscussionThreadReplyType;
+  reply?: DiscussionThreadReply;
   quote?: string;
   quoteAuthor?: string;
   currentId: number;

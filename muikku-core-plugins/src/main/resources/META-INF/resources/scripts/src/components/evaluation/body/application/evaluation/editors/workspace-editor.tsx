@@ -12,11 +12,8 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import {
   AssessmentRequest,
-  BilledPrice,
   EvaluationEnum,
   EvaluationGradeSystem,
 } from "~/@types/evaluation";
@@ -28,6 +25,8 @@ import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
 import { withTranslation, WithTranslation } from "react-i18next";
+import MApi from "~/api/api";
+import { BilledPrice } from "~/generated/client";
 
 /**
  * WorkspaceEditorProps
@@ -286,26 +285,27 @@ class WorkspaceEditor extends SessionStateComponent<
   loadExistingBilledPrice = async (
     assessmentIdentifier: string
   ): Promise<BilledPrice | undefined> => {
+    const worklistApi = MApi.getWorklistApi();
+
     const { workspaceEntityId } = this.props.selectedAssessment;
 
     let existingBilledPriceObject = undefined;
     /**
      * If existing price object is found
      */
-    await promisify(
-      mApi().worklist.billedPrice.read({
+    await worklistApi
+      .getBilledPrice({
         workspaceEntityId: workspaceEntityId,
         assessmentIdentifier,
-      }),
-      "callback"
-    )().then(
-      (data) => {
-        existingBilledPriceObject = data as BilledPrice;
-      },
-      (reject) => {
-        existingBilledPriceObject = undefined;
-      }
-    );
+      })
+      .then(
+        (data) => {
+          existingBilledPriceObject = data;
+        },
+        (reject) => {
+          existingBilledPriceObject = undefined;
+        }
+      );
 
     return existingBilledPriceObject;
   };

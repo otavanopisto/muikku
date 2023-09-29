@@ -1,11 +1,11 @@
 import { MaterialCompositeRepliesStateType } from "./../reducers/workspaces/index";
-import { JournalComment } from "~/@types/journal";
 import {
   WorkspaceType,
   MaterialContentNodeListType,
   MaterialAssignmentType,
   WorkspaceSubject,
 } from "../reducers/workspaces/index";
+import { WorkspaceJournalComment } from "~/generated/client";
 /**
  * EvaluationEnum
  */
@@ -140,7 +140,7 @@ export interface EvaluationStudyDiaryEvent {
  * EvaluationJournalCommentsByJournal
  */
 export interface EvaluationJournalCommentsByJournal {
-  [journalEntryId: number]: JournalComment[];
+  [journalEntryId: number]: WorkspaceJournalComment[];
 }
 
 /**
@@ -350,15 +350,6 @@ export interface WorkspaceSupplementationSaveRequest {
   requestText: string;
 }
 
-/**
- * BilledPrice
- */
-export interface BilledPrice {
-  assessmentIdentifier: string;
-  editable: boolean;
-  price: number;
-}
-
 export enum AssignmentEvaluationType {
   ASSESSMENT = "ASSESSMENT",
   SUPPLEMENTATIONREQUEST = "SUPPLEMENTATIONREQUEST",
@@ -401,14 +392,6 @@ export interface EvaluationData {
  */
 export interface EvaluationAssigmentData {
   assigments: MaterialAssignmentType[];
-}
-
-/**
- * BilledPriceRequest
- */
-export interface BilledPriceRequest {
-  assessmentIdentifier: string;
-  price: string;
 }
 
 /**

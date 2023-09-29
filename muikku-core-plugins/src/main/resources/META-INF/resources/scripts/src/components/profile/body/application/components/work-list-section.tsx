@@ -2,14 +2,11 @@ import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import Link from "~/components/general/link";
 import moment from "~/lib/moment";
-import {
-  StoredWorklistItem,
-  WorklistBillingState,
-  WorklistSection,
-} from "~/reducers/main-function/profile";
+import { WorklistSection } from "~/reducers/main-function/profile";
 import WorkListRow from "./work-list-row";
 import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";
 import { useTranslation } from "react-i18next";
+import { WorklistBillingStateType, WorklistItem } from "~/generated/client";
 
 /**
  * sortBy
@@ -18,10 +15,10 @@ import { useTranslation } from "react-i18next";
  * @param direction direction
  */
 function sortBy(
-  data: StoredWorklistItem[],
+  data: WorklistItem[],
   property: string,
   direction: "asc" | "desc"
-): StoredWorklistItem[] {
+) {
   const actualProperty = property || "entryDate";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,7 +111,9 @@ export function WorkListSection(props: WorkListSectionProps) {
   // check if any entries are submittable based on the entry state
   const sectionHasSubmittableEntries =
     props.section.items &&
-    props.section.items.some((i) => i.state === WorklistBillingState.ENTERED);
+    props.section.items.some(
+      (i) => i.state === WorklistBillingStateType.Entered
+    );
 
   // check if section is for previous month entries
   const sectionIsPreviousMonth = moment(props.section.summary.beginDate).isSame(

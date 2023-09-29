@@ -20,6 +20,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
@@ -345,6 +346,11 @@ public class WorkspaceSchoolDataController {
     }
     
     return null;
+  }
+  
+  public WorkspaceAssessmentPrice getWorkspaceAssessmentPrice(WorkspaceEntity workspaceEntity) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
+    return workspaceBridge.getWorkspaceAssessmentPrice(workspaceEntity.getIdentifier());
   }
   
   public WorklistBasePriceRestModel getWorkspaceBasePrice(WorkspaceEntity workspaceEntity) {

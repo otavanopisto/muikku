@@ -21,6 +21,7 @@
       "hide": "Piilota",
       "hideAll": "Piilota kaikki",
       "hide_comments": "Piilota kommentit",
+      "lock": "Lukitse",
       "next": "Seuraava",
       "previous": "Edellinen",
       "openAll": "Avaa kaikki",
@@ -1041,8 +1042,9 @@
       "studentsToAdd": "Lisättävät opiskelijat",
       "studentsToRemove": "Poistettavat opiskelijat",
       "studyProgrammeLeader": "Linjanvetäjä",
+      "studyEndDate": "Opintojen päättymispäivä",
+      "studyStartDate": "Opintojen alkamispäivä",
       "studyTimeEnd": "Opinto-oikeuden päättymispäivä",
-      "studyTimeStart": "Opintojen alkamispäivämäärä",
       "teacher_one": "Opettaja",
       "teacher_other": "Opettajat",
       "teacher_workspace_one": "Kurssin opettaja",
@@ -1384,9 +1386,8 @@
       "empty_intermin": "Kurssilla ei ole yhtään välipalautetehtävää",
       "empty_journals": "Kurssilla ei ole yhtään oppimispäiväkirjamerkintää",
       "empty_instructions": "Kurssilla ei ole ohjeita",
-      "evaluationHasFee": "Tämän kurssin arviointi on maksullinen, mutta opiskelu on maksutonta.",
-      "evaluationFee": "Tämän kurssin arviointi maksaa sinulle {0} euroa.",
-      "evaluationPaymentInfo": "Kun olet maksanut arvioinnin, opettaja saa automaattisesti tiedon arviointipyynnöstäsi.",
+      "evaluationHasFee": "Tämän kurssin arviointi on maksullinen. Jos olet jo maksanut, tämä ilmoitus on aiheeton.",
+      "evaluationFee": "Tämän kurssin arviointi maksaa sinulle {{price}} euroa. Kun olet maksanut arvioinnin, opettaja saa automaattisesti tiedon arviointipyynnöstäsi.",
       "evaluationPaymentProcessor": "Maksu suoritetaan Mikkelin kaupungin verkkokaupassa. ",
       "logInGuidingInformation": "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.",
       "mustBePublished": "Huomaa, että kurssi täytyy erikseen julkaista, ennen kuin se näkyy opiskelijoille kurssipoimurissa. Kurssin alkamispäivämäärä ei vaikuta kurssin näkymiseen. Päivämääriä ei ole pakko asettaa.",
@@ -1918,5 +1919,24 @@
     "unspecifiedOptional": "Valinnainen",
     "unspecifiedOptional_lukioOPS2016": "Muu",
     "unspecifiedOptional_lukioOPS2021": "Paikallinen valinnainen"
+  },
+  "readSpeaker": {
+    "messages": {
+      "assignment": "Tehtävä",
+      "assignment_audio": "Äänitystehtävä",
+      "assignment_connect": "Yhdistelykenttä",
+      "assignment_file": "Tiedoston palautuslaatikko",
+      "assignment_journal": "Oppimispäiväkirjatehtävä",
+      "assignment_math": "Matematiikkatehtävä",
+      "assignment_memo": "Muistiokenttä",
+      "assignment_multiSelect": "Monivalintatehtävä",
+      "assignment_organizer": "Ryhmittelytehtävä",
+      "assignment_select": "Valintakenttä",
+      "assignment_sorter": "Järjestelytehtävä",
+      "assignment_text": "Tekstikenttä",
+      "iframe": "Iframe-upotus",
+      "image": "Kuva",
+      "mathJax": "Matematiikkakaava"
+    }
   }
 }

@@ -3,11 +3,10 @@ import { Assessment, WorkspaceType } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
 import {
-  WorkspaceCurriculumFilterListType,
-  WorkspaceJournalListType,
   MaterialContentNodeListType,
   MaterialCompositeRepliesType,
 } from "~/reducers/workspaces";
+import { Curriculum, WorkspaceJournal } from "~/generated/client";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
 
@@ -80,7 +79,7 @@ export interface RecordGroupType {
  */
 export interface CurrentRecordType {
   workspace: WorkspaceType;
-  journals: WorkspaceJournalListType;
+  journals: WorkspaceJournal[];
   materials: MaterialContentNodeListType;
   compositeReplies: MaterialCompositeRepliesType[];
 }
@@ -106,7 +105,7 @@ export interface RecordsType {
   currentStatus: CurrentStudentUserAndWorkspaceStatusType;
   current?: CurrentRecordType;
   location?: TranscriptOfRecordLocationType;
-  curriculums: WorkspaceCurriculumFilterListType;
+  curriculums: Curriculum[];
 }
 
 export type TranscriptOfRecordLocationType =

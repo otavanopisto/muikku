@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
-  WorkspaceListType,
   WorkspaceType,
   WorkspaceMaterialReferenceType,
 } from "~/reducers/workspaces";
@@ -25,7 +24,7 @@ import ItemList from "~/components/general/item-list";
  */
 interface WorkspacesPanelProps extends WithTranslation {
   status: StatusType;
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceType[];
   lastWorkspaces: WorkspaceMaterialReferenceType[];
   displayNotification: DisplayNotificationTriggerType;
 }
