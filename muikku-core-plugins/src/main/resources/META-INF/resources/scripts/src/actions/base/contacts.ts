@@ -1,16 +1,11 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import {
-  ContactGroup,
-  ContactGroupNames,
-  Contact,
-} from "~/reducers/base/contacts";
+import { ContactGroup, ContactGroupNames } from "~/reducers/base/contacts";
 import { LoadingState } from "~/@types/shared";
 import notificationActions from "~/actions/base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import { Dispatch } from "react-redux";
 import i18n from "~/locales/i18n";
+import MApi, { isMApiError } from "~/api/api";
 
 export type CONTACT_LOAD_GROUP = SpecificActionType<
   "CONTACT_LOAD_GROUP",
@@ -22,7 +17,7 @@ export type CONTACT_UPDATE_GROUP_STATE = SpecificActionType<
 >;
 
 /**
- *
+ * ContactGroupPayload
  */
 export interface ContactGroupPayload {
   data: ContactGroup;
@@ -55,6 +50,8 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const meApi = MApi.getMeApi();
+
     const contactsLoaded = getState().contacts[groupName].list.length > 0;
 
     if (contactsLoaded) {
@@ -66,13 +63,11 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         type: "CONTACT_UPDATE_GROUP_STATE",
         payload: { groupName: groupName, state: <LoadingState>"LOADING" },
       });
-      const data: Contact[] = (await promisify(
-        mApi().me.guidanceCounselors.read({
-          properties:
-            "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
-        }),
-        "callback"
-      )()) as Contact[];
+
+      const data = await meApi.getGuidanceCounselors({
+        properties:
+          "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
+      });
 
       const payload = {
         data: {
@@ -86,7 +81,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         payload: payload,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         return dispatch(
           notificationActions.displayNotification(err.message, "error")
         );
