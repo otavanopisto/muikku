@@ -1,11 +1,6 @@
-import { UserType } from "~/reducers/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
-import {
-  GuiderStudentType,
-  GuiderStudentUserProfileLabelType,
-} from "~/reducers/main-function/guider";
-import { i18nType } from "~/reducers/base/i18n";
+import { GuiderStudentType } from "~/reducers/main-function/guider";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -19,16 +14,16 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
 
 /**
  * StudentProps
  */
-interface StudentProps {
+interface StudentProps extends WithTranslation<"common"> {
   student: GuiderStudentType;
   checkbox: React.ReactElement<HTMLInputElement>;
-  i18n: i18nType;
   index: number;
   status: StatusType;
 }
@@ -45,7 +40,7 @@ class Student extends React.Component<StudentProps, StudentState> {
   /**
    * getSudentStudyTimeState
    *
-   * @param student
+   * @param student student
    * @returns StudentStudytimeState "ENDED" | "ENDING" | "ONGOING"
    */
   getSudentStudyTimeState = (
@@ -79,7 +74,7 @@ class Student extends React.Component<StudentProps, StudentState> {
               htmlFor={`userSelect-` + this.props.index}
               className="visually-hidden"
             >
-              {this.props.i18n.text.get("plugin.wcag.userSelect.label")}
+              {this.props.i18n.t("wcag.userSelect", { ns: "guider" })}
             </label>
             {this.props.checkbox}
           </div>
@@ -96,7 +91,6 @@ class Student extends React.Component<StudentProps, StudentState> {
             {this.props.student.studyProgrammeName}
           </span>
         </ApplicationListItemHeader>
-
         <ApplicationListItemFooter modifiers="student">
           <div className="labels">
             {studyTimeEndState !== "ONGOING" ? (
@@ -105,25 +99,24 @@ class Student extends React.Component<StudentProps, StudentState> {
                   className={`label__icon icon-clock state-${studyTimeEndState}`}
                 ></span>
                 <span className="label__text">
-                  {this.props.i18n.text.get(
-                    "plugin.guider.user.state." + studyTimeEndState,
-                    moment(this.props.student.studyTimeEnd).format("LL")
-                  )}{" "}
+                  {this.props.i18n.t("labels.studyTime", {
+                    ns: "guider",
+                    context: studyTimeEndState,
+                    time: moment(this.props.student.studyTimeEnd).format("LL"),
+                  })}{" "}
                 </span>
               </div>
             ) : null}
             {this.props.student.flags.length
-              ? this.props.student.flags.map(
-                  (flag: GuiderStudentUserProfileLabelType) => (
-                    <div className="label" key={flag.id}>
-                      <span
-                        className="label__icon icon-flag"
-                        style={{ color: flag.flagColor }}
-                      ></span>
-                      <span className="label__text">{flag.flagName}</span>
-                    </div>
-                  )
-                )
+              ? this.props.student.flags.map((flag) => (
+                  <div className="label" key={flag.id}>
+                    <span
+                      className="label__icon icon-flag"
+                      style={{ color: flag.flagColor }}
+                    ></span>
+                    <span className="label__text">{flag.flagName}</span>
+                  </div>
+                ))
               : null}
           </div>
         </ApplicationListItemFooter>
@@ -138,9 +131,8 @@ class Student extends React.Component<StudentProps, StudentState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
 
-export default connect(mapStateToProps)(Student);
+export default withTranslation(["guider"])(connect(mapStateToProps)(Student));

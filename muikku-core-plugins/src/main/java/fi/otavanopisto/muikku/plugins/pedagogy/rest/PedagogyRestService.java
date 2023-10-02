@@ -26,10 +26,10 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
@@ -46,6 +46,7 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -76,6 +77,9 @@ public class PedagogyRestService {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   /**
    * mApi().pedagogy.form.access.read('PYRAMUS-STUDENT-123');
@@ -408,17 +412,28 @@ public class PedagogyRestService {
         specEdTeacher = relation.isSpecEdTeacher();
         guidanceCounselor = relation.isGuidanceCounselor();
         courseTeacher = relation.isCourseTeacher();
+        // If only the courseTeacher is true, check if the student is active in some of the teacher's courses
+        if (courseTeacher && !guidanceCounselor && !specEdTeacher) {
+
+          SchoolDataIdentifier studentId = SchoolDataIdentifier.fromId(studentIdentifier);
+          UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(studentId.getDataSource(), studentId.getIdentifier());
+          
+          Set<Long> teacherWorkspaceIds = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity()).stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
+          Set<Long> studentWorkspaceIds = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(studentEntity).stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
+          
+          courseTeacher = !Collections.disjoint(teacherWorkspaceIds, studentWorkspaceIds);
+          
+        }
       }
       
       // Form is always accessible to admins and special education teachers but also to other related staff,
       // if the form exists and its visibility is set to allow that
       
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-      boolean isAdmin = roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR; 
+      boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
       accessible = isAdmin || specEdTeacher;
       if (!accessible && form != null && form.getVisibility() != null) {
         List<PedagogyFormVisibility> visibility = Stream.of(form.getVisibility().split(",")).map(v -> PedagogyFormVisibility.valueOf(v)).collect(Collectors.toList());
-        accessible = visibility.contains(PedagogyFormVisibility.TEACHERS) && (relation.isGuidanceCounselor() || relation.isCourseTeacher());
+        accessible = visibility.contains(PedagogyFormVisibility.TEACHERS) && (relation.isGuidanceCounselor() || courseTeacher);
       }
     }
     return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher);

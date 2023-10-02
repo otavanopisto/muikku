@@ -1,12 +1,12 @@
 import { ActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
-import { UserGroupType, UserType } from "~/reducers/user-index";
 import { Reducer } from "redux";
 import {
   CommunicatorSignature,
   MessageThread,
   MessageThreadExpanded,
   MessageThreadLabel,
+  User,
+  UserGroup,
 } from "~/generated/client";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -46,7 +46,7 @@ export interface MessageSearchResult {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tags: any;
   recipients?: Array<MessageRecepientType>;
-  userGroupRecipients?: Array<UserGroupType>;
+  userGroupRecipients?: UserGroup[];
   workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
 }
 
@@ -75,7 +75,7 @@ export interface MessageThreadUpdateType {
   tags?: any;
   threadLatestMessageDate?: string;
   unreadMessagesInThread?: boolean;
-  sender?: UserType;
+  sender?: User;
   messageCountInThread?: number;
   labels?: MessageThreadLabel[];
 }
@@ -114,11 +114,10 @@ export interface MessagesNavigationItemUpdateType {
   id?: string | number;
   icon?: string;
   color?: string;
-  /**
-   *
-   */
-  text?(i18n: i18nType): string;
+  text: string;
 }
+
+export type NavigationItemTypes = "folder" | "label";
 
 /**
  * MessagesNavigationItem
@@ -135,10 +134,7 @@ export interface MessagesNavigationItem {
   id: string | number;
   icon: string;
   color?: string;
-  /**
-   *
-   */
-  text(i18n: i18nType): string;
+  text: string;
 }
 
 /**
@@ -158,52 +154,28 @@ const defaultNavigation: MessagesNavigationItem[] = [
     type: "folder",
     id: "inbox",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.inbox");
-    },
+    text: "inbox",
   },
   {
     location: "unread",
     type: "folder",
     id: "unread",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.unread");
-    },
+    text: "unread",
   },
   {
     location: "sent",
     type: "folder",
     id: "sent",
     icon: "folder",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.sent");
-    },
+    text: "sent",
   },
   {
     location: "trash",
     type: "folder",
     id: "trash",
     icon: "trash-alt",
-    /**
-     * text
-     * @param i18n i18n
-     */
-    text(i18n: i18nType): string {
-      return i18n.text.get("plugin.communicator.category.title.trash");
-    },
+    text: "trash",
   },
 ];
 
@@ -263,8 +235,8 @@ function sortNavigationItems(
     return -1;
   }
 
-  const labelAUpperCase = itemA.text(null).toUpperCase();
-  const labelBUpperCase = itemB.text(null).toUpperCase();
+  const labelAUpperCase = itemA.text.toUpperCase();
+  const labelBUpperCase = itemB.text.toUpperCase();
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase

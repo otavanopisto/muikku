@@ -1,17 +1,17 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Link from "../../general/link";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
+import { localizeTime } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { MessageThread } from "~/generated/client";
 
 /**
  * LastMessagesPanelProps
  */
-interface LastMessagesPanelProps {
-  i18n: i18nType;
+interface LastMessagesPanelProps extends WithTranslation {
   lastThreads: MessageThread[];
 }
 
@@ -35,9 +35,7 @@ class LastMessagesPanel extends React.Component<
       <Panel
         modifier="latest-messages"
         icon="icon-envelope"
-        header={this.props.i18n.text.get(
-          "plugin.frontPage.latestMessages.title"
-        )}
+        header={this.props.t("labels.lastMessages", { ns: "frontPage" })}
       >
         {this.props.lastThreads.length ? (
           <div className="item-list item-list--panel-latest-messages">
@@ -62,7 +60,7 @@ class LastMessagesPanel extends React.Component<
                     {thread.caption}
                   </span>
                   <span className="item-list__latest-message-date">
-                    {this.props.i18n.time.format(thread.created)}
+                    {localizeTime.date(thread.created)}
                   </span>
                 </span>
               </Link>
@@ -70,9 +68,7 @@ class LastMessagesPanel extends React.Component<
           </div>
         ) : (
           <div className="empty empty--front-page">
-            {this.props.i18n.text.get(
-              "plugin.frontPage.latestMessages.noMessages"
-            )}
+            {this.props.t("content.empty", { ns: "messaging" })}
           </div>
         )}
       </Panel>
@@ -86,16 +82,10 @@ class LastMessagesPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     lastThreads: state.messages.threads,
   };
 }
 
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LastMessagesPanel);
+export default withTranslation(["frontPage", "messaging"])(
+  connect(mapStateToProps)(LastMessagesPanel)
+);

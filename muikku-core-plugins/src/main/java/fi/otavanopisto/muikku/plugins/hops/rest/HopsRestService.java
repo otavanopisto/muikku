@@ -38,8 +38,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
@@ -481,9 +481,9 @@ public class HopsRestService {
     }
     
     if (userEntity != null && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUserEntity());
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
 
-      if (roleEntity.getArchetype().equals(EnvironmentRoleArchetype.STUDENT)) {
+      if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }

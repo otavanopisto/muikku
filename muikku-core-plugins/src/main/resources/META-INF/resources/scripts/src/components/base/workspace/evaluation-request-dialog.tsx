@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -13,16 +12,23 @@ import {
   requestAssessmentAtWorkspace,
 } from "~/actions/workspaces";
 import { StatusType } from "~/reducers/base/status";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * EvaluationRequestDialogProps
  */
-interface EvaluationRequestDialogProps {
-  i18n: i18nType;
+interface EvaluationRequestDialogProps extends WithTranslation {
   workspace: WorkspaceType;
   isOpen: boolean;
   onClose: () => any;
   requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
 }
 
@@ -32,6 +38,7 @@ interface EvaluationRequestDialogProps {
 interface EvaluationRequestDialogState {
   locked: boolean;
   message: string;
+  price: number;
 }
 
 /**
@@ -49,11 +56,13 @@ class EvaluationRequestDialog extends React.Component<
     super(props);
     this.state = {
       locked: false,
+      price: 0,
       message: "",
     };
 
     this.updateMessage = this.updateMessage.bind(this);
     this.request = this.request.bind(this);
+    this.proceedToPay = this.proceedToPay.bind(this);
   }
 
   /**
@@ -96,11 +105,70 @@ class EvaluationRequestDialog extends React.Component<
   }
 
   /**
+   * proceedToPay creates the payment link and
+   * @param closeDialog closeDialog
+   */
+  proceedToPay = async (closeDialog: () => any) => {
+    try {
+      closeDialog();
+      const link: string = (await promisify(
+        mApi().assessmentrequest.workspace.paidAssessmentRequest.create(
+          this.props.workspace.id,
+          {
+            requestText: this.state.message,
+          }
+        ),
+        "callback"
+      )().then((link: { url: string }) => link.url)) as string;
+      window.location.href = link;
+    } catch (e) {
+      this.props.displayNotification(
+        this.props.t("notifications.createError", {
+          ns: "orders",
+          context: "paymentLocation",
+        }),
+        "error"
+      );
+    }
+  };
+
+  /**
+   * loadPriceInfo loads the assessment prices from backend
+   */
+  loadPriceInfo = async () => {
+    try {
+      const price: number = (await promisify(
+        mApi().assessmentrequest.workspace.assessmentPrice.read(
+          this.props.workspace.id
+        ),
+        "callback"
+      )().then(
+        (assessmentPrice: { price: number }) => assessmentPrice.price
+      )) as number;
+
+      this.setState({
+        price,
+      });
+      // eslint-disable-next-line no-empty
+    } catch (e) {
+      this.props.displayNotification(
+        this.props.t("notifications.loadError", {
+          ns: "orders",
+          error: e,
+        }),
+        "error"
+      );
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
     const hasFees = this.props.status.hasFees;
+    const price = this.state.price;
 
     /**
      * content
@@ -108,28 +176,64 @@ class EvaluationRequestDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        <div className="dialog__content-row">
-          {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.description"
-          )}
-        </div>
         {hasFees ? (
+          <>
+            {price > 0 ? (
+              <>
+                <div className="dialog__content-row">
+                  <p>
+                    {t("content.evaluationFee", {
+                      ns: "workspace",
+                      price: price,
+                    })}
+                  </p>
+                </div>
+                <div className="dialog__content-row">
+                  <p>
+                    {t("content.evaluationPaymentProcessor", {
+                      ns: "workspace",
+                    })}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="dialog__content-row">
+                  {t("content.requestEvaluation", {
+                    ns: "workspace",
+                  })}
+                </div>
+                <div className="dialog__content-row">
+                  <label>
+                    {t("labels.evaluationHasFee", {
+                      ns: "workspace",
+                    })}
+                  </label>
+                  <p>
+                    {t("content.evaluationHasFee", {
+                      ns: "workspace",
+                    })}
+                  </p>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
           <div className="dialog__content-row">
-            <label>
-              {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label"
-              )}
-            </label>
-            <p>
-              {this.props.i18n.text.get(
-                "plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.content"
-              )}
-            </p>
+            {t("content.requestEvaluation", {
+              ns: "workspace",
+            })}
           </div>
-        ) : null}
+        )}
         <div className="form-element dialog__content-row">
           <p>
+            <label htmlFor="messageForTeacher">
+              {t("labels.evaluationRequestMessage", {
+                ns: "workspace",
+              })}
+            </label>
             <textarea
+              id="messageForTeacher"
               className="form-element__textarea"
               value={this.state.message}
               onChange={this.updateMessage}
@@ -145,23 +249,32 @@ class EvaluationRequestDialog extends React.Component<
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">
-        <Button
-          buttonModifiers={["standard-ok", "execute"]}
-          onClick={this.request.bind(this, closeDialog)}
-          disabled={this.state.locked}
-        >
-          {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.requestButton"
-          )}
-        </Button>
+        {price > 0 ? (
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            buttonAs="div"
+            onClick={() => this.proceedToPay(closeDialog)}
+            disabled={this.state.locked}
+          >
+            {t("actions.pay", {
+              ns: "workspace",
+            })}
+          </Button>
+        ) : (
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            onClick={this.request.bind(this, closeDialog)}
+            disabled={this.state.locked}
+          >
+            {t("actions.send", { context: "evaluationRequest" })}
+          </Button>
+        )}
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.workspace.evaluation.requestEvaluation.cancelButton"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -169,9 +282,8 @@ class EvaluationRequestDialog extends React.Component<
     return (
       <Dialog
         modifier="evaluation-request-dialog"
-        title={this.props.i18n.text.get(
-          "plugin.workspace.evaluation.requestEvaluation.title"
-        )}
+        title={t("labels.requestEvaluation", { ns: "workspace" })}
+        executeOnOpen={this.loadPriceInfo}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -187,7 +299,6 @@ class EvaluationRequestDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspace: state.workspaces.currentWorkspace,
     status: state.status,
   };
@@ -198,10 +309,12 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ requestAssessmentAtWorkspace }, dispatch);
+  return bindActionCreators(
+    { requestAssessmentAtWorkspace, displayNotification },
+    dispatch
+  );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EvaluationRequestDialog);
+export default withTranslation(["workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EvaluationRequestDialog)
+);

@@ -171,7 +171,7 @@ public class OrganizationEntityController {
         sessionController.getLoggedUserEntity());
     // TODO Configurable default organization rather than considering one with id 1 as The One
     return usdi != null &&
-        EnvironmentRoleArchetype.ADMINISTRATOR.equals(usdi.getRole().getArchetype()) &&
+        usdi.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR) &&
         usdi.getOrganization() != null &&
         usdi.getOrganization().getId().equals(1L);
   }

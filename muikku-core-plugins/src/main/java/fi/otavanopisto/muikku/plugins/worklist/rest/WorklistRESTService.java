@@ -14,6 +14,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -204,15 +205,20 @@ public class WorklistRESTService {
    * Output: Updated worklist item
    * 
    * Errors:
+   * 400 Payload and path ids don't match
    * 403 if trying to update a worklist item that is already approved or paid
    */
-  @Path("/worklistItems")
+  @Path("/worklistItems/{ID}")
   @PUT
   @RESTPermit(MuikkuPermissions.UPDATE_WORKLISTITEM)
-  public Response updateWorklistItem(WorklistItemRestModel item) {
+  public Response updateWorklistItem(@PathParam("ID") Long worklistItemId, WorklistItemRestModel item) {
 
     if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    if (!worklistItemId.equals(item.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Id mismatch").build();
     }
     
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
@@ -228,24 +234,26 @@ public class WorklistRESTService {
   /**
    * DELETE mApi().worklist.worklistItems
    * 
-   * Removes an existing worklist item.
+   * Removes an existing worklist item with the specified id
    * 
-   * Payload: An existing worklist item
+   * Payload: None
    * 
    * Output: 204 (no content)
    * 
    * Errors:
    * 403 if trying to remove a worklist item that is already approved or paid
    */
-  @Path("/worklistItems")
+  @Path("/worklistItems/{ID}")
   @DELETE
   @RESTPermit(MuikkuPermissions.DELETE_WORKLISTITEM)
-  public Response removeWorklistItem(WorklistItemRestModel item) {
+  public Response removeWorklistItem(@PathParam("ID") Long worklistItemId) {
 
     if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
+    WorklistItemRestModel item = new WorklistItemRestModel();
+    item.setId(worklistItemId);
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
     userSchoolDataController.removeWorklistItem(dataSource, item);
     return Response.noContent().build();

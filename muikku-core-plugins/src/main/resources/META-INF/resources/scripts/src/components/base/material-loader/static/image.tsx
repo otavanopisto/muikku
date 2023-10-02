@@ -5,18 +5,18 @@
  */
 
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   HTMLtoReactComponent,
   HTMLToReactComponentRule,
 } from "~/util/modifiers";
 import Zoom from "~/components/general/zoom";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * ImageProps
  */
-interface ImageProps {
+interface ImageProps extends WithTranslation {
   element: HTMLElement;
   path: string;
   dataset: {
@@ -28,7 +28,6 @@ interface ImageProps {
     sourceUrl: string;
     original?: string;
   };
-  i18n: i18nType;
   processingRules: HTMLToReactComponentRule[];
 
   invisible?: boolean;
@@ -45,7 +44,7 @@ interface ImageState {
 /**
  * Image
  */
-export default class Image extends React.Component<ImageProps, ImageState> {
+class Image extends React.Component<ImageProps, ImageState> {
   private predictedAspectRatio: number;
   /**
    * constructor
@@ -128,6 +127,8 @@ export default class Image extends React.Component<ImageProps, ImageState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     const newRules = this.props.processingRules.filter(
       (r) => r.id !== "image-rule"
     );
@@ -161,9 +162,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
             >
               <span className="image__details-container">
                 <span className="image__details-label">
-                  {this.props.i18n.text.get(
-                    "plugin.workspace.materials.detailsSourceLabel"
-                  )}{" "}
+                  {t("labels.source", { ns: "materials" })}:{" "}
                 </span>
                 {this.props.dataset.source || this.props.dataset.sourceUrl ? (
                   this.props.dataset.sourceUrl ? (
@@ -301,8 +300,12 @@ export default class Image extends React.Component<ImageProps, ImageState> {
 
         return (
           <>
-            {/* TODO: lokalisointi*/}
-            <ReadspeakerMessage text="Kuva" />
+            <ReadspeakerMessage
+              text={this.props.t("messages.assignment", {
+                ns: "readSpeaker",
+                context: "image",
+              })}
+            />
             <Zoom key={props.key} imgsrc={props.src}>
               <Tag {...props}>{children}</Tag>
             </Zoom>
@@ -314,3 +317,5 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     return HTMLtoReactComponent(this.props.element, newRules);
   }
 }
+
+export default withTranslation(["workspace", "readSpeaker"])(Image);

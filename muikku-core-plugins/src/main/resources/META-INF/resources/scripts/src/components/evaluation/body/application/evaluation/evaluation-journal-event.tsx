@@ -13,18 +13,12 @@ import SlideDrawer from "./slide-drawer";
 import EvaluationJournalEventComment from "./evaluation-journal-event-comment";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import {
-  JournalComment,
-  JournalCommentCreate,
-  JournalCommentUpdate,
-} from "~/@types/journal";
-import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import {
   LoadEvaluationJournalCommentsFromServerTriggerType,
   loadEvaluationJournalCommentsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { EvaluationStudyDiaryEvent } from "~/@types/evaluation";
+import { useTranslation } from "react-i18next";
 import {
   UpdateEvaluationJournalCommentTriggerType,
   updateEvaluationJournalComment,
@@ -33,12 +27,12 @@ import {
   CreateEvaluationJournalCommentTriggerType,
   createEvaluationJournalComment,
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
+import { WorkspaceJournal, WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * EvaluationEventContentCardProps
  */
-interface EvaluationDiaryEventProps extends EvaluationStudyDiaryEvent {
-  i18n: i18nType;
+interface EvaluationDiaryEventProps extends WorkspaceJournal {
   open: boolean;
   onClickOpen?: (diaryId: number) => void;
   evaluation: EvaluationState;
@@ -63,7 +57,6 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     userEntityId,
     workspaceEntityId,
     id,
-    i18n,
     commentCount,
     createEvaluationJournalComment,
     updateEvaluationJournalComment,
@@ -76,9 +69,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const [createNewActive, setCreateNewActive] = React.useState(false);
   const [commentToEdit, setCommentToEdit] = React.useState<
-    JournalComment | undefined
+    WorkspaceJournalComment | undefined
   >(undefined);
   const [editorLocked, setEditorLocked] = React.useState(false);
+
+  const { t } = useTranslation(["evaluation", "journal", "common"]);
 
   React.useEffect(() => {
     if (!createNewActive && commentToEdit === undefined) {
@@ -162,7 +157,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
    * If there is existing new comment editor open -> closes it
    * @param diaryComment diaryComment
    */
-  const handleEditComment = (diaryComment: JournalComment) => {
+  const handleEditComment = (diaryComment: WorkspaceJournalComment) => {
     unstable_batchedUpdates(() => {
       setCommentToEdit(diaryComment);
       createNewActive && setCreateNewActive(false);
@@ -195,13 +190,11 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const handleNewCommentSave = (comment: string, callback?: () => void) => {
     setEditorLocked(true);
 
-    const newComment: JournalCommentCreate = {
-      journalEntryId: id,
-      comment: comment,
-    };
-
     createEvaluationJournalComment({
-      newCommentPayload: newComment,
+      newCommentPayload: {
+        journalEntryId: id,
+        comment: comment,
+      },
       journalEntryId: id,
       workspaceEntityId: workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
@@ -224,14 +217,12 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const handleCommentEditSave = (comment: string, callback?: () => void) => {
     setEditorLocked(true);
 
-    const updatedComment: JournalCommentUpdate = {
-      id: commentToEdit.id,
-      journalEntryId: commentToEdit.journalEntryId,
-      comment: comment,
-    };
-
     updateEvaluationJournalComment({
-      updatedCommentPayload: updatedComment,
+      updatedCommentPayload: {
+        id: commentToEdit.id,
+        journalEntryId: commentToEdit.journalEntryId,
+        comment: comment,
+      },
       journalEntryId: id,
       workspaceEntityId: workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc
@@ -248,7 +239,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
-  ).format("LT")}`;
+  ).format("h:mm")}`;
 
   const arrowClasses = !showComments
     ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--journal-comment evaluation-modal__event-arrow--right`
@@ -280,11 +271,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
             {isDraft && (
               <span className="label label--draft">
-                <span className="label__text">
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.journalEntry.statusDraft"
-                  )}
-                </span>
+                <span className="label__text">{t("actions.draft")}</span>
               </span>
             )}
           </div>
@@ -292,9 +279,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           <div className="evaluation-modal__item-meta">
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalEntry.writtenLabel"
-                )}
+                {t("labels.written", { ns: "evaluation" })}
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {formatedDate}
@@ -316,10 +301,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
           >
             <div className={arrowClasses + " icon-arrow-right"} />
             <div className="evaluation-modal__item-subheader-title evaluation-modal__item-subheader-title--journal-comment">
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.journalComments.title"
-              )}{" "}
-              ({commentCount})
+              {t("labels.comments")} ({commentCount})
             </div>
           </div>
 
@@ -330,9 +312,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
               ) : comments && comments.length === 0 ? (
                 <div className="empty">
                   <span>
-                    {i18n.text.get(
-                      "plugin.evaluation.evaluationModal.journalComments.noComments"
-                    )}
+                    {t("content.empty", { ns: "journal", context: "comments" })}
                   </span>
                 </div>
               ) : (
@@ -359,9 +339,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
                 className="link link--evaluation"
                 onClick={handleCreateNewComment}
               >
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalComments.newCommentButton"
-                )}
+                {t("labels.create", { context: "comment" })}
               </Link>
             </div>
           </AnimateHeight>
@@ -369,9 +347,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </AnimateHeight>
 
       <SlideDrawer
-        title={i18n.text.get(
-          "plugin.evaluation.evaluationModal.journalComments.newComment.editorTitle"
-        )}
+        title={t("labels.create", { context: "comment" })}
         closeIconModifiers={["evaluation"]}
         modifiers={["journal-comment"]}
         show={createNewActive}
@@ -389,9 +365,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </SlideDrawer>
 
       <SlideDrawer
-        title={i18n.text.get(
-          "plugin.evaluation.evaluationModal.journalComments.editComment.editorTitle"
-        )}
+        title={t("labels.edit", { context: "comment" })}
         show={commentToEdit !== undefined}
         closeIconModifiers={["evaluation"]}
         modifiers={["journal-comment"]}
@@ -418,7 +392,6 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     evaluation: state.evaluations,
   };
 }

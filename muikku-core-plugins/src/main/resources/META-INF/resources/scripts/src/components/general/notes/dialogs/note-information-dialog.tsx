@@ -1,105 +1,67 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import NotesListItem, { NotesListItemProps } from "../notes-item-list-item";
-import { AnyActionType } from "~/actions";
+import { useTranslation } from "react-i18next";
 
 /**
- * MatriculationExaminationWizardDialogProps
+ * NoteInformationDialogProps
  */
 interface NoteInformationDialogProps extends NotesListItemProps {
-  i18n: i18nType;
   children?: React.ReactElement;
 }
 
 /**
- * MatriculationExaminationWizardDialogState
+ * NoteInformationDialog
+ * @param props props
+ * @returns JSX.Element
  */
-interface NoteInformationDialogState {}
+const NoteInformationDialog: React.FC<NoteInformationDialogProps> = (props) => {
+  const { children, ...item } = props;
+  const { t } = useTranslation("tasks");
 
-/**
- * MatriculationExaminationWizardDialog
- */
-class NoteInformationDialog extends React.Component<
-  NoteInformationDialogProps,
-  NoteInformationDialogState
-> {
   /**
-   * Component render method
+   * content
+   * @param closeDialog closeDialog
    * @returns JSX.Element
    */
-  render() {
-    const { children, ...item } = this.props;
+  const content = (closeDialog: () => never) => (
+    <NotesListItem
+      {...item}
+      containerModifier={["dialog-information"]}
+      openInformationToDialog={false}
+    />
+  );
 
-    /**
-     * content
-     * @param closeDialog closeDialog
-     * @returns JSX.Element
-     */
-    const content = (closeDialog: () => never) => (
-      <NotesListItem
-        {...item}
-        containerModifier={["dialog-information"]}
-        openInformationToDialog={false}
-      />
-    );
-
-    /**
-     * footer
-     * @param closeDialog closeDialog
-     */
-    const footer = (closeDialog: () => never) => (
-      <div className="dialog__button-set">
-        <Button
-          buttonModifiers={["standard-cancel", "cancel"]}
-          onClick={closeDialog}
-        >
-          Sulje
-        </Button>
-      </div>
-    );
-
-    return (
-      <Dialog
-        modifier="note-information"
-        disableScroll={true}
-        title={this.props.i18n.text.get(
-          "plugin.records.tasks.dialog.noteDetails.title"
-        )}
-        content={content}
-        footer={footer}
-        closeOnOverlayClick={false}
+  /**
+   * footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => never) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["standard-cancel", "cancel"]}
+        onClick={closeDialog}
       >
-        {children}
-      </Dialog>
-    );
-  }
-}
+        {t("actions.close", { ns: "common" })}
+      </Button>
+    </div>
+  );
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
+  return (
+    <Dialog
+      modifier="note-information"
+      disableScroll={true}
+      title={t("labels.details")}
+      content={content}
+      footer={footer}
+      closeOnOverlayClick={false}
+    >
+      {children}
+    </Dialog>
+  );
+};
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NoteInformationDialog);
+export default NoteInformationDialog;

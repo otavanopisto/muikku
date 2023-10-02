@@ -1,49 +1,13 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
+import { UserChatSettingsType } from "~/reducers/user-index";
 import {
-  StudentUserAddressType,
-  UserWithSchoolDataType,
-  UserChatSettingsType,
-} from "~/reducers/user-index";
-
-export enum EditableField {
-  ENTRYDATE = "ENTRYDATE",
-  DESCRIPTION = "DESCRIPTION",
-  PRICE = "PRICE",
-  FACTOR = "FACTOR",
-  BILLING_NUMBER = "BILLING_NUMBER",
-}
-
-export enum WorklistBillingState {
-  ENTERED = "ENTERED",
-  PROPOSED = "PROPOSED",
-  APPROVED = "APPROVED",
-  PAID = "PAID",
-}
-
-/**
- * WorklistTemplate
- */
-export interface WorklistTemplate {
-  id: number;
-  description: string;
-  price: number;
-  factor: number;
-  billingNumber: number;
-  editableFields: Array<EditableField>;
-}
-
-/**
- * WorklistItem
- */
-export interface WorklistItem {
-  templateId: number;
-  entryDate: string;
-  description: string;
-  price: number;
-  factor: number;
-  billingNumber: number;
-}
+  UserStudentAddress,
+  UserWithSchoolData,
+  WorklistItem,
+  WorklistSummary,
+  WorklistTemplate,
+} from "~/generated/client";
 
 /**
  * PurchaseStateType
@@ -92,31 +56,11 @@ export interface PurchaseType {
 }
 
 /**
- * StoredWorklistItem
- */
-export interface StoredWorklistItem extends WorklistItem {
-  id: number;
-  editableFields: Array<EditableField>;
-  state: WorklistBillingState;
-  removable: boolean;
-}
-
-/**
- * WorklistItemsSummary
- */
-export interface WorklistItemsSummary {
-  displayName: string;
-  beginDate: string;
-  endDate: string;
-  count: number;
-}
-
-/**
  * WorklistSection
  */
 export interface WorklistSection {
-  summary: WorklistItemsSummary;
-  items?: Array<StoredWorklistItem>;
+  summary: WorklistSummary;
+  items?: WorklistItem[];
 }
 
 /**
@@ -127,16 +71,16 @@ export interface ProfileProperty {
 }
 
 /**
- * ProfileType
+ * ProfileState
  */
-export interface ProfileType {
+export interface ProfileState {
   location: string;
   properties: ProfileProperty;
   username?: string;
-  addresses?: Array<StudentUserAddressType>;
-  student?: UserWithSchoolDataType;
+  addresses?: UserStudentAddress[];
+  student?: UserWithSchoolData;
   chatSettings?: UserChatSettingsType;
-  worklistTemplates?: Array<WorklistTemplate>;
+  worklistTemplates?: WorklistTemplate[];
   worklist?: Array<WorklistSection>;
   purchases?: PurchaseType[];
 }
@@ -144,7 +88,7 @@ export interface ProfileType {
 /**
  * initialProfileState
  */
-const initialProfileState: ProfileType = {
+const initialProfileState: ProfileState = {
   properties: {},
   username: null,
   addresses: null,
@@ -162,7 +106,7 @@ const initialProfileState: ProfileType = {
  * @param action action
  * @returns State of profileReducer
  */
-export const profile: Reducer<ProfileType> = (
+export const profile: Reducer<ProfileState> = (
   state = initialProfileState,
   action: ActionType
 ) => {

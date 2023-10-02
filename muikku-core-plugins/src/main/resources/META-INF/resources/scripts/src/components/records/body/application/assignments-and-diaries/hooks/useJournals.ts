@@ -2,18 +2,17 @@ import * as React from "react";
 import mApi from "~/lib/mApi";
 import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { i18nType } from "~/reducers/base/i18n";
-import {
-  WorkspaceJournalFeedback,
-  WorkspaceJournalType,
-} from "~/reducers/workspaces/journals";
+import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
+import { WorkspaceJournal } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseDiariesState {
   isLoading: boolean;
-  journals: WorkspaceJournalType[];
+  journals: WorkspaceJournal[];
   journalFeedback: WorkspaceJournalFeedback | null;
 }
 
@@ -26,20 +25,22 @@ const initialState: UseDiariesState = {
   journalFeedback: null,
 };
 
+const workspaceApi = MApi.getWorkspaceApi();
+
 /**
  * Custom hook for student study hours
  * @param userEntityId userEntityId
  * @param workspaceId workspaceId
- * @param i18n i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useJournals = (
   userEntityId: number,
   workspaceId: number,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
+  const { t } = useTranslation(["studies", "common"]);
+
   const [journalsData, setJournalsData] = React.useState(initialState);
 
   React.useEffect(() => {
@@ -68,14 +69,12 @@ export const useJournals = (
          */
         const [journals, journalFeedback] = await Promise.all([
           (async () => {
-            const journals = <WorkspaceJournalType[]>await promisify(
-              mApi().workspace.workspaces.journal.read(workspaceId, {
-                userEntityId,
-                firstResult: 0,
-                maxResults: 512,
-              }),
-              "callback"
-            )();
+            const journals = await workspaceApi.getWorkspaceJournals({
+              workspaceId,
+              userEntityId,
+              firstResult: 0,
+              maxResults: 512,
+            });
             return journals;
           })(),
           (async () => {
@@ -102,10 +101,15 @@ export const useJournals = (
         }
       } catch (err) {
         if (!isCancelled) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(
-            `${i18n.text.get(
-              "plugin.records.errormessage.workspaceDiaryLoadFailed"
-            )}, ${err.message}`,
+            `${t("notifications.loadError", {
+              ns: "studies",
+              context: "workspaceJournal",
+            })}, ${err.message}`,
             "error"
           );
           setJournalsData((journalsData) => ({
@@ -121,7 +125,7 @@ export const useJournals = (
     return () => {
       isCancelled = true;
     };
-  }, [userEntityId, workspaceId, displayNotification, i18n]);
+  }, [userEntityId, workspaceId, displayNotification, t]);
 
   return {
     journalsData,

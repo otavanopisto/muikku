@@ -7,7 +7,7 @@ import {
   MaterialContentNodeType,
 } from "~/reducers/workspaces";
 import { AssignmentsTabType } from "../assignments-and-diaries";
-import { i18nType } from "~/reducers/base/i18n";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
@@ -30,18 +30,18 @@ const initialState: UseAssignmentsState = {
  *
  * @param workspaceId workspaceId
  * @param tabOpen tabOpen
- * @param i18n i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useEvaluatedAssignments = (
   workspaceId: number,
   tabOpen: AssignmentsTabType,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [evaluatedAssignmentsData, setEvaluatedAssignmentsData] =
     React.useState(initialState);
+
+  const { t } = useTranslation(["studies", "common"]);
 
   React.useEffect(() => {
     let isCancelled = false;
@@ -107,9 +107,10 @@ export const useEvaluatedAssignments = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${i18n.text.get(
-              "plugin.records.errormessage.workspaceAssignmentsEvaluatedLoadFailed"
-            )}, ${err.message}`,
+            `${t("notifications.loadError", {
+              ns: "studies",
+              context: "workspaceAssignments",
+            })}, ${err.message}`,
             "error"
           );
           setEvaluatedAssignmentsData((evaluatedAssignmentsData) => ({
@@ -139,7 +140,7 @@ export const useEvaluatedAssignments = (
     displayNotification,
     tabOpen,
     evaluatedAssignmentsData.evaluatedAssignments.length,
-    i18n,
+    t,
   ]);
 
   return {

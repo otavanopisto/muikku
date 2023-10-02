@@ -4,7 +4,6 @@ import { StateType } from "~/reducers";
 import { bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import EvaluationJournalEvent from "./evaluation-journal-event";
 import Link from "~/components/general/link";
@@ -20,15 +19,16 @@ import Button, { ButtonPill } from "~/components/general/button";
 import {
   AssessmentRequest,
   EvaluationJournalFilters,
-  EvaluationStudyDiaryEvent,
 } from "~/@types/evaluation";
 import Dropdown from "~/components/general/dropdown";
+import { WorkspaceJournal } from "~/generated/client";
+import { localizeTime } from "~/locales/i18n";
+import { useTranslation } from "react-i18next";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventListProps {
-  i18n: i18nType;
   selectedAssessment: AssessmentRequest;
   evaluation: EvaluationState;
   deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
@@ -43,7 +43,9 @@ interface EvaluationDiaryEventListProps {
 const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
   props
 ) => {
-  const { evaluation, i18n } = props;
+  const { evaluation } = props;
+
+  const { t } = useTranslation(["journal", "evaluation", "common"]);
 
   const [listOfDiaryIds, setListOfDiaryIds] = React.useState<number[]>([]);
   const [journalFilters, setJournalFilters] =
@@ -141,10 +143,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
    * @param a a
    * @param b b
    */
-  const sortByDate = (
-    a: EvaluationStudyDiaryEvent,
-    b: EvaluationStudyDiaryEvent
-  ) => {
+  const sortByDate = (a: WorkspaceJournal, b: WorkspaceJournal) => {
     const dateA = new Date(a.created);
     const dateB = new Date(b.created);
 
@@ -210,9 +209,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
         })
     ) : (
       <div className="empty">
-        <span>
-          {i18n.text.get("plugin.evaluation.evaluationModal.noJournals")}
-        </span>
+        <span>{t("content.empty", { ns: "journal", context: "entries" })}</span>
       </div>
     );
 
@@ -224,7 +221,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
   return (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
-        {i18n.text.get("plugin.evaluation.evaluationModal.journalTitle")}
+        {t("labels.entries", { ns: "journal" })}
       </div>
 
       {journalFeedbackIsReady ? (
@@ -233,9 +230,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
             <div className="evaluation-modal__item">
               <div className="evaluation-modal__item-journal-feedback">
                 <div className="evaluation-modal__item-journal-feedback-label">
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.journalFeedBackTitle"
-                  )}
+                  {t("labels.feedback", { ns: "journal" })}
                 </div>
                 <div className="evaluation-modal__item-journal-feedback-data rich-text rich-text--evaluation-literal">
                   <CkeditorContentLoader html={journalFeedback.feedback} />
@@ -244,13 +239,10 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               <div className="evaluation-modal__item-meta">
                 <div className="evaluation-modal__item-meta-item">
                   <span className="evaluation-modal__item-meta-item-label">
-                    {i18n.text.get(
-                      "plugin.evaluation.evaluationModal.journalFeedBackLabel"
-                    )}
-                    :
+                    {t("labels.feedbackDate", { ns: "journal" })}:
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
-                    {i18n.time.format(journalFeedback.created, "l")}
+                    {localizeTime.date(journalFeedback.created, "l")}
                   </span>
                 </div>
               </div>
@@ -260,17 +252,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
                 >
-                  {props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.journalFeedback.editButton"
-                  )}
+                  {t("actions.cancel")}
                 </Link>
 
                 {!feedbackEditorOpen && (
                   <DeleteJournalFeedback journalFeedback={journalFeedback}>
                     <Link className="link link--evaluation link--evaluation-delete">
-                      {props.i18n.text.get(
-                        "plugin.evaluation.evaluationModal.journalFeedback.deleteButton"
-                      )}
+                      {t("actions.remove")}
                     </Link>
                   </DeleteJournalFeedback>
                 )}
@@ -282,9 +270,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
             <div className="evaluation-modal__item">
               <div className="evaluation-modal__item-body rich-text">
                 <p>
-                  {props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.journalFeedBackEmpty"
-                  )}
+                  {t("content.empty", { ns: "journal", context: "evaluation" })}
                 </p>
               </div>
               <div className="evaluation-modal__item-actions evaluation-modal__item-actions--journal-feedback">
@@ -293,9 +279,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
                 >
-                  {props.i18n.text.get(
-                    "plugin.evaluation.evaluationModal.journalFeedBackLink"
-                  )}
+                  {t("actions.grade", { ns: "evaluation", context: "overall" })}
                 </Link>
               </div>
             </div>
@@ -315,9 +299,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 : ["journal-filter"]
             }
           >
-            {props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.filters.mandatory.label"
-            )}
+            {t("labels.mandatories", { ns: "journal" })}
           </Button>
           <Button
             onClick={handleChangeJournalFilterClick("showOthers")}
@@ -327,9 +309,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 : ["journal-filter"]
             }
           >
-            {props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.filters.other.label"
-            )}
+            {t("labels.others", { ns: "journal" })}
           </Button>
         </div>
 
@@ -339,13 +319,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               className="link link--evaluation link--evaluation-open-close"
               onClick={handleCloseAllDiaryEntriesClick}
             >
-              {i18n.text.get("plugin.evaluation.evaluationModal.closeAll")}
+              {t("actions.closeAll")}
             </Link>
             <Link
               className="link link--evaluation link--evaluation-open-close"
               onClick={handleOpenAllDiaryEntriesClick}
             >
-              {i18n.text.get("plugin.evaluation.evaluationModal.openAll")}
+              {t("actions.openAll")}
             </Link>
 
             <div className="evaluation-modal__content-actions-sorters">
@@ -385,9 +365,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
 
       <SlideDrawer
         show={feedbackEditorOpen}
-        title={props.i18n.text.get(
-          "plugin.evaluation.evaluationModal.journalFeedBackTitle"
-        )}
+        title={t("labels.feedback", { ns: "journal" })}
         onClose={handleJournalFeedbackEditorStateClick}
       >
         <JournalFeedbackEditor
@@ -407,7 +385,6 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     evaluation: state.evaluations,
   };
 }
