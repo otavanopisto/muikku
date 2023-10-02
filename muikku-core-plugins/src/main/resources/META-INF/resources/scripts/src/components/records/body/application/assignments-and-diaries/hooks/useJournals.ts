@@ -1,6 +1,4 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
 import { WorkspaceJournal } from "~/generated/client";
@@ -25,6 +23,7 @@ const initialState: UseDiariesState = {
   journalFeedback: null,
 };
 
+const evaluationApi = MApi.getEvaluationApi();
 const workspaceApi = MApi.getWorkspaceApi();
 
 /**
@@ -78,15 +77,12 @@ export const useJournals = (
             return journals;
           })(),
           (async () => {
-            const journalFeedback = <WorkspaceJournalFeedback>(
-              await promisify(
-                mApi().evaluation.workspaces.students.journalfeedback.read(
-                  workspaceId,
-                  userEntityId
-                ),
-                "callback"
-              )()
-            );
+            const journalFeedback =
+              await evaluationApi.getWorkspaceStudentJournalFeedback({
+                workspaceId,
+                studentEntityId: userEntityId,
+              });
+
             return journalFeedback;
           })(),
         ]);

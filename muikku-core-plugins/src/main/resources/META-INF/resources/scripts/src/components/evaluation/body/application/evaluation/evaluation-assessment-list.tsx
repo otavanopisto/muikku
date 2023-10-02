@@ -10,9 +10,9 @@ import {
   MaterialCompositeRepliesType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import { AssessmentRequest } from "~/@types/evaluation";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 interface AssessmentListProps {
   evaluation: EvaluationState;
   workspaces: WorkspaceType[];
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
 }
 
 /**

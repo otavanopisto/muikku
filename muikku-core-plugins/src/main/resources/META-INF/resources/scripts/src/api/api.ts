@@ -29,8 +29,8 @@ import {
   ResponseError,
   FetchError,
   RequiredError,
-  Middleware,
   ResponseContext,
+  Middleware,
 } from "../generated/client";
 
 /**
