@@ -541,7 +541,6 @@ class AssignmentEditor extends SessionStateComponent<
             </CKEditor>
           </div>
         </div>
-
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="assignmentEvaluationGrade">

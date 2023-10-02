@@ -98,7 +98,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="application-sub-panel__item-title">
                 {this.props.summary.data.studentsDetails.studyEndDate
                   ? t("labels.endDate", { ns: "studies" })
-                  : t("labels.studyTimeEnd", { ns: "users" })}
+                  : t("labels.studyEndDate", { ns: "users" })}
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date">
                 <span className="application-sub-panel__single-entry">

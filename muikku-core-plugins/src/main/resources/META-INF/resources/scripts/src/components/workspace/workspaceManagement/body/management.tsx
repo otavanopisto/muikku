@@ -48,10 +48,7 @@ import {
 import { filterMatch, filterHighlight } from "~/util/modifiers";
 import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
-import {
-  langAttributeLocale,
-  outputCorrectDatePickerLocale,
-} from "~/helper-functions/locale";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -785,7 +782,10 @@ class ManagementPanel extends React.Component<
                       >
                         {languageOptions.map((language) => (
                           <option key={language} value={language}>
-                            {langAttributeLocale[language]}
+                            {t("labels.language", {
+                              ns: language,
+                              context: "workspace",
+                            })}
                           </option>
                         ))}
                       </select>
@@ -956,8 +956,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessMembers">
-                            {t("labels.membersOnly", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              context: "membersOnly",
                             })}
                           </label>
                         </div>
@@ -973,8 +974,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessLoggedin">
-                            {t("labels.loggedInUsers", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              context: "loggedInUsers",
                             })}
                           </label>
                         </div>
@@ -990,8 +992,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessAnyone">
-                            {t("labels.anyone", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              context: "anyone",
                             })}
                           </label>
                         </div>

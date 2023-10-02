@@ -275,7 +275,10 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       selectedWorkspaceId === rest.workspaceEntityId ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
-          aria-label={t("evaluation:actions.archiveStudent")}
+          aria-label={t("actions.archive", {
+            ns: "evaluation",
+            context: "student",
+          })}
           buttonModifiers="archive-student"
           icon="archive"
         />

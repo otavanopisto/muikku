@@ -279,7 +279,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
                 >
-                  {t("actions.grade", { ns: "evaluation", context: "overall" })}
+                  {t("actions.grade", { ns: "evaluation", context: "journal" })}
                 </Link>
               </div>
             </div>
@@ -335,9 +335,19 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 alignSelfVertically="top"
                 content={
                   sortByCreationDate === "asc" ? (
-                    <p>Järjestetty luontipäivämäärän mukaan nousevasti</p>
+                    <p>
+                      {t("labels.sortDescending", {
+                        ns: "journal",
+                        context: "writingDate",
+                      })}
+                    </p>
                   ) : (
-                    <p>Järjestetty luontipäivämäärän mukaan laskevasti</p>
+                    <p>
+                      {t("labels.sortAscending", {
+                        ns: "journal",
+                        context: "writingDate",
+                      })}
+                    </p>
                   )
                 }
               >
