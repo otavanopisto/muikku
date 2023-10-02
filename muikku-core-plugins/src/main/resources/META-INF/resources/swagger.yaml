@@ -1614,6 +1614,26 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
+  /rest/coursepicker/educationTypes:
+    get:
+      operationId: getCoursepickerEducationTypes
+      description: Returns list of education types that are used in coursepicker. This list only contains education types that do have courses for sure.
+      tags:
+        - Coursepicker
+      responses:
+        "200":
+          description: Course picker education types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EducationType"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
   /rest/coursepicker/organizations:
     get:
       operationId: getCoursepickerOrganizations
@@ -7241,7 +7261,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceEducationType"
+                  $ref: "#/components/schemas/EducationType"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10906,6 +10926,18 @@ components:
         latestMessage:
           type: string
 
+    EducationType:
+      type: object
+      description: EducationType object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+
     EvaluationJournalFeedback:
       type: object
       description: EvaluationJournalFeedback object
@@ -13989,18 +14021,6 @@ components:
       enum:
         - ENABLED
         - DISABLED
-
-    WorkspaceEducationType:
-      type: object
-      description: WorkspaceEducationType object
-      required:
-        - identifier
-        - name
-      properties:
-        identifier:
-          type: string
-        name:
-          type: string
 
     WorkspaceDetails:
       type: object

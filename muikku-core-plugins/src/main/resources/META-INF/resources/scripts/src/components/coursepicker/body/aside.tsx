@@ -11,7 +11,6 @@ import Navigation, {
 } from "~/components/general/navigation";
 import {
   WorkspacesType,
-  WorkspaceEducationFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
@@ -53,7 +52,7 @@ class NavigationAside extends React.Component<
           name={this.props.t("labels.educationLevel", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
-            (educationType: WorkspaceEducationFilterType) => {
+            (educationType) => {
               const isActive =
                 this.props.workspaces.activeFilters.educationFilters.includes(
                   educationType.identifier

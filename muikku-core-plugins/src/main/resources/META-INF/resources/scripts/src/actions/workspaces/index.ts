@@ -8,7 +8,6 @@ import {
   WorkspaceChatStatusType,
   WorkspaceAssessementStateType,
   WorkspaceAssessmentRequestType,
-  WorkspaceEducationFilterListType,
   WorkspacesActiveFiltersType,
   WorkspacesStateType,
   WorkspacesPatchType,
@@ -43,6 +42,7 @@ import {
   WorkspaceStudent,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
+  EducationType,
 } from "~/generated/client";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
@@ -100,7 +100,7 @@ export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
   SpecificActionType<
     "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-    WorkspaceEducationFilterListType
+    EducationType[]
   >;
 
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
@@ -1268,21 +1268,21 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
       try {
         if (!loadOrganizationWorkspaceFilters) {
+          const educationTypes =
+            await coursepickerApi.getCoursepickerEducationTypes();
+
           dispatch({
             type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-            payload: <WorkspaceEducationFilterListType>(
-              await promisify(
-                mApi().workspace.educationTypes.read(),
-                "callback"
-              )()
-            ),
+            payload: educationTypes,
           });
         } else {
           dispatch({
             type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-            payload: <WorkspaceEducationFilterListType>(
+            payload: <EducationType[]>(
               await promisify(
                 mApi().workspace.educationTypes.read(),
                 "callback"

@@ -4,6 +4,7 @@ import { SelectItem } from "~/actions/workspaces/index";
 import { WorkspaceJournal } from "~/generated/client";
 import {
   Curriculum,
+  EducationType,
   Organization,
   WorkspaceOrganization,
 } from "~/generated/client";
@@ -476,17 +477,6 @@ export type WorkspaceBaseFilterType =
   | "UNPUBLISHED";
 
 /**
- * WorkspaceEducationFilterType
- */
-export interface WorkspaceEducationFilterType {
-  identifier: string;
-  name: string;
-}
-
-export type WorkspaceEducationFilterListType =
-  Array<WorkspaceEducationFilterType>;
-
-/**
  * WorkspaceOrganizationFilterType
  */
 export interface WorkspaceOrganizationFilterType {
@@ -509,7 +499,7 @@ export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
  * WorkspacesavailableFiltersType
  */
 export interface WorkspacesavailableFiltersType {
-  educationTypes: WorkspaceEducationFilterListType;
+  educationTypes: EducationType[];
   curriculums: Curriculum[];
   organizations?: WorkspaceOrganization[];
   baseFilters?: WorkspaceBaseFilterListType;
@@ -520,7 +510,7 @@ export interface WorkspacesavailableFiltersType {
  * OrganizationWorkspacesAvailableFiltersType
  */
 export interface OrganizationWorkspacesAvailableFiltersType {
-  educationTypes: WorkspaceEducationFilterListType;
+  educationTypes: EducationType[];
   curriculums: Curriculum[];
   stateFilters?: WorkspaceStateFilterListType;
 }
