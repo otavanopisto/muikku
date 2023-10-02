@@ -3996,7 +3996,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderStudent"
+                  $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4022,7 +4022,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderStudent"
+                $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4055,7 +4055,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceWithAddons"
+                  $ref: "#/components/schemas/RecordsWorkspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4159,9 +4159,30 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ContactLog"
+                $ref: "#/components/schemas/ContactLog"
+
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/guider/files/{fileId}:
+    delete:
+      operationId: deleteGuiderFile
+      summary: Delete guider file
+      description: Delete guider file
+      tags:
+        - Guider
+      parameters:
+        - name: fileId
+          in: path
+          description: File id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Guider file deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6871,6 +6892,16 @@ paths:
       tags:
         - Usergroup
       parameters:
+        - name: userIdentifier
+          in: query
+          description: User identifier
+          schema:
+            type: string
+        - name: archetype
+          in: query
+          description: Archetype
+          schema:
+            type: string
         - name: q
           in: query
           description: Search string
@@ -9243,6 +9274,7 @@ components:
               - $ref: "#/components/schemas/DiscussionThreadReply"
 
     ContactLogCreateEventRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9261,6 +9293,7 @@ components:
                 type: string
 
     ContactLogUpdateEventRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9282,6 +9315,7 @@ components:
                 type: integer
 
     ContactLogEventCommentCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9297,6 +9331,7 @@ components:
                 type: string
 
     ContactLogEventCommentUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10608,7 +10643,6 @@ components:
         - EMAIL
         - PHONE
         - CHATLOG
-        - SKYPE
         - FACE2FACE
         - ABSENCE
         - MUIKKU
@@ -10678,14 +10712,19 @@ components:
       properties:
         id:
           type: integer
-        entryDate:
+        entry:
+          type: integer
+        commentDate:
           type: string
+          format: date-time
         creatorId:
           type: integer
         creatorName:
           type: string
         text:
           type: string
+        hasImage:
+          type: boolean
 
     Curriculum:
       type: object
@@ -11299,39 +11338,6 @@ components:
         properties:
           $ref: "#/components/schemas/AnyValue"
         role:
-          type: string
-
-    GuiderStudent:
-      allOf:
-        - $ref: "#/components/schemas/UserWithSchoolData"
-        - type: object
-          required:
-            - flags
-          properties:
-            flags:
-              type: array
-              items:
-                $ref: "#/components/schemas/GuiderStudentLabel"
-
-    GuiderStudentLabel:
-      type: object
-      description: GuiderStudentLabel object
-      required:
-        - id
-        - flagId
-        - flagName
-        - flagColor
-        - studentIdentifier
-      properties:
-        id:
-          type: integer
-        flagId:
-          type: integer
-        flagName:
-          type: string
-        flagColor:
-          type: integer
-        studentIdentifier:
           type: string
 
     GuiderStudentNotification:
@@ -12745,6 +12751,18 @@ components:
           description: The date when the form was created
           type: string
 
+    RecordsWorkspace:
+      allOf:
+        - $ref: "#/components/schemas/Workspace"
+        - type: object
+          properties:
+            subjects:
+              type: array
+              items:
+                $ref: "#/components/schemas/WorkspaceSubject"
+            activity:
+              $ref: "#/components/schemas/WorkspaceActivity"
+
     PublicityRestriction:
       type: string
       enum:
@@ -12875,6 +12893,79 @@ components:
           type: string
         code:
           type: string
+
+    Student:
+      type: object
+      required:
+        - id
+        - email
+        - firstName
+        - hasImage
+        - updatedByStudent
+        - userEntityId
+        - matriculationEligibility
+        - ceeposLine
+        - flags
+      properties:
+        curriculumIdentifier:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        hasImage:
+          type: boolean
+        id:
+          type: string
+        language:
+          nullable: true
+          type: string
+        lastName:
+          type: string
+        municipality:
+          nullable: true
+          type: string
+        nationality:
+          nullable: true
+          type: string
+        nickName:
+          nullable: true
+          type: string
+        school:
+          nullable: true
+          type: string
+        studyEndDate:
+          nullable: true
+          type: string
+          format: date-time
+        studyProgrammeName:
+          type: string
+        studyStartDate:
+          nullable: true
+          type: string
+          format: date-time
+        studyTimeEnd:
+          nullable: true
+          type: string
+          format: date-time
+        lastLogin:
+          nullable: true
+          type: string
+          format: date-time
+        updatedByStudent:
+          type: boolean
+        userEntityId:
+          type: integer
+        matriculationEligibility:
+          type: boolean
+        ceeposLine:
+          type: string
+          nullable: true
+        flags:
+          nullable: true
+          type: array
+          items:
+            $ref: "#/components/schemas/UserStudentFlag"
 
     StudentInfo:
       type: object
@@ -13758,14 +13849,6 @@ components:
           type: string
         name:
           type: string
-
-    WorkspaceWithAddons:
-      allOf:
-        - $ref: "#/components/schemas/Workspace"
-        - type: object
-          properties:
-            activity:
-              $ref: "#/components/schemas/WorkspaceActivity"
 
     WorkspaceBasicInfo:
       type: object

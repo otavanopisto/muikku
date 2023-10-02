@@ -16,7 +16,7 @@ import {
 } from "./main-function/users";
 import { DiscussionState } from "./discussion";
 import { UserIndexState } from "./user-index";
-import { GuiderType } from "./main-function/guider";
+import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
 import {
   YOType,
@@ -59,7 +59,7 @@ export interface StateType {
   organizationWorkspaces?: WorkspacesType;
   discussion?: DiscussionState;
   organizationUsers?: UsersState;
-  guider?: GuiderType;
+  guider?: GuiderState;
   records?: RecordsType;
   error?: ErrorType;
   profile?: ProfileState;
