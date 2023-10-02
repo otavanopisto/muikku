@@ -1,15 +1,9 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { localizeTime } from "~/locales/i18n";
-import {
-  ProfileState,
-  PurchaseType,
-  PurchaseStateType,
-} from "~/reducers/main-function/profile";
-import promisify from "~/util/promisify";
+import { ProfileState } from "~/reducers/main-function/profile";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
@@ -23,6 +17,8 @@ import {
 } from "~/helper-functions/ceepos-error";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { CeeposOrder } from "~/generated/client";
+import MApi from "~/api/api";
 
 /**
  * IPurchasesProps
@@ -54,11 +50,17 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
    * performPayment
    */
   public async performPayment() {
+    const ceeposApi = MApi.getCeeposApi();
+
     const currentPurchase = this.props.profile.purchases[0];
-    const value: string = (await promisify(
+    /* const value: string = (await promisify(
       mApi().ceepos.pay.create(currentPurchase.id),
       "callback"
-    )()) as string;
+    )()) as string; */
+
+    const value = await ceeposApi.createCeeposPay({
+      orderId: currentPurchase.id,
+    });
 
     location.href = value;
   }
@@ -76,18 +78,18 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
     const purchases = this.props.profile.purchases;
 
-    const ongoingPuchases: PurchaseType[] = purchases.filter(
+    const ongoingPuchases: CeeposOrder[] = purchases.filter(
       (purchase) =>
-        purchase.state === PurchaseStateType.ONGOING ||
-        purchase.state === PurchaseStateType.CREATED ||
-        purchase.state === PurchaseStateType.ERRORED
+        purchase.state === "ONGOING" ||
+        purchase.state === "CREATED" ||
+        purchase.state === "ERRORED"
     );
 
-    const completedPurchases: PurchaseType[] = purchases.filter(
+    const completedPurchases: CeeposOrder[] = purchases.filter(
       (purchase) =>
-        purchase.state !== PurchaseStateType.ONGOING &&
-        purchase.state !== PurchaseStateType.CREATED &&
-        purchase.state !== PurchaseStateType.ERRORED
+        purchase.state !== "ONGOING" &&
+        purchase.state !== "CREATED" &&
+        purchase.state !== "ERRORED"
     );
 
     if (!purchases.length) {
@@ -153,8 +155,7 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           ) : null}
                         </span>
 
-                        {p.state === PurchaseStateType.CREATED ||
-                        p.state === PurchaseStateType.ONGOING ? (
+                        {p.state === "CREATED" || p.state === "ONGOING" ? (
                           <span className="application-list__header-primary-actions">
                             <Button
                               icon="forward"
@@ -166,9 +167,9 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                         ) : null}
 
-                        {p.state === PurchaseStateType.ERRORED ||
-                        p.state === PurchaseStateType.CANCELLED ||
-                        p.state === PurchaseStateType.PAID ? (
+                        {p.state === "ERRORED" ||
+                        p.state === "CANCELLED" ||
+                        p.state === "PAID" ? (
                           <span className="application-list__header-primary-actions">
                             <CommunicatorNewMessage
                               extraNamespace="ceepos-error"

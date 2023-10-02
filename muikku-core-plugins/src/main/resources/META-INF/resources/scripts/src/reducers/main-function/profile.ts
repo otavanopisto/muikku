@@ -2,6 +2,7 @@ import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import {
+  CeeposOrder,
   UserStudentAddress,
   UserWithSchoolData,
   WorklistItem,
@@ -12,48 +13,48 @@ import {
 /**
  * PurchaseStateType
  */
-export enum PurchaseStateType {
+/* export enum PurchaseStateType {
   CREATED = "CREATED",
   CANCELLED = "CANCELLED",
   ERRORED = "ERRORED",
   ONGOING = "ONGOING",
   PAID = "PAID",
   COMPLETE = "COMPLETE",
-}
+} */
 
 /**
  * PurchaseProductType
  */
-export interface PurchaseProductType {
+/* export interface PurchaseProductType {
   Code: string;
   Description: string;
   Price: number;
-}
+} */
 
 /**
  * PurchaseCreatorType
  */
-export interface PurchaseCreatorType {
+/* export interface PurchaseCreatorType {
   id: number;
   userEntityId: number;
   firstName: string;
   lastName: string;
   email: string;
-}
+} */
 
 /**
  * PurchaseType
  */
-export interface PurchaseType {
+/* export interface PurchaseType {
   created: string;
   paid: string;
   id: number;
-  product: PurchaseProductType;
+  product: CeeposPurchaseProduct;
   state: PurchaseStateType;
   studentEmail: string;
   studentIdentifier: string;
   creator: PurchaseCreatorType;
-}
+} */
 
 /**
  * WorklistSection
@@ -82,7 +83,7 @@ export interface ProfileState {
   chatSettings?: UserChatSettingsType;
   worklistTemplates?: WorklistTemplate[];
   worklist?: Array<WorklistSection>;
-  purchases?: PurchaseType[];
+  purchases?: CeeposOrder[];
 }
 
 /**
