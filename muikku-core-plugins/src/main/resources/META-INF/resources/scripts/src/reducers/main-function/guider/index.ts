@@ -13,6 +13,7 @@ import {
   UserStudentEmail,
   UserStudentPhoneNumber,
   UserWithSchoolData,
+  PedagogyFormAccess,
 } from "~/generated/client";
 
 export type GuiderUserGroupListType = UserGroup[];
@@ -160,7 +161,7 @@ export interface GuiderStudentUserProfileType {
   purchases: PurchaseType[];
   hopsPhase?: string;
   hopsAvailable: boolean;
-  pedagogyFormAvailable: PedagogyFormAvailability;
+  pedagogyFormAvailable: PedagogyFormAccess;
 }
 
 /**

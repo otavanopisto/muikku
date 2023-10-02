@@ -5,13 +5,13 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
-import { Visibility } from "~/@types/pedagogy-form";
+import { PedagogyFormVisibility } from "~/generated/client";
 
 /**
  * VisibilityDialogProps
  */
 interface VisibilityDialogProps {
-  visibility: Visibility[];
+  visibility: PedagogyFormVisibility[];
   onVisibilityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;

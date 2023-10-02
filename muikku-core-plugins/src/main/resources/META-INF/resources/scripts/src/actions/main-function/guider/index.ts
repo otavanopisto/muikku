@@ -9,7 +9,6 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderType,
-  PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import promisify from "~/util/promisify";
@@ -557,6 +556,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();
+    const pedagogyApi = MApi.getPedagogyApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -619,8 +619,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               }
             );
 
-            promisify(mApi().pedagogy.form.access.read(id), "callback")().then(
-              (pedagogyFormAvaibility: PedagogyFormAvailability) => {
+            /* promisify(mApi().pedagogy.form.access.read(id), "callback")().then(
+              (pedagogyFormAvaibility: PedagogyFormAccess) => {
                 dispatch({
                   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                   payload: {
@@ -629,7 +629,21 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                   },
                 });
               }
-            );
+            ); */
+
+            pedagogyApi
+              .getPedagogyFormAccess({
+                studentIdentifier: id,
+              })
+              .then((pedagogyFormAvaibility) => {
+                dispatch({
+                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                  payload: {
+                    property: "pedagogyFormAvailable",
+                    value: pedagogyFormAvaibility,
+                  },
+                });
+              });
           }
         ),
 

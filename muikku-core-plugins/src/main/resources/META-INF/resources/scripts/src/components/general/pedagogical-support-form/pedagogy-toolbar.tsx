@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Visibility } from "~/@types/pedagogy-form";
 import VisibilityAndApprovalDialog from "./dialogs/visibility-and-approval";
 import VisibilityDialog from "./dialogs/visibility";
 import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 import Button from "../button";
 import { usePedagogyContext } from "./context/pedagogy-context";
+import { PedagogyFormVisibility } from "~/generated/client";
 
 /**
  * PedagogyToolbarProps
@@ -81,7 +81,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   ) => {
     const newVisibility = [...visibility];
 
-    const value = e.target.value as Visibility;
+    const value = e.target.value as PedagogyFormVisibility;
 
     if (newVisibility.includes(value)) {
       const index = newVisibility.indexOf(value);

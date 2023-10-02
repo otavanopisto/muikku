@@ -1,18 +1,22 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   FormData,
   Opinion,
-  PedagogyForm,
   SupportActionImplementation,
-  Visibility,
 } from "~/@types/pedagogy-form";
+import {
+  PedagogyForm,
+  PedagogyFormState,
+  PedagogyFormVisibility,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 export type UsePedagogyType = ReturnType<typeof usePedagogy>;
+
+const pedagogyApi = MApi.getPedagogyApi();
 
 /**
  * usePedagogy
@@ -28,9 +32,9 @@ export const usePedagogy = (
   const [formData, setFormData] = React.useState<FormData | undefined>(
     undefined
   );
-  const [visibility, setVisibility] = React.useState<Visibility[] | undefined>(
-    []
-  );
+  const [visibility, setVisibility] = React.useState<
+    PedagogyFormVisibility[] | undefined
+  >([]);
   const [formIsApproved, setFormIsApproved] = React.useState(false);
   const [changedFields, setChangedFields] = React.useState<string[]>([]);
   const [extraDetails, setExtraDetails] = React.useState<string>("");
@@ -47,16 +51,21 @@ export const usePedagogy = (
       setLoading(true);
 
       try {
-        const pedagogyData = (await promisify(
+        /* const pedagogyData = (await promisify(
           mApi().pedagogy.form.read(studentId),
           "callback"
-        )()) as PedagogyForm;
+        )()) as PedagogyForm; */
+
+        const pedagogyData = await pedagogyApi.getPedagogyForm({
+          studentIdentifier: studentId,
+        });
 
         if (componentMounted.current) {
           unstable_batchedUpdates(() => {
             setData({
               ...pedagogyData,
             });
+
             setFormData({
               ...defaultFormData,
               ...(JSON.parse(pedagogyData.formData) as FormData),
@@ -68,6 +77,10 @@ export const usePedagogy = (
         }
       } catch (err) {
         if (componentMounted.current) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           setLoading(false);
           displayNotification(err.message, "error");
         }
@@ -157,10 +170,17 @@ export const usePedagogy = (
   const activateForm = async () => {
     setLoading(true);
     try {
-      const pedagogyData = (await promisify(
+      /*  const pedagogyData = (await promisify(
         mApi().pedagogy.form.create(studentId, { formData: "{}" }),
         "callback"
-      )()) as PedagogyForm;
+      )()) as PedagogyForm; */
+
+      const pedagogyData = await pedagogyApi.createPedagogyForm({
+        studentIdentifier: studentId,
+        createPedagogyFormRequest: {
+          formData: "{}",
+        },
+      });
 
       unstable_batchedUpdates(() => {
         setData(pedagogyData);
@@ -351,38 +371,70 @@ export const usePedagogy = (
       };
     }
 
-    return (await promisify(
+    /* return (await promisify(
       mApi().pedagogy.form.formData.update(studentId, {
         formData: JSON.stringify(dataToUpdate),
         fields: fields || null,
         details: details || null,
       }),
       "callback"
-    )()) as PedagogyForm;
+    )()) as PedagogyForm; */
+
+    return await pedagogyApi.updatePedagogyFormData({
+      studentIdentifier: studentId,
+      updatePedagogyFormDataRequest: {
+        formData: JSON.stringify(dataToUpdate),
+        fields: fields || null,
+        details: details || null,
+      },
+    });
   };
 
   /**
    * updatevisibilityToServer
    */
-  const updatevisibilityToServer = async () =>
+  /* const updatevisibilityToServer = async () =>
     (await promisify(
       await mApi().pedagogy.form.visibility.update(studentId, {
         visibility,
       }),
       "callback"
-    )()) as PedagogyForm;
+    )()) as PedagogyForm; */
+
+  /**
+   * updatevisibilityToServer
+   */
+  const updatevisibilityToServer = async () =>
+    await pedagogyApi.updatePedagogyFormVisibility({
+      studentIdentifier: studentId,
+      updatePedagogyFormVisibilityRequest: {
+        visibility,
+      },
+    });
 
   /**
    * updateStateToServer
    * @param state state
    */
-  const updateStateToServer = async (state: string) =>
+  /* const updateStateToServer = async (state: string) =>
     (await promisify(
       mApi().pedagogy.form.state.update(studentId, {
         state,
       }),
       "callback"
-    )()) as PedagogyForm;
+    )()) as PedagogyForm; */
+
+  /**
+   * updateStateToServer
+   * @param state state
+   */
+  const updateStateToServer = async (state: PedagogyFormState) =>
+    await pedagogyApi.updatePedagogyFormState({
+      studentIdentifier: studentId,
+      updatePedagogyFormStateRequest: {
+        state,
+      },
+    });
 
   return {
     loading,

@@ -9564,6 +9564,7 @@ components:
                   type: integer
 
     PedagogyFormCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9576,6 +9577,7 @@ components:
                 type: string
 
     PedagogyFormDataUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9598,6 +9600,7 @@ components:
                 type: string
 
     PedagogyFormStateUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9610,6 +9613,7 @@ components:
                 $ref: "#/components/schemas/PedagogyFormState"
 
     PedagogyFormVisibilityUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -12541,18 +12545,18 @@ components:
       enum:
         - PENDING
         - APPROVED
-        - NOT_SENT
+        - ACTIVE
         - INACTIVE
 
     PedagogyFormVisibility:
       type: string
       enum:
-        - TEACHER
+        - TEACHERS
         - GUARDIANS
 
-    PedaogyHistoryEntry:
+    PedagogyHistoryEntry:
       type: object
-      description: PedaogyHistoryEntry object
+      description: PedagogyHistoryEntry object
       required:
         - modifierId
         - modifierName
@@ -12571,7 +12575,7 @@ components:
         date:
           description: The date when the update was made
           type: string
-        editedFiels:
+        editedFields:
           description: Fields that were edited in the update
           type: array
           items:
@@ -12639,6 +12643,8 @@ components:
         - studentInfo
         - history
         - visibility
+        - formData
+        - created
       properties:
         studentIdentifier:
           description: The id of the student
@@ -12647,13 +12653,16 @@ components:
         ownerId:
           description: Id of the user who created the document
           type: integer
+          nullable: true
         ownerInfo:
           description: Info of the user who created the document
           allOf:
             - $ref: "#/components/schemas/PedagogyUserInfo"
+          nullable: true
         id:
           description: The id of the form
           type: integer
+          nullable: true
         state:
           description: State of the form
           example: "PENDING | APPROVED | NOT_SENT | INACTIVE"
@@ -12667,20 +12676,23 @@ components:
           description: Update history of the form
           type: array
           items:
-            $ref: "#/components/schemas/PedaogyHistoryEntry"
+            $ref: "#/components/schemas/PedagogyHistoryEntry"
         visibility:
           description: Permissions for reading and viewing the form inside Muikku
           example: ["TEACHER", "GUARDIANS"]
           type: array
           items:
             $ref: "#/components/schemas/PedagogyFormVisibility"
-        fromData:
+        formData:
           description: The data of the form
           example: "JSON object"
+          nullable: true
           type: string
         created:
           description: The date when the form was created
           type: string
+          format: date-time
+          nullable: true
 
     PublicityRestriction:
       type: string
