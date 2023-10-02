@@ -10,7 +10,7 @@ import "~/sass/elements/evaluation.scss";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import { JournalComment } from "~/@types/journal";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -18,7 +18,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface JournalCommentEditorProps extends WithTranslation {
   locale: LocaleState;
-  journalComment?: JournalComment;
+  journalComment?: WorkspaceJournalComment;
   locked: boolean;
   journalEventId: number;
   userEntityId: number;

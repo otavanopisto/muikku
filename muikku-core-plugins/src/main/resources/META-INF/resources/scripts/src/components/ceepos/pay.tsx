@@ -1,6 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { Dispatch, bindActionCreators } from "redux";
+import promisify from "~/util/promisify";
+import mApi from "~/lib/mApi";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
+
 import { StateType } from "~/reducers";
 import { CeeposState } from "~/reducers/main-function/ceepos";
 import {
@@ -11,23 +18,77 @@ import { getName } from "~/util/modifiers";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
+import { ReturnLink } from "./done";
+import { AnyActionType } from "~/actions/index";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+
+/**
+ * CeeposPayProps
+ */
 
 interface CeeposPayProps extends WithTranslation {
   ceepos: CeeposState;
   status: StatusType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
-interface CeeposPayState {}
+/**
+ * CeeposPayState
+ */
+interface CeeposPayState {
+  returnLink: ReturnLink;
+}
 
+/**
+ * CeeposPay
+ */
 class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
   /**
+   * Class constructor
+   * @param props props
+   */
+  constructor(props: CeeposPayProps) {
+    super(props);
+
+    this.state = {
+      returnLink: {
+        text: this.props.i18n.t("actions.returnHome"),
+        path: "/",
+      },
+    };
+  }
+
+  // This same one used in both components and the Returnlink interface. Could be a hook
+  /**
+   * componentDidMount
+   */
+  async componentDidMount() {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+
+      const returnLink: ReturnLink = (await promisify(
+        mApi().ceepos.order.returnLink.read(searchParams.get("order")),
+        "callback"
+      )()) as ReturnLink;
+      this.setState({ returnLink });
+    } catch (e) {
+      this.props.displayNotification(
+        this.props.t("notifications.loadError", {
+          context: "link",
+          ns: "orders",
+          error: e,
+        }),
+        "error"
+      );
+    }
+  }
+
+  /**
    * render
-   * @returns
+   * @returns JSX component
    */
   render() {
     return (
@@ -58,9 +119,9 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
                   <Button
                     icon="forward"
                     buttonModifiers={["back-to-muikku", "info"]}
-                    href="/"
+                    href={this.state.returnLink.path}
                   >
-                    {this.props.i18n.t("actions.returnHome")}
+                    {this.state.returnLink.text}
                   </Button>
                   {this.props.ceepos.purchase ? (
                     <CommunicatorNewMessage
@@ -116,6 +177,10 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
   }
 }
 
+/**
+ * mapStateToProps
+ * @param state state
+ */
 function mapStateToProps(state: StateType) {
   return {
     ceepos: state.ceepos,
@@ -123,8 +188,12 @@ function mapStateToProps(state: StateType) {
   };
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default withTranslation("orders")(

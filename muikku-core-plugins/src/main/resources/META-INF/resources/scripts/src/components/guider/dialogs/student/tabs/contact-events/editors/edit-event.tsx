@@ -7,10 +7,7 @@ import {
   editContactLogEvent,
   EditContactLogEventTriggerType,
 } from "~/actions/main-function/guider";
-import {
-  ContactTypes,
-  contactTypesArray,
-} from "~/reducers/main-function/guider";
+import { contactTypesArray } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
@@ -18,7 +15,7 @@ import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
-import { ContactLogEvent } from "~/reducers/main-function/guider";
+import { ContactLogEvent, ContactType } from "~/generated/client";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -45,7 +42,7 @@ interface EditContactLogEventProps extends WithTranslation<["common"]> {
 interface EditContactLogEventState {
   text: string;
   date: Date;
-  type: ContactTypes;
+  type: ContactType;
   locked: boolean;
 }
 
@@ -101,7 +98,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
    */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
-      { type: e.target.value as ContactTypes },
+      { type: e.target.value as ContactType },
       this.props.contactEvent.id + "-edit-contact-event"
     );
   };

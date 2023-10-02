@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.util.ResourceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -115,5 +116,16 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
     implementation.login(authSource, dataSource, identifier);
   }
   
+  @Override
+  public boolean hasRole(EnvironmentRoleArchetype role) {
+    return implementation.hasRole(role);
+  }
+
+  @Override
+  public boolean hasAnyRole(EnvironmentRoleArchetype... roles) {
+    return implementation.hasAnyRole(roles);
+  }
+
   private SessionController implementation;
+
 }

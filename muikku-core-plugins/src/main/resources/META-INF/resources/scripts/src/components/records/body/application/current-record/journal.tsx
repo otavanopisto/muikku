@@ -9,15 +9,14 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { StateType } from "~/reducers";
 import { useJournalComments } from "../assignments-and-diaries/hooks/useJournalComments";
 import { useTranslation } from "react-i18next";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { WorkspaceJournalType } from "~/reducers/workspaces/journals";
 import JournalComment from "./journalComment";
+import { WorkspaceJournal } from "~/generated/client";
 import { localizeTime } from "~/locales/i18n";
 
 /**
@@ -25,7 +24,7 @@ import { localizeTime } from "~/locales/i18n";
  */
 interface JournalProps {
   displayNotification: DisplayNotificationTriggerType;
-  journal: WorkspaceJournalType;
+  journal: WorkspaceJournal;
   open: boolean;
   onJournalClick: (
     id: number

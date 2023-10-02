@@ -443,8 +443,12 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
       }
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Äänitystehtävä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "audio",
+            })}
+          />
           <span className="material-page__audiofield-wrapper rs_skip_always">
             <span className="material-page__audiofield">
               {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
@@ -621,8 +625,12 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
     // and this is the container
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Äänitystehtävä" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "audio",
+          })}
+        />
         <span
           className={`material-page__audiofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

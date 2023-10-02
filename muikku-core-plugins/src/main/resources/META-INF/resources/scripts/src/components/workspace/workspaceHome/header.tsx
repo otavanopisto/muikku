@@ -1,10 +1,7 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import {
-  WorkspaceCurriculumFilterListType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { localizeTime } from "~/locales/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
@@ -17,6 +14,7 @@ import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
 import { suitabilityMap } from "~/@shared/suitability";
+import { Curriculum } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -24,7 +22,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface WorkspaceHomeHeaderProps extends WithTranslation {
   workspace: WorkspaceType;
-  availableCurriculums: WorkspaceCurriculumFilterListType;
+  availableCurriculums: Curriculum[];
   status: StatusType;
   updateWorkspace: UpdateWorkspaceTriggerType;
 }

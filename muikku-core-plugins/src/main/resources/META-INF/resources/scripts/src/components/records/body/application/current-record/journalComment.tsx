@@ -1,12 +1,12 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
-import { JournalComment } from "~/@types/journal";
 import { AnyActionType } from "~/actions";
 import {
   ApplicationListItem,
   ApplicationListItemBody,
 } from "~/components/general/application-list";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { localizeTime } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
@@ -15,7 +15,7 @@ import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 /**
  * JournalCommentProps
  */
-interface JournalCommentProps extends JournalComment {
+interface JournalCommentProps extends WorkspaceJournalComment {
   status: StatusType;
 }
 
@@ -24,7 +24,7 @@ interface JournalCommentProps extends JournalComment {
  * @param props props
  * @returns JSX.Element
  */
-const JournalComment: React.FC<JournalCommentProps> = (props) => {
+const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
   const { comment, status, created, id, firstName, lastName, authorId } = props;
   const creatorIsMe = status.userId === authorId;
   const { t } = useTranslation();
@@ -69,4 +69,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(JournalComment);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WorkspaceJournalComment);

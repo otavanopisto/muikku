@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
-import { DiscussionType } from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
@@ -20,7 +20,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * DiscussionModifyAreaProps
  */
 interface DiscussionModifyAreaProps extends WithTranslation<["common"]> {
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   updateDiscussionArea: UpdateDiscussionAreaTriggerType;

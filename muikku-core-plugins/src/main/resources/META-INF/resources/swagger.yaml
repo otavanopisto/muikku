@@ -1595,7 +1595,7 @@ paths:
   #COURSEPICKER
   /rest/coursepicker/curriculums:
     get:
-      operationId: getCoursePickerCurriculums
+      operationId: getCoursepickerCurriculums
       summary: Get course picker curriculums
       description: Get course picker curriculums
       tags:
@@ -1614,9 +1614,29 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
+  /rest/coursepicker/educationTypes:
+    get:
+      operationId: getCoursepickerEducationTypes
+      description: Returns list of education types that are used in coursepicker. This list only contains education types that do have courses for sure.
+      tags:
+        - Coursepicker
+      responses:
+        "200":
+          description: Course picker education types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EducationType"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
   /rest/coursepicker/organizations:
     get:
-      operationId: getCoursePickerOrganizations
+      operationId: getCoursepickerOrganizations
       summary: Get course picker organizations
       description: Get course picker organizations
       tags:
@@ -1629,7 +1649,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Organization"
+                  $ref: "#/components/schemas/WorkspaceOrganization"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1637,7 +1657,7 @@ paths:
 
   /rest/coursepicker/workspaces:
     get:
-      operationId: getCoursePickerWorkspaces
+      operationId: getCoursepickerWorkspaces
       summary: Get course picker workspaces
       description: Get course picker workspaces
       tags:
@@ -1648,6 +1668,66 @@ paths:
           description: Search string
           schema:
             type: string
+        - name: subjects
+          in: query
+          description: Subject ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: educationTypes
+          in: query
+          description: Education type ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: curriculums
+          in: query
+          description: Curriculum ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: organizations
+          in: query
+          description: Organization ids
+          schema:
+            type: array
+            items:
+              type: string
+        - name: minVisits
+          in: query
+          description: Minimum visits
+          schema:
+            type: integer
+        - name: publicity
+          in: query
+          description: Publicity restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/PublicityRestriction"
+            default: ONLY_PUBLISHED
+        - name: myWorkspaces
+          in: query
+          description: My workspaces
+          schema:
+            type: boolean
+            default: false
+        - name: templates
+          in: query
+          description: Template restriction
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/TemplateRestriction"
+            default: ONLY_WORKSPACES
+        - name: orderBy
+          in: query
+          description: Order by
+          schema:
+            type: array
+            items:
+              type: string
         - name: firstResult
           in: query
           description: First result
@@ -1669,7 +1749,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Workspace"
+                  $ref: "#/components/schemas/AnyValue"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1677,7 +1757,7 @@ paths:
 
   /rest/coursepicker/workspaces/{workspaceId}:
     get:
-      operationId: getCoursePickerWorkspace
+      operationId: getCoursepickerWorkspace
       summary: Get course picker workspace
       description: Get course picker workspace
       tags:
@@ -1741,6 +1821,8 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignUpRequestBody"
       responses:
         "204":
           description: User signed up to workspace successfully
@@ -1757,6 +1839,12 @@ paths:
       description: Get composite assessment requests
       tags:
         - Evaluation
+      parameters:
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
       responses:
         "200":
           description: Composite assessment requests
@@ -1832,6 +1920,12 @@ paths:
           schema:
             type: integer
       responses:
+        "200":
+          description: Interim evaluation request deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterimEvaluationRequest"
         "204":
           description: Interim evaluation request deleted successfully
         "400":
@@ -1904,10 +1998,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-
+                $ref: "#/components/schemas/AssessmentWithAudio"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1955,10 +2046,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-
+                $ref: "#/components/schemas/AssessmentWithAudio"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2018,6 +2106,12 @@ paths:
           required: true
           schema:
             type: integer
+        - name: userEntityId
+          in: query
+          description: User entity id
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Workspace material evaluations
@@ -2061,6 +2155,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EvaluationJournalFeedback"
+        "204":
+          description: Workspace student journal feedback not found
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2156,7 +2252,7 @@ paths:
           description: Student entity id
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: Workspace student activity
@@ -2233,9 +2329,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
-      operationId: archiveWorkspaceUserEvaluationRequest
-      summary: Archive workspace user evaluation request
-      description: Archive workspace user evaluation request
+      operationId: archiveEvaluationWorkspaceUser
+      summary: Archive workspace user evaluation
+      description: Archive workspace user evaluation
       tags:
         - Evaluation
       parameters:
@@ -2257,9 +2353,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/events:
     get:
-      operationId: getWorkspaceUserEvents
-      summary: Get workspace user events
-      description: Get workspace user events
+      operationId: getWorkspaceUserEvaluationEvents
+      summary: Get workspace user evaluation events
+      description: Get workspace user evaluation events
       tags:
         - Evaluation
       parameters:
@@ -2393,7 +2489,7 @@ paths:
           description: Workspace assessment id
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "204":
           description: Workspace user workspace assessment deleted successfully
@@ -2443,12 +2539,11 @@ paths:
   /rest/forgotpassword/credentialReset:
     post:
       operationId: updateCredentials
-      summary: Reset password
-      description: Reset password
+      description: Changes the username and password of the account corresponding to the credential reset hashcode.
       tags:
         - Credentials
       requestBody:
-        $ref: "#/components/requestBodies/ResetPasswordRequestBody"
+        $ref: "#/components/requestBodies/UpdateCredentialsBody"
       responses:
         "204":
           description: Password reset successfully
@@ -2460,14 +2555,13 @@ paths:
   /rest/forgotpassword/credentialReset/{hash}:
     get:
       operationId: loadCredentials
-      summary: Get reset password
-      description: Get reset password
+      description: For a valid credential reset hashcode, returns a credential reset entity containing the current username of the user requesting credential reset.
       tags:
         - Credentials
       parameters:
         - name: hash
           in: path
-          description: Reset password hash
+          description: Hashcode of the reset request
           required: true
           schema:
             type: string
@@ -2477,25 +2571,27 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  username:
-                    type: string
+                $ref: "#/components/schemas/Credentials"
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
   /rest/forgotpassword/reset:
-    post:
+    get:
       operationId: resetCredentials
-      summary: Reset password
-      description: Reset password
+      description: Used to request a credential reset for the account corresponding to the given email address. 204 for a successful reset request; user receives an email with a link to change the credentials
       tags:
         - Credentials
-      requestBody:
-        $ref: "#/components/requestBodies/ResetPasswordRequestBody"
+      parameters:
+        - name: email
+          in: query
+          description: the email address of the user requesting a password reset
+          required: true
+          schema:
+            type: string
       responses:
-        "200":
+        "204":
           description: Password reset successfully
         "400":
           description: Invalid request was sent to the server
@@ -2661,6 +2757,37 @@ paths:
           description: Internal server error
 
   /rest/forum/areas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getDiscussionThread
+      summary: Get discussion thread
+      description: Get discussion thread
+      tags:
+        - Discussion
+      parameters:
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateDiscussionThread
       summary: Update discussion thread
@@ -2900,6 +3027,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DiscussionSubscribedThread"
+        "204":
+          description: Discussion thread subscription untoggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3256,6 +3385,43 @@ paths:
           description: Internal server error
 
   /rest/workspace/workspaces/{workspaceentityId}/forumAreas/{areaId}/threads/{threadId}:
+    get:
+      operationId: getWorkspaceDiscussionThread
+      summary: Get workspace discussion thread
+      description: Get workspace discussion thread
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceentityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: areaId
+          in: path
+          description: Discussion area id
+          required: true
+          schema:
+            type: integer
+        - name: threadId
+          in: path
+          description: Discussion thread id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workspace discussion thread
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
     put:
       operationId: updateWorkspaceDiscussionThread
       summary: Update workspace discussion thread
@@ -3535,6 +3701,46 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/workspace/workspaces/{workspaceId}/forumLatest:
+    get:
+      operationId: getWorkspaceForumLatest
+      summary: Get workspace forum latest
+      description: Get workspace forum latest
+      tags:
+        - WorkspaceDiscussion
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Workspace forum latest
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DiscussionThread"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   #GUIDER
   /rest/guider/student/{studentId}/contactLog:
     post:
@@ -3790,7 +3996,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderStudent"
+                  $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3816,7 +4022,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderStudent"
+                $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3849,7 +4055,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceWithAddons"
+                  $ref: "#/components/schemas/RecordsWorkspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3953,9 +4159,30 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ContactLog"
+                $ref: "#/components/schemas/ContactLog"
+
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/guider/files/{fileId}:
+    delete:
+      operationId: deleteGuiderFile
+      summary: Delete guider file
+      description: Delete guider file
+      tags:
+        - Guider
+      parameters:
+        - name: fileId
+          in: path
+          description: File id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Guider file deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4851,7 +5078,7 @@ paths:
       parameters:
         - name: properties
           in: query
-          description: Properties
+          description: Properties as string divided by comma
           schema:
             type: string
       responses:
@@ -6647,6 +6874,16 @@ paths:
       tags:
         - Usergroup
       parameters:
+        - name: userIdentifier
+          in: query
+          description: User identifier
+          schema:
+            type: string
+        - name: archetype
+          in: query
+          description: Archetype
+          schema:
+            type: string
         - name: q
           in: query
           description: Search string
@@ -6769,17 +7006,23 @@ paths:
   /rest/worklist/basePrice:
     get:
       operationId: getBasePrice
-      summary: Get base price
-      description: Get base price
+      description: Returns base price object for the given workspace. Values in the object use pattern (key-value) where key is the assessment identifier and value is the base price. Depending how many modules there is, so many key-value pairs are returned.
       tags:
         - Worklist
+      parameters:
+        - name: workspaceEntityId
+          in: query
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Base price
           content:
             application/json:
               schema:
-                type: integer
+                type: object # <--Should use patternProperties when it is supported by generator
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6789,19 +7032,18 @@ paths:
     get:
       operationId: getBilledPrice
       summary: Get billed price
-      description: Get billed price
       tags:
         - Worklist
       parameters:
         - name: workspaceEntityId
           in: query
-          description: Worklist item id
+          description: Workspace id
           required: true
           schema:
             type: integer
         - name: assessmentIdentifier
           in: query
-          description: Worklist item id
+          description: Assessment identifier
           required: true
           schema:
             type: string
@@ -6819,8 +7061,7 @@ paths:
 
     put:
       operationId: updateBilledPrice
-      summary: Update billed price
-      description: Update billed price
+      summary: Updates billed price
       tags:
         - Worklist
       parameters:
@@ -6844,7 +7085,6 @@ paths:
     get:
       operationId: isAvailable
       summary: Is available
-      description: Is available
       tags:
         - Worklist
       responses:
@@ -6862,8 +7102,7 @@ paths:
   /rest/worklist/templates:
     get:
       operationId: getWorklistTemplates
-      summary: Get worklist templates
-      description: Get worklist templates
+      summary: Returns list of worklist templates
       tags:
         - Worklist
       responses:
@@ -6883,8 +7122,7 @@ paths:
   /rest/worklist/updateWorklistItemsState:
     put:
       operationId: updateWorklistItemsState
-      summary: Update worklist items state
-      description: Update worklist items state
+      summary: Updates worklist items state
       tags:
         - Worklist
       requestBody:
@@ -6907,29 +7145,26 @@ paths:
   /rest/worklist/worklistItems:
     get:
       operationId: getWorklistItems
-      summary: Get worklist items
-      description: Get worklist items
+      summary: Returns list of worklist items
       tags:
         - Worklist
       parameters:
         - name: owner
           in: query
-          description: Search string
+          description: Owner identifier
           required: true
           schema:
             type: string
         - name: beginDate
           in: query
-          description: Begin date
+          description: Local date in ISO format (YYYY-MM-DD)
           schema:
             type: string
-            format: date-time
         - name: endDate
           in: query
-          description: End date
+          description: Local date in ISO format (YYYY-MM-DD)
           schema:
             type: string
-            format: date-time
       responses:
         "200":
           description: Worklist items results object
@@ -6947,7 +7182,6 @@ paths:
     post:
       operationId: createWorklistItem
       summary: Create worklist item
-      description: Create worklist item
       tags:
         - Worklist
       requestBody:
@@ -6964,12 +7198,19 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/worklist/worklistItems/{worklistItemId}:
     put:
       operationId: updateWorklistItem
-      summary: Update worklist item
-      description: Update worklist item
+      summary: Updates worklist item
       tags:
         - Worklist
+      parameters:
+        - name: worklistItemId
+          in: path
+          description: Worklist item id
+          required: true
+          schema:
+            type: integer
       requestBody:
         $ref: "#/components/requestBodies/WorklistItemUpdateRequestBody"
       responses:
@@ -6984,16 +7225,14 @@ paths:
         "500":
           description: Internal server error
 
-    #FIX
     delete:
       operationId: deleteWorklistItem
-      summary: Delete worklist item
-      description: Delete worklist item
+      summary: Deletes worklist item
       tags:
         - Worklist
       parameters:
         - name: worklistItemId
-          in: query
+          in: path
           description: Worklist item id
           required: true
           schema:
@@ -7009,8 +7248,7 @@ paths:
   /rest/worklist/worklistSummary:
     get:
       operationId: getWorklistSummary
-      summary: Get worklist summary
-      description: Get worklist summary
+      summary: Returns list of worklist summary items
       tags:
         - Worklist
       parameters:
@@ -7050,7 +7288,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceEducationType"
+                  $ref: "#/components/schemas/EducationType"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7996,37 +8234,9 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/forumLatest:
-    get:
-      operationId: getWorkspaceForumLatest
-      summary: Get workspace forum latest
-      description: Get workspace forum latest
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: Workspace forum latest
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DiscussionThread"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/workspace/workspaces/{workspaceId}/journal:
     get:
-      operationId: getWorkspaceJournal
+      operationId: getWorkspaceJournals
       summary: Get workspace journal
       description: Get workspace journal
       tags:
@@ -8038,6 +8248,28 @@ paths:
           required: true
           schema:
             type: integer
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 25
+        - name: userEntityId
+          in: query
+          description: User entity id
+          schema:
+            type: integer
+        - name: workspaceStudentId
+          in: query
+          description: Workspace student id
+          schema:
+            type: string
       responses:
         "200":
           description: Workspace journal
@@ -8052,7 +8284,34 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/journal/{journalEntryID}:
+    post:
+      operationId: createWorkspaceJournal
+      summary: Create workspace journal
+      description: Create workspace journal
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceJournalCreateRequestBody"
+      responses:
+        "200":
+          description: Workspace journal created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceJournal"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/journal/{journalEntryId}:
     put:
       operationId: updateWorkspaceJournal
       summary: Update workspace journal
@@ -8066,7 +8325,7 @@ paths:
           required: true
           schema:
             type: integer
-        - name: journalEntryID
+        - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
@@ -8081,6 +8340,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WorkspaceJournal"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    delete:
+      operationId: deleteWorkspaceJournal
+      summary: Delete workspace journal
+      description: Delete workspace journal
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+        - name: journalEntryId
+          in: path
+          description: Journal entry id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Workspace journal deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8282,23 +8568,28 @@ paths:
           description: Internal server error
 
   #WORKSPACENOTES
-  /rest/workspacenotes/archive:
-    delete:
-      operationId: archiveWorkspaceNote
-      summary: Archive workspace note
-      description: Archive workspace note
+  /rest/workspacenotes/owner/{owner}:
+    get:
+      operationId: getAllWorkspaceNotes
+      summary: Returns all notes from every workspace
       tags:
         - WorkspaceNotes
       parameters:
-        - name: id
-          in: query
-          description: Workspace note id
+        - name: owner
+          in: path
+          description: Owner identifier
           required: true
           schema:
             type: integer
       responses:
-        "204":
-          description: Workspace note archived successfully
+        "200":
+          description: Workspace notes results object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkspaceNote"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8307,8 +8598,7 @@ paths:
   /rest/workspacenotes/workspace/{workspaceId}/owner/{owner}:
     get:
       operationId: getWorkspaceNotes
-      summary: Get workspace notes
-      description: Get workspace notes
+      summary: Returns all notes from selected workspace
       tags:
         - WorkspaceNotes
       parameters:
@@ -8320,10 +8610,10 @@ paths:
             type: integer
         - name: owner
           in: path
-          description: Owner
+          description: Owner identifier
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         "200":
           description: Workspace notes results object
@@ -8341,8 +8631,7 @@ paths:
   /rest/workspacenotes/workspacenote:
     post:
       operationId: createWorkspaceNote
-      summary: Create workspace note
-      description: Create workspace note
+      summary: Creates new workspace note
       tags:
         - WorkspaceNotes
       requestBody:
@@ -8359,12 +8648,19 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/workspacenotes/workspacenote/{id}:
     put:
       operationId: updateWorkspaceNote
-      summary: Update workspace note
-      description: Update workspace note
+      summary: Updates workspace note
       tags:
         - WorkspaceNotes
+      parameters:
+        - name: id
+          in: path
+          description: Workspace note id
+          required: true
+          schema:
+            type: integer
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceNoteUpdateRequestBody"
       responses:
@@ -8374,6 +8670,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WorkspaceNote"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Bad request if userEntityId is null
+        "404":
+          description: Workspace note not found
+        "500":
+          description: Internal server error
+    delete:
+      operationId: archiveWorkspaceNote
+      summary: Archives selected workspace note
+      tags:
+        - WorkspaceNotes
+      parameters:
+        - name: id
+          in: path
+          description: Workspace note id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Workspace note deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8649,6 +8968,7 @@ components:
                 type: integer
 
     InterimEvaluationRequestCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8664,6 +8984,7 @@ components:
                 type: string
 
     EvaluationSaveAssignmentAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8672,8 +8993,6 @@ components:
             required:
               - evaluationType
               - assessorIdentifier
-              - gradingScaleIdentifier
-              - gradeIdentifier
               - verbalAssessment
               - assessmentDate
               - audioAssessments
@@ -8681,7 +9000,7 @@ components:
               identifier:
                 type: string
               evaluationType:
-                type: string
+                $ref: "#/components/schemas/EvaluationType"
               assessorIdentifier:
                 type: string
               gradingScaleIdentifier:
@@ -8691,13 +9010,15 @@ components:
               verbalAssessment:
                 type: string
               assessmentDate:
-                type: string
+                description: Unix timestamp
+                type: integer
               audioAssessments:
                 type: array
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
     EvaluationUpdateAssignmentAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8726,13 +9047,15 @@ components:
               verbalAssessment:
                 type: string
               assessmentDate:
-                type: string
+                description: Unix timestamp
+                type: integer
               audioAssessments:
                 type: array
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
     EvaluationCreateJournalFeedbackRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8745,6 +9068,7 @@ components:
                 type: string
 
     EvaluationSaveWorkspaceUserAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8772,6 +9096,7 @@ components:
                 type: string
 
     EvaluationUpdateWorkspaceUserAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8802,6 +9127,7 @@ components:
                 type: string
 
     EvaluationSaveSupplementationRequestRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8820,6 +9146,7 @@ components:
                 type: string
 
     EvaluationUpdateSupplementationRequestRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8840,19 +9167,8 @@ components:
               workspaceSubjectIdentifier:
                 type: string
 
-    ResetPasswordRequestBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            description: ResetPasswordRequestBody object
-            required:
-              - email
-            properties:
-              email:
-                type: string
-
     DiscussionAreaCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8868,6 +9184,7 @@ components:
                 type: string
 
     DiscussionAreaUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8883,6 +9200,7 @@ components:
                 type: string
 
     DiscussionThreadCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8907,6 +9225,7 @@ components:
                 type: integer
 
     DiscussionThreadUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8914,6 +9233,7 @@ components:
               - $ref: "#/components/schemas/DiscussionThread"
 
     DiscussionThreadReplyCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8924,20 +9244,19 @@ components:
             properties:
               message:
                 type: string
+              parentReplyId:
+                type: integer
 
     DiscussionThreadReplyUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
-            type: object
-            description: DiscussionThreadReplyUpdateRequestBody object
-            required:
-              - message
-            properties:
-              message:
-                type: string
+            allOf:
+              - $ref: "#/components/schemas/DiscussionThreadReply"
 
     ContactLogCreateEventRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8956,6 +9275,7 @@ components:
                 type: string
 
     ContactLogUpdateEventRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8977,6 +9297,7 @@ components:
                 type: integer
 
     ContactLogEventCommentCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8992,6 +9313,7 @@ components:
                 type: string
 
     ContactLogEventCommentUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9223,6 +9545,7 @@ components:
             type: string
 
     LocalizationSetRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9391,6 +9714,14 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondaryData"
+
+    UpdateCredentialsBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/Credentials"
 
     UserFlagCreateRequestBody:
       content:
@@ -9675,6 +10006,15 @@ components:
                 items:
                   type: string
 
+    WorkspaceSignUpRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
     WorkspaceStudentUpdateRequestBody:
       content:
         application/json:
@@ -9683,6 +10023,7 @@ components:
               - $ref: "#/components/schemas/UserStudent"
 
     BilledPriceUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9711,8 +10052,10 @@ components:
               userIdentifier:
                 type: string
               beginDate:
+                description: Local date in ISO format (YYYY-MM-DD)
                 type: string
               endDate:
+                description: Local date in ISO format (YYYY-MM-DD)
                 type: string
               state:
                 $ref: "#/components/schemas/WorklistBillingStateType"
@@ -9763,8 +10106,8 @@ components:
               templateId:
                 type: integer
               entryDate:
+                description: Local date in ISO format (YYYY-MM-DD)
                 type: string
-                format: date-time
               description:
                 type: string
               price:
@@ -9790,6 +10133,7 @@ components:
                 type: integer
 
     WorkspaceNoteCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9812,11 +10156,27 @@ components:
                 nullable: true
 
     WorkspaceNoteUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             allOf:
               - $ref: "#/components/schemas/WorkspaceNote"
+
+    WorkspaceJournalCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: WorkspaceJournalCreateRequestBody object
+            required:
+              - title
+              - content
+            properties:
+              title:
+                type: string
+              content:
+                type: string
 
     WorkspaceJournalCommentCreateRequestBody:
       content:
@@ -10033,7 +10393,7 @@ components:
         - verbalAssessment
       properties:
         identifier:
-          type: integer
+          type: string
         assessorIdentifier:
           type: string
         gradingScaleIdentifier:
@@ -10291,7 +10651,6 @@ components:
         - EMAIL
         - PHONE
         - CHATLOG
-        - SKYPE
         - FACE2FACE
         - ABSENCE
         - MUIKKU
@@ -10361,14 +10720,19 @@ components:
       properties:
         id:
           type: integer
-        entryDate:
+        entry:
+          type: integer
+        commentDate:
           type: string
+          format: date-time
         creatorId:
           type: integer
         creatorName:
           type: string
         text:
           type: string
+        hasImage:
+          type: boolean
 
     Curriculum:
       type: object
@@ -10382,9 +10746,27 @@ components:
         name:
           type: string
 
+    Credentials:
+      type: object
+      description: Credentials object
+      required:
+        - secret
+        - username
+        - password
+      properties:
+        secret:
+          nullable: true
+          type: string
+        username:
+          nullable: true
+          type: string
+        password:
+          nullable: true
+          type: string
+
     DiscussionArea:
       type: object
-      description: DiscussionArea object
+      description: DiscussionArea area information
       required:
         - id
         - name
@@ -10405,7 +10787,7 @@ components:
 
     DiscussionThread:
       type: object
-      description: DiscussionThread object
+      description: Thread information
       required:
         - id
         - message
@@ -10433,14 +10815,16 @@ components:
           type: string
         lastModified:
           type: string
+          format: date-time
         forumAreaId:
           type: integer
         entryPoint:
           type: boolean
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         created:
           type: string
+          format: date-time
         lock:
           $ref: "#/components/schemas/DiscussionThreadLock"
         lockBy:
@@ -10451,6 +10835,7 @@ components:
           description: Date when the thread was locked. Backend updates this field
           nullable: true
           type: string
+          format: date-time
 
     DiscussionThreadReply:
       type: object
@@ -10470,8 +10855,9 @@ components:
           type: integer
         created:
           type: string
+          format: date-time
         creator:
-          type: string
+          $ref: "#/components/schemas/DiscussionUser"
         childReplyCount:
           type: integer
         deleted:
@@ -10480,6 +10866,7 @@ components:
           type: integer
         lastModified:
           type: string
+          format: date-time
         message:
           type: string
         parentReplyId:
@@ -10494,11 +10881,22 @@ components:
         - thread
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         threadId:
+          description: Id of the thread
           type: integer
         thread:
           $ref: "#/components/schemas/DiscussionThread"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedThread:
       allOf:
@@ -10525,11 +10923,22 @@ components:
         - area
       properties:
         userEntityId:
+          description: Id of the user
           type: integer
         areaId:
+          description: Id of the area
           type: integer
         area:
           $ref: "#/components/schemas/DiscussionArea"
+        workspaceId:
+          description: Id of the workspace
+          type: integer
+        workspaceName:
+          description: Name of the workspace. Includes the name extension if it has one.
+          type: string
+        workspaceUrlName:
+          description: Url name of the workspace
+          type: string
 
     DiscussionWorkspaceSubscribedArea:
       allOf:
@@ -10546,6 +10955,27 @@ components:
               type: string
             workspaceUrlName:
               type: string
+
+    DiscussionUser:
+      type: object
+      description: DiscussionUser object
+      required:
+        - id
+        - firstName
+        - lastName
+        - nickname
+        - hasImage
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickname:
+          type: string
+        hasImage:
+          type: boolean
 
     DiscussionThreadLock:
       type: string
@@ -10565,6 +10995,18 @@ components:
         latestMessage:
           type: string
 
+    EducationType:
+      type: object
+      description: EducationType object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+
     EvaluationJournalFeedback:
       type: object
       description: EvaluationJournalFeedback object
@@ -10582,7 +11024,7 @@ components:
           type: integer
         student:
           description: userEntityId of student
-          type: string
+          type: integer
         workspaceEntityId:
           type: integer
         created:
@@ -10609,7 +11051,7 @@ components:
         - graded
         - passing
         - interimEvaluationRequest
-        - userEntityID
+        - userEntityId
         - firstName
         - lastName
         - studyProgramme
@@ -10642,7 +11084,7 @@ components:
           type: boolean
         interimEvaluationRequest:
           type: boolean
-        userEntityID:
+        userEntityId:
           type: integer
         firstName:
           type: string
@@ -10718,7 +11160,7 @@ components:
         - workspaceSubjectIdentifier
       properties:
         identifier:
-          type: integer
+          type: string
         author:
           type: string
         date:
@@ -10742,7 +11184,7 @@ components:
 
     EvaluationGradeScale:
       type: object
-      description: EvaluationGradeSystem object
+      description: EvaluationGradeScale object
       required:
         - id
         - name
@@ -10904,39 +11346,6 @@ components:
         properties:
           $ref: "#/components/schemas/AnyValue"
         role:
-          type: string
-
-    GuiderStudent:
-      allOf:
-        - $ref: "#/components/schemas/UserWithSchoolData"
-        - type: object
-          required:
-            - flags
-          properties:
-            flags:
-              type: array
-              items:
-                $ref: "#/components/schemas/GuiderStudentLabel"
-
-    GuiderStudentLabel:
-      type: object
-      description: GuiderStudentLabel object
-      required:
-        - id
-        - flagId
-        - flagName
-        - flagColor
-        - studentIdentifier
-      properties:
-        id:
-          type: integer
-        flagId:
-          type: integer
-        flagName:
-          type: string
-        flagColor:
-          type: integer
-        studentIdentifier:
           type: string
 
     GuiderStudentNotification:
@@ -11129,8 +11538,10 @@ components:
           type: integer
         requestDate:
           type: string
+          format: date-time
         cancellationDate:
           type: string
+          format: date-time
         requestText:
           type: string
         archived:
@@ -11625,20 +12036,27 @@ components:
         workspaceMaterialId:
           type: integer
         gradingScaleIdentifier:
+          nullable: true
           type: string
         gradingScaleSchoolDataSource:
+          nullable: true
           type: string
         grade:
+          nullable: true
           type: string
         gradeIdentifier:
+          nullable: true
           type: string
         gradeSchoolDataSource:
+          nullable: true
           type: string
         gradingScale:
+          nullable: true
           type: string
         verbalAssessment:
           type: string
         passed:
+          nullable: true
           type: boolean
         audioAssessments:
           type: array
@@ -12288,13 +12706,6 @@ components:
           type: string
           nullable: true
 
-    PublicityRestriction:
-      type: string
-      enum:
-        - LIST_ALL
-        - ONLY_PUBLISHED
-        - ONLY_UNPUBLISHED
-
     PedagogyForm:
       type: object
       description: PedagogyForm object
@@ -12349,6 +12760,25 @@ components:
         created:
           description: The date when the form was created
           type: string
+
+    RecordsWorkspace:
+      allOf:
+        - $ref: "#/components/schemas/Workspace"
+        - type: object
+          properties:
+            subjects:
+              type: array
+              items:
+                $ref: "#/components/schemas/WorkspaceSubject"
+            activity:
+              $ref: "#/components/schemas/WorkspaceActivity"
+
+    PublicityRestriction:
+      type: string
+      enum:
+        - LIST_ALL
+        - ONLY_PUBLISHED
+        - ONLY_UNPUBLISHED
 
     RecordWorkspaceActivity:
       type: object
@@ -12473,6 +12903,79 @@ components:
           type: string
         code:
           type: string
+
+    Student:
+      type: object
+      required:
+        - id
+        - email
+        - firstName
+        - hasImage
+        - updatedByStudent
+        - userEntityId
+        - matriculationEligibility
+        - ceeposLine
+        - flags
+      properties:
+        curriculumIdentifier:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        hasImage:
+          type: boolean
+        id:
+          type: string
+        language:
+          nullable: true
+          type: string
+        lastName:
+          type: string
+        municipality:
+          nullable: true
+          type: string
+        nationality:
+          nullable: true
+          type: string
+        nickName:
+          nullable: true
+          type: string
+        school:
+          nullable: true
+          type: string
+        studyEndDate:
+          nullable: true
+          type: string
+          format: date-time
+        studyProgrammeName:
+          type: string
+        studyStartDate:
+          nullable: true
+          type: string
+          format: date-time
+        studyTimeEnd:
+          nullable: true
+          type: string
+          format: date-time
+        lastLogin:
+          nullable: true
+          type: string
+          format: date-time
+        updatedByStudent:
+          type: boolean
+        userEntityId:
+          type: integer
+        matriculationEligibility:
+          type: boolean
+        ceeposLine:
+          type: string
+          nullable: true
+        flags:
+          nullable: true
+          type: array
+          items:
+            $ref: "#/components/schemas/UserStudentFlag"
 
     StudentInfo:
       type: object
@@ -13108,8 +13611,9 @@ components:
           type: string
           nullable: true
         locale:
-          type: string
           nullable: true
+          allOf:
+            - $ref: "#/components/schemas/LocaleType"
         hasEvaluationFees:
           type: boolean
           nullable: true
@@ -13230,20 +13734,133 @@ components:
           type: string
         language:
           $ref: "#/components/schemas/Language"
-        mandatority:
-          allOf:
-            - $ref: "#/components/schemas/WorkspaceMandatority"
-          nullable: true
-        access:
-          $ref: "#/components/schemas/WorkspaceAccess"
 
-    WorkspaceWithAddons:
-      allOf:
-        - $ref: "#/components/schemas/Workspace"
-        - type: object
-          properties:
-            activity:
-              $ref: "#/components/schemas/WorkspaceActivity"
+    # NOTE: this is for WorkspaceCoursepicker. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceCoursepicker:
+      type: object
+      description: WorkspaceCoursepicker object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - hasCustomImage
+        - mandatority
+        - educationTypeName
+        - isCourseMember
+        - organization
+        - lastVisit
+        - numVisits
+        - urlName
+        - curriculumIdentifiers
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
+          nullable: true
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        hasCustomImage:
+          type: boolean
+        mandatority:
+          $ref: "#/components/schemas/WorkspaceMandatority"
+        educationTypeName:
+          type: string
+        isCourseMember:
+          type: boolean
+        organization:
+          $ref: "#/components/schemas/Organization"
+        lastVisit:
+          type: string
+        numVisits:
+          type: integer
+        urlName:
+          type: string
+        curriculumIdentifiers:
+          type: array
+          items:
+            type: string
+
+    # NOTE: this is for Organization. Currently its not used because frontend uses one for all Workspace model,
+    # but it should be used in the future. This model based on backend implementation
+    WorkspaceOrganizationManager:
+      type: object
+      description: WorkspaceOrganizationManager object
+      required:
+        - id
+        - name
+        - nameExtension
+        - description
+        - published
+        - archived
+        - studentCount
+        - teachers
+        - educationTypeName
+        - hasCustomImage
+        - urlName
+        - organization
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        nameExtension:
+          type: string
+          nullable: true
+        description:
+          type: string
+        published:
+          type: boolean
+        archived:
+          type: boolean
+        studentCount:
+          type: integer
+        teachers:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceOrganizationManagerTeacher"
+        educationTypeName:
+          type: string
+        hasCustomImage:
+          type: boolean
+        urlName:
+          type: string
+        organization:
+          $ref: "#/components/schemas/Organization"
+
+    WorkspaceOrganizationManagerTeacher:
+      type: object
+      description: WorkspaceOrganizationManagerTeacher object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+
+    WorkspaceOrganization:
+      type: object
+      description: WorkspaceOrganization object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
 
     WorkspaceBasicInfo:
       type: object
@@ -13270,7 +13887,7 @@ components:
         - identifier
       properties:
         identifier:
-          type: integer
+          type: string
         subject:
           $ref: "#/components/schemas/Subject"
         courseNumber:
@@ -13524,17 +14141,12 @@ components:
         name:
           type: string
 
-    WorkspaceEducationType:
-      type: object
-      description: WorkspaceEducationType object
-      required:
-        - identifier
-        - name
-      properties:
-        identifier:
-          type: string
-        name:
-          type: string
+    WorkspaceChatStatusType:
+      type: string
+      description: WorkspaceChatStatusType enum
+      enum:
+        - ENABLED
+        - DISABLED
 
     WorkspaceDetails:
       type: object
@@ -13668,9 +14280,11 @@ components:
           type: string
         created:
           type: string
+          format: date-time
         commentCount:
           type: integer
         isMaterialField:
+          description: Whether journal is "mandatory" assignment and material field
           type: boolean
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
@@ -13779,6 +14393,7 @@ components:
         factor:
           type: integer
         billingNumber:
+          nullable: true
           type: integer
         editableFields:
           type: array
@@ -13847,11 +14462,11 @@ components:
         displayName:
           type: string
         beginDate:
+          description: Local date in ISO format (YYYY-MM-DD)
           type: string
-          format: date-time
         endDate:
+          description: Local date in ISO format (YYYY-MM-DD)
           type: string
-          format: date-time
         count:
           type: integer
 

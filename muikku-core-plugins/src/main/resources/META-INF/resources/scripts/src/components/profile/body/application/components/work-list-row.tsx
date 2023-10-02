@@ -1,10 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "~/reducers";
-import {
-  StoredWorklistItem,
-  WorklistBillingState,
-} from "~/reducers/main-function/profile";
 import { ButtonPill } from "~/components/general/button";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
@@ -22,6 +17,7 @@ import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "~/lib/moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { WorklistBillingStateType, WorklistItem } from "~/generated/client";
 
 // get today date in order to be able to calculate the 10 days
 // and next month rule that allows for modification since
@@ -34,7 +30,7 @@ const previousMonth = moment().subtract(1, "months");
  * WorkListRowProps
  */
 interface WorkListRowProps extends WithTranslation {
-  item: StoredWorklistItem;
+  item: WorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
   editProfileWorklistItem: EditProfileWorklistItemTriggerType;
   currentMonthDayLimit: number;
@@ -187,8 +183,8 @@ class WorkListRow extends React.Component<
     // it must be current month, or if it's previous month the current month
     // should be less than 10 days or whatever the limit is specified
     const canBeEdited =
-      this.props.item.state !== WorklistBillingState.PAID &&
-      this.props.item.state !== WorklistBillingState.APPROVED &&
+      this.props.item.state !== WorklistBillingStateType.Paid &&
+      this.props.item.state !== WorklistBillingStateType.Approved &&
       (isCurrentMonth ||
         (isPreviousMonth &&
           dayOfCurrentMonth <= this.props.currentMonthDayLimit));

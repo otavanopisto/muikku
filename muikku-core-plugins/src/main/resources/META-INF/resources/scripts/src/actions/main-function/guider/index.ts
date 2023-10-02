@@ -2,13 +2,11 @@ import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   GuiderActiveFiltersType,
-  GuiderPatchType,
+  GuiderStatePatch,
   GuiderStudentsStateType,
-  GuiderStudentType,
-  GuiderNotificationStudentsDataType,
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
-  GuiderType,
+  GuiderState,
   PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
@@ -16,17 +14,9 @@ import promisify from "~/util/promisify";
 import { UserFileType } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import {
-  GuiderWorkspaceListType,
-  GuiderUserGroupListType,
-  ContactLogEvent,
-  ContactLogData,
-  ContactLogEventComment,
-  ContactTypes,
-} from "~/reducers/main-function/guider";
-import {
-  WorkspaceListType,
   WorkspaceForumStatisticsType,
   ActivityLogType,
+  WorkspaceType,
 } from "~/reducers/workspaces";
 import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
@@ -37,7 +27,14 @@ import {
   PurchaseType,
 } from "~/reducers/main-function/profile";
 import { LoadingState } from "~/@types/shared";
-import { UserStudentFlag, UserFlag, UserGroup } from "~/generated/client";
+import {
+  ContactLog,
+  ContactType,
+  Student,
+  UserStudentFlag,
+  UserFlag,
+  UserGroup,
+} from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 
@@ -47,7 +44,7 @@ export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
 >;
 export type UPDATE_GUIDER_ALL_PROPS = SpecificActionType<
   "UPDATE_GUIDER_ALL_PROPS",
-  GuiderPatchType
+  GuiderStatePatch
 >;
 export type UPDATE_GUIDER_STATE = SpecificActionType<
   "UPDATE_GUIDER_STATE",
@@ -55,11 +52,11 @@ export type UPDATE_GUIDER_STATE = SpecificActionType<
 >;
 export type ADD_TO_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "ADD_TO_GUIDER_SELECTED_STUDENTS",
-  GuiderStudentType
+  Student
 >;
 export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
-  GuiderStudentType
+  Student
 >;
 export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT",
@@ -127,11 +124,11 @@ export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-  GuiderWorkspaceListType
+  WorkspaceType[]
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
-  GuiderUserGroupListType
+  UserGroup[]
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL",
@@ -225,7 +222,7 @@ export interface CreateContactLogEventTriggerType {
     payload: {
       text: string;
       entryDate: string;
-      type: ContactTypes;
+      type: ContactType;
     },
     onSuccess?: () => void,
     onFail?: () => void
@@ -253,7 +250,7 @@ export interface EditContactLogEventTriggerType {
     payload: {
       text: string;
       entryDate: string;
-      type: ContactTypes;
+      type: ContactType;
       creatorId: number;
     },
     onSuccess?: () => void,
@@ -309,14 +306,14 @@ export interface EditContactLogEventCommentTriggerType {
  * AddToGuiderSelectedStudentsTriggerType action creator type
  */
 export interface AddToGuiderSelectedStudentsTriggerType {
-  (student: GuiderStudentType): AnyActionType;
+  (student: Student): AnyActionType;
 }
 
 /**
  * RemoveFromGuiderSelectedStudentsTriggerType action creator type
  */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
-  (student: GuiderStudentType): AnyActionType;
+  (student: Student): AnyActionType;
 }
 
 /**
@@ -484,14 +481,19 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
-        await promisify(mApi().guider.files.del(file.id), "callback")();
+        await guiderApi.deleteGuiderFile({
+          fileId: file.id,
+        });
+
         dispatch({
           type: "REMOVE_FILE_FROM_CURRENT_STUDENT",
           payload: file,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -558,7 +560,9 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     getState: () => StateType
   ) => {
     const hopsApi = MApi.getHopsApi();
+    const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
+    const usergroupApi = MApi.getUsergroupApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -577,11 +581,14 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
       });
 
       await Promise.all([
-        promisify(mApi().guider.students.read(id), "callback")().then(
-          (basic: GuiderStudentType) => {
+        guiderApi
+          .getGuiderStudent({
+            studentId: id,
+          })
+          .then((student) => {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "basic", value: basic },
+              payload: { property: "basic", value: student },
             });
 
             // If user has LIST_USER_ORDERS permission AND student has ceeposLine set then dispatchin is possible
@@ -610,7 +617,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 // after basic data is loaded and hops availability checked, then check if hopsPhase property
                 // is used and what values it contains
                 const hopsPhase = await userApi.getUserProperties({
-                  userEntityId: basic.userEntityId,
+                  userEntityId: student.userEntityId,
                   properties: "hopsPhase",
                 });
 
@@ -634,18 +641,16 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 });
               }
             );
-          }
-        ),
+          }),
 
-        promisify(
-          mApi().usergroup.groups.read({ userIdentifier: id }),
-          "callback"
-        )().then((usergroups: UserGroup[]) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "usergroups", value: usergroups },
-          });
-        }),
+        usergroupApi
+          .getUsergroups({ userIdentifier: id })
+          .then((usergroups) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "usergroups", value: usergroups },
+            });
+          }),
 
         userApi
           .getStudentFlags({
@@ -682,14 +687,17 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           });
         }),
 
-        promisify(mApi().guider.users.files.read(id), "callback")().then(
-          (files: Array<UserFileType>) => {
+        guiderApi
+          .getGuiderUserFiles({
+            identifier: id,
+          })
+          .then((files) => {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "files", value: files },
             });
-          }
-        ),
+          }),
+
         promisify(mApi().records.hops.read(id), "callback")().then(
           (hops: HOPSDataType) => {
             dispatch({
@@ -698,57 +706,72 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             });
           }
         ),
-        promisify(
-          mApi().guider.users.latestNotifications.read(id),
-          "callback"
-        )().then((notifications: GuiderNotificationStudentsDataType) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "notifications", value: notifications },
-          });
-        }),
-        promisify(
-          mApi().guider.students.workspaces.read(id, { active: true }),
-          "callback"
-        )().then(async (workspaces: WorkspaceListType) => {
-          if (workspaces && workspaces.length) {
-            await Promise.all([
-              Promise.all(
-                workspaces.map(async (workspace, index) => {
-                  const statistics: WorkspaceForumStatisticsType = <
-                    WorkspaceForumStatisticsType
-                  >await promisify(
-                    mApi().workspace.workspaces.forumStatistics.read(
-                      workspace.id,
-                      { userIdentifier: id }
-                    ),
-                    "callback"
-                  )();
-                  workspaces[index].forumStatistics = statistics;
-                })
-              ),
-              Promise.all(
-                workspaces.map(async (workspace, index) => {
-                  const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
-                    await promisify(
-                      mApi().activitylogs.user.workspace.read(id, {
-                        workspaceEntityId: workspace.id,
-                        from: new Date(new Date().getFullYear() - 2, 0),
-                        to: new Date(),
-                      }),
+
+        guiderApi
+          .getGuiderUserLatestNotification({
+            identifier: id,
+          })
+          .then((notifications) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "notifications", value: notifications },
+            });
+          }),
+
+        guiderApi
+          .getStudentWorkspaces({
+            studentId: id,
+            active: true,
+          })
+          .then(async (workspaces) => {
+            // Note that this is a workaround for the fact that the API returns different type that current
+            // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
+            // what returned data is.
+            const workspacesWithAddons =
+              workspaces as unknown as WorkspaceType[];
+
+            if (workspacesWithAddons && workspacesWithAddons.length) {
+              await Promise.all([
+                Promise.all(
+                  workspacesWithAddons.map(async (workspace, index) => {
+                    const statistics: WorkspaceForumStatisticsType = <
+                      WorkspaceForumStatisticsType
+                    >await promisify(
+                      mApi().workspace.workspaces.forumStatistics.read(
+                        workspace.id,
+                        { userIdentifier: id }
+                      ),
                       "callback"
-                    )()
-                  );
-                  workspaces[index].activityLogs = activityLogs;
-                })
-              ),
-            ]);
-          }
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "currentWorkspaces", value: workspaces },
-          });
-        }),
+                    )();
+                    workspacesWithAddons[index].forumStatistics = statistics;
+                  })
+                ),
+                Promise.all(
+                  workspacesWithAddons.map(async (workspace, index) => {
+                    const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
+                      await promisify(
+                        mApi().activitylogs.user.workspace.read(id, {
+                          workspaceEntityId: workspace.id,
+                          from: new Date(new Date().getFullYear() - 2, 0),
+                          to: new Date(),
+                        }),
+                        "callback"
+                      )()
+                    );
+                    workspacesWithAddons[index].activityLogs = activityLogs;
+                  })
+                ),
+              ]);
+            }
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "currentWorkspaces",
+                value: workspacesWithAddons,
+              },
+            });
+          }),
+
         canListUserOrders &&
           promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
             (pOrders: PurchaseType[]) => {
@@ -811,6 +834,8 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const guiderApi = MApi.getGuiderApi();
+
     try {
       const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
 
@@ -857,55 +882,66 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
           },
         });
         promises.push(
-          promisify(
-            mApi().guider.students.workspaces.read(id, { active: false }),
-            "callback"
-          )().then(async (workspaces: WorkspaceListType) => {
-            if (workspaces && workspaces.length) {
-              await Promise.all([
-                Promise.all(
-                  workspaces.map(async (workspace, index) => {
-                    const statistics: WorkspaceForumStatisticsType = <
-                      WorkspaceForumStatisticsType
-                    >await promisify(
-                      mApi().workspace.workspaces.forumStatistics.read(
-                        workspace.id,
-                        { userIdentifier: id }
-                      ),
-                      "callback"
-                    )();
-                    workspaces[index].forumStatistics = statistics;
-                  })
-                ),
-                Promise.all(
-                  workspaces.map(async (workspace, index) => {
-                    const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
-                      await promisify(
+          guiderApi
+            .getStudentWorkspaces({
+              studentId: id,
+              active: false,
+            })
+            .then(async (workspaces) => {
+              // Note that this is a workaround for the fact that the API returns different type that current
+              // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
+              // what returned data is.
+              const workspacesWithAddons =
+                workspaces as unknown as WorkspaceType[];
+
+              if (workspacesWithAddons && workspacesWithAddons.length) {
+                await Promise.all([
+                  Promise.all(
+                    workspacesWithAddons.map(async (workspace, index) => {
+                      const statistics: WorkspaceForumStatisticsType = <
+                        WorkspaceForumStatisticsType
+                      >await promisify(
+                        mApi().workspace.workspaces.forumStatistics.read(
+                          workspace.id,
+                          { userIdentifier: id }
+                        ),
+                        "callback"
+                      )();
+                      workspacesWithAddons[index].forumStatistics = statistics;
+                    })
+                  ),
+                  Promise.all(
+                    workspacesWithAddons.map(async (workspace, index) => {
+                      const activityLogs: ActivityLogType[] = <
+                        ActivityLogType[]
+                      >await promisify(
                         mApi().activitylogs.user.workspace.read(id, {
                           workspaceEntityId: workspace.id,
                           from: new Date(new Date().getFullYear() - 2, 0),
                           to: new Date(),
                         }),
                         "callback"
-                      )()
-                    );
-                    workspaces[index].activityLogs = activityLogs;
-                  })
-                ),
-              ]);
-            }
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "pastWorkspaces", value: workspaces },
-            });
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: {
-                property: "pastWorkspacesState",
-                value: <LoadingState>"READY",
-              },
-            });
-          })
+                      )();
+                      workspacesWithAddons[index].activityLogs = activityLogs;
+                    })
+                  ),
+                ]);
+              }
+              dispatch({
+                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                payload: {
+                  property: "pastWorkspaces",
+                  value: workspacesWithAddons,
+                },
+              });
+              dispatch({
+                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                payload: {
+                  property: "pastWorkspacesState",
+                  value: <LoadingState>"READY",
+                },
+              });
+            })
         );
       }
 
@@ -965,6 +1001,8 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
         const contactLogsLoaded =
           getState().guider.currentStudent.contactLogState === "READY";
@@ -984,15 +1022,20 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
             value: <LoadingState>"LOADING",
           },
         });
-        await promisify(
-          mApi().guider.users.contactLog.read(id, { resultsPerPage, page }),
-          "callback"
-        )().then((contactLogs: ContactLogData) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "contactLogs", value: contactLogs },
+
+        await guiderApi
+          .getGuiderUserContactLog({
+            userId: id,
+            resultsPerPage,
+            page,
+          })
+          .then((contactLogs) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "contactLogs", value: contactLogs },
+            });
           });
-        });
+
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
@@ -1006,7 +1049,7 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
           payload: null,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1053,6 +1096,8 @@ const createContactLogEvent: CreateContactLogEventTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
         dispatch({
           type: "LOCK_TOOLBAR",
@@ -1060,23 +1105,25 @@ const createContactLogEvent: CreateContactLogEventTriggerType =
         });
         const contactLogs = JSON.parse(
           JSON.stringify(getState().guider.currentStudent.contactLogs)
-        ) as ContactLogData;
+        ) as ContactLog;
 
-        await promisify(
-          mApi().guider.student.contactLog.create(studentUserEntityId, payload),
-          "callback"
-        )().then((contactLog: ContactLogEvent) => {
-          contactLogs.results = [...[contactLog], ...contactLogs.results];
-          contactLogs.totalHitCount = contactLogs.totalHitCount + 1;
-
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: {
-              property: "contactLogs",
-              value: contactLogs,
-            },
+        await guiderApi
+          .createContactLogEvents({
+            studentId: studentUserEntityId,
+            createContactLogEventsRequest: payload,
+          })
+          .then((contactLogEvent) => {
+            contactLogs.results = [contactLogEvent, ...contactLogs.results];
+            contactLogs.totalHitCount = contactLogs.totalHitCount + 1;
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "contactLogs",
+                value: contactLogs,
+              },
+            });
           });
-        });
+
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.createSuccess", {
@@ -1092,7 +1139,7 @@ const createContactLogEvent: CreateContactLogEventTriggerType =
           payload: null,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1138,14 +1185,13 @@ const deleteContactLogEvent: DeleteContactLogEventTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
-        await promisify(
-          mApi().guider.student.contactLog.del(
-            studentUserEntityId,
-            contactLogEntryId
-          ),
-          "callback"
-        )();
+        await guiderApi.deleteContactLogEvent({
+          studentId: studentUserEntityId,
+          entryId: contactLogEntryId,
+        });
 
         dispatch({
           type: "DELETE_CONTACT_EVENT",
@@ -1163,7 +1209,7 @@ const deleteContactLogEvent: DeleteContactLogEventTriggerType =
         );
         onSuccess && onSuccess();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1207,41 +1253,43 @@ const editContactLogEvent: EditContactLogEventTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
         dispatch({
           type: "LOCK_TOOLBAR",
           payload: null,
         });
 
-        await promisify(
-          mApi().guider.student.contactLog.update(
-            studentUserEntityId,
-            contactLogEntryId,
-            payload
-          ),
-          "callback"
-        )().then((contactLog: ContactLogEvent) => {
-          // Make a deep copy of the current state of contactLogs
-          const contactLogs = JSON.parse(
-            JSON.stringify(getState().guider.currentStudent.contactLogs)
-          ) as ContactLogData;
+        await guiderApi
+          .updateContactLogEvent({
+            studentId: studentUserEntityId,
+            entryId: contactLogEntryId,
+            updateContactLogEventRequest: payload,
+          })
+          .then((contactLogEvent) => {
+            // Make a deep copy of the current state of contactLogs
+            const contactLogs = JSON.parse(
+              JSON.stringify(getState().guider.currentStudent.contactLogs)
+            ) as ContactLog;
 
-          // Find the index of the edited contactLog
-          const contactLogIndex = contactLogs.results.findIndex(
-            (log) => log.id === contactLog.id
-          );
+            // Find the index of the edited contactLog
+            const contactLogIndex = contactLogs.results.findIndex(
+              (log) => log.id === contactLogEvent.id
+            );
 
-          // Replace the edited contactLog with the new one
-          contactLogs.results.splice(contactLogIndex, 1, contactLog);
+            // Replace the edited contactLog with the new one
+            contactLogs.results.splice(contactLogIndex, 1, contactLogEvent);
 
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: {
-              property: "contactLogs",
-              value: contactLogs,
-            },
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "contactLogs",
+                value: contactLogs,
+              },
+            });
           });
-        });
+
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.updateSuccess", {
@@ -1257,7 +1305,7 @@ const editContactLogEvent: EditContactLogEventTriggerType =
         });
         onSuccess && onSuccess();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1305,50 +1353,52 @@ const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
         dispatch({
           type: "LOCK_TOOLBAR",
           payload: null,
         });
 
-        await promisify(
-          mApi().guider.student.contactLog.comments.create(
-            studentUserEntityId,
-            contactLogEntryId,
-            payload
-          ),
-          "callback"
-        )().then((comment: ContactLogEventComment) => {
-          // Make a deep copy of the current state contactLogs
+        await guiderApi
+          .createContactLogEventComment({
+            studentId: studentUserEntityId,
+            entryId: contactLogEntryId,
+            createContactLogEventCommentRequest: payload,
+          })
+          .then((comment) => {
+            // Make a deep copy of the current state contactLogs
 
-          const contactLogs = JSON.parse(
-            JSON.stringify(getState().guider.currentStudent.contactLogs)
-          ) as ContactLogData;
+            const contactLogs = JSON.parse(
+              JSON.stringify(getState().guider.currentStudent.contactLogs)
+            ) as ContactLog;
 
-          const contactLogResults = contactLogs.results;
+            const contactLogResults = contactLogs.results;
 
-          // Add the new comment to the current contactEvent
-          const contactEvent = contactLogResults.find(
-            (log) => log.id === comment.entry
-          );
-          contactEvent.comments.push(comment);
+            // Add the new comment to the current contactEvent
+            const contactEvent = contactLogResults.find(
+              (log) => log.id === comment.entry
+            );
+            contactEvent.comments.push(comment);
 
-          // Find the index of the updated contactevent
-          const contactEventIndex = contactLogResults.findIndex(
-            (log) => log.id === contactEvent.id
-          );
+            // Find the index of the updated contactevent
+            const contactEventIndex = contactLogResults.findIndex(
+              (log) => log.id === contactEvent.id
+            );
 
-          // Replace the existing contactEvent at the correct index
-          contactLogResults.splice(contactEventIndex, 1, contactEvent);
+            // Replace the existing contactEvent at the correct index
+            contactLogResults.splice(contactEventIndex, 1, contactEvent);
 
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: {
-              property: "contactLogs",
-              value: contactLogs,
-            },
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "contactLogs",
+                value: contactLogs,
+              },
+            });
           });
-        });
+
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.createSuccess", { context: "comment" }),
@@ -1361,7 +1411,7 @@ const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
         });
         onSuccess && onSuccess();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1409,15 +1459,14 @@ const deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
-        await promisify(
-          mApi().guider.student.contactLog.comments.del(
-            studentUserEntityId,
-            contactLogEntryId,
-            commentId
-          ),
-          "callback"
-        )();
+        await guiderApi.deleteContactLogEventComment({
+          studentId: studentUserEntityId,
+          entryId: contactLogEntryId,
+          commentId,
+        });
 
         dispatch({
           type: "DELETE_CONTACT_EVENT_COMMENT",
@@ -1432,7 +1481,7 @@ const deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType =
         );
         onSuccess && onSuccess();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1475,71 +1524,74 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const guiderApi = MApi.getGuiderApi();
+
       try {
         dispatch({
           type: "LOCK_TOOLBAR",
           payload: null,
         });
-        await promisify(
-          mApi().guider.student.contactLog.comments.update(
-            studentUserEntityId,
-            contactLogEntryId,
+
+        await guiderApi
+          .updateContactLogEventComment({
+            studentId: studentUserEntityId,
+            entryId: contactLogEntryId,
             commentId,
-            payload
-          ),
-          "callback"
-        )().then((comment: ContactLogEventComment) => {
-          // Make a deep copy of the current state contactLogs
+            updateContactLogEventCommentRequest: payload,
+          })
+          .then((comment) => {
+            // Make a deep copy of the current state contactLogs
 
-          const contactLogs = JSON.parse(
-            JSON.stringify(getState().guider.currentStudent.contactLogs)
-          ) as ContactLogData;
+            const contactLogs = JSON.parse(
+              JSON.stringify(getState().guider.currentStudent.contactLogs)
+            ) as ContactLog;
 
-          const contactLogsResults = [...contactLogs.results];
+            const contactLogsResults = [...contactLogs.results];
 
-          // find the current contactEvent
-          const contactEvent = contactLogsResults.find(
-            (log) => log.id === comment.entry
-          );
+            // find the current contactEvent
+            const contactEvent = contactLogsResults.find(
+              (log) => log.id === comment.entry
+            );
 
-          // get the index number of the comment inside the contactEvent
-          const commmentIndex = contactEvent.comments.findIndex(
-            (c) => c.id === comment.id
-          );
+            // get the index number of the comment inside the contactEvent
+            const commmentIndex = contactEvent.comments.findIndex(
+              (c) => c.id === comment.id
+            );
 
-          // replace the comment with the updated comment
-          contactEvent.comments.splice(commmentIndex, 1, comment);
+            // replace the comment with the updated comment
+            contactEvent.comments.splice(commmentIndex, 1, comment);
 
-          // find the index of the current contactEvent
-          const contactEventIndex = contactLogsResults.findIndex(
-            (log) => log.id === contactEvent.id
-          );
+            // find the index of the current contactEvent
+            const contactEventIndex = contactLogsResults.findIndex(
+              (log) => log.id === contactEvent.id
+            );
 
-          // Replace the existing contactEvent at the correct index
-          contactLogsResults.splice(contactEventIndex, 1, contactEvent);
+            // Replace the existing contactEvent at the correct index
+            contactLogsResults.splice(contactEventIndex, 1, contactEvent);
 
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: {
-              property: "contactLogs",
-              value: contactLogs,
-            },
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "contactLogs",
+                value: contactLogs,
+              },
+            });
+
+            dispatch(
+              notificationActions.displayNotification(
+                i18n.t("notifications.updateSuccess", { context: "comment" }),
+                "success"
+              )
+            );
+            onSuccess && onSuccess();
           });
 
-          dispatch(
-            notificationActions.displayNotification(
-              i18n.t("notifications.updateSuccess", { context: "comment" }),
-              "success"
-            )
-          );
-          onSuccess && onSuccess();
-        });
         dispatch({
           type: "UNLOCK_TOOLBAR",
           payload: null,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -1621,7 +1673,7 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
  * @param getState getstate method
  */
 async function removeLabelFromUserUtil(
-  student: GuiderStudentType,
+  student: Student,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -1669,7 +1721,7 @@ async function removeLabelFromUserUtil(
  * @param getState getstate method
  */
 async function addLabelToUserUtil(
-  student: GuiderStudentType,
+  student: Student,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -1722,7 +1774,7 @@ const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const guider: GuiderType = getState().guider;
+      const guider: GuiderState = getState().guider;
       const student = guider.currentStudent;
       addLabelToUserUtil(
         student.basic,
@@ -1745,7 +1797,7 @@ const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerT
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const guider: GuiderType = getState().guider;
+      const guider: GuiderState = getState().guider;
       const student = guider.currentStudent;
       removeLabelFromUserUtil(
         student.basic,
@@ -1768,8 +1820,8 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const guider: GuiderType = getState().guider;
-      guider.selectedStudents.forEach((student: GuiderStudentType) => {
+      const guider: GuiderState = getState().guider;
+      guider.selectedStudents.forEach((student: Student) => {
         addLabelToUserUtil(student, student.flags, label, dispatch, getState);
       });
     };
@@ -1785,8 +1837,8 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const guider: GuiderType = getState().guider;
-      guider.selectedStudents.forEach((student: GuiderStudentType) => {
+      const guider: GuiderState = getState().guider;
+      guider.selectedStudents.forEach((student: Student) => {
         removeLabelFromUserUtil(
           student,
           student.flags,
@@ -1848,7 +1900,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
       try {
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-          payload: <GuiderWorkspaceListType>await promisify(
+          payload: <WorkspaceType[]>await promisify(
               mApi().workspace.workspaces.read({
                 userIdentifier: currentUser,
                 includeInactiveWorkspaces: true,
@@ -1882,20 +1934,21 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const usergroupApi = MApi.getUsergroupApi();
+
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
+        const usergroups = await usergroupApi.getUsergroups({
+          userIdentifier: currentUser,
+          maxResults: 500,
+        });
+
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
-          payload: <GuiderUserGroupListType>await promisify(
-              mApi().usergroup.groups.read({
-                userIdentifier: currentUser,
-                maxResults: 500,
-              }),
-              "callback"
-            )() || [],
+          payload: usergroups || [],
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

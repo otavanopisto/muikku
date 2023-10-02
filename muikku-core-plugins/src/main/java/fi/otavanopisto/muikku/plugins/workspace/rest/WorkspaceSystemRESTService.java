@@ -27,7 +27,6 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.security.WorkspaceGroupPermission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -114,8 +113,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     
     // Access check
     
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -158,8 +156,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     if (count == null || count < 0) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     int bytes = 0;
@@ -195,8 +192,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     if (count == null || count < 0) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     int bytes = 0;
@@ -229,8 +225,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
   @Path("/syncworkspaceusers/{ID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response synchronizeWorkspaceUsers(@PathParam("ID") Long workspaceEntityId, @Context Request request) {
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     logger.info(String.format("Synchronizing users of workspace entity %d", workspaceEntityId));
@@ -425,8 +420,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
     
     // Access check
     
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    if (roleEntity == null || roleEntity.getArchetype() != EnvironmentRoleArchetype.ADMINISTRATOR) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
