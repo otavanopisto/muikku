@@ -39,6 +39,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const recordsApi = MApi.getRecordsApi();
     const evaluationApi = MApi.getEvaluationApi();
     const userApi = MApi.getUserApi();
 
@@ -52,10 +53,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const pyramusId = getState().status.userSchoolDataIdentifier;
 
       /* We need completed courses from Eligibility */
-      const eligibility: any = await promisify(
-        mApi().records.studentMatriculationEligibility.read(pyramusId),
-        "callback"
-      )();
+      const eligibility = await recordsApi.getStudentMatriculationEligibility({
+        studentIdentifier: pyramusId,
+      });
 
       /* We need past month activity */
       const activityLogs: any = await promisify(

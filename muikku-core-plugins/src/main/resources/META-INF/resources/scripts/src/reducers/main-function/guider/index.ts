@@ -1,6 +1,5 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType, ActivityLogType } from "~/reducers/workspaces";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
@@ -16,6 +15,7 @@ import {
   UserStudentAddress,
   UserStudentEmail,
   UserStudentPhoneNumber,
+  HopsUppersecondary,
 } from "~/generated/client";
 
 /**
@@ -90,7 +90,7 @@ export interface GuiderStudentUserProfileType {
   usergroups: Array<UserGroup>;
   // Disabled until it really works
   //  vops: VOPSDataType,
-  hops: HOPSDataType;
+  hops: HopsUppersecondary;
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
   currentWorkspaces: WorkspaceType[];
