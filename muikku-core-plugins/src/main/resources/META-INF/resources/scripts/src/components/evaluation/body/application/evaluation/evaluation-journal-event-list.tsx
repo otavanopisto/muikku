@@ -16,12 +16,12 @@ import {
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
 import DeleteJournalFeedback from "~/components/evaluation/dialogs/delete-journal-feedback";
 import Button, { ButtonPill } from "~/components/general/button";
-import {
-  AssessmentRequest,
-  EvaluationJournalFilters,
-} from "~/@types/evaluation";
+import { EvaluationJournalFilters } from "~/@types/evaluation";
 import Dropdown from "~/components/general/dropdown";
-import { WorkspaceJournal } from "~/generated/client";
+import {
+  WorkspaceJournal,
+  EvaluationAssessmentRequest,
+} from "~/generated/client";
 import { localizeTime } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventListProps {
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   evaluation: EvaluationState;
   deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
 }

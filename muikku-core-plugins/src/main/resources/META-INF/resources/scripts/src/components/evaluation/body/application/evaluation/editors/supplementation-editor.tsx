@@ -20,7 +20,7 @@ import {
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import { AssessmentRequest } from "~/@types/evaluation";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -30,7 +30,7 @@ interface SupplementationEditorProps extends WithTranslation {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   type?: "new" | "edit";
   eventId?: string;
   editorLabel?: string;

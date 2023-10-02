@@ -3,7 +3,6 @@ import ArchiveDialog from "../../../dialogs/archive";
 import EvaluateDialog from "../../../dialogs/evaluate";
 import DeleteRequestDialog from "../../../dialogs/delete-request";
 import {
-  AssessmentRequest,
   EvaluationImportantStatus,
   UpdateImportanceObject,
 } from "~/@types/evaluation";
@@ -20,6 +19,7 @@ import { StateType } from "~/reducers/index";
 import { ButtonPill, IconButton } from "~/components/general/button";
 import "~/sass/elements/evaluation-card.scss";
 import "~/sass/elements/buttons.scss";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 import {
   useTranslation,
   WithTranslation,
@@ -29,7 +29,9 @@ import {
 /**
  * EvaluationCardProps
  */
-interface EvaluationCardProps extends AssessmentRequest, WithTranslation {
+interface EvaluationCardProps
+  extends EvaluationAssessmentRequest,
+    WithTranslation {
   selectedWorkspaceId?: number;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   updateEvaluationImportance: (object: UpdateImportanceObject) => void;
