@@ -1055,6 +1055,7 @@ public class CeeposRESTService {
       break;
     
     case ASSESSMENTREQUEST:
+    case ASSESSMENTREQUEST_FUNDED:
       CeeposAssessmentRequestOrder assessmentRequestOrder = ceeposController.findAssessmentRequestOrderById(order.getId());
       if (assessmentRequestOrder == null) {
         logger.severe(String.format("Assessment request order %d not found", order.getId()));
