@@ -9,7 +9,10 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/react-select-override.scss";
 import Select from "react-select";
 import { StateType } from "~/reducers";
-import { WorkspaceBaseFilterType, WorkspacesState } from "~/reducers/workspaces";
+import {
+  WorkspaceBaseFilterType,
+  WorkspacesState,
+} from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
