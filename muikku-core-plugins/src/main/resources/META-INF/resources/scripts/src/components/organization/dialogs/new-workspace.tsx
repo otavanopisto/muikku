@@ -43,7 +43,6 @@ import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   CreateWorkspaceType,
   WorkspaceDataType,
-  WorkspaceAccessType,
   WorkspacesActiveFiltersType,
 } from "~/reducers/workspaces";
 import "~/sass/elements/course.scss";
@@ -51,6 +50,7 @@ import { TagItem } from "~/components/general/tag-input";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localizeTime } from "~/locales/i18n";
 import { AnyActionType } from "~/actions";
+import { WorkspaceAccess } from "~/generated/client";
 
 /**
  * ValidationType
@@ -86,7 +86,7 @@ interface OrganizationNewWorkspaceState {
   template: SelectItem;
   templateSearch: string;
   workspaceName: string;
-  workspaceAccess: WorkspaceAccessType;
+  workspaceAccess: WorkspaceAccess;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   beginDate: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -283,7 +283,7 @@ class OrganizationNewWorkspace extends React.Component<
    * setWorkspaceAccess
    * @param value value
    */
-  setWorkspaceAccess(value: WorkspaceAccessType) {
+  setWorkspaceAccess(value: WorkspaceAccess) {
     this.setState({ workspaceAccess: value });
   }
 

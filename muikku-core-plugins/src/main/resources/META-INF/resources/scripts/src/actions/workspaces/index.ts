@@ -5,17 +5,14 @@ import mApi, { MApiError } from "~/lib/mApi";
 import {
   WorkspaceMaterialReferenceType,
   WorkspaceDataType,
-  WorkspaceAssessementStateType,
   WorkspacesActiveFiltersType,
   WorkspacesStateType,
   WorkspacesStatePatch,
   WorkspaceUpdateType,
   WorkspaceSignUpDetails,
-  WorkspaceInterimEvaluationRequest,
   MaterialContentNodeWithIdAndLogic,
-  WorkspaceJournalsType,
-  WorkspaceStateFilterListType,
   WorkspaceEditModeStateType,
+  WorkspaceStateFilterType,
 } from "~/reducers/workspaces";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -24,7 +21,11 @@ import {
   reuseExistantValue,
 } from "~/actions/workspaces/helpers";
 import { Dispatch } from "react-redux";
-import { WorkspaceActivity } from "~/generated/client";
+import {
+  InterimEvaluationRequest,
+  WorkspaceActivity,
+  WorkspaceAssessmentStateType,
+} from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import {
   AssessmentRequest,
@@ -77,14 +78,14 @@ export type UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS = SpecificActionType<
 export type UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS =
   SpecificActionType<
     "UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS",
-    WorkspaceInterimEvaluationRequest[]
+    InterimEvaluationRequest[]
   >;
 
 export type UPDATE_WORKSPACE_ASSESSMENT_STATE = SpecificActionType<
   "UPDATE_WORKSPACE_ASSESSMENT_STATE",
   {
     workspace: WorkspaceDataType;
-    newState: WorkspaceAssessementStateType;
+    newState: WorkspaceAssessmentStateType;
     newDate: string;
     newAssessmentRequest?: AssessmentRequest;
     oldAssessmentRequestToDelete?: AssessmentRequest;
@@ -111,7 +112,7 @@ export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES =
   SpecificActionType<
     "UPDATE_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
-    WorkspaceStateFilterListType
+    WorkspaceStateFilterType[]
   >;
 
 export type UPDATE_WORKSPACES_ACTIVE_FILTERS = SpecificActionType<
@@ -166,7 +167,7 @@ export interface SelectItem {
  */
 export interface UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger {
   (data?: {
-    requestData: WorkspaceInterimEvaluationRequest;
+    requestData: InterimEvaluationRequest;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -534,15 +535,13 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           workspace = { ...current };
         }
 
-        /* let assesments: WorkspaceStudentAssessmentsType; */
         let assessmentRequests: AssessmentRequest[];
-        let interimEvaluationRequests: WorkspaceInterimEvaluationRequest[];
+        let interimEvaluationRequests: InterimEvaluationRequest[];
         let activity: WorkspaceActivity;
         let additionalInfo: WorkspaceAdditionalInfo;
         let contentDescription: MaterialContentNodeWithIdAndLogic;
         let producers: WorkspaceMaterialProducer[];
         let isCourseMember: boolean;
-        let journals: WorkspaceJournalsType;
         let details: WorkspaceDetails;
         let chatStatus: WorkspaceChatStatus;
         const status = state.status;
@@ -563,8 +562,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           producers,
           // eslint-disable-next-line prefer-const
           isCourseMember,
-          // eslint-disable-next-line prefer-const
-          journals,
           // eslint-disable-next-line prefer-const
           details,
           // eslint-disable-next-line prefer-const
@@ -653,8 +650,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )
             : false,
 
-          reuseExistantValue(true, workspace && workspace.journals, () => null),
-
           data.loadDetails || (workspace && workspace.details)
             ? reuseExistantValue(true, workspace && workspace.details, () =>
                 workspaceApi.getWorkspaceDetails({
@@ -679,7 +674,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.contentDescription = contentDescription;
         workspace.producers = producers;
         workspace.isCourseMember = isCourseMember;
-        workspace.journals = journals;
         workspace.details = details;
         workspace.chatStatus = chatStatus;
 
@@ -1101,7 +1095,7 @@ export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
 export interface setFiltersTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
-    filters: WorkspaceStateFilterListType
+    filters: WorkspaceStateFilterType[]
   ): AnyActionType;
 }
 
@@ -1372,8 +1366,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["activity"];
     delete actualOriginal["studentActivity"];
     delete actualOriginal["forumStatistics"];
-    delete actualOriginal["studentAssessments"];
-    delete actualOriginal["activityStatistics"];
     delete actualOriginal["assessmentRequests"];
     delete actualOriginal["interimEvaluationRequests"];
     delete actualOriginal["additionalInfo"];
@@ -1383,7 +1375,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["producers"];
     delete actualOriginal["contentDescription"];
     delete actualOriginal["isCourseMember"];
-    delete actualOriginal["journals"];
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
     delete actualOriginal["chatStatus"];

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WorkspaceDataType, Assessment } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
 import WorkspaceChart from "./workspace/workspace-chart";
 import "~/sass/elements/application-list.scss";
@@ -15,6 +15,7 @@ import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import {
   WorkspaceActivity,
   DiscussionWorkspaceStatistic,
+  WorkspaceAssessmentState,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localizeTime } from "~/locales/i18n";
@@ -62,7 +63,7 @@ class StudentWorkspace extends React.Component<
    * is in "incomplete" state
    * @param assessments assessments
    */
-  showWorkspacePercents = (assessments?: Assessment[]) => {
+  showWorkspacePercents = (assessments?: WorkspaceAssessmentState[]) => {
     if (assessments) {
       for (const assessment of assessments) {
         if (!assessment.grade || assessment.state === "incomplete") {
@@ -79,7 +80,7 @@ class StudentWorkspace extends React.Component<
    * @param assessment assessment
    * @returns object containing state text and class modifier
    */
-  getAssessmentStateText = (assessment: Assessment) => {
+  getAssessmentStateText = (assessment: WorkspaceAssessmentState) => {
     let stateText;
 
     switch (assessment.state) {
@@ -534,7 +535,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
  * GuiderAssessmentProps
  */
 interface GuiderAssessmentProps {
-  assessment?: Assessment;
+  assessment?: WorkspaceAssessmentState;
 }
 
 /**

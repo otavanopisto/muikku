@@ -7,7 +7,6 @@ import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
   WorkspaceEditModeStateType,
-  WorkspaceAssessementStateType,
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
@@ -29,7 +28,7 @@ import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 import {
   MaterialCompositeReply,
-  MaterialContentNode,
+  WorkspaceAssessmentStateType,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -131,7 +130,7 @@ class WorkspaceMaterial extends React.Component<
     let isDisabled = false;
 
     // Values to indicate pending state
-    const pendingValues: WorkspaceAssessementStateType[] = [
+    const pendingValues: WorkspaceAssessmentStateType[] = [
       "pending",
       "pending_fail",
       "pending_pass",

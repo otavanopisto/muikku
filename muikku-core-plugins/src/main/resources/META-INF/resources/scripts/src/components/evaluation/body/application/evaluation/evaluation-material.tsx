@@ -1,6 +1,5 @@
 import * as React from "react";
 import {
-  WorkspaceInterimEvaluationRequest,
   WorkspaceDataType,
   MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
@@ -15,8 +14,8 @@ import { bindActionCreators } from "redux";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 import {
+  InterimEvaluationRequest,
   MaterialCompositeReply,
-  MaterialContentNode,
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -26,7 +25,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 export interface EvaluationMaterialProps extends WithTranslation {
   material: MaterialContentNodeWithIdAndLogic;
   compositeReply?: MaterialCompositeReply;
-  interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
+  interminEvaluationRequest?: InterimEvaluationRequest;
   workspace: WorkspaceDataType;
   userEntityId: number;
 }

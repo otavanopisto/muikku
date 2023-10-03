@@ -6,14 +6,16 @@ import {
   UpdateWorkspaceTriggerType,
 } from "./index";
 import { Dispatch } from "react-redux";
-import { WorkspaceDataType } from "../../reducers/workspaces/index";
+import {
+  WorkspaceDataType,
+  WorkspaceStateFilterType,
+} from "../../reducers/workspaces/index";
 import { reuseExistantValue } from "./helpers";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import {
   WorkspaceUpdateType,
-  WorkspaceStateFilterListType,
   WorkspacesActiveFiltersType,
   WorkspacesStatePatch,
   WorkspacesStateType,
@@ -65,7 +67,7 @@ export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES =
   SpecificActionType<
     "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
-    WorkspaceStateFilterListType
+    WorkspaceStateFilterType[]
   >;
 
 /**
@@ -401,8 +403,6 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         delete originalWorkspace["details"];
         delete originalWorkspace["studentActivity"];
         delete originalWorkspace["forumStatistics"];
-        delete originalWorkspace["studentAssessments"];
-        delete originalWorkspace["activityStatistics"];
         delete originalWorkspace["assessmentRequests"];
         delete originalWorkspace["additionalInfo"];
         delete originalWorkspace["staffMembers"];
@@ -411,7 +411,6 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         delete originalWorkspace["producers"];
         delete originalWorkspace["contentDescription"];
         delete originalWorkspace["isCourseMember"];
-        delete originalWorkspace["journals"];
         delete originalWorkspace["activityLogs"];
         delete originalWorkspace["permissions"];
         delete originalWorkspace["chatStatus"];

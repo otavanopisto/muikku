@@ -3,7 +3,6 @@ import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import {
   WorkspaceDataType,
-  WorkspaceAccessType,
   WorkspaceUpdateType,
   languageOptions,
 } from "~/reducers/workspaces";
@@ -46,6 +45,7 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 import {
   Language,
+  WorkspaceAccess,
   WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
@@ -78,7 +78,7 @@ interface ManagementPanelState {
   workspaceName: string;
   workspaceLanguage: Language;
   workspacePublished: boolean;
-  workspaceAccess: WorkspaceAccessType;
+  workspaceAccess: WorkspaceAccess;
   workspaceExtension: string;
   workspaceType: string;
   workspaceStartDate: Date | null;
@@ -286,7 +286,7 @@ class ManagementPanel extends React.Component<
    * setWorkspaceAccessTo
    * @param value value
    */
-  setWorkspaceAccessTo(value: WorkspaceAccessType) {
+  setWorkspaceAccessTo(value: WorkspaceAccess) {
     this.setState({
       workspaceAccess: value,
     });

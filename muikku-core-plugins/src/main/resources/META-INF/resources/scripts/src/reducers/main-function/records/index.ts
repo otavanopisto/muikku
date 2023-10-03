@@ -1,12 +1,15 @@
 import { UserFileType } from "~/reducers/user-index";
 import {
-  Assessment,
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
-import { MaterialCompositeReply, Curriculum } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  Curriculum,
+  WorkspaceAssessmentState,
+} from "~/generated/client";
 import { WorkspaceJournal } from "~/generated/client";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
@@ -56,7 +59,7 @@ export interface RecordWorkspaceActivity {
   id: number;
   identifier: string;
   subjects: RecordWorkspaceActivitySubject[] | null;
-  assessmentStates: Assessment[];
+  assessmentStates: WorkspaceAssessmentState[];
   name: string;
   curriculums: RecordWorkspaceActivityCurriculum[] | null;
   exercisesTotal?: number | null;

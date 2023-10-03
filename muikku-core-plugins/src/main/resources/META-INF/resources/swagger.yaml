@@ -14640,7 +14640,7 @@ components:
           description: Assessment states of the workspace
           type: array
           items:
-            $ref: "#/components/schemas/WorkspaceAssessment"
+            $ref: "#/components/schemas/WorkspaceAssessmentState"
         evaluablesAnswered:
           description: The number of answered evaluables
           type: integer
@@ -14708,9 +14708,9 @@ components:
           description: The number of visits to the workspace
           type: integer
 
-    WorkspaceAssessment:
+    WorkspaceAssessmentState:
       type: object
-      description: WorkspaceAssessment object
+      description: WorkspaceAssessmentState object
       required:
         - date
         - state

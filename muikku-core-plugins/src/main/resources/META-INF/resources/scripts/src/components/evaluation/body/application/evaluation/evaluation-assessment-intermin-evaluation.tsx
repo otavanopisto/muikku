@@ -3,7 +3,6 @@ import EvaluationMaterial from "./evaluation-material";
 import {
   WorkspaceDataType,
   MaterialContentNodeWithIdAndLogic,
-  WorkspaceInterimEvaluationRequest,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -28,6 +27,7 @@ import {
   MaterialCompositeReply,
   AssessmentWithAudio,
   EvaluationAssessmentRequest,
+  InterimEvaluationRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -56,7 +56,7 @@ interface EvaluationAssessmentInterminEvaluationRequestState {
   openContent: boolean;
   openDrawer: boolean;
   materialNode?: MaterialContentNodeWithIdAndLogic;
-  interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
+  interminEvaluationRequest?: InterimEvaluationRequest;
   isLoading: boolean;
   openAssignmentType?: MaterialAssigmentType;
   showCloseEditorWarning: boolean;

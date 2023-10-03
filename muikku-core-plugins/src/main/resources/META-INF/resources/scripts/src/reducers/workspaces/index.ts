@@ -1,7 +1,6 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
-import { AudioAssessment, WorkspaceJournal } from "~/generated/client";
 import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
@@ -24,6 +23,12 @@ import {
   WorkspaceSubject,
   Language,
   WorkspaceMaterial,
+  InterimEvaluationRequest,
+  MaterialEvaluation,
+  WorkspaceAccess,
+  WorkspaceJournal,
+  WorkspaceMandatority,
+  WorkspaceAssessmentStateType,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -37,94 +42,6 @@ export interface CreateWorkspaceType {
 }
 
 export type UserSelectLoader = "WAIT" | "LOADING" | "READY" | "ERROR";
-
-export type WorkspaceAssessementStateType =
-  | "transferred"
-  | "unassessed"
-  | "pending"
-  | "pending_pass"
-  | "pending_fail"
-  | "pass"
-  | "fail"
-  | "incomplete"
-  | "interim_evaluation_request"
-  | "interim_evaluation";
-
-/**
- * Assessment
- */
-export interface Assessment {
-  date: string;
-  state: WorkspaceAssessementStateType;
-  grade: string;
-  passingGrade: boolean;
-  text: string;
-  workspaceSubjectIdentifier: string | null;
-}
-
-/**
- * WorkspaceActivityType
- */
-export interface WorkspaceActivityType {
-  assessmentState: Assessment[];
-  evaluablesAnswered: number;
-  evaluablesAnsweredLastDate: string;
-  evaluablesDonePercent: number;
-  evaluablesFailed: number;
-  evaluablesFailedLastDate?: string;
-  evaluablesIncomplete: number;
-  evaluablesIncompleteLastDate?: string;
-  evaluablesPassed: number;
-  evaluablesPassedLastDate?: string;
-  evaluablesSubmitted: number;
-  evaluablesSubmittedLastDate?: string;
-  evaluablesTotal: number;
-  evaluablesUnanswered: number;
-  exercisesAnswered: number;
-  exercisesAnsweredLastDate: string;
-  exercisesDonePercent: number;
-  exercisesTotal: number;
-  exercisesUnanswered: number;
-  journalEntryCount: number;
-  lastJournalEntry?: string;
-  lastVisit?: string;
-  numVisits: number;
-}
-
-/**
- * WorkspaceForumStatisticsType
- */
-export interface WorkspaceForumStatisticsType {
-  messageCount: number;
-  latestMessage: string; //represents a date
-}
-
-/**
- * WorkspaceStudentAssessmentType
- */
-export interface WorkspaceStudentAssessmentType {
-  assessorEntityId: number;
-  evaluated: string;
-  gradeIdentifier: string;
-  gradeSchoolDataSource: string;
-  grade: string;
-  gradingScale: string;
-  gradingScaleIdentifier: string;
-  gradingScaleSchoolDataSource: string;
-  identifier: string;
-  passed: boolean;
-  verbalAssessment: string;
-  workspaceStudentId: string;
-}
-
-/**
- * WorkspaceStudentAssessmentsType
- */
-export interface WorkspaceStudentAssessmentsType {
-  assessmentState: WorkspaceAssessementStateType;
-  assessmentStateDate: string;
-  assessments: Array<WorkspaceStudentAssessmentType>;
-}
 
 /**
  * ActivityLogType
@@ -150,101 +67,12 @@ export interface ActivityLogType {
 }
 
 /**
- * WorkspaceActivityRecordType
- */
-export interface WorkspaceActivityRecordType {
-  type: string;
-  date: string;
-}
-
-/**
- * WorkspaceActivityStatisticsType
- */
-export interface WorkspaceActivityStatisticsType {
-  records: WorkspaceActivityRecordType[];
-}
-
-/**
- * WorkspaceJournalsType
- */
-export interface WorkspaceJournalsType {
-  journals: WorkspaceJournal[];
-  currentJournal?: WorkspaceJournal;
-  hasMore: boolean;
-  userEntityId?: number;
-  state: WorkspacesStateType;
-}
-
-/**
- * WorkspaceInterminEvaluationRequest
- */
-export interface WorkspaceInterimEvaluationRequest {
-  id: number;
-  userEntityId: number;
-  workspaceEntityId: number;
-  workspaceMaterialId: number;
-  requestDate: Date;
-  cancellationDate: Date;
-  requestText: string;
-  archived: boolean;
-}
-
-/**
- * WorkspaceSubjectType
- */
-export interface WorkspaceSubjectType {
-  code: string;
-  identifier: string;
-  name: string;
-  schoolDataSource: string;
-}
-
-/**
- * WorkspaceCourseLengthSymbolType
- */
-export interface WorkspaceCourseLengthSymbolType {
-  id: string;
-  name: string;
-  schoolDataSource: string;
-  symbol: string;
-}
-
-/**
- * WorkspaceProducerType
- */
-export interface WorkspaceProducerType {
-  name: string;
-  id?: number;
-}
-
-/**
  * UserSelectType
  */
 export interface UserSelectType {
   users?: Array<SelectItem>;
   state?: UserSelectLoader;
 }
-
-export enum WorkspaceMandatority {
-  MANDATORY = "MANDATORY",
-  SCHOOL_LEVEL_OPTIONAL = "SCHOOL_LEVEL_OPTIONAL",
-  NATIONAL_LEVEL_OPTIONAL = "NATIONAL_LEVEL_OPTIONAL",
-  UNSPECIFIED_OPTIONAL = "UNSPECIFIED_OPTIONAL",
-}
-
-export type WorkspaceAccessType = "MEMBERS_ONLY" | "LOGGED_IN" | "ANYONE";
-
-/**
- * WorkspaceStudentAssessmentStateType
- */
-export interface WorkspaceStudentAssessmentStateType {
-  date: string;
-  state: WorkspaceAssessementStateType;
-  grade?: string;
-  text?: string;
-}
-
-export type TemplateWorkspaceListType = Array<TemplateWorkspaceType>;
 
 /**
  * TemplateWorkspaceType
@@ -281,7 +109,7 @@ export interface WorkspaceDataType {
   chatStatus?: WorkspaceChatStatus;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
-  access?: WorkspaceAccessType;
+  access?: WorkspaceAccess;
   //These appear in certain circumstances
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
@@ -294,13 +122,11 @@ export interface WorkspaceDataType {
 
   //These are optional addons, and are usually not available
   activity?: WorkspaceActivity;
-  studentActivity?: WorkspaceActivityType;
+  studentActivity?: WorkspaceActivity;
   forumStatistics?: DiscussionWorkspaceStatistic;
   organization?: Organization;
-  studentAssessments?: WorkspaceStudentAssessmentsType;
-  activityStatistics?: WorkspaceActivityStatisticsType;
   assessmentRequests?: AssessmentRequest[];
-  interimEvaluationRequests?: WorkspaceInterimEvaluationRequest[];
+  interimEvaluationRequests?: InterimEvaluationRequest[];
   additionalInfo?: WorkspaceAdditionalInfo;
   staffMembers?: UserStaffSearchResult;
   staffMemberSelect?: UserSelectType;
@@ -313,8 +139,6 @@ export interface WorkspaceDataType {
   details?: WorkspaceDetails;
   permissions?: WorkspaceSignupGroup[];
   mandatority?: WorkspaceMandatority | null;
-  //Fancy stuff in here
-  journals?: WorkspaceJournalsType;
 
   // These are only in organizationlistings
   teachers?: UserStaff[];
@@ -349,23 +173,12 @@ export type WorkspaceBaseFilterType =
   | "UNPUBLISHED";
 
 /**
- * WorkspaceOrganizationFilterType
- */
-export interface WorkspaceOrganizationFilterType {
-  identifier: string;
-  name: string;
-}
-
-/**
  * WorkspaceStateFilterType
  */
 export interface WorkspaceStateFilterType {
   identifier: string;
   name: string;
 }
-
-export type WorkspaceBaseFilterListType = Array<WorkspaceBaseFilterType>;
-export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
 
 /**
  * WorkspacesavailableFiltersType
@@ -374,8 +187,8 @@ export interface WorkspacesavailableFiltersType {
   educationTypes: EducationType[];
   curriculums: Curriculum[];
   organizations?: WorkspaceOrganization[];
-  baseFilters?: WorkspaceBaseFilterListType;
-  stateFilters?: WorkspaceStateFilterListType;
+  baseFilters?: WorkspaceBaseFilterType[];
+  stateFilters?: WorkspaceStateFilterType[];
 }
 
 export type WorkspacesStateType =
@@ -452,40 +265,8 @@ export interface MaterialContentNodeWithIdAndLogic extends MaterialContentNode {
   id?: number;
   // this is usually missing and has to be manually retrieved
   childrenAttachments?: MaterialContentNodeWithIdAndLogic[];
-  evaluation?: MaterialEvaluationType;
+  evaluation?: MaterialEvaluation;
   assignment?: WorkspaceMaterial;
-}
-
-/**
- * MaterialCompositeRepliesStateType
- */
-export type MaterialCompositeRepliesStateType =
-  | "UNANSWERED"
-  | "ANSWERED"
-  | "SUBMITTED"
-  | "WITHDRAWN"
-  | "PASSED"
-  | "FAILED"
-  | "INCOMPLETE";
-
-/**
- * MaterialEvaluationType
- */
-export interface MaterialEvaluationType {
-  id: number;
-  evaluated: string;
-  assessorEntityId: number;
-  studentEntityId: number;
-  workspaceMaterialId: number;
-  gradingScaleIdentifier: string;
-  gradingScaleSchoolDataSource: string;
-  grade: string;
-  gradeIdentifier: string;
-  gradeSchoolDataSource: string;
-  gradingScale: string;
-  verbalAssessment: string;
-  passed: boolean;
-  audioAssessments: AudioAssessment[];
 }
 
 /* export type MaterialContentNodeListType = Array<MaterialContentNodeWithIdAndLogic>; */
@@ -1044,7 +825,7 @@ export const workspaces: Reducer<WorkspacesState> = (
 
 /* function processWorkspaceToHaveNewAssessmentStateAndDate(
   id: number,
-  assessmentState: WorkspaceAssessementStateType,
+  assessmentState: WorkspaceAssessmentStateType,
   date: string,
   assessmentRequestObject: AssessmentRequest,
   deleteAssessmentRequestObject: boolean,

@@ -15,10 +15,7 @@ import {
   EvaluationBasePriceById,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
-import {
-  WorkspaceDataType,
-  WorkspaceInterimEvaluationRequest,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import {
   EvaluationAssessmentRequest,
   EvaluationEvent,
@@ -35,6 +32,7 @@ import {
   WorkspaceJournal,
   MaterialCompositeReply,
   UpdateBilledPriceRequest,
+  InterimEvaluationRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -67,7 +65,7 @@ export type EVALUATION_ASSESSMENT_EVENTS_LOAD = SpecificActionType<
 
 export type EVALUATION_INTERMIN_REQUESTS_LOAD = SpecificActionType<
   "EVALUATION_INTERMIN_REQUESTS_LOAD",
-  WorkspaceInterimEvaluationRequest[]
+  InterimEvaluationRequest[]
 >;
 
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<

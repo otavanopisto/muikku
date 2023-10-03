@@ -42,7 +42,6 @@ import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   WorkspaceUpdateType,
   WorkspaceDataType,
-  WorkspaceAccessType,
   WorkspacesActiveFiltersType,
 } from "~/reducers/workspaces";
 import { TagItem } from "~/components/general/tag-input";
@@ -52,6 +51,7 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import {
   UserStaff,
   UserStaffSearchResult,
+  WorkspaceAccess,
   WorkspaceStudentSearchResult,
 } from "~/generated/client";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
@@ -101,7 +101,7 @@ interface OrganizationEditWorkspaceState {
   };
   workspaceName: string;
   workspaceNameExtension: string;
-  workspaceAccess: WorkspaceAccessType;
+  workspaceAccess: WorkspaceAccess;
   locked: boolean;
   currentStep: number;
   addStaff: UiSelectItem[];
@@ -442,7 +442,7 @@ class OrganizationEditWorkspace extends React.Component<
    * setWorkspaceAccess
    * @param value value
    */
-  setWorkspaceAccess(value: WorkspaceAccessType) {
+  setWorkspaceAccess(value: WorkspaceAccess) {
     this.setState({ workspaceAccess: value });
   }
 
