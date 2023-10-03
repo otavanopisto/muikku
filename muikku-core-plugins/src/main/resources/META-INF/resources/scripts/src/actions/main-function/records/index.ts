@@ -8,13 +8,13 @@ import {
   TranscriptOfRecordLocationType,
   CurrentStudentUserAndWorkspaceStatusType,
   CurrentRecordType,
-  RecordWorkspaceActivityInfo,
   RecordWorkspaceActivityByLine,
   RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
 import i18n from "~/locales/i18n";
 import { UserFile } from "~/generated/client";
 import { Dispatch } from "react-redux";
+import { RecordWorkspaceActivityInfo } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
@@ -107,6 +107,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const recordsApi = MApi.getRecordsApi();
       const userApi = MApi.getUserApi();
 
       try {
@@ -153,13 +154,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         const workspaceWithActivity: RecordWorkspaceActivityInfo[] =
           await Promise.all(
             users.map(async (user) => {
-              const workspacesWithActivity = (await promisify(
-                mApi().records.users.workspaceActivity.read(user.id, {
+              const workspacesWithActivity =
+                await recordsApi.getWorkspaceActivity({
+                  userIdentifier: user.id,
                   includeTransferCredits: "true",
                   includeAssignmentStatistics: "true",
-                }),
-                "callback"
-              )()) as RecordWorkspaceActivityInfo;
+                });
 
               return workspacesWithActivity;
             })

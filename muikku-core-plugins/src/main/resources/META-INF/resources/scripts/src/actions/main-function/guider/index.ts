@@ -18,7 +18,6 @@ import {
   ActivityLogType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { colorIntToHex } from "~/util/modifiers";
 import { Dispatch } from "react-redux";
@@ -560,6 +559,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     getState: () => StateType
   ) => {
     const hopsApi = MApi.getHopsApi();
+    const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
     const usergroupApi = MApi.getUsergroupApi();
@@ -698,14 +698,16 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             });
           }),
 
-        promisify(mApi().records.hops.read(id), "callback")().then(
-          (hops: HOPSDataType) => {
+        hopsUppersecondaryApi
+          .getHopsByUser({
+            userIdentifier: id,
+          })
+          .then((hops) => {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "hops", value: hops },
             });
-          }
-        ),
+          }),
 
         guiderApi
           .getGuiderUserLatestNotification({

@@ -319,7 +319,6 @@ class ExerciseEditor extends SessionStateComponent<
             <label htmlFor="assignmentEvaluationGrade">
               {this.props.t("labels.verbalEvaluation", {
                 ns: "evaluation",
-                context: "assignment",
               })}
             </label>
             <Recorder

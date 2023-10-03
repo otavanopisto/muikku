@@ -5724,7 +5724,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HopsUppersecondaryData"
+                $ref: "#/components/schemas/HopsUppersecondary"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5737,14 +5737,14 @@ paths:
       tags:
         - HopsUpperSecondary
       requestBody:
-        $ref: "#/components/requestBodies/HopsUppersecondaryDataUpdateRequestBody"
+        $ref: "#/components/requestBodies/HopsUppersecondaryUpdateRequestBody"
       responses:
         "200":
           description: Hops updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HopsUppersecondaryData"
+                $ref: "#/components/schemas/HopsUppersecondary"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5770,7 +5770,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HopsUppersecondaryData"
+                $ref: "#/components/schemas/HopsUppersecondary"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5789,7 +5789,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HOPSEligibility"
+                $ref: "#/components/schemas/HopsEligibility"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5892,7 +5892,7 @@ paths:
           in: query
           description: String boolean
           schema:
-            type: integer
+            type: string
         - name: includeAssignmentStatistics
           in: query
           description: String boolean
@@ -5904,9 +5904,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/RecordWorkspaceActivityInfo"
+                $ref: "#/components/schemas/RecordWorkspaceActivityInfo"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5939,6 +5938,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AnyValue"
+                #$ref: "#/components/schemas/Workspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9708,12 +9708,13 @@ components:
                 items:
                   $ref: "#/components/schemas/PedagogyFormVisibility"
 
-    HopsUppersecondaryDataUpdateRequestBody:
+    HopsUppersecondaryUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/HopsUppersecondaryData"
+              - $ref: "#/components/schemas/HopsUppersecondary"
 
     UpdateCredentialsBody:
       required: true
@@ -11385,9 +11386,9 @@ components:
         modifierHasImage:
           type: boolean
 
-    HopsUppersecondaryData:
+    HopsUppersecondary:
       type: object
-      description: HopsUppersecondaryData object
+      description: HopsUppersecondary object
       required:
         - goalSecondarySchoolDegree
         - goalMatriculationExam
@@ -11412,23 +11413,23 @@ components:
         goalSecondarySchoolDegree:
           type: string
           enum:
-            - yes
-            - no
-            - maybe
+            - "yes"
+            - "no"
+            - "maybe"
         goalMatriculationExam:
           type: string
           enum:
-            - yes
-            - no
-            - maybe
+            - "yes"
+            - "no"
+            - "maybe"
         vocationalYears:
           description: defined as a string, but this is actually a number
           type: string
         goalJustMatriculationExam:
           type: string
           enum:
-            - yes
-            - no
+            - "yes"
+            - "no"
         justTransferCredits:
           description: defined as a string, but this is actually a number
           type: string
@@ -11482,9 +11483,9 @@ components:
         additionalInfo:
           type: string
 
-    HOPSEligibility:
+    HopsEligibility:
       type: object
-      description: HOPSEligibilityType object
+      description: HopsEligibility object
       required:
         - upperSecondarySchoolCurriculum
       properties:
@@ -12861,7 +12862,7 @@ components:
 
     RecordWorkspaceActivityInfo:
       type: object
-      description: RecordsWorkspaceActivityInfo object
+      description: Record workspace activity info with line and category, default line and activities
       required:
         - lineName
         - lineCategory

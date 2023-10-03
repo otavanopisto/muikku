@@ -8,8 +8,8 @@ import "~/sass/elements/item-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import { SummaryType } from "~/reducers/main-function/records/summary";
+import { HOPSState } from "~/reducers/main-function/hops";
 import { ContactsState } from "~/reducers/base/contacts";
-import { HOPSType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
@@ -38,7 +38,7 @@ interface SummaryProps extends WithTranslation {
   contacts: ContactsState;
   summary: SummaryType;
   status: StatusType;
-  hops: HOPSType;
+  hops: HOPSState;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -98,7 +98,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="application-sub-panel__item-title">
                 {this.props.summary.data.studentsDetails.studyEndDate
                   ? t("labels.endDate", { ns: "studies" })
-                  : t("labels.studyTimeEnd", { ns: "users" })}
+                  : t("labels.studyEndDate", { ns: "users" })}
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date">
                 <span className="application-sub-panel__single-entry">

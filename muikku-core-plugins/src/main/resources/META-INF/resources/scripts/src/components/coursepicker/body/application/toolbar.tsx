@@ -118,7 +118,6 @@ class CoursepickerToolbar extends React.Component<
               id="searchCourses"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
-              // TODO: Translate this with new i18next
               placeholder={this.props.t("labels.search", { ns: "workspace" })}
               value={this.state.searchquery}
             />

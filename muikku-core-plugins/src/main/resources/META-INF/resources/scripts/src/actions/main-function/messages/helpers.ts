@@ -385,7 +385,6 @@ export function setLabelStatusSelectedMessages(
         });
       } else if (!isToAddLabel) {
         if (!threadLabel) {
-          //TODO translate this
           dispatch(
             notificationActions.displayNotification(
               i18n.t("notifications.doesNotExistError", {
