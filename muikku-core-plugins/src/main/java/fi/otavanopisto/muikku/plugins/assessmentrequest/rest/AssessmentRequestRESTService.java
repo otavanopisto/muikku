@@ -41,6 +41,7 @@ import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -127,8 +128,20 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       if (order != null) {
         price.setPrice(0d);
       }
-      
     }
+    
+    // Price is reset to zero if the user has an active supplementation request on this workspace
+    
+    if (price != null && price.getPrice() > 0) {
+      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+          sessionController.getLoggedUserEntity().getId(),
+          workspaceEntityId,
+          Boolean.FALSE);
+      if (supplementationRequest != null) {
+        price.setPrice(0d);
+      }
+    }
+    
     return Response.ok(price).build();
   }
 
