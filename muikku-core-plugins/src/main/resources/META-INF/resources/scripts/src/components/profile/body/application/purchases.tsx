@@ -5,7 +5,7 @@ import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { localizeTime } from "~/locales/i18n";
 import {
-  ProfileType,
+  ProfileState,
   PurchaseType,
   PurchaseStateType,
 } from "~/reducers/main-function/profile";
@@ -28,7 +28,7 @@ import { AnyActionType } from "~/actions";
  * IPurchasesProps
  */
 interface IPurchasesProps extends WithTranslation {
-  profile: ProfileType;
+  profile: ProfileState;
 }
 
 /**
@@ -215,9 +215,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">
-            {this.props.t("content.empty", {
+            {this.props.t("labels.history", {
               ns: "orders",
-              context: "history",
             })}
           </h3>
           {completedPurchases.length > 0 ? (
@@ -263,13 +262,15 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
               </ApplicationList>
             </div>
           ) : (
-            <div className="empty">
-              <span>
-                {this.props.t("content.empty", {
-                  ns: "orders",
-                  context: "history",
-                })}
-              </span>
+            <div className="application-sub-panel__body">
+              <div className="empty">
+                <span>
+                  {this.props.t("content.empty", {
+                    ns: "orders",
+                    context: "history",
+                  })}
+                </span>
+              </div>
             </div>
           )}
         </div>

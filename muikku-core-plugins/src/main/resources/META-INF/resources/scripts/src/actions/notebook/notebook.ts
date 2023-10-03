@@ -1,18 +1,16 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import {
   NoteDefaultLocation,
   ReducerStateType,
-  WorkspaceNote,
-  WorkspaceNoteCreatePayload,
 } from "~/reducers/notebook/notebook";
-import promisify from "~/util/promisify";
 import { displayNotification } from "../base/notifications";
 import { materialShowOrHideExtraTools } from "../workspaces/material";
 import update from "immutability-helper";
+import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
+import { CreateWorkspaceNoteRequest, WorkspaceNote } from "~/generated/client";
 
 // Notebook actions
 
@@ -99,7 +97,7 @@ export interface UpdateNotebookEntriesOrder {
 export interface SaveNewNotebookEntry {
   (data: {
     workspaceEntityId?: number;
-    newEntry: WorkspaceNoteCreatePayload;
+    newEntry: CreateWorkspaceNoteRequest;
     defaultPosition?: NoteDefaultLocation;
     success?: () => void;
     fail?: () => void;
@@ -183,6 +181,8 @@ const loadNotebookEntries: LoadNotebookEntries =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceNotesApi = MApi.getWorkspaceNotesApi();
+
       const state = getState();
 
       const { status, workspaces } = state;
@@ -200,13 +200,10 @@ const loadNotebookEntries: LoadNotebookEntries =
       // Load workspace specific entries for user
       if (workspaces.currentWorkspace) {
         try {
-          const entries = (await promisify(
-            mApi().workspacenotes.workspace.owner.read(
-              workspaces.currentWorkspace.id,
-              status.userId
-            ),
-            "callback"
-          )()) as WorkspaceNote[];
+          const entries = await workspaceNotesApi.getWorkspaceNotes({
+            workspaceId: workspaces.currentWorkspace.id,
+            owner: status.userId,
+          });
 
           dispatch({
             type: "NOTEBOOK_LOAD_ENTRIES",
@@ -218,6 +215,10 @@ const loadNotebookEntries: LoadNotebookEntries =
             payload: "READY",
           });
         } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           dispatch({
             type: "NOTEBOOK_UPDATE_STATE",
             payload: "ERROR",
@@ -237,10 +238,9 @@ const loadNotebookEntries: LoadNotebookEntries =
       // Load all entries for user
       else {
         try {
-          const entries = (await promisify(
-            mApi().workspace.journal.read(status.userId),
-            "callback"
-          )()) as WorkspaceNote[];
+          const entries = await workspaceNotesApi.getAllWorkspaceNotes({
+            owner: status.userId,
+          });
 
           dispatch({
             type: "NOTEBOOK_LOAD_ENTRIES",
@@ -252,6 +252,10 @@ const loadNotebookEntries: LoadNotebookEntries =
             payload: "READY",
           });
         } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           dispatch({
             type: "NOTEBOOK_UPDATE_STATE",
             payload: "ERROR",
@@ -284,6 +288,8 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceNotesApi = MApi.getWorkspaceNotesApi();
+
       const { notes } = getState().notebook;
 
       // dragged and dropped note
@@ -316,14 +322,18 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
 
         if (noteToUpdate) {
           try {
-            await promisify(
-              mApi().workspacenotes.workspacenote.update({
+            await workspaceNotesApi.updateWorkspaceNote({
+              id: noteToUpdate.id,
+              updateWorkspaceNoteRequest: {
                 ...noteToUpdate,
                 nextSiblingId: nextSiblingNote ? nextSiblingNote.id : null,
-              }),
-              "callback"
-            )();
+              },
+            });
           } catch (err) {
+            if (!isMApiError(err)) {
+              throw err;
+            }
+
             dispatch({
               type: "NOTEBOOK_UPDATE_STATE",
               payload: "ERROR",
@@ -369,6 +379,8 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
+      const workspaceNotesApi = MApi.getWorkspaceNotesApi();
 
       try {
         const dataToSave = {
@@ -399,15 +411,12 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
         // we need to update default position to server
         // Selected new default value is updated anyways even if user has selected position from the list
         if (state.notebook.noteDefaultLocation !== data.defaultPosition) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const properties: any = await promisify(
-            mApi().user.property.create({
+          const properties = await userApi.setUserProperty({
+            setUserPropertyRequest: {
               key: "note-default-position",
               value: data.defaultPosition,
-              userEntityId: state.status.userId,
-            }),
-            "callback"
-          )();
+            },
+          });
 
           dispatch({
             type: "NOTEBOOK_UPDATE_DEFAULT_POSITION",
@@ -415,10 +424,9 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
           });
         }
 
-        const entry = (await promisify(
-          mApi().workspacenotes.workspacenote.create(dataToSave),
-          "callback"
-        )()) as WorkspaceNote;
+        const entry = await workspaceNotesApi.createWorkspaceNote({
+          createWorkspaceNoteRequest: dataToSave,
+        });
 
         let updatedList = [...state.notebook.notes];
 
@@ -465,6 +473,10 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
 
         data.success && data.success();
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch({
           type: "NOTEBOOK_UPDATE_STATE",
           payload: "ERROR",
@@ -501,12 +513,13 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
       getState: () => StateType
     ) => {
       const state = getState();
+      const workspaceNotesApi = MApi.getWorkspaceNotesApi();
 
       try {
-        const updatedEntry = (await promisify(
-          mApi().workspacenotes.workspacenote.update(data.editedEntry),
-          "callback"
-        )()) as WorkspaceNote;
+        const updatedEntry = await workspaceNotesApi.updateWorkspaceNote({
+          id: data.editedEntry.id,
+          updateWorkspaceNoteRequest: data.editedEntry,
+        });
 
         const updatedList = [...state.notebook.notes];
 
@@ -523,6 +536,10 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
 
         data.success && data.success();
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch({
           type: "NOTEBOOK_UPDATE_STATE",
           payload: "ERROR",
@@ -554,12 +571,12 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
     getState: () => StateType
   ) => {
     const state = getState();
+    const workpsaceNotesApi = MApi.getWorkspaceNotesApi();
 
     try {
-      await promisify(
-        mApi().workspacenotes.archive.del({ id: data.workspaceNoteId }),
-        "callback"
-      )();
+      await workpsaceNotesApi.archiveWorkspaceNote({
+        id: data.workspaceNoteId,
+      });
 
       let updatedList = [...state.notebook.notes];
 
@@ -582,6 +599,10 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
         payload: updatedList,
       });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       dispatch({
         type: "NOTEBOOK_UPDATE_STATE",
         payload: "ERROR",
@@ -668,15 +689,13 @@ const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
       getState: () => StateType
     ) => {
       const state = getState();
+      const userApi = MApi.getUserApi();
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const properties: any = await promisify(
-          mApi().user.properties.read(state.status.userId, {
-            properties: "note-default-position",
-          }),
-          "callback"
-        )();
+        const properties = await userApi.getUserProperties({
+          userEntityId: state.status.userId,
+          properties: "note-default-position",
+        });
 
         dispatch({
           type: "NOTEBOOK_LOAD_DEFAULT_POSITION",

@@ -1,6 +1,4 @@
 import * as React from "react";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
@@ -18,6 +16,7 @@ import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
+import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -276,31 +275,27 @@ class CommunicatorNewMessage extends SessionStateComponent<
    * inputContactsAutofillLoaders
    */
   inputContactsAutofillLoaders() {
+    const communicatorApi = MApi.getCommunicatorApi();
+
     return {
       /**
        * studentsLoader
        * @param searchString searchString
        */
-      studentsLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsUsersSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      studentsLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsUserSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
       /**
        * workspacesLoader
        * @param searchString searchString
        */
-      workspacesLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsWorkspacesSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      workspacesLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsWorkspacesSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
     };
   }
 

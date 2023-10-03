@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { localizeTime } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import ProfilePicture from "./components/profile-picture";
 import ProfileProperty from "./components/profile-property";
 
@@ -12,7 +12,7 @@ import ProfileProperty from "./components/profile-property";
  * GeneralInformationProps
  */
 interface GeneralInformationProps extends WithTranslation {
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
 }
 
@@ -82,16 +82,15 @@ class GeneralInformation extends React.Component<
               <ProfileProperty
                 modifier="study-start-date"
                 condition={!!this.props.status.profile.studyStartDate}
-                label={this.props.t("labels.studyTimeStart", { ns: "users" })}
+                label={this.props.t("labels.studyStartDate", { ns: "users" })}
                 value={localizeTime.date(
                   this.props.status.profile.studyStartDate
                 )}
               />
-
               <ProfileProperty
                 modifier="study-end-date"
                 condition={!!this.props.status.profile.studyTimeEnd}
-                label={this.props.t("labels.studyTimeEnd", { ns: "users" })}
+                label={this.props.t("labels.studyEndDate", { ns: "users" })}
                 value={studyTimeEndValues}
               />
             </div>

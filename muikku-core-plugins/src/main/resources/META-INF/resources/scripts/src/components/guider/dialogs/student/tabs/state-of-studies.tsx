@@ -20,8 +20,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import {
-  GuiderType,
-  GuiderStudentUserProfileLabelType,
+  GuiderState,
   GuiderNotificationStudentsDataType,
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
@@ -47,7 +46,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * StateOfStudiesProps
  */
 interface StateOfStudiesProps extends WithTranslation {
-  guider: GuiderType;
+  guider: GuiderState;
   status: StatusType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;
@@ -126,8 +125,8 @@ class StateOfStudies extends React.Component<
           this.props.i18n.t("labels.noEmail", { ns: "guider" })
         }
       >
-        {this.props.guider.currentStudent.basic &&
-        this.props.guider.currentStudent.basic.ceeposLine !== null ? (
+        {this.props.guider.currentStudent.basic.ceeposLine !== null &&
+        this.props.guider.currentStudent.basic.ceeposLine !== "aineopiskelu" ? (
           <CeeposButton />
         ) : null}
         <NewMessage
@@ -153,22 +152,20 @@ class StateOfStudies extends React.Component<
 
     const studentLabels =
       this.props.guider.currentStudent.labels &&
-      this.props.guider.currentStudent.labels.map(
-        (label: GuiderStudentUserProfileLabelType) => (
-          <span className="label" key={label.id}>
-            <span
-              className="label__icon icon-flag"
-              style={{ color: label.flagColor }}
-            ></span>
-            <span className="label__text">{label.flagName}</span>
-          </span>
-        )
-      );
+      this.props.guider.currentStudent.labels.map((label) => (
+        <span className="label" key={label.id}>
+          <span
+            className="label__icon icon-flag"
+            style={{ color: label.flagColor }}
+          ></span>
+          <span className="label__text">{label.flagName}</span>
+        </span>
+      ));
 
     const studentBasicInfo = this.props.guider.currentStudent.basic && (
       <ApplicationSubPanel.Body>
         <ApplicationSubPanelItem
-          title={this.props.i18n.t("labels.studyTimeStart", { ns: "users" })}
+          title={this.props.i18n.t("labels.studyStartDate", { ns: "users" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyStartDate
@@ -179,7 +176,7 @@ class StateOfStudies extends React.Component<
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
         <ApplicationSubPanelItem
-          title={this.props.i18n.t("labels.studyTimeEnd", { ns: "users" })}
+          title={this.props.i18n.t("labels.studyEndDate", { ns: "users" })}
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyEndDate

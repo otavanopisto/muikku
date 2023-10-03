@@ -1,6 +1,5 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
+import MApi from "~/api/api";
 
 /**
  * UseCourseCarousel
@@ -28,13 +27,15 @@ export const useCanSignUp = (workspaceId: number) => {
      * Sends api request to Api which returns data if
      * user can signUp for course or is already member of
      * the course
-     * @returns Requirements object
+     * @returns Boolean whether user can signUp or not
      */
-    const checkSignUpStatus = async (): Promise<boolean> =>
-      (await promisify(
-        mApi().coursepicker.workspaces.canSignup.read(workspaceId),
-        "callback"
-      )()) as boolean;
+    const checkSignUpStatus = () => {
+      const coursepickerApi = MApi.getCoursepickerApi();
+
+      return coursepickerApi.workspaceCanSignUp({
+        workspaceId,
+      });
+    };
 
     /**
      * fetchData

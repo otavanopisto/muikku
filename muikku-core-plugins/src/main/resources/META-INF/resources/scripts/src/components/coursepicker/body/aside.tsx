@@ -11,8 +11,6 @@ import Navigation, {
 } from "~/components/general/navigation";
 import {
   WorkspacesType,
-  WorkspaceEducationFilterType,
-  WorkspaceCurriculumFilterType,
   WorkspaceOrganizationFilterType,
 } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
@@ -54,7 +52,7 @@ class NavigationAside extends React.Component<
           name={this.props.t("labels.educationLevel", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.educationTypes.map(
-            (educationType: WorkspaceEducationFilterType) => {
+            (educationType) => {
               const isActive =
                 this.props.workspaces.activeFilters.educationFilters.includes(
                   educationType.identifier
@@ -94,7 +92,7 @@ class NavigationAside extends React.Component<
           name={this.props.t("labels.curriculum", { ns: "workspace" })}
         >
           {this.props.workspaces.availableFilters.curriculums.map(
-            (curriculum: WorkspaceCurriculumFilterType) => {
+            (curriculum) => {
               const isActive =
                 this.props.workspaces.activeFilters.curriculumFilters.includes(
                   curriculum.identifier
@@ -130,7 +128,6 @@ class NavigationAside extends React.Component<
         </NavigationTopic>
         {this.props.workspaces.availableFilters.organizations.length > 1 ? (
           <NavigationTopic
-            // TODO: Translate this using i18next
             name={this.props.t("labels.organization", { ns: "workspace" })}
           >
             {this.props.workspaces.availableFilters.organizations.map(

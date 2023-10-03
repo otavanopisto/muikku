@@ -14,7 +14,6 @@ import { loadAnnouncementsAsAClient } from "~/actions/announcements";
 import { loadLastMessageThreadsFromServer } from "~/actions/main-function/messages";
 import CousePickerBody from "../components/coursepicker/body";
 import { loadLoggedUser } from "~/actions/user-index";
-import { UserType } from "~/reducers/user-index";
 import {
   loadWorkspacesFromServer,
   loadUserWorkspaceCurriculumFiltersFromServer,
@@ -112,7 +111,7 @@ import {
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
-import { DiscussionPatchType } from "~/reducers/discussion";
+import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
@@ -120,7 +119,7 @@ import { loadContactGroup } from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
-import { Announcement } from "~/generated/client";
+import { Announcement, User } from "~/generated/client";
 
 moment.locale("fi");
 
@@ -413,7 +412,7 @@ export default class MainFunction extends React.Component<
     this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
     if (location.includes("subs")) {
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           current: state.discussion.current && undefined,
           areaId: undefined,
         };
@@ -442,7 +441,7 @@ export default class MainFunction extends React.Component<
         );
 
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           areaId: undefined,
         };
 
@@ -497,7 +496,7 @@ export default class MainFunction extends React.Component<
       curriculumFilters: originalData.c || [],
       organizationFilters: originalData.o || [],
       stateFilters: originalData.p || [],
-      templates: originalData.t || [],
+      templates: originalData.t || undefined,
       query: originalData.q || null,
       baseFilter: originalData.b || "ALL_COURSES",
     };
@@ -560,7 +559,7 @@ export default class MainFunction extends React.Component<
        * loadCoursepickerDataByUser
        * @param user user
        */
-      const loadCoursepickerDataByUser = (user: UserType) => {
+      const loadCoursepickerDataByUser = (user: User) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {};
@@ -588,7 +587,7 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: UserType) => {
+            loadLoggedUser((user: User) => {
               loadCoursepickerDataByUser(user);
             }) as Action
           );
@@ -697,7 +696,7 @@ export default class MainFunction extends React.Component<
        * loadWorkspacesByUser
        * @param user user
        */
-      const loadWorkspacesByUser = (user: UserType) => {
+      const loadWorkspacesByUser = (user: User) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {
@@ -723,7 +722,7 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: UserType) => {
+            loadLoggedUser((user: User) => {
               loadWorkspacesByUser(user);
             }) as Action
           );

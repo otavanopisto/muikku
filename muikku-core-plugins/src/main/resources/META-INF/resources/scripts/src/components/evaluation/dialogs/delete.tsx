@@ -11,7 +11,7 @@ import {
   RemoveWorkspaceEvent,
   removeWorkspaceEventFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { EvaluationEvent } from "~/@types/evaluation";
+import { EvaluationEvent } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**

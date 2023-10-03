@@ -1,9 +1,5 @@
 import * as React from "react";
 import { getName } from "~/util/modifiers";
-import {
-  GuiderStudentType,
-  GuiderStudentUserProfileLabelType,
-} from "~/reducers/main-function/guider";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -17,6 +13,7 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
+import { Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
@@ -25,7 +22,7 @@ type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
  * StudentProps
  */
 interface StudentProps extends WithTranslation<"common"> {
-  student: GuiderStudentType;
+  student: Student;
   checkbox: React.ReactElement<HTMLInputElement>;
   index: number;
   status: StatusType;
@@ -39,16 +36,14 @@ interface StudentState {}
 /**
  * Student
  */
-class Student extends React.Component<StudentProps, StudentState> {
+class StudentListItem extends React.Component<StudentProps, StudentState> {
   /**
    * getSudentStudyTimeState
    *
    * @param student student
    * @returns StudentStudytimeState "ENDED" | "ENDING" | "ONGOING"
    */
-  getSudentStudyTimeState = (
-    student: GuiderStudentType
-  ): StudentStudyTimeState => {
+  getSudentStudyTimeState = (student: Student): StudentStudyTimeState => {
     if (student.studyTimeEnd) {
       const studyTimeEnd = moment(student.studyTimeEnd);
       const difference = studyTimeEnd.diff(moment(), "days");
@@ -111,17 +106,15 @@ class Student extends React.Component<StudentProps, StudentState> {
               </div>
             ) : null}
             {this.props.student.flags.length
-              ? this.props.student.flags.map(
-                  (flag: GuiderStudentUserProfileLabelType) => (
-                    <div className="label" key={flag.id}>
-                      <span
-                        className="label__icon icon-flag"
-                        style={{ color: flag.flagColor }}
-                      ></span>
-                      <span className="label__text">{flag.flagName}</span>
-                    </div>
-                  )
-                )
+              ? this.props.student.flags.map((flag) => (
+                  <div className="label" key={flag.id}>
+                    <span
+                      className="label__icon icon-flag"
+                      style={{ color: flag.flagColor }}
+                    ></span>
+                    <span className="label__text">{flag.flagName}</span>
+                  </div>
+                ))
               : null}
           </div>
         </ApplicationListItemFooter>
@@ -140,4 +133,6 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default withTranslation(["guider"])(connect(mapStateToProps)(Student));
+export default withTranslation(["guider"])(
+  connect(mapStateToProps)(StudentListItem)
+);

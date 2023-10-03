@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +16,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.Logged;
-import fi.otavanopisto.muikku.i18n.LocaleBundle;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.plugin.AfterPluginInitEvent;
 import fi.otavanopisto.muikku.plugin.AfterPluginsInitEvent;
@@ -94,9 +94,9 @@ public class Plugins {
     	  
     	  firePluginInitEvent(pluginDescriptor, true);
     	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
-    	    List<LocaleBundle> localeBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles();
-    	    for (LocaleBundle localeBundle : localeBundles) {
-    	      localeController.add(localeBundle.getLocation(), localeBundle.getBundle());
+    	    List<ResourceBundle> resourceBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getResourceBundles();
+    	    for (ResourceBundle resourceBundle : resourceBundles) {
+    	      localeController.add(resourceBundle);
     	    }
     	  }
       	logger.info("Plugin '" + pluginDescriptor.getName() + "' initialized");

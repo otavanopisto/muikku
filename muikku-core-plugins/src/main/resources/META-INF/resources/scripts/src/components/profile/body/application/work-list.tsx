@@ -8,16 +8,14 @@ import {
   LoadProfileWorklistSectionTriggerType,
 } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
-import {
-  ProfileType,
-  WorklistTemplate,
-} from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import { WorkListSection } from "./components/work-list-section";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { WorklistTemplate } from "~/generated/client";
 
 // we use these
 const today = moment();
@@ -30,7 +28,7 @@ const currentMonthDayLimit = 10;
  * IWorkListProps
  */
 interface IWorkListProps extends WithTranslation<["common"]> {
-  profile: ProfileType;
+  profile: ProfileState;
   status: StatusType;
   insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
   loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;

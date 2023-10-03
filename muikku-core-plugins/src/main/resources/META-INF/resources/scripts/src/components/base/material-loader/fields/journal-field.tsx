@@ -300,8 +300,12 @@ class JournalField extends React.Component<
     // and here the element itself
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Oppimispäiväkirjatehtävä" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "journal",
+          })}
+        />
         <span
           className={`material-page__journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >

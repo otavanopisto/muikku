@@ -39,7 +39,7 @@ import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
-import { UsersSelectType } from "~/reducers/main-function/users";
+import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   CreateWorkspaceType,
   WorkspaceType,
@@ -68,7 +68,7 @@ interface OrganizationNewWorkspaceProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   data?: CreateWorkspaceType;
-  users: UsersSelectType;
+  users: UsersSelectState;
   templates: WorkspaceType[];
   activeFilters: WorkspacesActiveFiltersType;
   loadStudents: LoadUsersTriggerType;
@@ -624,7 +624,7 @@ class OrganizationNewWorkspace extends React.Component<
                     <label htmlFor="accessMembers">
                       {t("labels.access", {
                         ns: "workspace",
-                        context: "members",
+                        context: "membersOnly",
                       })}
                     </label>
                   </div>
@@ -639,7 +639,7 @@ class OrganizationNewWorkspace extends React.Component<
                     <label htmlFor="accessLoggedin">
                       {t("labels.access", {
                         ns: "workspace",
-                        context: "loggedIn",
+                        context: "loggedInUsers",
                       })}
                     </label>
                   </div>
