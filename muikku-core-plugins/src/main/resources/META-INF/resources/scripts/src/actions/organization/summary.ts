@@ -41,15 +41,6 @@ export type UPDATE_SUMMARY_STATUS = SpecificActionType<
   OrganizationSummaryStatusType
 >;
 
-// julkaistut/julkaisemattomat kurssit:
-// mApi().organizationWorkspaceManagement.overview.read()
-
-// aktiiviset/epäaktiiviset opiskelijat:
-// mApi().organizationUserManagement.studentsSummary.read()
-
-// yhteyshenkilöt
-// mApi().organizationUserManagement.contactPersons.read()
-
 /**
  * loadOrganizationSummary
  */

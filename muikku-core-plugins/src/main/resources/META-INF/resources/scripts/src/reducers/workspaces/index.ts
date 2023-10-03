@@ -26,9 +26,7 @@ import {
   InterimEvaluationRequest,
   MaterialEvaluation,
   WorkspaceAccess,
-  WorkspaceJournal,
   WorkspaceMandatority,
-  WorkspaceAssessmentStateType,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 

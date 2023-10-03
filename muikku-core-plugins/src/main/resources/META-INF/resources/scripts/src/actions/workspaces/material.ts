@@ -565,7 +565,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
       try {
         const childrenAttachments = await workspaceApi.getWorkspaceMaterials({
           workspaceEntityId: workspace.id,
-          parentId: material.workspaceMaterialId,
+          parentId: material.parentId,
         });
 
         const attachments = childrenAttachments.map(
@@ -635,13 +635,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             data.material.materialId &&
             !data.dontTriggerReducerActions
           ) {
-            /* const materialsAnswer: any[] = (await promisify(
-              mApi().materials.material.workspaceMaterials.read(
-                data.material.materialId
-              ),
-              "callback"
-            )()) as any; */
-
             const materialsAnswer = await materialsApi.getMaterialsByWorkspace({
               materialId: data.material.materialId,
             });

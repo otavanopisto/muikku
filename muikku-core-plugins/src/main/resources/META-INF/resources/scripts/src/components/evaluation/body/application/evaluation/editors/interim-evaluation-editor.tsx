@@ -21,7 +21,6 @@ import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import AnimateHeight from "react-animate-height";
 import { CKEditorConfig } from "../evaluation";
-import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { LocaleState } from "~/reducers/base/locales";
@@ -198,8 +197,6 @@ class InterimEvaluationEditor extends SessionStateComponent<
             ...dataToSave,
           },
         });
-
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,

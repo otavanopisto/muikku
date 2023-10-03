@@ -8,7 +8,6 @@ import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import mApi from "~/lib/mApi";
 import { StateType } from "reducers";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
@@ -169,8 +168,6 @@ class ExerciseEditor extends SessionStateComponent<
             ...dataToSave,
           },
         });
-
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,

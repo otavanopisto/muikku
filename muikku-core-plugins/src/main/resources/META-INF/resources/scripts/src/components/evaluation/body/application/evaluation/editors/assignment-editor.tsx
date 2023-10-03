@@ -17,7 +17,6 @@ import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -286,8 +285,6 @@ class AssignmentEditor extends SessionStateComponent<
               ...(dataToSave as SaveWorkspaceAssigmentAssessmentRequest),
             },
           });
-
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,

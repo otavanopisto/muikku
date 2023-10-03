@@ -11,7 +11,6 @@ import { bindActionCreators } from "redux";
 import * as moment from "moment";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
-import mApi from "~/lib/mApi";
 import SlideDrawer from "./slide-drawer";
 import { StateType } from "~/reducers/index";
 import {
@@ -19,7 +18,6 @@ import {
   updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
-import promisify from "~/util/promisify";
 import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
 import {
   MaterialAssigmentType,
@@ -148,6 +146,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    */
   loadMaterialContentNodeData = async () => {
     const evaluationApi = MApi.getEvaluationApi();
+    const materialsApi = MApi.getMaterialsApi();
 
     const { workspace, assigment, selectedAssessment } = this.props;
 
@@ -155,10 +154,9 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
 
     const [loadedMaterial] = await Promise.all([
       (async () => {
-        const material = (await promisify(
-          mApi().materials.html.read(assigment.materialId),
-          "callback"
-        )()) as MaterialContentNodeWithIdAndLogic;
+        const material = await materialsApi.getHtmlMaterial({
+          id: assigment.materialId,
+        });
 
         const evaluation = await evaluationApi.getWorkspaceMaterialEvaluations({
           workspaceId: workspace.id,
@@ -167,11 +165,13 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
         });
 
         const loadedMaterial: MaterialContentNodeWithIdAndLogic = Object.assign(
-          material,
+          {},
           {
+            ...material,
             evaluation: evaluation[0],
             assignment: this.props.assigment,
             path: this.props.assigment.path,
+            contentHiddenForUser: false,
           }
         );
 

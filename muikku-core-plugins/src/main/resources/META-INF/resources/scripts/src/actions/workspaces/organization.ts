@@ -476,32 +476,6 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
           data.progress && data.progress("add-teachers");
         }
 
-        // if (data.removeStudents.length > 0) {
-        //   let studentIdentifiers = data.removeStudents.map(student => student.id);
-
-        // await promisify(mApi().organizationWorkspaceManagement.workspaces.students
-        //   .del(data.workspace.id, {
-        //     studentIdentifiers: studentIdentifiers
-        //   }
-        //   ), 'callback')().then(
-        //     data.progress && data.progress("remove-students")
-        //   );
-        // }
-
-        // if (data.removeTeachers.length > 0) {
-        //   let staffMemberIdentifiers = data.addTeachers.map(teacher => teacher.id);
-
-        // await promisify(mApi().organizationWorkspaceManagement.workspaces.staff
-        //   .del(data.workspace.id, {
-        //     staffMemberIdentifiers: staffMemberIdentifiers
-        //   }
-        //   ), 'callback')().then(
-        //     data.progress && data.progress("remove-teachers")
-        //   );
-        // }
-
-        //  await promisify(setTimeout(() => loadWorkspacesFromServer(data.activeFilters, true), 2000), 'callback')();
-
         data.progress && data.progress("done");
         data.success && data.success();
       } catch (err) {
