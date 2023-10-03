@@ -135,12 +135,14 @@ class CommunicatorMessages extends BodyScrollLoader<
     const messageRecipientsList = thread.recipients.map((recipient) => {
       if (recipient.userEntityId === userId) {
         return (
-          <span key={recipient.recipientId}>{this.props.t("labels.self")}</span>
+          <span key={recipient.userEntityId}>
+            {this.props.t("labels.self")}
+          </span>
         );
       }
       if (recipient.archived === true) {
         return (
-          <span key={recipient.recipientId} className="message__user-archived">
+          <span key={recipient.userEntityId} className="message__user-archived">
             {this.props.t("labels.archived")}
           </span>
         );
@@ -151,12 +153,12 @@ class CommunicatorMessages extends BodyScrollLoader<
       if (recipient.studiesEnded === true) {
         return (
           <InfoPopover
-            key={recipient.recipientId}
-            userId={recipient.recipientId}
+            key={recipient.userEntityId}
+            userId={recipient.userEntityId}
           >
             <span
               className="message__user-studies-ended"
-              key={recipient.recipientId}
+              key={recipient.userEntityId}
             >
               {name}
             </span>
@@ -164,8 +166,11 @@ class CommunicatorMessages extends BodyScrollLoader<
         );
       }
       return (
-        <InfoPopover key={recipient.recipientId} userId={recipient.recipientId}>
-          <span key={recipient.recipientId}>{name}</span>
+        <InfoPopover
+          key={recipient.userEntityId}
+          userId={recipient.userEntityId}
+        >
+          <span key={recipient.userEntityId}>{name}</span>
         </InfoPopover>
       );
     });
