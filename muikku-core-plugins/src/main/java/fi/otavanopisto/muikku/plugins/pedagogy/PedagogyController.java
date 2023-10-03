@@ -18,13 +18,10 @@ import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormHistoryDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
@@ -42,9 +39,6 @@ public class PedagogyController {
   
   @Inject
   private LocaleController localeController;
-  
-  @Inject
-  private UserController userController;
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
@@ -61,8 +55,6 @@ public class PedagogyController {
   @Inject
   private PedagogyFormHistoryDAO pedagogyFormHistoryDAO;
 
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   public PedagogyForm createForm(String studentIdentifier, String formData) {
 
@@ -121,18 +113,8 @@ public class PedagogyController {
     if (state == PedagogyFormState.APPROVED) {
       UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
 
-      boolean visibleToGuidanceCouncelors = false;
-      if (!StringUtils.isEmpty(form.getVisibility())) {
-        String[] visibilities = form.getVisibility().split(",");
-        for (String s : visibilities) {
-          if (PedagogyFormVisibility.valueOf(s) == PedagogyFormVisibility.TEACHERS) {
-            visibleToGuidanceCouncelors = true;
-            break;
-          }
-        }
-      }
 
-      List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), visibleToGuidanceCouncelors, true);
+      List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), true, true);
       if (!specEdTeachers.isEmpty()) {
 
         StringBuffer url = new StringBuffer();
@@ -193,55 +175,6 @@ public class PedagogyController {
           subject,
           content);
       
-    }
-
-    return form;
-  }
-
-  public PedagogyForm updateVisibility(PedagogyForm form, List<PedagogyFormVisibility> visibility, Long modifierId) {
-
-    // Visibility update
-
-    String visibilityStr = visibility == null || visibility.isEmpty() ? null
-        : String.join(",", visibility.stream().map(Object::toString).collect(Collectors.toList()));
-    form = pedagogyFormDAO.updateVisibility(form, visibilityStr);
-
-    // History entry
-
-    pedagogyFormHistoryDAO.create(form, "Suunnitelman jako-oikeuksia muutettiin", modifierId);
-    
-    // Notification if the visibility was changed after the form has been approved by the student
-    
-    if (form.getState() == PedagogyFormState.APPROVED) {
-      UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
-      boolean visibleToGuidanceCouncelors = visibility != null && visibility.contains(PedagogyFormVisibility.TEACHERS);
-      List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), true, true);
-      if (!specEdTeachers.isEmpty()) {
-        StringBuffer url = new StringBuffer();
-        url.append(httpRequest.getScheme());
-        url.append("://");
-        url.append(httpRequest.getServerName());
-        url.append("/guider#?c=");
-        url.append(sessionController.getLoggedUser().toId());
-
-        String subject = localeController.getText(
-            sessionController.getLocale(),
-            "plugin.pedagogy.visibility.subject",
-            new String[] {userEntityName.getDisplayNameWithLine()});
-
-        for (SpecEdTeacher specEdTeacher : specEdTeachers) {
-          String content = !specEdTeacher.isGuidanceCouncelor() || visibleToGuidanceCouncelors
-              ? localeController.getText(sessionController.getLocale(), "plugin.pedagogy.visibility.content.access",
-                  new String[] {userEntityName.getDisplayNameWithLine(), url.toString()})
-                  : localeController.getText(sessionController.getLocale(), "plugin.pedagogy.visibility.content.noAccess",
-                      new String[] {userEntityName.getDisplayNameWithLine()});
-          String email = userEmailEntityController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier(), false);
-          mailer.sendMail(MailType.HTML,
-              Arrays.asList(email),
-              subject,
-              content);
-        }
-      }
     }
 
     return form;
