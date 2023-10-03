@@ -1886,9 +1886,9 @@
       "updateError": "Updating the student order failed"
     },
     "states": {
-      "CANCELLED": "Order cancelled.",
+      "CANCELLED": "The order has been cancelled.",
       "CANCELLED_counselor": "Student cancelled the order.",
-      "CANCELLED_student": "You cancelled the order. If you want a new order, contact your counselor.",
+      "CANCELLED_student": "The order has been cancelled.",
       "COMPLETE": "Order has been completed.",
       "COMPLETE_counselor": "Student's order has been completed.",
       "COMPLETE_student": "Your order has been completed.",
@@ -1897,13 +1897,13 @@
       "CREATED_student": "Your order has been created.",
       "ERRORED": "Processing the order failed.",
       "ERRORED_counselor": "Processing the student's order failed.",
-      "ERRORED_student": "Processing your order failed. Please contact your counselor.",
+      "ERRORED_student": "Processing your order failed. Please contact Muikku helpdesk.",
       "ONGOING": "The payment process has been started.",
       "ONGOING_counselor": "The student has started the payment process.",
       "ONGOING_student": "You have started the payment process.",
-      "PAID": "The payment succeeded, but the order  has not been processed.",
+      "PAID": "The payment succeeded, but the order has not been processed.",
       "PAID_counselor": "The student's payment succeeded, but the order has not been processed. The order has to be finished manually. Please ask the student for a receipt of the payment and contact the helpdesk (helpdesk@muikkuverkko.fi).",
-      "PAID_student": "Your payment succeeded, but the order has not been processed. Please contact your counselor."
+      "PAID_student": "Your payment succeeded, but the order has not been processed. Please contact Muikku helpdesk."
     }
   },
   "ops": {
