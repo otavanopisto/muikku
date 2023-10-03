@@ -130,10 +130,7 @@ class DiscussionThreadReply extends React.Component<
         ) : (
           <>
             {discussionItem.deleted ? (
-              <DiscussionThreadBody>
-                <div className="rich-text">
-                  {this.props.i18n.t("content.removed", { ns: "messaging" })}
-                </div>
+                <DiscussionThreadBody html={`<p><i> ${this.props.i18n.t('content.removed', { ns: 'messaging' })} </i></p>`}>
                 {discussionItem.created !== discussionItem.lastModified ? (
                   <div className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
