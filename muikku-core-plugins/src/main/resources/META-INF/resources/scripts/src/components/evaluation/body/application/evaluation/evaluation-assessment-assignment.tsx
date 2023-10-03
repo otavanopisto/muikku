@@ -1,12 +1,7 @@
 import * as React from "react";
 import EvaluationMaterial from "./evaluation-material";
 import {
-  AssessmentRequest,
-  AssignmentEvaluationSaveReturn,
-} from "~/@types/evaluation";
-import {
   WorkspaceDataType,
-  MaterialEvaluationType,
   MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
@@ -27,7 +22,13 @@ import {
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import promisify from "~/util/promisify";
 import ExerciseEditor from "./editors/exercise-editor";
-import { WorkspaceMaterial, MaterialCompositeReply } from "~/generated/client";
+import {
+  WorkspaceMaterial,
+  MaterialCompositeReply,
+  AssessmentWithAudio,
+  EvaluationAssessmentRequest,
+} from "~/generated/client";
+import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -38,7 +39,7 @@ interface EvaluationAssessmentAssignmentProps extends WithTranslation {
   assigment: WorkspaceMaterial;
   open: boolean;
   evaluations: EvaluationState;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   showAsHidden: boolean;
   compositeReply?: MaterialCompositeReply;
@@ -114,6 +115,8 @@ class EvaluationAssessmentAssignment extends React.Component<
    * loadMaterialData
    */
   loadMaterialData = async () => {
+    const evaluationApi = MApi.getEvaluationApi();
+
     const { workspace, assigment, selectedAssessment } = this.props;
 
     const userEntityId = selectedAssessment.userEntityId;
@@ -131,16 +134,11 @@ class EvaluationAssessmentAssignment extends React.Component<
           "callback"
         )()) as MaterialContentNodeWithIdAndLogic;
 
-        const evaluation = (await promisify(
-          mApi().evaluation.workspaces.materials.evaluations.read(
-            workspace.id,
-            assigment.id,
-            {
-              userEntityId,
-            }
-          ),
-          "callback"
-        )()) as MaterialEvaluationType[];
+        const evaluation = await evaluationApi.getWorkspaceMaterialEvaluations({
+          workspaceId: workspace.id,
+          workspaceMaterialId: assigment.id,
+          userEntityId,
+        });
 
         const loadedMaterial: MaterialContentNodeWithIdAndLogic = Object.assign(
           material,
@@ -164,11 +162,9 @@ class EvaluationAssessmentAssignment extends React.Component<
 
   /**
    * updateMaterialEvaluationData
-   * @param  assigmentSaveReturn assigmentSaveReturn
+   * @param  assessmentWithAudio assessmentWithAudio
    */
-  updateMaterialEvaluationData = (
-    assigmentSaveReturn: AssignmentEvaluationSaveReturn
-  ) => {
+  updateMaterialEvaluationData = (assessmentWithAudio: AssessmentWithAudio) => {
     /**
      * Get initial values that needs to be updated
      */
@@ -182,22 +178,22 @@ class EvaluationAssessmentAssignment extends React.Component<
     let gradeScaleId = null;
     let gradeScaleDataSource = null;
 
-    if (assigmentSaveReturn.gradeIdentifier !== null) {
+    if (assessmentWithAudio.gradeIdentifier !== null) {
       /**
        * gradeId and source are included in same string, so splittin is required
        */
       const gradeIdentifierSplitted =
-        assigmentSaveReturn.gradeIdentifier.split("-");
+        assessmentWithAudio.gradeIdentifier.split("-");
 
       gradeId = gradeIdentifierSplitted[1];
       gradeDataSource = gradeIdentifierSplitted[0];
     }
-    if (assigmentSaveReturn.gradingScaleIdentifier !== null) {
+    if (assessmentWithAudio.gradingScaleIdentifier !== null) {
       /**
        * gradeScaleId and source are included in same string, so splittin is required
        */
       const gradeScaleIdentifierSplitted =
-        assigmentSaveReturn.gradingScaleIdentifier.split("-");
+        assessmentWithAudio.gradingScaleIdentifier.split("-");
 
       gradeScaleId = gradeScaleIdentifierSplitted[1];
 
@@ -209,13 +205,13 @@ class EvaluationAssessmentAssignment extends React.Component<
      */
     updatedMaterial.evaluation = {
       ...this.state.materialNode.evaluation,
-      evaluated: assigmentSaveReturn.assessmentDate,
-      verbalAssessment: assigmentSaveReturn.verbalAssessment,
+      evaluated: assessmentWithAudio.assessmentDate,
+      verbalAssessment: assessmentWithAudio.verbalAssessment,
       gradeIdentifier: gradeId,
       gradeSchoolDataSource: gradeDataSource,
       gradingScaleIdentifier: gradeScaleId,
       gradingScaleSchoolDataSource: gradeScaleDataSource,
-      passed: assigmentSaveReturn.passing,
+      passed: assessmentWithAudio.passing,
     };
 
     this.setState({
@@ -592,6 +588,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 selectedAssessment={this.props.selectedAssessment}
                 editorLabel={t("labels.literalEvaluation", {
                   ns: "evaluation",
+                  context: "assignment",
                 })}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}
@@ -606,6 +603,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 selectedAssessment={this.props.selectedAssessment}
                 editorLabel={t("labels.literalEvaluation", {
                   ns: "evaluation",
+                  context: "assignment",
                 })}
                 materialEvaluation={this.state.materialNode.evaluation}
                 materialAssignment={this.state.materialNode.assignment}

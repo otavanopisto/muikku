@@ -1,6 +1,6 @@
 import * as React from "react";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { useTranslation } from "react-i18next";
-import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import Hops from "~/components/base/hops_readable";
@@ -9,7 +9,7 @@ import Hops from "~/components/base/hops_readable";
  * Study plan props
  */
 interface StudyPlanProps {
-  guider: GuiderType;
+  guider: GuiderState;
 }
 
 /**

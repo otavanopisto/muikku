@@ -760,8 +760,9 @@ class OrganizationEditWorkspace extends React.Component<
                       )}
                     />
                     <label htmlFor="accessMembers">
-                      {t("labels.membersOnly", {
+                      {t("labels.access", {
                         ns: "workspace",
+                        context: "membersOnly",
                       })}
                     </label>
                   </div>
@@ -774,8 +775,9 @@ class OrganizationEditWorkspace extends React.Component<
                       onChange={this.setWorkspaceAccess.bind(this, "LOGGED_IN")}
                     />
                     <label htmlFor="accessLoggedin">
-                      {t("labels.loggedInUsers", {
+                      {t("labels.access", {
                         ns: "workspace",
+                        context: "loggedInUsers",
                       })}
                     </label>
                   </div>
@@ -788,8 +790,9 @@ class OrganizationEditWorkspace extends React.Component<
                       onChange={this.setWorkspaceAccess.bind(this, "ANYONE")}
                     />
                     <label htmlFor="accessAnyone">
-                      {t("labels.anyone", {
+                      {t("labels.access", {
                         ns: "workspace",
+                        context: "anyone",
                       })}
                     </label>
                   </div>

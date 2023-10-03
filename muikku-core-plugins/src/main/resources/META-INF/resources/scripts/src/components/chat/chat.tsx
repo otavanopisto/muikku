@@ -27,7 +27,7 @@ import {
   loadContactGroup,
   LoadContactGroupTriggerType,
 } from "~/actions/base/contacts";
-import { Contacts } from "~/reducers/base/contacts";
+import { ContactsState } from "~/reducers/base/contacts";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 export type tabs = "ROOMS" | "PEOPLE";
@@ -165,7 +165,7 @@ interface IChatState {
 interface IChatProps extends WithTranslation {
   settings: UserChatSettingsType;
   status: StatusType;
-  contacts: Contacts;
+  contacts: ContactsState;
   currentLocale: string;
   loadContactGroup: LoadContactGroupTriggerType;
   displayNotification: DisplayNotificationTriggerType;

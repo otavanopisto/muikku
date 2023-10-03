@@ -29,8 +29,8 @@ import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 import {
   WorkspaceAccess,
-  WorkspaceEducationType,
   Curriculum,
+  EducationType,
   WorkspaceOrganization,
 } from "~/generated/client";
 
@@ -48,7 +48,7 @@ export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS =
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
   SpecificActionType<
     "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-    WorkspaceEducationType[]
+    EducationType[]
   >;
 /**
  * UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS

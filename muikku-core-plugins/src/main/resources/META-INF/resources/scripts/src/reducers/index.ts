@@ -1,11 +1,11 @@
 import { EasyToUseFunctionState } from "./easy-to-use-functions/index";
 import { LocaleState } from "./base/locales";
 import { NotificationState } from "./base/notifications";
-import { CredentialsType } from "./base/credentials";
+import { CredentialsState } from "./base/credentials";
 import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
-import { HOPSType } from "./main-function/hops";
+import { HOPSState } from "./main-function/hops";
 import { MessagesState } from "./main-function/messages";
 import { WorkspacesState } from "./workspaces";
 import {
@@ -16,7 +16,7 @@ import {
 } from "./main-function/users";
 import { DiscussionState } from "./discussion";
 import { UserIndexState } from "./user-index";
-import { GuiderType } from "./main-function/guider";
+import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
 import {
   YOType,
@@ -30,7 +30,7 @@ import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
 import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
-import { Contacts } from "./base/contacts";
+import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
 
 /**
@@ -40,14 +40,14 @@ export interface StateType {
   notifications: NotificationState;
   locales: LocaleState;
   status: StatusType;
-  contacts: Contacts;
+  contacts: ContactsState;
   title: string;
   websocket?: WebsocketStateType;
   yo?: YOType;
   eligibilitySubjects?: SubjectEligibilitySubjectsType;
-  credentials?: CredentialsType;
+  credentials?: CredentialsState;
   announcements?: AnnouncementsState;
-  hops?: HOPSType;
+  hops?: HOPSState;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesState;
@@ -59,7 +59,7 @@ export interface StateType {
   organizationWorkspaces?: WorkspacesState;
   discussion?: DiscussionState;
   organizationUsers?: UsersState;
-  guider?: GuiderType;
+  guider?: GuiderState;
   records?: RecordsType;
   error?: ErrorType;
   profile?: ProfileState;

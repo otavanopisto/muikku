@@ -1,6 +1,6 @@
 import * as React from "react";
 import NoteEditor from "./note-editor";
-import { NoteBookState, WorkspaceNote } from "~/reducers/notebook/notebook";
+import { NoteBookState } from "~/reducers/notebook/notebook";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -37,6 +37,7 @@ import Dropdown from "~/components/general/dropdown";
 import { useLocalStorage } from "usehooks-ts";
 import { useTranslation } from "react-i18next";
 import NoteBookPDFDialog from "./notebook-pdf-dialog";
+import { WorkspaceNote } from "~/generated/client";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [

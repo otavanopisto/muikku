@@ -63,7 +63,7 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       className="react-select-override react-select-override--hops"
       classNamePrefix="react-select-override"
       isClearable
-      placeholder="Etsi työtiloja..."
+      placeholder="Etsi kursseja..."
       options={options}
       value={selectedValue}
       onChange={handleSelectChange}

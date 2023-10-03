@@ -10,7 +10,6 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { WorkspaceEducationType } from "~/generated/client";
 
 /**
  * NavigationAsideProps
@@ -63,7 +62,7 @@ class WorkspacesAside extends React.Component<
       <Navigation>
         <NavigationTopic name={t("labels.educationLevel", { ns: "workspace" })}>
           {this.props.workspaces.availableFilters.educationTypes.map(
-            (educationType: WorkspaceEducationType) => {
+            (educationType) => {
               const isActive =
                 this.props.workspaces.activeFilters.educationFilters.includes(
                   educationType.identifier

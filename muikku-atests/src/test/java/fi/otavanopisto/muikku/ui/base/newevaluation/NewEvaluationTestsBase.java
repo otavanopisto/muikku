@@ -552,7 +552,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
-        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Työtila merkitty täydennettäväksi");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Kurssi merkitty täydennettäväksi");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

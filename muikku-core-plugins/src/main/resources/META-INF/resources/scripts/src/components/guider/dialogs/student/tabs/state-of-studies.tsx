@@ -20,7 +20,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import {
-  GuiderType,
+  GuiderState,
   GuiderNotificationStudentsDataType,
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
@@ -46,7 +46,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * StateOfStudiesProps
  */
 interface StateOfStudiesProps extends WithTranslation {
-  guider: GuiderType;
+  guider: GuiderState;
   status: StatusType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;

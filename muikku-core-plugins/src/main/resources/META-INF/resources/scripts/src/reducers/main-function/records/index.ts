@@ -33,16 +33,6 @@ export interface RecordWorkspaceActivityCurriculum {
 }
 
 /**
- * Record workspace activity info with line and category, default line and activities
- */
-export interface RecordWorkspaceActivityInfo {
-  lineName: string;
-  lineCategory: string;
-  defaultLine: boolean;
-  activities: RecordWorkspaceActivity[];
-}
-
-/**
  * RecordWorkspaceByLineCategory
  */
 export interface RecordWorkspaceActivitiesWithLineCategory {

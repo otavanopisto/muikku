@@ -11,7 +11,7 @@ import {
   TranscriptOfRecordLocationType,
   RecordsType,
 } from "../../../reducers/main-function/records/index";
-import { HOPSType } from "../../../reducers/main-function/hops";
+import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
@@ -34,7 +34,7 @@ import mApi from "~/lib/mApi";
  */
 interface StudiesApplicationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
-  hops: HOPSType;
+  hops: HOPSState;
   status: StatusType;
   records: RecordsType;
 }

@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  WorkspaceDataType,
-  Assessment,
-  WorkspaceActivityType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType, Assessment } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
 import WorkspaceChart from "./workspace/workspace-chart";
 import "~/sass/elements/application-list.scss";
@@ -16,10 +12,13 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
+import {
+  WorkspaceActivity,
+  DiscussionWorkspaceStatistic,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localizeTime } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
-import { DiscussionWorkspaceStatistic } from "~/generated/client";
 
 /**
  * StudentWorkspaceProps
@@ -326,17 +325,17 @@ class StudentWorkspace extends React.Component<
             <div className="application-sub-panel__body">
               {renderCourseActivity()}
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfVisits"
                 givenDateAttributeLocale="content.lastVisit"
-                labelTranslationString="labels.visits"
+                labelTranslationString="labels.workspaceVisits"
                 conditionalAttribute="numVisits"
                 givenDateAttribute="lastVisit"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfJournalEntries"
                 givenDateAttributeLocale="content.lastJournalEntry"
                 labelTranslationString="labels.entries"
@@ -363,14 +362,14 @@ class StudentWorkspace extends React.Component<
                 })}
               </h4>
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 labelTranslationString="labels.unanswered"
                 conditionalAttribute="evaluablesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastAnswered"
                 labelTranslationString="labels.answered"
@@ -380,7 +379,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastSubmittedAssignment"
                 labelTranslationString="labels.submittedAssignments"
@@ -390,7 +389,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastEvaluationFailed"
                 labelTranslationString="labels.evaluatedWithNonPassingGrade"
@@ -400,7 +399,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastEvaluationPassed"
                 labelTranslationString="labels.evaluatedWithPassingGrade"
@@ -416,14 +415,14 @@ class StudentWorkspace extends React.Component<
                 })}
               </h4>
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 labelTranslationString="labels.unanswered"
                 conditionalAttribute="exercisesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfExercises"
                 givenDateAttributeLocale="content.lastAnswered"
                 labelTranslationString="labels.answered"
@@ -603,7 +602,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
  * GuiderWorkspacePercentsProps
  */
 interface GuiderWorkspacePercentsProps {
-  activity?: WorkspaceActivityType;
+  activity?: WorkspaceActivity;
 }
 
 /**

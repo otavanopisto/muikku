@@ -1,9 +1,6 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
-import {
-  NoteDefaultLocation,
-  WorkspaceNote,
-} from "~/reducers/notebook/notebook";
+import { NoteDefaultLocation } from "~/reducers/notebook/notebook";
 import CKEditor from "../ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import SessionStateComponent from "../session-state-component";
@@ -25,6 +22,7 @@ import {
   updateEditedNotebookEntry,
 } from "../../../actions/notebook/notebook";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { WorkspaceNote } from "~/generated/client";
 
 /**
  * NoteBookProps
@@ -422,7 +420,6 @@ class NoteEditor extends SessionStateComponent<
                 onClick={this.handleCancelClick}
               >
                 {this.props.t("actions.cancel")}
-                Peruuta
               </Button>
 
               {this.recovered && (
@@ -433,9 +430,8 @@ class NoteEditor extends SessionStateComponent<
                 >
                   {this.props.t("actions.remove", {
                     ns: "common",
-                    context: "draf",
+                    context: "draft",
                   })}
-                  Poista luonnos
                 </Button>
               )}
             </div>

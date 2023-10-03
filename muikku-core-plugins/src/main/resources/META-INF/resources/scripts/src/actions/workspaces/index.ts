@@ -11,9 +11,11 @@ import {
   WorkspacesStatePatch,
   WorkspaceUpdateType,
   WorkspaceSignUpDetails,
-  WorkspaceActivityType,
   WorkspaceInterimEvaluationRequest,
   MaterialContentNodeWithIdAndLogic,
+  WorkspaceJournalsType,
+  WorkspaceStateFilterListType,
+  WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -22,18 +24,13 @@ import {
   reuseExistantValue,
 } from "~/actions/workspaces/helpers";
 import { Dispatch } from "react-redux";
-import {
-  WorkspaceJournalsType,
-  WorkspaceStateFilterListType,
-  WorkspaceEditModeStateType,
-} from "~/reducers/workspaces";
+import { WorkspaceActivity } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
   WorkspaceChatStatus,
   WorkspaceDetails,
-  WorkspaceEducationType,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
   Curriculum,
@@ -43,6 +40,7 @@ import {
   GetWorkspaceStudentsRequest,
   MaterialReply,
   MaterialCompositeReplyStateType,
+  EducationType,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
@@ -68,7 +66,7 @@ export type SET_CURRENT_WORKSPACE = SpecificActionType<
 
 export type UPDATE_CURRENT_WORKSPACE_ACTIVITY = SpecificActionType<
   "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
-  WorkspaceActivityType
+  WorkspaceActivity
 >;
 
 export type UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS = SpecificActionType<
@@ -101,7 +99,7 @@ export type UPDATE_WORKSPACES_EDIT_MODE_STATE = SpecificActionType<
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
   SpecificActionType<
     "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-    WorkspaceEducationType[]
+    EducationType[]
   >;
 
 export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS =
@@ -510,6 +508,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       const chatApi = MApi.getChatApi();
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
+      const evaluationApi = MApi.getEvaluationApi();
 
       const current = state.workspaces.currentWorkspace;
       if (
@@ -538,7 +537,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         /* let assesments: WorkspaceStudentAssessmentsType; */
         let assessmentRequests: AssessmentRequest[];
         let interimEvaluationRequests: WorkspaceInterimEvaluationRequest[];
-        let activity: WorkspaceActivityType;
+        let activity: WorkspaceActivity;
         let additionalInfo: WorkspaceAdditionalInfo;
         let contentDescription: MaterialContentNodeWithIdAndLogic;
         let producers: WorkspaceMaterialProducer[];
@@ -592,12 +591,9 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 true,
                 workspace && workspace.interimEvaluationRequests,
                 () =>
-                  promisify(
-                    mApi().evaluation.workspace.interimEvaluationRequests.read(
-                      data.workspaceId
-                    ),
-                    "callback"
-                  )()
+                  evaluationApi.getWorkspaceInterimEvaluationRequests({
+                    workspaceId: data.workspaceId,
+                  })
               )
             : null,
 
@@ -773,7 +769,7 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
 
       if (state.status.loggedIn) {
         try {
-          const activity = <WorkspaceActivityType>(
+          const activity = <WorkspaceActivity>(
             await promisify(
               mApi()
                 .evaluation.workspaces.students.activity.cacheClear()
@@ -1228,11 +1224,13 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const coursepickerApi = MApi.getCoursepickerApi();
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
         if (!loadOrganizationWorkspaceFilters) {
-          const educationTypes = await workspaceApi.getEducationTypes();
+          const educationTypes =
+            await coursepickerApi.getCoursepickerEducationTypes();
 
           dispatch({
             type: "UPDATE_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",

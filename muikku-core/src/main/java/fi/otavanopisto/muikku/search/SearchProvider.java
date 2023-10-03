@@ -23,11 +23,25 @@ public interface SearchProvider {
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
 
   public SearchResult searchWorkspaces(List<SchoolDataIdentifier> subjects, List<SchoolDataIdentifier> identifiers, List<SchoolDataIdentifier> educationTypeIdentifiers, List<SchoolDataIdentifier> curriculumIdentifiers,
-
       Collection<OrganizationRestriction> organizationRestrictions, String freeText, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser, int start, int maxResults, List<Sort> sorts);
+
   public SearchResult searchWorkspaces(SchoolDataIdentifier subjectIdentifier, int courseNumber);
 
   public SearchResult searchWorkspacesSignupEnd();
+  
+  /**
+   * List distinct curriculums from indexed workspaces.
+   * 
+   * @return a list of distinct curriculums from workspaces
+   */
+  Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser);
+
+  /**
+   * List distinct education types from indexed workspaces.
+   * 
+   * @return a list of distinct education types from workspaces
+   */
+  Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser);
 
   public SearchResult findWorkspace(SchoolDataIdentifier identifier);
   public IndexedCommunicatorMessage findCommunicatorMessage(Long communicatorMessageId);

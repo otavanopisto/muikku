@@ -1,19 +1,22 @@
 import { ActionType } from "../../../actions/index";
 import {
   EvaluationStateType,
-  EvaluationGradeSystem,
-  AssessmentRequest,
   EvaluationSort,
   EvaluationAssigmentData,
-  EvaluationEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
-import { EvaluationJournalFeedback } from "../../../@types/evaluation";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { MaterialCompositeReply, WorkspaceJournal } from "~/generated/client";
+import {
+  EvaluationAssessmentRequest,
+  EvaluationEvent,
+  EvaluationGradeScale,
+  EvaluationJournalFeedback,
+  MaterialCompositeReply,
+  WorkspaceJournal,
+} from "~/generated/client";
 
 /**
  * EvaluationStateAndData
@@ -30,14 +33,14 @@ export interface EvaluationState {
   status: EvaluationStateType;
   importantRequests: number[];
   unimportantRequests: number[];
-  evaluationGradeSystem: EvaluationGradeSystem[];
-  evaluationRequests: EvaluationStateAndData<AssessmentRequest[]>;
+  evaluationGradeSystem: EvaluationGradeScale[];
+  evaluationRequests: EvaluationStateAndData<EvaluationAssessmentRequest[]>;
   evaluationWorkspaces: WorkspaceDataType[];
   selectedWorkspaceId?: number;
   evaluationSearch: string;
   evaluationSort?: EvaluationSort;
   evaluationFilters: EvaluationFilters;
-  evaluationSelectedAssessmentId?: AssessmentRequest;
+  evaluationSelectedAssessmentId?: EvaluationAssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationJournalFeedback?: EvaluationStateAndData<EvaluationJournalFeedback>;
   evaluationDiaryEntries?: EvaluationStateAndData<WorkspaceJournal[]>;

@@ -1,20 +1,19 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
-import { WorkspaceJournal } from "~/generated/client";
+import { AudioAssessment, WorkspaceJournal } from "~/generated/client";
 import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
   WorkspaceChatStatus,
   WorkspaceDetails,
-  WorkspaceEducationType,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
+  WorkspaceActivity,
   Curriculum,
+  EducationType,
   Organization,
   WorkspaceOrganization,
-} from "~/generated/client";
-import {
   UserStaff,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
@@ -27,7 +26,6 @@ import {
   WorkspaceMaterial,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
-import { AudioAssessment } from "../../@types/evaluation";
 
 /**
  * CreateWorkspaceType
@@ -295,7 +293,7 @@ export interface WorkspaceDataType {
   subjects?: WorkspaceSubject[];
 
   //These are optional addons, and are usually not available
-  activity?: WorkspaceActivityType;
+  activity?: WorkspaceActivity;
   studentActivity?: WorkspaceActivityType;
   forumStatistics?: DiscussionWorkspaceStatistic;
   organization?: Organization;
@@ -351,14 +349,6 @@ export type WorkspaceBaseFilterType =
   | "UNPUBLISHED";
 
 /**
- * WorkspaceCurriculumFilterType
- */
-export interface WorkspaceCurriculumFilterType {
-  identifier: string;
-  name: string;
-}
-
-/**
  * WorkspaceOrganizationFilterType
  */
 export interface WorkspaceOrganizationFilterType {
@@ -381,7 +371,7 @@ export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
  * WorkspacesavailableFiltersType
  */
 export interface WorkspacesavailableFiltersType {
-  educationTypes: WorkspaceEducationType[];
+  educationTypes: EducationType[];
   curriculums: Curriculum[];
   organizations?: WorkspaceOrganization[];
   baseFilters?: WorkspaceBaseFilterListType;

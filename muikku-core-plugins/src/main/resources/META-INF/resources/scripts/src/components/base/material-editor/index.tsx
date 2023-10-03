@@ -41,11 +41,9 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { langAttributeLocale } from "~/helper-functions/locale";
 import {
   Language,
   MaterialAssigmentType,
-  MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
 
@@ -223,7 +221,7 @@ type PageTypeLocales =
   | "labels.exercise"
   | "labels.evaluable"
   | "labels.journalAssignment"
-  | "labels.interimEvaluationPage"
+  | "labels.interimEvaluation"
   | "labels.theoryPage";
 
 /**
@@ -254,7 +252,7 @@ const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
   {
     type: "INTERIM_EVALUATION",
     classNameMod: "material-editor-dropdown-interim-evaluation",
-    text: "labels.interimEvaluationPage",
+    text: "labels.interimEvaluation",
   },
   {
     type: null,
@@ -1122,7 +1120,10 @@ class MaterialEditor extends React.Component<
                         </option>
                         {languageOptions.map((language) => (
                           <option key={language} value={language}>
-                            {langAttributeLocale[language]}
+                            {this.props.i18n.t("labels.language", {
+                              context: language,
+                              ns: "workspace",
+                            })}
                           </option>
                         ))}
                       </select>
@@ -1232,7 +1233,10 @@ class MaterialEditor extends React.Component<
                       </option>
                       {languageOptions.map((language) => (
                         <option key={language} value={language}>
-                          {langAttributeLocale[language]}
+                          {this.props.i18n.t("labels.language", {
+                            context: language,
+                            ns: "workspace",
+                          })}
                         </option>
                       ))}
                     </select>
