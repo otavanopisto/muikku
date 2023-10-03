@@ -12290,13 +12290,10 @@ components:
       type: object
       description: Message recipient object
       required:
-        - recipientId
         - userEntityId
         - communicatorMessageId
         - firstName
       properties:
-        recipientId:
-          type: integer
         userEntityId:
           type: integer
         communicatorMessageId:
