@@ -63,6 +63,8 @@ export type SupportActionMatriculationExamination =
 
 export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
 
+export type HistoryEntryType = "EDIT" | "VIEW";
+
 /**
  * The history of the updates made to the form
  */

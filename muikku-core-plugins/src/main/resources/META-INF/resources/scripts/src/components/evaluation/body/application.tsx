@@ -13,7 +13,6 @@ import {
 import { bindActionCreators } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 import { WorkspaceType } from "../../../reducers/workspaces/index";
-import { EvaluationWorkspace } from "../../../@types/evaluation";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
@@ -94,7 +93,7 @@ class EvaluationApplication extends React.Component<
         .map((eWorkspace) => eWorkspace.id)
         .indexOf(currentWorkspace.id) === -1
     ) {
-      workspaces.push({ ...currentWorkspace } as EvaluationWorkspace);
+      workspaces.push({ ...currentWorkspace } as WorkspaceType);
     }
 
     workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));

@@ -1,6 +1,6 @@
 import { ActionType } from "actions";
 import { Reducer } from "redux";
-
+import { MatriculationSubject } from "~/generated/client";
 export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
 export type SubjectEligibilityStatusType =
@@ -60,7 +60,7 @@ export interface YOEligibilityType {
 export interface YOType {
   status: YOStatusType;
   enrollment: Array<YOEnrollmentType>;
-  subjects: Array<YOMatriculationSubjectType>;
+  subjects: MatriculationSubject[];
   eligibility: YOEligibilityType;
   eligibilityStatus: YOEligibilityStatusType;
 }

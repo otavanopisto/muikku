@@ -5,7 +5,7 @@ import { CredentialsState } from "./base/credentials";
 import { StatusType } from "./base/status";
 import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
-import { HOPSType } from "./main-function/hops";
+import { HOPSState } from "./main-function/hops";
 import { MessagesState } from "./main-function/messages";
 import { WorkspacesType } from "./workspaces";
 import {
@@ -16,7 +16,7 @@ import {
 } from "./main-function/users";
 import { DiscussionState } from "./discussion";
 import { UserIndexState } from "./user-index";
-import { GuiderType } from "./main-function/guider";
+import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
 import {
   YOType,
@@ -47,7 +47,7 @@ export interface StateType {
   eligibilitySubjects?: SubjectEligibilitySubjectsType;
   credentials?: CredentialsState;
   announcements?: AnnouncementsState;
-  hops?: HOPSType;
+  hops?: HOPSState;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesState;
@@ -59,7 +59,7 @@ export interface StateType {
   organizationWorkspaces?: WorkspacesType;
   discussion?: DiscussionState;
   organizationUsers?: UsersState;
-  guider?: GuiderType;
+  guider?: GuiderState;
   records?: RecordsType;
   error?: ErrorType;
   profile?: ProfileState;

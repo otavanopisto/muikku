@@ -14,7 +14,6 @@ import org.apache.commons.lang3.LocaleUtils;
 import fi.otavanopisto.muikku.events.ContextDestroyedEvent;
 import fi.otavanopisto.muikku.events.ContextInitializedEvent;
 import fi.otavanopisto.muikku.i18n.LocaleController;
-import fi.otavanopisto.muikku.i18n.LocaleLocation;
 import fi.otavanopisto.muikku.plugins.Plugins;
 
 @WebListener
@@ -37,10 +36,8 @@ public class ContextListener implements ServletContextListener {
   public void contextInitialized(ServletContextEvent sce) {
     plugins.initialize();
     // TODO Incorrect place or just a misleading listener name?
-    localeController.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.otavanopisto.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("fi")));
-    localeController.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.otavanopisto.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("en")));
-    localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("fi")));
-    localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.otavanopisto.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("en")));
+    localeController.add(ResourceBundle.getBundle("fi.otavanopisto.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("fi")));
+    localeController.add(ResourceBundle.getBundle("fi.otavanopisto.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("en")));
     
     contextInitializedEvent.fire(new ContextInitializedEvent());
   }

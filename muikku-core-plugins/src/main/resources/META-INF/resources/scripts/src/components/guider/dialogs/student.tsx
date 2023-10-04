@@ -13,7 +13,7 @@ import { StatusType } from "~/reducers/base/status";
 import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
-  GuiderType,
+  GuiderState,
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
@@ -51,7 +51,7 @@ export type tabs =
 interface StudentDialogProps extends WithTranslation<["common"]> {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
-  guider: GuiderType;
+  guider: GuiderState;
   currentStudentStatus: GuiderCurrentStudentStateType;
   onClose?: () => void;
   onOpen?: () => void;

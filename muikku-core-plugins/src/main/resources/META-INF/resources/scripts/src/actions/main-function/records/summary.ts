@@ -9,7 +9,6 @@ import {
 import {
   WorkspaceForumStatisticsType,
   ActivityLogType,
-  WorkspaceActivityType,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
@@ -40,6 +39,8 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const recordsApi = MApi.getRecordsApi();
+    const evaluationApi = MApi.getEvaluationApi();
     const userApi = MApi.getUserApi();
 
     try {
@@ -52,10 +53,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const pyramusId = getState().status.userSchoolDataIdentifier;
 
       /* We need completed courses from Eligibility */
-      const eligibility: any = await promisify(
-        mApi().records.studentMatriculationEligibility.read(pyramusId),
-        "callback"
-      )();
+      const eligibility = await recordsApi.getStudentMatriculationEligibility({
+        studentIdentifier: pyramusId,
+      });
 
       /* We need past month activity */
       const activityLogs: any = await promisify(
@@ -104,15 +104,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         await Promise.all([
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const activity = <WorkspaceActivityType>(
-                await promisify(
-                  mApi().evaluation.workspaces.students.activity.read(
-                    workspace.id,
-                    pyramusId
-                  ),
-                  "callback"
-                )()
-              );
+              const activity = await evaluationApi.getWorkspaceStudentActivity({
+                workspaceId: workspace.id,
+                studentEntityId: pyramusId,
+              });
               workspaces[index].activity = activity;
             })
           ),

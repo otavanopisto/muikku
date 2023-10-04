@@ -1,7 +1,10 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
-import { EvaluationJournalFeedback } from "../../@types/evaluation";
-import { WorkspaceJournal, WorkspaceJournalComment } from "~/generated/client";
+import {
+  WorkspaceJournal,
+  WorkspaceJournalComment,
+  EvaluationJournalFeedback,
+} from "~/generated/client";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 

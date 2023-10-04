@@ -2,12 +2,9 @@
 import { loadCurrentWorkspaceJournalsHelper } from "./helpers";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import { displayNotification } from "../base/notifications";
 import {
   JournalsState,
-  WorkspaceJournalFeedback,
   WorkspaceJournalFilters,
 } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react-redux";
@@ -916,17 +913,16 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
       const { userEntityId, workspaceEntityId, fail, success } = data;
 
       const currentJournalsState = getState().journals;
+      const evaluationApi = MApi.getEvaluationApi();
 
       try {
         const [updated] = await Promise.all([
           (async () => {
-            const journalFeedback = (await promisify(
-              mApi().evaluation.workspaces.students.journalfeedback.read(
-                workspaceEntityId,
-                userEntityId
-              ),
-              "callback"
-            )()) as WorkspaceJournalFeedback;
+            const journalFeedback =
+              await evaluationApi.getWorkspaceStudentJournalFeedback({
+                workspaceId: workspaceEntityId,
+                studentEntityId: userEntityId,
+              });
 
             return {
               journalFeedback,
@@ -947,7 +943,7 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

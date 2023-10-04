@@ -128,11 +128,11 @@ class DiscussionThreadReplyComponent extends React.Component<
         ) : (
           <>
             {discussionItem.deleted ? (
-              <DiscussionThreadBody>
-                <div className="rich-text">
-                  {this.props.i18n.t("content.removed", { ns: "messaging" })}
-                </div>
-
+              <DiscussionThreadBody
+                html={`<p><i> ${this.props.i18n.t("content.removed", {
+                  ns: "messaging",
+                })} </i></p>`}
+              >
                 {!moment(discussionItem.created).isSame(
                   discussionItem.lastModified
                 ) ? (

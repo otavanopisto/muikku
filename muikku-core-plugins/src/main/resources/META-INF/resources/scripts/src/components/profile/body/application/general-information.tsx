@@ -90,7 +90,7 @@ class GeneralInformation extends React.Component<
               <ProfileProperty
                 modifier="study-end-date"
                 condition={!!this.props.status.profile.studyTimeEnd}
-                label={this.props.t("labels.studyTimeEnd", { ns: "users" })}
+                label={this.props.t("labels.studyEndDate", { ns: "users" })}
                 value={studyTimeEndValues}
               />
             </div>

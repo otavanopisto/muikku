@@ -1614,6 +1614,26 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
+  /rest/coursepicker/educationTypes:
+    get:
+      operationId: getCoursepickerEducationTypes
+      description: Returns list of education types that are used in coursepicker. This list only contains education types that do have courses for sure.
+      tags:
+        - Coursepicker
+      responses:
+        "200":
+          description: Course picker education types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EducationType"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
   /rest/coursepicker/organizations:
     get:
       operationId: getCoursepickerOrganizations
@@ -1819,6 +1839,12 @@ paths:
       description: Get composite assessment requests
       tags:
         - Evaluation
+      parameters:
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
       responses:
         "200":
           description: Composite assessment requests
@@ -1894,6 +1920,12 @@ paths:
           schema:
             type: integer
       responses:
+        "200":
+          description: Interim evaluation request deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InterimEvaluationRequest"
         "204":
           description: Interim evaluation request deleted successfully
         "400":
@@ -1966,10 +1998,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-
+                $ref: "#/components/schemas/AssessmentWithAudio"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2017,10 +2046,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  id:
-                    type: integer
-
+                $ref: "#/components/schemas/AssessmentWithAudio"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2080,6 +2106,12 @@ paths:
           required: true
           schema:
             type: integer
+        - name: userEntityId
+          in: query
+          description: User entity id
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: Workspace material evaluations
@@ -2123,6 +2155,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/EvaluationJournalFeedback"
+        "204":
+          description: Workspace student journal feedback not found
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2218,7 +2252,7 @@ paths:
           description: Student entity id
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: Workspace student activity
@@ -2295,9 +2329,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
-      operationId: archiveWorkspaceUserEvaluationRequest
-      summary: Archive workspace user evaluation request
-      description: Archive workspace user evaluation request
+      operationId: archiveEvaluationWorkspaceUser
+      summary: Archive workspace user evaluation
+      description: Archive workspace user evaluation
       tags:
         - Evaluation
       parameters:
@@ -2319,9 +2353,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/events:
     get:
-      operationId: getWorkspaceUserEvents
-      summary: Get workspace user events
-      description: Get workspace user events
+      operationId: getWorkspaceUserEvaluationEvents
+      summary: Get workspace user evaluation events
+      description: Get workspace user evaluation events
       tags:
         - Evaluation
       parameters:
@@ -2455,7 +2489,7 @@ paths:
           description: Workspace assessment id
           required: true
           schema:
-            type: integer
+            type: string
       responses:
         "204":
           description: Workspace user workspace assessment deleted successfully
@@ -3962,7 +3996,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuiderStudent"
+                  $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -3988,7 +4022,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GuiderStudent"
+                $ref: "#/components/schemas/Student"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4021,7 +4055,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceWithAddons"
+                  $ref: "#/components/schemas/RecordsWorkspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4125,9 +4159,30 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ContactLog"
+                $ref: "#/components/schemas/ContactLog"
+
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/guider/files/{fileId}:
+    delete:
+      operationId: deleteGuiderFile
+      summary: Delete guider file
+      description: Delete guider file
+      tags:
+        - Guider
+      parameters:
+        - name: fileId
+          in: path
+          description: File id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Guider file deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5687,7 +5742,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HopsUppersecondaryData"
+                $ref: "#/components/schemas/HopsUppersecondary"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5700,14 +5755,14 @@ paths:
       tags:
         - HopsUpperSecondary
       requestBody:
-        $ref: "#/components/requestBodies/HopsUppersecondaryDataUpdateRequestBody"
+        $ref: "#/components/requestBodies/HopsUppersecondaryUpdateRequestBody"
       responses:
         "200":
           description: Hops updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HopsUppersecondaryData"
+                $ref: "#/components/schemas/HopsUppersecondary"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5733,7 +5788,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HopsUppersecondaryData"
+                $ref: "#/components/schemas/HopsUppersecondary"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5752,7 +5807,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HOPSEligibility"
+                $ref: "#/components/schemas/HopsEligibility"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5855,7 +5910,7 @@ paths:
           in: query
           description: String boolean
           schema:
-            type: integer
+            type: string
         - name: includeAssignmentStatistics
           in: query
           description: String boolean
@@ -5867,9 +5922,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/RecordWorkspaceActivityInfo"
+                $ref: "#/components/schemas/RecordWorkspaceActivityInfo"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5902,6 +5956,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AnyValue"
+                #$ref: "#/components/schemas/Workspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6837,6 +6892,16 @@ paths:
       tags:
         - Usergroup
       parameters:
+        - name: userIdentifier
+          in: query
+          description: User identifier
+          schema:
+            type: string
+        - name: archetype
+          in: query
+          description: Archetype
+          schema:
+            type: string
         - name: q
           in: query
           description: Search string
@@ -7241,7 +7306,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceEducationType"
+                  $ref: "#/components/schemas/EducationType"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -8921,6 +8986,7 @@ components:
                 type: integer
 
     InterimEvaluationRequestCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8936,6 +9002,7 @@ components:
                 type: string
 
     EvaluationSaveAssignmentAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8944,8 +9011,6 @@ components:
             required:
               - evaluationType
               - assessorIdentifier
-              - gradingScaleIdentifier
-              - gradeIdentifier
               - verbalAssessment
               - assessmentDate
               - audioAssessments
@@ -8953,7 +9018,7 @@ components:
               identifier:
                 type: string
               evaluationType:
-                type: string
+                $ref: "#/components/schemas/EvaluationType"
               assessorIdentifier:
                 type: string
               gradingScaleIdentifier:
@@ -8963,13 +9028,15 @@ components:
               verbalAssessment:
                 type: string
               assessmentDate:
-                type: string
+                description: Unix timestamp
+                type: integer
               audioAssessments:
                 type: array
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
     EvaluationUpdateAssignmentAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -8998,13 +9065,15 @@ components:
               verbalAssessment:
                 type: string
               assessmentDate:
-                type: string
+                description: Unix timestamp
+                type: integer
               audioAssessments:
                 type: array
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
     EvaluationCreateJournalFeedbackRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9017,6 +9086,7 @@ components:
                 type: string
 
     EvaluationSaveWorkspaceUserAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9044,6 +9114,7 @@ components:
                 type: string
 
     EvaluationUpdateWorkspaceUserAssessmentRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9074,6 +9145,7 @@ components:
                 type: string
 
     EvaluationSaveSupplementationRequestRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9092,6 +9164,7 @@ components:
                 type: string
 
     EvaluationUpdateSupplementationRequestRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9201,6 +9274,7 @@ components:
               - $ref: "#/components/schemas/DiscussionThreadReply"
 
     ContactLogCreateEventRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9219,6 +9293,7 @@ components:
                 type: string
 
     ContactLogUpdateEventRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9240,6 +9315,7 @@ components:
                 type: integer
 
     ContactLogEventCommentCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9255,6 +9331,7 @@ components:
                 type: string
 
     ContactLogEventCommentUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9627,12 +9704,13 @@ components:
                 items:
                   $ref: "#/components/schemas/PedagogyFormVisibility"
 
-    HopsUppersecondaryDataUpdateRequestBody:
+    HopsUppersecondaryUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/HopsUppersecondaryData"
+              - $ref: "#/components/schemas/HopsUppersecondary"
 
     UpdateCredentialsBody:
       required: true
@@ -10312,7 +10390,7 @@ components:
         - verbalAssessment
       properties:
         identifier:
-          type: integer
+          type: string
         assessorIdentifier:
           type: string
         gradingScaleIdentifier:
@@ -10570,7 +10648,6 @@ components:
         - EMAIL
         - PHONE
         - CHATLOG
-        - SKYPE
         - FACE2FACE
         - ABSENCE
         - MUIKKU
@@ -10640,14 +10717,19 @@ components:
       properties:
         id:
           type: integer
-        entryDate:
+        entry:
+          type: integer
+        commentDate:
           type: string
+          format: date-time
         creatorId:
           type: integer
         creatorName:
           type: string
         text:
           type: string
+        hasImage:
+          type: boolean
 
     Curriculum:
       type: object
@@ -10910,6 +10992,18 @@ components:
         latestMessage:
           type: string
 
+    EducationType:
+      type: object
+      description: EducationType object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+
     EvaluationJournalFeedback:
       type: object
       description: EvaluationJournalFeedback object
@@ -10927,7 +11021,7 @@ components:
           type: integer
         student:
           description: userEntityId of student
-          type: string
+          type: integer
         workspaceEntityId:
           type: integer
         created:
@@ -10954,7 +11048,7 @@ components:
         - graded
         - passing
         - interimEvaluationRequest
-        - userEntityID
+        - userEntityId
         - firstName
         - lastName
         - studyProgramme
@@ -10987,7 +11081,7 @@ components:
           type: boolean
         interimEvaluationRequest:
           type: boolean
-        userEntityID:
+        userEntityId:
           type: integer
         firstName:
           type: string
@@ -11063,7 +11157,7 @@ components:
         - workspaceSubjectIdentifier
       properties:
         identifier:
-          type: integer
+          type: string
         author:
           type: string
         date:
@@ -11087,7 +11181,7 @@ components:
 
     EvaluationGradeScale:
       type: object
-      description: EvaluationGradeSystem object
+      description: EvaluationGradeScale object
       required:
         - id
         - name
@@ -11251,39 +11345,6 @@ components:
         role:
           type: string
 
-    GuiderStudent:
-      allOf:
-        - $ref: "#/components/schemas/UserWithSchoolData"
-        - type: object
-          required:
-            - flags
-          properties:
-            flags:
-              type: array
-              items:
-                $ref: "#/components/schemas/GuiderStudentLabel"
-
-    GuiderStudentLabel:
-      type: object
-      description: GuiderStudentLabel object
-      required:
-        - id
-        - flagId
-        - flagName
-        - flagColor
-        - studentIdentifier
-      properties:
-        id:
-          type: integer
-        flagId:
-          type: integer
-        flagName:
-          type: string
-        flagColor:
-          type: integer
-        studentIdentifier:
-          type: string
-
     GuiderStudentNotification:
       type: object
       description: GuiderStudentNotification object
@@ -11320,9 +11381,9 @@ components:
         modifierHasImage:
           type: boolean
 
-    HopsUppersecondaryData:
+    HopsUppersecondary:
       type: object
-      description: HopsUppersecondaryData object
+      description: HopsUppersecondary object
       required:
         - goalSecondarySchoolDegree
         - goalMatriculationExam
@@ -11347,23 +11408,23 @@ components:
         goalSecondarySchoolDegree:
           type: string
           enum:
-            - yes
-            - no
-            - maybe
+            - "yes"
+            - "no"
+            - "maybe"
         goalMatriculationExam:
           type: string
           enum:
-            - yes
-            - no
-            - maybe
+            - "yes"
+            - "no"
+            - "maybe"
         vocationalYears:
           description: defined as a string, but this is actually a number
           type: string
         goalJustMatriculationExam:
           type: string
           enum:
-            - yes
-            - no
+            - "yes"
+            - "no"
         justTransferCredits:
           description: defined as a string, but this is actually a number
           type: string
@@ -11417,9 +11478,9 @@ components:
         additionalInfo:
           type: string
 
-    HOPSEligibility:
+    HopsEligibility:
       type: object
-      description: HOPSEligibilityType object
+      description: HopsEligibility object
       required:
         - upperSecondarySchoolCurriculum
       properties:
@@ -11472,8 +11533,10 @@ components:
           type: integer
         requestDate:
           type: string
+          format: date-time
         cancellationDate:
           type: string
+          format: date-time
         requestText:
           type: string
         archived:
@@ -11968,20 +12031,27 @@ components:
         workspaceMaterialId:
           type: integer
         gradingScaleIdentifier:
+          nullable: true
           type: string
         gradingScaleSchoolDataSource:
+          nullable: true
           type: string
         grade:
+          nullable: true
           type: string
         gradeIdentifier:
+          nullable: true
           type: string
         gradeSchoolDataSource:
+          nullable: true
           type: string
         gradingScale:
+          nullable: true
           type: string
         verbalAssessment:
           type: string
         passed:
+          nullable: true
           type: boolean
         audioAssessments:
           type: array
@@ -12224,13 +12294,10 @@ components:
       type: object
       description: Message recipient object
       required:
-        - recipientId
         - userEntityId
         - communicatorMessageId
         - firstName
       properties:
-        recipientId:
-          type: integer
         userEntityId:
           type: integer
         communicatorMessageId:
@@ -12694,6 +12761,18 @@ components:
           format: date-time
           nullable: true
 
+    RecordsWorkspace:
+      allOf:
+        - $ref: "#/components/schemas/Workspace"
+        - type: object
+          properties:
+            subjects:
+              type: array
+              items:
+                $ref: "#/components/schemas/WorkspaceSubject"
+            activity:
+              $ref: "#/components/schemas/WorkspaceActivity"
+
     PublicityRestriction:
       type: string
       enum:
@@ -12782,7 +12861,7 @@ components:
 
     RecordWorkspaceActivityInfo:
       type: object
-      description: RecordsWorkspaceActivityInfo object
+      description: Record workspace activity info with line and category, default line and activities
       required:
         - lineName
         - lineCategory
@@ -12824,6 +12903,79 @@ components:
           type: string
         code:
           type: string
+
+    Student:
+      type: object
+      required:
+        - id
+        - email
+        - firstName
+        - hasImage
+        - updatedByStudent
+        - userEntityId
+        - matriculationEligibility
+        - ceeposLine
+        - flags
+      properties:
+        curriculumIdentifier:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        hasImage:
+          type: boolean
+        id:
+          type: string
+        language:
+          nullable: true
+          type: string
+        lastName:
+          type: string
+        municipality:
+          nullable: true
+          type: string
+        nationality:
+          nullable: true
+          type: string
+        nickName:
+          nullable: true
+          type: string
+        school:
+          nullable: true
+          type: string
+        studyEndDate:
+          nullable: true
+          type: string
+          format: date-time
+        studyProgrammeName:
+          type: string
+        studyStartDate:
+          nullable: true
+          type: string
+          format: date-time
+        studyTimeEnd:
+          nullable: true
+          type: string
+          format: date-time
+        lastLogin:
+          nullable: true
+          type: string
+          format: date-time
+        updatedByStudent:
+          type: boolean
+        userEntityId:
+          type: integer
+        matriculationEligibility:
+          type: boolean
+        ceeposLine:
+          type: string
+          nullable: true
+        flags:
+          nullable: true
+          type: array
+          items:
+            $ref: "#/components/schemas/UserStudentFlag"
 
     StudentInfo:
       type: object
@@ -13708,14 +13860,6 @@ components:
         name:
           type: string
 
-    WorkspaceWithAddons:
-      allOf:
-        - $ref: "#/components/schemas/Workspace"
-        - type: object
-          properties:
-            activity:
-              $ref: "#/components/schemas/WorkspaceActivity"
-
     WorkspaceBasicInfo:
       type: object
       description: WorkspaceBasicInfo object
@@ -13741,7 +13885,7 @@ components:
         - identifier
       properties:
         identifier:
-          type: integer
+          type: string
         subject:
           $ref: "#/components/schemas/Subject"
         courseNumber:
@@ -14001,18 +14145,6 @@ components:
       enum:
         - ENABLED
         - DISABLED
-
-    WorkspaceEducationType:
-      type: object
-      description: WorkspaceEducationType object
-      required:
-        - identifier
-        - name
-      properties:
-        identifier:
-          type: string
-        name:
-          type: string
 
     WorkspaceDetails:
       type: object
