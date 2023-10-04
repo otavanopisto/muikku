@@ -12621,6 +12621,12 @@ components:
         - TEACHERS
         - GUARDIANS
 
+    PedagogyHistoryEntryType:
+      type: string
+      enum:
+        - VIEW
+        - EDIT
+
     PedagogyHistoryEntry:
       type: object
       description: PedagogyHistoryEntry object
@@ -12642,6 +12648,7 @@ components:
         date:
           description: The date when the update was made
           type: string
+          format: date-time
         editedFields:
           description: Fields that were edited in the update
           type: array
@@ -12650,6 +12657,9 @@ components:
         details:
           description: The description or details of the update what was done
           type: string
+        type:
+          description: The type of the update
+          $ref: "#/components/schemas/PedagogyHistoryEntryType"
 
     PedagogyUserInfo:
       type: object

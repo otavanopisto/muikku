@@ -1,9 +1,6 @@
 import { WorkspaceType } from "~/reducers/workspaces";
 
-/* const states = ["PENDING", "APPROVED", "ACTIVE", "INACTIVE"] as const; */
-
-/* const users = ["TEACHERS", "GUARDIANS"] as const; */
-
+// used for frontend logic
 const useRoles = [
   "STUDENT",
   "COURSE_TEACHER",
@@ -11,6 +8,7 @@ const useRoles = [
   "SPECIAL_ED_TEACHER",
 ] as const;
 
+// For the PedagogyForm JSON
 const reasonsForSupport = [
   "disease",
   "disability",
@@ -21,6 +19,7 @@ const reasonsForSupport = [
   "other",
 ] as const;
 
+// For the PedagogyForm JSON
 const supportActions = [
   "remedialInstruction",
   "specialEducation",
@@ -30,6 +29,7 @@ const supportActions = [
   "other",
 ] as const;
 
+// For the PedagogyForm JSON
 const matriculationExaminationSupport = [
   "extraTime",
   "invidualSpace",
@@ -43,17 +43,6 @@ const matriculationExaminationSupport = [
 
 export type UserRole = typeof useRoles[number];
 
-/**
- * The state of the form
- */
-/* export type FormState = typeof states[number]; */
-
-/**
- * The viewing rights of the form
- * who have reading access to the published form data inside Muikku
- */
-/* export type Visibility = typeof users[number]; */
-
 export type SupportReason = typeof reasonsForSupport[number];
 
 export type SupportAction = typeof supportActions[number];
@@ -63,21 +52,8 @@ export type SupportActionMatriculationExamination =
 
 export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
 
-export type HistoryEntryType = "EDIT" | "VIEW";
-
 /**
- * The history of the updates made to the form
- */
-/* export interface HistoryEntry {
-  modifierId: number;
-  modifierName: string;
-  modifierHasAvatar: boolean;
-  editedFields?: string[];
-  details?: string;
-  date: Date;
-} */
-
-/**
+ * Part of JSON
  * Support actions that have been implemented
  */
 export interface SupportActionImplementation {
@@ -108,6 +84,7 @@ export interface SupportActionImplementation {
 }
 
 /**
+ * Part of JSON
  * Opinion
  */
 export interface Opinion {
@@ -186,36 +163,3 @@ export interface FormData {
    */
   schoolOpinionOfSupport?: Opinion[];
 }
-
-/**
- * The student information of the form
- */
-/* export interface UserInfo {
-  firstName: string;
-  lastName: string;
-  dateOfBirth?: Date;
-  phoneNumber?: string | null;
-  city?: string | null;
-  country?: string | null;
-  email?: string | null;
-  streetAddress?: string | null;
-  addressName?: string | null;
-  zipCode?: string | null;
-} */
-
-/**
- * The pedagogy form
- */
-/* export interface PedagogyForm {
-  studentIdentifier: string;
-  created?: Date;
-  ownerId: number;
-  ownerInfo: UserInfo;
-  id: number;
-  state: FormState;
-  studentInfo: UserInfo;
-  formData?: string;
-  history: HistoryEntry[];
-  visibility: Visibility[];
-}
- */
