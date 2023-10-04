@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
@@ -176,22 +175,23 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
   }
 
   /**
-   * Sets archivedByReceiver field to true for CommunicatorMessageRecipients that have
-   * - archivedByReceiver = false                   (avoid unnecessary updates)
-   * - trashedByReceiver = true                     (update rows that are in trash folder)
-   * - trashedByReceiverTimestamp < expireThreshold (update rows that have been trashed before given threshold)
+   * Lists CommunicatorMessageRecipients that have
+   * - archivedByReceiver = false
+   * - trashedByReceiver = true
+   * - trashedByReceiverTimestamp < expireThreshold
    * 
    * @param expireThreshold messages trashed before the threshold are archived
-   * @return number of rows affected
+   * @param maxResults maximum number of results to return
+   * @return list of CommunicatorMessageRecipients
    */
-  public int timedArchiveRecipientMessagesInTrash(Date expireThreshold) {
+  public List<CommunicatorMessageRecipient> listRecipientsExpiredTrashMessages(Date expireThreshold, int maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaUpdate<CommunicatorMessageRecipient> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(CommunicatorMessageRecipient.class);
+    CriteriaQuery<CommunicatorMessageRecipient> criteriaUpdate = criteriaBuilder.createQuery(CommunicatorMessageRecipient.class);
     Root<CommunicatorMessageRecipient> root = criteriaUpdate.from(CommunicatorMessageRecipient.class);
     
-    criteriaUpdate.set(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.TRUE);
+    criteriaUpdate.select(root);
     criteriaUpdate.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE),
@@ -200,7 +200,7 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
         )
     );
     
-    return entityManager.createQuery(criteriaUpdate).executeUpdate();
+    return entityManager.createQuery(criteriaUpdate).setMaxResults(maxResults).getResultList();
   }
   
   @Override
