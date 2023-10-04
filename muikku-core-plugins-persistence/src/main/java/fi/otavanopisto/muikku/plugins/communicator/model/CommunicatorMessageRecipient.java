@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -15,6 +17,12 @@ import javax.validation.constraints.NotNull;
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
+@Table (
+    indexes = {
+        // Index for automated trash folder archive task
+        @Index ( columnList = "archivedByReceiver, trashedByReceiver, trashedByReceiverTimestamp" ),
+    }
+)
 public class CommunicatorMessageRecipient implements ContextReference {
 
   public Long getId() {

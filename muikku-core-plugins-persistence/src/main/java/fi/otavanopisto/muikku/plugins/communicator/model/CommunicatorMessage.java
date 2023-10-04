@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.communicator.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -11,10 +13,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PersistenceException;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
@@ -23,6 +28,12 @@ import javax.validation.constraints.NotNull;
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
+@Table (
+    indexes = {
+        // Index for automated trash folder archive task
+        @Index ( columnList = "archivedBySender, trashedBySender, trashedBySenderTimestamp" ),
+    }
+)
 public class CommunicatorMessage implements ContextReference {
 
   public Long getId() {
@@ -170,4 +181,7 @@ public class CommunicatorMessage implements ContextReference {
   @CollectionTable (name="communicatormessage_tags", joinColumns=@JoinColumn(name="communicatorMessage_id"))
   @Column
   private Set<Long> tags = new HashSet<Long>();
+  
+  @OneToMany(mappedBy = "communicatorMessage")
+  private List<CommunicatorMessageRecipient> recipients = new ArrayList<>();
 }
