@@ -14626,6 +14626,7 @@ components:
         - evaluablesIncomplete
         - evaluablesPassed
         - evaluablesSubmitted
+        - evaluablesWithdrawn
         - evaluablesTotal
         - evaluablesUnanswered
         - exercisesAnswered
@@ -14647,6 +14648,7 @@ components:
         evaluablesAnsweredLastDate:
           description: The date of the last answered evaluable
           type: string
+          format: date-time
         evaluablesDonePercent:
           description: The percentage of answered evaluables
           type: integer
@@ -14656,6 +14658,7 @@ components:
         evaluablesFailedLastDate:
           description: The date of the last failed evaluable
           type: string
+          format: date-time
         evaluablesIncomplete:
           description: The number of incomplete evaluables
           type: integer
@@ -14668,12 +14671,21 @@ components:
         evaluablesPassedLastDate:
           description: The date of the last passed evaluable
           type: string
+          format: date-time
         evaluablesSubmitted:
           description: The number of submitted evaluables
           type: integer
         evaluablesSubmittedLastDate:
           description: The date of the last submitted evaluable
           type: string
+          format: date-time
+        evaluablesWithdrawn:
+          description: The number of withdrawn evaluables
+          type: integer
+        evaluablesWithdrawnLastDate:
+          description: The date of the last withdrawn evaluable
+          type: string
+          format: date-time
         evaluablesTotal:
           description: The number of evaluables
           type: integer
@@ -14686,6 +14698,7 @@ components:
         exercisesAnsweredLastDate:
           description: The date of the last answered exercise
           type: string
+          format: date-time
         exercisesDonePercent:
           description: The percentage of answered exercises
           type: integer
@@ -14701,9 +14714,11 @@ components:
         lastJournalEntry:
           description: The date of the last journal entry
           type: string
+          format: date-time
         lastVisit:
           description: The date of the last visit to the workspace
           type: string
+          format: date-time
         numVisits:
           description: The number of visits to the workspace
           type: integer

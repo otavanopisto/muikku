@@ -604,15 +604,10 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                   ? null
                   : workspace && workspace.activity,
                 () =>
-                  promisify(
-                    mApi()
-                      .evaluation.workspaces.students.activity.cacheClear()
-                      .read(
-                        data.workspaceId,
-                        state.status.userSchoolDataIdentifier
-                      ),
-                    "callback"
-                  )()
+                  evaluationApi.getWorkspaceStudentActivity({
+                    workspaceId: data.workspaceId,
+                    studentEntityId: state.status.userSchoolDataIdentifier,
+                  })
               )
             : null,
 
@@ -760,20 +755,14 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
       getState: () => StateType
     ) => {
       const state = getState();
+      const evaluationApi = MApi.getEvaluationApi();
 
       if (state.status.loggedIn) {
         try {
-          const activity = <WorkspaceActivity>(
-            await promisify(
-              mApi()
-                .evaluation.workspaces.students.activity.cacheClear()
-                .read(
-                  state.workspaces.currentWorkspace.id,
-                  state.status.userSchoolDataIdentifier
-                ),
-              "callback"
-            )()
-          );
+          const activity = await evaluationApi.getWorkspaceStudentActivity({
+            workspaceId: state.workspaces.currentWorkspace.id,
+            studentEntityId: state.status.userSchoolDataIdentifier,
+          });
 
           dispatch({
             type: "UPDATE_CURRENT_WORKSPACE_ACTIVITY",

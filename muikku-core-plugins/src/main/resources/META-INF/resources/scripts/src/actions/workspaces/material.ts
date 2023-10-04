@@ -1186,16 +1186,6 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
-        /* const contentNodes: Array<MaterialContentNodeWithIdAndLogic> =
-          <Array<MaterialContentNodeWithIdAndLogic>>(
-            await promisify(
-              mApi()
-                .workspace.workspaces.help.cacheClear()
-                .read(workspaceId, { includeHidden }),
-              "callback"
-            )()
-          ) || []; */
-
         const materialContentNodes = await workspaceApi.getWorkspaceHelp({
           workspaceId: workspaceId,
           includeHidden,

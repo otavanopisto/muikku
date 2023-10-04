@@ -477,8 +477,6 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       }
       dispatch(updateUnreadMessageThreadsCount());
 
-      /* mApi().communicator.sentitems.cacheClear(); */
-
       message.success && message.success();
 
       const state = getState();
@@ -850,8 +848,6 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
           });
         }
       }
-
-      mApi().communicator[getApiId(item)].cacheClear();
 
       if (!dontLockToolbar) {
         dispatch({
