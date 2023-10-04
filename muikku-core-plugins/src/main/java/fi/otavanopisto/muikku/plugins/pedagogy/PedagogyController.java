@@ -1,7 +1,10 @@
 package fi.otavanopisto.muikku.plugins.pedagogy;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +20,7 @@ import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormHistoryDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
+import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistoryType;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -43,9 +47,6 @@ public class PedagogyController {
   @Inject
   private LocaleController localeController;
   
-  @Inject
-  private UserController userController;
-
   @Inject
   private UserEmailEntityController userEmailEntityController;
 
@@ -75,7 +76,7 @@ public class PedagogyController {
     // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
     PedagogyForm form = pedagogyFormDAO.create(studentIdentifier, formData, state, visibility);
-    pedagogyFormHistoryDAO.create(form, "Asiakirja luotiin", creator);
+    pedagogyFormHistoryDAO.create(form, "Asiakirja luotiin", creator, PedagogyFormHistoryType.EDIT);
 
     return form;
   }
@@ -90,7 +91,7 @@ public class PedagogyController {
 
     String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
         : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
-    pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelmaa muokattiin" : details, modifierId, fieldStr);
+    pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelmaa muokattiin" : details, modifierId, fieldStr, PedagogyFormHistoryType.EDIT);
 
     return form;
   }
@@ -114,7 +115,7 @@ public class PedagogyController {
      default:
        break;
     }
-    pedagogyFormHistoryDAO.create(form, details, modifierId);
+    pedagogyFormHistoryDAO.create(form, details, modifierId, PedagogyFormHistoryType.EDIT);
     
     // Notification about student accepting the form
     
@@ -208,7 +209,7 @@ public class PedagogyController {
 
     // History entry
 
-    pedagogyFormHistoryDAO.create(form, "Suunnitelman jako-oikeuksia muutettiin", modifierId);
+    pedagogyFormHistoryDAO.create(form, "Suunnitelman jako-oikeuksia muutettiin", modifierId, PedagogyFormHistoryType.EDIT);
     
     // Notification if the visibility was changed after the form has been approved by the student
     
@@ -250,6 +251,26 @@ public class PedagogyController {
   public PedagogyForm findFormByStudentIdentifier(String studentIdentifier) {
     return pedagogyFormDAO.findByStudentIdentifier(studentIdentifier);
   }
+  
+  public void createViewHistory(PedagogyForm form, Long modifierId) {
+    List<PedagogyFormHistory> historyList = pedagogyFormHistoryDAO.listByFormAndCreatorAndType(form, modifierId, PedagogyFormHistoryType.VIEW);
+    
+    if (!historyList.isEmpty()) {
+      PedagogyFormHistory latestHistoryItem = historyList.get(0);
+      
+      Date lastCreated = latestHistoryItem.getCreated();
+      Instant now = new Date().toInstant();
+      
+      // Skip creation if latest history item (with same creator + form) is less than 3 hours old
+      if (!lastCreated.toInstant().isBefore(now.minus(3, ChronoUnit.HOURS))) {
+        return;
+      }
+    }
+    
+    pedagogyFormHistoryDAO.create(form, "Suunnitelmaa katsottiin", modifierId, PedagogyFormHistoryType.VIEW);
+
+  }
+
 
   public List<PedagogyFormHistory> listHistory(PedagogyForm form) {
     List<PedagogyFormHistory> history = pedagogyFormHistoryDAO.listByForm(form);
