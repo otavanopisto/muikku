@@ -51,11 +51,6 @@ export const usePedagogy = (
       setLoading(true);
 
       try {
-        /* const pedagogyData = (await promisify(
-          mApi().pedagogy.form.read(studentId),
-          "callback"
-        )()) as PedagogyForm; */
-
         const pedagogyData = await pedagogyApi.getPedagogyForm({
           studentIdentifier: studentId,
         });
@@ -170,11 +165,6 @@ export const usePedagogy = (
   const activateForm = async () => {
     setLoading(true);
     try {
-      /*  const pedagogyData = (await promisify(
-        mApi().pedagogy.form.create(studentId, { formData: "{}" }),
-        "callback"
-      )()) as PedagogyForm; */
-
       const pedagogyData = await pedagogyApi.createPedagogyForm({
         studentIdentifier: studentId,
         createPedagogyFormRequest: {
@@ -371,15 +361,6 @@ export const usePedagogy = (
       };
     }
 
-    /* return (await promisify(
-      mApi().pedagogy.form.formData.update(studentId, {
-        formData: JSON.stringify(dataToUpdate),
-        fields: fields || null,
-        details: details || null,
-      }),
-      "callback"
-    )()) as PedagogyForm; */
-
     return await pedagogyApi.updatePedagogyFormData({
       studentIdentifier: studentId,
       updatePedagogyFormDataRequest: {
@@ -393,17 +374,6 @@ export const usePedagogy = (
   /**
    * updatevisibilityToServer
    */
-  /* const updatevisibilityToServer = async () =>
-    (await promisify(
-      await mApi().pedagogy.form.visibility.update(studentId, {
-        visibility,
-      }),
-      "callback"
-    )()) as PedagogyForm; */
-
-  /**
-   * updatevisibilityToServer
-   */
   const updatevisibilityToServer = async () =>
     await pedagogyApi.updatePedagogyFormVisibility({
       studentIdentifier: studentId,
@@ -411,18 +381,6 @@ export const usePedagogy = (
         visibility,
       },
     });
-
-  /**
-   * updateStateToServer
-   * @param state state
-   */
-  /* const updateStateToServer = async (state: string) =>
-    (await promisify(
-      mApi().pedagogy.form.state.update(studentId, {
-        state,
-      }),
-      "callback"
-    )()) as PedagogyForm; */
 
   /**
    * updateStateToServer
