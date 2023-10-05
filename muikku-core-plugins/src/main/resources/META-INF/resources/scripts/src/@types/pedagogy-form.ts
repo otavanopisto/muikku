@@ -2,8 +2,6 @@ import { WorkspaceType } from "~/reducers/workspaces";
 
 const states = ["PENDING", "APPROVED", "ACTIVE", "INACTIVE"] as const;
 
-const users = ["TEACHERS", "GUARDIANS"] as const;
-
 const useRoles = [
   "STUDENT",
   "COURSE_TEACHER",
@@ -47,12 +45,6 @@ export type UserRole = typeof useRoles[number];
  * The state of the form
  */
 export type FormState = typeof states[number];
-
-/**
- * The viewing rights of the form
- * who have reading access to the published form data inside Muikku
- */
-export type Visibility = typeof users[number];
 
 export type SupportReason = typeof reasonsForSupport[number];
 
@@ -302,9 +294,4 @@ export interface PedagogyForm {
    * Update history of the form
    */
   history: HistoryEntry[];
-  /**
-   * permissions for reading and viewing the form inside Muikku
-   * @example ["TEACHER", "GUARDIANS"]
-   */
-  visibility: Visibility[];
 }

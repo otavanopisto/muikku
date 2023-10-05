@@ -19,7 +19,6 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
     form.setFormData(formData);
     form.setState(state);
     form.setStudentIdentifier(studentIdentifier);
-    form.setVisibility(visibility);
     return persist(form);
   }
   
@@ -30,11 +29,6 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
   
   public PedagogyForm updateState(PedagogyForm form, PedagogyFormState state) {
     form.setState(state);
-    return persist(form);
-  }
-  
-  public PedagogyForm updateVisibility(PedagogyForm form, String visibility) {
-    form.setVisibility(visibility);
     return persist(form);
   }
   
