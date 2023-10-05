@@ -12615,12 +12615,6 @@ components:
         - ACTIVE
         - INACTIVE
 
-    PedagogyFormVisibility:
-      type: string
-      enum:
-        - TEACHERS
-        - GUARDIANS
-
     PedagogyHistoryEntryType:
       type: string
       enum:
@@ -12754,12 +12748,6 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PedagogyHistoryEntry"
-        visibility:
-          description: Permissions for reading and viewing the form inside Muikku
-          example: ["TEACHER", "GUARDIANS"]
-          type: array
-          items:
-            $ref: "#/components/schemas/PedagogyFormVisibility"
         formData:
           description: The data of the form
           example: "JSON object"
