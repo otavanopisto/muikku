@@ -21,6 +21,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -34,14 +36,19 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentReq
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposController;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -95,6 +102,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   private UserEntityController userEntityController;
   
   @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
   private EvaluationController evaluationController;
   
   @GET
@@ -118,8 +128,20 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       if (order != null) {
         price.setPrice(0d);
       }
-      
     }
+    
+    // Price is reset to zero if the user has an active supplementation request on this workspace
+    
+    if (price != null && price.getPrice() > 0) {
+      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+          sessionController.getLoggedUserEntity().getId(),
+          workspaceEntityId,
+          Boolean.FALSE);
+      if (supplementationRequest != null) {
+        price.setPrice(0d);
+      }
+    }
+    
     return Response.ok(price).build();
   }
 
@@ -189,6 +211,19 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Unable to determine price").build();
     }
     
+    // Figure out the product
+    
+    User user = userSchoolDataController.findUser(sessionController.getLoggedUser());
+    if (user == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unable to determine user").build();
+    }
+    CeeposProduct product = StringUtils.isBlank(user.getSchool())
+        ? ceeposController.findProductByType(CeeposProductType.ASSESSMENTREQUEST_FUNDED)
+        : ceeposController.findProductByType(CeeposProductType.ASSESSMENTREQUEST);
+    if (product == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unable to determine product").build();
+    }
+    
     // Create the order, or reuse an existing one as long as it is still CREATED or ONGOING
     
     order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.CREATED || o.getState() == CeeposOrderState.ONGOING).findFirst().orElse(null);
@@ -197,6 +232,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     }
     else { 
       order = ceeposController.createAssessmentRequestOrder(
+          product,
           sessionController.getLoggedUserEntity(),
           workspaceEntity,
           payload.getRequestText(),
