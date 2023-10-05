@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType, ActivityLogType } from "~/reducers/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
@@ -16,6 +16,7 @@ import {
   UserStudentEmail,
   UserStudentPhoneNumber,
   HopsUppersecondary,
+  ActivityLogEntry,
 } from "~/generated/client";
 
 /**
@@ -95,7 +96,7 @@ export interface GuiderStudentUserProfileType {
   contactLogs: ContactLog;
   currentWorkspaces: WorkspaceType[];
   pastWorkspaces: WorkspaceType[];
-  activityLogs: ActivityLogType[];
+  activityLogs: ActivityLogEntry[];
   purchases: PurchaseType[];
   hopsPhase?: string;
   hopsAvailable: boolean;

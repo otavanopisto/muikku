@@ -78,6 +78,96 @@ paths:
   #    "500":
   #      description: Internal server error
 
+  #ACTIVITYLOGS
+  /rest/activitylogs/user/{userId}:
+    get:
+      operationId: getUserActivityLogs
+      summary: Get activity logs
+      tags:
+        - Activitylogs
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: From
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: To
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Activity logs successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityLogHash"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Activity logs not found
+        "500":
+          description: Internal server error
+
+  /rest/activitylogs/user/{userId}/workspace:
+    get:
+      operationId: getWorkspaceActivityLogs
+      summary: Get activity logs
+      tags:
+        - Activitylogs
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
+        - name: from
+          in: query
+          description: From
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: To
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityLogEntry"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Activity logs not found
+        "500":
+          description: Internal server error
+
   #ANNNOUNCER
   /rest/announcer/announcements:
     get:
@@ -10358,6 +10448,59 @@ components:
     #description: "for adding nullability to a ref"
     #enum:
     #  - null
+
+    ActivityLogType:
+      type: string
+      enum:
+        - EVALUATION_REQUESTED
+        - EVALUATION_GOTINCOMPLETED
+        - EVALUATION_GOTFAILED
+        - EVALUATION_GOTPASSED
+        - SESSION_LOGGEDIN
+        - WORKSPACE_VISIT
+        - MATERIAL_EXERCISEDONE
+        - MATERIAL_ASSIGNMENTDONE
+        - FORUM_NEWMESSAGE
+        - FORUM_NEWTHREAD
+        - NOTIFICATION_ASSESMENTREQUEST
+        - NOTIFICATION_NOPASSEDCOURSES
+        - NOTIFICATION_SUPPLEMENTATIONREQUEST
+        - NOTIFICATION_STUDYTIME
+        - NOTIFICATION_NEVERLOGGEDIN
+        - NOTIFICATION_NOLOGGEDINFORTWOMONTHS
+        - EVALUATION_REQUEST_CANCELLED
+
+    ActivityLogHash:
+      type: object
+      description: Hashmap containing activity log entries list for each key value and general list for all other entries
+      required:
+        - general
+      properties:
+        general:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityLogEntry"
+      additionalProperties:
+        type: array
+        items:
+          $ref: "#/components/schemas/ActivityLogEntry"
+
+    ActivityLogEntry:
+      type: object
+      description: ActivityLogEntry object
+      required:
+        - type
+        - timestamp
+        - contextId
+      properties:
+        type:
+          $ref: "#/components/schemas/ActivityLogType"
+        timestamp:
+          type: string
+          format: date-time
+        contextId:
+          type: integer
+          nullable: true
 
     AlternativeStudyOption:
       type: object
