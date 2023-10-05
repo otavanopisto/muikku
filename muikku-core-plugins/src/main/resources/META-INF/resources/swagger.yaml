@@ -5700,34 +5700,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{studentIdentifier}/visibility:
-    put:
-      operationId: updatePedagogyFormVisibility
-      summary: Update pedagogy form visibility
-      description: Update pedagogy form visibility
-      tags:
-        - Pedagogy
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormVisibilityUpdateRequestBody"
-      responses:
-        "200":
-          description: Pedagogy form visibility updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PedagogyForm"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   #HOPSUPPERSECONDARY
   /rest/records/hops:
     get:
@@ -9688,21 +9660,6 @@ components:
             properties:
               state:
                 $ref: "#/components/schemas/PedagogyFormState"
-
-    PedagogyFormVisibilityUpdateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: PedagogyFormVisibilityUpdateRequestBody object
-            required:
-              - visibility
-            properties:
-              visibility:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PedagogyFormVisibility"
 
     HopsUppersecondaryUpdateRequestBody:
       required: true
