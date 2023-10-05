@@ -1,13 +1,12 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
-import { AnnouncementsType, AnnouncementType } from "~/reducers/announcements";
+import { AnnouncementsState } from "~/reducers/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
 import {
@@ -22,13 +21,15 @@ import {
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
 } from "~/actions/announcements";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
 
 /**
  * AnnouncerToolbarProps
  */
-interface AnnouncerToolbarProps {
-  i18n: i18nType;
-  announcements: AnnouncementsType;
+interface AnnouncerToolbarProps extends WithTranslation {
+  announcements: AnnouncementsState;
   updateAnnouncement: UpdateAnnouncementTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
@@ -91,7 +92,7 @@ class AnnouncerToolbar extends React.Component<
    * go
    * @param announcement announcement
    */
-  go(announcement: AnnouncementType) {
+  go(announcement: Announcement) {
     if (!announcement) {
       return;
     }
@@ -141,10 +142,10 @@ class AnnouncerToolbar extends React.Component<
       //this is why we had to have notOverrideCurrent in the reducers, it's such a mess
       const currentIndex: number =
         this.props.announcements.announcements.findIndex(
-          (a: AnnouncementType) => a.id === this.props.announcements.current.id
+          (a: Announcement) => a.id === this.props.announcements.current.id
         );
-      let next: AnnouncementType = null;
-      let prev: AnnouncementType = null;
+      let next: Announcement = null;
+      let prev: Announcement = null;
 
       if (currentIndex !== -1) {
         next = this.props.announcements.announcements[currentIndex + 1];
@@ -163,9 +164,10 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
-                )}
+                {this.props.i18n.t("labels.category", {
+                  context: this.props.announcements.location,
+                  ns: "messaging",
+                })}
               </span>
             </div>
 
@@ -214,9 +216,10 @@ class AnnouncerToolbar extends React.Component<
             <div className="application-panel__mobile-current-folder">
               <span className="glyph application-panel__mobile-current-folder-icon icon-folder"></span>
               <span className="application-panel__mobile-current-folder-title">
-                {this.props.i18n.text.get(
-                  "plugin.announcer.cat." + this.props.announcements.location
-                )}
+                {this.props.i18n.t("labels.category", {
+                  context: this.props.announcements.location,
+                  ns: "messaging",
+                })}
               </span>
             </div>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
@@ -253,7 +256,6 @@ class AnnouncerToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     announcements: state.announcements,
   };
 }
@@ -263,11 +265,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { updateAnnouncement, removeFromAnnouncementsSelected },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnnouncerToolbar);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(AnnouncerToolbar)
+);

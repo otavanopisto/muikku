@@ -1,20 +1,24 @@
 import { ActionType } from "../../../actions/index";
-import { MaterialCompositeRepliesType } from "../../workspaces/index";
 import {
-  EvaluationWorkspace,
+  MaterialCompositeRepliesType,
+  WorkspaceType,
+} from "../../workspaces/index";
+import {
   EvaluationStateType,
-  EvaluationGradeSystem,
-  AssessmentRequest,
   EvaluationSort,
   EvaluationAssigmentData,
-  EvaluationEvent,
-  EvaluationStudyDiaryEvent,
   EvaluationBasePriceById,
   EvaluationFilters,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
-import { EvaluationJournalFeedback } from "../../../@types/evaluation";
+import {
+  EvaluationAssessmentRequest,
+  EvaluationEvent,
+  EvaluationGradeScale,
+  EvaluationJournalFeedback,
+  WorkspaceJournal,
+} from "~/generated/client";
 
 /**
  * EvaluationStateAndData
@@ -31,17 +35,17 @@ export interface EvaluationState {
   status: EvaluationStateType;
   importantRequests: number[];
   unimportantRequests: number[];
-  evaluationGradeSystem: EvaluationGradeSystem[];
-  evaluationRequests: EvaluationStateAndData<AssessmentRequest[]>;
-  evaluationWorkspaces: EvaluationWorkspace[];
+  evaluationGradeSystem: EvaluationGradeScale[];
+  evaluationRequests: EvaluationStateAndData<EvaluationAssessmentRequest[]>;
+  evaluationWorkspaces: WorkspaceType[];
   selectedWorkspaceId?: number;
   evaluationSearch: string;
   evaluationSort?: EvaluationSort;
   evaluationFilters: EvaluationFilters;
-  evaluationSelectedAssessmentId?: AssessmentRequest;
+  evaluationSelectedAssessmentId?: EvaluationAssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationJournalFeedback?: EvaluationStateAndData<EvaluationJournalFeedback>;
-  evaluationDiaryEntries?: EvaluationStateAndData<EvaluationStudyDiaryEvent[]>;
+  evaluationDiaryEntries?: EvaluationStateAndData<WorkspaceJournal[]>;
   evaluationJournalComments: {
     comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];

@@ -10,20 +10,18 @@ import {
   updateCredentials,
   UpdateCredentialsTriggerType,
 } from "~/actions/base/credentials";
-import { CredentialsType } from "~/reducers/base/credentials";
-import { i18nType } from "~/reducers/base/i18n";
-import { StateType } from "~/reducers";
+import { CredentialsState } from "~/reducers/base/credentials";
 import { bindActionCreators } from "redux";
 import LoginButton from "../../base/login-button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ReturnCredentialsProps
  */
-interface ReturnCredentialsProps {
+interface ReturnCredentialsProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   updateCredentials: UpdateCredentialsTriggerType;
-  credentials: CredentialsType;
-  i18n: i18nType;
+  credentials: CredentialsState;
 }
 
 /**
@@ -62,7 +60,7 @@ class ReturnCredentials extends React.Component<
    */
   componentWillReceiveProps() {
     this.setState({
-      username: this.props.credentials.username,
+      username: this.props.credentials.credentials.username,
     });
   }
 
@@ -76,13 +74,11 @@ class ReturnCredentials extends React.Component<
     const newUserCredentials = {
       username: this.state.username,
       password: this.state.newPassword,
-      secret: this.props.credentials.secret,
+      secret: this.props.credentials.credentials.secret,
     };
     if (userName == "") {
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.empty.username"
-        ),
+        this.props.i18n.t("validation.username"),
         "error"
       );
       return;
@@ -90,9 +86,7 @@ class ReturnCredentials extends React.Component<
 
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.passwordsDontMatch"
-        ),
+        this.props.i18n.t("validation.password", { context: "match" }),
         "error"
       );
       return;
@@ -100,9 +94,7 @@ class ReturnCredentials extends React.Component<
 
     if (newPassword1 == "" || newPassword2 == "") {
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.forgotpassword.changeCredentials.messages.error.empty.passwords"
-        ),
+        this.props.i18n.t("validation.password"),
         "error"
       );
       return;
@@ -136,9 +128,7 @@ class ReturnCredentials extends React.Component<
           <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsUsername">
-                {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.name"
-                )}
+                {this.props.i18n.t("labels.userName")}
               </label>
               <input
                 id="resetCredentialsUsername"
@@ -152,9 +142,7 @@ class ReturnCredentials extends React.Component<
           <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword1">
-                {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.password1"
-                )}
+                {this.props.i18n.t("labels.password1")}
               </label>
               <input
                 id="resetCredentialsPassword1"
@@ -168,9 +156,7 @@ class ReturnCredentials extends React.Component<
           <div className="form__row">
             <div className="form-element form-element--forgot-password">
               <label htmlFor="resetCredentialsPassword2">
-                {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.input.password2"
-                )}
+                {this.props.i18n.t("labels.password2")}
               </label>
               <input
                 id="resetCredentialsPassword2"
@@ -187,9 +173,7 @@ class ReturnCredentials extends React.Component<
                 onClick={this.handleNewCredentials.bind(this)}
                 buttonModifiers="reset-password"
               >
-                {this.props.i18n.text.get(
-                  "plugin.forgotpassword.changeCredentials.button"
-                )}
+                {this.props.i18n.t("actions.save")}
               </Button>
             </div>
           </div>
@@ -197,9 +181,7 @@ class ReturnCredentials extends React.Component<
       ) : (
         <div className="credentials__changed">
           <div className="credentials__changed-message">
-            {this.props.i18n.text.get(
-              "plugin.forgotpassword.changeCredentials.messages.success.loginFromCredentials"
-            )}
+            {this.props.i18n.t("content.loginFromCredentials")}
           </div>
           <div className="credentials__changed-action">
             <LoginButton />
@@ -209,16 +191,6 @@ class ReturnCredentials extends React.Component<
 
     return <>{credentialsContent}</>;
   }
-}
-
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
 }
 
 /**
@@ -232,4 +204,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReturnCredentials);
+export default withTranslation()(
+  connect(null, mapDispatchToProps)(ReturnCredentials)
+);

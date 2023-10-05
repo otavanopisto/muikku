@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,10 +27,10 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -111,17 +110,9 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults
     ) {
     
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-    EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     
-    EnumSet<EnvironmentRoleArchetype> staffRoles = EnumSet.of(
-        EnvironmentRoleArchetype.ADMINISTRATOR, 
-        EnvironmentRoleArchetype.MANAGER, 
-        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
-        EnvironmentRoleArchetype.STUDY_GUIDER,
-        EnvironmentRoleArchetype.TEACHER);
-    
-    if (loggedUserRole == null) {
+    if (userSchoolDataIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
@@ -129,14 +120,14 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
     Set<Long> workspaceFilters = null;
     Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
     
-    if (EnvironmentRoleArchetype.STUDENT.equals(loggedUserRole)) {
+    if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       // Stuff students can seach for
       roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.MANAGER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.TEACHER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
-    } else if (staffRoles.contains(loggedUserRole)) {
+    } else if (userSchoolDataIdentifier.isStaff()) {
       // Default for other roles
       
       roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);

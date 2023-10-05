@@ -1,6 +1,6 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
+import { useTranslation } from "react-i18next";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import Hops from "~/components/base/hops_readable";
@@ -9,8 +9,7 @@ import Hops from "~/components/base/hops_readable";
  * Study plan props
  */
 interface StudyPlanProps {
-  i18n: i18nType;
-  guider: GuiderType;
+  guider: GuiderState;
 }
 
 /**
@@ -19,7 +18,8 @@ interface StudyPlanProps {
  * @returns JSX.Element
  */
 const StudyPlan: React.FC<StudyPlanProps> = (props) => {
-  const { i18n, guider } = props;
+  const { guider } = props;
+  const { t } = useTranslation("guider");
   const studentHops =
     guider.currentStudent.hops && guider.currentStudent.hops.optedIn ? (
       <Hops data={guider.currentStudent.hops} />
@@ -31,9 +31,7 @@ const StudyPlan: React.FC<StudyPlanProps> = (props) => {
 
   return (
     <div className="application-sub-panel">
-      <h3 className="application-sub-panel__header">
-        {i18n.text.get("plugin.guider.user.details.hops")}
-      </h3>
+      <h3 className="application-sub-panel__header">{t("labels.hops")}</h3>
       {studentHops}
     </div>
   );
@@ -45,7 +43,6 @@ const StudyPlan: React.FC<StudyPlanProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guider: state.guider,
   };
 }

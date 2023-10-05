@@ -10,18 +10,17 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 /**
  * Creates textfield element specifically for matriculation examination
- * @param root0.label label
- * @param root0.labelAria labelAria
+ * @param props props
  */
-export const TextField: React.FC<InputProps> = ({
-  label,
-  labelAria,
-  ...rest
-}) => (
-  <>
-    <label className="matriculation__label" aria-label={labelAria}>
-      {label}
-    </label>
-    <input {...rest} />
-  </>
-);
+export const TextField: React.FC<InputProps> = (props) => {
+  const { label, labelAria, ...rest } = props;
+
+  return (
+    <>
+      <label className="matriculation__label" aria-label={labelAria}>
+        {label}
+      </label>
+      <input {...rest} />
+    </>
+  );
+};

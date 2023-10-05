@@ -2,22 +2,19 @@
 import { loadCurrentWorkspaceJournalsHelper } from "./helpers";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import { displayNotification } from "../base/notifications";
 import {
   JournalsState,
-  WorkspaceJournalFeedback,
   WorkspaceJournalFilters,
-  WorkspaceJournalType,
 } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react-redux";
 import {
-  JournalComment,
-  JournalCommentCreate,
-  JournalCommentDelete,
-  JournalCommentUpdate,
-} from "~/@types/journal";
+  CreateWorkspaceJournalCommentRequest,
+  UpdateWorkspaceJournalCommentRequest,
+  WorkspaceJournal,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
+import i18n from "~/locales/i18n";
 
 /**
  * JournalActionUpdate
@@ -134,7 +131,7 @@ export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
  */
 export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
-    journal: WorkspaceJournalType;
+    journal: WorkspaceJournal;
     title: string;
     content: string;
     success?: () => void;
@@ -147,7 +144,7 @@ export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
  */
 export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
-    journal: WorkspaceJournalType;
+    journal: WorkspaceJournal;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -169,7 +166,7 @@ export interface ChangeWorkspaceJournalFiltersTriggerType {
  */
 export interface CreateWorkspaceJournalCommentTriggerType {
   (data: {
-    newCommentPayload: JournalCommentCreate;
+    newCommentPayload: CreateWorkspaceJournalCommentRequest;
     journalEntryId: number;
     workspaceEntityId: number;
     success?: () => void;
@@ -182,7 +179,7 @@ export interface CreateWorkspaceJournalCommentTriggerType {
  */
 export interface UpdateWorkspaceJournalCommentTriggerType {
   (data: {
-    updatedCommentPayload: JournalCommentUpdate;
+    updatedCommentPayload: UpdateWorkspaceJournalCommentRequest;
     journalEntryId: number;
     workspaceEntityId: number;
     success?: () => void;
@@ -195,7 +192,7 @@ export interface UpdateWorkspaceJournalCommentTriggerType {
  */
 export interface DeleteWorkspaceJournalCommentTriggerType {
   (data: {
-    deleteCommentPayload: JournalCommentDelete;
+    commentId: number;
     journalEntryId: number;
     workspaceEntityId: number;
     success?: () => void;
@@ -207,7 +204,7 @@ export interface DeleteWorkspaceJournalCommentTriggerType {
  * SetCurrentJournal
  */
 export interface SetCurrentJournalTriggerType {
-  (data: { currentJournal: WorkspaceJournalType }): AnyActionType;
+  (data: { currentJournal: WorkspaceJournal }): AnyActionType;
 }
 
 // Journal feedback trigger types
@@ -266,14 +263,14 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const journalCommentList = (await promisify(
-          mApi().workspace.workspaces.journal.comments.read(
-            data.workspaceId,
-            data.journalEntryId
-          ),
-          "callback"
-        )()) as JournalComment[];
+        const journalCommentList =
+          await workspaceApi.getWorkspaceJournalComments({
+            workspaceId: data.workspaceId,
+            journalEntryId: data.journalEntryId,
+          });
 
         const currentJournalsState = getState().journals;
 
@@ -301,14 +298,17 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.load.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "comments",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -326,22 +326,20 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      try {
-        const state: StateType = getState();
-        const newJournal: WorkspaceJournalType = <WorkspaceJournalType>(
-          await promisify(
-            mApi().workspace.workspaces.journal.create(
-              state.workspaces.currentWorkspace.id,
-              {
-                content: data.content,
-                title: data.title,
-              }
-            ),
-            "callback"
-          )()
-        );
+      const workspaceApi = MApi.getWorkspaceApi();
 
-        const currentJournalsState = getState().journals;
+      try {
+        const state = getState();
+
+        const newJournal = await workspaceApi.createWorkspaceJournal({
+          workspaceId: state.workspaces.currentWorkspace.id,
+          createWorkspaceJournalRequest: {
+            title: data.title,
+            content: data.content,
+          },
+        });
+
+        const currentJournalsState = state.journals;
 
         dispatch({
           type: "JOURNALS_CREATE",
@@ -358,14 +356,16 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.create.error"
-            ),
+            i18n.t("notifications.createError", {
+              ns: "journal",
+              context: "entry",
+            }),
             "error"
           )
         );
@@ -384,23 +384,23 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      try {
-        const state: StateType = getState();
-        await promisify(
-          mApi().workspace.workspaces.journal.update(
-            state.workspaces.currentWorkspace.id,
-            data.journal.id,
-            {
-              id: data.journal.id,
-              workspaceEntityId: state.workspaces.currentWorkspace.id,
-              content: data.content,
-              title: data.title,
-            }
-          ),
-          "callback"
-        )();
+      const workspaceApi = MApi.getWorkspaceApi();
 
-        const currentJournalsState = getState().journals;
+      try {
+        const state = getState();
+
+        await workspaceApi.updateWorkspaceJournal({
+          workspaceId: state.workspaces.currentWorkspace.id,
+          journalEntryId: data.journal.id,
+          updateWorkspaceJournalRequest: {
+            id: data.journal.id,
+            workspaceEntityId: state.workspaces.currentWorkspace.id,
+            content: data.content,
+            title: data.title,
+          },
+        });
+
+        const currentJournalsState = state.journals;
 
         dispatch({
           type: "JOURNALS_UPDATE",
@@ -422,14 +422,16 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.update.error"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "journal",
+              context: "entry",
+            }),
             "error"
           )
         );
@@ -448,17 +450,17 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      try {
-        const state: StateType = getState();
-        await promisify(
-          mApi().workspace.workspaces.journal.del(
-            state.workspaces.currentWorkspace.id,
-            data.journal.id
-          ),
-          "callback"
-        )();
+      const workspaceApi = MApi.getWorkspaceApi();
 
-        const currentJournalsState = getState().journals;
+      try {
+        const state = getState();
+
+        await workspaceApi.deleteWorkspaceJournal({
+          workspaceId: state.workspaces.currentWorkspace.id,
+          journalEntryId: data.journal.id,
+        });
+
+        const currentJournalsState = state.journals;
 
         dispatch({
           type: "JOURNALS_DELETE",
@@ -477,14 +479,17 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.notification.delete.error"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "journal",
+              context: "entry",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -503,6 +508,8 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const currentJournalsState = getState().journals;
 
       dispatch({
@@ -524,13 +531,11 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
               data.currentJournal.id
             )
           ) {
-            const journalCommentList = (await promisify(
-              mApi().workspace.workspaces.journal.comments.read(
-                data.currentJournal.workspaceEntityId,
-                data.currentJournal.id
-              ),
-              "callback"
-            )()) as JournalComment[];
+            const journalCommentList =
+              await workspaceApi.getWorkspaceJournalComments({
+                workspaceId: data.currentJournal.workspaceEntityId,
+                journalEntryId: data.currentJournal.id,
+              });
 
             const currentJournalsStateAfter = getState().journals;
 
@@ -573,14 +578,17 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
           }
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.load.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "comments",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -636,20 +644,21 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
         success,
       } = data;
 
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const currentJournalsState = getState().journals;
 
       try {
         const [updated] = await Promise.all([
           (async () => {
             // New comment data
-            const newComment = (await promisify(
-              mApi().workspace.workspaces.journal.comments.create(
-                workspaceEntityId,
+            const newComment = await workspaceApi.createWorkspaceJournalComment(
+              {
+                workspaceId: workspaceEntityId,
                 journalEntryId,
-                newCommentPayload
-              ),
-              "callback"
-            )()) as JournalComment;
+                createWorkspaceJournalCommentRequest: newCommentPayload,
+              }
+            );
 
             // Find current journal index
             const index = currentJournalsState.journals.findIndex(
@@ -688,14 +697,17 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.create.error"
-            ),
+            i18n.t("notifications.createError", {
+              context: "comment",
+              ns: "journal",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -722,21 +734,21 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
         success,
       } = data;
 
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const currentJournalsState = getState().journals;
 
       try {
         const [updated] = await Promise.all([
           (async () => {
             // Updated comment data
-            const updatedComment = (await promisify(
-              mApi().workspace.workspaces.journal.comments.update(
-                workspaceEntityId,
+            const updatedComment =
+              await workspaceApi.updateWorkspaceJournalComment({
+                workspaceId: workspaceEntityId,
                 journalEntryId,
-                updatedCommentPayload.id,
-                updatedCommentPayload
-              ),
-              "callback"
-            )()) as JournalComment;
+                journalCommentId: updatedCommentPayload.id,
+                updateWorkspaceJournalCommentRequest: updatedCommentPayload,
+              });
 
             // Find current journal index
             const index = currentJournalsState.journals.findIndex(
@@ -783,14 +795,16 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.update.error"
-            ),
+            i18n.t("notifications.updateError", {
+              context: "comment",
+              ns: "journal",
+            }),
             "error"
           )
         );
@@ -809,27 +823,21 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const {
-        deleteCommentPayload,
-        journalEntryId,
-        workspaceEntityId,
-        fail,
-        success,
-      } = data;
+      const { commentId, journalEntryId, workspaceEntityId, fail, success } =
+        data;
+
+      const workspaceApi = MApi.getWorkspaceApi();
 
       const currentJournalsState = getState().journals;
 
       try {
         const [updated] = await Promise.all([
           (async () => {
-            await promisify(
-              mApi().workspace.workspaces.journal.comments.del(
-                workspaceEntityId,
-                journalEntryId,
-                deleteCommentPayload.id
-              ),
-              "callback"
-            )();
+            await workspaceApi.deleteWorkspaceJournalComment({
+              workspaceId: workspaceEntityId,
+              journalEntryId,
+              journalCommentId: commentId,
+            });
 
             // Find current journal index
             const index = currentJournalsState.journals.findIndex(
@@ -840,7 +848,7 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
 
             // Find updated comment index from list
             const commentIndex = updatedCurrentJournal.comments.findIndex(
-              (c) => c.id === deleteCommentPayload.id
+              (c) => c.id === commentId
             );
 
             // Updated that list with new data
@@ -873,14 +881,17 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.comments.notification.delete.error"
-            ),
+            i18n.t("notifications.updateError", {
+              context: "comment",
+              ns: "journal",
+              error: err.message,
+            }),
             "error"
           )
         );
@@ -902,17 +913,16 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
       const { userEntityId, workspaceEntityId, fail, success } = data;
 
       const currentJournalsState = getState().journals;
+      const evaluationApi = MApi.getEvaluationApi();
 
       try {
         const [updated] = await Promise.all([
           (async () => {
-            const journalFeedback = (await promisify(
-              mApi().evaluation.workspaces.students.journalfeedback.read(
-                workspaceEntityId,
-                userEntityId
-              ),
-              "callback"
-            )()) as WorkspaceJournalFeedback;
+            const journalFeedback =
+              await evaluationApi.getWorkspaceStudentJournalFeedback({
+                workspaceId: workspaceEntityId,
+                studentEntityId: userEntityId,
+              });
 
             return {
               journalFeedback,
@@ -933,14 +943,16 @@ const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.journal.feedback.notification.delete.error"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "journal",
+              context: "feedback",
+              error: err,
+            }),
             "error"
           )
         );

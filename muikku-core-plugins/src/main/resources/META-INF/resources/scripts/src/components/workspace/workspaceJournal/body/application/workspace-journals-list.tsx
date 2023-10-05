@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/journal.scss";
@@ -19,12 +18,12 @@ import {
   loadMoreCurrentWorkspaceJournalsFromServer,
 } from "~/actions/workspaces/journals";
 import { JournalsState } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalsProps
  */
-interface WorkspaceJournalsListProps {
-  i18n: i18nType;
+interface WorkspaceJournalsListProps extends WithTranslation {
   workspaceJournalsState: WorkspacesStateType;
   workspaceJournalsHasMore: boolean;
   loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType;
@@ -87,6 +86,10 @@ class WorkspaceJournalsList extends BodyScrollLoader<
    * render
    */
   render() {
+    const { t } = this.props;
+
+    t("content.empty", { ns: "journal", context: "you" });
+
     if (
       !this.props.workspace ||
       !this.props.journalsState ||
@@ -107,10 +110,8 @@ class WorkspaceJournalsList extends BodyScrollLoader<
         <div className="empty">
           <span>
             {this.props.status.isStudent
-              ? this.props.i18n.text.get("plugin.workspace.journal.noEntries")
-              : this.props.i18n.text.get(
-                  "plugin.workspace.journal.studentHasNoEntries"
-                )}
+              ? t("content.empty", { ns: "journal", context: "you" })
+              : t("content.empty", { ns: "journal", context: "student" })}
           </span>
         </div>
       );
@@ -142,7 +143,6 @@ class WorkspaceJournalsList extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaceJournalsState: state.journals && state.journals.state,
     workspaceJournalsHasMore: state.journals && state.journals.hasMore,
     workspace: state.workspaces.currentWorkspace,
@@ -162,7 +162,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalsList);
+export default withTranslation(["journal", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalsList)
+);

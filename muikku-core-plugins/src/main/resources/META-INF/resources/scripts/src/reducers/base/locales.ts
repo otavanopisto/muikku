@@ -1,5 +1,6 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
+import { resources } from "~/locales/i18n";
 
 /**
  * LocaleState
@@ -8,14 +9,7 @@ export interface LocaleState {
   current?: string;
 }
 
-export type LocaleType = "en" | "fi";
-
-/**
- * LocaleReadResponse
- */
-export interface LocaleReadResponse {
-  lang: string;
-}
+export type LocaleType = keyof typeof resources;
 
 /**
  * initialLocalesState

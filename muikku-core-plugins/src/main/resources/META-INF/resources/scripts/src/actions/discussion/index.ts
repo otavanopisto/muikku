@@ -1,23 +1,25 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
-import promisify from "~/util/promisify";
 import notificationActions from "~/actions/base/notifications";
-import mApi, { MApiError } from "~/lib/mApi";
 import {
-  DiscussionAreaListType,
-  DiscussionAreaType,
-  DiscussionPatchType,
+  DiscussionStatePatch,
   DiscussionStateType,
-  DiscussionThreadType,
-  DiscussionType,
-  DiscussionThreadListType,
-  DiscussionThreadReplyListType,
-  DiscussionThreadReplyType,
-  DiscussionAreaUpdateType,
-  DiscussionSubscribedThread,
-  DiscussionSubscribedArea,
 } from "~/reducers/discussion";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
+import {
+  CreateDiscussionAreaRequest,
+  CreateDiscussionThreadReplyRequest,
+  DiscussionArea,
+  DiscussionSubscribedArea,
+  DiscussionSubscribedThread,
+  DiscussionThread,
+  DiscussionThreadLock,
+  DiscussionThreadReply,
+  UpdateDiscussionAreaRequest,
+  UpdateDiscussionThreadReplyRequest,
+} from "~/generated/client";
+import i18n from "~/locales/i18n";
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -28,7 +30,7 @@ export type UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS = SpecificActionType<
 
 export type UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES = SpecificActionType<
   "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
-  DiscussionPatchType
+  DiscussionStatePatch
 >;
 export type UPDATE_DISCUSSION_THREADS_STATE = SpecificActionType<
   "UPDATE_DISCUSSION_THREADS_STATE",
@@ -40,11 +42,11 @@ export type UPDATE_DISCUSSION_CURRENT_THREAD_STATE = SpecificActionType<
 >;
 export type PUSH_DISCUSSION_THREAD_FIRST = SpecificActionType<
   "PUSH_DISCUSSION_THREAD_FIRST",
-  DiscussionThreadType
+  DiscussionThread
 >;
 export type SET_CURRENT_DISCUSSION_THREAD = SpecificActionType<
   "SET_CURRENT_DISCUSSION_THREAD",
-  DiscussionThreadType
+  DiscussionThread
 >;
 export type SET_TOTAL_DISCUSSION_PAGES = SpecificActionType<
   "SET_TOTAL_DISCUSSION_PAGES",
@@ -56,25 +58,25 @@ export type SET_TOTAL_DISCUSSION_THREAD_PAGES = SpecificActionType<
 >;
 export type UPDATE_DISCUSSION_THREAD = SpecificActionType<
   "UPDATE_DISCUSSION_THREAD",
-  DiscussionThreadType
+  DiscussionThread
 >;
 export type UPDATE_DISCUSSION_THREAD_REPLY = SpecificActionType<
   "UPDATE_DISCUSSION_THREAD_REPLY",
-  DiscussionThreadReplyType
+  DiscussionThreadReply
 >;
 export type UPDATE_DISCUSSION_AREAS = SpecificActionType<
   "UPDATE_DISCUSSION_AREAS",
-  DiscussionAreaListType
+  DiscussionArea[]
 >;
 export type PUSH_DISCUSSION_AREA_LAST = SpecificActionType<
   "PUSH_DISCUSSION_AREA_LAST",
-  DiscussionAreaType
+  DiscussionArea
 >;
 export type UPDATE_DISCUSSION_AREA = SpecificActionType<
   "UPDATE_DISCUSSION_AREA",
   {
     areaId: number;
-    update: DiscussionAreaUpdateType;
+    update: UpdateDiscussionAreaRequest;
   }
 >;
 export type DELETE_DISCUSSION_AREA = SpecificActionType<
@@ -183,7 +185,7 @@ export interface loadDiscussionThreadsFromServerTriggerType {
 export interface CreateDiscussionThreadTriggerType {
   (data: {
     forumAreaId: number;
-    locked: boolean;
+    lock: DiscussionThreadLock | null;
     message: string;
     sticky: boolean;
     title: string;
@@ -198,8 +200,8 @@ export interface CreateDiscussionThreadTriggerType {
  */
 export interface ModifyDiscussionThreadTriggerType {
   (data: {
-    thread: DiscussionThreadType;
-    locked: boolean;
+    thread: DiscussionThread;
+    lock: DiscussionThreadLock | null;
     message: string;
     sticky: boolean;
     title: string;
@@ -247,7 +249,7 @@ export interface DeleteCurrentDiscussionThreadTriggerType {
  */
 export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
   (data: {
-    reply: DiscussionThreadReplyType;
+    reply: DiscussionThreadReply;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -258,7 +260,7 @@ export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
  */
 export interface ModifyReplyFromCurrentThreadTriggerType {
   (data: {
-    reply: DiscussionThreadReplyType;
+    reply: DiscussionThreadReply;
     message: string;
     success?: () => void;
     fail?: () => void;
@@ -296,16 +298,14 @@ const subscribeDiscussionThread: SubscribeDiscussionThread =
     ) => {
       const state = getState();
 
+      const discussionApi = MApi.getDiscussionApi();
+
       try {
-        const subscribedThread: DiscussionSubscribedThread = <
-          DiscussionSubscribedThread
-        >await promisify(
-          mApi().forum.areas.threads.toggleSubscription.create(
-            data.areaId,
-            data.threadId
-          ),
-          "callback"
-        )();
+        const subscribedThread =
+          await discussionApi.toggleDiscussionThreadSubscription({
+            areaId: data.areaId,
+            threadId: data.threadId,
+          });
 
         const subscribedThreadList = [...state.discussion.subscribedThreads];
 
@@ -316,10 +316,14 @@ const subscribeDiscussionThread: SubscribeDiscussionThread =
           payload: subscribedThreadList,
         });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
-          payload: <DiscussionStateType>"ERROR",
+          payload: "ERROR",
         });
       }
     };
@@ -338,14 +342,13 @@ const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
     ) => {
       const state = getState();
 
+      const discussionApi = MApi.getDiscussionApi();
+
       try {
-        await promisify(
-          mApi().forum.areas.threads.toggleSubscription.create(
-            data.areaId,
-            data.threadId
-          ),
-          "callback"
-        )();
+        await discussionApi.toggleDiscussionThreadSubscription({
+          areaId: data.areaId,
+          threadId: data.threadId,
+        });
 
         const subscribedThreadList = [...state.discussion.subscribedThreads];
 
@@ -360,10 +363,14 @@ const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
           payload: subscribedThreadList,
         });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
-          payload: <DiscussionStateType>"ERROR",
+          payload: "ERROR",
         });
       }
     };
@@ -381,14 +388,13 @@ const subscribeDiscussionArea: SubscribeDiscussionArea =
       getState: () => StateType
     ) => {
       const state = getState();
+      const discussionApi = MApi.getDiscussionApi();
 
       try {
-        const subscribedArea: DiscussionSubscribedArea = <
-          DiscussionSubscribedArea
-        >await promisify(
-          mApi().forum.areas.toggleSubscription.create(data.areaId),
-          "callback"
-        )();
+        const subscribedArea =
+          await discussionApi.toggleDiscussionAreaSubscription({
+            areaId: data.areaId,
+          });
 
         const subscribedAreaList = [...state.discussion.subscribedAreas];
 
@@ -399,10 +405,14 @@ const subscribeDiscussionArea: SubscribeDiscussionArea =
           payload: subscribedAreaList,
         });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
-          payload: <DiscussionStateType>"ERROR",
+          payload: "ERROR",
         });
       }
     };
@@ -420,12 +430,12 @@ const unsubscribeDiscussionArea: UnsubscribeDiscustionArea =
       getState: () => StateType
     ) => {
       const state = getState();
+      const discussionApi = MApi.getDiscussionApi();
 
       try {
-        await promisify(
-          mApi().forum.areas.toggleSubscription.create(data.areaId),
-          "callback"
-        )();
+        await discussionApi.toggleDiscussionAreaSubscription({
+          areaId: data.areaId,
+        });
 
         const subscribedAreaList = [...state.discussion.subscribedAreas];
 
@@ -440,10 +450,14 @@ const unsubscribeDiscussionArea: UnsubscribeDiscustionArea =
           payload: subscribedAreaList,
         });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
-          payload: <DiscussionStateType>"ERROR",
+          payload: "ERROR",
         });
       }
     };
@@ -461,14 +475,13 @@ const loadSubscribedDiscussionAreaList: LoadSubscribedDiscussionAreaList =
       getState: () => StateType
     ) => {
       const state = getState();
+      const discussionApi = MApi.getDiscussionApi();
 
       try {
-        const subscribedAreaList: DiscussionSubscribedArea[] = <
-          DiscussionSubscribedArea[]
-        >await promisify(
-          mApi().forum.subscriptionAreas.read(state.status.userId),
-          "callback"
-        )();
+        const subscribedAreaList =
+          await discussionApi.getDiscussionSubscribedAreas({
+            userId: state.status.userId,
+          });
 
         dispatch({
           type: "UPDATE_SUBSCRIBED_AREA_LIST",
@@ -482,6 +495,10 @@ const loadSubscribedDiscussionAreaList: LoadSubscribedDiscussionAreaList =
 
         data.success && data.success();
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
@@ -504,14 +521,13 @@ const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
       getState: () => StateType
     ) => {
       const state = getState();
+      const discussionApi = MApi.getDiscussionApi();
 
       try {
-        const subscribedThreadList: DiscussionSubscribedThread[] = <
-          DiscussionSubscribedThread[]
-        >await promisify(
-          mApi().forum.subscriptionThreads.read(state.status.userId),
-          "callback"
-        )();
+        const subscribedThreadList =
+          await discussionApi.getDiscussionSubscribedThreads({
+            userId: state.status.userId,
+          });
 
         dispatch({
           type: "UPDATE_SUBSCRIBED_THREAD_LIST",
@@ -525,6 +541,10 @@ const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
 
         data.success && data.success();
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
@@ -546,6 +566,9 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       //Remove the current message
       if (!data.notRemoveCurrent) {
         dispatch({
@@ -555,11 +578,11 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
       }
       dispatch({
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
-        payload: <DiscussionStateType>"WAIT",
+        payload: "WAIT",
       });
 
       const state = getState();
-      const discussion: DiscussionType = state.discussion;
+      const discussion = state.discussion;
 
       //Avoid loading if it's the same area
       if (
@@ -579,18 +602,18 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
         loadDiscussionAreasFromServer(async () => {
           dispatch({
             type: "UPDATE_DISCUSSION_THREADS_STATE",
-            payload: <DiscussionStateType>"LOADING",
+            payload: "LOADING",
           });
 
           //Calculate the amount of pages
           let allThreadNumber = 0;
           if (data.areaId) {
-            const area: DiscussionAreaType = discussion.areas.find(
-              (area: DiscussionAreaType) => area.id === data.areaId
+            const area = discussion.areas.find(
+              (area) => area.id === data.areaId
             );
             allThreadNumber = area.numThreads;
           } else {
-            discussion.areas.forEach((area: DiscussionAreaType) => {
+            discussion.areas.forEach((area) => {
               allThreadNumber += area.numThreads;
             });
           }
@@ -605,34 +628,45 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
           //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
           const firstResult = (data.page - 1) * MAX_LOADED_AT_ONCE;
 
-          const params = {
-            firstResult,
-            maxResults: MAX_LOADED_AT_ONCE,
-          };
-
           try {
-            const threads: DiscussionThreadListType = <
-              DiscussionThreadListType
-            >await promisify(
-              discussion.workspaceId
-                ? data.areaId
-                  ? mApi().workspace.workspaces.forumAreas.threads.read(
-                      discussion.workspaceId,
-                      data.areaId,
-                      params
-                    )
-                  : mApi().workspace.workspaces.forumLatest.read(
-                      discussion.workspaceId,
-                      params
-                    )
-                : data.areaId
-                ? mApi().forum.areas.threads.read(data.areaId, params)
-                : mApi().forum.latest.read(params),
-              "callback"
-            )();
+            let threads: DiscussionThread[] = [];
+
+            // If in workspace
+            if (discussion.workspaceId) {
+              if (data.areaId) {
+                threads =
+                  await workspaceDiscussionApi.getWorkspaceDiscussionThreads({
+                    workspaceentityId: discussion.workspaceId,
+                    areaId: data.areaId,
+                    firstResult,
+                    maxResults: MAX_LOADED_AT_ONCE,
+                  });
+              } else {
+                threads = await workspaceDiscussionApi.getWorkspaceForumLatest({
+                  workspaceId: discussion.workspaceId,
+                  firstResult,
+                  maxResults: MAX_LOADED_AT_ONCE,
+                });
+              }
+            }
+            // Enviroment level
+            else {
+              if (data.areaId) {
+                threads = await discussionApi.getDiscussionThreads({
+                  areaId: data.areaId,
+                  firstResult,
+                  maxResults: MAX_LOADED_AT_ONCE,
+                });
+              } else {
+                threads = await discussionApi.getLatestDiscussionThreads({
+                  firstResult,
+                  maxResults: MAX_LOADED_AT_ONCE,
+                });
+              }
+            }
 
             //Create the payload for updating all the communicator properties
-            const payload: DiscussionPatchType = {
+            const payload: DiscussionStatePatch = {
               state: "READY",
               threads,
               page: data.page,
@@ -645,16 +679,17 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
               payload,
             });
           } catch (err) {
-            if (!(err instanceof MApiError)) {
+            if (!isMApiError(err)) {
               throw err;
             }
+
             //Error :(
             dispatch(
               notificationActions.displayNotification(err.message, "error")
             );
             dispatch({
               type: "UPDATE_DISCUSSION_THREADS_STATE",
-              payload: <DiscussionStateType>"ERROR",
+              payload: "ERROR",
             });
           }
         })
@@ -673,13 +708,17 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       if (!data.title) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title"
-            ),
+            i18n.t("validation.caption", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -687,35 +726,38 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content"
-            ),
+            i18n.t("validation.content", { ns: "messaging" }),
             "error"
           )
         );
       }
 
       try {
-        const discussion: DiscussionType = getState().discussion;
+        const discussion = getState().discussion;
         const params = {
           forumAreaId: data.forumAreaId,
-          locked: data.locked,
+          lock: data.lock,
           message: data.message,
           sticky: data.sticky,
           title: data.title,
         };
-        const newThread = <DiscussionThreadType>(
-          await promisify(
-            discussion.workspaceId
-              ? mApi().workspace.workspaces.forumAreas.threads.create(
-                  discussion.workspaceId,
-                  data.forumAreaId,
-                  params
-                )
-              : mApi().forum.areas.threads.create(data.forumAreaId, params),
-            "callback"
-          )()
-        );
+
+        let newThread: DiscussionThread;
+
+        // If in workspace
+        if (discussion.workspaceId) {
+          newThread =
+            await workspaceDiscussionApi.createWorkspaceDiscussionThread({
+              workspaceentityId: discussion.workspaceId,
+              areaId: data.forumAreaId,
+              createDiscussionThreadRequest: params,
+            });
+        } else {
+          newThread = await discussionApi.createDiscussionThread({
+            areaId: data.forumAreaId,
+            createDiscussionThreadRequest: params,
+          });
+        }
 
         const hash = window.location.hash.replace("#", "").split("/");
 
@@ -748,14 +790,15 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
         //this will do it, since it will consider the discussion thread to be in a waiting state
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
-          payload: <DiscussionStateType>"WAIT",
+          payload: "WAIT",
         });
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -773,13 +816,17 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       if (!data.title) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.title"
-            ),
+            i18n.t("validation.caption", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -787,44 +834,46 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createMessage.missing.content"
-            ),
+            i18n.t("validation.content", { ns: "messaging" }),
             "error"
           )
         );
       }
 
       try {
-        const payload: DiscussionThreadType = Object.assign({}, data.thread, {
+        const payload: DiscussionThread = Object.assign({}, data.thread, {
           title: data.title,
           message: data.message,
           sticky: data.sticky,
-          locked: data.locked,
+          lock: data.lock,
         });
-        const discussion: DiscussionType = getState().discussion;
-        const newThread = <DiscussionThreadType>(
-          await promisify(
-            discussion.workspaceId
-              ? mApi().workspace.workspaces.forumAreas.threads.update(
-                  discussion.workspaceId,
-                  data.thread.forumAreaId,
-                  data.thread.id,
-                  payload
-                )
-              : mApi().forum.areas.threads.update(
-                  data.thread.forumAreaId,
-                  data.thread.id,
-                  payload
-                ),
-            "callback"
-          )()
-        );
+        const discussion = getState().discussion;
+
+        let updatedThread: DiscussionThread;
+
+        if (discussion.workspaceId) {
+          updatedThread =
+            await workspaceDiscussionApi.updateWorkspaceDiscussionThread({
+              workspaceentityId: discussion.workspaceId,
+              areaId: data.thread.forumAreaId,
+              threadId: data.thread.id,
+              updateDiscussionThreadRequest: payload,
+            });
+        } else {
+          updatedThread = await discussionApi.updateDiscussionThread({
+            areaId: data.thread.forumAreaId,
+            threadId: data.thread.id,
+            updateDiscussionThreadRequest: payload,
+          });
+        }
+
         dispatch({
           type: "UPDATE_DISCUSSION_THREAD",
-          payload: newThread,
+          payload: updatedThread,
         });
+
         const discussionState = getState().discussion;
+
         dispatch(
           loadDiscussionThreadsFromServer({
             areaId: discussionState.areaId,
@@ -836,9 +885,10 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -857,7 +907,10 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
       getState: () => StateType
     ) => {
       const state = getState();
-      const discussion: DiscussionType = state.discussion;
+      const discussion = state.discussion;
+
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
       //Avoid loading if it's the same thread that has been loaded already
       if (
@@ -872,35 +925,31 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
 
       dispatch({
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
-        payload: <DiscussionStateType>"LOADING",
+        payload: "LOADING",
       });
 
       //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
       const firstResult = (actualThreadPage - 1) * MAX_LOADED_AT_ONCE;
 
-      const params = {
-        firstResult,
-        maxResults: MAX_LOADED_AT_ONCE,
-      };
-
       try {
-        let newCurrentThread: DiscussionThreadType = discussion.threads.find(
+        let newCurrentThread = discussion.threads.find(
           (thread) => thread.id === data.threadId
         );
 
         if (!newCurrentThread || data.forceRefresh) {
-          newCurrentThread = <DiscussionThreadType>(
-            await promisify(
-              discussion.workspaceId
-                ? mApi().workspace.workspaces.forumAreas.threads.read(
-                    discussion.workspaceId,
-                    data.areaId,
-                    data.threadId
-                  )
-                : mApi().forum.areas.threads.read(data.areaId, data.threadId),
-              "callback"
-            )()
-          );
+          if (discussion.workspaceId) {
+            newCurrentThread =
+              await workspaceDiscussionApi.getWorkspaceDiscussionThread({
+                workspaceentityId: discussion.workspaceId,
+                areaId: data.areaId,
+                threadId: data.threadId,
+              });
+          } else {
+            newCurrentThread = await discussionApi.getDiscussionThread({
+              areaId: data.areaId,
+              threadId: data.threadId,
+            });
+          }
         }
 
         const pages: number =
@@ -911,33 +960,34 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
           payload: pages,
         });
 
-        const replies: DiscussionThreadReplyListType = <
-          DiscussionThreadReplyListType
-        >await promisify(
-          discussion.workspaceId
-            ? mApi().workspace.workspaces.forumAreas.threads.replies.read(
-                discussion.workspaceId,
-                data.areaId,
-                data.threadId,
-                params
-              )
-            : mApi().forum.areas.threads.replies.read(
-                data.areaId,
-                data.threadId,
-                params
-              ),
-          "callback"
-        )();
+        let replies: DiscussionThreadReply[] = [];
 
-        const newThreads: DiscussionThreadListType =
-          state.discussion.threads.map((thread: DiscussionThreadType) => {
-            if (thread.id !== newCurrentThread.id) {
-              return thread;
-            }
-            return newCurrentThread;
+        if (discussion.workspaceId) {
+          replies =
+            await workspaceDiscussionApi.getWorkspaceDiscussionThreadReplies({
+              workspaceentityId: discussion.workspaceId,
+              areaId: data.areaId,
+              threadId: data.threadId,
+              firstResult: firstResult,
+              maxResults: MAX_LOADED_AT_ONCE,
+            });
+        } else {
+          replies = await discussionApi.getDiscussionThreadReplies({
+            areaId: data.areaId,
+            threadId: data.threadId,
+            firstResult: firstResult,
+            maxResults: MAX_LOADED_AT_ONCE,
           });
+        }
 
-        const newProps: DiscussionPatchType = {
+        const newThreads = state.discussion.threads.map((thread) => {
+          if (thread.id !== newCurrentThread.id) {
+            return thread;
+          }
+          return newCurrentThread;
+        });
+
+        const newProps: DiscussionStatePatch = {
           current: newCurrentThread,
           currentReplies: replies,
           currentState: "READY",
@@ -952,14 +1002,15 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         //Error :(
         dispatch(notificationActions.displayNotification(err.message, "error"));
         dispatch({
           type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
-          payload: <DiscussionStateType>"ERROR",
+          payload: "ERROR",
         });
 
         data.fail && data.fail();
@@ -978,8 +1029,11 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const payload: any = {
+      const payload: CreateDiscussionThreadReplyRequest = {
         message: data.message,
       };
 
@@ -988,24 +1042,23 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
       }
 
       const state = getState();
-      const discussion: DiscussionType = state.discussion;
+      const discussion = state.discussion;
 
       try {
-        await promisify(
-          discussion.workspaceId
-            ? mApi().workspace.workspaces.forumAreas.threads.replies.create(
-                discussion.workspaceId,
-                discussion.current.forumAreaId,
-                discussion.current.id,
-                payload
-              )
-            : mApi().forum.areas.threads.replies.create(
-                discussion.current.forumAreaId,
-                discussion.current.id,
-                payload
-              ),
-          "callback"
-        )();
+        if (discussion.workspaceId) {
+          await workspaceDiscussionApi.createWorkspaceDiscussionThreadReply({
+            workspaceentityId: discussion.workspaceId,
+            areaId: discussion.current.forumAreaId,
+            threadId: discussion.current.id,
+            createDiscussionThreadReplyRequest: payload,
+          });
+        } else {
+          await discussionApi.createDiscussionThreadReply({
+            areaId: discussion.current.forumAreaId,
+            threadId: discussion.current.id,
+            createDiscussionThreadReplyRequest: payload,
+          });
+        }
 
         //sadly the new calculation is overly complex and error prone so we'll just do this;
         //We also need to use force refresh to avoid reusing data in memory
@@ -1019,9 +1072,10 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
           })
         );
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -1040,22 +1094,25 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const discussion: DiscussionType = state.discussion;
+      const discussion = state.discussion;
+
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
       try {
-        await promisify(
-          discussion.workspaceId
-            ? mApi().workspace.workspaces.forumAreas.threads.del(
-                discussion.workspaceId,
-                discussion.current.forumAreaId,
-                discussion.current.id
-              )
-            : mApi().forum.areas.threads.del(
-                discussion.current.forumAreaId,
-                discussion.current.id
-              ),
-          "callback"
-        )();
+        if (discussion.workspaceId) {
+          await workspaceDiscussionApi.deleteWorkspaceDiscussionThread({
+            workspaceentityId: discussion.workspaceId,
+            areaId: discussion.current.forumAreaId,
+            threadId: discussion.current.id,
+          });
+        } else {
+          await discussionApi.deleteDiscussionThread({
+            areaId: discussion.current.forumAreaId,
+            threadId: discussion.current.id,
+          });
+        }
+
         dispatch(
           loadDiscussionThreadsFromServer({
             areaId: discussion.areaId,
@@ -1081,9 +1138,10 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
           location.hash = splitted[0] + "/" + splitted[1];
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -1102,24 +1160,26 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
       getState: () => StateType
     ) => {
       const state = getState();
-      const discussion: DiscussionType = state.discussion;
+      const discussion = state.discussion;
+
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
       try {
-        await promisify(
-          discussion.workspaceId
-            ? mApi().workspace.workspaces.forumAreas.threads.replies.del(
-                discussion.workspaceId,
-                discussion.current.forumAreaId,
-                discussion.current.id,
-                data.reply.id
-              )
-            : mApi().forum.areas.threads.replies.del(
-                discussion.current.forumAreaId,
-                discussion.current.id,
-                data.reply.id
-              ),
-          "callback"
-        )();
+        if (discussion.workspaceId) {
+          await workspaceDiscussionApi.deleteWorkspaceDiscussionThreadReply({
+            workspaceentityId: discussion.workspaceId,
+            areaId: discussion.current.forumAreaId,
+            threadId: discussion.current.id,
+            replyId: data.reply.id,
+          });
+        } else {
+          await discussionApi.deleteDiscussionThreadReply({
+            areaId: discussion.current.forumAreaId,
+            threadId: discussion.current.id,
+            replyId: data.reply.id,
+          });
+        }
 
         dispatch(
           loadDiscussionThreadFromServer({
@@ -1130,14 +1190,16 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
           })
         );
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.deleteReply"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "reply",
+            }),
             "error"
           )
         );
@@ -1158,42 +1220,48 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const discussion: DiscussionType = state.discussion;
+      const discussion = state.discussion;
+
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
       try {
-        const newReplyMod = Object.assign({}, data.reply, {
+        const updateRequest: UpdateDiscussionThreadReplyRequest = {
+          ...data.reply,
           message: data.message,
-        });
-        const newReply = <DiscussionThreadReplyType>(
-          await promisify(
-            discussion.workspaceId
-              ? mApi().workspace.workspaces.forumAreas.threads.replies.update(
-                  discussion.workspaceId,
-                  discussion.current.forumAreaId,
-                  discussion.current.id,
-                  data.reply.id,
-                  newReplyMod
-                )
-              : mApi().forum.areas.threads.replies.update(
-                  discussion.current.forumAreaId,
-                  discussion.current.id,
-                  data.reply.id,
-                  newReplyMod
-                ),
-            "callback"
-          )()
-        );
+        };
+
+        let updatedReply: DiscussionThreadReply;
+
+        if (discussion.workspaceId) {
+          updatedReply =
+            await workspaceDiscussionApi.updateWorkspaceDiscussionThreadReply({
+              workspaceentityId: discussion.workspaceId,
+              areaId: discussion.current.forumAreaId,
+              threadId: discussion.current.id,
+              replyId: data.reply.id,
+              updateDiscussionThreadReplyRequest: updateRequest,
+            });
+        } else {
+          updatedReply = await discussionApi.updateDiscussionThreadReply({
+            areaId: discussion.current.forumAreaId,
+            threadId: discussion.current.id,
+            replyId: data.reply.id,
+            updateDiscussionThreadReplyRequest: updateRequest,
+          });
+        }
 
         dispatch({
           type: "UPDATE_DISCUSSION_THREAD_REPLY",
-          payload: newReply,
+          payload: updatedReply,
         });
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -1218,26 +1286,33 @@ const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const discussion: DiscussionType = getState().discussion;
+      const discussion = getState().discussion;
+
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       try {
+        let areas: DiscussionArea[] = [];
+
+        if (discussion.workspaceId) {
+          areas = await workspaceDiscussionApi.getWorkspaceDiscussionAreas({
+            workspaceentityId: discussion.workspaceId,
+          });
+        } else {
+          areas = await discussionApi.getDiscussionAreas();
+        }
+
         dispatch({
           type: "UPDATE_DISCUSSION_AREAS",
-          payload: <DiscussionAreaListType>(
-            await promisify(
-              discussion.workspaceId
-                ? mApi().workspace.workspaces.forumAreas.read(
-                    discussion.workspaceId
-                  )
-                : mApi().forum.areas.read(),
-              "callback"
-            )()
-          ),
+          payload: areas,
         });
+
         callback && callback();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
       }
     };
@@ -1267,35 +1342,39 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       if (!data.name) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName"
-            ),
+            i18n.t("validation.name", { ns: "messaging", context: "area" }),
             "error"
           )
         );
       }
 
       try {
-        const discussion: DiscussionType = getState().discussion;
-        const params = {
+        const discussion = getState().discussion;
+
+        const params: CreateDiscussionAreaRequest = {
           name: data.name,
           description: data.description,
         };
-        const newArea = <DiscussionAreaType>(
-          await promisify(
-            discussion.workspaceId
-              ? mApi().workspace.workspaces.forumAreas.create(
-                  discussion.workspaceId,
-                  params
-                )
-              : mApi().forum.areas.create(params),
-            "callback"
-          )()
-        );
+
+        let newArea: DiscussionArea;
+
+        if (discussion.workspaceId) {
+          newArea = await workspaceDiscussionApi.createWorkspaceDiscussionArea({
+            workspaceentityId: discussion.workspaceId,
+            createDiscussionAreaRequest: params,
+          });
+        } else {
+          newArea = await discussionApi.createDiscussionArea({
+            createDiscussionAreaRequest: params,
+          });
+        }
 
         // If user want to subscribe data when creating new
         if (data.subscribe) {
@@ -1313,9 +1392,10 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
         location.hash = "#" + newArea.id;
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -1346,34 +1426,39 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       if (!data.name) {
         data.fail && data.fail();
         return dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.discussion.errormessage.createForumArea.missing.areaName"
-            ),
+            i18n.t("validation.name", { ns: "messaging", context: "area" }),
             "error"
           )
         );
       }
 
       try {
-        const discussion: DiscussionType = getState().discussion;
-        const params = {
+        const discussion = getState().discussion;
+        const params: UpdateDiscussionAreaRequest = {
           name: data.name,
           description: data.description,
         };
-        await promisify(
-          discussion.workspaceId
-            ? mApi().workspace.workspaces.forumAreas.update(
-                discussion.workspaceId,
-                data.id,
-                params
-              )
-            : mApi().forum.areas.update(data.id, params),
-          "callback"
-        )();
+
+        if (discussion.workspaceId) {
+          await workspaceDiscussionApi.updateWorkspaceDiscussionArea({
+            workspaceentityId: discussion.workspaceId,
+            areaId: data.id,
+            updateDiscussionAreaRequest: params,
+          });
+        } else {
+          await discussionApi.updateDiscussionArea({
+            areaId: data.id,
+            updateDiscussionAreaRequest: params,
+          });
+        }
+
         dispatch({
           type: "UPDATE_DISCUSSION_AREA",
           payload: {
@@ -1386,9 +1471,10 @@ const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
         });
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -1417,17 +1503,23 @@ const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const discussionApi = MApi.getDiscussionApi();
+      const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
       try {
-        const discussion: DiscussionType = getState().discussion;
-        await promisify(
-          discussion.workspaceId
-            ? mApi().workspace.workspaces.forumAreas.del(
-                discussion.workspaceId,
-                data.id
-              )
-            : mApi().forum.areas.del(data.id),
-          "callback"
-        )();
+        const discussion = getState().discussion;
+
+        if (discussion.workspaceId) {
+          await workspaceDiscussionApi.deleteWorkspaceDiscussionArea({
+            workspaceentityId: discussion.workspaceId,
+            areaId: data.id,
+          });
+        } else {
+          await discussionApi.deleteDiscussionArea({
+            areaId: data.id,
+          });
+        }
+
         location.hash = "";
         dispatch({
           type: "DELETE_DISCUSSION_AREA",
@@ -1435,9 +1527,10 @@ const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
         });
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
+
         dispatch(notificationActions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }

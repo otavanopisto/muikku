@@ -41,10 +41,10 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
@@ -545,8 +545,8 @@ public class CommunicatorRESTService extends PluginRESTService {
       
       if (recipient != null) {
         if (!studentMessaging) {
-          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(recipient);
-          if (recipientRole == null || EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype())) {
+          UserSchoolDataIdentifier recipientUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(recipient);
+          if (recipientUserSchoolDataIdentifier == null || recipientUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
             return Response.status(Status.BAD_REQUEST).build();
           }
         }
@@ -718,8 +718,8 @@ public class CommunicatorRESTService extends PluginRESTService {
 
       if (recipient != null) {
         if (!studentMessaging) {
-          EnvironmentRoleEntity recipientRole = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(recipient);
-          if (recipientRole == null || EnvironmentRoleArchetype.STUDENT.equals(recipientRole.getArchetype())) {
+          UserSchoolDataIdentifier recipientUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(recipient);
+          if (recipientUserSchoolDataIdentifier == null || recipientUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
             return Response.status(Status.BAD_REQUEST).build();
           }
         }

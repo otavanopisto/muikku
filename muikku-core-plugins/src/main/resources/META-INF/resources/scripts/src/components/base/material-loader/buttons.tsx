@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Button from "~/components/general/button";
 
@@ -16,6 +17,22 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
  * @param props props
  */
 export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
+  const { t } = useTranslation(["materials", "common"]);
+  const namespace = () => {
+    const p = props.stateConfiguration["assignment-type"]
+      ? props.stateConfiguration["assignment-type"]
+      : "";
+
+    switch (p) {
+      case "JOURNAL":
+        return "journal";
+      case "INTERIM_EVALUATION":
+        return "workspace";
+      default:
+        return "materials";
+    }
+  };
+
   const noAnswerOrStateConfig = !props.answerable || !props.stateConfiguration;
   if (
     noAnswerOrStateConfig ||
@@ -39,7 +56,9 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           buttonModifiers={props.stateConfiguration["button-class"]}
           onClick={props.onPushAnswer}
         >
-          {props.i18n.text.get(props.stateConfiguration["button-text"])}
+          {t(props.stateConfiguration["button-text"], {
+            ns: namespace(),
+          })}
         </Button>
       ) : null}
       {props.stateConfiguration[
@@ -49,11 +68,9 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
           buttonModifiers="muikku-show-correct-answers-button"
           onClick={props.onToggleAnswersVisible}
         >
-          {props.i18n.text.get(
-            props.answersVisible
-              ? "plugin.workspace.materialsLoader.hideAnswers"
-              : "plugin.workspace.materialsLoader.showAnswers"
-          )}
+          {props.answersVisible
+            ? t("actions.hide", { ns: "materials" })
+            : t("actions.show", { ns: "materials" })}
         </Button>
       ) : null}
     </div>

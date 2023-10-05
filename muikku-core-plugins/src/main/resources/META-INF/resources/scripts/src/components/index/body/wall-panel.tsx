@@ -1,6 +1,6 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
+
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -12,12 +12,12 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { Note } from "./wall/note";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * Wall properties
  */
-export interface WallProps {
-  i18n: i18nType;
+export interface WallProps extends WithTranslation {
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -27,27 +27,23 @@ export interface WallProps {
  * @param props WallProps
  */
 const WallPanel: React.FC<WallProps> = (props) => {
-  const { i18n, status, displayNotification } = props;
+  const { status, displayNotification, t } = props;
   const { notes, updateNoteStatus, updateNote } = useOnGoingNotes(
     status,
-    i18n,
     displayNotification
   );
 
   return (
     <Panel
-      header={props.i18n.text.get("plugin.frontPage.wall.title")}
+      header={t("labels.wall", { ns: "frontPage" })}
       modifier="wall"
       icon="icon-star-empty"
     >
-      <Panel.BodyTitle>
-        {props.i18n.text.get("plugin.frontPage.wall.subtitle.tasks")}
-      </Panel.BodyTitle>
+      <Panel.BodyTitle>{t("labels.wall", { ns: "frontPage" })}</Panel.BodyTitle>
       <Panel.BodyContent>
         {notes.length > 0 ? (
           notes.map((note) => (
             <Note
-              i18n={i18n}
               isCreator={note.creator === status.userId}
               key={note.id}
               note={note}
@@ -57,7 +53,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
           ))
         ) : (
           <div className="empty empty--front-page">
-            {i18n.text.get("plugin.frontPage.wall.tasks.empty")}
+            {t("content.empty", { ns: "tasks", context: "student" })}
           </div>
         )}
       </Panel.BodyContent>
@@ -72,7 +68,6 @@ const WallPanel: React.FC<WallProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    i18n: state.i18n,
   };
 }
 
@@ -84,4 +79,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WallPanel);
+export default withTranslation(["frontPage", "tasks"])(
+  connect(mapStateToProps, mapDispatchToProps)(WallPanel)
+);

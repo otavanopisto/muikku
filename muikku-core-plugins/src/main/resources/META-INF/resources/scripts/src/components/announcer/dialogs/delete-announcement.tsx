@@ -4,7 +4,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
 import {
@@ -13,15 +12,14 @@ import {
   DeleteSelectedAnnouncementsTriggerType,
   DeleteAnnouncementTriggerType,
 } from "~/actions/announcements";
-import { AnnouncementType } from "reducers/announcements";
-import { StateType } from "~/reducers";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { Announcement } from "~/generated/client";
 
 /**
  * DeleteAnnouncementDialogProps
  */
-interface DeleteAnnouncementDialogProps {
-  i18n: i18nType;
-  announcement?: AnnouncementType;
+interface DeleteAnnouncementDialogProps extends WithTranslation {
+  announcement?: Announcement;
   children: React.ReactElement<any>;
   deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType;
   deleteAnnouncement: DeleteAnnouncementTriggerType;
@@ -101,13 +99,10 @@ class DeleteAnnouncementDialog extends React.Component<
      */
     const content = (closeDialog: () => any) => (
       <div>
-        {this.props.announcement
-          ? this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.description"
-            )
-          : this.props.i18n.text.get(
-              "plugin.announcer.deleteDialog.description"
-            )}
+        {this.props.i18n.t("content.removing", {
+          ns: "messaging",
+          context: "announcement",
+        })}
       </div>
     );
 
@@ -123,17 +118,13 @@ class DeleteAnnouncementDialog extends React.Component<
           onClick={this.deleteAnnouncement.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.announcer.deleteDialog.deleteButton.label"
-          )}
+          {this.props.i18n.t("actions.remove")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={closeDialog}
         >
-          {this.props.i18n.text.get(
-            "plugin.announcer.deleteDialog.cancelButton.label"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -141,7 +132,10 @@ class DeleteAnnouncementDialog extends React.Component<
     return (
       <Dialog
         modifier="delete-announcement"
-        title={this.props.i18n.text.get("plugin.announcer.deleteDialog.title")}
+        title={this.props.i18n.t("labels.remove", {
+          ns: "messaging",
+          context: "announcement",
+        })}
         content={content}
         footer={footer}
       >
@@ -149,17 +143,6 @@ class DeleteAnnouncementDialog extends React.Component<
       </Dialog>
     );
   }
-}
-
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
 }
 
 /**
@@ -174,7 +157,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DeleteAnnouncementDialog);
+export default withTranslation()(
+  connect(null, mapDispatchToProps)(DeleteAnnouncementDialog)
+);

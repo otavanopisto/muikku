@@ -8,15 +8,14 @@ import {
   LoadProfileWorklistSectionTriggerType,
 } from "~/actions/main-function/profile";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
-import {
-  ProfileType,
-  WorklistTemplate,
-} from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
 import moment from "~/lib/moment";
 import { StatusType } from "~/reducers/base/status";
 import { WorkListSection } from "./components/work-list-section";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
+import { WorklistTemplate } from "~/generated/client";
 
 // we use these
 const today = moment();
@@ -28,9 +27,8 @@ const currentMonthDayLimit = 10;
 /**
  * IWorkListProps
  */
-interface IWorkListProps {
-  i18n: i18nType;
-  profile: ProfileType;
+interface IWorkListProps extends WithTranslation<["common"]> {
+  profile: ProfileState;
   status: StatusType;
   insertProfileWorklistItem: InsertProfileWorklistItemTriggerType;
   loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType;
@@ -203,7 +201,6 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           currentMonthDayLimit={currentMonthDayLimit}
           currentMonthsFirstDay={currentMonthsFirstDay}
           daysInCurrentMonth={daysInCurrentMonth}
-          i18n={this.props.i18n}
           isExpanded={this.state.openedSections.includes(
             section.summary.beginDate
           )}
@@ -218,11 +215,11 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
       <section>
         <form onSubmit={this.onFormSubmit} className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.profile.titles.worklist")}
+            {this.props.t("labels.create", { ns: "worklist" })}
           </h2>
           <div className="application-sub-panel application-sub-panel--worklist">
             <h3 className="application-sub-panel__header">
-              {this.props.i18n.text.get("plugin.profile.worklist.addNewEntry")}
+              {this.props.t("labels.create", { ns: "worklist" })}
             </h3>
             <div className="application-sub-panel__body">
               <div className="form__row">
@@ -255,7 +252,7 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
           </div>
           <div className="application-sub-panel__panels-wrapper">
             <h3 className="application-sub-panel__header">
-              {this.props.i18n.text.get("plugin.profile.worklist.addedEntries")}
+              {this.props.t("labels.entries", { ns: "worklist" })}
             </h3>
             {sections && sections.reverse()}
           </div>
@@ -271,7 +268,6 @@ class WorkList extends React.Component<IWorkListProps, IWorkListState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     profile: state.profile,
     status: state.status,
   };
@@ -281,11 +277,13 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { insertProfileWorklistItem, loadProfileWorklistSection },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkList);
+export default withTranslation(["worklist"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkList)
+);

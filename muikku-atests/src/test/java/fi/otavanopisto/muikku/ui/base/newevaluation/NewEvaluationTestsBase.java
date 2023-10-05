@@ -148,11 +148,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
       assertText(".application-list__item-counter", "3");
       waitAndClick("div.application-list__item.message");
-      assertText(".application-list__item-content-body", "Student Tester (Test Study Programme) lähetti arviointipyynnön työtilassa testcourse (test extension).\n" + 
+      assertText(".application-list__item-content-body", "Student Tester (Test Study Programme) lähetti arviointipyynnön kurssilta testcourse (test extension).\n" + 
           "Arviointipyynnön teksti\n" + 
           "Hello!");
 
-      assertText(".application-list__item--communicator-message:nth-of-type(2) .application-list__item-content-header", "Arviointipyyntö peruttu opiskelijalta Student Tester (Test Study Programme) työtilassa testcourse (test extension)");
+      assertText(".application-list__item--communicator-message:nth-of-type(2) .application-list__item-content-header", "Arviointipyyntö peruttu opiskelijalta Student Tester (Test Study Programme) kurssilla testcourse (test extension)");
       navigate(String.format("/evaluation"), false);
       waitAndClick(".button-pill--evaluate");
       
@@ -552,7 +552,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Admin User");
         waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
-        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Työtila merkitty täydennettäväksi");
+        assertText(".application-list__item-body--communicator-message .application-list__header-item-body", "Kurssi merkitty täydennettäväksi");
       } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
           deleteWorkspace(workspace.getId());

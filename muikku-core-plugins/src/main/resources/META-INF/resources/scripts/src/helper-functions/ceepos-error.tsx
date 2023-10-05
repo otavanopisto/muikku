@@ -1,17 +1,12 @@
-import { i18nType } from "~/reducers/base/i18n";
+import i18n, { localizeTime } from "~/locales/i18n";
 import { PurchaseType } from "~/reducers/main-function/profile";
 
 /**
  * getErrorMessageContent
- * @param i18n i18n
  * @param order  order
  * @param message  message
  */
-export function getErrorMessageContent(
-  i18n: i18nType,
-  order: PurchaseType,
-  message?: string
-) {
+export function getErrorMessageContent(order: PurchaseType, message?: string) {
   /**
    * errorMessage which can come from backend or from localization properties
    */
@@ -22,6 +17,8 @@ export function getErrorMessageContent(
   // Pretext is functioning as a empty place holder paragraph enabling user to place caret above of the prefilled content
   const pretext = "<p></p>";
 
+  i18n.t("labels.created");
+
   // Error message's prefilled content
   const content: string =
     '<div class="message-from-ceepos-error">' +
@@ -30,14 +27,14 @@ export function getErrorMessageContent(
     "</b></div>" +
     errorMessage +
     "<div><b>" +
-    i18n.text.get("plugin.profile.purchases.orderId") +
+    i18n.t("labels.id", { ns: "orders" }) +
     "</b>: " +
     order.id +
     "</div>" +
     "<div><b>" +
-    i18n.text.get("plugin.profile.purchases.date.created") +
+    i18n.t("labels.created") +
     "</b>: " +
-    i18n.time.format(order.created) +
+    localizeTime.date(order.created) +
     "</div>" +
     "</div>";
 

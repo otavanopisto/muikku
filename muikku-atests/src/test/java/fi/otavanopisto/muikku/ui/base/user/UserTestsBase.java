@@ -54,10 +54,10 @@ public class UserTestsBase extends AbstractUITest {
       login();
       selectEnglishLocale();
       waitForPresent(".panel--workspaces .panel__header-title");
-      assertTextIgnoreCase(".panel--workspaces .panel__header-title", "Workspaces");
+      assertTextIgnoreCase(".panel--workspaces .panel__header-title", "Courses");
       selectFinnishLocale();
       waitForPresent(".panel--workspaces .panel__header-title");
-      assertTextIgnoreCase(".panel--workspaces .panel__header-title", "Työtilat");
+      assertTextIgnoreCase(".panel--workspaces .panel__header-title", "Kurssit");
     }finally {
       mockBuilder.wiremockReset();
     }

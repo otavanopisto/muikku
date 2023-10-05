@@ -3,18 +3,18 @@ import promisify from "~/util/promisify";
 import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
-  SummarStudentDetails,
   SummaryDataType,
   SummaryStatusType,
 } from "~/reducers/main-function/records/summary";
 import {
   WorkspaceForumStatisticsType,
   ActivityLogType,
-  WorkspaceActivityType,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import { GuiderUserGroupListType } from "~/reducers/main-function/guider";
+import MApi from "~/api/api";
+import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -36,9 +36,13 @@ export interface UpdateSummaryTriggerType {
  */
 const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const recordsApi = MApi.getRecordsApi();
+    const evaluationApi = MApi.getEvaluationApi();
+    const userApi = MApi.getUserApi();
+
     try {
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
@@ -49,10 +53,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const pyramusId = getState().status.userSchoolDataIdentifier;
 
       /* We need completed courses from Eligibility */
-      const eligibility: any = await promisify(
-        mApi().records.studentMatriculationEligibility.read(pyramusId),
-        "callback"
-      )();
+      const eligibility = await recordsApi.getStudentMatriculationEligibility({
+        studentIdentifier: pyramusId,
+      });
 
       /* We need past month activity */
       const activityLogs: any = await promisify(
@@ -68,9 +71,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       const coursesDone: Record<string, unknown>[] = [];
 
       /* Student's study time */
-      const studentsDetails = <SummarStudentDetails>(
-        await promisify(mApi().user.students.read(pyramusId), "callback")()
-      );
+      const studentsDetails = await userApi.getStudent({
+        studentId: pyramusId,
+      });
 
       /* Getting past the object with keys */
       const activityArrays: Record<string, unknown>[] = Object.keys(
@@ -101,15 +104,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         await Promise.all([
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const activity = <WorkspaceActivityType>(
-                await promisify(
-                  mApi().evaluation.workspaces.students.activity.read(
-                    workspace.id,
-                    pyramusId
-                  ),
-                  "callback"
-                )()
-              );
+              const activity = await evaluationApi.getWorkspaceStudentActivity({
+                workspaceId: workspace.id,
+                studentEntityId: pyramusId,
+              });
               workspaces[index].activity = activity;
             })
           ),
@@ -174,9 +172,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       }
       dispatch(
         actions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.records.summary.errormessage.summaryUpdateFailed"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "studies",
+            context: "summary",
+          }),
           "error"
         )
       );

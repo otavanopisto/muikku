@@ -69,7 +69,6 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
@@ -513,10 +512,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       // When querying workspaces of a student, plain teachers are limited to workspaces they are teaching
 
       if ((userIdentifier != null || userEntity != null) && sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_OWN_STUDENT_WORKSPACES)) {
-        EnvironmentRoleEntity targetRole = userIdentifier != null
-            ? userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userIdentifier)
-            : userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userEntity);
-        if (targetRole != null && targetRole.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+        UserSchoolDataIdentifier targetUSDI = userIdentifier != null
+            ? userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier)
+            : userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+        if (targetUSDI != null && targetUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
           Predicate<WorkspaceEntity> isTeacher = new Predicate<WorkspaceEntity>() {
             @Override
             public boolean test(WorkspaceEntity workspaceEntity) {
