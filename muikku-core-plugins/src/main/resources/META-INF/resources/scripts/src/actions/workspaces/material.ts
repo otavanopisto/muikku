@@ -19,7 +19,6 @@ import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
-import { ServerResponse } from "http";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -909,13 +908,10 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
 
         // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
         if (err.message) {
-          try {
-            const message = JSON.parse(err.message);
-            if (message.reason === "CONTAINS_ANSWERS") {
-              isConflictError = true;
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+          const message = JSON.parse(err.message);
+          if (message.reason === "CONTAINS_ANSWERS") {
+            isConflictError = true;
+          }
         }
 
         if (data.updateLinked) {
