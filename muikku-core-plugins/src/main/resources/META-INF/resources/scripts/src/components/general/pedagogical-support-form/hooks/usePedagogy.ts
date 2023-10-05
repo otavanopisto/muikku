@@ -10,7 +10,6 @@ import {
 import {
   PedagogyForm,
   PedagogyFormState,
-  PedagogyFormVisibility,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 
