@@ -56,16 +56,7 @@ public class CeeposController {
     return ceeposStudyTimeOrderDAO.create(studentIdentifier, product.getId(), product.getCode(), product.getDescription(), product.getPrice(), studentEmail, userEntityId);
   }
   
-  public CeeposAssessmentRequestOrder createAssessmentRequestOrder(UserEntity userEntity, WorkspaceEntity workspaceEntity, String requestText, Integer price) {
-    
-    // Figure out the product to use. There should be only one for assessment requests.
-    
-    List<CeeposProduct> products = ceeposProductDAO.listByType(CeeposProductType.ASSESSMENTREQUEST);
-    CeeposProduct product = products.size() == 1 ? products.get(0) : null;
-    if (product == null) {
-      logger.severe("Unable to determine assessment request product");
-      return null;
-    }
+  public CeeposAssessmentRequestOrder createAssessmentRequestOrder(CeeposProduct product, UserEntity userEntity, WorkspaceEntity workspaceEntity, String requestText, Integer price) {
     
     // Workspace name and product description
     
@@ -115,6 +106,11 @@ public class CeeposController {
   
   public CeeposProduct findProductById(Long productId) {
     return ceeposProductDAO.findById(productId);
+  }
+  
+  public CeeposProduct findProductByType(CeeposProductType type) {
+    List<CeeposProduct> products = ceeposProductDAO.listByType(type);
+    return products.size() == 1 ? products.get(0) : null;
   }
 
   public CeeposProduct findProductByCode(String code) {

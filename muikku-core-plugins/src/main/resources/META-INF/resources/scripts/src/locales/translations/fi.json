@@ -1911,7 +1911,7 @@
     "states": {
       "CANCELLED": "Tilaus on peruttu.",
       "CANCELLED_counselor": "Opiskelija peruutti tilauksen.",
-      "CANCELLED_student": "Peruutit tilauksen.",
+      "CANCELLED_student": "Tilaus on peruttu.",
       "COMPLETE": "Tilaus on maksettu ja käsitelty.",
       "COMPLETE_counselor": "Opiskelijan tilaus on maksettu ja käsitelty.",
       "COMPLETE_student": "Tilauksesi on maksettu ja käsitelty.",
@@ -1920,13 +1920,13 @@
       "CREATED_student": "Tilauksesi on luotu.",
       "ERRORED": "Tilauksen käsittelyssä tapahtui virhe.",
       "ERRORED_counselor": "Opiskelijan tilauksen käsittelyssä tapahtui virhe.",
-      "ERRORED_student": "Tilauksesi käsittelyssä tapahtui virhe. Ota yhteyttä ohjaajaasi.",
+      "ERRORED_student": "Tilauksesi käsittelyssä tapahtui virhe. Ota yhteyttä helpdeskiin.",
       "ONGOING": "Tilausta on alettu maksamaan.",
       "ONGOING_counselor": "Opiskelija on aloittanut tilauksen maksamisen.",
       "ONGOING_student": "Olet aloittanut tilauksen maksamisen.",
       "PAID": "Tilaus on maksettu, mutta ei käsitelty.",
       "PAID_counselor": "Opiskelija on maksanut tilauksen, mutta sitä ei ole käsitelty. Tilaus pitää viimeistellä manuaalisesti. Pyydä opiskelijalta kuitti maksamisesta ja ota yhteyttä helpdeskiin (helpdesk@muikkuverkko.fi).",
-      "PAID_student": "Olet maksanut tilauksen, mutta sitä ei ole käsitelty. Ota yhteyttä ohjaajaasi."
+      "PAID_student": "Olet maksanut tilauksen, mutta sitä ei ole käsitelty. Ota yhteyttä helpdeskiin."
     }
   },
   "ops": {

@@ -32,9 +32,6 @@ export const usePedagogy = (
   const [formData, setFormData] = React.useState<FormData | undefined>(
     undefined
   );
-  const [visibility, setVisibility] = React.useState<
-    PedagogyFormVisibility[] | undefined
-  >([]);
   const [formIsApproved, setFormIsApproved] = React.useState(false);
   const [changedFields, setChangedFields] = React.useState<string[]>([]);
   const [extraDetails, setExtraDetails] = React.useState<string>("");
@@ -66,7 +63,6 @@ export const usePedagogy = (
               ...(JSON.parse(pedagogyData.formData) as FormData),
             });
             setFormIsApproved(pedagogyData.state === "APPROVED");
-            setVisibility(pedagogyData.visibility);
             setLoading(false);
           });
         }
@@ -211,18 +207,9 @@ export const usePedagogy = (
   const approveForm = async () => {
     setLoading(true);
     try {
-      // Check if visibility has changed
-      const visibilityHasChanged = visibility.some(
-        (v) => !data.visibility.includes(v)
-      );
-
       let updatedData = {
         ...data,
       };
-
-      if (visibilityHasChanged) {
-        await updatevisibilityToServer();
-      }
 
       updatedData = await updateStateToServer("APPROVED");
 
@@ -233,30 +220,6 @@ export const usePedagogy = (
           ...(JSON.parse(updatedData.formData) as FormData),
         });
         setFormIsApproved(true);
-        setLoading(false);
-      });
-    } catch (err) {
-      setLoading(false);
-      displayNotification(err.message, "error");
-    }
-  };
-
-  /**
-   * updateVisibility
-   */
-  const updateVisibility = async () => {
-    setLoading(true);
-    try {
-      const updatedData = await updatevisibilityToServer();
-
-      unstable_batchedUpdates(() => {
-        setData(updatedData);
-        setFormData({
-          ...defaultFormData,
-          ...(JSON.parse(updatedData.formData) as FormData),
-        });
-        setVisibility(updatedData.visibility);
-        setFormIsApproved(updatedData.state === "APPROVED");
         setLoading(false);
       });
     } catch (err) {
@@ -372,17 +335,6 @@ export const usePedagogy = (
   };
 
   /**
-   * updatevisibilityToServer
-   */
-  const updatevisibilityToServer = async () =>
-    await pedagogyApi.updatePedagogyFormVisibility({
-      studentIdentifier: studentId,
-      updatePedagogyFormVisibilityRequest: {
-        visibility,
-      },
-    });
-
-  /**
    * updateStateToServer
    * @param state state
    */
@@ -398,7 +350,6 @@ export const usePedagogy = (
     loading,
     data,
     formData,
-    visibility,
     formIsApproved,
     changedFields,
     editIsActive,
@@ -407,9 +358,7 @@ export const usePedagogy = (
     sendToStudent,
     approveForm,
     updateFormData,
-    updateVisibility,
     setFormDataAndUpdateChangedFields,
-    setVisibility,
     setFormIsApproved,
     setExtraDetails,
     setEditIsActive,

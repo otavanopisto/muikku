@@ -1,11 +1,9 @@
 import * as React from "react";
-import VisibilityAndApprovalDialog from "./dialogs/visibility-and-approval";
-import VisibilityDialog from "./dialogs/visibility";
+import ApprovalDialog from "./dialogs/approval";
 import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 import Button from "../button";
 import { usePedagogyContext } from "./context/pedagogy-context";
-import { PedagogyFormVisibility } from "~/generated/client";
 
 /**
  * PedagogyToolbarProps
@@ -29,18 +27,15 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const {
     data,
     loading,
-    visibility,
     formIsApproved,
     changedFields,
     editIsActive,
     resetData,
-    setVisibility,
     setFormIsApproved,
     setExtraDetails,
     setEditIsActive,
     approveForm,
     updateFormData,
-    updateVisibility,
     userRole,
     activateForm,
   } = usePedagogyValues;
@@ -69,30 +64,6 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const handleApproveValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setFormIsApproved(value);
-  };
-
-  /**
-   * Handle visibility permissions change
-   *
-   * @param e e
-   */
-  const handleVisibilityPermissionChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newVisibility = [...visibility];
-
-    const value = e.target.value as PedagogyFormVisibility;
-
-    if (newVisibility.includes(value)) {
-      const index = newVisibility.indexOf(value);
-      if (index > -1) {
-        newVisibility.splice(index, 1);
-      }
-    } else {
-      newVisibility.push(value);
-    }
-
-    setVisibility(newVisibility);
   };
 
   /**
@@ -193,7 +164,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         );
 
       default:
-        return null;
+        return <></>;
     }
   }
 
@@ -201,47 +172,19 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     case "PENDING":
       return (
         <div className="pedagogy-form__toolbar">
-          <VisibilityAndApprovalDialog
+          <ApprovalDialog
             formIsApproved={formIsApproved}
-            visibility={visibility}
             saveButtonDisabled={!formIsApproved}
             onSaveClick={approveForm}
             onApproveChange={handleApproveValueChange}
-            onVisibilityChange={handleVisibilityPermissionChange}
           >
             <Button buttonModifiers={["info"]}>Hyväksy lomake</Button>
-          </VisibilityAndApprovalDialog>
-        </div>
-      );
-    case "APPROVED":
-      return (
-        <div className="pedagogy-form__toolbar">
-          <div className="pedagogy-form__toolbar-primary">
-            <VisibilityDialog
-              visibility={visibility}
-              onVisibilityChange={handleVisibilityPermissionChange}
-              onSaveClick={updateVisibility}
-            >
-              <Button buttonModifiers={["info"]} disabled={showPDF}>
-                Muuta jako-oikeuksia
-              </Button>
-            </VisibilityDialog>
-          </div>
-
-          <div className="pedagogy-form__toolbar-secondary">
-            <Button
-              buttonModifiers={["info"]}
-              disabled={loading}
-              onClick={handlePDFClick}
-            >
-              {showPDF ? "Sulje PDF" : "PDF"}
-            </Button>
-          </div>
+          </ApprovalDialog>
         </div>
       );
 
     default:
-      return null;
+      return <></>;
   }
 };
 
