@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -26,6 +27,7 @@ import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceFolderCreateEvent;
@@ -40,12 +42,14 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 // TODO Should probably be split or renamed WorkspaceNodeController
@@ -59,6 +63,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -71,6 +78,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private WorkspaceMaterialDAO workspaceMaterialDAO;
+
+  @Inject
+  private WorkspaceMaterialReplyDAO workspaceMaterialReplyDAO;
 
   @Inject
   private WorkspaceFolderDAO workspaceFolderDAO;
@@ -623,6 +633,17 @@ public class WorkspaceMaterialController {
 
   public void hideWorkspaceNode(WorkspaceNode workspaceNode) {
     workspaceNodeDAO.updateHidden(workspaceNode, Boolean.FALSE);
+  }
+  
+  public boolean hasStudentAnswers(WorkspaceMaterial workspaceMaterial) {
+    List<WorkspaceMaterialReply> replies = workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
+    for (WorkspaceMaterialReply reply : replies) {
+      UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
+      if (userEntityController.isStudent(userEntity)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers)

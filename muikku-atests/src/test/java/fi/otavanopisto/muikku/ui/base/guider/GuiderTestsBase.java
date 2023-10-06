@@ -695,7 +695,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/profile#general", false);
           assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.getNextWeek().format(DateTimeFormatter.ofPattern("d.M.yyyy")));
           navigate("/profile#purchases", false);
-          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Peruutit tilauksen.");
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Tilaus on peruttu.");
           logout();
           mockBuilder.mockLogin(admin);
           login();
