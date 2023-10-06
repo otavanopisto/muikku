@@ -133,7 +133,6 @@ export async function loadAnnouncementsHelper(
         i18n.t("notifications.loadError", {
           ns: "messaging",
           context: "announcements",
-
         }),
         "error"
       )
