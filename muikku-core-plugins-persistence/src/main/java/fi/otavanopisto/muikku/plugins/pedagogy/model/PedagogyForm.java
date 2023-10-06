@@ -48,15 +48,7 @@ public class PedagogyForm {
   public void setState(PedagogyFormState state) {
     this.state = state;
   }
-
-  public String getVisibility() {
-    return visibility;
-  }
-
-  public void setVisibility(String visibility) {
-    this.visibility = visibility;
-  }
-
+  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -75,8 +67,5 @@ public class PedagogyForm {
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private PedagogyFormState state;
-  
-  @Column
-  private String visibility;
 
 }

@@ -8,6 +8,7 @@ import {
   WorkspaceType,
   MaterialCompositeRepliesType,
   WorkspaceEditModeStateType,
+  WorkspaceAssessementStateType,
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
@@ -124,6 +125,39 @@ class WorkspaceMaterial extends React.Component<
       }
     }
 
+    let isDisabled = false;
+
+    // Values to indicate pending state
+    const pendingValues: WorkspaceAssessementStateType[] = [
+      "pending",
+      "pending_fail",
+      "pending_pass",
+    ];
+
+    if (this.props.workspace.activity) {
+      // Get the number of modules
+      const valueToCheck = this.props.workspace.activity.assessmentState.length;
+      let passValueCount = 0;
+
+      this.props.workspace.activity.assessmentState.forEach((activity) => {
+        // Check if any of the modules are in pending state
+        if (pendingValues.includes(activity.state)) {
+          isDisabled = true;
+        }
+        // Check if module is passed and increment counter
+        if (activity.state === "pass") {
+          passValueCount++;
+        }
+      });
+
+      // there must be at least one assessmentState and
+      // If all modules are passed, materials are disabled.
+      // This is to prevent students from changing their answers after passing grades are given
+      if (valueToCheck > 0 && passValueCount === valueToCheck) {
+        isDisabled = true;
+      }
+    }
+
     return (
       <LazyLoader
         useChildrenAsLazy={true}
@@ -148,8 +182,8 @@ class WorkspaceMaterial extends React.Component<
             material={this.props.materialContentNode}
             workspace={this.props.workspace}
             compositeReplies={this.props.compositeReplies}
-            answerable={this.props.status.loggedIn}
-            readOnly={!this.props.status.loggedIn}
+            answerable={this.props.status.loggedIn && !isDisabled}
+            readOnly={!this.props.status.loggedIn || isDisabled}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}

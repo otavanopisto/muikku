@@ -215,7 +215,6 @@ class Course extends React.Component<CourseProps, CourseState> {
           {hasFees ? (
             <span
               className="application-list__fee-indicatoricon-coin-euro icon-coin-euro"
-              // TODO: Translate using i18next
               title={this.props.t("labels.hasEvaluationFee", {
                 ns: "workspace",
               })}

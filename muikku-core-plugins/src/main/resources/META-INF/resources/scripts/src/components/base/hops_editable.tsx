@@ -1,12 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
+import { HopsUppersecondary } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 
@@ -14,10 +14,10 @@ import { AnyActionType } from "~/actions";
  * HopsProps
  */
 interface HopsProps extends WithTranslation {
-  data?: HOPSDataType;
-  defaultData: HOPSDataType;
+  data?: HopsUppersecondary;
+  defaultData: HopsUppersecondary;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onHopsChange?: (hops: HOPSDataType) => any;
+  onHopsChange?: (hops: HopsUppersecondary) => any;
   status: StatusType;
 }
 
@@ -25,7 +25,7 @@ interface HopsProps extends WithTranslation {
  * HopsState
  */
 interface HopsState {
-  hops: HOPSDataType;
+  hops: HopsUppersecondary;
 }
 
 /**

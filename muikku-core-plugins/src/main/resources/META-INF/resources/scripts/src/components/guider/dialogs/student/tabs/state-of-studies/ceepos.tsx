@@ -1,8 +1,8 @@
 import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { localizeTime } from "~/locales/i18n";
-import { GuiderType } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -29,7 +29,7 @@ import { CeeposOrder, CeeposPurchaseProduct } from "~/generated/client";
  */
 interface CeeposProps extends WithTranslation {
   status: StatusType;
-  guider: GuiderType;
+  guider: GuiderState;
   locale: string;
   deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType;
   completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType;

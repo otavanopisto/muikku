@@ -806,7 +806,7 @@ public class EvaluationRESTService extends PluginRESTService {
    *  archived: false}
    *  
    * Errors:
-   * 400 Workspace material id not given, material not found, request text not given
+   * 400 Workspace material id not given, material not found, request text not given, workspace not found, not workspace user
    */
   @POST
   @Path("/interimEvaluationRequest")
@@ -824,6 +824,14 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     if (StringUtils.isBlank(payload.getRequestText())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing requestText").build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getWorkspaceEntityId());
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unknown workspace").build();
+    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Unknown workspace user").build();
     }
     
     // Interim evaluation request creation
@@ -1257,7 +1265,10 @@ public class EvaluationRESTService extends PluginRESTService {
           ? Collections.emptyList()
           : evaluationController.listInterimEvaluationRequests(workspaceEntityIds, Boolean.FALSE);
       for (InterimEvaluationRequest interimEvaluationRequest : interimEvaluationRequests) {
-        restAssessmentRequests.add(toRestAssessmentRequest(interimEvaluationRequest));
+        RestAssessmentRequest request = toRestAssessmentRequest(interimEvaluationRequest); 
+        if (request != null) {
+          restAssessmentRequests.add(request);
+        }
       }
     }
     else {
@@ -1683,6 +1694,13 @@ public class EvaluationRESTService extends PluginRESTService {
     UserEntityName userEntityName = userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
         workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+    
+    // Bug fix for non-course students having been able to request interim evaluation...
+    
+    if (workspaceUserEntity == null) {
+      return null;
+    }
+    
     WorkspaceUser workspaceUser = workspaceUserEntity == null
         ? null
         : workspaceController.findWorkspaceUser(workspaceUserEntity); // unavoidable Pyramus call just for enrollment date :'(
@@ -1703,8 +1721,8 @@ public class EvaluationRESTService extends PluginRESTService {
 
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
     restAssessmentRequest.setId(interimEvaluationRequest.getId());
-    restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
-    restAssessmentRequest.setWorkspaceUserIdentifier(userEntity.getDefaultIdentifier());
+    restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity.getId());
+    restAssessmentRequest.setWorkspaceUserIdentifier(workspaceUserEntity.getIdentifier());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
     restAssessmentRequest.setEvaluationDate(null);

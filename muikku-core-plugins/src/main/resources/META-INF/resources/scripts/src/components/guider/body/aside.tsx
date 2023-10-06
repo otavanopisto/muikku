@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
@@ -16,7 +16,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * NavigationProps
  */
 interface NavigationProps extends WithTranslation<["common"]> {
-  guider: GuiderType;
+  guider: GuiderState;
 }
 
 /**

@@ -15,7 +15,6 @@ import promisify from "~/util/promisify";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import {
   WorkspaceUpdateType,
-  WorkspaceEducationFilterListType,
   WorkspaceStateFilterListType,
   WorkspacesActiveFiltersType,
   WorkspacesPatchType,
@@ -33,6 +32,7 @@ import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 import {
   Curriculum,
+  EducationType,
   WorkspaceOrganization,
   WorkspaceStudentSearchResult,
 } from "~/generated/client";
@@ -51,7 +51,7 @@ export type UPDATE_WORKSPACES_AVAILABLE_FILTERS_ORGANIZATIONS =
 export type UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES =
   SpecificActionType<
     "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES",
-    WorkspaceEducationFilterListType
+    EducationType[]
   >;
 /**
  * UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_CURRICULUMS
