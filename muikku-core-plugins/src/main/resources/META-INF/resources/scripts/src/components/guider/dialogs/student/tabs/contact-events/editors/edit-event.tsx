@@ -173,7 +173,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18n.t("labels.date", { count: 1 })}
+              {this.props.i18n.t("labels.date")}
             </label>
             <DatePicker
               className="env-dialog__input"

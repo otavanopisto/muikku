@@ -55,7 +55,7 @@ class NavigationAside extends React.Component<
     return (
       <Navigation>
         <NavigationTopic
-          name={this.props.i18n.t("labels.folders", { count: 0 })}
+          name={this.props.i18n.t("labels.folders")}
         >
           {navigationElementList}
         </NavigationTopic>

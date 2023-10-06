@@ -248,13 +248,13 @@ class OrganizationUser extends React.Component<
             updateField={this.updateField}
           >
             <option value="STUDENT">
-              {t("labels.student", { ns: "users", count: 1 })}
+              {t("labels.student", { ns: "users" })}
             </option>
             <option value="MANAGER">
               {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {t("labels.teacher", { ns: "users", count: 1 })}
+              {t("labels.teacher", { ns: "users" })}
             </option>
           </SelectFormElement>
         </DialogRow>

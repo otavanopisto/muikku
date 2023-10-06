@@ -52,7 +52,10 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
     return (
       <div className="empty">
         <span>
-          {t("notifications.loadError", { ns: "workspace", count: 1 })}
+          {t("notifications.loadError", {
+            ns: "workspace",
+            context: "workspace",
+          })}
         </span>
       </div>
     );

@@ -609,7 +609,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="exercise-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.exercises", { ns: "materials", count: 0 })}
+                        {t("labels.exercises", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -630,7 +630,6 @@ class ContentComponent extends SessionStateComponent<
                       >
                         {t("labels.evaluables", {
                           ns: "materials",
-                          count: 0,
                         })}
                       </label>
                     </div>

@@ -800,7 +800,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           i18n.t("notifications.loadError", {
             ns: "users",
             context: "student",
-            count: 1,
           }),
           "error"
         )
@@ -958,8 +957,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         notificationActions.displayNotification(
           i18n.t("notifications.loadError", {
             ns: "users",
-            context: "students",
-            count: 1,
+            context: "student",
           }),
           "error"
         )
@@ -1055,8 +1053,7 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
               ns: "users",
-              context: "students",
-              count: 1,
+              context: "student",
             }),
             "error"
           )
@@ -1915,7 +1912,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "workspace", count: 0 }),
+            i18n.t("notifications.loadError", { ns: "workspace", context: "workspaces" }),
             "error"
           )
         );

@@ -99,7 +99,7 @@ class EvaluationApplication extends React.Component<
     workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
 
     const evaluationRequestOption = {
-      label: t("labels.evaluationRequest", { ns: "evaluation", count: 0 }),
+      label: t("labels.evaluationRequests", { ns: "evaluation" }),
       value: "",
     };
 

@@ -93,10 +93,9 @@ class OrganizationUsers extends React.Component<
             context: "students",
           })}
           searchString={this.props.users.students.searchString}
-          title={t("labels.student", {
+          title={t("labels.students", {
             ns: "users",
             context: "organization",
-            count: 0,
           })}
           users={this.props.users.students}
           pageChange={this.studentPanelPageChange}

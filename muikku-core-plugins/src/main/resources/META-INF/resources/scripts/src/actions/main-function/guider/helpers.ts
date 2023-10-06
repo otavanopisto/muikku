@@ -141,7 +141,6 @@ export async function loadStudentsHelper(
       notificationActions.displayNotification(
         i18n.t("notifications.loadError", {
           ns: "users",
-          count: 0,
           context: "students",
         }),
         "error"

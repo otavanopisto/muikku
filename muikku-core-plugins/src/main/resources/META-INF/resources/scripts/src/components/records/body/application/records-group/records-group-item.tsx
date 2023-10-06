@@ -156,7 +156,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 ></div>
                 <div className="workspace-assessment__date">
                   <span className="workspace-assessment__date-label">
-                    {t("labels.date", { count: 0 })}:
+                    {t("labels.date")}:
                   </span>
                   <span className="workspace-assessment__date-data">
                     {localizeTime.date(a.date)}
@@ -204,7 +204,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {t("labels.date", { count: 1 })}:
+                      {t("labels.date")}:
                     </span>
 
                     <span className="workspace-assessment__date-data">
@@ -254,7 +254,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   ></div>
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {t("labels.date", { count: 1 })}:
+                      {t("labels.date")}:
                     </span>
                     <span className="workspace-assessment__date-data">
                       {localizeTime.date(a.date)}
@@ -264,7 +264,6 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     <div className="workspace-assessment__literal-label">
                       {t("labels.evaluationRequest", {
                         ns: "evaluation",
-                        count: 1,
                       })}
                       :
                     </div>

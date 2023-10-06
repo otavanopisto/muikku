@@ -644,7 +644,6 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
           i18n.t("notifications.loadError", {
             ns: "users",
             context: "students",
-            count: 0,
           }),
           "error"
         )
@@ -1163,7 +1162,6 @@ const loadSelectorStudents: LoadUsersTriggerType =
             i18n.t("notifications.loadError", {
               ns: "users",
               context: "students",
-              count: 0,
             }),
             "error"
           )

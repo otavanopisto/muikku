@@ -109,7 +109,7 @@ class NavigationAside extends React.Component<
           onClick={this.handleNavigationWorkspaceClick(undefined)}
           isActive={this.props.evaluations.selectedWorkspaceId === undefined}
         >
-          {t("labels.evaluationRequest", { ns: "evaluation", count: 0 })}
+          {t("labels.evaluationRequests", { ns: "evaluation" })}
         </NavigationElement>
         {renderNavigationWorkspaceElements.length > 0
           ? renderNavigationWorkspaceElements

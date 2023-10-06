@@ -498,17 +498,16 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>
   );
-  t("actions.openAll");
 
   const panelTabs: Tab[] = [
     {
       id: "EVALUATED",
-      name: t("labels.evaluables", { ns: "materials", count: 0 }),
+      name: t("labels.evaluables", { ns: "materials" }),
       type: "assignments",
       component: (
         <ApplicationSubPanel modifier="studies-assignments">
           <ApplicationSubPanel.Header modifier="studies-assignments">
-            <span>{t("labels.evaluables", { ns: "materials", count: 0 })}</span>
+            <span>{t("labels.evaluables", { ns: "materials" })}</span>
             <span>
               <Link
                 className="link link--studies-open-close"
@@ -546,12 +545,12 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     },
     {
       id: "EXCERCISE",
-      name: t("labels.exercises", { ns: "materials", count: 0 }),
+      name: t("labels.exercises", { ns: "materials" }),
       type: "excercises",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            <span>{t("labels.exercises", { ns: "materials", count: 0 })}</span>
+            <span>{t("labels.exercises", { ns: "materials" })}</span>
             <span>
               <Link
                 className="link link--studies-open-close"

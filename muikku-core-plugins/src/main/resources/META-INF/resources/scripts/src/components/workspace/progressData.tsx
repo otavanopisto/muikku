@@ -65,7 +65,7 @@ class ProgressData extends React.Component<
               content={
                 <div>
                   <div className="workspace-activity__menu-title">
-                    {t("labels.evaluables", { ns: "materials", count: 0 })}
+                    {t("labels.evaluables", { ns: "materials" })}
                   </div>
                   <div className="workspace-activity__menu-label">
                     {t("labels.assignments", {
@@ -168,7 +168,7 @@ class ProgressData extends React.Component<
               content={
                 <div>
                   <div className="workspace-activity__menu-title">
-                    {t("labels.exercises", { ns: "materials", count: 0 })}
+                    {t("labels.exercises", { ns: "materials" })}
                   </div>
                   <div className="workspace-activity__menu-label">
                     {t("labels.assignments", {
