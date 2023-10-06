@@ -7,10 +7,7 @@ import {
   Opinion,
   SupportActionImplementation,
 } from "~/@types/pedagogy-form";
-import {
-  PedagogyForm,
-  PedagogyFormState,
-} from "~/generated/client";
+import { PedagogyForm, PedagogyFormState } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 
 export type UsePedagogyType = ReturnType<typeof usePedagogy>;

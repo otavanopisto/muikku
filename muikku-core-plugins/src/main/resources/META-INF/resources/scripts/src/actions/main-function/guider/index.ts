@@ -7,7 +7,6 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
-  PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import promisify from "~/util/promisify";
@@ -653,8 +652,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                   },
                 });
               });
-          }
-        ),
+          }),
 
         usergroupApi
           .getUsergroups({ userIdentifier: id })
