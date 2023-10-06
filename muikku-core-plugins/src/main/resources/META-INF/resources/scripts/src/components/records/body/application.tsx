@@ -135,17 +135,6 @@ class StudiesApplication extends React.Component<
   /**
    * loadPedagogyFormState
    */
-  /* loadPedagogyFormState = async () =>
-    (await promisify(
-      mApi().pedagogy.form.state.read(
-        this.props.status.userSchoolDataIdentifier
-      ),
-      "callback"
-    )()) as FormState; */
-
-  /**
-   * loadPedagogyFormState
-   */
   loadPedagogyFormState = async () => {
     const pedagogyApi = MApi.getPedagogyApi();
 

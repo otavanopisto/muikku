@@ -627,18 +627,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               }
             );
 
-            /* promisify(mApi().pedagogy.form.access.read(id), "callback")().then(
-              (pedagogyFormAvaibility: PedagogyFormAccess) => {
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "pedagogyFormAvailable",
-                    value: pedagogyFormAvaibility,
-                  },
-                });
-              }
-            ); */
-
             pedagogyApi
               .getPedagogyFormAccess({
                 studentIdentifier: id,
