@@ -60,6 +60,11 @@
   }
 }
 
+.avatar-img {
+  position: absolute;
+  z-index: 1;
+}
+
 .avatar--category-1 {
   background-color: $color-main-function-category-1;
 }
