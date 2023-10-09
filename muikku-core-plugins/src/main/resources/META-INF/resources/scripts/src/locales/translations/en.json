@@ -1325,8 +1325,8 @@
     },
     "content": {
       "empty": "No notes",
-      "defaultPosition": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
-      "defaultPosition_bottom": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
+      "defaultPosition": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
+      "defaultPosition_bottom": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
       "remove": "Are you sure you wish to deöete the note?"
     },
     "labels": {
@@ -1707,7 +1707,7 @@
       "evaluateStudent": "Evaluate student",
       "evaluateAssignment": "Evaluate assignment",
       "grade": "Grade",
-      "grade_journal": "Grade journal",
+      "grade_journal": "Journal feedback",
       "grade_overall": "Grade overall",
       "grade_workspace": "Course grade",
       "improveGrade": "Improve grade",
