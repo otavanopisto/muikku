@@ -25,7 +25,6 @@ import {
 import {
   MessagesStateType,
   MessagesState,
-  MessageSearchResult,
 } from "~/reducers/main-function/messages";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
@@ -39,7 +38,12 @@ import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import InfoPopover from "~/components/general/info-popover";
 import Dropdown from "~/components/general/dropdown";
-import { MessageThread, MessageThreadExpanded } from "~/generated/client";
+import {
+  MessageSearchResult,
+  instanceOfMessageThread,
+  MessageThread,
+  MessageThreadExpanded,
+} from "~/generated/client";
 
 /**
  * CommunicatorMessagesProps
@@ -204,14 +208,27 @@ class CommunicatorMessages extends BodyScrollLoader<
   }
 
   /**
+   * Type guard for MessageThread
+   * @param value value
+   * @returns value is MessageThread
+   */
+  isMessageThread = (value: object): value is MessageThread =>
+    instanceOfMessageThread(value);
+
+  /**
    * setCurrentThread
    * @param threadOrSearchResult threadOrSearchResult
    */
   setCurrentThread(threadOrSearchResult: MessageThread | MessageSearchResult) {
-    window.location.hash =
-      window.location.hash.split("/")[0] +
-      "/" +
-      threadOrSearchResult.communicatorMessageId;
+    if (this.isMessageThread(threadOrSearchResult)) {
+      window.location.hash = `${window.location.hash.split("/")[0]}/${
+        threadOrSearchResult.communicatorMessageId
+      }`;
+    } else {
+      window.location.hash = `#${threadOrSearchResult.folder.toLowerCase()}/${
+        threadOrSearchResult.communicatorMessageId
+      }`;
+    }
   }
 
   /**
