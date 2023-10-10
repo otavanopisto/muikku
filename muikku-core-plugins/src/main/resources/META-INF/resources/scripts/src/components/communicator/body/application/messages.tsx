@@ -101,7 +101,7 @@ class CommunicatorMessages extends BodyScrollLoader<
    * @param thread thread
    * @param userId userId
    */
-  getThreadUserNames(thread: MessageThread, userId: number): any {
+  getThreadUserNames(thread: MessageThread, userId: number) {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
         return <span>{this.props.t("labels.self")}</span>;
@@ -152,7 +152,7 @@ class CommunicatorMessages extends BodyScrollLoader<
         );
       }
 
-      const name = getName(recipient as any, !this.props.status.isStudent);
+      const name = getName(recipient, !this.props.status.isStudent);
 
       if (recipient.studiesEnded === true) {
         return (

@@ -4,8 +4,6 @@ import { Dispatch } from "react-redux";
 import {
   MessagesStateType,
   MessagesStatePatch,
-  MessageThreadUpdateType,
-  MessageRecepientType,
   MessagesNavigationItem,
 } from "~/reducers/main-function/messages";
 import { displayNotification } from "~/actions/base/notifications";
@@ -84,7 +82,7 @@ export type UPDATE_ONE_MESSAGE_THREAD = SpecificActionType<
   "UPDATE_ONE_MESSAGE_THREAD",
   {
     thread: MessageThread;
-    update: MessageThreadUpdateType;
+    update: Partial<MessageThread>;
   }
 >;
 export type UPDATE_MESSAGES_SIGNATURE = SpecificActionType<
@@ -509,8 +507,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
           state.messages.location === "inbox" ||
           state.messages.location === "unread";
         const weAreOneOfTheRecepients = result.recipients.find(
-          (recipient: MessageRecepientType) =>
-            recipient.userEntityId === status.userId
+          (recipient) => recipient.userEntityId === status.userId
         );
         const isInboxOrUnreadAndWeAreOneOfTheRecepients =
           isInboxOrUnread && weAreOneOfTheRecepients;
