@@ -1,9 +1,4 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import {
-  DiscussionUserType,
-  DiscussionThreadReplyType,
-} from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
@@ -21,15 +16,19 @@ import {
 } from "./threads/threads";
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
+import { AnyActionType } from "~/actions";
+import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
+import * as moment from "moment";
+import { localizeTime } from "~/locales/i18n";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * DiscussionThreadReplyProps
  */
-interface DiscussionThreadReplyProps {
-  discussionItem: DiscussionThreadReplyType;
-  i18n: i18nType;
+interface DiscussionThreadReplyProps extends WithTranslation {
+  discussionItem: DiscussionThreadReply;
   status: StatusType;
-  user: DiscussionUserType;
+  user: DiscussionUser;
   avatar?: JSX.Element;
   isStudent: boolean;
   isHidden: boolean;
@@ -53,7 +52,7 @@ interface DiscussionThreadReplyState {
 /**
  * DiscussionThreadReply
  */
-class DiscussionThreadReply extends React.Component<
+class DiscussionThreadReplyComponent extends React.Component<
   DiscussionThreadReplyProps,
   DiscussionThreadReplyState
 > {
@@ -69,7 +68,7 @@ class DiscussionThreadReply extends React.Component<
 
   /**
    * handleOnReplyClick
-   * @param type
+   * @param type type
    */
   handleOnReplyClick =
     (type: "answer" | "modify" | "quote") =>
@@ -90,7 +89,7 @@ class DiscussionThreadReply extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const {
@@ -114,9 +113,7 @@ class DiscussionThreadReply extends React.Component<
         hidden={isHidden}
       >
         <DiscussionThreadHeader
-          aside={
-            <span>{this.props.i18n.time.format(discussionItem.created)}</span>
-          }
+          aside={<span>{localizeTime.date(discussionItem.created)}</span>}
         >
           <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">
             {getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}
@@ -131,33 +128,33 @@ class DiscussionThreadReply extends React.Component<
         ) : (
           <>
             {discussionItem.deleted ? (
-              <DiscussionThreadBody>
-                <div className="rich-text">
-                  [
-                  {this.props.i18n.text.get(
-                    "plugin.discussion.infomessage.message.removed"
-                  )}
-                  ]
-                </div>
-
-                {discussionItem.created !== discussionItem.lastModified ? (
-                  <span className="application-list__item-edited">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(discussionItem.lastModified)
-                    )}
-                  </span>
+              <DiscussionThreadBody
+                html={`<p><i> ${this.props.i18n.t("content.removed", {
+                  ns: "messaging",
+                })} </i></p>`}
+              >
+                {!moment(discussionItem.created).isSame(
+                  discussionItem.lastModified
+                ) ? (
+                  <div className="application-list__item-edited">
+                    {this.props.i18n.t("labels.edited", {
+                      context: "in",
+                      time: localizeTime.date(discussionItem.lastModified),
+                    })}
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
             ) : (
               <DiscussionThreadBody html={discussionItem.message}>
-                {discussionItem.created !== discussionItem.lastModified ? (
-                  <span className="application-list__item-edited">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(discussionItem.lastModified)
-                    )}
-                  </span>
+                {!moment(discussionItem.created).isSame(
+                  discussionItem.lastModified
+                ) ? (
+                  <div className="application-list__item-edited">
+                    {this.props.i18n.t("labels.edited", {
+                      context: "in",
+                      time: localizeTime.date(discussionItem.lastModified),
+                    })}
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
             )}
@@ -171,9 +168,7 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("answer")}
                   >
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.reply.message"
-                    )}
+                    {this.props.i18n.t("actions.reply", { ns: "messaging" })}
                   </Link>
                 ) : null}
                 {!threadLocked || !isStudent ? (
@@ -183,7 +178,7 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("quote")}
                   >
-                    {this.props.i18n.text.get("plugin.discussion.reply.quote")}
+                    {this.props.i18n.t("actions.quote")}
                   </Link>
                 ) : null}
                 {canEditMessage ? (
@@ -193,7 +188,7 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                     onClick={this.handleOnReplyClick("modify")}
                   >
-                    {this.props.i18n.text.get("plugin.discussion.reply.edit")}
+                    {this.props.i18n.t("actions.edit")}
                   </Link>
                 ) : null}
                 {canRemoveMessage ? (
@@ -203,9 +198,7 @@ class DiscussionThreadReply extends React.Component<
                       as="span"
                       className="link link--application-list"
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.delete"
-                      )}
+                      {this.props.i18n.t("actions.remove")}
                     </Link>
                   </DeleteThreadComponent>
                 ) : null}
@@ -217,12 +210,14 @@ class DiscussionThreadReply extends React.Component<
                     className="link link--application-list"
                   >
                     {parentHasHiddenSiblings
-                      ? this.props.i18n.text.get(
-                          "plugin.discussion.reply.showAllReplies"
-                        )
-                      : this.props.i18n.text.get(
-                          "plugin.discussion.reply.hideAllReplies"
-                        )}
+                      ? this.props.i18n.t("actions.show", {
+                          ns: "messaging",
+                          context: "comments",
+                        })
+                      : this.props.i18n.t("actions.hide", {
+                          ns: "messaging",
+                          context: "comments",
+                        })}
                   </Link>
                 ) : null}
               </DiscussionThreadFooter>
@@ -255,26 +250,22 @@ class DiscussionThreadReply extends React.Component<
 
 /**
  * mapStateToProps
- * @param state
- * @returns
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
 
 /**
  * mapDispatchToProps
- * @param dispatch
- * @returns
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionThreadReply);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionThreadReplyComponent)
+);

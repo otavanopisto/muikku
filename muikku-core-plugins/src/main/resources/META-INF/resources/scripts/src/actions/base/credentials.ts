@@ -1,15 +1,15 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import {
-  CredentialsType,
-  CredentialsStateType,
-} from "~/reducers/base/credentials";
+import { CredentialsStateType } from "~/reducers/base/credentials";
 import notificationActions from "~/actions/base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
+import i18n from "~/locales/i18n";
+import MApi, { isMApiError } from "~/api/api";
+import { Credentials } from "~/generated/client";
+import { Dispatch } from "react-redux";
+
 export type LOAD_CREDENTIALS = SpecificActionType<
   "LOAD_CREDENTIALS",
-  CredentialsType
+  Credentials
 >;
 export type CREDENTIALS_STATE = SpecificActionType<
   "CREDENTIALS_STATE",
@@ -20,7 +20,7 @@ export type CREDENTIALS_STATE = SpecificActionType<
  * UpdateCredentialsTriggerType
  */
 export interface UpdateCredentialsTriggerType {
-  (data: CredentialsType): AnyActionType;
+  (data: Credentials): AnyActionType;
 }
 
 /**
@@ -38,14 +38,16 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
   secret
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const credentialsApi = MApi.getCredentialsApi();
+
     try {
-      const data: any = await promisify(
-        mApi().forgotpassword.credentialReset.read(secret),
-        "callback"
-      )();
+      const data = await credentialsApi.loadCredentials({
+        hash: secret,
+      });
+
       dispatch({
         type: "LOAD_CREDENTIALS",
         payload: data,
@@ -55,17 +57,18 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
         payload: <CredentialsStateType>"READY",
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         return dispatch(
           notificationActions.displayNotification(err.message, "error")
         );
       }
+
       return dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.forgotpassword.changeCredentials.messages.error.hashLoadFailed",
-            err.message
-          ),
+          i18n.t("notifications.loadError", {
+            context: "credentials",
+            error: err.message,
+          }),
           "error"
         )
       );
@@ -80,32 +83,37 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
 const updateCredentials: UpdateCredentialsTriggerType =
   function updateCredentials(credentials) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const credentialsApi = MApi.getCredentialsApi();
+
       try {
-        mApi()
-          .forgotpassword.credentialReset.create(credentials)
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
-          .callback(() => {});
+        await credentialsApi.updateCredentials({
+          updateCredentialsRequest: credentials,
+        });
+
         dispatch({
           type: "CREDENTIALS_STATE",
           payload: <CredentialsStateType>"CHANGED",
         });
+
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.forgotpassword.changeCredentials.messages.success.credentialsReset"
-            ),
+            i18n.t("notifications.updateSuccess", {
+              context: "credentials",
+            }),
             "success"
           )
         );
       } catch (err) {
-        if (err) {
-          return dispatch(
-            notificationActions.displayNotification(err.message, "error")
-          );
+        if (!isMApiError(err)) {
+          throw err;
         }
+
+        return dispatch(
+          notificationActions.displayNotification(err.message, "error")
+        );
       }
     };
   };

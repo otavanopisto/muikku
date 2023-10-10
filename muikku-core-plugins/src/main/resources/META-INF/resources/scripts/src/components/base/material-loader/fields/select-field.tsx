@@ -6,19 +6,19 @@
 
 import * as React from "react";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18n";
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import { v4 as uuidv4 } from "uuid";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
+import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 
 /**
  * SelectFieldProps
  */
-interface SelectFieldProps {
+interface SelectFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -39,7 +39,6 @@ interface SelectFieldProps {
   ) => any;
 
   usedAs: UsedAs;
-  i18n: i18nType;
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;
@@ -69,10 +68,7 @@ interface SelectFieldState {
 /**
  * SelectField
  */
-export default class SelectField extends React.Component<
-  SelectFieldProps,
-  SelectFieldState
-> {
+class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
   /**
    * constructor
    * @param props props
@@ -100,7 +96,7 @@ export default class SelectField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -110,7 +106,7 @@ export default class SelectField extends React.Component<
 
   /**
    * onSelectChange
-   * @param e
+   * @param e e
    */
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
     // When the select changes, we gotta call it up
@@ -122,8 +118,8 @@ export default class SelectField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: SelectFieldProps,
@@ -133,7 +129,6 @@ export default class SelectField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -145,7 +140,6 @@ export default class SelectField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if we are allowed to check answers
@@ -206,8 +200,8 @@ export default class SelectField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(prevProps: SelectFieldProps, prevState: SelectFieldState) {
     this.checkAnswers();
@@ -215,9 +209,11 @@ export default class SelectField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.content) {
       return null;
     }
@@ -228,8 +224,12 @@ export default class SelectField extends React.Component<
       ) {
         return (
           <>
-            {/* TODO: lokalisointi*/}
-            <ReadspeakerMessage text="Valintakenttä" />
+            <ReadspeakerMessage
+              text={t("messages.assignment", {
+                ns: "readSpeaker",
+                context: "select",
+              })}
+            />
             <span className="material-page__selectfield-wrapper rs_skip_always">
               <select
                 className="material-page__selectfield"
@@ -247,8 +247,12 @@ export default class SelectField extends React.Component<
 
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Valintakenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "select",
+            })}
+          />
           <span
             className="material-page__radiobutton-wrapper rs_skip_always"
             ref="base"
@@ -301,9 +305,7 @@ export default class SelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.correctSummary.title"
-              )}
+              {t("labels.answer", { ns: "materials", context: "correct" })}:{" "}
             </span>
             {correctAnswersFound.map((answer, index) => (
               <span key={index} className="material-page__field-answer-example">
@@ -329,9 +331,10 @@ export default class SelectField extends React.Component<
         correctAnswersummaryComponent = (
           <span className="material-page__field-answer-examples">
             <span className="material-page__field-answer-examples-title">
-              {this.props.i18n.text.get(
-                "plugin.workspace.assigment.checkAnswers.detailsSummary.title"
-              )}
+              {this.props.i18n.t("labels.answer", {
+                ns: "materials",
+                context: "example",
+              })}
             </span>
             <span className="material-page__field-answer-example">
               <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
@@ -364,15 +367,18 @@ export default class SelectField extends React.Component<
         this.props.content.listType === "list" ? "list" : "dropdown";
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Valintakenttä" />
+          <ReadspeakerMessage
+            text={t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "select",
+            })}
+          />
           <span
             className={`material-page__selectfield-wrapper material-page__selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass} rs_skip_always`}
           >
             <Synchronizer
               synced={this.state.synced}
               syncError={this.state.syncError}
-              i18n={this.props.i18n}
               onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
             />
             <select
@@ -408,15 +414,18 @@ export default class SelectField extends React.Component<
     //this is for the standard
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Valintakenttä" />
+        <ReadspeakerMessage
+          text={t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "select",
+          })}
+        />
         <span
           className={`material-page__radiobutton-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           <span
@@ -459,3 +468,5 @@ export default class SelectField extends React.Component<
     );
   }
 }
+
+export default withTranslation(["materials", "common"])(SelectField);

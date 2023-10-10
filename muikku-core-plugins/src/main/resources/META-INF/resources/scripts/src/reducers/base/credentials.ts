@@ -1,13 +1,13 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
+import { Credentials } from "~/generated/client";
 
 /**
- * CredentialsType
+ * CredentialsState
  */
-export interface CredentialsType {
-  secret: string;
-  username: string;
+export interface CredentialsState {
   state?: CredentialsStateType;
+  credentials: Credentials;
 }
 
 export type CredentialsStateType = "LOADING" | "READY" | "CHANGED";
@@ -15,9 +15,12 @@ export type CredentialsStateType = "LOADING" | "READY" | "CHANGED";
 /**
  * initialCredentialsState
  */
-const initialCredentialsState: CredentialsType = {
-  secret: "",
-  username: "",
+const initialCredentialsState: CredentialsState = {
+  credentials: {
+    username: "",
+    password: "",
+    secret: "",
+  },
   state: "LOADING",
 };
 
@@ -28,13 +31,13 @@ const initialCredentialsState: CredentialsType = {
  * @param action action
  * @returns State of credentials
  */
-export const credentials: Reducer<CredentialsType> = (
+export const credentials: Reducer<CredentialsState> = (
   state = initialCredentialsState,
   action: ActionType
 ) => {
   switch (action.type) {
     case "LOAD_CREDENTIALS":
-      return { ...state, ...action.payload };
+      return { ...state, credentials: action.payload };
 
     case "CREDENTIALS_STATE":
       return { ...state, state: action.payload };

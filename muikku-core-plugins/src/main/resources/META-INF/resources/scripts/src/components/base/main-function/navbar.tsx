@@ -3,15 +3,14 @@ import Link from "~/components/general/link";
 import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import Dropdown from "~/components/general/dropdown";
-
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * ItemDataElement
@@ -31,9 +30,9 @@ interface ItemDataElement {
 /**
  * MainFunctionNavbarProps
  */
-interface MainFunctionNavbarProps {
+interface MainFunctionNavbarProps extends WithTranslation {
   activeTrail?: string;
-  i18n: i18nType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
   messageCount: number;
@@ -56,21 +55,22 @@ class MainFunctionNavbar extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     const itemData: ItemDataElement[] = [
       {
         modifier: "home",
         trail: "index",
-        text: "plugin.home.home",
+        text: t("labels.home"),
         href: "/",
         icon: "home",
-        // Go to frontpage if not logged in
         to: this.props.status.loggedIn,
         condition: true,
       },
       {
         modifier: "coursepicker",
         trail: "coursepicker",
-        text: "plugin.coursepicker.coursepicker",
+        text: t("labels.coursepicker"),
         href: "/coursepicker",
         icon: "books",
         to: true,
@@ -79,7 +79,7 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "communicator",
         trail: "communicator",
-        text: "plugin.communicator.communicator",
+        text: t("labels.communicator"),
         href: "/communicator",
         icon: "envelope",
         condition: this.props.status.isActiveUser && this.props.status.loggedIn,
@@ -89,7 +89,7 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "discussion",
         trail: "discussion",
-        text: "plugin.forum.forum",
+        text: t("labels.discussion"),
         href: "/discussion",
         icon: "bubbles",
         to: true,
@@ -101,7 +101,7 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "guider",
         trail: "guider",
-        text: "plugin.guider.guider",
+        text: t("labels.guider"),
         href: "/guider",
         icon: "users",
         to: true,
@@ -110,7 +110,7 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "records",
         trail: "records",
-        text: "plugin.records.records",
+        text: t("labels.studies"),
         href: "/records",
         icon: "profile",
         to: true,
@@ -119,7 +119,7 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "announcer",
         trail: "announcer",
-        text: "plugin.announcer.announcer",
+        text: t("labels.announcer"),
         href: "/announcer",
         icon: "paper-plane",
         to: true,
@@ -128,7 +128,7 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "evaluation",
         trail: "evaluation",
-        text: "plugin.evaluation.evaluation",
+        text: t("labels.evaluation"),
         href: "/evaluation",
         icon: "evaluate",
         to: true,
@@ -137,13 +137,15 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "organization",
         trail: "organization",
-        text: "plugin.organization.organization",
+        text: t("labels.organizationManagament"),
         href: "/organization",
         icon: "board",
         to: true,
         condition: this.props.status.permissions.ORGANIZATION_VIEW,
       },
     ];
+
+    t("labels.forgotPasswordLink");
 
     return (
       <Navbar
@@ -158,11 +160,7 @@ class MainFunctionNavbar extends React.Component<
           return {
             modifier: item.modifier,
             item: (
-              <Dropdown
-                openByHover
-                key={item.text + i}
-                content={this.props.i18n.text.get(item.text)}
-              >
+              <Dropdown openByHover key={item.text + i} content={item.text}>
                 <Link
                   openInNewTab={item.openInNewTab}
                   as={this.props.activeTrail == item.trail ? "span" : null}
@@ -179,12 +177,8 @@ class MainFunctionNavbar extends React.Component<
                   }`}
                   aria-label={
                     this.props.activeTrail == item.trail
-                      ? this.props.i18n.text.get(
-                          "plugin.wcag.mainNavigation.currentPage.aria.label"
-                        ) +
-                        " " +
-                        this.props.i18n.text.get(item.text)
-                      : this.props.i18n.text.get(item.text)
+                      ? t("wcag.currentPage") + " " + item.text
+                      : item.text
                   }
                   role="menuitem"
                 >
@@ -207,16 +201,10 @@ class MainFunctionNavbar extends React.Component<
                 <ForgotPasswordDialog key="1">
                   <Link
                     className="link link--forgot-password link--forgot-password-main-function"
-                    aria-label={this.props.i18n.text.get(
-                      "plugin.forgotpassword.forgotLink"
-                    )}
+                    aria-label={t("labels.forgotPasswordLink")}
                     role="menuitem"
                   >
-                    <span>
-                      {this.props.i18n.text.get(
-                        "plugin.forgotpassword.forgotLink"
-                      )}
-                    </span>
+                    <span>{t("labels.forgotPasswordLink")}</span>
                   </Link>
                 </ForgotPasswordDialog>,
               ]
@@ -234,7 +222,7 @@ class MainFunctionNavbar extends React.Component<
               className={`menu__item-link ${
                 this.props.activeTrail === item.trail ? "active" : ""
               }`}
-              aria-label={this.props.i18n.text.get(item.text)}
+              aria-label={item.text}
               role="menuitem"
             >
               <span className={`menu__item-link-icon icon-${item.icon}`} />
@@ -243,9 +231,7 @@ class MainFunctionNavbar extends React.Component<
                   {item.badge >= 100 ? "99+" : item.badge}
                 </span>
               ) : null}
-              <span className="menu__item-link-text">
-                {this.props.i18n.text.get(item.text)}
-              </span>
+              <span className="menu__item-link-text">{item.text}</span>
             </Link>
           );
         })}
@@ -260,7 +246,6 @@ class MainFunctionNavbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
     title: state.title,
@@ -271,6 +256,8 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({});
+const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainFunctionNavbar);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(MainFunctionNavbar)
+);

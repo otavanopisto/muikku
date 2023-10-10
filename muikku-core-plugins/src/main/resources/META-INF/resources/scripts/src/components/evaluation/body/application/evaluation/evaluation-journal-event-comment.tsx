@@ -1,7 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { JournalComment } from "~/@types/journal";
 import { StateType } from "~/reducers";
 import { Dispatch } from "redux";
 import Link from "~/components/general/link";
@@ -13,20 +12,21 @@ import {
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
-import { i18nType } from "~/reducers/base/i18n";
+import { WorkspaceJournalComment } from "~/generated/client";
+import { useTranslation } from "react-i18next";
+import { localizeTime } from "~/locales/i18n";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventCommentProps {
-  i18n: i18nType;
-  journalComment: JournalComment;
+  journalComment: WorkspaceJournalComment;
   userEntityId: number;
   workspaceEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
   canDelete: boolean;
-  onEditClick: (comment: JournalComment) => void;
+  onEditClick: (comment: WorkspaceJournalComment) => void;
 }
 
 /**
@@ -39,7 +39,6 @@ const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps
 > = (props) => {
   const {
-    i18n,
     journalComment,
     status,
     onEditClick,
@@ -50,6 +49,8 @@ const EvaluationJournalEventComment: React.FC<
 
   const { comment, created, id, firstName, lastName, authorId } =
     journalComment;
+
+  const { t } = useTranslation();
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
@@ -72,14 +73,12 @@ const EvaluationJournalEventComment: React.FC<
 
   const creatorIsMe = status.userId === authorId;
   const creatorName = creatorIsMe
-    ? i18n.text.get(
-        "plugin.evaluation.evaluationModal.journalComments.creator.me"
-      )
+    ? t("labels.self")
     : `${firstName} ${lastName}`;
-  const formatedDate = `${i18n.time.format(created, "l")} - ${i18n.time.format(
+  const formatedDate = `${localizeTime.date(
     created,
-    "LT"
-  )}`;
+    "l"
+  )} - ${localizeTime.date(created, "h:mm")}`;
 
   return (
     <div
@@ -96,9 +95,7 @@ const EvaluationJournalEventComment: React.FC<
             className="link link--evaluation"
             onClick={handleEditCommentClick}
           >
-            {i18n.text.get(
-              "plugin.evaluation.evaluationModal.journalComments.editButton"
-            )}
+            {t("actions.edit")}
           </Link>
 
           {canDelete && creatorIsMe && (
@@ -108,9 +105,7 @@ const EvaluationJournalEventComment: React.FC<
               workspaceEntityId={workspaceEntityId}
             >
               <Link className="link link--evaluation link--evaluation-delete">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.journalComments.deleteButton"
-                )}
+                {t("actions.remove")}
               </Link>
             </DeleteJournalComment>
           )}
@@ -130,7 +125,6 @@ const EvaluationJournalEventComment: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }

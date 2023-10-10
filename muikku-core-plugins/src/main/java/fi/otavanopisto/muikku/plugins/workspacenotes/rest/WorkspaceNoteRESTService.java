@@ -17,17 +17,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNote;
 import fi.otavanopisto.muikku.plugins.workspacenotes.WorkspaceNoteController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -51,9 +48,6 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
 
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
 
   /*
@@ -108,7 +102,7 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
   }
   
   /*
-   * mApi() call mApi().workspacenotes.workspacenote.update(WorkspaceNoteRestModel) 
+   * mApi() call mApi().workspacenotes.workspacenote.update(123, WorkspaceNoteRestModel) 
    *  
    *  Parameter rest model must contain owner, workspaceEntityId & nextSiblingId. 
    *  
@@ -130,15 +124,19 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    *  
    *  Errors:
    *  404 Not found if workspaceNote not found
-   *  400 Bad request if userEntityId is null
+   *  400 Bad request if userEntityId is null or note id doesn't match payload
    *  403 Forbidden if userEntityId does not match with logged user
    */
   @PUT
-  @Path ("/workspacenote")
+  @Path ("/workspacenote/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateWorkspaceNote(WorkspaceNoteRestModel restModel) {
+  public Response updateWorkspaceNote(@PathParam("ID") Long workspaceNoteId, WorkspaceNoteRestModel restModel) {
     
-    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(restModel.getId());
+    if (!workspaceNoteId.equals(restModel.getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Id mismatch").build();
+    }
+    
+    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
     
     if (workspaceNote == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -218,10 +216,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     }
     
     // non-admins can only list their own notes
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
     if (!owner.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -264,10 +261,9 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
     }
     
     // users can only edit their own notes
-    EnvironmentRoleArchetype loggedUserRole = getUserRoleArchetype(sessionController.getLoggedUser());
     
     if (!owner.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -293,13 +289,13 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
    * */
   
   @DELETE
-  @Path ("/archive")
+  @Path ("/workspacenote/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response archive(WorkspaceNoteRestModel payload) {
-    WorkspaceNote workspaceNote= workspaceNoteController.findWorkspaceNoteById(payload.getId());
+  public Response archive(@PathParam("ID") Long workspaceNoteId) {
+    WorkspaceNote workspaceNote = workspaceNoteController.findWorkspaceNoteById(workspaceNoteId);
     
     if (workspaceNote == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceNote(%d) not found", payload.getId())).build();
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceNote(%d) not found", workspaceNoteId)).build();
     }
     
     // Archiving is only allowed if you're the owner of the workspace note
@@ -316,9 +312,4 @@ public class WorkspaceNoteRESTService extends PluginRESTService {
 
   }
   
-  private EnvironmentRoleArchetype getUserRoleArchetype(SchoolDataIdentifier userSchoolDataIdentifier) {
-    EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(userSchoolDataIdentifier);
-    EnvironmentRoleArchetype userRoleArchetype = roleEntity != null ? roleEntity.getArchetype() : null;
-    return userRoleArchetype;
-  }
 } 

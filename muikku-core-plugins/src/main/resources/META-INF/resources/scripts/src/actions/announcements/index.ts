@@ -10,6 +10,7 @@ import { loadAnnouncementsHelper } from "./helpers";
 import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
+import i18n from "~/locales/i18n";
 import {
   Announcement,
   CreateAnnouncementRequest,
@@ -163,9 +164,10 @@ function validateAnnouncement(
   if (!announcement.caption) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.caption"
-        ),
+        i18n.t("validation.caption", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -173,9 +175,10 @@ function validateAnnouncement(
   } else if (!announcement.content) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.content"
-        ),
+        i18n.t("validation.content", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -183,9 +186,10 @@ function validateAnnouncement(
   } else if (!announcement.endDate) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.endDate"
-        ),
+        i18n.t("validation.endDate", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -193,9 +197,10 @@ function validateAnnouncement(
   } else if (!announcement.startDate) {
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get(
-          "plugin.announcer.errormessage.createAnnouncement.missing.startDate"
-        ),
+        i18n.t("validation.beginDate", {
+          ns: "messaging",
+          context: "announcements",
+        }),
         "error"
       )
     );
@@ -265,9 +270,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         } catch (err) {
           dispatch(
             notificationActions.displayNotification(
-              getState().i18n.text.get(
-                "plugin.announcer.errormessage.announcementNotAvailable"
-              ),
+              i18n.t("notifications.availableError", { ns: "messaging" }),
               "error"
             )
           );
@@ -293,9 +296,11 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
       }
       dispatch(
         notificationActions.displayNotification(
-          getState().i18n.text.get(
-            "plugin.announcer.errormessage.loadAnnouncement"
-          ),
+          i18n.t("notifications.loadError", {
+            ns: "messaging",
+            context: "announcements",
+            count: 0,
+          }),
           "error"
         )
       );
@@ -368,7 +373,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
             return;
           }
           location.hash = "#active";
-        } else if (announcements.location !== "past" && diff < 0) {
+        } else if (announcements.location !== "expired" && diff < 0) {
           if (data.cancelRedirect) {
             dispatch({
               type: "DELETE_ANNOUNCEMENT",
@@ -376,7 +381,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
             });
             return;
           }
-          location.hash = "#past";
+          location.hash = "#expired";
         } else {
           dispatch({
             type: "UPDATE_ONE_ANNOUNCEMENT",
@@ -395,9 +400,10 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.announcer.errormessage.updateAnnouncement"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "messaging",
+              context: "announcement",
+            }),
             "error"
           )
         );
@@ -467,9 +473,10 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
             }
             dispatch(
               notificationActions.displayNotification(
-                getState().i18n.text.get(
-                  "plugin.announcer.errormessage.deleteAnnouncement"
-                ),
+                i18n.t("notifications.removeError", {
+                  ns: "messaging",
+                  context: "announcement",
+                }),
                 "error"
               )
             );
@@ -506,8 +513,8 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         const diff = moment(data.announcement.endDate).diff(moment(), "days");
         if (announcements.location !== "active" && diff >= 0) {
           location.hash = "#active";
-        } else if (announcements.location !== "past" && diff < 0) {
-          location.hash = "#past";
+        } else if (announcements.location !== "expired" && diff < 0) {
+          location.hash = "#expired";
         } else {
           //TODO why in the world the request to create the announcement does not return the created object?
           //I am forced to reload all the announcements due to being unable to know what was created
@@ -527,9 +534,10 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.announcer.errormessage.createAnnouncement"
-            ),
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "announcement",
+            }),
             "error"
           )
         );
@@ -595,9 +603,11 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.announcer.errormessage.loadAnnouncements"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              context: "announcements",
+              count: 0,
+            }),
             "error"
           )
         );

@@ -2,21 +2,21 @@ import * as React from "react";
 import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
-import { i18nType } from "~/reducers/base/i18n";
 import Synchronizer from "./base/synchronizer";
-import { StrMathJAX } from "../static/mathjax";
+import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * FieldType
  */
-interface FieldType {
+/* interface FieldType {
   name: string;
   text: string;
-}
+} */
 
 /**
  * TermType
@@ -45,7 +45,7 @@ interface CategoryTerm {
 /**
  * OrganizerFieldProps
  */
-interface OrganizerFieldProps {
+interface OrganizerFieldProps extends WithTranslation {
   type: string;
   content: {
     name: string;
@@ -63,7 +63,6 @@ interface OrganizerFieldProps {
     name: string,
     newValue: any
   ) => any;
-  i18n: i18nType;
 
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
@@ -113,7 +112,7 @@ interface OrganizerFieldState {
 /**
  * OrganizerField
  */
-export default class OrganizerField extends React.Component<
+class OrganizerField extends React.Component<
   OrganizerFieldProps,
   OrganizerFieldState
 > {
@@ -180,7 +179,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -190,9 +189,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: OrganizerFieldProps,
@@ -202,7 +200,6 @@ export default class OrganizerField extends React.Component<
       !equals(nextProps.content, this.props.content) ||
       this.props.readOnly !== nextProps.readOnly ||
       !equals(nextState, this.state) ||
-      this.props.i18n !== nextProps.i18n ||
       this.props.displayCorrectAnswers !== nextProps.displayCorrectAnswers ||
       this.props.checkAnswers !== nextProps.checkAnswers ||
       this.state.modified !== nextState.modified ||
@@ -214,7 +211,6 @@ export default class OrganizerField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if we are allowed
@@ -295,8 +291,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(
     prevProps: OrganizerFieldProps,
@@ -307,9 +303,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * onDropDraggableItem
-   * @param termId
-   * @param categoryId
-   * @returns
+   * @param termId termId
+   * @param categoryId categoryId
    */
   onDropDraggableItem(termId: string, categoryId: string) {
     if (!this.props.content) {
@@ -350,8 +345,8 @@ export default class OrganizerField extends React.Component<
 
   /**
    * deleteTermFromBox
-   * @param categoryId
-   * @param termId
+   * @param categoryId categoryId
+   * @param termId termId
    */
   deleteTermFromBox(categoryId: string, termId: string) {
     // And so when we delete from the item
@@ -388,7 +383,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * selectItemId
-   * @param id
+   * @param id id
    */
   selectItemId(id: string) {
     this.setState({
@@ -398,7 +393,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * selectBox
-   * @param box
+   * @param box box
    */
   selectBox(box: CategoryType) {
     if (this.state.selectedItemId) {
@@ -420,7 +415,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * preventPropagation
-   * @param e
+   * @param e e
    */
   preventPropagation(e: React.MouseEvent<any>) {
     e.stopPropagation();
@@ -430,7 +425,7 @@ export default class OrganizerField extends React.Component<
 
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     if (!this.props.content) {
@@ -439,8 +434,12 @@ export default class OrganizerField extends React.Component<
     if (this.props.invisible) {
       return (
         <>
-          {/* TODO: lokalisointi*/}
-          <ReadspeakerMessage text="Järjestelytehtävä" />
+          <ReadspeakerMessage
+            text={this.props.t("messages.assignment", {
+              ns: "readSpeaker",
+              context: "organizer",
+            })}
+          />
           <span className="material-page__organizerfield-wrapper rs_skip_always">
             <span className="material-page__organizerfield">
               <span className="material-page__organizerfield-terms">
@@ -506,15 +505,18 @@ export default class OrganizerField extends React.Component<
     // we add that class name in our component
     return (
       <>
-        {/* TODO: lokalisointi*/}
-        <ReadspeakerMessage text="Järjestelytehtävä" />
+        <ReadspeakerMessage
+          text={this.props.t("messages.assignment", {
+            ns: "readSpeaker",
+            context: "organizer",
+          })}
+        />
         <span
           className={`material-page__organizerfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
-            i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           <span className="material-page__taskfield-header">
@@ -529,9 +531,9 @@ export default class OrganizerField extends React.Component<
               content={
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: this.props.i18n.text.get(
-                      "plugin.workspace.organizerField.instructions"
-                    ),
+                    __html: this.props.t("instructions.organizationField", {
+                      ns: "materials",
+                    }),
                   }}
                 />
               }
@@ -703,3 +705,5 @@ export default class OrganizerField extends React.Component<
     );
   }
 }
+
+export default withTranslation("materials")(OrganizerField);

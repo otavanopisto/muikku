@@ -1,5 +1,6 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
+import { Dispatch } from "react-redux";
 import {
   MessagesStateType,
   MessagesStatePatch,
@@ -17,6 +18,7 @@ import {
 } from "./helpers";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
+import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 import {
   CommunicatorSignature,
@@ -25,7 +27,6 @@ import {
   MessageThreadExpanded,
   MessageThreadLabel,
 } from "~/generated/client";
-import { Dispatch } from "react-redux";
 import mApi from "~/lib/mApi";
 
 /**
@@ -137,7 +138,7 @@ export type UPDATE_MESSAGES_NAVIGATION_LABEL = SpecificActionType<
   {
     labelId: number;
     update: {
-      text: () => string;
+      text: string;
       color: string;
     };
   }
@@ -182,9 +183,10 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.unreadMessageCount"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              context: "unreadMessageCount",
+            }),
             "error"
           )
         );
@@ -225,9 +227,10 @@ const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerTy
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.lastMessageLoad"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              context: "latestMessage",
+            }),
             "error"
           )
         );
@@ -436,9 +439,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.subject"
-          ),
+          i18n.t("validation.caption", { ns: "messaging", context: "message" }),
           "error"
         )
       );
@@ -446,9 +447,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.content"
-          ),
+          i18n.t("validation.content", { ns: "messaging", context: "message" }),
           "error"
         )
       );
@@ -456,9 +455,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       message.fail && message.fail();
       return dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.errormessage.createMessage.missing.recipients"
-          ),
+          i18n.t("validation.recipients", { ns: "messaging" }),
           "error"
         )
       );
@@ -606,9 +603,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
 
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.infomessage.newMessage.success"
-          ),
+          i18n.t("notifications.sendSuccess", { ns: "messaging" }),
           "success"
         )
       );
@@ -618,9 +613,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.errormessage.sendFailed"
-          ),
+          i18n.t("notifications.sendError", { ns: "messaging" }),
           "error"
         )
       );
@@ -752,12 +745,9 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -844,9 +834,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.changeStatusFailed"
-            ),
+            i18n.t("notifications.sendSuccess", { ns: "messaging" }),
             "error"
           )
         );
@@ -935,12 +923,9 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -992,9 +977,10 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
-                  "plugin.communicator.errormessage.deleteFailed"
-                ),
+                i18n.t("notifications.removeError", {
+                  ns: "messaging",
+                  context: "message",
+                }),
                 "error"
               )
             );
@@ -1032,12 +1018,9 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1094,9 +1077,10 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.deleteFailed"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "message",
+            }),
             "error"
           )
         );
@@ -1135,12 +1119,9 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         (item) => item.location === location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1205,9 +1186,11 @@ const loadMessageThread: LoadMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.threadLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              // this is a temporary fix, will be further fixed in 6697
+              count: 0,
+            }),
             "error"
           )
         );
@@ -1316,9 +1299,10 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
           }
           dispatch(
             displayNotification(
-              getState().i18n.text.get(
-                "plugin.communicator.errormessage.receivedFailed"
-              ),
+              i18n.t("notifications.loadError", {
+                ns: "messaging",
+                context: "receivedMessage",
+              }),
               "error"
             )
           );
@@ -1352,9 +1336,10 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.errormessage.signatureLoadFailed"
-          ),
+          i18n.t("notifications.loadError", {
+            ns: "messaging",
+            context: "signature",
+          }),
           "error"
         )
       );
@@ -1420,9 +1405,10 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
       }
       dispatch(
         displayNotification(
-          getState().i18n.text.get(
-            "plugin.communicator.errormessage.signatureUpdateFailed"
-          ),
+          i18n.t("notifications.updateError", {
+            ns: "messaging",
+            context: "signature",
+          }),
           "error"
         )
       );
@@ -1490,12 +1476,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
             id: label.id,
             type: "label",
             icon: "tag",
-            /**
-             * text
-             */
-            text() {
-              return label.name;
-            },
+            text: label.name,
             color: colorIntToHex(label.color),
           })),
         });
@@ -1506,9 +1487,10 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.labelsLoadFailed"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "messaging",
+              context: "labels",
+            }),
             "error"
           )
         );
@@ -1531,9 +1513,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
       if (!name) {
         return dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
-            ),
+            i18n.t("validation.name", { ns: "messaging", context: "labels" }),
             "error"
           )
         );
@@ -1563,9 +1543,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
             /**
              * text
              */
-            text() {
-              return newLabel.name;
-            },
+            text: newLabel.name,
             color: colorIntToHex(newLabel.color),
           },
         });
@@ -1575,9 +1553,10 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.createFailed"
-            ),
+            i18n.t("notifications.createError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );
@@ -1599,9 +1578,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         return dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.createUpdateLabels.missing.title"
-            ),
+            i18n.t("validation.name", { ns: "messaging", context: "labels" }),
             "error"
           )
         );
@@ -1643,7 +1620,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
               /**
                * text
                */
-              text: () => newLabelData.name,
+              text: newLabelData.name,
               color: data.newColor,
             },
           },
@@ -1656,9 +1633,10 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.updateFailed"
-            ),
+            i18n.t("notifications.updateError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );
@@ -1710,9 +1688,10 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
         data.fail && data.fail();
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.label.deleteFailed"
-            ),
+            i18n.t("notifications.removeError", {
+              ns: "messaging",
+              context: "label",
+            }),
             "error"
           )
         );
@@ -1742,12 +1721,9 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
         (item) => item.location === state.messages.location
       );
       if (!item) {
-        //TODO translate this
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1785,9 +1761,10 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
             }
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
-                  "plugin.communicator.errormessage.msgRestoreFailed"
-                ),
+                i18n.t("notifications.restoreError", {
+                  ns: "messaging",
+                  context: "message",
+                }),
                 "error"
               )
             );
@@ -1826,9 +1803,7 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
       if (!item) {
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.communicator.errormessage.badLocation"
-            ),
+            i18n.t("notifications.locationError", { ns: "messaging" }),
             "error"
           )
         );
@@ -1873,7 +1848,10 @@ const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
         }
         dispatch(
           displayNotification(
-            getState().i18n.text.get("currentThreadRestoreFailed"),
+            i18n.t("notifications.restoreError", {
+              ns: "messaging",
+              context: "messageThread",
+            }),
             "error"
           )
         );

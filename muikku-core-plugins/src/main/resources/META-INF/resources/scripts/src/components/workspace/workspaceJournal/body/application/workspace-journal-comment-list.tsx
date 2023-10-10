@@ -4,7 +4,6 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceType } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
@@ -24,12 +23,12 @@ import {
   CreateWorkspaceJournalCommentTriggerType,
 } from "../../../../../actions/workspaces/journals";
 import WorkspaceJournalCommentListItem from "./workspace-journal-comment-list-item";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListProps {
-  i18n: i18nType;
   status: StatusType;
   journalsState: JournalsState;
   currentWorkspace: WorkspaceType;
@@ -45,6 +44,8 @@ interface WorkspaceJournalCommentListProps {
 export const WorkspaceJournalCommentList: React.FC<
   WorkspaceJournalCommentListProps
 > = (props) => {
+  const { t } = useTranslation(["journal", "common"]);
+
   const { currentJournal, journalsState } = props;
 
   const [showComments, setShowComments] = React.useState(false);
@@ -144,10 +145,7 @@ export const WorkspaceJournalCommentList: React.FC<
           onClick={handleShowCommentsClick}
         >
           <span className="application-list__title-main">
-            {props.i18n.text.get(
-              "plugin.workspace.journal.entry.comments.title"
-            )}{" "}
-            ({props.currentJournal.commentCount})
+            {t("labels.comments")} ({props.currentJournal.commentCount})
           </span>
         </h2>
       </div>
@@ -160,7 +158,7 @@ export const WorkspaceJournalCommentList: React.FC<
             currentJournal.comments.length === 0 ? (
             <div className="empty">
               <span>
-                {props.i18n.text.get("plugin.workspace.journal.noComments")}
+                {t("content.empty", { ns: "journal", context: "comments" })}
               </span>
             </div>
           ) : (
@@ -183,9 +181,7 @@ export const WorkspaceJournalCommentList: React.FC<
                 onClick={handleCreateNewCommentClick}
                 className="link link--application-list"
               >
-                {props.i18n.text.get(
-                  "plugin.workspace.journal.newCommentButton.label"
-                )}
+                {t("labels.create", { context: "comment" })}
               </Link>
             </div>
           )}
@@ -222,7 +218,6 @@ export const WorkspaceJournalCommentList: React.FC<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     journalsState: state.journals,
     currentWorkspace: state.workspaces && state.workspaces.currentWorkspace,

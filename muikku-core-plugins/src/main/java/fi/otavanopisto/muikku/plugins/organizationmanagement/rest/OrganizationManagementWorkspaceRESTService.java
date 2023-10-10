@@ -402,8 +402,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       Set<SchoolDataIdentifier> filteredStudentIdentifiers = userGroupUserEntities.stream()
         .filter(userGroupUserEntity -> Boolean.FALSE.equals(userGroupUserEntity.getArchived()))
         .filter(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier() != null)
-        .filter(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier().getRole() != null)
-        .filter(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier().getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT)
+        .filter(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier().hasRole(EnvironmentRoleArchetype.STUDENT))
         .map(userGroupUserEntity -> userGroupUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier())
         .collect(Collectors.toSet());
         

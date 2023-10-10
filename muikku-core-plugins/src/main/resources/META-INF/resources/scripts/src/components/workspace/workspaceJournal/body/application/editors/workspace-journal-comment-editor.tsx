@@ -8,19 +8,18 @@ import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
-import { JournalComment } from "~/@types/journal";
+import { WorkspaceJournalComment } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SupplementationEditorProps
  */
-interface WorkspaceJournalCommentEditorProps {
-  i18n: i18nType;
+interface WorkspaceJournalCommentEditorProps extends WithTranslation {
   status: StatusType;
   locale: LocaleState;
-  journalComment?: JournalComment;
+  journalComment?: WorkspaceJournalComment;
   locked: boolean;
   diaryEventId: number;
   userEntityId: number;
@@ -136,19 +135,16 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
     const editorTitle = this.props.journalComment
-      ? this.props.i18n.text.get("plugin.workspace.journal.editComment.title") +
+      ? t("actions.edit", { context: "comment" }) + " - " + t("labels.content")
+      : t("labels.create", { context: "comment" }) +
         " - " +
-        this.props.i18n.text.get("plugin.workspace.journal.entry.content.label")
-      : this.props.i18n.text.get("plugin.workspace.journal.newComment.title") +
-        " - " +
-        this.props.i18n.text.get(
-          "plugin.workspace.journal.entry.content.label"
-        );
+        t("labels.content");
 
     const commentHeaderTitle = this.props.journalComment
-      ? this.props.i18n.text.get("plugin.workspace.journal.editComment.title")
-      : this.props.i18n.text.get("plugin.workspace.journal.newComment.title");
+      ? t("actions.edit", { context: "comment" })
+      : t("labels.create", { context: "comment" });
 
     return (
       <div className="form" role="form">
@@ -165,9 +161,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
                 >
                   <div className="env-dialog__form-element-container">
                     <label className="env-dialog__label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.journal.entry.content.label"
-                      )}
+                      {t("labels.content")}
                     </label>
                     <CKEditor
                       onChange={this.handleCKEditorChange}
@@ -185,18 +179,14 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
                     onClick={this.handleSaveClick}
                     disabled={this.props.locked}
                   >
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.save.button.label"
-                    )}
+                    {t("actions.save")}
                   </Button>
                   <Button
                     onClick={this.props.onClose}
                     disabled={this.props.locked}
                     buttonModifiers="dialog-cancel"
                   >
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.journal.cancel.button.label"
-                    )}
+                    {t("actions.cancel")}
                   </Button>
                   {this.recovered && (
                     <Button
@@ -204,9 +194,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
                       disabled={this.props.locked}
                       onClick={this.handleDeleteEditorDraft}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.journal.deleteDraft.button.label"
-                      )}
+                      {t("actions.remove", { context: "draft" })}
                     </Button>
                   )}
                 </div>
@@ -225,7 +213,6 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     locale: state.locales,
   };
@@ -239,7 +226,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({}, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalCommentEditor);
+export default withTranslation(["journal", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceJournalCommentEditor)
+);

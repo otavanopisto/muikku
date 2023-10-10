@@ -2,12 +2,10 @@ import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import Evaluation from "../body/application/evaluation/evaluation";
-import { AssessmentRequest } from "~/@types/evaluation";
 import { StatusType } from "~/reducers/base/status";
 import {
   LoadBasePrice,
@@ -23,6 +21,7 @@ import {
   LoadEvaluationJournalFeedbackFromServerTriggerType,
   loadEvaluationJournalFeedbackFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * EvaluateDialogProps
@@ -35,9 +34,8 @@ interface EvaluateDialogProps {
   onClose?: () => any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpen?: (jotan: any) => any;
-  i18n: i18nType;
   status: StatusType;
-  assessment: AssessmentRequest;
+  assessment: EvaluationAssessmentRequest;
   updateSelectedAssessment: UpdateEvaluationSelectedAssessment;
   loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments;
   loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
@@ -71,7 +69,7 @@ class EvaluateDialog extends React.Component<
    * @param assessment assessment
    */
   handleUpdateSelectAssessmentOnDialogOpen = (
-    assessment: AssessmentRequest
+    assessment: EvaluationAssessmentRequest
   ) => {
     this.props.updateSelectedAssessment({ assessment });
 
@@ -143,7 +141,6 @@ class EvaluateDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
