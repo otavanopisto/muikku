@@ -52,6 +52,14 @@ public class IndexedCommunicatorMessageSender{
     this.labels = labels;
   }
 
+  public Boolean getTrashedBySender() {
+    return trashedBySender;
+  }
+
+  public void setTrashedBySender(Boolean trashedBySender) {
+    this.trashedBySender = trashedBySender;
+  }
+
   private Long userEntityId;
 
   private String firstName;
@@ -61,6 +69,8 @@ public class IndexedCommunicatorMessageSender{
   private String nickName;
   
   private List<IndexedCommunicatorMessageLabels> labels;
+
+  private Boolean trashedBySender;
 
   private Boolean archivedBySender;
 
