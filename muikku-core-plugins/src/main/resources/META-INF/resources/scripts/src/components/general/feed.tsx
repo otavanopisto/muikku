@@ -2,7 +2,7 @@ import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/feed.scss";
 import "~/sass/elements/wcag.scss";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -93,7 +93,7 @@ class Feed extends React.Component<FeedProps, FeedState> {
               </div>
               <div className="feed__item-meta">
                 <span className="feed__item-date">
-                  {localizeTime.date(entry.publicationDate)}
+                  {localize.date(entry.publicationDate)}
                 </span>
               </div>
             </div>

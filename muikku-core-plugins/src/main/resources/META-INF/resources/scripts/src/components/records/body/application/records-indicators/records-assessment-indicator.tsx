@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { Assessment } from "~/reducers/workspaces";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -42,7 +42,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
@@ -72,7 +72,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) +
               " - " +
               status}
@@ -100,7 +100,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
               {assessment.grade
                 ? t("labels.evaluablesDone", {
                     ns: "studies",
-                    date: localizeTime.date(assessment.date),
+                    date: localize.date(assessment.date),
                   }) + getShortenGradeExtension(assessment.grade)
                 : t("content.notEvaluated", {
                     ns: "studies",

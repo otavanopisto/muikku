@@ -19,7 +19,7 @@ import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { updateFollowUpData, useFollowUp } from "./context/follow-up-context";
@@ -80,7 +80,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             id="graduationGoalMonth"
             onChange={(date) => handleGoalsChange("graduationGoal", date)}
             selected={followUpData.followUp.graduationGoal}
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="MM/yyyy"
             showMonthYearPicker
             showFullMonthYearPicker

@@ -1,6 +1,6 @@
 import * as React from "react";
 import Link from "~/components/general/link";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { ContactRecipientType } from "~/reducers/user-index";
@@ -387,12 +387,9 @@ class Message extends React.Component<MessageProps, MessageState> {
             </div>
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
               <span aria-label={this.props.t("wcag.date", { ns: "messaging" })}>
-                {`${localizeTime.date(
+                {`${localize.date(
                   this.props.message.created
-                )} klo ${localizeTime.date(
-                  this.props.message.created,
-                  "HH:mm"
-                )}`}
+                )} klo ${localize.date(this.props.message.created, "HH:mm")}`}
               </span>
             </div>
           </div>

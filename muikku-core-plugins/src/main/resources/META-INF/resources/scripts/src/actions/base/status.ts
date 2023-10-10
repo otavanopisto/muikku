@@ -6,7 +6,7 @@ import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
-import i18n from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -144,7 +144,7 @@ async function loadWhoAMI(
     },
   });
 
-  i18n.changeLanguage(whoAmI.locale);
+  localize.language = whoAmI.locale;
 
   dispatch({
     type: "LOCALE_UPDATE",

@@ -12,7 +12,7 @@ import {
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -191,7 +191,7 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={new Date()}
             maxDate={this.state.notesItem.dueDate}
@@ -209,7 +209,7 @@ class NotesItemNew extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
               this.state.notesItem.startDate !== null

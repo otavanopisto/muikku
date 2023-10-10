@@ -50,7 +50,7 @@ import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
@@ -1026,9 +1026,7 @@ class ManagementPanel extends React.Component<
                         ? this.state.workspaceSignupEndDate
                         : undefined
                     }
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.workspaceSignupStartDate}
                     dateFormat="P"
                   />
@@ -1049,9 +1047,7 @@ class ManagementPanel extends React.Component<
                         ? this.state.workspaceSignupStartDate
                         : new Date()
                     }
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.workspaceSignupEndDate}
                     dateFormat="P"
                   />
@@ -1108,9 +1104,7 @@ class ManagementPanel extends React.Component<
                     className="form-element__input"
                     onChange={this.updateStartDate}
                     maxDate={this.state.workspaceEndDate}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.workspaceStartDate}
                     dateFormat="P"
                   />
@@ -1127,9 +1121,7 @@ class ManagementPanel extends React.Component<
                     className="form-element__input"
                     onChange={this.updateEndDate}
                     minDate={this.state.workspaceStartDate}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.workspaceEndDate}
                     dateFormat="P"
                   />
