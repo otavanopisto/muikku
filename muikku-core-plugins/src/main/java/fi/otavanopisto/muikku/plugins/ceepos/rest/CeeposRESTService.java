@@ -819,7 +819,7 @@ public class CeeposRESTService {
     
     String path;
     String text;
-    if (product.getType() == CeeposProductType.ASSESSMENTREQUEST) {
+    if (product.getType() == CeeposProductType.ASSESSMENTREQUEST || product.getType() == CeeposProductType.ASSESSMENTREQUEST_FUNDED) {
       CeeposAssessmentRequestOrder assessmentRequestOrder = ceeposController.findAssessmentRequestOrderById(orderId);
       if (assessmentRequestOrder == null) {
         logger.warning(String.format("Ceepos assessment request order %d: Not found", orderId));
