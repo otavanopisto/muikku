@@ -51,6 +51,8 @@ import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
@@ -165,6 +167,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private PedagogyController pedagogyController;
 
   @Inject
   @Any
@@ -412,7 +417,8 @@ public class GuiderRESTService extends PluginRESTService {
 
           UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
           OrganizationEntity organizationEntity = usdi.getOrganization();
-
+          
+          
           students.add(new fi.otavanopisto.muikku.rest.model.Student(
             studentIdentifier.toId(),
             (String) o.get("firstName"),
@@ -434,7 +440,8 @@ public class GuiderRESTService extends PluginRESTService {
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             restFlags,
-            organizationEntity == null ? null : toRestModel(organizationEntity)
+            organizationEntity == null ? null : toRestModel(organizationEntity),
+            getHasPedagogyForm(studentIdentifier.toId())
           ));
         }
       }
@@ -519,7 +526,8 @@ public class GuiderRESTService extends PluginRESTService {
         userEntity == null ? -1 : userEntity.getId(),
         null,
         organizationRESTModel,
-        user.getMatriculationEligibility()
+        user.getMatriculationEligibility(),
+        getHasPedagogyForm(studentIdentifier.toId())
     );
 
     return Response
@@ -1040,6 +1048,14 @@ public class GuiderRESTService extends PluginRESTService {
       date = new Date(((Double) value).longValue() * 1000);
     }
     return date;
+  }
+  
+  private Boolean getHasPedagogyForm(String studentIdentifier) {
+    PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
+    
+    Boolean hasPedagogyForm = form != null;
+    
+    return hasPedagogyForm;
   }
 
 }

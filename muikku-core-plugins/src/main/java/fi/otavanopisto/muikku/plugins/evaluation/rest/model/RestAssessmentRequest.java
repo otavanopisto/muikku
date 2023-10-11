@@ -167,6 +167,14 @@ public class RestAssessmentRequest {
     this.id = id;
   }
 
+  public Boolean getHasPedagogyForm() {
+    return hasPedagogyForm;
+  }
+
+  public void setHasPedagogyForm(Boolean hasPedagogyForm) {
+    this.hasPedagogyForm = hasPedagogyForm;
+  }
+
   private Long id;
   private Long userEntityId;
   private String firstName;
@@ -188,4 +196,5 @@ public class RestAssessmentRequest {
   private Long assignmentsTotal;
 
   private List<WorkspaceSubjectRestModel> subjects;
+  private Boolean hasPedagogyForm;
 }

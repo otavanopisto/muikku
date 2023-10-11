@@ -125,29 +125,6 @@ public class PedagogyRestService {
   }
   
   /**
-   * mApi().pedagogy.form.isCreated.read('PYRAMUS-STUDENT-123');
-   */
-  @Path("/form/{STUDENTIDENTIFIER}/isCreated")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getDoesStudentHaveForm(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
-    
-    // Access check
-    
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
-    if (!access.isAccessible()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
-    
-    Boolean created = form != null;
-    
-    return Response.ok(created).build();
-    
-  }
-  
-  /**
    * mApi().pedagogy.form.read('PYRAMUS-STUDENT-123');
    */
   @Path("/form/{STUDENTIDENTIFIER}")

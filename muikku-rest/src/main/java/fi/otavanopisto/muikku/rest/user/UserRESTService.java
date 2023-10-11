@@ -615,7 +615,8 @@ public class UserRESTService extends AbstractRESTService {
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             restFlags,
-            organizationRESTModel
+            organizationRESTModel,
+            null
           ));
         }
       }
@@ -717,7 +718,8 @@ public class UserRESTService extends AbstractRESTService {
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
         null,
-        organizationRESTModel
+        organizationRESTModel,
+        null
     );
     
     return Response
