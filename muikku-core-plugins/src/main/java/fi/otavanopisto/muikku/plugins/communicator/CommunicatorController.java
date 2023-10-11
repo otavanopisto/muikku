@@ -461,31 +461,38 @@ public class CommunicatorController {
   public void trashSentMessages(UserEntity user, CommunicatorMessageId messageId) {
     List<CommunicatorMessage> sentMessages = communicatorMessageDAO.listMessagesInSentThread(user, messageId, false, false);
     for (CommunicatorMessage message : sentMessages) {
-      communicatorMessageDAO.updateTrashedBySender(message, true);
+      CommunicatorMessage updatedMessage = communicatorMessageDAO.updateTrashedBySender(message, true);
+      communicatorMessageIndexer.indexMessage(updatedMessage);
     }
   }
 
   public void trashAllThreadMessages(UserEntity user, CommunicatorMessageId messageId) {
     List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId, false, false);
     for (CommunicatorMessageRecipient recipient : received) {
-      communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, true);
+      CommunicatorMessageRecipient updatedRecipient = communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, true);
+      CommunicatorMessage message = updatedRecipient.getCommunicatorMessage();
+      communicatorMessageIndexer.indexMessage(message);
     }
     
     List<CommunicatorMessage> sentMessages = communicatorMessageDAO.listMessagesInSentThread(user, messageId, false, false);
     for (CommunicatorMessage message : sentMessages) {
-      communicatorMessageDAO.updateTrashedBySender(message, true);
+      CommunicatorMessage updatedMessage = communicatorMessageDAO.updateTrashedBySender(message, true);
+      communicatorMessageIndexer.indexMessage(updatedMessage);
     }
   }
 
   public void unTrashAllThreadMessages(UserEntity user, CommunicatorMessageId messageId) {
     List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId, true, false);
     for (CommunicatorMessageRecipient recipient : received) {
-      communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, false);
+      CommunicatorMessageRecipient updatedRecipient = communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, false);
+      CommunicatorMessage message = updatedRecipient.getCommunicatorMessage();
+      communicatorMessageIndexer.indexMessage(message);
     }
     
     List<CommunicatorMessage> sentMessages = communicatorMessageDAO.listMessagesInSentThread(user, messageId, true, false);
     for (CommunicatorMessage message : sentMessages) {
-      communicatorMessageDAO.updateTrashedBySender(message, false);
+      CommunicatorMessage updatedMessage = communicatorMessageDAO.updateTrashedBySender(message, false);
+      communicatorMessageIndexer.indexMessage(updatedMessage);
     }
   }
 
