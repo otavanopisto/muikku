@@ -11,6 +11,7 @@ import {
   ApplicationListItemContentActions,
 } from "~/components/general/application-list";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * workspaceUserProps
@@ -30,8 +31,19 @@ interface workspaceUserProps {
  * @returns JSX.Element
  */
 export default function WorkspaceUser(props: workspaceUserProps) {
+  const pedagogyFormIcon = props.student.hasPedagogyForm ? (
+    <Dropdown
+      alignSelfVertically="top"
+      openByHover
+      content={<p>Opiskelijalle on tehty pedagogisen tuen suunnitelma</p>}
+    >
+      <IconButton icon="book" disabled />
+    </Dropdown>
+  ) : null;
+
   const actionButtons = props.student.active ? (
     <ApplicationListItemContentActions>
+      {pedagogyFormIcon}
       <IconButton
         buttonModifiers="workspace-users-contact"
         icon="envelope"
@@ -44,11 +56,14 @@ export default function WorkspaceUser(props: workspaceUserProps) {
       />
     </ApplicationListItemContentActions>
   ) : (
-    <IconButton
-      buttonModifiers="workspace-users-unarchive"
-      icon="back"
-      onClick={props.onSetToggleStatus}
-    />
+    <ApplicationListItemContentActions>
+      {pedagogyFormIcon}
+      <IconButton
+        buttonModifiers="workspace-users-unarchive"
+        icon="back"
+        onClick={props.onSetToggleStatus}
+      />
+    </ApplicationListItemContentActions>
   );
 
   return (
