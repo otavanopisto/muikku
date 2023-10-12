@@ -15,12 +15,6 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
-import { getName } from "~/util/modifiers";
-import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
-import {
-  getErrorMessageContent,
-  getErrorMessageTitle,
-} from "~/helper-functions/ceepos-error";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 
@@ -163,40 +157,6 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                             >
                               {this.props.t("actions.pay", { ns: "orders" })}
                             </Button>
-                          </span>
-                        ) : null}
-
-                        {p.state === PurchaseStateType.ERRORED ||
-                        p.state === PurchaseStateType.CANCELLED ||
-                        p.state === PurchaseStateType.PAID ? (
-                          <span className="application-list__header-primary-actions">
-                            <CommunicatorNewMessage
-                              extraNamespace="ceepos-error"
-                              initialSelectedItems={[
-                                {
-                                  type: "staff",
-                                  value: {
-                                    id: p.creator.userEntityId,
-                                    name: getName(p.creator, true),
-                                  },
-                                },
-                              ]}
-                              initialSubject={getErrorMessageTitle(p)}
-                              initialMessage={getErrorMessageContent(
-                                p,
-                                this.props.t(`states.${p.state}`, {
-                                  context: "student",
-                                  ns: "orders",
-                                })
-                              )}
-                            >
-                              <Button
-                                icon="envelope"
-                                buttonModifiers={["send-message", "info"]}
-                              >
-                                {this.props.t("actions.reportError")}
-                              </Button>
-                            </CommunicatorNewMessage>
                           </span>
                         ) : null}
                       </span>

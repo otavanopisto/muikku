@@ -2,6 +2,7 @@ import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
 import {
+  ActivityLogEntry,
   AssessmentRequest,
   WorkspaceAdditionalInfo,
   WorkspaceChatStatus,
@@ -130,7 +131,7 @@ export interface WorkspaceDataType {
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceMaterialProducer[];
   contentDescription?: MaterialContentNodeWithIdAndLogic;
-  activityLogs?: ActivityLogType[];
+  activityLogs?: ActivityLogEntry[];
   students?: WorkspaceStudentSearchResult;
   inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;

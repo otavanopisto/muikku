@@ -153,7 +153,7 @@ class CurrentStudentStatistics extends React.Component<
       WORKSPACE_VISIT: 0,
     });
     this.props.workspace.activityLogs.map((log) => {
-      const date = log.timestamp.slice(0, 10);
+      const date = log.timestamp.toISOString().slice(0, 10);
       const entry = chartDataMap.get(date) || {};
       switch (log.type) {
         case "EVALUATION_REQUESTED":

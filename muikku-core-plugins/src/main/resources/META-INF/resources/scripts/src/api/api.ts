@@ -33,6 +33,7 @@ import {
   ChatApi,
   Middleware,
   ResponseContext,
+  ActivitylogsApi,
 } from "../generated/client";
 
 /**
@@ -104,6 +105,14 @@ const configuration = new Configuration({
  * Utility class for loading api with predefined configuration
  */
 export default class MApi {
+  /**
+   * Gets initialized discussions API
+   *
+   * @returns initialized workspaces API
+   */
+  public static getActivitylogsApi() {
+    return new ActivitylogsApi(configuration);
+  }
   /**
    * Get initialized AnnouncerApi API
    *

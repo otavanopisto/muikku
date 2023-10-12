@@ -1325,8 +1325,8 @@
     },
     "content": {
       "empty": "No notes",
-      "defaultPosition": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
-      "defaultPosition_bottom": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
+      "defaultPosition": "A new note will be created at the beginning of the list. You can also choose the position from the list. The choice will be saved.",
+      "defaultPosition_bottom": "A new note will be created at the end of the list. You can also choose the position from the list. The choice will be saved.",
       "remove": "Are you sure you wish to deöete the note?"
     },
     "labels": {
@@ -1356,7 +1356,7 @@
       "copy_workspace": "Copy course",
       "create": "t(common:actions.create)",
       "create_workspace": "Create course",
-      "create_journal": "Create journal",
+      "create_journal": "New entry",
       "edit": "Edit course",
       "hide": "$t(common:actions.hide)",
       "hide_supplementationRequest": "Hide supplementation request",
@@ -1450,7 +1450,7 @@
       "evaluated_withPassedGrade": "Evaluated with a passing grade",
       "evaluated_withNonPassingGrade": "Evaluated with a failing grade",
       "evaluationHasFee": "Evaluation has a fee",
-      "evaluationRequestMessage": "Additional Message to the course teacher",
+      "evaluationRequestMessage": "Additional message to the course teacher",
       "failed": "Failed",
       "goto": "Go to course",
       "grade": "Grade",
@@ -1627,7 +1627,7 @@
       "empty_evaluation": "Journal has not been evaluated",
       "empty_student": "Student has no journal entries",
       "empty_workspace": "Course has no journal entries",
-      "empty_you": "You have no journal entries",
+      "empty_you": "You don’t have any journal entries yet. Click on the 'New entry' button to start your journal for this course.",
       "removing": "Are you sure you want to delete the journal entry?"
     },
     "labels": {
@@ -1707,7 +1707,7 @@
       "evaluateStudent": "Evaluate student",
       "evaluateAssignment": "Evaluate assignment",
       "grade": "Grade",
-      "grade_journal": "Grade journal",
+      "grade_journal": "Journal feedback",
       "grade_overall": "Grade overall",
       "grade_workspace": "Course grade",
       "improveGrade": "Improve grade",
@@ -1909,9 +1909,9 @@
       "updateError": "Updating the student order failed"
     },
     "states": {
-      "CANCELLED": "Order cancelled.",
+      "CANCELLED": "The order has been cancelled.",
       "CANCELLED_counselor": "Student cancelled the order.",
-      "CANCELLED_student": "You cancelled the order. If you want a new order, contact your counselor.",
+      "CANCELLED_student": "The order has been cancelled.",
       "COMPLETE": "Order has been completed.",
       "COMPLETE_counselor": "Student's order has been completed.",
       "COMPLETE_student": "Your order has been completed.",
@@ -1920,13 +1920,13 @@
       "CREATED_student": "Your order has been created.",
       "ERRORED": "Processing the order failed.",
       "ERRORED_counselor": "Processing the student's order failed.",
-      "ERRORED_student": "Processing your order failed. Please contact your counselor.",
+      "ERRORED_student": "Processing your order failed. Please contact Muikku helpdesk.",
       "ONGOING": "The payment process has been started.",
       "ONGOING_counselor": "The student has started the payment process.",
       "ONGOING_student": "You have started the payment process.",
-      "PAID": "The payment succeeded, but the order  has not been processed.",
+      "PAID": "The payment succeeded, but the order has not been processed.",
       "PAID_counselor": "The student's payment succeeded, but the order has not been processed. The order has to be finished manually. Please ask the student for a receipt of the payment and contact the helpdesk (helpdesk@muikkuverkko.fi).",
-      "PAID_student": "Your payment succeeded, but the order has not been processed. Please contact your counselor."
+      "PAID_student": "Your payment succeeded, but the order has not been processed. Please contact Muikku helpdesk."
     }
   },
   "ops": {

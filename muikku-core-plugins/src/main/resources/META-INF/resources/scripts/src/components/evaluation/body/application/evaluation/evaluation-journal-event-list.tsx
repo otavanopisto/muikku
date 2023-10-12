@@ -252,13 +252,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
                 >
-                  {t("actions.cancel")}
+                  {t("actions.edit", { ns: "common" })}
                 </Link>
 
                 {!feedbackEditorOpen && (
                   <DeleteJournalFeedback journalFeedback={journalFeedback}>
                     <Link className="link link--evaluation link--evaluation-delete">
-                      {t("actions.remove")}
+                      {t("actions.remove", { ns: "common" })}
                     </Link>
                   </DeleteJournalFeedback>
                 )}

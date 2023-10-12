@@ -78,6 +78,96 @@ paths:
   #    "500":
   #      description: Internal server error
 
+  #ACTIVITYLOGS
+  /rest/activitylogs/user/{userId}:
+    get:
+      operationId: getUserActivityLogs
+      summary: Get activity logs
+      tags:
+        - Activitylogs
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: From
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: To
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Activity logs successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityLogHash"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Activity logs not found
+        "500":
+          description: Internal server error
+
+  /rest/activitylogs/user/{userId}/workspace:
+    get:
+      operationId: getWorkspaceActivityLogs
+      summary: Get activity logs
+      tags:
+        - Activitylogs
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
+        - name: from
+          in: query
+          description: From
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: To
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityLogEntry"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Activity logs not found
+        "500":
+          description: Internal server error
+
   #ANNNOUNCER
   /rest/announcer/announcements:
     get:
@@ -4567,9 +4657,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4596,9 +4685,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4620,7 +4707,6 @@ paths:
             type: string
       requestBody:
         $ref: "#/components/requestBodies/OptionalSuggestionCreateRequestBody"
-
       responses:
         "200":
           description: Student optional suggestion created successfully
@@ -4709,9 +4795,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StudentCourseChoice"
+                $ref: "#/components/schemas/StudentCourseChoice"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4754,18 +4839,6 @@ paths:
         - name: studentIdentifier
           in: path
           description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: startDate
-          in: query
-          description: Start date
-          required: true
-          schema:
-            type: string
-        - name: endDate
-          in: query
-          description: End date
           required: true
           schema:
             type: string
@@ -4854,17 +4927,16 @@ paths:
         $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
-    #FIX
-    delete:
-      operationId: deleteToggleSuggestion
-      summary: Delete toggle suggestion
-      description: Delete toggle suggestion
+    put:
+      operationId: updateToggleSuggestion
+      summary: Update toggle suggestion
+      description: Update toggle suggestion
       tags:
         - Hops
       parameters:
@@ -4874,11 +4946,11 @@ paths:
           required: true
           schema:
             type: string
-      #requestBody:
-      #  $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
+      requestBody:
+        $ref: "#/components/requestBodies/ToggleSuggestionUpdateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5295,8 +5367,7 @@ paths:
   /rest/notes/note:
     post:
       operationId: createNote
-      summary: Create note
-      description: Create note
+      summary: Creates and returns created note
       tags:
         - Notes
       requestBody:
@@ -5316,8 +5387,7 @@ paths:
   /rest/notes/note/{noteId}:
     put:
       operationId: updateNote
-      summary: Update note
-      description: Update note
+      summary: Updates and returns note
       tags:
         - Notes
       parameters:
@@ -5344,8 +5414,7 @@ paths:
   /rest/notes/note/{noteId}/toggleArchived:
     put:
       operationId: toggleNoteArchived
-      summary: Toggle note archived
-      description: Toggle note archived
+      summary: Toggles note archived
       tags:
         - Notes
       parameters:
@@ -5367,17 +5436,16 @@ paths:
         "500":
           description: Internal server error
 
-  /rest//notes/owner/{studentId}:
+  /rest/notes/owner/{ownerId}:
     get:
       operationId: getNotes
-      summary: Get notes
-      description: Get notes
+      summary: Returns notes with given owner id and optional archived flag
       tags:
         - Notes
       parameters:
-        - name: studentId
+        - name: ownerId
           in: path
-          description: studentId
+          description: owner id
           required: true
           schema:
             type: integer
@@ -5386,9 +5454,10 @@ paths:
           description: List archived
           schema:
             type: boolean
+            default: false
       responses:
         "200":
-          description: Notes
+          description: Notes returned successfully
           content:
             application/json:
               schema:
@@ -5834,34 +5903,6 @@ paths:
       responses:
         "200":
           description: Pedagogy form state updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PedagogyForm"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/pedagogy/form/{studentIdentifier}/visibility:
-    put:
-      operationId: updatePedagogyFormVisibility
-      summary: Update pedagogy form visibility
-      description: Update pedagogy form visibility
-      tags:
-        - Pedagogy
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormVisibilityUpdateRequestBody"
-      responses:
-        "200":
-          description: Pedagogy form visibility updated successfully
           content:
             application/json:
               schema:
@@ -9863,6 +9904,7 @@ components:
                 type: string
 
     HopsHistoryEntryUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9875,6 +9917,7 @@ components:
                 type: string
 
     HopsGoalsUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9882,6 +9925,7 @@ components:
               - $ref: "#/components/schemas/HopsGoals"
 
     AlternativeStudyOptionSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9889,6 +9933,7 @@ components:
               - $ref: "#/components/schemas/AlternativeStudyOption"
 
     OptionalSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9904,6 +9949,7 @@ components:
                 type: integer
 
     StudentCourseChoiceSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9911,6 +9957,7 @@ components:
               - $ref: "#/components/schemas/StudentCourseChoice"
 
     StudentStudyHoursSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9923,11 +9970,31 @@ components:
                 type: integer
 
     ToggleSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             type: object
             description: ToggleSuggestionCreateRequestBody object
+            required:
+              - courseId
+              - subject
+              - courseNumber
+            properties:
+              courseId:
+                type: integer
+              subject:
+                type: string
+              courseNumber:
+                type: integer
+
+    ToggleSuggestionUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: ToggleSuggestionUpdateRequestBody object
             required:
               - courseId
               - subject
@@ -10026,6 +10093,8 @@ components:
               - $ref: "#/components/schemas/LocalizationLocale"
 
     NoteCreateRequestBody:
+      required: true
+      description: NoteCreateRequestBody object
       content:
         application/json:
           schema:
@@ -10051,15 +10120,19 @@ components:
               pinned:
                 type: boolean
               owner:
-                type: string
+                type: integer
               startDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
               dueDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
 
     NoteUpdateRequestBody:
+      required: true
+      description: NoteUpdateRequestBody object
       content:
         application/json:
           schema:
@@ -10082,11 +10155,13 @@ components:
               pinned:
                 type: boolean
               startDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
               dueDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
               status:
                 $ref: "#/components/schemas/NoteStatusType"
 
@@ -10122,6 +10197,7 @@ components:
                   type: integer
 
     PedagogyFormCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10134,6 +10210,7 @@ components:
                 type: string
 
     PedagogyFormDataUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10156,6 +10233,7 @@ components:
                 type: string
 
     PedagogyFormStateUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -10166,20 +10244,6 @@ components:
             properties:
               state:
                 $ref: "#/components/schemas/PedagogyFormState"
-
-    PedagogyFormVisibilityUpdateRequestBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            description: PedagogyFormVisibilityUpdateRequestBody object
-            required:
-              - visibility
-            properties:
-              visibility:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PedagogyFormVisibility"
 
     HopsUppersecondaryUpdateRequestBody:
       required: true
@@ -10875,6 +10939,59 @@ components:
     #description: "for adding nullability to a ref"
     #enum:
     #  - null
+
+    ActivityLogType:
+      type: string
+      enum:
+        - EVALUATION_REQUESTED
+        - EVALUATION_GOTINCOMPLETED
+        - EVALUATION_GOTFAILED
+        - EVALUATION_GOTPASSED
+        - SESSION_LOGGEDIN
+        - WORKSPACE_VISIT
+        - MATERIAL_EXERCISEDONE
+        - MATERIAL_ASSIGNMENTDONE
+        - FORUM_NEWMESSAGE
+        - FORUM_NEWTHREAD
+        - NOTIFICATION_ASSESMENTREQUEST
+        - NOTIFICATION_NOPASSEDCOURSES
+        - NOTIFICATION_SUPPLEMENTATIONREQUEST
+        - NOTIFICATION_STUDYTIME
+        - NOTIFICATION_NEVERLOGGEDIN
+        - NOTIFICATION_NOLOGGEDINFORTWOMONTHS
+        - EVALUATION_REQUEST_CANCELLED
+
+    ActivityLogHash:
+      type: object
+      description: Hashmap containing activity log entries list for each key value and general list for all other entries
+      required:
+        - general
+      properties:
+        general:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityLogEntry"
+      additionalProperties:
+        type: array
+        items:
+          $ref: "#/components/schemas/ActivityLogEntry"
+
+    ActivityLogEntry:
+      type: object
+      description: ActivityLogEntry object
+      required:
+        - type
+        - timestamp
+        - contextId
+      properties:
+        type:
+          $ref: "#/components/schemas/ActivityLogType"
+        timestamp:
+          type: string
+          format: date-time
+        contextId:
+          type: integer
+          nullable: true
 
     AlternativeStudyOption:
       type: object
@@ -11889,6 +12006,7 @@ components:
           nullable: true
         date:
           type: string
+          format: date-time
         modifier:
           type: string
         modifierId:
@@ -12012,6 +12130,7 @@ components:
         graduationGoal:
           nullable: true
           type: string
+          format: date-time
         followUpGoal:
           type: string
         followUpStudies:
@@ -12918,13 +13037,10 @@ components:
       type: object
       description: Message recipient object
       required:
-        - recipientId
         - userEntityId
         - communicatorMessageId
         - firstName
       properties:
-        recipientId:
-          type: integer
         userEntityId:
           type: integer
         communicatorMessageId:
@@ -13075,29 +13191,34 @@ components:
         isArchived:
           type: boolean
         owner:
-          type: string
+          type: integer
         creator:
-          type: string
+          type: integer
         creatorName:
           type: string
         created:
           type: string
+          format: date-time
         startDate:
-          nullable: true
           type: string
+          format: date-time
+          nullable: true
         dueDate:
-          nullable: true
           type: string
+          format: date-time
+          nullable: true
         status:
           $ref: "#/components/schemas/NoteStatusType"
 
     NoteCreationType:
+      description: NoteCreationType enum type
       type: string
       enum:
         - MANUAL
         - AUTOMATIC
 
     NotePriorityType:
+      description: NotePriorityType enum type
       type: string
       enum:
         - OWN
@@ -13106,6 +13227,7 @@ components:
         - HIGH
 
     NoteStatusType:
+      description: NoteStatusType enum type
       type: string
       enum:
         - ONGOING
@@ -13239,18 +13361,18 @@ components:
       enum:
         - PENDING
         - APPROVED
-        - NOT_SENT
+        - ACTIVE
         - INACTIVE
 
-    PedagogyFormVisibility:
+    PedagogyHistoryEntryType:
       type: string
       enum:
-        - TEACHER
-        - GUARDIANS
+        - VIEW
+        - EDIT
 
-    PedaogyHistoryEntry:
+    PedagogyHistoryEntry:
       type: object
-      description: PedaogyHistoryEntry object
+      description: PedagogyHistoryEntry object
       required:
         - modifierId
         - modifierName
@@ -13269,7 +13391,8 @@ components:
         date:
           description: The date when the update was made
           type: string
-        editedFiels:
+          format: date-time
+        editedFields:
           description: Fields that were edited in the update
           type: array
           items:
@@ -13277,6 +13400,9 @@ components:
         details:
           description: The description or details of the update what was done
           type: string
+        type:
+          description: The type of the update
+          $ref: "#/components/schemas/PedagogyHistoryEntryType"
 
     PedagogyUserInfo:
       type: object
@@ -13337,6 +13463,8 @@ components:
         - studentInfo
         - history
         - visibility
+        - formData
+        - created
       properties:
         studentIdentifier:
           description: The id of the student
@@ -13345,13 +13473,16 @@ components:
         ownerId:
           description: Id of the user who created the document
           type: integer
+          nullable: true
         ownerInfo:
           description: Info of the user who created the document
           allOf:
             - $ref: "#/components/schemas/PedagogyUserInfo"
+          nullable: true
         id:
           description: The id of the form
           type: integer
+          nullable: true
         state:
           description: State of the form
           example: "PENDING | APPROVED | NOT_SENT | INACTIVE"
@@ -13365,20 +13496,17 @@ components:
           description: Update history of the form
           type: array
           items:
-            $ref: "#/components/schemas/PedaogyHistoryEntry"
-        visibility:
-          description: Permissions for reading and viewing the form inside Muikku
-          example: ["TEACHER", "GUARDIANS"]
-          type: array
-          items:
-            $ref: "#/components/schemas/PedagogyFormVisibility"
-        fromData:
+            $ref: "#/components/schemas/PedagogyHistoryEntry"
+        formData:
           description: The data of the form
           example: "JSON object"
+          nullable: true
           type: string
         created:
           description: The date when the form was created
           type: string
+          format: date-time
+          nullable: true
 
     RecordsWorkspace:
       allOf:
@@ -13613,6 +13741,7 @@ components:
         lastName:
           type: string
         studyTimeEnd:
+          nullable: true
           type: string
         studyProgrammeEducationType:
           type: string
@@ -13654,6 +13783,7 @@ components:
           $ref: "#/components/schemas/CourseStatus"
         date:
           type: string
+          format: date-time
         transferCreditMandatory:
           type: boolean
           nullable: true
@@ -14811,7 +14941,7 @@ components:
         nameExtension:
           nullable: true
           type: string
-        courseType:
+        type:
           $ref: "#/components/schemas/CourseType"
         description:
           type: string

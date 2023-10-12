@@ -5,15 +5,12 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
-import { Visibility } from "~/@types/pedagogy-form";
 
 /**
  * VisibilityAndApprovalDialogProps
  */
 interface VisibilityAndApprovalDialogProps {
   formIsApproved: boolean;
-  visibility: Visibility[];
-  onVisibilityChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onApproveChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
@@ -29,7 +26,7 @@ interface VisibilityAndApprovalDialogState {}
 /**
  * VisibilityAndApprovalDialog
  */
-class VisibilityAndApprovalDialog extends React.Component<
+class ApprovalDialog extends React.Component<
   VisibilityAndApprovalDialogProps,
   VisibilityAndApprovalDialogState
 > {
@@ -58,8 +55,7 @@ class VisibilityAndApprovalDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { visibility, formIsApproved, onVisibilityChange, onApproveChange } =
-      this.props;
+    const { formIsApproved, onApproveChange } = this.props;
 
     /**
      * content
@@ -74,52 +70,12 @@ class VisibilityAndApprovalDialog extends React.Component<
         }}
       >
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">LUVAT</legend>
+          <legend className="hops-container__subheader">HYVÄKSYNTÄ</legend>
           <div className="hops-container__row">
-            Valitse ketkä saavat nähdä suunnitelman erityisopettajan ja rehtorin
-            lisäksi. Voit muokata valintojasi myöhemmin.
+            Erityisopettaja, rehtori sekä sinua opettavat ja ohjaavat henkilöt
+            saavat nähdä pedagogisen tuen suunnitelmasi. Jos olet alaikäinen,
+            myös huoltajallasi on oikeus nähdä suunnitelman tietoja.
           </div>
-          <div className="hops-container__row">
-            <div
-              className="hops__form-element-container hops__form-element-container--single-row"
-              style={{ flexFlow: "unset" }}
-            >
-              <input
-                id="forGuardians"
-                type="checkbox"
-                name="forGuardians"
-                className="hops__input"
-                value="GUARDIANS"
-                checked={visibility.includes("GUARDIANS")}
-                onChange={onVisibilityChange}
-              />
-              <label htmlFor="forGuardians" className="hops__label">
-                Olen alaikäinen. Pedagogisen tuen suunnitelman tietoja saa antaa
-                huoltajalleni.
-              </label>
-            </div>
-            <div
-              className="hops__form-element-container hops__form-element-container--single-row"
-              style={{ flexFlow: "unset" }}
-            >
-              <input
-                id="forTeachers"
-                type="checkbox"
-                name="forTeachers"
-                className="hops__input"
-                value="TEACHERS"
-                checked={visibility.includes("TEACHERS")}
-                onChange={onVisibilityChange}
-              />
-              <label htmlFor="forTeachers" className="hops__label">
-                Pedagogisen tuen suunnitelman tietoja saa antaa minua
-                opettavalle ja ohjaavalle henkilökunnalle.
-              </label>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">HYVÄKSYMINEN</legend>
           <div className="hops-container__row">
             Lue pedagogisen tuen suunnitelma ja merkitse se hyväksytyksi. Jos et
             hyväksy suunnitelmaa, ota yhteyttä erityisopettajaan.
@@ -192,4 +148,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(null, mapDispatchToProps)(VisibilityAndApprovalDialog);
+export default connect(null, mapDispatchToProps)(ApprovalDialog);
