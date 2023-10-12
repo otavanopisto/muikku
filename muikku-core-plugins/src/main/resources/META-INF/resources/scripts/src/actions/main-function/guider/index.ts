@@ -7,7 +7,6 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
-  PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import promisify from "~/util/promisify";
@@ -561,6 +560,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
+    const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
 
     try {
@@ -627,8 +627,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               }
             );
 
-            promisify(mApi().pedagogy.form.access.read(id), "callback")().then(
-              (pedagogyFormAvaibility: PedagogyFormAvailability) => {
+            pedagogyApi
+              .getPedagogyFormAccess({
+                studentIdentifier: id,
+              })
+              .then((pedagogyFormAvaibility) => {
                 dispatch({
                   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                   payload: {
@@ -636,8 +639,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                     value: pedagogyFormAvaibility,
                   },
                 });
-              }
-            );
+              });
           }),
 
         usergroupApi

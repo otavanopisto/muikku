@@ -8,9 +8,9 @@ import { StatusType } from "~/reducers/base/status";
 import PagerV2 from "../../pagerV2";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { buildAddress } from "../helpers";
-import { HistoryEntryType } from "~/@types/pedagogy-form";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { PedagogyHistoryEntryType } from "~/generated/client";
 
 /**
  * BasicInformationProps
@@ -32,7 +32,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
   const { data } = usePedagogyContext();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
   const [historyFilters, setHistoryFilters] = React.useState<
-    HistoryEntryType[]
+    PedagogyHistoryEntryType[]
   >(["EDIT", "VIEW"]);
 
   /**
@@ -49,7 +49,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
    * @param filter filter
    */
   const handleClickHistoryFilter =
-    (filter: HistoryEntryType) =>
+    (filter: PedagogyHistoryEntryType) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (historyFilters.includes(filter)) {
         unstable_batchedUpdates(() => {

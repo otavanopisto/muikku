@@ -1,22 +1,15 @@
-import {
-  NotesItemFilters,
-  NotesItemRead,
-  NotesItemPriority,
-} from "~/@types/notes";
+import { NotesItemFilters } from "~/@types/notes";
+import { Note, NotePriorityType } from "~/generated/client";
 
 /**
  * Finds deselected items based on two arrays
  * @param currentArray currentArray
  * @returns array of delected sorter strings
  */
-export const findDeselectedSorterItems = (currentArray: string[]) => {
-  const filtersStrings: string[] = [
-    NotesItemPriority.HIGH,
-    NotesItemPriority.NORMAL,
-    NotesItemPriority.LOW,
-  ];
+export const findDeselectedSorterItems = (currentArray: NotePriorityType[]) => {
+  const filtersStrings: NotePriorityType[] = ["HIGH", "NORMAL", "LOW"];
 
-  const deSelectedItems: string[] = [];
+  const deSelectedItems: NotePriorityType[] = [];
 
   // loop through previous array
   for (let j = 0; j < filtersStrings.length; j++) {
@@ -34,10 +27,10 @@ export const findDeselectedSorterItems = (currentArray: string[]) => {
  * @param notesItemList journalList
  * @returns two list, pinnend and non pinned lists
  */
-export const sortByPinned = (notesItemList: NotesItemRead[]) => {
-  const pinnedList: NotesItemRead[] = [];
+export const sortByPinned = (notesItemList: Note[]) => {
+  const pinnedList: Note[] = [];
 
-  const nonPinnedList: NotesItemRead[] = [];
+  const nonPinnedList: Note[] = [];
 
   notesItemList.map((j) => {
     if (j.pinned) {
@@ -60,15 +53,11 @@ export const sortByPinned = (notesItemList: NotesItemRead[]) => {
  * @returns list of notesItem sorted by priority
  */
 export const sortByNotesItemPriority = (
-  notesItemList: NotesItemRead[],
+  notesItemList: Note[],
   filters: NotesItemFilters
 ) => {
   // Default order is always follow
-  let order: string[] = [
-    NotesItemPriority.HIGH,
-    NotesItemPriority.NORMAL,
-    NotesItemPriority.LOW,
-  ];
+  let order: NotePriorityType[] = ["HIGH", "NORMAL", "LOW"];
 
   // If any of priority sorters are active default ordering
   // is reseted and build depending what sorters are active
@@ -76,13 +65,13 @@ export const sortByNotesItemPriority = (
     order = [];
 
     if (filters.high) {
-      order.push(NotesItemPriority.HIGH);
+      order.push("HIGH");
     }
     if (filters.normal) {
-      order.push(NotesItemPriority.NORMAL);
+      order.push("NORMAL");
     }
     if (filters.low) {
-      order.push(NotesItemPriority.LOW);
+      order.push("LOW");
     }
   }
 
@@ -107,12 +96,9 @@ export const sortByNotesItemPriority = (
  * @param userId userId
  * @returns notesItem list sorted by logged user own notesItems first
  */
-export const sortByMadeByMe = (
-  notesItemList: NotesItemRead[],
-  userId: number
-) => {
-  const madeByMe: NotesItemRead[] = [];
-  const madeByOthers: NotesItemRead[] = [];
+export const sortByMadeByMe = (notesItemList: Note[], userId: number) => {
+  const madeByMe: Note[] = [];
+  const madeByOthers: Note[] = [];
 
   notesItemList.map((j) =>
     j.creator === userId ? madeByMe.push(j) : madeByOthers.push(j)
@@ -129,10 +115,10 @@ export const sortByMadeByMe = (
  * @returns list of filtered notesItems
  */
 export const filterByCreator = (
-  notesItemList: NotesItemRead[],
+  notesItemList: Note[],
   filters: NotesItemFilters,
   creator: number
-): NotesItemRead[] => {
+): Note[] => {
   const updatedList = notesItemList.filter((j) => {
     if (
       (filters.own && creator === j.creator) ||
@@ -153,10 +139,10 @@ export const filterByCreator = (
  * @returns sorted notesItem list if there is priorities selected
  */
 export const sortNotesItemsBy = (
-  notesItemList: NotesItemRead[],
+  notesItemList: Note[],
   filters: NotesItemFilters,
   userId: number
-): NotesItemRead[] => {
+): Note[] => {
   let { pinnedList, nonPinnedList } = sortByPinned(notesItemList);
 
   // Filters notesItems by creator

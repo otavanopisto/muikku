@@ -2,8 +2,8 @@ import {
   SupportAction,
   SupportActionMatriculationExamination,
   SupportReason,
-  UserInfo,
 } from "~/@types/pedagogy-form";
+import { PedagogyUserInfo } from "~/generated/client";
 import { OptionDefault } from "../react-select/types";
 
 /**
@@ -127,9 +127,9 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
  * @param studentInfo studentInfo
  * @returns builded address string
  */
-export const buildAddress = (studentInfo: UserInfo) => {
+export const buildAddress = (studentInfo: PedagogyUserInfo) => {
   // Fields and order to build address string
-  const addressFields: (keyof UserInfo)[] = [
+  const addressFields: (keyof PedagogyUserInfo)[] = [
     "streetAddress",
     "zipCode",
     "city",
