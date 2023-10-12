@@ -48,10 +48,7 @@ import {
 import { filterMatch, filterHighlight } from "~/util/modifiers";
 import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
-import {
-  langAttributeLocale,
-  outputCorrectDatePickerLocale,
-} from "~/helper-functions/locale";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 import { localizeTime } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -132,7 +129,10 @@ class ManagementPanel extends React.Component<
       workspaceSignupStartDate: null,
       workspaceSignupEndDate: null,
       workspaceProducers: null,
-      workspaceDescription: "",
+      workspaceDescription:
+        props.workspace && props.workspace.description
+          ? props.workspace.description
+          : "",
       workspaceLicense: "",
       workspaceHasCustomImage: false,
       workspaceChatStatus: null,
@@ -785,7 +785,10 @@ class ManagementPanel extends React.Component<
                       >
                         {languageOptions.map((language) => (
                           <option key={language} value={language}>
-                            {langAttributeLocale[language]}
+                            {t("labels.language", {
+                              ns: "workspace",
+                              context: language,
+                            })}
                           </option>
                         ))}
                       </select>
@@ -796,20 +799,14 @@ class ManagementPanel extends React.Component<
                   <div className="form__row">
                     <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description form-element">
                       <label>{t("labels.description")}</label>
-                      {
-                        // TODO: This is a temporary fix for Ckedtior not showing content
-                        // between view changes or refreshes. This should be fixed in CKEditor
-                      }
-                      {this.state.workspaceDescription && (
-                        <CKEditor
-                          editorTitle={t("wcag.workspaceDescription", {
-                            ns: "workspace",
-                          })}
-                          onChange={this.onDescriptionChange}
-                        >
-                          {this.state.workspaceDescription}
-                        </CKEditor>
-                      )}
+                      <CKEditor
+                        editorTitle={t("wcag.workspaceDescription", {
+                          ns: "workspace",
+                        })}
+                        onChange={this.onDescriptionChange}
+                      >
+                        {this.state.workspaceDescription}
+                      </CKEditor>
                     </div>
                   </div>
                 </div>
@@ -956,8 +953,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessMembers">
-                            {t("labels.membersOnly", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              context: "membersOnly",
                             })}
                           </label>
                         </div>
@@ -973,8 +971,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessLoggedin">
-                            {t("labels.loggedInUsers", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              context: "loggedInUsers",
                             })}
                           </label>
                         </div>
@@ -990,8 +989,9 @@ class ManagementPanel extends React.Component<
                             )}
                           />
                           <label htmlFor="workspaceAccessAnyone">
-                            {t("labels.anyone", {
+                            {t("labels.access", {
                               ns: "workspace",
+                              context: "anyone",
                             })}
                           </label>
                         </div>

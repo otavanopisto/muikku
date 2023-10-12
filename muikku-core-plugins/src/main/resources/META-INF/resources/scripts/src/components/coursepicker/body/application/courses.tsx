@@ -14,11 +14,7 @@ import {
   loadMoreWorkspacesFromServer,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
-import {
-  WorkspacesStateType,
-  WorkspaceListType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -29,7 +25,7 @@ interface CoursepickerWorkspacesProps extends WithTranslation<["common"]> {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
-  workspaces: WorkspaceListType;
+  workspaces: WorkspaceType[];
 }
 
 /**

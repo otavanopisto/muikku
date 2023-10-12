@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.search;
 
 import java.util.List;
+import java.util.Set;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.AbstractWorkspaceSearchBuilder;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -45,6 +47,16 @@ public class ElasticWorkspaceSearchBuilder extends AbstractWorkspaceSearchBuilde
         getMaxResults(),
         getSorts()
     );
+  }
+
+  @Override
+  public Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums() {
+    return elastic.listDistinctWorkspaceCurriculums(getOrganizationRestrictions(), getAccesses(), getAccessUser());
+  }
+
+  @Override
+  public Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes() {
+    return elastic.listDistinctWorkspaceEducationTypes(getOrganizationRestrictions(), getAccesses(), getAccessUser());
   }
 
   private ElasticSearchProvider elastic;

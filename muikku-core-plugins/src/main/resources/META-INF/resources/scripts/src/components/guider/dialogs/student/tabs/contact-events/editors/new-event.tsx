@@ -13,11 +13,7 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import DatePicker from "react-datepicker";
-import {
-  ContactTypes,
-  contactTypesArray,
-  GuiderStudentType,
-} from "~/reducers/main-function/guider";
+import { contactTypesArray } from "~/reducers/main-function/guider";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
@@ -25,6 +21,7 @@ import {
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
+import { ContactType, Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -35,12 +32,12 @@ interface NewContactEventProps extends WithTranslation {
   createContactLogEvent: CreateContactLogEventTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
   logsPerPage: number;
-  currentStudent: GuiderStudentType;
+  currentStudent: Student;
   status: StatusType;
   initialDate?: Date;
   initialSender?: string;
   initialMessage?: string;
-  initialType?: ContactTypes;
+  initialType?: ContactType;
   onOpen?: () => void;
   onClose?: () => void;
   isOpen?: boolean;
@@ -53,7 +50,7 @@ interface NewContactEventState {
   text: string;
   sender: string;
   date: Date;
-  type: ContactTypes;
+  type: ContactType;
   locked: boolean;
 }
 
@@ -136,7 +133,7 @@ class NewContactEvent extends SessionStateComponent<
    */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     this.setStateAndStore(
-      { type: e.target.value as ContactTypes },
+      { type: e.target.value as ContactType },
       this.nameSpace
     );
   };

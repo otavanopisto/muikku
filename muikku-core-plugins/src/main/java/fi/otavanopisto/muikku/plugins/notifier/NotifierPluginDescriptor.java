@@ -1,25 +1,20 @@
 package fi.otavanopisto.muikku.plugins.notifier;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.i18n.LocaleBundle;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.AfterPluginsInitEvent;
-import fi.otavanopisto.muikku.plugin.LocalizedPluginDescriptor;
 import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 
-public class NotifierPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+public class NotifierPluginDescriptor implements PluginDescriptor {
+
+  @Inject
+  private NotifierController notifierController;
 
   @Override
   public void init() {
   }
-
-  @Inject
-  private NotifierController notifierController;
   
 	@Override
 	public String getName() {
@@ -34,13 +29,6 @@ public class NotifierPluginDescriptor implements PluginDescriptor, LocalizedPlug
       e.printStackTrace();
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public List<LocaleBundle> getLocaleBundles() {
-    List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    
-    return bundles;
   }
 
 }

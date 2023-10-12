@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { CredentialsType } from "~/reducers/base/credentials";
+import { CredentialsState } from "~/reducers/base/credentials";
 import ReturnCredentials from "./body/return-credentials";
 import CredentialsContainer from "./body/credentials-container";
 import CredentialsHero from "./body/credentials-hero";
@@ -10,7 +10,7 @@ import { StateType } from "~/reducers";
  * CredentialsBodyProps
  */
 interface CredentialsBodyProps {
-  credentials: CredentialsType;
+  credentials: CredentialsState;
 }
 
 /**

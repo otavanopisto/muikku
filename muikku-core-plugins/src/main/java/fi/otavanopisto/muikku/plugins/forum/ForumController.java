@@ -22,7 +22,6 @@ import fi.otavanopisto.muikku.controller.ResourceRightsController;
 import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -99,8 +98,7 @@ public class ForumController {
   
   public boolean isEnvironmentForumActive() {
     if (sessionController.isLoggedIn()) {
-      EnvironmentRoleEntity roleEntity = userSchoolDataIdentifierController.findUserSchoolDataIdentifierRole(sessionController.getLoggedUser());
-      if (roleEntity != null && roleEntity.getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR) {
+      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return true;
       }
       
@@ -210,7 +208,7 @@ public class ForumController {
   public void archiveThread(ForumThread thread) {
     List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
     for (ForumThreadReply reply : replies) {
-      forumThreadReplyDAO.updateArchived(reply, true);
+      forumThreadReplyDAO.updateArchived(reply, true, sessionController.getLoggedUserEntity());
     }
     
     forumThreadDAO.updateArchived(thread, true);
@@ -246,11 +244,11 @@ public class ForumController {
   }
 
   public void archiveReply(ForumThreadReply reply) {
-    forumThreadReplyDAO.updateArchived(reply, true);
+    forumThreadReplyDAO.updateArchived(reply, true, sessionController.getLoggedUserEntity());
   }
   
   public void updateReplyDeleted(ForumThreadReply reply, boolean deleted) {
-    forumThreadReplyDAO.updateDeleted(reply, deleted);
+    forumThreadReplyDAO.updateDeleted(reply, deleted, sessionController.getLoggedUserEntity());
   }
   
   public void deleteReply(ForumThreadReply reply) {
@@ -364,7 +362,7 @@ public class ForumController {
   }
   
   public void archiveMessage(ForumMessage message) {
-    forumMessageDAO.archive(message);
+    forumMessageDAO.archive(message, sessionController.getLoggedUserEntity());
     
     if (message instanceof ForumThreadReply) {
       ForumThreadReply reply = (ForumThreadReply) message;

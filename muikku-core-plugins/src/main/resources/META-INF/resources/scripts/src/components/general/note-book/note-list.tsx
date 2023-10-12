@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NoteBookState, WorkspaceNote } from "~/reducers/notebook/notebook";
+import { NoteBookState } from "~/reducers/notebook/notebook";
 import { IconButton } from "../button";
 import AnimateHeight from "react-animate-height";
 import { connect, Dispatch } from "react-redux";
@@ -10,6 +10,7 @@ import CkeditorContentLoader from "../../base/ckeditor-loader/content";
 import Button from "../button";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { WorkspaceNote } from "~/generated/client";
 
 /**
  * NoteBookProps

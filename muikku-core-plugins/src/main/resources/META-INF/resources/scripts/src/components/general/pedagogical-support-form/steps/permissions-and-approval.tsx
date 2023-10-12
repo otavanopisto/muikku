@@ -18,14 +18,8 @@ interface PermissionsAndApprovalProps {}
 const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props
 ) => {
-  const {
-    formIsApproved,
-    visibility,
-    data,
-    userRole,
-    sendToStudent,
-    editIsActive,
-  } = usePedagogyContext();
+  const { formIsApproved, data, userRole, sendToStudent, editIsActive } =
+    usePedagogyContext();
 
   return (
     <section className="hops-container">
@@ -38,11 +32,13 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
             <div className="hops-container__state state-INFO">
               <div className="hops-container__state-icon icon-notification"></div>
               <div className="hops-container__state-text">
-                Pedagogisen tuen suunnitelma tehdään yhteistyössä opiskelijan
-                kanssa. Suunnitelma jaetaan opiskelijan kanssa Lähetä-painiketta
-                klikkaamalla. Opiskelija voi hyväksyä suunnitelman ja valita,
-                ketkä erityisopettajan ja rehtorin lisäksi saavat nähdä
-                pedagogisen tuen suunnitelman.
+                Pedagogisen tuen suunnitelma laaditaan yhteistyössä opiskelijan
+                kanssa. Suunnitelma jaetaan opiskelijalle Lähetä-painikkeen
+                avulla. Opiskelija voi joko hyväksyä suunnitelman tai ottaa
+                yhteyttä erityisopettajaan. Hyväksytyn suunnitelman näkevät
+                erityisopettajan ja rehtorin lisäksi opiskelijaa opettava ja
+                ohjaava henkilökunta. Alaikäisten opiskelijoiden kohdalla
+                suunnitelman tietoja voidaan myös jakaa heidän huoltajilleen.
               </div>
             </div>
             {editIsActive && (
@@ -69,53 +65,6 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
         </fieldset>
       ) : null}
 
-      <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Luvat</legend>
-        <div
-          className="hops-container__row"
-          style={{ flexDirection: "column" }}
-        >
-          <div
-            className="hops__form-element-container hops__form-element-container--single-row"
-            style={{ flexFlow: "unset" }}
-          >
-            <input
-              id="allowAccessToFamilyMember"
-              type="checkbox"
-              name="forGuardians"
-              className="hops__input"
-              value="GUARDIANS"
-              disabled
-              defaultChecked={visibility.includes("GUARDIANS")}
-            />
-            <label htmlFor="allowAccessToFamilyMember" className="hops__label">
-              Olen alaikäinen. Pedagogisen tuen suunnitelman tietoja saa antaa
-              huoltajalleni.
-            </label>
-          </div>
-          <div
-            className="hops__form-element-container hops__form-element-container--single-row"
-            style={{ flexFlow: "unset" }}
-          >
-            <input
-              id="allowAccessToGuidanceCounselor"
-              type="checkbox"
-              name="forTeachers"
-              className="hops__input"
-              value="TEACHERS"
-              disabled
-              defaultChecked={visibility.includes("TEACHERS")}
-            />
-            <label
-              htmlFor="allowAccessToGuidanceCounselor"
-              className="hops__label"
-            >
-              Pedagogisen tuen suunnitelman tietoja saa antaa minua opettavalle
-              ja ohjaavalle henkilökunnalle.
-            </label>
-          </div>
-        </div>
-      </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">Hyväksyminen</legend>
         <div className="hops-container__row">

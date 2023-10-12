@@ -1,14 +1,13 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi from "~/lib/mApi";
-import { LocaleReadResponse, LocaleType } from "~/reducers/base/locales";
-import promisify from "~/util/promisify";
+import { LocaleType } from "~/reducers/base/locales";
 import notificationActions from "~/actions/base/notifications";
 import i18n, { localizeTime } from "~/locales/i18n";
+import MApi, { isMApiError } from "~/api/api";
 
 // ACTIONS for locale
-export type LOCALE_SET = SpecificActionType<"LOCALE_SET", string>;
-export type LOCALE_UPDATE = SpecificActionType<"LOCALE_UPDATE", string>;
+export type LOCALE_SET = SpecificActionType<"LOCALE_SET", LocaleType>;
+export type LOCALE_UPDATE = SpecificActionType<"LOCALE_UPDATE", LocaleType>;
 
 // TRIGGER types for locale
 
@@ -37,11 +36,14 @@ export interface LoadLocaleTriggerType {
  */
 const setLocale: SetLocaleTriggerType = function setLocale(data) {
   return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+    const meApi = MApi.getMeApi();
+
     try {
-      await promisify(
-        mApi().me.locale.create({ lang: data.locale }),
-        "callback"
-      )();
+      await meApi.setLocale({
+        setLocaleRequest: {
+          lang: data.locale,
+        },
+      });
 
       localizeTime.language = data.locale;
       i18n.changeLanguage(data.locale);
@@ -68,11 +70,10 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
  */
 const loadLocale: LoadLocaleTriggerType = function loadLocale() {
   return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+    const meApi = MApi.getMeApi();
+
     try {
-      const locale = (await promisify(
-        mApi().me.locale.read(),
-        "callback"
-      )()) as LocaleReadResponse;
+      const locale = await meApi.getLocale();
 
       localizeTime.language = locale.lang;
 
@@ -81,6 +82,10 @@ const loadLocale: LoadLocaleTriggerType = function loadLocale() {
         payload: locale.lang,
       });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.loadError", {

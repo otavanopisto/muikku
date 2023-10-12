@@ -52,7 +52,9 @@ const WallPanel: React.FC<WallProps> = (props) => {
             />
           ))
         ) : (
-          <div className="empty empty--front-page">{t("content.empty")}</div>
+          <div className="empty empty--front-page">
+            {t("content.empty", { ns: "tasks", context: "student" })}
+          </div>
         )}
       </Panel.BodyContent>
     </Panel>

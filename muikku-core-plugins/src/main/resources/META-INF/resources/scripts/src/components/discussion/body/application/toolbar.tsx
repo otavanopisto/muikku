@@ -7,7 +7,7 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import "~/sass/elements/react-select-override.scss";
-import { DiscussionType } from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
 import NewArea from "../../dialogs/new-area";
 import ModifyArea from "../../dialogs/modify-area";
 import DeleteArea from "../../dialogs/delete-area";
@@ -43,7 +43,7 @@ type DiscussionAreaOptionWithExtraContent = OptionWithExtraContent<
  * DiscussionToolbarProps
  */
 interface DiscussionToolbarProps extends WithTranslation {
-  discussion: DiscussionType;
+  discussion: DiscussionState;
   status: StatusType;
   showOnlySubscribedThreads: ShowOnlySubscribedThreads;
   subscribeDiscussionArea: SubscribeDiscussionArea;

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { getName } from "~/util/modifiers";
-import { GuiderStudentType } from "~/reducers/main-function/guider";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -14,6 +13,7 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
+import { Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
@@ -22,7 +22,7 @@ type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
  * StudentProps
  */
 interface StudentProps extends WithTranslation<"common"> {
-  student: GuiderStudentType;
+  student: Student;
   checkbox: React.ReactElement<HTMLInputElement>;
   index: number;
   status: StatusType;
@@ -36,16 +36,14 @@ interface StudentState {}
 /**
  * Student
  */
-class Student extends React.Component<StudentProps, StudentState> {
+class StudentListItem extends React.Component<StudentProps, StudentState> {
   /**
    * getSudentStudyTimeState
    *
    * @param student student
    * @returns StudentStudytimeState "ENDED" | "ENDING" | "ONGOING"
    */
-  getSudentStudyTimeState = (
-    student: GuiderStudentType
-  ): StudentStudyTimeState => {
+  getSudentStudyTimeState = (student: Student): StudentStudyTimeState => {
     if (student.studyTimeEnd) {
       const studyTimeEnd = moment(student.studyTimeEnd);
       const difference = studyTimeEnd.diff(moment(), "days");
@@ -135,4 +133,6 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default withTranslation(["guider"])(connect(mapStateToProps)(Student));
+export default withTranslation(["guider"])(
+  connect(mapStateToProps)(StudentListItem)
+);

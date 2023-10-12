@@ -16,12 +16,12 @@ import {
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
 import DeleteJournalFeedback from "~/components/evaluation/dialogs/delete-journal-feedback";
 import Button, { ButtonPill } from "~/components/general/button";
-import {
-  AssessmentRequest,
-  EvaluationJournalFilters,
-  EvaluationStudyDiaryEvent,
-} from "~/@types/evaluation";
+import { EvaluationJournalFilters } from "~/@types/evaluation";
 import Dropdown from "~/components/general/dropdown";
+import {
+  WorkspaceJournal,
+  EvaluationAssessmentRequest,
+} from "~/generated/client";
 import { localizeTime } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventListProps {
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   evaluation: EvaluationState;
   deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
 }
@@ -143,10 +143,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
    * @param a a
    * @param b b
    */
-  const sortByDate = (
-    a: EvaluationStudyDiaryEvent,
-    b: EvaluationStudyDiaryEvent
-  ) => {
+  const sortByDate = (a: WorkspaceJournal, b: WorkspaceJournal) => {
     const dateA = new Date(a.created);
     const dateB = new Date(b.created);
 
@@ -255,13 +252,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
                 >
-                  {t("actions.cancel")}
+                  {t("actions.edit", { ns: "common" })}
                 </Link>
 
                 {!feedbackEditorOpen && (
                   <DeleteJournalFeedback journalFeedback={journalFeedback}>
                     <Link className="link link--evaluation link--evaluation-delete">
-                      {t("actions.remove")}
+                      {t("actions.remove", { ns: "common" })}
                     </Link>
                   </DeleteJournalFeedback>
                 )}
@@ -282,7 +279,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
                 >
-                  {t("actions.grade", { ns: "evaluation", context: "overall" })}
+                  {t("actions.grade", { ns: "evaluation", context: "journal" })}
                 </Link>
               </div>
             </div>
@@ -338,9 +335,19 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                 alignSelfVertically="top"
                 content={
                   sortByCreationDate === "asc" ? (
-                    <p>Järjestetty luontipäivämäärän mukaan nousevasti</p>
+                    <p>
+                      {t("labels.sortDescending", {
+                        ns: "journal",
+                        context: "writingDate",
+                      })}
+                    </p>
                   ) : (
-                    <p>Järjestetty luontipäivämäärän mukaan laskevasti</p>
+                    <p>
+                      {t("labels.sortAscending", {
+                        ns: "journal",
+                        context: "writingDate",
+                      })}
+                    </p>
                   )
                 }
               >

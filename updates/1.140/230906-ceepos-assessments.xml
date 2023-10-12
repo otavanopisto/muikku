@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table CeeposAssessmentRequestOrder (
+       requestText mediumtext,
+       workspaceEntityId bigint not null,
+       id bigint not null,
+       primary key (id)
+    );
+  </sql>
+  <sql>
+    alter table CeeposAssessmentRequestOrder 
+       add constraint FKo3axlfhvrb35usmdbpljbmwj7 
+       foreign key (id) 
+       references CeeposOrder (id);
+  </sql>
+
+</update>

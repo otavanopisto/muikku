@@ -10,10 +10,7 @@ import {
   WorkspacesPatchType,
   WorkspaceType,
 } from "~/reducers/workspaces";
-import {
-  ReducerStateType,
-  WorkspaceJournalType,
-} from "~/reducers/workspaces/journals";
+import { ReducerStateType } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
@@ -139,6 +136,9 @@ export async function loadWorkspacesHelper(
 
   // If we are loading workspaces within organization management
   // then we use different set of params so front-end follows back-end's specs
+
+  // NOTE: empty arrays as parameters are not supported by the backend, so we need to
+  // send undefined instead of empty array. Empty array is resolved as ERROR by the backend.
   if (loadOrganizationWorkspaces) {
     params = {
       firstResult,
@@ -180,17 +180,17 @@ export async function loadWorkspacesHelper(
     (params as any).q = actualFilters.query;
   }
 
-  try {
-    const organizationApi = MApi.getOrganizationApi();
+  const coursepickerApi = MApi.getCoursepickerApi();
+  const organizationApi = MApi.getOrganizationApi();
 
-    let nWorkspaces = loadOrganizationWorkspaces
-      ? <WorkspaceType[]>await organizationApi.getOrganizationWorkspaces(params)
-      : <WorkspaceType[]>(
-          await promisify(
-            mApi().coursepicker.workspaces.cacheClear().read(params),
-            "callback"
-          )()
-        );
+  try {
+    // NOTE: Still using old WorkspaceType for now, because frontend is not ready for the path
+    // specific types yet. This will be changed in the future.
+    let nWorkspaces: WorkspaceType[] = loadOrganizationWorkspaces
+      ? await organizationApi.getOrganizationWorkspaces(params)
+      : await coursepickerApi.getCoursepickerWorkspaces({
+          ...params,
+        });
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
@@ -258,8 +258,9 @@ export async function loadCurrentWorkspaceJournalsHelper(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
-  const state: StateType = getState();
+  const workspaceApi = MApi.getWorkspaceApi();
 
+  const state = getState();
   const currentWorkspace = state.workspaces.currentWorkspace;
 
   let currentJournalState = state.journals;
@@ -309,10 +310,12 @@ export async function loadCurrentWorkspaceJournalsHelper(
   }
 
   try {
-    const journals = (await promisify(
-      mApi().workspace.workspaces.journal.read(currentWorkspace.id, params),
-      "callback"
-    )()) as WorkspaceJournalType[];
+    const journals = await workspaceApi.getWorkspaceJournals({
+      workspaceId: currentWorkspace.id,
+      firstResult: params.firstResult,
+      maxResults: params.maxResults,
+      userEntityId: params.userEntityId,
+    });
 
     //update current workspace again in case
     currentJournalState = getState().journals;
@@ -351,7 +354,7 @@ export async function loadCurrentWorkspaceJournalsHelper(
         })
       );
   } catch (err) {
-    if (!(err instanceof MApiError)) {
+    if (!isMApiError(err)) {
       throw err;
     }
     //update current workspace again in case

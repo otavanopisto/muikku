@@ -9,11 +9,12 @@ import { RecordsType } from "~/reducers/main-function/records";
 import HopsGraph from "~/components/base/hops_editable";
 import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
-import { HOPSDataType, HOPSType } from "~/reducers/main-function/hops";
+import { HOPSState } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import CompulsoryEducationHopsWizard from "../../../general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
+import { HopsUppersecondary } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -22,7 +23,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface HopsProps extends WithTranslation {
   records: RecordsType;
   status: StatusType;
-  hops: HOPSType;
+  hops: HOPSState;
   setHopsTo: SetHopsToTriggerType;
 }
 
@@ -51,7 +52,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
    * setHopsToWithDelay
    * @param hops hops
    */
-  setHopsToWithDelay(hops: HOPSDataType) {
+  setHopsToWithDelay(hops: HopsUppersecondary) {
     clearTimeout(this.timeout);
     this.timeout = setTimeout(
       this.props.setHopsTo.bind(null, hops),

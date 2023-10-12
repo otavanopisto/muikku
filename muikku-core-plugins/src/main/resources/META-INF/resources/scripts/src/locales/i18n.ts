@@ -15,7 +15,7 @@ export const defaultNS = "common";
 const lang = document.querySelector("html").lang;
 
 i18n.use(initReactI18next).init({
-  debug: true,
+  debug: false,
   resources,
   lng: "fi",
   defaultNS: defaultNS,
@@ -37,6 +37,13 @@ export class LocalizeTime {
    */
   constructor(language: string) {
     this.lang = language;
+
+    this.date = this.date.bind(this);
+    this.getLocalizedMoment = this.getLocalizedMoment.bind(this);
+    this.formatDaily = this.formatDaily.bind(this);
+    this.subtract = this.subtract.bind(this);
+    this.add = this.add.bind(this);
+    this.duration = this.duration.bind(this);
   }
 
   /**
