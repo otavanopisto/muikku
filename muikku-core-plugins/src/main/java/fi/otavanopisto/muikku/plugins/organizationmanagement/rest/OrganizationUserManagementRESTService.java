@@ -308,7 +308,7 @@ public class OrganizationUserManagementRESTService {
             userEntity.getId(),
             null, // flags
             organizationRESTModel,
-            null));
+            false));
       }
     }
     

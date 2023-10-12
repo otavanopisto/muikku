@@ -52,7 +52,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
@@ -441,7 +440,7 @@ public class GuiderRESTService extends PluginRESTService {
             userEntity.getId(),
             restFlags,
             organizationEntity == null ? null : toRestModel(organizationEntity),
-            getHasPedagogyForm(studentIdentifier.toId())
+            pedagogyController.getHasPedagogyForm(studentIdentifier.toId())
           ));
         }
       }
@@ -527,7 +526,7 @@ public class GuiderRESTService extends PluginRESTService {
         null,
         organizationRESTModel,
         user.getMatriculationEligibility(),
-        getHasPedagogyForm(studentIdentifier.toId())
+        pedagogyController.getHasPedagogyForm(studentIdentifier.toId())
     );
 
     return Response
@@ -1049,13 +1048,4 @@ public class GuiderRESTService extends PluginRESTService {
     }
     return date;
   }
-  
-  private Boolean getHasPedagogyForm(String studentIdentifier) {
-    PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
-    
-    Boolean hasPedagogyForm = form != null;
-    
-    return hasPedagogyForm;
-  }
-
 }

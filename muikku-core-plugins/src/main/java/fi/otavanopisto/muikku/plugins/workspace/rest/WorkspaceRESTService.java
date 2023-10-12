@@ -94,7 +94,6 @@ import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
@@ -1253,7 +1252,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
               hasImage,
               activeUserIds.contains(workspaceUserEntity.getId()),
-              getHasPedagogyForm(studentIdentifier.toId())));
+              pedagogyController.getHasPedagogyForm(studentIdentifier.toId())));
         }
       }
 
@@ -2917,7 +2916,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
         hasImage,
         workspaceUserEntity.getActive(),
-        getHasPedagogyForm(schoolDataIdentifier.toId()));
+        pedagogyController.getHasPedagogyForm(schoolDataIdentifier.toId()));
 
     return Response.ok(workspaceStudentRestModel).build();
   }
@@ -3653,13 +3652,4 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     return null;
   }
-  
-  private Boolean getHasPedagogyForm(String studentIdentifier) {
-    PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
-    
-    Boolean hasPedagogyForm = form != null;
-    
-    return hasPedagogyForm;
-  }
-
 }

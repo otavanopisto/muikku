@@ -61,7 +61,6 @@ import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -1685,7 +1684,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    Boolean hasPedagogyForm = getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     return restAssessmentRequest;
   }
@@ -1771,13 +1770,4 @@ public class EvaluationRESTService extends PluginRESTService {
         interimEvaluationRequest.getRequestText(),
         interimEvaluationRequest.getArchived());
   }
-  
-  private Boolean getHasPedagogyForm(String studentIdentifier) {
-    PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
-    
-    Boolean hasPedagogyForm = form != null;
-    
-    return hasPedagogyForm;
-  }
-
 }

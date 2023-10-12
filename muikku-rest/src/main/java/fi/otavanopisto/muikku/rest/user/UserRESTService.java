@@ -616,7 +616,7 @@ public class UserRESTService extends AbstractRESTService {
             userEntity.getId(),
             restFlags,
             organizationRESTModel,
-            null
+            false
           ));
         }
       }
@@ -719,7 +719,7 @@ public class UserRESTService extends AbstractRESTService {
         userEntity == null ? -1 : userEntity.getId(),
         null,
         organizationRESTModel,
-        null
+        false
     );
     
     return Response
