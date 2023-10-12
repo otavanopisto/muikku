@@ -1,11 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import {
-  Course,
-  CourseStatus,
-  StudentActivityCourse,
-  Suggestion,
-} from "~/@types/shared";
+import { Course } from "~/@types/shared";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
@@ -14,6 +9,7 @@ import {
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
 import { useSuggestionList } from "./hooks/useSuggestedList";
+import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
 
 /**
  * SuggestionListProps
@@ -23,7 +19,7 @@ interface HopsSuggestionListProps {
   studentsUserEntityId: number;
   course: Course;
   subjectCode: string;
-  suggestedActivityCourses?: StudentActivityCourse[];
+  suggestedActivityCourses?: StudentStudyActivity[];
   displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;
   /**
@@ -33,7 +29,7 @@ interface HopsSuggestionListProps {
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
   openSignUpBehalfDialog: (
     studentEntityId: number,
-    suggestion: Suggestion
+    suggestion: WorkspaceSuggestion
   ) => void;
   onCloseSignUpBehalfDialog: () => void;
 }
@@ -67,7 +63,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
    * @param suggestion suggestion
    */
   const handleOpenSignUpBehalfDialog =
-    (studentEntityId: number, suggestion: Suggestion) =>
+    (studentEntityId: number, suggestion: WorkspaceSuggestion) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
       props.openSignUpBehalfDialog(studentEntityId, suggestion);
     };
@@ -96,11 +92,10 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
             (item) => item.courseId === suggestion.id
           );
 
-          // If any of these condition happens, changes respectivily action type
-          if (
-            suggestedCourse &&
-            suggestedCourse.status === CourseStatus.SUGGESTED_NEXT
-          ) {
+          /**
+           * If any of these condition happens, changes respectivily action type
+           */
+          if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
             suggestionNextActionType = "remove";
           }
         }

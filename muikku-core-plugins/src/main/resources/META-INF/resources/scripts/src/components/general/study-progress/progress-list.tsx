@@ -1,5 +1,4 @@
 import * as React from "react";
-import { StudentActivityCourse } from "~/@types/shared";
 import {
   ListContainer,
   ListHeader,
@@ -27,6 +26,11 @@ import {
   useStudyProgressStaticDataContext,
 } from "./context";
 import SuggestionList from "./suggestion-list";
+
+import { OptionalCourseSuggestion,
+  StudentCourseChoice,
+  StudentStudyActivity,
+} from "~/generated/client";
 
 /**
  * CourseListProps
@@ -100,7 +104,7 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
 
       // List item options with default values
       let canBeSelected = true;
-      let courseSuggestions: StudentActivityCourse[] = [];
+      let courseSuggestions: StudentStudyActivity[] = [];
 
       let selectedByStudent = false;
       let suggestedBySupervisor = false;
@@ -187,7 +191,7 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
         studyProgressStatic.useCase === "hops-planning";
 
       /**
-       * Suggestion list is shown only if not disabled, for supervisor only
+       * WorkspaceSuggestion list is shown only if not disabled, for supervisor only
        * and there can be made selections
        */
       const showSuggestionList =

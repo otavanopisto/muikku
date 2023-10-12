@@ -4,7 +4,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
 import Button from "~/components/general/button";
-import { Suggestion } from "~/@types/shared";
+import { WorkspaceSuggestion } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -14,7 +14,7 @@ interface WorkspaceDescriptionDialogProps extends WithTranslation {
   children?: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
-  course: Suggestion;
+  course: WorkspaceSuggestion;
 }
 
 /**

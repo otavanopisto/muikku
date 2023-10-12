@@ -78,6 +78,96 @@ paths:
   #    "500":
   #      description: Internal server error
 
+  #ACTIVITYLOGS
+  /rest/activitylogs/user/{userId}:
+    get:
+      operationId: getUserActivityLogs
+      summary: Get activity logs
+      tags:
+        - Activitylogs
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: From
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: To
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Activity logs successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityLogHash"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Activity logs not found
+        "500":
+          description: Internal server error
+
+  /rest/activitylogs/user/{userId}/workspace:
+    get:
+      operationId: getWorkspaceActivityLogs
+      summary: Get activity logs
+      tags:
+        - Activitylogs
+      parameters:
+        - name: userId
+          in: path
+          description: User id
+          required: true
+          schema:
+            type: string
+        - name: workspaceEntityId
+          in: query
+          description: Workspace entity id
+          schema:
+            type: integer
+        - name: from
+          in: query
+          description: From
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: To
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityLogEntry"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Activity logs not found
+        "500":
+          description: Internal server error
+
   #ANNNOUNCER
   /rest/announcer/announcements:
     get:
@@ -4457,9 +4547,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4486,9 +4575,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4510,7 +4597,6 @@ paths:
             type: string
       requestBody:
         $ref: "#/components/requestBodies/OptionalSuggestionCreateRequestBody"
-
       responses:
         "200":
           description: Student optional suggestion created successfully
@@ -4599,9 +4685,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StudentCourseChoice"
+                $ref: "#/components/schemas/StudentCourseChoice"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4644,18 +4729,6 @@ paths:
         - name: studentIdentifier
           in: path
           description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: startDate
-          in: query
-          description: Start date
-          required: true
-          schema:
-            type: string
-        - name: endDate
-          in: query
-          description: End date
           required: true
           schema:
             type: string
@@ -4744,17 +4817,16 @@ paths:
         $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
-    #FIX
-    delete:
-      operationId: deleteToggleSuggestion
-      summary: Delete toggle suggestion
-      description: Delete toggle suggestion
+    put:
+      operationId: updateToggleSuggestion
+      summary: Update toggle suggestion
+      description: Update toggle suggestion
       tags:
         - Hops
       parameters:
@@ -4764,11 +4836,11 @@ paths:
           required: true
           schema:
             type: string
-      #requestBody:
-      #  $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
+      requestBody:
+        $ref: "#/components/requestBodies/ToggleSuggestionUpdateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9354,6 +9426,7 @@ components:
                 type: string
 
     HopsHistoryEntryUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9366,6 +9439,7 @@ components:
                 type: string
 
     HopsGoalsUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9373,6 +9447,7 @@ components:
               - $ref: "#/components/schemas/HopsGoals"
 
     AlternativeStudyOptionSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9380,6 +9455,7 @@ components:
               - $ref: "#/components/schemas/AlternativeStudyOption"
 
     OptionalSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9395,6 +9471,7 @@ components:
                 type: integer
 
     StudentCourseChoiceSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9402,6 +9479,7 @@ components:
               - $ref: "#/components/schemas/StudentCourseChoice"
 
     StudentStudyHoursSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9414,11 +9492,31 @@ components:
                 type: integer
 
     ToggleSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             type: object
             description: ToggleSuggestionCreateRequestBody object
+            required:
+              - courseId
+              - subject
+              - courseNumber
+            properties:
+              courseId:
+                type: integer
+              subject:
+                type: string
+              courseNumber:
+                type: integer
+
+    ToggleSuggestionUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: ToggleSuggestionUpdateRequestBody object
             required:
               - courseId
               - subject
@@ -10324,6 +10422,59 @@ components:
     #description: "for adding nullability to a ref"
     #enum:
     #  - null
+
+    ActivityLogType:
+      type: string
+      enum:
+        - EVALUATION_REQUESTED
+        - EVALUATION_GOTINCOMPLETED
+        - EVALUATION_GOTFAILED
+        - EVALUATION_GOTPASSED
+        - SESSION_LOGGEDIN
+        - WORKSPACE_VISIT
+        - MATERIAL_EXERCISEDONE
+        - MATERIAL_ASSIGNMENTDONE
+        - FORUM_NEWMESSAGE
+        - FORUM_NEWTHREAD
+        - NOTIFICATION_ASSESMENTREQUEST
+        - NOTIFICATION_NOPASSEDCOURSES
+        - NOTIFICATION_SUPPLEMENTATIONREQUEST
+        - NOTIFICATION_STUDYTIME
+        - NOTIFICATION_NEVERLOGGEDIN
+        - NOTIFICATION_NOLOGGEDINFORTWOMONTHS
+        - EVALUATION_REQUEST_CANCELLED
+
+    ActivityLogHash:
+      type: object
+      description: Hashmap containing activity log entries list for each key value and general list for all other entries
+      required:
+        - general
+      properties:
+        general:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityLogEntry"
+      additionalProperties:
+        type: array
+        items:
+          $ref: "#/components/schemas/ActivityLogEntry"
+
+    ActivityLogEntry:
+      type: object
+      description: ActivityLogEntry object
+      required:
+        - type
+        - timestamp
+        - contextId
+      properties:
+        type:
+          $ref: "#/components/schemas/ActivityLogType"
+        timestamp:
+          type: string
+          format: date-time
+        contextId:
+          type: integer
+          nullable: true
 
     AlternativeStudyOption:
       type: object
@@ -11336,6 +11487,7 @@ components:
           nullable: true
         date:
           type: string
+          format: date-time
         modifier:
           type: string
         modifierId:
@@ -11459,6 +11611,7 @@ components:
         graduationGoal:
           nullable: true
           type: string
+          format: date-time
         followUpGoal:
           type: string
         followUpStudies:
@@ -12960,6 +13113,7 @@ components:
         lastName:
           type: string
         studyTimeEnd:
+          nullable: true
           type: string
         studyProgrammeEducationType:
           type: string
@@ -13001,6 +13155,7 @@ components:
           $ref: "#/components/schemas/CourseStatus"
         date:
           type: string
+          format: date-time
         transferCreditMandatory:
           type: boolean
           nullable: true
@@ -14029,7 +14184,7 @@ components:
         nameExtension:
           nullable: true
           type: string
-        courseType:
+        type:
           $ref: "#/components/schemas/CourseType"
         description:
           type: string
