@@ -4418,7 +4418,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AlternativeStudyOption"
+                type: array
+                items:
+                  type: string
         "400":
           description: Invalid request was sent to the server
         "500":

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { Course } from "~/@types/shared";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
@@ -10,6 +9,7 @@ import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
 import { useSuggestionList } from "./hooks/useSuggestedList";
 import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
+import { Course } from "~/@types/shared";
 
 /**
  * SuggestionListProps

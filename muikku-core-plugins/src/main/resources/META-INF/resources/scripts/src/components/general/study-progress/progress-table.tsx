@@ -31,10 +31,7 @@ import {
   showSubject,
 } from "~/helper-functions/shared";
 import SuggestionList from "./suggestion-list";
-import { OptionalCourseSuggestion,
-  StudentCourseChoice,
-  StudentStudyActivity,
-} from "~/generated/client";
+import { StudentStudyActivity } from "~/generated/client";
 import { SchoolSubject } from "~/@types/shared";
 
 /**

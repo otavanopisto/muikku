@@ -1,18 +1,18 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import {
-  CourseStatus,
-  StudentActivityByStatus,
-  StudentActivityCourse,
-  StudentCourseChoice,
-  Suggestion,
-  SupervisorOptionalSuggestion,
-} from "~/@types/shared";
+import { StudentActivityByStatus } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
+import {
+  OptionalCourseSuggestion,
+  StudentCourseChoice,
+  StudentStudyActivity,
+  WorkspaceSuggestion,
+} from "~/generated/client";
 import {
   LANGUAGE_SUBJECTS,
   OTHER_SUBJECT_OUTSIDE_HOPS,
@@ -21,10 +21,8 @@ import {
 } from "~/hooks/useStudentActivity";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import promisify from "~/util/promisify";
 
 type DataToLoad = "studentActivity" | "studentChoices" | "optionalSuggestions";
 
@@ -51,7 +49,7 @@ interface StudyProgressUpdaterContext {
   ) => Promise<void>;
   openSignUpBehalfDialog: (
     studentEntityId: number,
-    suggestion: Suggestion
+    suggestion: WorkspaceSuggestion
   ) => void;
   closeSignUpBehalfDialog: () => void;
 }
@@ -142,12 +140,14 @@ interface StudyProgresContextProviderProps {
 interface StudyProgressContextState extends StudentActivityByStatus {
   signUpDialog?: {
     studentEntityId: number;
-    suggestion: Suggestion;
+    suggestion: WorkspaceSuggestion;
   };
   studentChoices: StudentCourseChoice[];
-  supervisorOptionalSuggestions: SupervisorOptionalSuggestion[];
+  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
   options: string[];
 }
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * StudyProgresContextProvider
@@ -194,7 +194,7 @@ const StudyProgressContextProvider = (
    * @param workspaceId workspaceId
    */
   const openSignUpBehalfDialog = React.useCallback(
-    (studentEntityId: number, suggestion: Suggestion) => {
+    (studentEntityId: number, suggestion: WorkspaceSuggestion) => {
       setStudyProgress((oStudyProgress) => ({
         ...oStudyProgress,
         signUpDialog: {
@@ -227,14 +227,23 @@ const StudyProgressContextProvider = (
 
       if (actionType === "add") {
         try {
-          await promisify(
+          /* await promisify(
             mApi().hops.student.toggleSuggestion.create(studentId, {
               courseId: courseId,
               subject: subjectCode,
               courseNumber: courseNumber,
             }),
             "callback"
-          )();
+          )(); */
+
+          await hopsApi.toggleSuggestion({
+            studentIdentifier: studentId,
+            toggleSuggestionRequest: {
+              courseId: courseId,
+              subject: subjectCode,
+              courseNumber: courseNumber,
+            },
+          });
         } catch (err) {
           // TODO: lokalisointi
           displayNotification(
@@ -244,15 +253,28 @@ const StudyProgressContextProvider = (
         }
       } else {
         try {
-          await promisify(
+          /* await promisify(
             mApi().hops.student.toggleSuggestion.del(studentId, {
               subject: subjectCode,
               courseNumber: courseNumber,
               courseId: courseId,
             }),
             "callback"
-          )();
+          )(); */
+
+          await hopsApi.updateToggleSuggestion({
+            studentIdentifier: studentId,
+            updateToggleSuggestionRequest: {
+              courseId: courseId,
+              subject: subjectCode,
+              courseNumber: courseNumber,
+            },
+          });
         } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           // TODO: lokalisointi
           displayNotification(
             `Update remove suggestion:, ${err.message}`,
@@ -273,14 +295,26 @@ const StudyProgressContextProvider = (
       const { subject, courseNumber, studentId } = params;
 
       try {
-        await promisify(
+        /* await promisify(
           mApi().hops.student.studentChoices.create(studentId, {
             subject: subject,
             courseNumber: courseNumber,
           }),
           "callback"
-        )();
+        )(); */
+
+        await hopsApi.saveStudentCourseChoices({
+          studentIdentifier: studentId,
+          saveStudentCourseChoicesRequest: {
+            subject: subject,
+            courseNumber: courseNumber,
+          },
+        });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         displayNotification(err.message, "error");
       }
     },
@@ -296,14 +330,26 @@ const StudyProgressContextProvider = (
       const { subject, courseNumber, studentId } = params;
 
       try {
-        await promisify(
+        /* await promisify(
           mApi().hops.student.optionalSuggestion.create(studentId, {
             subject: subject,
             courseNumber: courseNumber,
           }),
           "callback"
-        )();
+        )(); */
+
+        await hopsApi.createOptionalSuggestion({
+          studentIdentifier: studentId,
+          createOptionalSuggestionRequest: {
+            subject: subject,
+            courseNumber: courseNumber,
+          },
+        });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         displayNotification(err.message, "error");
       }
     },
@@ -344,10 +390,14 @@ const StudyProgressContextProvider = (
               };
             }
 
-            const studentActivityList = (await promisify(
+            /* const studentActivityList = (await promisify(
               mApi().hops.student.studyActivity.read(studentId),
               "callback"
-            )()) as StudentActivityCourse[];
+            )()) as StudentStudyActivity[]; */
+
+            const studentActivityList = await hopsApi.getStudentStudyActivity({
+              studentIdentifier: studentId,
+            });
 
             const skillAndArtCourses = filterActivityBySubjects(
               SKILL_AND_ART_SUBJECTS,
@@ -378,10 +428,14 @@ const StudyProgressContextProvider = (
               return [];
             }
 
-            const studentChoicesList = (await promisify(
+            /* const studentChoicesList = (await promisify(
               mApi().hops.student.studentChoices.read(studentId),
               "callback"
-            )()) as StudentCourseChoice[];
+            )()) as StudentCourseChoice[]; */
+
+            const studentChoicesList = await hopsApi.getStudentCourseChoices({
+              studentIdentifier: studentId,
+            });
 
             return studentChoicesList;
           })(),
@@ -390,18 +444,27 @@ const StudyProgressContextProvider = (
               return [];
             }
 
-            const supervisorOptionalSuggestionList = (await promisify(
+            /* const supervisorOptionalSuggestionList = (await promisify(
               mApi().hops.student.optionalSuggestions.read(studentId),
               "callback"
-            )()) as SupervisorOptionalSuggestion[];
+            )()) as OptionalCourseSuggestion[]; */
+
+            const supervisorOptionalSuggestionList =
+              await hopsApi.getStudentOptionalSuggestions({
+                studentIdentifier: studentId,
+              });
 
             return supervisorOptionalSuggestionList;
           })(),
           (async () => {
-            const options = (await promisify(
+            /* const options = (await promisify(
               mApi().hops.student.alternativeStudyOptions.read(studentId),
               "callback"
-            )()) as string[];
+            )()) as string[]; */
+
+            const options = await hopsApi.getStudentAlternativeStudyOptions({
+              studentIdentifier: studentId,
+            });
 
             return options;
           })(),
@@ -425,6 +488,10 @@ const StudyProgressContextProvider = (
           options: studyOptions,
         }));
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         displayNotification(err.message, "error");
         setStudyProgress((studentActivity) => ({
           ...studentActivity,
@@ -538,12 +605,12 @@ const StudyProgressContextProvider = (
      * something is saved/changed
      * @param data Websocket data
      */
-    const onAnswerSavedAtServer = (data: StudentActivityCourse) => {
+    const onAnswerSavedAtServer = (data: StudentStudyActivity) => {
       const { suggestedNextList, onGoingList, gradedList, transferedList } =
         ref.current;
 
       // Concated list of different suggestions
-      let arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
+      let arrayOfStudentActivityCourses: StudentStudyActivity[] = [].concat(
         suggestedNextList
       );
 
@@ -625,13 +692,13 @@ const StudyProgressContextProvider = (
      * @param data Websocket data
      */
     const onAnswerSavedAtServer = (
-      data: StudentActivityCourse | StudentActivityCourse[]
+      data: StudentStudyActivity | StudentStudyActivity[]
     ) => {
       const { suggestedNextList, onGoingList, gradedList, transferedList } =
         ref.current;
 
       // Concated list of different suggestions
-      let arrayOfStudentActivityCourses: StudentActivityCourse[] = [].concat(
+      let arrayOfStudentActivityCourses: StudentStudyActivity[] = [].concat(
         onGoingList,
         gradedList,
         transferedList,
@@ -783,22 +850,18 @@ const StudyProgressContextProvider = (
  * Lists are Ongoing, Suggested next, Suggested optional, Transfered and graded
  */
 const filterActivity = (
-  list: StudentActivityCourse[]
+  list: StudentStudyActivity[]
 ): Omit<
   StudentActivityByStatus,
   "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
 > => {
-  const onGoingList = list.filter(
-    (item) => item.status === CourseStatus.ONGOING
-  );
+  const onGoingList = list.filter((item) => item.status === "ONGOING");
   const suggestedNextList = list.filter(
-    (item) => item.status === CourseStatus.SUGGESTED_NEXT
+    (item) => item.status === "SUGGESTED_NEXT"
   );
 
-  const transferedList = list.filter(
-    (item) => item.status === CourseStatus.TRANSFERRED
-  );
-  const gradedList = list.filter((item) => item.status === CourseStatus.GRADED);
+  const transferedList = list.filter((item) => item.status === "TRANSFERRED");
+  const gradedList = list.filter((item) => item.status === "GRADED");
 
   return {
     onGoingList,
@@ -815,7 +878,7 @@ const filterActivity = (
  */
 const filterActivityBySubjects = (
   subjectsList: string[],
-  list: StudentActivityCourse[]
+  list: StudentStudyActivity[]
 ) =>
   subjectsList.reduce(
     (a, v) => ({
