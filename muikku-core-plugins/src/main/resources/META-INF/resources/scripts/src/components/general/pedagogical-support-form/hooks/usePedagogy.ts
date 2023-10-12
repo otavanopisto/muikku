@@ -1,17 +1,18 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import {
   FormData,
   Opinion,
-  PedagogyForm,
   SupportActionImplementation,
 } from "~/@types/pedagogy-form";
+import { PedagogyForm, PedagogyFormState } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 export type UsePedagogyType = ReturnType<typeof usePedagogy>;
+
+const pedagogyApi = MApi.getPedagogyApi();
 
 /**
  * usePedagogy
@@ -43,16 +44,16 @@ export const usePedagogy = (
       setLoading(true);
 
       try {
-        const pedagogyData = (await promisify(
-          mApi().pedagogy.form.read(studentId),
-          "callback"
-        )()) as PedagogyForm;
+        const pedagogyData = await pedagogyApi.getPedagogyForm({
+          studentIdentifier: studentId,
+        });
 
         if (componentMounted.current) {
           unstable_batchedUpdates(() => {
             setData({
               ...pedagogyData,
             });
+
             setFormData({
               ...defaultFormData,
               ...(JSON.parse(pedagogyData.formData) as FormData),
@@ -63,6 +64,10 @@ export const usePedagogy = (
         }
       } catch (err) {
         if (componentMounted.current) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           setLoading(false);
           displayNotification(err.message, "error");
         }
@@ -152,10 +157,12 @@ export const usePedagogy = (
   const activateForm = async () => {
     setLoading(true);
     try {
-      const pedagogyData = (await promisify(
-        mApi().pedagogy.form.create(studentId, { formData: "{}" }),
-        "callback"
-      )()) as PedagogyForm;
+      const pedagogyData = await pedagogyApi.createPedagogyForm({
+        studentIdentifier: studentId,
+        createPedagogyFormRequest: {
+          formData: "{}",
+        },
+      });
 
       unstable_batchedUpdates(() => {
         setData(pedagogyData);
@@ -313,27 +320,27 @@ export const usePedagogy = (
       };
     }
 
-    return (await promisify(
-      mApi().pedagogy.form.formData.update(studentId, {
+    return await pedagogyApi.updatePedagogyFormData({
+      studentIdentifier: studentId,
+      updatePedagogyFormDataRequest: {
         formData: JSON.stringify(dataToUpdate),
         fields: fields || null,
         details: details || null,
-      }),
-      "callback"
-    )()) as PedagogyForm;
+      },
+    });
   };
 
   /**
    * updateStateToServer
    * @param state state
    */
-  const updateStateToServer = async (state: string) =>
-    (await promisify(
-      mApi().pedagogy.form.state.update(studentId, {
+  const updateStateToServer = async (state: PedagogyFormState) =>
+    await pedagogyApi.updatePedagogyFormState({
+      studentIdentifier: studentId,
+      updatePedagogyFormStateRequest: {
         state,
-      }),
-      "callback"
-    )()) as PedagogyForm;
+      },
+    });
 
   return {
     loading,

@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
-import { HistoryEntry } from "~/@types/pedagogy-form";
 import Avatar from "~/components/general/avatar";
+import { PedagogyHistoryEntry } from "~/generated/client";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/hops.scss";
 import { formFieldsWithTranslation } from "./helpers";
@@ -23,7 +23,7 @@ export const History: React.FC<HistoryProps> = (props) => (
  * HopsHistoryEventProps
  */
 interface HistoryEntryItemProps {
-  historyEntry: HistoryEntry;
+  historyEntry: PedagogyHistoryEntry;
   showEdit: boolean;
   status: StatusType;
 }

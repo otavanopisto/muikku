@@ -6,7 +6,6 @@ import {
 } from "~/actions/base/notifications";
 import Tabs, { Tab } from "~/components/general/tabs";
 import { useNotesItem } from "./hooks/useNotesItems";
-import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";

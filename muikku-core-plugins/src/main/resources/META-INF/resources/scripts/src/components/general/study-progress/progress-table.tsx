@@ -1,5 +1,4 @@
 import * as React from "react";
-import { SchoolSubject, StudentActivityCourse } from "~/@types/shared";
 import {
   Table,
   TableHead,
@@ -32,6 +31,8 @@ import {
   showSubject,
 } from "~/helper-functions/shared";
 import SuggestionList from "./suggestion-list";
+import { StudentStudyActivity } from "~/generated/client";
+import { SchoolSubject } from "~/@types/shared";
 
 /**
  * CourseTableProps
@@ -140,7 +141,7 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
 
         // Table data content options with default values
         let canBeSelected = true;
-        let courseSuggestions: StudentActivityCourse[] = [];
+        let courseSuggestions: StudentStudyActivity[] = [];
 
         let selectedByStudent = false;
         let suggestedBySupervisor = false;
@@ -227,7 +228,7 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
           studyProgressStatic.useCase === "hops-planning";
 
         /**
-         * Suggestion list is shown only if not disabled, for supervisor only
+         * WorkspaceSuggestion list is shown only if not disabled, for supervisor only
          * and there can be made selections
          */
         const showSuggestionList =

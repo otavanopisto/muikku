@@ -1,7 +1,7 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
-import { WorkspaceJournal } from "~/generated/client";
+import { ActivityLogEntry, WorkspaceJournal } from "~/generated/client";
 import {
   AudioAssessment,
   EvaluationType,
@@ -432,7 +432,7 @@ export interface WorkspaceType {
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceProducerType[];
   contentDescription?: MaterialContentNodeType;
-  activityLogs?: ActivityLogType[];
+  activityLogs?: ActivityLogEntry[];
   students?: WorkspaceStudentSearchResult;
   inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;

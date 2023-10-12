@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
@@ -16,7 +15,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-import { Suggestion } from "~/@types/shared";
+import { WorkspaceSuggestion } from "~/generated/client";
 
 /**
  * SignUpBehalfOfStudentParams
@@ -40,7 +39,6 @@ interface SignUpBehalfOfStudentParams {
  * SaveExtraDetailsDialogProps
  */
 interface SignUpBehalfOfStudentDialogProps {
-  i18n: i18nType;
   /**
    * Entity id of the student.
    */
@@ -48,7 +46,7 @@ interface SignUpBehalfOfStudentDialogProps {
   /**
    * Id of workspace where student is signing up.
    */
-  workspaceSuggestion?: Suggestion;
+  workspaceSuggestion?: WorkspaceSuggestion;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   displayNotification: DisplayNotificationTriggerType;
@@ -192,7 +190,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
         </div>
         <div className="form-element dialog__content-row">
           <label htmlFor="signUpMessage">
-            {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")}
+            {/* {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")} */}
           </label>
           <textarea
             id="signUpMessage"
@@ -255,7 +253,6 @@ class SignUpBehalfOfStudentDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
   };
 }
 

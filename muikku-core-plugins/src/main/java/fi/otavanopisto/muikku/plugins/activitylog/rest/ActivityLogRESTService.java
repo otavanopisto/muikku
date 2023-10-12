@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLog;
+import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -56,8 +57,19 @@ public class ActivityLogRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserWorkspaceActivityLogs(@PathParam ("USERID") String userId,
       @QueryParam("workspaceEntityId") Long workspaceEntityId,
-      @QueryParam("from") Date from,
-      @QueryParam("to") Date to) {
+      @QueryParam("from") ISO8601UTCTimestamp fromISO,
+      @QueryParam("to") ISO8601UTCTimestamp toISO) {
+    
+    if (fromISO == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing or invalid query parameter (from)").build();
+    }
+
+    if (toISO == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing or invalid query parameter (to)").build();
+    }
+    
+    Date from = fromISO.getDate();
+    Date to = toISO.getDate();
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
@@ -85,8 +97,19 @@ public class ActivityLogRESTService extends PluginRESTService {
   @Path("/user/{USERID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserActivityLogs(@PathParam("USERID") String userId,
-      @QueryParam("from") Date from,
-      @QueryParam("to") Date to) {
+      @QueryParam("from") ISO8601UTCTimestamp fromISO,
+      @QueryParam("to") ISO8601UTCTimestamp toISO) {
+
+    if (fromISO == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing or invalid query parameter (from)").build();
+    }
+
+    if (toISO == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing or invalid query parameter (to)").build();
+    }
+    
+    Date from = fromISO.getDate();
+    Date to = toISO.getDate();
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);

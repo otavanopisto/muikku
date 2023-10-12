@@ -5,6 +5,7 @@ import {
   schoolCourseTableUppersecondary,
   subjectsNotIncludedInNettilukio,
 } from "~/mock/mock-data";
+import { AlternativeStudyOption } from "~/generated/client";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RELIGION_SUBJECTS_CS = ["ue", "uo", "et"];
