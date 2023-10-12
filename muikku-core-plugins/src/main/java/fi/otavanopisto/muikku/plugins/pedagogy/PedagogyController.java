@@ -214,12 +214,8 @@ public class PedagogyController {
     return history;
   }
   
-  public Boolean getHasPedagogyForm(String studentIdentifier) {
-    PedagogyForm form = findFormByStudentIdentifier(studentIdentifier);
-    
-    Boolean hasPedagogyForm = form != null;
-    
-    return hasPedagogyForm;
+  public boolean hasPedagogyForm(String studentIdentifier) {
+    return findFormByStudentIdentifier(studentIdentifier) != null;
   }
 
 }
