@@ -25,6 +25,7 @@ import {
   WithTranslation,
   withTranslation,
 } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * EvaluationCardProps
@@ -362,6 +363,17 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
             }
             icon="star-empty"
           />
+          {rest.hasPedagogyForm ? (
+            <Dropdown
+              alignSelfVertically="top"
+              openByHover
+              content={
+                <p>Opiskelijalle on tehty pedagogisen tuen suunnitelma</p>
+              }
+            >
+              <IconButton icon="book" disabled />
+            </Dropdown>
+          ) : null}
         </div>
 
         <div className="evaluation-card__button-set">
