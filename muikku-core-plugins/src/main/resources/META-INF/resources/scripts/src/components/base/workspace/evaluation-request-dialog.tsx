@@ -149,11 +149,11 @@ class EvaluationRequestDialog extends React.Component<
       this.setState({
         price,
       });
-      // eslint-disable-next-line no-empty
     } catch (e) {
       this.props.displayNotification(
         this.props.t("notifications.loadError", {
           ns: "orders",
+          context: "price",
           error: e,
         }),
         "error"

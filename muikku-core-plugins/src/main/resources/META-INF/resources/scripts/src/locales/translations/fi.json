@@ -456,7 +456,7 @@
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_studies": "Suoritusten lataus epäonnistui. Yritä ladata sivu uudelleen.",
-      "loadError_councelors": "Ohjaajien lataus epäonnistui",
+      "loadError_counselors": "Ohjaajien lataus epäonnistui",
       "loadError_matriculation": "Yo-tietojen lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_statistics": "Tilastojen lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_userAndWorkspace": "Käyttäjän ja kurssin lataus epäonnistui. Yritä ladata sivu uudelleen.",
@@ -1902,10 +1902,10 @@
       "createError_payment": "Tilauksen maksutapahtumassa tapahtui virhe. Ole hyvä ja ota yhteyttä ohjaajaasi",
       "createSuccess": "Tilauksen maksutapahtuma onnistui",
       "loadError": "$t(common:notifications.loadError)",
-      "loadError_link": "Paluulinkin lataus epäonnistui {{Error}}",
+      "loadError_link": "Paluulinkin lataus epäonnistui {{error}}",
       "loadError_order": "Tilauksen lataus epäonnistui",
       "loadError_orders": "Tilausten lataus epäonnistui",
-      "loadError_price": "Maksullisen arvioinnin hintatiedon lataus epäonnistui {{Error}}",
+      "loadError_price": "Maksullisen arvioinnin hintatiedon lataus epäonnistui {{error}}",
       "removeError": "Opiskelijan tilauksen poisto epäonistui",
       "updateError": "Tilauksen päivittäminen epäonnistui"
     },

@@ -456,7 +456,7 @@
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_studies": "Loading records failed. Please try refreshing the page.",
-      "loadError_councelors": "Loading counselors failed. Please try refreshing the page.",
+      "loadError_counselors": "Loading counselors failed. Please try refreshing the page.",
       "loadError_matriculation": "Loading the matriculation examination information failed. Please try again.",
       "loadError_statistics": "Loading the statistics information failed. Please try again.",
       "loadError_userAndWorkspace": "User and course loading failed. Please try refreshing the page.",
@@ -1902,10 +1902,10 @@
       "createError_payment": "There was problem with the payment. Please contact your counselor",
       "createSuccess": "Payment succeeded",
       "loadError": "$t(common:notifications.loadError)",
-      "loadError_link": "Loading the return link failed {{Error}}",
+      "loadError_link": "Loading the return link failed {{{error}}}",
       "loadError_order": "Loading the order failed",
       "loadError_orders": "Loading orders failed",
-      "loadError_price": "Loading the price for the evaluation fee failed {{Error}}",
+      "loadError_price": "Loading the price for the evaluation fee failed {{{error}}}",
       "removeError": "Deleting the student order failed",
       "updateError": "Updating the student order failed"
     },
