@@ -227,15 +227,6 @@ const StudyProgressContextProvider = (
 
       if (actionType === "add") {
         try {
-          /* await promisify(
-            mApi().hops.student.toggleSuggestion.create(studentId, {
-              courseId: courseId,
-              subject: subjectCode,
-              courseNumber: courseNumber,
-            }),
-            "callback"
-          )(); */
-
           await hopsApi.toggleSuggestion({
             studentIdentifier: studentId,
             toggleSuggestionRequest: {
@@ -253,15 +244,6 @@ const StudyProgressContextProvider = (
         }
       } else {
         try {
-          /* await promisify(
-            mApi().hops.student.toggleSuggestion.del(studentId, {
-              subject: subjectCode,
-              courseNumber: courseNumber,
-              courseId: courseId,
-            }),
-            "callback"
-          )(); */
-
           await hopsApi.updateToggleSuggestion({
             studentIdentifier: studentId,
             updateToggleSuggestionRequest: {
@@ -295,14 +277,6 @@ const StudyProgressContextProvider = (
       const { subject, courseNumber, studentId } = params;
 
       try {
-        /* await promisify(
-          mApi().hops.student.studentChoices.create(studentId, {
-            subject: subject,
-            courseNumber: courseNumber,
-          }),
-          "callback"
-        )(); */
-
         await hopsApi.saveStudentCourseChoices({
           studentIdentifier: studentId,
           saveStudentCourseChoicesRequest: {
@@ -330,14 +304,6 @@ const StudyProgressContextProvider = (
       const { subject, courseNumber, studentId } = params;
 
       try {
-        /* await promisify(
-          mApi().hops.student.optionalSuggestion.create(studentId, {
-            subject: subject,
-            courseNumber: courseNumber,
-          }),
-          "callback"
-        )(); */
-
         await hopsApi.createOptionalSuggestion({
           studentIdentifier: studentId,
           createOptionalSuggestionRequest: {
@@ -390,11 +356,6 @@ const StudyProgressContextProvider = (
               };
             }
 
-            /* const studentActivityList = (await promisify(
-              mApi().hops.student.studyActivity.read(studentId),
-              "callback"
-            )()) as StudentStudyActivity[]; */
-
             const studentActivityList = await hopsApi.getStudentStudyActivity({
               studentIdentifier: studentId,
             });
@@ -428,11 +389,6 @@ const StudyProgressContextProvider = (
               return [];
             }
 
-            /* const studentChoicesList = (await promisify(
-              mApi().hops.student.studentChoices.read(studentId),
-              "callback"
-            )()) as StudentCourseChoice[]; */
-
             const studentChoicesList = await hopsApi.getStudentCourseChoices({
               studentIdentifier: studentId,
             });
@@ -444,11 +400,6 @@ const StudyProgressContextProvider = (
               return [];
             }
 
-            /* const supervisorOptionalSuggestionList = (await promisify(
-              mApi().hops.student.optionalSuggestions.read(studentId),
-              "callback"
-            )()) as OptionalCourseSuggestion[]; */
-
             const supervisorOptionalSuggestionList =
               await hopsApi.getStudentOptionalSuggestions({
                 studentIdentifier: studentId,
@@ -457,11 +408,6 @@ const StudyProgressContextProvider = (
             return supervisorOptionalSuggestionList;
           })(),
           (async () => {
-            /* const options = (await promisify(
-              mApi().hops.student.alternativeStudyOptions.read(studentId),
-              "callback"
-            )()) as string[]; */
-
             const options = await hopsApi.getStudentAlternativeStudyOptions({
               studentIdentifier: studentId,
             });
