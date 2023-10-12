@@ -189,9 +189,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
           Ilmoita opiskelija työtilaan {workspaceName}
         </div>
         <div className="form-element dialog__content-row">
-          <label htmlFor="signUpMessage">
-            {/* {this.props.i18n.text.get("plugin.workspaceSignUp.messageLabel")} */}
-          </label>
+          <label htmlFor="signUpMessage">Ilmoitusviesti</label>
           <textarea
             id="signUpMessage"
             className="form-element__textarea"
@@ -252,8 +250,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-  };
+  return {};
 }
 
 /**
