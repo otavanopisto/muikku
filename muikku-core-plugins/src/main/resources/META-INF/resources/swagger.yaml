@@ -5700,34 +5700,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{studentIdentifier}/visibility:
-    put:
-      operationId: updatePedagogyFormVisibility
-      summary: Update pedagogy form visibility
-      description: Update pedagogy form visibility
-      tags:
-        - Pedagogy
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormVisibilityUpdateRequestBody"
-      responses:
-        "200":
-          description: Pedagogy form visibility updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PedagogyForm"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   #HOPSUPPERSECONDARY
   /rest/records/hops:
     get:
@@ -9641,6 +9613,7 @@ components:
                   type: integer
 
     PedagogyFormCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9653,6 +9626,7 @@ components:
                 type: string
 
     PedagogyFormDataUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9675,6 +9649,7 @@ components:
                 type: string
 
     PedagogyFormStateUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9685,20 +9660,6 @@ components:
             properties:
               state:
                 $ref: "#/components/schemas/PedagogyFormState"
-
-    PedagogyFormVisibilityUpdateRequestBody:
-      content:
-        application/json:
-          schema:
-            type: object
-            description: PedagogyFormVisibilityUpdateRequestBody object
-            required:
-              - visibility
-            properties:
-              visibility:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PedagogyFormVisibility"
 
     HopsUppersecondaryUpdateRequestBody:
       required: true
@@ -12608,18 +12569,18 @@ components:
       enum:
         - PENDING
         - APPROVED
-        - NOT_SENT
+        - ACTIVE
         - INACTIVE
 
-    PedagogyFormVisibility:
+    PedagogyHistoryEntryType:
       type: string
       enum:
-        - TEACHER
-        - GUARDIANS
+        - VIEW
+        - EDIT
 
-    PedaogyHistoryEntry:
+    PedagogyHistoryEntry:
       type: object
-      description: PedaogyHistoryEntry object
+      description: PedagogyHistoryEntry object
       required:
         - modifierId
         - modifierName
@@ -12638,7 +12599,8 @@ components:
         date:
           description: The date when the update was made
           type: string
-        editedFiels:
+          format: date-time
+        editedFields:
           description: Fields that were edited in the update
           type: array
           items:
@@ -12646,6 +12608,9 @@ components:
         details:
           description: The description or details of the update what was done
           type: string
+        type:
+          description: The type of the update
+          $ref: "#/components/schemas/PedagogyHistoryEntryType"
 
     PedagogyUserInfo:
       type: object
@@ -12706,6 +12671,8 @@ components:
         - studentInfo
         - history
         - visibility
+        - formData
+        - created
       properties:
         studentIdentifier:
           description: The id of the student
@@ -12714,13 +12681,16 @@ components:
         ownerId:
           description: Id of the user who created the document
           type: integer
+          nullable: true
         ownerInfo:
           description: Info of the user who created the document
           allOf:
             - $ref: "#/components/schemas/PedagogyUserInfo"
+          nullable: true
         id:
           description: The id of the form
           type: integer
+          nullable: true
         state:
           description: State of the form
           example: "PENDING | APPROVED | NOT_SENT | INACTIVE"
@@ -12734,20 +12704,17 @@ components:
           description: Update history of the form
           type: array
           items:
-            $ref: "#/components/schemas/PedaogyHistoryEntry"
-        visibility:
-          description: Permissions for reading and viewing the form inside Muikku
-          example: ["TEACHER", "GUARDIANS"]
-          type: array
-          items:
-            $ref: "#/components/schemas/PedagogyFormVisibility"
-        fromData:
+            $ref: "#/components/schemas/PedagogyHistoryEntry"
+        formData:
           description: The data of the form
           example: "JSON object"
+          nullable: true
           type: string
         created:
           description: The date when the form was created
           type: string
+          format: date-time
+          nullable: true
 
     RecordsWorkspace:
       allOf:

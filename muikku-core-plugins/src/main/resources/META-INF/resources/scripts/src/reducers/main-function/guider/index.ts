@@ -15,6 +15,7 @@ import {
   UserStudentAddress,
   UserStudentEmail,
   UserStudentPhoneNumber,
+  PedagogyFormAccess,
   HopsUppersecondary,
 } from "~/generated/client";
 
@@ -99,7 +100,7 @@ export interface GuiderStudentUserProfileType {
   purchases: PurchaseType[];
   hopsPhase?: string;
   hopsAvailable: boolean;
-  pedagogyFormAvailable: PedagogyFormAvailability;
+  pedagogyFormAvailable: PedagogyFormAccess;
 }
 
 /**
