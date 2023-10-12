@@ -557,6 +557,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const hopsApi = MApi.getHopsApi();
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
@@ -600,8 +601,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
             // After basic data is loaded, check if current user of guider has permissions
             // to see/use current student hops
-            promisify(mApi().hops.isHopsAvailable.read(id), "callback")().then(
-              async (hopsAvailable: boolean) => {
+            hopsApi
+              .isHopsAvailable({
+                studentIdentifier: id,
+              })
+              .then(async (hopsAvailable) => {
                 dispatch({
                   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                   payload: {
@@ -624,8 +628,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                     value: hopsPhase[0].value,
                   },
                 });
-              }
-            );
+              });
 
             pedagogyApi
               .getPedagogyFormAccess({

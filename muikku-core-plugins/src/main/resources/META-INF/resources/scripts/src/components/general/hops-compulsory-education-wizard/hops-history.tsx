@@ -1,16 +1,16 @@
 import * as moment from "moment";
 import * as React from "react";
-import { HopsUpdate } from "~/@types/shared";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
 import { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
+import { HopsHistoryEntry } from "~/generated/client";
 
 /**
  * HopsHistoryProps
  */
 interface HopsHistoryProps {
-  hopsUpdates: HopsUpdate[];
+  hopsUpdates: HopsHistoryEntry[];
   loggedUserId: number;
   loading: boolean;
   superVisorModifies: boolean;
@@ -49,7 +49,7 @@ export default HopsHistory;
  * HopsHistoryEventProps
  */
 interface HopsHistoryEventProps {
-  hopsUpdate: HopsUpdate;
+  hopsUpdate: HopsHistoryEntry;
   showEdit: boolean;
   onHistoryEventClick: (eventId: number) => void;
   status: StatusType;

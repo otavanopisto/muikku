@@ -4457,9 +4457,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4486,9 +4485,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/HopsGoals"
+                $ref: "#/components/schemas/HopsGoals"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4510,7 +4507,6 @@ paths:
             type: string
       requestBody:
         $ref: "#/components/requestBodies/OptionalSuggestionCreateRequestBody"
-
       responses:
         "200":
           description: Student optional suggestion created successfully
@@ -4599,9 +4595,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/StudentCourseChoice"
+                $ref: "#/components/schemas/StudentCourseChoice"
+
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4644,18 +4639,6 @@ paths:
         - name: studentIdentifier
           in: path
           description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: startDate
-          in: query
-          description: Start date
-          required: true
-          schema:
-            type: string
-        - name: endDate
-          in: query
-          description: End date
           required: true
           schema:
             type: string
@@ -4744,17 +4727,16 @@ paths:
         $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
-    #FIX
-    delete:
-      operationId: deleteToggleSuggestion
-      summary: Delete toggle suggestion
-      description: Delete toggle suggestion
+    put:
+      operationId: updateToggleSuggestion
+      summary: Update toggle suggestion
+      description: Update toggle suggestion
       tags:
         - Hops
       parameters:
@@ -4764,11 +4746,11 @@ paths:
           required: true
           schema:
             type: string
-      #requestBody:
-      #  $ref: "#/components/requestBodies/ToggleSuggestionCreateRequestBody"
+      requestBody:
+        $ref: "#/components/requestBodies/ToggleSuggestionUpdateRequestBody"
       responses:
         "204":
-          description: Suggestion toggled successfully
+          description: WorkspaceSuggestion toggled successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -9354,6 +9336,7 @@ components:
                 type: string
 
     HopsHistoryEntryUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9366,6 +9349,7 @@ components:
                 type: string
 
     HopsGoalsUpdateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9373,6 +9357,7 @@ components:
               - $ref: "#/components/schemas/HopsGoals"
 
     AlternativeStudyOptionSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9380,6 +9365,7 @@ components:
               - $ref: "#/components/schemas/AlternativeStudyOption"
 
     OptionalSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9395,6 +9381,7 @@ components:
                 type: integer
 
     StudentCourseChoiceSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9402,6 +9389,7 @@ components:
               - $ref: "#/components/schemas/StudentCourseChoice"
 
     StudentStudyHoursSaveRequestBody:
+      required: true
       content:
         application/json:
           schema:
@@ -9414,11 +9402,31 @@ components:
                 type: integer
 
     ToggleSuggestionCreateRequestBody:
+      required: true
       content:
         application/json:
           schema:
             type: object
             description: ToggleSuggestionCreateRequestBody object
+            required:
+              - courseId
+              - subject
+              - courseNumber
+            properties:
+              courseId:
+                type: integer
+              subject:
+                type: string
+              courseNumber:
+                type: integer
+
+    ToggleSuggestionUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: ToggleSuggestionUpdateRequestBody object
             required:
               - courseId
               - subject
@@ -11336,6 +11344,7 @@ components:
           nullable: true
         date:
           type: string
+          format: date-time
         modifier:
           type: string
         modifierId:
@@ -11459,6 +11468,7 @@ components:
         graduationGoal:
           nullable: true
           type: string
+          format: date-time
         followUpGoal:
           type: string
         followUpStudies:
@@ -12960,6 +12970,7 @@ components:
         lastName:
           type: string
         studyTimeEnd:
+          nullable: true
           type: string
         studyProgrammeEducationType:
           type: string
@@ -13001,6 +13012,7 @@ components:
           $ref: "#/components/schemas/CourseStatus"
         date:
           type: string
+          format: date-time
         transferCreditMandatory:
           type: boolean
           nullable: true
@@ -14029,7 +14041,7 @@ components:
         nameExtension:
           nullable: true
           type: string
-        courseType:
+        type:
           $ref: "#/components/schemas/CourseType"
         description:
           type: string
