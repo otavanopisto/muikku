@@ -108,7 +108,7 @@ export const useExerciseAssignments = (
           displayNotification(
             t("notifications.loadError", {
               context: "workspaceAssignments",
-              error: err.message
+              error: err.message,
             }),
             "error"
           );

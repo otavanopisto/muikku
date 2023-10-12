@@ -228,7 +228,7 @@ const updateYO: updateYOTriggerType = function updateYO() {
         actions.displayNotification(
           i18n.t("notifications.loadError", {
             ns: "studies",
-            context: "matriculation"
+            context: "matriculation",
           }),
           "error"
         )

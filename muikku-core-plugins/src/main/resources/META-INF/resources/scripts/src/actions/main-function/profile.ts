@@ -1220,7 +1220,10 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "orders", context: "orders" }),
+            i18n.t("notifications.loadError", {
+              ns: "orders",
+              context: "orders",
+            }),
             "error"
           )
         );

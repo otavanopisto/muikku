@@ -110,7 +110,7 @@ export const useEvaluatedAssignments = (
             t("notifications.loadError", {
               ns: "studies",
               context: "workspaceAssignments",
-              error: "err.message"
+              error: "err.message",
             }),
             "error"
           );
