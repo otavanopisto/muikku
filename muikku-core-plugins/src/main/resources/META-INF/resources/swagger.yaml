@@ -5152,8 +5152,7 @@ paths:
   /rest/notes/note:
     post:
       operationId: createNote
-      summary: Create note
-      description: Create note
+      summary: Creates and returns created note
       tags:
         - Notes
       requestBody:
@@ -5173,8 +5172,7 @@ paths:
   /rest/notes/note/{noteId}:
     put:
       operationId: updateNote
-      summary: Update note
-      description: Update note
+      summary: Updates and returns note
       tags:
         - Notes
       parameters:
@@ -5201,8 +5199,7 @@ paths:
   /rest/notes/note/{noteId}/toggleArchived:
     put:
       operationId: toggleNoteArchived
-      summary: Toggle note archived
-      description: Toggle note archived
+      summary: Toggles note archived
       tags:
         - Notes
       parameters:
@@ -5224,17 +5221,16 @@ paths:
         "500":
           description: Internal server error
 
-  /rest//notes/owner/{studentId}:
+  /rest/notes/owner/{ownerId}:
     get:
       operationId: getNotes
-      summary: Get notes
-      description: Get notes
+      summary: Returns notes with given owner id and optional archived flag
       tags:
         - Notes
       parameters:
-        - name: studentId
+        - name: ownerId
           in: path
-          description: studentId
+          description: owner id
           required: true
           schema:
             type: integer
@@ -5243,9 +5239,10 @@ paths:
           description: List archived
           schema:
             type: boolean
+            default: false
       responses:
         "200":
-          description: Notes
+          description: Notes returned successfully
           content:
             application/json:
               schema:
@@ -9517,6 +9514,8 @@ components:
               - $ref: "#/components/schemas/LocalizationLocale"
 
     NoteCreateRequestBody:
+      required: true
+      description: NoteCreateRequestBody object
       content:
         application/json:
           schema:
@@ -9542,15 +9541,19 @@ components:
               pinned:
                 type: boolean
               owner:
-                type: string
+                type: integer
               startDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
               dueDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
 
     NoteUpdateRequestBody:
+      required: true
+      description: NoteUpdateRequestBody object
       content:
         application/json:
           schema:
@@ -9573,11 +9576,13 @@ components:
               pinned:
                 type: boolean
               startDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
               dueDate:
-                nullable: true
                 type: string
+                format: date-time
+                nullable: true
               status:
                 $ref: "#/components/schemas/NoteStatusType"
 
@@ -12405,29 +12410,34 @@ components:
         isArchived:
           type: boolean
         owner:
-          type: string
+          type: integer
         creator:
-          type: string
+          type: integer
         creatorName:
           type: string
         created:
           type: string
+          format: date-time
         startDate:
-          nullable: true
           type: string
+          format: date-time
+          nullable: true
         dueDate:
-          nullable: true
           type: string
+          format: date-time
+          nullable: true
         status:
           $ref: "#/components/schemas/NoteStatusType"
 
     NoteCreationType:
+      description: NoteCreationType enum type
       type: string
       enum:
         - MANUAL
         - AUTOMATIC
 
     NotePriorityType:
+      description: NotePriorityType enum type
       type: string
       enum:
         - OWN
@@ -12436,6 +12446,7 @@ components:
         - HIGH
 
     NoteStatusType:
+      description: NoteStatusType enum type
       type: string
       enum:
         - ONGOING
