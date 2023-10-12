@@ -1,10 +1,9 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
 import { sleep } from "~/helper-functions/shared";
-import { StudentCourseChoice } from "~/@types/shared";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
+import { StudentCourseChoice } from "~/generated/client";
 
 /**
  * UpdateStudentChoicesParams
@@ -23,10 +22,7 @@ export interface UseStudentChoiceState {
   studentChoices: StudentCourseChoice[];
 }
 
-/**
- * useStudentActivity
- * Custom hook to return student activity data
- */
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook to handle student course choices
@@ -83,10 +79,9 @@ export const useStudentChoices = (
          */
         const [loadedStudentChoices] = await Promise.all([
           (async () => {
-            const studentChoicesList = (await promisify(
-              mApi().hops.student.studentChoices.read(studentId),
-              "callback"
-            )()) as StudentCourseChoice[];
+            const studentChoicesList = await hopsApi.getStudentCourseChoices({
+              studentIdentifier: studentId,
+            });
 
             return studentChoicesList;
           })(),
@@ -102,6 +97,10 @@ export const useStudentChoices = (
         }
       } catch (err) {
         if (componentMounted.current) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(err.message, "error");
           setStudentChoices((studentChoices) => ({
             ...studentChoices,
@@ -183,14 +182,18 @@ export const useStudentChoices = (
     const { subject, courseNumber, studentId } = params;
 
     try {
-      await promisify(
-        mApi().hops.student.studentChoices.create(studentId, {
+      await hopsApi.saveStudentCourseChoices({
+        studentIdentifier: studentId,
+        saveStudentCourseChoicesRequest: {
           subject: subject,
           courseNumber: courseNumber,
-        }),
-        "callback"
-      )();
+        },
+      });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       displayNotification(err.message, "error");
     }
   };

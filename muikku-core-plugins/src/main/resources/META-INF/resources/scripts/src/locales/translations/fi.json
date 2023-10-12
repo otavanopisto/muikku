@@ -251,7 +251,7 @@
       "test": "Testaa URL"
     },
     "content": {
-      "appointmentCalendar": "Voit laittaa tähän linkin ajanvarauskalenteriisi. Linkki näkyy yhteystiedoissasi kursseilla ja opiskelijan opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testauspainikkeesta.",
+      "appointmentCalendar": "Voit laittaa tähän linkin ajanvarauskalenteriisi. Linkki näkyy yhteystiedoissasi kursseilla ja opiskelijan Opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testauspainikkeesta.",
       "changePassword": "Ole hyvä ja syötä alla olevat tiedot",
       "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
       "removing": "Oletko varma, että haluat poistaa kuvan profiilistasi?",
@@ -1325,8 +1325,8 @@
     },
     "content": {
       "empty": "Ei muistiinpanoja",
-      "defaultPosition": "Oletuksena uusi muistiinpano luodaan listan viimeiseksi. Voit myös valita sijainnin listasta. Valintalaatikon valinta tallentuu muistiin.",
-      "defaultPosition_bottom": "Oletuksena uusi muistiinpano luodaan listan viimeiseksi. Voit myös valita sijainnin listasta. Valintalaatikon valinta tallentuu muistiin.",
+      "defaultPosition": "Uusi muistiinpano luodaan listan ensimmäiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
+      "defaultPosition_bottom": "Uusi muistiinpano luodaan listan viimeiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
       "remove": "Oletko varma, että haluat poistaa muistiinpanon?"
     },
     "labels": {
@@ -1707,7 +1707,7 @@
       "evaluateStudent": "Arvioi opiskelija",
       "evaluateAssignment": "Arvioi tehtävä",
       "grade": "Arvioi",
-      "grade_journal": "Arvioi oppimispäiväkirja",
+      "grade_journal": "Oppimispäiväkirjan kokonaispalaute",
       "grade_overall": "Anna kokonaispalaute",
       "grade_workspace": "Anna kurssiarvio",
       "improveGrade": "Anna korotus",
