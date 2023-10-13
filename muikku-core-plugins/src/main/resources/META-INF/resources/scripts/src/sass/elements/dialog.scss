@@ -80,6 +80,10 @@
   opacity: 100%;
 }
 
+.dialog--workspace-signup-dialog {
+  z-index: 9999;
+}
+
 .dialog__window {
   align-items: flex-start;
   background-color: $color-dialog-default-background;
