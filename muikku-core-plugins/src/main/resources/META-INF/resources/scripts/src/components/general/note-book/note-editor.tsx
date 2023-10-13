@@ -420,7 +420,6 @@ class NoteEditor extends SessionStateComponent<
                 onClick={this.handleCancelClick}
               >
                 {this.props.t("actions.cancel")}
-                Peruuta
               </Button>
 
               {this.recovered && (
@@ -431,9 +430,8 @@ class NoteEditor extends SessionStateComponent<
                 >
                   {this.props.t("actions.remove", {
                     ns: "common",
-                    context: "draf",
+                    context: "draft",
                   })}
-                  Poista luonnos
                 </Button>
               )}
             </div>

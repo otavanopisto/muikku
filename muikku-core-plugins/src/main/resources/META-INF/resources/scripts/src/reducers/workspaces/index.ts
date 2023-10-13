@@ -1,22 +1,21 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
-import { WorkspaceJournal } from "~/generated/client";
+import { ActivityLogEntry, WorkspaceJournal } from "~/generated/client";
 import {
+  AudioAssessment,
+  EvaluationType,
+  MaterialEvaluation,
+  WorkspaceActivity,
   Curriculum,
+  EducationType,
   Organization,
   WorkspaceOrganization,
-} from "~/generated/client";
-import {
   UserStaff,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
-import {
-  AssignmentEvaluationType,
-  AudioAssessment,
-} from "../../@types/evaluation";
 
 /**
  * WorkspaceBasicInfo
@@ -420,7 +419,7 @@ export interface WorkspaceType {
   subjects?: WorkspaceSubject[];
 
   //These are optional addons, and are usually not available
-  activity?: WorkspaceActivityType;
+  activity?: WorkspaceActivity;
   organization?: Organization;
   studentActivity?: WorkspaceStudentActivityType;
   forumStatistics?: WorkspaceForumStatisticsType;
@@ -433,7 +432,7 @@ export interface WorkspaceType {
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceProducerType[];
   contentDescription?: MaterialContentNodeType;
-  activityLogs?: ActivityLogType[];
+  activityLogs?: ActivityLogEntry[];
   students?: WorkspaceStudentSearchResult;
   inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;
@@ -476,17 +475,6 @@ export type WorkspaceBaseFilterType =
   | "UNPUBLISHED";
 
 /**
- * WorkspaceEducationFilterType
- */
-export interface WorkspaceEducationFilterType {
-  identifier: string;
-  name: string;
-}
-
-export type WorkspaceEducationFilterListType =
-  Array<WorkspaceEducationFilterType>;
-
-/**
  * WorkspaceOrganizationFilterType
  */
 export interface WorkspaceOrganizationFilterType {
@@ -509,7 +497,7 @@ export type WorkspaceStateFilterListType = Array<WorkspaceStateFilterType>;
  * WorkspacesavailableFiltersType
  */
 export interface WorkspacesavailableFiltersType {
-  educationTypes: WorkspaceEducationFilterListType;
+  educationTypes: EducationType[];
   curriculums: Curriculum[];
   organizations?: WorkspaceOrganization[];
   baseFilters?: WorkspaceBaseFilterListType;
@@ -520,7 +508,7 @@ export interface WorkspacesavailableFiltersType {
  * OrganizationWorkspacesAvailableFiltersType
  */
 export interface OrganizationWorkspacesAvailableFiltersType {
-  educationTypes: WorkspaceEducationFilterListType;
+  educationTypes: EducationType[];
   curriculums: Curriculum[];
   stateFilters?: WorkspaceStateFilterListType;
 }
@@ -684,7 +672,7 @@ export interface MaterialContentNodeType {
 
   //Assigned fields
   childrenAttachments?: Array<MaterialContentNodeType>; // this is usually missing and has to be manually retrieved
-  evaluation?: MaterialEvaluationType;
+  evaluation?: MaterialEvaluation;
   assignment?: MaterialAssignmentType;
 }
 
@@ -739,7 +727,7 @@ export interface MaterialCompositeRepliesType {
 export interface MaterialEvaluationInfo {
   id: number;
   type: MaterialCompositeRepliesStateType;
-  evaluationType: AssignmentEvaluationType;
+  evaluationType: EvaluationType;
   text: string;
   grade: string;
   date: string;

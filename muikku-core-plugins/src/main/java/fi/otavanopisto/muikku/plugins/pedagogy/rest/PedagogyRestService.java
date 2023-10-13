@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -34,7 +33,6 @@ import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
@@ -142,11 +140,16 @@ public class PedagogyRestService {
     }
     
     PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
+    
     // UI wants a skeleton return object for the student even if they don't yet have a form at all...
     if (form == null) {
       return Response.ok(toRestModel(form, studentIdentifier)).build();
     }
     else {
+
+      // PedagogyFormHistory creation
+      pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
+      
       return Response.ok(toRestModel(form)).build();
     }
   }
@@ -179,34 +182,6 @@ public class PedagogyRestService {
     // Form data update
     
     form = pedagogyController.updateFormData(form, payload.getFormData(), payload.getFields(), payload.getDetails(), sessionController.getLoggedUserEntity().getId());
-    
-    return Response.ok(toRestModel(form)).build();
-  }
-
-  /**
-   * mApi().pedagogy.form.visibility.update('PYRAMUS-STUDENT-123', {visibility: [String]});
-   */
-  @Path("/form/{STUDENTIDENTIFIER}/visibility")
-  @PUT
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateVisibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, PedagogyFormVisibilityPayload payload) {
-    
-    // Payload validation
-    
-    PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
-    if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %s not found", studentIdentifier)).build();
-    }
-    
-    // Access check
-    
-    if (!StringUtils.equals(sessionController.getLoggedUser().toId(), form.getStudentIdentifier())) {
-      return Response.status(Status.FORBIDDEN).entity("Visibility can only be updated by student").build();
-    }
-    
-    // Visibility update
-    
-    form = pedagogyController.updateVisibility(form, payload.getVisibility(), sessionController.getLoggedUserEntity().getId());
     
     return Response.ok(toRestModel(form)).build();
   }
@@ -313,14 +288,6 @@ public class PedagogyRestService {
       model.setId(form.getId());
       model.setState(form.getState());
 
-      // Comma-delimited visibility string to enum list
-
-      if (!StringUtils.isEmpty(form.getVisibility())) {
-        model.setVisibility(Stream.of(form.getVisibility().split(",")).map(v -> PedagogyFormVisibility.valueOf(v)).collect(Collectors.toList()));
-      }
-      else {
-        model.setVisibility(Collections.emptyList());
-      }
 
       // Form history
 
@@ -345,6 +312,7 @@ public class PedagogyRestService {
               avatars.add(historyItem.getCreator());
             }
           }
+          historyModel.setType(historyItem.getType());
           historyModel.setModifierHasAvatar(avatars.contains(historyItem.getCreator()));
           historyModel.setModifierId(historyItem.getCreator());
           historyModel.setModifierName(names.get(historyItem.getCreator()).getDisplayName());
@@ -359,7 +327,6 @@ public class PedagogyRestService {
     }
     else {
       model.setState(PedagogyFormState.INACTIVE);
-      model.setVisibility(Collections.emptyList());
       model.setHistory(Collections.emptyList());
     }
     
@@ -427,13 +394,12 @@ public class PedagogyRestService {
       }
       
       // Form is always accessible to admins and special education teachers but also to other related staff,
-      // if the form exists and its visibility is set to allow that
+      // if the form exists and form state is approved by student
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
       accessible = isAdmin || specEdTeacher;
-      if (!accessible && form != null && form.getVisibility() != null) {
-        List<PedagogyFormVisibility> visibility = Stream.of(form.getVisibility().split(",")).map(v -> PedagogyFormVisibility.valueOf(v)).collect(Collectors.toList());
-        accessible = visibility.contains(PedagogyFormVisibility.TEACHERS) && (relation.isGuidanceCounselor() || courseTeacher);
+      if (!accessible && form != null && form.getState() == PedagogyFormState.APPROVED) {
+        accessible = relation.isGuidanceCounselor() || courseTeacher;
       }
     }
     return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher);

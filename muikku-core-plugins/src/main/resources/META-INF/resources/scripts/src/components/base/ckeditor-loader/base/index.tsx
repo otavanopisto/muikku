@@ -5,6 +5,7 @@ import { HTMLtoReactComponent } from "~/util/modifiers";
 import { UsedAs } from "~/@types/shared";
 import Image from "../static/image";
 import Link from "../static/link";
+import MathJAX from "../static/mathjax";
 
 /**
  * BaseProps
@@ -135,6 +136,27 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    */
   render() {
     const processingRules: HTMLToReactComponentRule[] = [
+      {
+        /**
+         * shouldProcessHTMLElement
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
+        shouldProcessHTMLElement: (tagname, element) =>
+          tagname === "span" && element.classList.contains("math-tex"),
+        /**
+         * processingFunction
+         * @param tag tag
+         * @param props  props
+         * @param children  children
+         * @param element  element
+         * @returns any
+         */
+        processingFunction: (tag, props, children, element) => (
+          <MathJAX key={props.key} invisible={false} children={children} />
+        ),
+      },
       {
         /**
          * shouldProcessHTMLElement

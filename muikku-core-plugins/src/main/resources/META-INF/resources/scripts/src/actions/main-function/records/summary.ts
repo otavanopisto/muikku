@@ -8,14 +8,13 @@ import {
 } from "~/reducers/main-function/records/summary";
 import {
   WorkspaceForumStatisticsType,
-  ActivityLogType,
-  WorkspaceActivityType,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import MApi from "~/api/api";
 import { Dispatch } from "react-redux";
 import i18n from "~/locales/i18n";
+import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -40,7 +39,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const recordsApi = MApi.getRecordsApi();
+    const evaluationApi = MApi.getEvaluationApi();
     const userApi = MApi.getUserApi();
+    const activitylogsApi = MApi.getActivitylogsApi();
 
     try {
       dispatch({
@@ -48,50 +50,46 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         payload: <SummaryStatusType>"LOADING",
       });
 
-      /* Get user id */
+      // Get user id
       const pyramusId = getState().status.userSchoolDataIdentifier;
 
-      /* We need completed courses from Eligibility */
-      const eligibility: any = await promisify(
-        mApi().records.studentMatriculationEligibility.read(pyramusId),
-        "callback"
-      )();
+      // We need completed courses from Eligibility
+      const eligibility = await recordsApi.getStudentMatriculationEligibility({
+        studentIdentifier: pyramusId,
+      });
 
-      /* We need past month activity */
-      const activityLogs: any = await promisify(
-        mApi().activitylogs.user.read(pyramusId, {
-          from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
-          to: new Date(),
-        }),
-        "callback"
-      )();
+      const activityLogsHash = await activitylogsApi.getUserActivityLogs({
+        userId: pyramusId,
+        from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+        to: new Date(),
+      });
 
-      /* We need returned exercises and evaluated courses */
-      const assignmentsDone: Record<string, unknown>[] = [];
-      const coursesDone: Record<string, unknown>[] = [];
+      // We need returned exercises and evaluated courses
+      const assignmentsDone: ActivityLogType[] = [];
+      const coursesDone: ActivityLogType[] = [];
 
-      /* Student's study time */
+      // Student's study time
       const studentsDetails = await userApi.getStudent({
         studentId: pyramusId,
       });
 
-      /* Getting past the object with keys */
-      const activityArrays: Record<string, unknown>[] = Object.keys(
-        activityLogs
-      ).map((key) => activityLogs[key]);
+      // Convert key value pairs to array of array of objects
+      const activityArrays: ActivityLogEntry[][] = Object.keys(
+        activityLogsHash
+      ).map((key) => activityLogsHash[key]);
 
-      /* Picking the done exercises and evaluated courses from the objects */
-      activityArrays.forEach((element: any) => {
-        element.find(function (param: any) {
-          param["type"] == "MATERIAL_ASSIGNMENTDONE"
-            ? assignmentsDone.push(param["type"])
-            : param["type"] == "EVALUATION_GOTPASSED"
-            ? coursesDone.push(param["type"])
+      // Picking the done exercises and evaluated courses from the objects
+      activityArrays.forEach((element) => {
+        element.find(function (param) {
+          param.type == "MATERIAL_ASSIGNMENTDONE"
+            ? assignmentsDone.push(param.type)
+            : param.type == "EVALUATION_GOTPASSED"
+            ? coursesDone.push(param.type)
             : null;
         });
       });
 
-      /* User workspaces */
+      // User workspaces
       const workspaces = <WorkspaceType[]>await promisify(
         mApi().workspace.workspaces.read({
           userIdentifier: pyramusId,
@@ -104,15 +102,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         await Promise.all([
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const activity = <WorkspaceActivityType>(
-                await promisify(
-                  mApi().evaluation.workspaces.students.activity.read(
-                    workspace.id,
-                    pyramusId
-                  ),
-                  "callback"
-                )()
-              );
+              const activity = await evaluationApi.getWorkspaceStudentActivity({
+                workspaceId: workspace.id,
+                studentEntityId: pyramusId,
+              });
               workspaces[index].activity = activity;
             })
           ),
@@ -131,16 +124,14 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           ),
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const courseActivity: ActivityLogType[] = <ActivityLogType[]>(
-                await promisify(
-                  mApi().activitylogs.user.workspace.read(pyramusId, {
-                    workspaceEntityId: workspace.id,
-                    from: new Date(new Date().getFullYear() - 2, 0),
-                    to: new Date(),
-                  }),
-                  "callback"
-                )()
-              );
+              const courseActivity =
+                await activitylogsApi.getWorkspaceActivityLogs({
+                  userId: pyramusId,
+                  workspaceEntityId: workspace.id,
+                  from: new Date(new Date().getFullYear() - 2, 0),
+                  to: new Date(),
+                });
+
               workspaces[index].activityLogs = courseActivity;
             })
           ),
@@ -148,14 +139,14 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       }
 
       const graphData = {
-        activity: activityLogs.general,
+        activity: activityLogsHash.general,
         workspaces: workspaces,
       };
 
       /* Does have matriculation examination in goals? */
       const summaryData: SummaryDataType = {
         eligibilityStatus: eligibility.coursesCompleted,
-        activity: activityLogs.general.length,
+        activity: activityLogsHash.general.length,
         returnedExercises: assignmentsDone.length,
         coursesDone: coursesDone.length,
         graphData: graphData,

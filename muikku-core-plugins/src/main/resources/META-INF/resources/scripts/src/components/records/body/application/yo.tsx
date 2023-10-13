@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { RecordsType } from "~/reducers/main-function/records";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import { HOPSType } from "~/reducers/main-function/hops";
+import { HOPSState } from "~/reducers/main-function/hops";
 import {
   YOType,
   YOEligibilityType,
@@ -28,7 +28,7 @@ import { AnyActionType } from "~/actions";
  */
 interface YOProps extends WithTranslation {
   records: RecordsType;
-  hops: HOPSType;
+  hops: HOPSState;
   yo: YOType;
   updateYO: updateYOTriggerType;
   eligibilitySubjects: SubjectEligibilitySubjectsType;

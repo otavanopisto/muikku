@@ -904,13 +904,40 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           throw err;
         }
 
+        let isConflictError = false;
+
+        // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
+        if (err.message) {
+          const message = JSON.parse(err.message);
+          if (message.reason === "CONTAINS_ANSWERS") {
+            isConflictError = true;
+          }
+        }
+
         if (data.updateLinked) {
+          let showRemoveLinkedAnswersDialogForPublish = false;
+
+          if (isConflictError) {
+            showRemoveLinkedAnswersDialogForPublish = true;
+          } else {
+            dispatch(
+              displayNotification(
+                i18n.t("notifications.updateError", {
+                  ns: "materials",
+                  context: "page",
+                }),
+                "error"
+              )
+            );
+          }
+
           dispatch({
             type: "UPDATE_MATERIAL_CONTENT_NODE",
+
             payload: {
               showUpdateLinkedMaterialsDialogForPublish: false,
               showUpdateLinkedMaterialsDialogForPublishCount: 0,
-              showRemoveLinkedAnswersDialogForPublish: true,
+              showRemoveLinkedAnswersDialogForPublish,
               showRemoveAnswersDialogForPublish: false,
               material: data.material,
               update: data.material,
@@ -923,14 +950,11 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         }
 
         let showRemoveAnswersDialogForPublish = false;
-        if (!data.removeAnswers && err.message) {
-          try {
-            const message = JSON.parse(err.message);
-            if (message.reason === "CONTAINS_ANSWERS") {
-              showRemoveAnswersDialogForPublish = true;
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+
+        if (!data.removeAnswers) {
+          if (isConflictError) {
+            showRemoveAnswersDialogForPublish = true;
+          }
         }
 
         if (!data.dontTriggerReducerActions) {

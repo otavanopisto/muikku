@@ -6,10 +6,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
-import {
-  GuiderType,
-  GuiderStudentListType,
-} from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import {
   ApplicationPanelToolbar,
@@ -30,6 +27,7 @@ import {
   ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
+import { Student } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -37,7 +35,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * GuiderToolbarProps
  */
 interface GuiderToolbarProps extends WithTranslation {
-  guider: GuiderType;
+  guider: GuiderState;
   status: StatusType;
   toggleAllStudents: ToggleAllStudentsTriggerType;
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
@@ -167,9 +165,7 @@ class GuiderToolbar extends React.Component<
    * @param users array of GuiderStudents
    * @returns {Array} an Array of ContactRecipientType
    */
-  turnSelectedUsersToContacts = (
-    users: GuiderStudentListType
-  ): ContactRecipientType[] => {
+  turnSelectedUsersToContacts = (users: Student[]): ContactRecipientType[] => {
     const contacts: ContactRecipientType[] = [];
     users.map((user) => {
       contacts.push({

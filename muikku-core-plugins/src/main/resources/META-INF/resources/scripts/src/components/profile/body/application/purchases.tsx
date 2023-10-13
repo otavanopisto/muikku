@@ -15,12 +15,6 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
-import { getName } from "~/util/modifiers";
-import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
-import {
-  getErrorMessageContent,
-  getErrorMessageTitle,
-} from "~/helper-functions/ceepos-error";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 
@@ -165,40 +159,6 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                             </Button>
                           </span>
                         ) : null}
-
-                        {p.state === PurchaseStateType.ERRORED ||
-                        p.state === PurchaseStateType.CANCELLED ||
-                        p.state === PurchaseStateType.PAID ? (
-                          <span className="application-list__header-primary-actions">
-                            <CommunicatorNewMessage
-                              extraNamespace="ceepos-error"
-                              initialSelectedItems={[
-                                {
-                                  type: "staff",
-                                  value: {
-                                    id: p.creator.userEntityId,
-                                    name: getName(p.creator, true),
-                                  },
-                                },
-                              ]}
-                              initialSubject={getErrorMessageTitle(p)}
-                              initialMessage={getErrorMessageContent(
-                                p,
-                                this.props.t(`states.${p.state}`, {
-                                  context: "student",
-                                  ns: "orders",
-                                })
-                              )}
-                            >
-                              <Button
-                                icon="envelope"
-                                buttonModifiers={["send-message", "info"]}
-                              >
-                                {this.props.t("actions.reportError")}
-                              </Button>
-                            </CommunicatorNewMessage>
-                          </span>
-                        ) : null}
                       </span>
                       <span className="application-list__header-secondary"></span>
                     </ApplicationListItemHeader>
@@ -215,9 +175,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">
-            {this.props.t("content.empty", {
+            {this.props.t("labels.history", {
               ns: "orders",
-              context: "history",
             })}
           </h3>
           {completedPurchases.length > 0 ? (
@@ -263,13 +222,15 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
               </ApplicationList>
             </div>
           ) : (
-            <div className="empty">
-              <span>
-                {this.props.t("content.empty", {
-                  ns: "orders",
-                  context: "history",
-                })}
-              </span>
+            <div className="application-sub-panel__body">
+              <div className="empty">
+                <span>
+                  {this.props.t("content.empty", {
+                    ns: "orders",
+                    context: "history",
+                  })}
+                </span>
+              </div>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-list.scss";
@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
  */
 interface CeeposButtonProps {
   status: StatusType;
-  guider: GuiderType;
+  guider: GuiderState;
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
 }
 
