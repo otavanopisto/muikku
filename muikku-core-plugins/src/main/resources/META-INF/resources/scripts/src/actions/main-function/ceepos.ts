@@ -49,10 +49,6 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
         });
 
         const studentId = getState().status.userSchoolDataIdentifier;
-        /* const purchase = (await promisify(
-          mApi().ceepos.user.order.read(studentId, purchaseId),
-          "callback"
-        )()) as PurchaseType; */
 
         const order = await ceeposApi.getCeeposUserOrder({
           userIdentifier: studentId,
@@ -107,11 +103,6 @@ const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
         });
 
         if (getState().status.isActiveUser) {
-          /* const value: string = (await promisify(
-            mApi().ceepos.pay.create(purchaseId),
-            "callback"
-          )()) as string; */
-
           const value = await ceeposApi.createCeeposPay({
             orderId: orderId,
           });

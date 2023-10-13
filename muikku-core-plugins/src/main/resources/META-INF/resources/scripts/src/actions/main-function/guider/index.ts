@@ -2152,12 +2152,6 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
 
       try {
         const state = getState();
-        /* const value: CeeposPurchaseProduct[] = (await promisify(
-          mApi().ceepos.products.read({
-            line: state.guider.currentStudent.basic.ceeposLine,
-          }),
-          "callback"
-        )()) as CeeposPurchaseProduct[]; */
 
         const products = await ceeposApi.getCeeposProducts({
           line: state.guider.currentStudent.basic.ceeposLine,
@@ -2195,13 +2189,6 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
 
       try {
         const state = getState();
-        /* const value: CeeposOrder = (await promisify(
-          mApi().ceepos.order.create({
-            studentIdentifier: state.guider.currentStudent.basic.id,
-            product: order,
-          }),
-          "callback"
-        )()) as CeeposOrder; */
 
         const newOrder = await ceeposApi.createCeeposOrder({
           createCeeposOrderRequest: {
@@ -2242,8 +2229,6 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
       const ceeposApi = MApi.getCeeposApi();
 
       try {
-        /* await promisify(mApi().ceepos.order.del(order.id), "callback")(); */
-
         await ceeposApi.deleteCeeposOrder({
           orderId: order.id,
         });
@@ -2280,11 +2265,6 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
       const ceeposApi = MApi.getCeeposApi();
 
       try {
-        /* const value: CeeposOrder = (await promisify(
-          mApi().ceepos.manualCompletion.create(order.id),
-          "callback"
-        )()) as CeeposOrder; */
-
         const completedOrder = await ceeposApi.createCeeposManualCompletion({
           orderId: order.id,
         });

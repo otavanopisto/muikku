@@ -11,52 +11,6 @@ import {
 } from "~/generated/client";
 
 /**
- * PurchaseStateType
- */
-/* export enum PurchaseStateType {
-  CREATED = "CREATED",
-  CANCELLED = "CANCELLED",
-  ERRORED = "ERRORED",
-  ONGOING = "ONGOING",
-  PAID = "PAID",
-  COMPLETE = "COMPLETE",
-} */
-
-/**
- * PurchaseProductType
- */
-/* export interface PurchaseProductType {
-  Code: string;
-  Description: string;
-  Price: number;
-} */
-
-/**
- * PurchaseCreatorType
- */
-/* export interface PurchaseCreatorType {
-  id: number;
-  userEntityId: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-} */
-
-/**
- * PurchaseType
- */
-/* export interface PurchaseType {
-  created: string;
-  paid: string;
-  id: number;
-  product: CeeposPurchaseProduct;
-  state: PurchaseStateType;
-  studentEmail: string;
-  studentIdentifier: string;
-  creator: PurchaseCreatorType;
-} */
-
-/**
  * WorklistSection
  */
 export interface WorklistSection {

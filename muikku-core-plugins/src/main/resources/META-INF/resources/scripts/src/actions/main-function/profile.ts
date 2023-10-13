@@ -1207,10 +1207,6 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
 
       try {
         const studentId = state.status.userSchoolDataIdentifier;
-        /* const historia: CeeposOrder[] = (await promisify(
-          mApi().ceepos.user.orders.read(studentId),
-          "callback"
-        )()) as any; */
 
         const orderHistory: CeeposOrder[] = await ceeposApi.getCeeposUserOrders(
           {

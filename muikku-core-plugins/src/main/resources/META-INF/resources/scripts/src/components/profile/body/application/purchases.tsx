@@ -47,10 +47,6 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
     const ceeposApi = MApi.getCeeposApi();
 
     const currentPurchase = this.props.profile.purchases[0];
-    /* const value: string = (await promisify(
-      mApi().ceepos.pay.create(currentPurchase.id),
-      "callback"
-    )()) as string; */
 
     const value = await ceeposApi.createCeeposPay({
       orderId: currentPurchase.id,

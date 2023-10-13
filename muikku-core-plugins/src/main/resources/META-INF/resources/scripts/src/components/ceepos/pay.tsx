@@ -69,11 +69,6 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
     try {
       const searchParams = new URLSearchParams(window.location.search);
 
-      /* const returnLink: ReturnLink = (await promisify(
-        mApi().ceepos.order.returnLink.read(searchParams.get("order")),
-        "callback"
-      )()) as ReturnLink; */
-
       const returnLink = await ceeposApi.getCeeposReturnLink({
         orderId: parseInt(searchParams.get("order")),
       });
