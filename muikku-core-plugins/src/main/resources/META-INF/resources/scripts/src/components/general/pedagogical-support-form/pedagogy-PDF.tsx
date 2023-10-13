@@ -11,6 +11,7 @@ import {
 } from "./helpers";
 import { styles, htmlStyles } from "./pedagogy-PDF-styles";
 import { FormData, Opinion, PedagogyForm } from "~/@types/pedagogy-form";
+import { useTranslation } from "react-i18next";
 
 /**
  * PedagogyPDFProps
@@ -27,6 +28,7 @@ interface PedagogyPDFProps {
  * @returns JSX.Element
  */
 const PedagogyPDF = (props: PedagogyPDFProps) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { data } = props;
 
   const formData = JSON.parse(props.data.formData) as FormData;
@@ -62,13 +64,13 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>Merkitsijä</Text>
+            <Text style={styles.infoFieldLabelSameRow}>{t("labels.creator", { ns: "pedagogySupportPlan" })}</Text>
             <Text style={styles.infoFieldValueSameRow}>
               {opinion.creatorName},{" "}
               {opinion.updatedDate
                 ? `${moment(opinion.creationDate).format(
                     "DD.MM.YYYY"
-                  )} (päivitetty ${moment(opinion.updatedDate).format(
+                  )} (${t("labels.updated", { ns: "common" })} ${moment(opinion.updatedDate).format(
                     "DD.MM.YYYY"
                   )})`
                 : moment(opinion.creationDate).format("DD.MM.YYYY")}
@@ -76,7 +78,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           </View>
 
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>Merkintä</Text>
+            <Text style={styles.infoFieldLabelSameRow}>{t("labels.entry", { ns: "pedagogySupportPlan" })}</Text>
             <View style={styles.infoFieldValueSameRow}>
               <Html stylesheet={htmlStyles}>{opinion.opinion || "-"}</Html>
             </View>
@@ -85,7 +87,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       </View>
     ))) || (
     <View>
-      <Text style={styles.empty}>Ei mielipidettä asetettu</Text>
+      <Text style={styles.empty}>{t("content.empty", { ns: "pedagogySupportPlan", content: "opinnion" })}</Text>
     </View>
   );
 
@@ -95,13 +97,13 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>Merkitsijä</Text>
+            <Text style={styles.infoFieldLabelSameRow}>{t("labels.creator", { ns: "pedagogySupportPlan" })}</Text>
             <Text style={styles.infoFieldValueSameRow}>
               {opinion.creatorName},{" "}
               {opinion.updatedDate
                 ? `${moment(opinion.creationDate).format(
                     "DD.MM.YYYY"
-                  )} (päivitetty ${moment(opinion.updatedDate).format(
+                  )} (${t("labels.updated", { ns: "common" })} ${moment(opinion.updatedDate).format(
                     "DD.MM.YYYY"
                   )})`
                 : moment(opinion.creationDate).format("DD.MM.YYYY")}
@@ -109,7 +111,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
           </View>
 
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>Merkintä</Text>
+            <Text style={styles.infoFieldLabelSameRow}>{t("labels.entry", { ns: "pedagogySupportPlan" })}</Text>
             <View style={styles.infoFieldValueSameRow}>
               <Html stylesheet={htmlStyles}>{opinion.opinion || "-"}</Html>
             </View>
@@ -118,7 +120,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       </View>
     ))) || (
     <View>
-      <Text style={styles.empty}>Ei mielipidettä asetettu</Text>
+      <Text style={styles.empty}>{t("content.empty", { ns: "pedagogySupportPlan", content: "opinnion" })}</Text>
     </View>
   );
 

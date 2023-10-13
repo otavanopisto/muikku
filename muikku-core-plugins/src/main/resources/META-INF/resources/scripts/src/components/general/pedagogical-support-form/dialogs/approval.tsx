@@ -5,11 +5,12 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * VisibilityAndApprovalDialogProps
  */
-interface VisibilityAndApprovalDialogProps {
+interface VisibilityAndApprovalDialogProps extends WithTranslation {
   formIsApproved: boolean;
   onApproveChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,15 +71,20 @@ class ApprovalDialog extends React.Component<
         }}
       >
         <fieldset className="hops-container__fieldset">
-          <legend className="hops-container__subheader">HYVÄKSYNTÄ</legend>
+          <legend className="hops-container__subheader">
+            {this.props.i18n.t("labels.approval", {
+              ns: "pedagogySupportPlan",
+            })}
+          </legend>
           <div className="hops-container__row">
-            Erityisopettaja, rehtori sekä sinua opettavat ja ohjaavat henkilöt
-            saavat nähdä pedagogisen tuen suunnitelmasi. Jos olet alaikäinen,
-            myös huoltajallasi on oikeus nähdä suunnitelman tietoja.
+            {this.props.i18n.t("content.planVisibility", {
+              ns: "pedagogySupportPlan",
+            })}
           </div>
           <div className="hops-container__row">
-            Lue pedagogisen tuen suunnitelma ja merkitse se hyväksytyksi. Jos et
-            hyväksy suunnitelmaa, ota yhteyttä erityisopettajaan.
+            {this.props.i18n.t("content.planApproval", {
+              ns: "pedagogySupportPlan",
+            })}
           </div>
 
           <div className="hops-container__row">
@@ -95,7 +101,9 @@ class ApprovalDialog extends React.Component<
                 onChange={onApproveChange}
               ></input>
               <label htmlFor="approved" className="hops__label">
-                Olen lukenut suunnitelman ja hyväksyn sen sisällön.
+                {this.props.i18n.t("content.approving", {
+                  ns: "pedagogySupportPlan",
+                })}
               </label>
             </div>
           </div>
@@ -114,13 +122,13 @@ class ApprovalDialog extends React.Component<
           onClick={this.handleSaveClick.bind(this, closeDialog)}
           disabled={this.props.saveButtonDisabled}
         >
-          Hyväksy
+          {this.props.i18n.t("actions.approve", { ns: "common" })}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
         >
-          Peruuta
+          {this.props.i18n.t("actions.cancel", { ns: "common" })}
         </Button>
       </div>
     );
@@ -129,7 +137,9 @@ class ApprovalDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Suunnitelman hyväksyminen"
+        title={this.props.i18n.t("labels.approving", {
+          ns: "pedagogySupportPlan",
+        })}
         content={content}
         footer={footer}
         closeOnOverlayClick={false}
@@ -140,12 +150,6 @@ class ApprovalDialog extends React.Component<
   }
 }
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-
-export default connect(null, mapDispatchToProps)(ApprovalDialog);
+export default withTranslation(["pedagogySupportPlan", "common"])(
+  ApprovalDialog
+);

@@ -639,7 +639,7 @@ class GuiderLabelUpdateDialog extends React.Component<
           <div className="dialog__state state-INFO">
             <div className="dialog__state-icon icon-notification"></div>
             <div className="dialog__state-text">
-              {this.props.i18n.t("notifications.warning", {
+              {this.props.i18n.t("notifications.removeWarning", {
                 ns: "flags",
               })}
             </div>

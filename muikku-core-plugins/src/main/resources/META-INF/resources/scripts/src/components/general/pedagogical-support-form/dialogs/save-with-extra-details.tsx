@@ -5,11 +5,12 @@ import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { formFieldsWithTranslation } from "../helpers";
 import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SaveExtraDetailsDialogProps
  */
-interface SaveExtraDetailsDialogProps {
+interface SaveExtraDetailsDialogProps extends WithTranslation {
   changedFields: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
@@ -75,7 +76,11 @@ class SaveExtraDetailsDialog extends React.Component<
       <div className="hops-container__row" style={{ flexDirection: "column" }}>
         {changedFields.length > 0 && (
           <div className="hops__form-element-container">
-            <h4>Muokatut kentät:</h4>
+            <h4>
+              {this.props.i18n.t("labels.editedFields", {
+                ns: "pedagogySupportPlan",
+              })}
+            </h4>
             <ul>
               {changedFields.map((fieldKey, i) => (
                 <li key={fieldKey} style={{ display: "list-item" }}>
@@ -89,7 +94,9 @@ class SaveExtraDetailsDialog extends React.Component<
         <div className="hops__form-element-container">
           <Textarea
             id="hopsUpdateDetailsExplanation"
-            label="Kerro tarkemmin suunnitelman muutoksista"
+            label={this.props.i18n.t("labels.editedFieldsDetails", {
+              ns: "pedagogySupportPlan",
+            })}
             className="form-element__textarea form-element__textarea--resize__vertically"
             onChange={onExtraDetailsChange}
           />
@@ -107,13 +114,17 @@ class SaveExtraDetailsDialog extends React.Component<
           buttonModifiers={["standard-ok", "execute"]}
           onClick={this.handleSaveClick.bind(this, closeDialog)}
         >
-          Tallenna
+          {this.props.i18n.t("actions.save", {
+            ns: "common",
+          })}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={this.handleCloseClick.bind(this, closeDialog)}
         >
-          Peruuta
+          {this.props.i18n.t("actions.cancel", {
+            ns: "common",
+          })}
         </Button>
       </div>
     );
@@ -122,7 +133,9 @@ class SaveExtraDetailsDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="SUUNNITELMAN TALLENNUS"
+        title={this.props.i18n.t("labels.savingPlan", {
+          ns: "pedagogySupportPlan",
+        })}
         content={content}
         footer={footer}
         closeOnOverlayClick={false}
@@ -133,4 +146,6 @@ class SaveExtraDetailsDialog extends React.Component<
   }
 }
 
-export default SaveExtraDetailsDialog;
+export default withTranslation(["pedagogySupportPlan", "common"])(
+  SaveExtraDetailsDialog
+);

@@ -1,13 +1,16 @@
 {
   "common": {
     "actions": {
+      "activate": "Aktivoi",
       "add": "Lisää",
       "add_room": "Lisää huone",
+      "approve": "Hyväksy",
       "archive": "Arkistoi",
       "back": "Takaisin",
       "cancel": "Peruuta",
       "close": "Sulje",
       "closeAll": "Sulje kaikki",
+      "closePDF": "Sulje PDF",
       "comment": "Kommentoi",
       "confirmCancel": "Kyllä, peruuta",
       "confirmSave": "Olen varma",
@@ -25,6 +28,7 @@
       "next": "Seuraava",
       "previous": "Edellinen",
       "openAll": "Avaa kaikki",
+      "openPDF": "Avaa PDF",
       "quote": "Lainaa",
       "remove": "Poista",
       "remove_comment": "Poista kommentti",
@@ -50,6 +54,7 @@
       "empty_people": "Ei henkilöitä",
       "empty_students": "Ei opiskelijoita",
       "empty_rooms": "Ei huoneita",
+      "empty_courses": "Ei kursseja",
       "helpdesk": "Ongelmia Muikussa? helpdesk(a)muikkuverkko.fi",
       "home": "Muikku-oppimisympäristön logo, linkki etusivulle",
       "notFound": "Sisältöä ei löydy",
@@ -79,6 +84,7 @@
       "content": "Sisältö",
       "content_vacationMessage": "Lomaviestin sisältö",
       "copy": "Kopioi",
+      "course": "Kurssi",
       "coursepicker": "Kurssipoimuri",
       "create": "Luo uusi",
       "create_comment": "Uusi kommentti",
@@ -87,6 +93,7 @@
       "credentials": "Aseta tunnuksesi",
       "signIn": "Kirjautuminen",
       "date": "Päivämäärä",
+      "dateOfBirth": "Syntymäaika",
       "dates": "Päivämäärät",
       "default": "Oletus",
       "description": "Kuvaus",
@@ -159,6 +166,7 @@
       "title_vacationMessage": "Lomaviestin otsikko",
       "type": "Tyyppi",
       "unreachable": "Voi ei!...",
+      "updated": "Päivitetty",
       "userName": "Käyttäjätunnus",
       "whatsApp": "Whatsapp",
       "write": "Kirjoita viestisi...",
@@ -412,7 +420,7 @@
       "abiStatus": "Abistatuksestasi ei puutu kursseja. Voit nyt ilmoittautua YO-kirjoituksiin.",
       "completedWorkspaces": "kurssia",
       "completedWorkspaces_matriculation": "abistatukseen vaadittavaa kurssia.",
-      "completedWorkspaces_lasMonth": "kurssia viimeisen kuukauden aikana.",
+      "completedWorkspaces_lastMonth": "kurssia viimeisen kuukauden aikana.",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "Ei ohjaajia",
       "empty_studyTime": "Ei asetettu",
@@ -1117,7 +1125,7 @@
       "loadError": "Lippujen lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "removeError": "Lipun poistaminen epäonnistui. Yritä uudelleen.",
       "updateError": "Lipunn muokkasu epäonnistui. Yritä uudelleen",
-      "warning": "Poistettava lippu ei saa olla jaettu. Voit poistaa lipun, kun olet ensin poistanut lipun jaot."
+      "removeWarning": "Poistettava lippu ei saa olla jaettu. Voit poistaa lipun, kun olet ensin poistanut lipun jaot."
     },
     "validation": {
       "caption": "Lipun nimi on pakollinen tieto"
@@ -1744,7 +1752,7 @@
       "interimEvaluationRequest2": "välipalautepyynnön",
       "interimEvaluationRequestCancel1": "peruutti",
       "interimEvaluationRequestCancel2": "välipalautepyynnön",
-      "isRecording": "Tallennus käynnissä. Tallennus käynnissä. Kun olet valmis, paina Lopeta tallennus -painiketta.",
+      "isRecording": "Tallennus käynnissä. Kun olet valmis, paina Lopeta tallennus -painiketta.",
       "notFound": "Valituilla suodattimilla ei löydy yhtään opiskelijaa",
       "removing": "$t(common:content.removing)",
       "removing_entry": "Oletko varma, että haluat poistaa merkinnän opiskelijalta {{studentName}}?",
@@ -1961,5 +1969,45 @@
       "image": "Kuva",
       "mathJax": "Matematiikkakaava"
     }
+  },
+  "pedagogySupportPlan": {
+    "actions": {
+      "add": "$t(common:actions.add)",
+      "add_newRow": "Lisää uusi rivi",
+      "approve": "Hyväksy suunnitelma",
+      "confirmCancel": "Olen varma, peruuta muutokset"
+    },
+    "content": {
+      "approving": "Olen lukenut suunnitelman ja hyväksyn sen sisällön.",
+      "empty": "$t(common:content.empty)",
+      "empty_opinnion": "Mielipidettä ei ole asetettu",
+      "planApproval": "Lue pedagogisen tuen suunnitelma ja merkitse se hyväksytyksi. Jos et hyväksy suunnitelmaa, ota yhteyttä erityisopettajaan.",
+      "planVisibility": "Erityisopettaja, rehtori sekä sinua opettavat ja ohjaavat henkilöt saavat nähdä pedagogisen tuen suunnitelmasi. Jos olet alaikäinen, myös huoltajallasi on oikeus nähdä suunnitelman tietoja.",
+      "pointOfViewNotSet": "Lukion näkemystä ei ole vielä asetettu",
+      "notActivated": "Pedagogisen tuen suunnitelmaa ei ole aktivoitu.",
+      "notActivated_student": "Pedagogisen tuen suunnitelmaa ei ole aktivoitu, ole yhteydessä erityisopettajaasi.",
+      "unsavedWarning": "Sinulla on tallentamattomia muutoksia. Haluatko varmasti peruuttaa muokkauksen?"
+    },
+    "labels": {
+      "additionalInfo": "Lisätietoa",
+      "approval": "Hyväksyntä",
+      "approving": "Suunnitelman hyväksyminen",
+      "basicInfo": "Perustiedot",
+      "creator": "Merkitsijä",
+      "document": "Asiakirja",
+      "editedFields": "Muokatut kentät",
+      "editedFieldsDetails": "Kerro tarkemmin suunnitelman muutoksista",
+      "needOfSupport": "Pedagogisen tuen tarve",
+      "savingPlan": "Suunnitelman tallennus",
+      "supportAction": "Tukitoimi",
+      "supportActionsDone": "Toteutetut tukitoimet",
+      "followUpAndAssessment": "Tuen seuranta ja arviointi",
+      "approvalAndPermissions": "Luvat ja hyväksyminen",
+      "entry": "Merkintä",
+      "search": "$t(common:labels.search)",
+      "search_course": "Etsi kursseja",
+      "unsavedWarning": "Tallemattomia muutoksia"
+    },
+    "notifications": {}
   }
 }

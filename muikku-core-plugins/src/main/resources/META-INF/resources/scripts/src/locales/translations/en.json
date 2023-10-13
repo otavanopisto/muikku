@@ -1,13 +1,16 @@
 {
   "common": {
     "actions": {
+      "activate": "Activate",
       "add": "Add",
       "add_room": "Add room",
+      "approve": "Approve",
       "archive": "Archive",
       "back": "Back",
       "cancel": "Cancel",
       "close": "Close",
       "closeAll": "Close all",
+      "closePDF": "Close PDF",
       "comment": "Comment",
       "confirmCancel": "Yes, cancel",
       "confirmSave": "I am sure",
@@ -25,6 +28,7 @@
       "next": "Next",
       "previous": "Previous",
       "openAll": "Open all",
+      "openPDF": "Open PDF",
       "quote": "Quote",
       "remove": "Delete",
       "remove_comment": "Delete comment",
@@ -87,6 +91,7 @@
       "credentials": "Set your credentials",
       "signIn": "Sign in",
       "date": "Date",
+      "dateOfBirth": "Date of birth",
       "dates": "Dates",
       "default": "Default",
       "description": "Description",
@@ -412,7 +417,7 @@
       "abiStatus": "You do not lack any courses from your Abi status. You may sign up for the matriculation examination.",
       "completedWorkspaces": "courses",
       "completedWorkspaces_matriculation": "courses for the Abi status",
-      "completedWorkspaces_lasMonth": "courses during the last month",
+      "completedWorkspaces_lastMonth": "courses during the last month",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "No counselors",
       "empty_studyTime": "Not set",
@@ -1117,7 +1122,7 @@
       "loadError": "Flag loading failed. Please try loading the page again.",
       "removeError": "Flag removal failed. Please try again.",
       "updateError": "Flag editing failed.  Please try again.",
-      "warning": "If you want to remove the flag, it must not be shared. Unshare to remove the flag."
+      "removeWarning": "If you want to remove the flag, it must not be shared. Unshare to remove the flag."
     },
     "validation": {
       "caption": "Flag name is mandatory"
