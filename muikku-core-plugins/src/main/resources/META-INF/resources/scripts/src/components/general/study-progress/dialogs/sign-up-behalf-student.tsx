@@ -5,8 +5,6 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -16,6 +14,7 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 import { WorkspaceSuggestion } from "~/generated/client";
+import MApi from "~/api/api";
 
 /**
  * SignUpBehalfOfStudentParams
@@ -61,6 +60,8 @@ interface SignUpBehalfOfStudentDialogState {
   disabled: boolean;
 }
 
+const guiderApi = MApi.getGuiderApi();
+
 /**
  * SaveExtraDetailsDialog
  */
@@ -90,16 +91,13 @@ class SignUpBehalfOfStudentDialog extends React.Component<
   signUpForWorkspaceBehalfOfStudent = async (
     params: SignUpBehalfOfStudentParams
   ) =>
-    await promisify(
-      mApi().guider.student.workspace.signup.create(
-        params.userEntityId,
-        params.workspaceId,
-        {
-          message: params.message,
-        }
-      ),
-      "callback"
-    )();
+    await guiderApi.signupStudentToWorkspace({
+      studentId: params.userEntityId,
+      workspaceId: params.workspaceId,
+      signupStudentToWorkspaceRequest: {
+        message: params.message,
+      },
+    });
 
   /**
    * Handles message change

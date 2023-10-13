@@ -3832,6 +3832,39 @@ paths:
           description: Internal server error
 
   #GUIDER
+  /rest/guider/student/{studentId}/workspace/{workspaceId}/signup:
+    post:
+      operationId: signupStudentToWorkspace
+      summary: Signup student to workspace with given id
+      tags:
+        - Guider
+      parameters:
+        - name: studentId
+          in: path
+          description: Student id
+          required: true
+          schema:
+            type: integer
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/SignupStudentToWorkspaceRequestBody"
+      responses:
+        "200":
+          description: Student signed up to workspace successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentStudyActivity"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/guider/student/{studentId}/contactLog:
     post:
       operationId: createContactLogEvents
@@ -9773,6 +9806,28 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondary"
+
+    SignupStudentToWorkspaceRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: SignupStudentToWorkspaceRequestBody object
+            required:
+              - message
+            properties:
+              id:
+                type: integer
+              message:
+                type: string
+              date:
+                type: string
+                format: date-time
+              workspaceId:
+                type: integer
+              userId:
+                type: integer
 
     UpdateCredentialsBody:
       required: true
