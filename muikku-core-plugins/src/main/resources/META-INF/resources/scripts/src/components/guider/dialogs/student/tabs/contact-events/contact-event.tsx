@@ -89,7 +89,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           className="link link--contact-event-footer"
           onClick={() => setCreateCommentOpen(true)}
         >
-          {t("actions.comment")}
+          {t("actions.create", { context: "comment" })}
         </Link>
         <Link
           className="link link--contact-event-footer"
