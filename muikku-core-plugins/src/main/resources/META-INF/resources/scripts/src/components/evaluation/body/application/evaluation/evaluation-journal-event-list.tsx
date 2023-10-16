@@ -355,8 +355,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleSortFunctionClick}
                   icon={
                     sortByCreationDate === "asc"
-                      ? "sort-amount-asc"
-                      : "sort-amount-desc"
+                      ? "sort-amount-desc"
+                      : "sort-amount-asc"
                   }
                   buttonModifiers={["evaluation-journal-sorter"]}
                 />
