@@ -10,8 +10,9 @@ import {
   supportReasonsOptions,
 } from "./helpers";
 import { styles, htmlStyles } from "./pedagogy-PDF-styles";
-import { FormData, Opinion, PedagogyForm } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
+import { FormData, Opinion } from "~/@types/pedagogy-form";
+import { PedagogyForm } from "~/generated/client";
 
 /**
  * PedagogyPDFProps

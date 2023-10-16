@@ -2,7 +2,7 @@ import * as React from "react";
 import HopsPlanningTool from "../hops-planning-tool";
 import FollowUpGoals from "../hops-follow-up-goals";
 import { HopsBaseProps, HopsUser } from "..";
-import { FollowUp, HopsStudyPeriodPlan } from "~/@types/shared";
+import { HopsStudyPeriodPlan } from "~/@types/shared";
 import HopsPeriodPlan from "../hops-period-plan";
 import { FollowUpProvider } from "../context/follow-up-context";
 import { connect, Dispatch } from "react-redux";
@@ -13,13 +13,14 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
+import { HopsGoals } from "~/generated/client";
 
 /**
  * StudiesPlanningProps
  */
 interface HopsStudiesPlanningProps extends HopsBaseProps {
   user: HopsUser;
-  followUp: FollowUp;
+  followUp: HopsGoals;
   studentId: string;
   studentsUserEntityId: number;
   studyTimeEnd: string | null;

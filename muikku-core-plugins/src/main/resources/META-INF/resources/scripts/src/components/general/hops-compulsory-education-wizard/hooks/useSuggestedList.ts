@@ -1,16 +1,16 @@
-import mApi from "~/lib/mApi";
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
-import { Course, Suggestion } from "~/@types/shared";
-import promisify from "~/util/promisify";
+import { Course } from "~/@types/shared";
+import { WorkspaceSuggestion } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UseSuggestion
  */
 export interface UseSuggestion {
   isLoading: boolean;
-  suggestionsList: Suggestion[];
+  suggestionsList: WorkspaceSuggestion[];
 }
 
 /**
@@ -20,6 +20,8 @@ const initialState: UseSuggestion = {
   isLoading: true,
   suggestionsList: [],
 };
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook for suggestion list
@@ -61,14 +63,12 @@ export const useSuggestionList = (
 
         const [loadedSuggestionListCourses] = await Promise.all([
           (async () => {
-            const suggestionListForSubject = (await promisify(
-              mApi().hops.listWorkspaceSuggestions.read({
+            const suggestionListForSubject =
+              await hopsApi.listWorkspaceSuggestions({
                 subject: subjectCode,
                 courseNumber: course.courseNumber,
                 userEntityId: userEntityId,
-              }),
-              "callback"
-            )()) as Suggestion[];
+              });
 
             return suggestionListForSubject;
           })(),
@@ -84,6 +84,10 @@ export const useSuggestionList = (
         }
       } catch (err) {
         if (componentMounted.current) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(err.message, "error");
           setSuggestins((suggestions) => ({
             ...suggestions,
