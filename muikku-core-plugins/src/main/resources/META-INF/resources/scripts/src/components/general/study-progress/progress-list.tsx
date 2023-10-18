@@ -10,7 +10,6 @@ import {
   OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
 } from "../../../hooks/useStudentActivity";
-import { StudyProgrammeName } from ".";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import Dropdown from "~/components/general/dropdown";
 import Button from "~/components/general/button";
@@ -32,7 +31,7 @@ import { StudentStudyActivity } from "~/generated/client";
  * CourseListProps
  */
 interface HopsCourseListProps {
-  studyProgrammeName: StudyProgrammeName;
+  studyProgrammeName: string;
   editMode: boolean;
 }
 
@@ -71,6 +70,22 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
     };
 
   const matrix = compulsoryOrUpperSecondary(studyProgrammeName);
+
+  if (matrix === null) {
+    return (
+      <div className="list">
+        <ListContainer modifiers={["section"]}>
+          <h4
+            style={{
+              margin: "10px 0",
+            }}
+          >
+            Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle
+          </h4>
+        </ListContainer>
+      </div>
+    );
+  }
 
   const filteredMatrix = filterMatrix(
     studyProgrammeName,

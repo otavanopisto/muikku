@@ -90,6 +90,7 @@ class StateOfStudies extends React.Component<
     if (this.props.guider.currentStudent === null) {
       return null;
     }
+
     // Note that some properties are not available until later, that's because it does
     // step by step loading, make sure to show this in the way this is represented, ensure to have
     // a case where the property is not available
@@ -377,62 +378,34 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
-            {this.props.guider.currentStudent.hopsAvailable &&
-            COMPULSORY_HOPS_VISIBLITY.includes(
-              this.props.guider.currentStudent.basic.studyProgrammeName
-            ) ? (
-              <ApplicationSubPanel modifier="student-data-container">
-                <ApplicationSubPanel>
-                  <ApplicationSubPanel.Header>
-                    {this.props.i18n.t("labels.studyProgress", {
-                      ns: "guider",
-                    })}
-                  </ApplicationSubPanel.Header>
-                  <ApplicationSubPanel.Body>
-                    <StudyProgressContextProvider
-                      user="supervisor"
-                      useCase="state-of-studies"
-                      studentId={this.props.guider.currentStudent.basic.id}
-                      studentUserEntityId={
-                        this.props.guider.currentStudent.basic.userEntityId
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  {this.props.i18n.t("labels.studyProgress", {
+                    ns: "guider",
+                  })}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <StudyProgressContextProvider
+                    user="supervisor"
+                    useCase="state-of-studies"
+                    studentId={this.props.guider.currentStudent.basic.id}
+                    studentUserEntityId={
+                      this.props.guider.currentStudent.basic.userEntityId
+                    }
+                    dataToLoad={["studentActivity"]}
+                  >
+                    <StudyProgress
+                      studyProgrammeName={
+                        this.props.guider.currentStudent.basic
+                          .studyProgrammeName
                       }
-                      dataToLoad={["studentActivity"]}
-                    >
-                      <StudyProgress
-                        studyProgrammeName="Nettiperuskoulu"
-                        editMode={true}
-                      />
-                    </StudyProgressContextProvider>
-                  </ApplicationSubPanel.Body>
-                </ApplicationSubPanel>
+                      editMode={true}
+                    />
+                  </StudyProgressContextProvider>
+                </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
-            ) : (
-              <ApplicationSubPanel modifier="student-data-container">
-                <ApplicationSubPanel>
-                  <ApplicationSubPanel.Header>
-                    {this.props.i18n.t("labels.studyProgress", {
-                      ns: "guider",
-                    })}
-                  </ApplicationSubPanel.Header>
-                  <ApplicationSubPanel.Body>
-                    <StudyProgressContextProvider
-                      user="supervisor"
-                      useCase="state-of-studies"
-                      studentId={this.props.guider.currentStudent.basic.id}
-                      studentUserEntityId={
-                        this.props.guider.currentStudent.basic.userEntityId
-                      }
-                      dataToLoad={["studentActivity"]}
-                    >
-                      <StudyProgress
-                        studyProgrammeName="Nettilukio"
-                        editMode={true}
-                      />
-                    </StudyProgressContextProvider>
-                  </ApplicationSubPanel.Body>
-                </ApplicationSubPanel>
-              </ApplicationSubPanel>
-            )}
+            </ApplicationSubPanel>
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>

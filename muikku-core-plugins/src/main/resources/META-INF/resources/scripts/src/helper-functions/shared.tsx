@@ -1,5 +1,4 @@
 import { SchoolSubject } from "~/@types/shared";
-import { StudyProgrammeName } from "~/components/general/study-progress";
 import {
   schoolCourseTable,
   schoolCourseTableUppersecondary,
@@ -106,7 +105,7 @@ export const filterUpperSecondarySubjects = (
  * @returns boolean
  */
 export const showSubject = (
-  studyProgrammeName: StudyProgrammeName,
+  studyProgrammeName: string,
   subject: SchoolSubject
 ) => {
   switch (studyProgrammeName) {
@@ -127,9 +126,7 @@ export const showSubject = (
  *
  * @param studyProgrammeName studyProgrammeName
  */
-export const compulsoryOrUpperSecondary = (
-  studyProgrammeName: StudyProgrammeName
-) => {
+export const compulsoryOrUpperSecondary = (studyProgrammeName: string) => {
   switch (studyProgrammeName) {
     case "Nettiperuskoulu":
       return schoolCourseTable;
@@ -138,7 +135,7 @@ export const compulsoryOrUpperSecondary = (
       return schoolCourseTableUppersecondary;
 
     default:
-      return schoolCourseTableUppersecondary;
+      return null;
   }
 };
 
@@ -150,7 +147,7 @@ export const compulsoryOrUpperSecondary = (
  * @returns filtered matrix
  */
 export const filterMatrix = (
-  studyProgrammeName: StudyProgrammeName,
+  studyProgrammeName: string,
   matrix: SchoolSubject[],
   options: string[]
 ) => {

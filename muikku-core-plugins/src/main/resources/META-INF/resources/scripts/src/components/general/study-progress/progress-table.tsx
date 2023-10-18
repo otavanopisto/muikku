@@ -7,9 +7,8 @@ import {
   Tr,
   Th,
 } from "~/components/general/table";
-
+import { ListContainer } from "~/components/general/list";
 import { connect } from "react-redux";
-import { StudyProgrammeName } from ".";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import Dropdown from "~/components/general/dropdown";
@@ -38,7 +37,7 @@ import { SchoolSubject } from "~/@types/shared";
  * CourseTableProps
  */
 interface HopsCourseTableProps {
-  studyProgrammeName: StudyProgrammeName;
+  studyProgrammeName: string;
   editMode: boolean;
 }
 
@@ -76,6 +75,22 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
     };
 
   const matrix = compulsoryOrUpperSecondary(studyProgrammeName);
+
+  if (matrix === null) {
+    return (
+      <div className="list">
+        <ListContainer modifiers={["section"]}>
+          <h4
+            style={{
+              margin: "10px 0",
+            }}
+          >
+            Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle
+          </h4>
+        </ListContainer>
+      </div>
+    );
+  }
 
   const filteredMatrix = filterMatrix(
     studyProgrammeName,

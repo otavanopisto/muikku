@@ -15,7 +15,7 @@ export type StudyProgrammeName = "Nettilukio" | "Nettiperuskoulu";
  */
 interface StudyProgressProps {
   editMode: boolean;
-  studyProgrammeName: StudyProgrammeName;
+  studyProgrammeName: string;
 }
 
 /**
