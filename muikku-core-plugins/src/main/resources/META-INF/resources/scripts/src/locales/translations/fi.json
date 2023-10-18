@@ -1450,7 +1450,7 @@
       "evaluated_withPassedGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_withNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
       "evaluationHasFee": "Maksullinen arviointi",
-      "evaluationRequestMessage": "Viesti kurssin opettajalle",
+      "evaluationRequestMessage": "Vapaaehtoinen viesti kurssin opettajalle",
       "failed": "Keskeytynyt",
       "goto": "Siirry kurssille",
       "grade": "Arvosana",
