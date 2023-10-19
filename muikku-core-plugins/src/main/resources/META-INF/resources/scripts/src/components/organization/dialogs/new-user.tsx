@@ -71,7 +71,7 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        roles: [ "STUDENT" ],
+        roles: [ Role.Student ],
       },
       locked: false,
       executing: false,
@@ -106,7 +106,7 @@ class OrganizationUser extends React.Component<
   clearComponentState() {
     this.setState({
       user: {
-        roles: [ "STUDENT" ],
+        roles: [ Role.Student ],
         studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier,
       },
       firstNameValid: 2,
@@ -154,7 +154,7 @@ class OrganizationUser extends React.Component<
       valid = false;
     }
 
-    if (this.state.user.roles.includes("STUDENT")) {
+    if (this.state.user.roles.includes(Role.Student)) {
       if (
         this.state.user.studyProgrammeIdentifier == "" ||
         this.state.user.studyProgrammeIdentifier == undefined
@@ -214,7 +214,7 @@ class OrganizationUser extends React.Component<
            */
           success: () => {
             this.setState({
-              user: { roles: [ "STUDENT" ] },
+              user: { roles: [ Role.Student ] },
               firstNameValid: 2,
               lastNameValid: 2,
               emailValid: 2,
@@ -296,7 +296,7 @@ class OrganizationUser extends React.Component<
             label={t("labels.email", { ns: "users" })}
           />
         </DialogRow>
-        {this.state.user.roles.includes("STUDENT") ? (
+        {this.state.user.roles.includes(Role.Student) ? (
           <>
             <DialogRow modifiers="new-user">
               <SSNFormElement
