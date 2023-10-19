@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
 import MApi from "~/api/api";
+import { Role } from "~/generated/client"
 
 const notesApi = MApi.getNotesApi();
 
@@ -23,7 +24,7 @@ export const useOnGoingNotes = (
 
   React.useEffect(() => {
     // This is for students only hook, if you call it as someone else, no loading should happen
-    if (roles ? roles.includes(Role.STUDENT) : false) {
+    if (roles ? roles.includes(Role.Student) : false) {
       return;
     }
 

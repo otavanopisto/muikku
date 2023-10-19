@@ -21,6 +21,7 @@ import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { CreateUserType } from "~/reducers/user-index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { Role } from "~/generated/client"
 
 /**
  * OrganizationUserProps
@@ -45,7 +46,7 @@ interface OrganizationUserState {
     firstName?: string;
     lastName?: string;
     email?: string;
-    roles: string[];
+    roles: Role[];
   };
   locked: boolean;
   executing: boolean;

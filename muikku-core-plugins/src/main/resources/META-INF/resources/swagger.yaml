@@ -9859,8 +9859,10 @@ components:
                 type: string
               studyProgrammeIdentifier:
                 type: string
-              role:
-                type: string
+              roles:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
               ssn:
                 type: string
 
@@ -13545,7 +13547,7 @@ components:
         roles:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/Role"
         role:
           type: string
         ssn:
@@ -13697,9 +13699,10 @@ components:
         hasImage:
           type: boolean
           nullable: true
-        role:
-          nullable: true
-          $ref: "#/components/schemas/Role"
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
         permissions:
           type: array
           nullable: true
