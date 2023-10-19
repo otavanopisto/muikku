@@ -557,7 +557,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CeeposPurchase"
+                $ref: "#/components/schemas/CeeposOrder"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -576,11 +576,11 @@ paths:
         $ref: "#/components/requestBodies/CeeposOrderCreateRequestBody"
       responses:
         "200":
-          description: ""
+          description: Order created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CeeposPurchase"
+                $ref: "#/components/schemas/CeeposOrder"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -628,7 +628,7 @@ paths:
             type: integer
       responses:
         "200":
-          description: Order created successfully
+          description: Order created successfully. Returns the url to which the user should be redirected to complete payment.
           content:
             application/json:
               schema:
@@ -640,6 +640,32 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/ceepos/order/{orderId}/returnLink:
+    get:
+      operationId: getCeeposReturnLink
+      summary: Get return link
+      description: Get return link
+      tags:
+        - Ceepos
+      parameters:
+        - name: orderId
+          in: path
+          description: Order id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Return link successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CeeposReturnLink"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/ceepos/products:
     get:
       operationId: getCeeposProducts
@@ -647,6 +673,12 @@ paths:
       description: Get products
       tags:
         - Ceepos
+      parameters:
+        - name: line
+          in: query
+          description: Line
+          schema:
+            type: string
       responses:
         "200":
           description: Ceepos products list successfully retrieved
@@ -689,7 +721,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CeeposPurchase"
+                $ref: "#/components/schemas/CeeposOrder"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -721,7 +753,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/CeeposPurchase"
+                  $ref: "#/components/schemas/CeeposOrder"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -11178,7 +11210,7 @@ components:
         price:
           type: integer
 
-    CeeposPurchaseState:
+    CeeposOrderStateType:
       type: string
       enum:
         - CREATED
@@ -11209,6 +11241,18 @@ components:
         email:
           type: string
 
+    CeeposReturnLink:
+      type: object
+      description: CeeposReturnLink object
+      required:
+        - path
+        - text
+      properties:
+        path:
+          type: string
+        text:
+          type: string
+
     CeeposPurchaseProduct:
       type: object
       description: CeeposPurchaseProduct object. Property first letter is capital because reasons...
@@ -11218,15 +11262,18 @@ components:
         - Price
       properties:
         Code:
+          description: Product code. Note that this is with uppercase lettering cause its 3rd party API related.
           type: string
         Description:
+          description: Product description. Note that this is with uppercase lettering cause its 3rd party API related.
           type: string
         Price:
+          description: Product price. Note that this is with uppercase lettering cause its 3rd party API related.
           type: integer
 
-    CeeposPurchase:
+    CeeposOrder:
       type: object
-      description: CeeposPurchase object
+      description: CeeposOrder object
       required:
         - id
         - paid
@@ -11242,13 +11289,14 @@ components:
         paid:
           type: string
           format: date-time
+          nullable: true
         created:
           type: string
           format: date-time
         product:
           $ref: "#/components/schemas/CeeposPurchaseProduct"
         state:
-          $ref: "#/components/schemas/CeeposPurchaseState"
+          $ref: "#/components/schemas/CeeposOrderStateType"
         studentEmail:
           type: string
         studentIdentifier:

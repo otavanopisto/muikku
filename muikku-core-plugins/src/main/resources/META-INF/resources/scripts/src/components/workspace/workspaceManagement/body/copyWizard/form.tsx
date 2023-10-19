@@ -10,7 +10,7 @@ import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * StepProps
@@ -214,9 +214,7 @@ class Step extends React.Component<StepProps, StepState> {
                     id="workspaceStartDate"
                     onChange={this.updateStartDate}
                     maxDate={this.props.getStore().endDate}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.props.getStore().beginDate}
                     dateFormat="P"
                   />
@@ -230,9 +228,7 @@ class Step extends React.Component<StepProps, StepState> {
                     id="workspaceEndDate"
                     onChange={this.updateEndDate}
                     minDate={this.props.getStore().beginDate}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.props.getStore().endDate}
                     dateFormat="P"
                   />

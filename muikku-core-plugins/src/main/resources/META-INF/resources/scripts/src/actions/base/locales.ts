@@ -2,7 +2,7 @@ import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { LocaleType } from "~/reducers/base/locales";
 import notificationActions from "~/actions/base/notifications";
-import i18n, { localizeTime } from "~/locales/i18n";
+import i18n, { localize } from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 
 // ACTIONS for locale
@@ -45,8 +45,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
         },
       });
 
-      localizeTime.language = data.locale;
-      i18n.changeLanguage(data.locale);
+      localize.language = data.locale;
 
       dispatch({
         type: "LOCALE_SET",
@@ -75,7 +74,7 @@ const loadLocale: LoadLocaleTriggerType = function loadLocale() {
     try {
       const locale = await meApi.getLocale();
 
-      localizeTime.language = locale.lang;
+      localize.language = locale.lang;
 
       dispatch({
         type: "LOCALE_UPDATE",

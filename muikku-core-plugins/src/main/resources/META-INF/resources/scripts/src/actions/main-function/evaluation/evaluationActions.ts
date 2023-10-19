@@ -728,6 +728,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
       try {
         const evaluationWorkspaces = (await workspaceApi.getWorkspaces({
           userId: state.status.userId,
+          maxResults: 500,
         })) as WorkspaceDataType[];
 
         dispatch({

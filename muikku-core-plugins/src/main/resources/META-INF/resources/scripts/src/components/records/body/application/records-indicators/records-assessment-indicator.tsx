@@ -1,5 +1,5 @@
 import * as React from "react";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
@@ -39,7 +39,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
@@ -69,7 +69,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluablesDone", {
               ns: "studies",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) +
               " - " +
               status}
@@ -97,7 +97,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
               {assessment.grade
                 ? t("labels.evaluablesDone", {
                     ns: "studies",
-                    date: localizeTime.date(assessment.date),
+                    date: localize.date(assessment.date),
                   }) + getShortenGradeExtension(assessment.grade)
                 : t("content.notEvaluated", {
                     ns: "studies",

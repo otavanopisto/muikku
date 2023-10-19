@@ -1,12 +1,10 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import MApi from "~/api/api";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
-import promisify from "~/util/promisify";
-import i18n from "~/locales/i18n";
 import { WorkspaceBasicInfo } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -144,7 +142,7 @@ async function loadWhoAMI(
     },
   });
 
-  i18n.changeLanguage(whoAmI.locale);
+  localize.language = whoAmI.locale;
 
   dispatch({
     type: "LOCALE_UPDATE",

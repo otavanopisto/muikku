@@ -8,7 +8,7 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { RecordWorkspaceActivityByLine } from "~/reducers/main-function/records";
 import ActivityIndicator from "../records-indicators/activity-indicator";
 import AssessmentRequestIndicator from "../records-indicators/assessment-request-indicator";
@@ -156,7 +156,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     {t("labels.date", { count: 0 })}:
                   </span>
                   <span className="workspace-assessment__date-data">
-                    {localizeTime.date(a.date)}
+                    {localize.date(a.date)}
                   </span>
                 </div>
                 <div className="workspace-assessment__literal">
@@ -205,7 +205,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     </span>
 
                     <span className="workspace-assessment__date-data">
-                      {localizeTime.date(a.date)}
+                      {localize.date(a.date)}
                     </span>
                   </div>
 
@@ -254,7 +254,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       {t("labels.date", { count: 1 })}:
                     </span>
                     <span className="workspace-assessment__date-data">
-                      {localizeTime.date(a.date)}
+                      {localize.date(a.date)}
                     </span>
                   </div>
                   <div className="workspace-assessment__literal">

@@ -8,7 +8,7 @@ import CommunicatorNewMessage from "~/components/communicator/dialogs/new-messag
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
 import moment from "~/lib/moment";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
@@ -118,12 +118,12 @@ class WorkspaceTeachers extends React.Component<
                         <div className="item-list__user-vacation-period">
                           {t("labels.away", { ns: "workspace" })}
                           &nbsp;
-                          {localizeTime.date(
+                          {localize.date(
                             teacher.properties["profile-vacation-start"]
                           )}
                           {teacher.properties["profile-vacation-end"]
                             ? "–" +
-                              localizeTime.date(
+                              localize.date(
                                 teacher.properties["profile-vacation-end"]
                               )
                             : null}

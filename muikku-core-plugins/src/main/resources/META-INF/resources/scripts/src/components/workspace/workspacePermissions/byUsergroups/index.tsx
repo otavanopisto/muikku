@@ -7,7 +7,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/form.scss";
 import ContentPanel from "~/components/general/content-panel";
 import { WorkspaceDataType } from "~/reducers/workspaces";

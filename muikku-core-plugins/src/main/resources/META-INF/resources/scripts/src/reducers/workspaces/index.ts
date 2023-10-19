@@ -822,6 +822,7 @@ export const workspaces: Reducer<WorkspacesState> = (
   }
 };
 
+// This method might be useful in the future
 /* function processWorkspaceToHaveNewAssessmentStateAndDate(
   id: number,
   assessmentState: WorkspaceAssessmentStateType,

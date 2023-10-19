@@ -48,7 +48,7 @@ import {
 import "~/sass/elements/course.scss";
 import { TagItem } from "~/components/general/tag-input";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { AnyActionType } from "~/actions";
 import { WorkspaceAccess } from "~/generated/client";
 
@@ -374,7 +374,7 @@ class OrganizationNewWorkspace extends React.Component<
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getLocaledDate(date: any) {
-    return localizeTime.getLocalizedMoment(date).format("L");
+    return localize.getLocalizedMoment(date).format("L");
   }
 
   /**
@@ -584,7 +584,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifiers="organization-workspace-date"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={localizeTime.language}
+                locale={localize.language}
                 selected={this.state.beginDate}
                 labels={{
                   label: t("labels.beginDate"),
@@ -595,7 +595,7 @@ class OrganizationNewWorkspace extends React.Component<
                 modifiers="organization-workspace-date"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={localizeTime.language}
+                locale={localize.language}
                 selected={this.state.endDate}
                 labels={{
                   label: t("labels.endDate"),

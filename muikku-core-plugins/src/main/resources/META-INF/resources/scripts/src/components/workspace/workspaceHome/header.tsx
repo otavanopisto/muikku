@@ -2,7 +2,7 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
@@ -287,10 +287,10 @@ class WorkspaceHomeHeader extends React.Component<
               <span className="meta__item-description">
                 {t("labels.workspaceDates", {
                   ns: "workspace",
-                  beginDate: localizeTime.date(
+                  beginDate: localize.date(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  endDate: localizeTime.date(
+                  endDate: localize.date(
                     this.props.workspace.additionalInfo.endDate
                   ),
                 })}

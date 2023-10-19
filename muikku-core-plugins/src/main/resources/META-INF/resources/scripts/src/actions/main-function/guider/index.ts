@@ -16,12 +16,10 @@ import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { colorIntToHex } from "~/util/modifiers";
 import { Dispatch } from "react-redux";
-import {
-  PurchaseProductType,
-  PurchaseType,
-} from "~/reducers/main-function/profile";
 import { LoadingState } from "~/@types/shared";
 import {
+  CeeposOrder,
+  CeeposPurchaseProduct,
   ContactLog,
   ContactType,
   Student,
@@ -74,15 +72,15 @@ export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<
 >;
 export type UPDATE_GUIDER_INSERT_PURCHASE_ORDER = SpecificActionType<
   "UPDATE_GUIDER_INSERT_PURCHASE_ORDER",
-  PurchaseType
+  CeeposOrder
 >;
 export type DELETE_GUIDER_PURCHASE_ORDER = SpecificActionType<
   "DELETE_GUIDER_PURCHASE_ORDER",
-  PurchaseType
+  CeeposOrder
 >;
 export type UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER = SpecificActionType<
   "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER",
-  PurchaseType
+  CeeposOrder
 >;
 
 export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<
@@ -95,7 +93,7 @@ export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<
 >;
 export type UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS",
-  PurchaseProductType[]
+  CeeposPurchaseProduct[]
 >;
 
 export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<
@@ -415,21 +413,21 @@ export interface UpdateAvailablePurchaseProductsTriggerType {
  * DoOrderForCurrentStudentTriggerType action creator type
  */
 export interface DoOrderForCurrentStudentTriggerType {
-  (order: PurchaseProductType): AnyActionType;
+  (order: CeeposPurchaseProduct): AnyActionType;
 }
 
 /**
  * DeleteOrderFromCurrentStudentTriggerType action creator type
  */
 export interface DeleteOrderFromCurrentStudentTriggerType {
-  (order: PurchaseType): AnyActionType;
+  (order: CeeposOrder): AnyActionType;
 }
 
 /**
  * CompleteOrderFromCurrentStudentTriggerType action creator type
  */
 export interface CompleteOrderFromCurrentStudentTriggerType {
-  (order: PurchaseType): AnyActionType;
+  (order: CeeposOrder): AnyActionType;
 }
 
 /**
@@ -558,6 +556,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+    const ceeposApi = MApi.getCeeposApi();
     const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
     const activitylogsApi = MApi.getActivitylogsApi();
@@ -770,14 +769,14 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           }),
 
         canListUserOrders &&
-          promisify(mApi().ceepos.user.orders.read(id), "callback")().then(
-            (pOrders: PurchaseType[]) => {
+          ceeposApi
+            .getCeeposUserOrders({ userIdentifier: id })
+            .then((orders) => {
               dispatch({
                 type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                payload: { property: "purchases", value: pOrders },
+                payload: { property: "purchases", value: orders },
               });
-            }
-          ),
+            }),
       ]);
 
       dispatch({
@@ -2144,20 +2143,21 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
         const state = getState();
-        const value: PurchaseProductType[] = (await promisify(
-          mApi().ceepos.products.read({
-            line: state.guider.currentStudent.basic.ceeposLine,
-          }),
-          "callback"
-        )()) as PurchaseProductType[];
+
+        const products = await ceeposApi.getCeeposProducts({
+          line: state.guider.currentStudent.basic.ceeposLine,
+        });
+
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_PURCHASE_PRODUCTS",
-          payload: value,
+          payload: products,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -2171,30 +2171,33 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
   };
 /**
  * doOrderForCurrentStudent thunk action creator
- * @param order the ordered product
+ * @param orderProduct the ordered product
  * @returns a thunk function for creating the order
  */
 const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
-  function doOrderForCurrentStudent(order: PurchaseProductType) {
+  function doOrderForCurrentStudent(orderProduct) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
         const state = getState();
-        const value: PurchaseType = (await promisify(
-          mApi().ceepos.order.create({
+
+        const newOrder = await ceeposApi.createCeeposOrder({
+          createCeeposOrderRequest: {
             studentIdentifier: state.guider.currentStudent.basic.id,
-            product: order,
-          }),
-          "callback"
-        )()) as PurchaseType;
+            product: orderProduct,
+          },
+        });
+
         dispatch({
           type: "UPDATE_GUIDER_INSERT_PURCHASE_ORDER",
-          payload: value,
+          payload: newOrder,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -2213,19 +2216,24 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
  * @returns a thunk function for order deletion
  */
 const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
-  function deleteOrderFromCurrentStudent(order: PurchaseType) {
+  function deleteOrderFromCurrentStudent(order: CeeposOrder) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
-        await promisify(mApi().ceepos.order.del(order.id), "callback")();
+        await ceeposApi.deleteCeeposOrder({
+          orderId: order.id,
+        });
+
         dispatch({
           type: "DELETE_GUIDER_PURCHASE_ORDER",
           payload: order,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -2244,23 +2252,24 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
  * @returns a thunk function for order completion
  */
 const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType =
-  function completeOrderFromCurrentStudent(order: PurchaseType) {
+  function completeOrderFromCurrentStudent(order: CeeposOrder) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
-        const value: PurchaseType = (await promisify(
-          mApi().ceepos.manualCompletion.create(order.id),
-          "callback"
-        )()) as PurchaseType;
+        const completedOrder = await ceeposApi.createCeeposManualCompletion({
+          orderId: order.id,
+        });
 
         dispatch({
           type: "UPDATE_GUIDER_COMPLETE_PURCHASE_ORDER",
-          payload: value,
+          payload: completedOrder,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

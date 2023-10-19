@@ -6,7 +6,7 @@ import { IBareMessageType } from "./chat";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import DeleteMessageDialog from "./deleteMessageDialog";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -291,7 +291,7 @@ class ChatMessage extends React.Component<
             )}
           </span>
           <span className="chat__message-meta-timestamp">
-            {localizeTime.formatDaily(this.props.message.timestamp)}
+            {localize.formatDaily(this.props.message.timestamp)}
           </span>
           {(this.props.canModerate || this.props.message.isSelf) &&
           !this.props.message.deleted &&
@@ -367,9 +367,7 @@ class ChatMessage extends React.Component<
               {this.props.message.edited && (
                 <div className="chat__message-edited-info">
                   {this.props.i18n.t("labels.edited")}{" "}
-                  {localizeTime.formatDaily(
-                    this.props.message.edited.timestamp
-                  )}
+                  {localize.formatDaily(this.props.message.edited.timestamp)}
                 </div>
               )}
             </div>
