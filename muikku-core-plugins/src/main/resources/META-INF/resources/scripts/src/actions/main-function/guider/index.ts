@@ -1,4 +1,3 @@
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   GuiderActiveFiltersType,
@@ -9,7 +8,6 @@ import {
   GuiderState,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
-import promisify from "~/util/promisify";
 import { UserFileType } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import { WorkspaceDataType } from "~/reducers/workspaces";
@@ -789,7 +787,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
@@ -946,7 +944,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(

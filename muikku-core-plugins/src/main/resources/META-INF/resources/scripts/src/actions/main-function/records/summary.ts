@@ -1,5 +1,4 @@
 import actions from "../../base/notifications";
-import { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   SummaryDataType,
@@ -7,7 +6,7 @@ import {
 } from "~/reducers/main-function/records/summary";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
 import i18n from "~/locales/i18n";
 import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
@@ -155,7 +154,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         payload: <SummaryStatusType>"READY",
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(

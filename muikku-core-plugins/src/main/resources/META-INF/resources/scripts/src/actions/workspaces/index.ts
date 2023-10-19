@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import actions, { displayNotification } from "../base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import {
   WorkspaceMaterialReferenceType,
   WorkspaceDataType,
@@ -718,7 +716,7 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
           payload: curriculums,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1319,7 +1317,7 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
         }`;
         data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 

@@ -275,7 +275,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
           });
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -310,7 +310,7 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -340,7 +340,7 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
