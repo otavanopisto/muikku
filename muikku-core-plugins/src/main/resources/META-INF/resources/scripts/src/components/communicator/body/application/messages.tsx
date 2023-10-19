@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { colorIntToHex, getName } from "~/util/modifiers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -338,14 +338,15 @@ class CommunicatorMessages extends BodyScrollLoader<
                     openByHover
                     content={
                       <p>
-                        {`${localizeTime.date(
-                          message.created
-                        )} klo ${localizeTime.date(message.created, "h:mm")}`}
+                        {`${localize.date(message.created)} klo ${localize.date(
+                          message.created,
+                          "h:mm"
+                        )}`}
                       </p>
                     }
                   >
                     <div className="application-list__header-item-date">
-                      {localizeTime.date(message.created)}
+                      {localize.date(message.created)}
                     </div>
                   </Dropdown>
                 </ApplicationListItemHeader>
@@ -482,9 +483,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                       openByHover
                       content={
                         <p>
-                          {`${localizeTime.date(
+                          {`${localize.date(
                             thread.threadLatestMessageDate
-                          )} klo ${localizeTime.date(
+                          )} klo ${localize.date(
                             thread.threadLatestMessageDate,
                             "h:mm"
                           )}`}
@@ -497,7 +498,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                           ns: "messaging",
                         })}
                       >
-                        {`${localizeTime.date(thread.threadLatestMessageDate)}`}
+                        {`${localize.date(thread.threadLatestMessageDate)}`}
                       </div>
                     </Dropdown>
                   </ApplicationListItemHeader>

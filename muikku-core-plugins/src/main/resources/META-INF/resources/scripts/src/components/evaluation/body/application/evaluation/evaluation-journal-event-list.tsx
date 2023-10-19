@@ -22,7 +22,7 @@ import {
   WorkspaceJournal,
   EvaluationAssessmentRequest,
 } from "~/generated/client";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -242,7 +242,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                     {t("labels.feedbackDate", { ns: "journal" })}:
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
-                    {localizeTime.date(journalFeedback.created, "l")}
+                    {localize.date(journalFeedback.created, "l")}
                   </span>
                 </div>
               </div>

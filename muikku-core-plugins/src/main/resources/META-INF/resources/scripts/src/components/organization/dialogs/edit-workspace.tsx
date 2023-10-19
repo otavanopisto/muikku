@@ -31,7 +31,7 @@ import {
   loadCurrentOrganizationWorkspaceStaff,
   loadCurrentOrganizationWorkspaceStudents,
 } from "~/actions/workspaces/organization";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
 import AutofillSelector, {
@@ -399,14 +399,10 @@ class OrganizationEditWorkspace extends React.Component<
         this.setState({
           workspaceAccess: workspace.access,
           beginDate: workspace.details.beginDate
-            ? localizeTime
-                .getLocalizedMoment(workspace.details.beginDate)
-                .toDate()
+            ? localize.getLocalizedMoment(workspace.details.beginDate).toDate()
             : null,
           endDate: workspace.details.endDate
-            ? localizeTime
-                .getLocalizedMoment(workspace.details.endDate)
-                .toDate()
+            ? localize.getLocalizedMoment(workspace.details.endDate).toDate()
             : null,
         });
       },
@@ -721,7 +717,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceBeginDate"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={outputCorrectDatePickerLocale(localizeTime.language)}
+                locale={outputCorrectDatePickerLocale(localize.language)}
                 selected={this.state.beginDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -733,7 +729,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceEndDate"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={outputCorrectDatePickerLocale(localizeTime.language)}
+                locale={outputCorrectDatePickerLocale(localize.language)}
                 selected={this.state.endDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -1046,7 +1042,7 @@ class OrganizationEditWorkspace extends React.Component<
               <DialogRowContent modifiers="summary-dates">
                 <span>
                   {this.state.beginDate
-                    ? localizeTime.date(this.state.beginDate)
+                    ? localize.date(this.state.beginDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "beginDate",
@@ -1054,7 +1050,7 @@ class OrganizationEditWorkspace extends React.Component<
                 </span>
                 <span>
                   {this.state.endDate
-                    ? localizeTime.date(this.state.endDate)
+                    ? localize.date(this.state.endDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "endDate",

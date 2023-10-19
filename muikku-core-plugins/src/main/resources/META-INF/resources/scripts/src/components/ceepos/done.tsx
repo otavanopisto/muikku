@@ -8,7 +8,7 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { CeeposState } from "~/reducers/main-function/ceepos";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
@@ -129,7 +129,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                   ns: "orders",
                 })}
               </div>
-              <div>{localizeTime.date(this.props.ceepos.purchase.created)}</div>
+              <div>{localize.date(this.props.ceepos.purchase.created)}</div>
             </div>
             {this.props.ceepos.purchase.paid &&
             this.props.ceepos.purchase.paid !== null ? (
@@ -140,7 +140,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                     ns: "orders",
                   })}
                 </div>
-                <div>{localizeTime.date(this.props.ceepos.purchase.paid)}</div>
+                <div>{localize.date(this.props.ceepos.purchase.paid)}</div>
               </div>
             ) : null}
           </div>
