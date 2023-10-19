@@ -7,7 +7,6 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
-  PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import promisify from "~/util/promisify";
@@ -15,7 +14,6 @@ import { UserFileType } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
 import {
   WorkspaceForumStatisticsType,
-  ActivityLogType,
   WorkspaceType,
 } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
@@ -558,10 +556,13 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const hopsApi = MApi.getHopsApi();
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
+    const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
+    const activitylogsApi = MApi.getActivitylogsApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -600,8 +601,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
             // After basic data is loaded, check if current user of guider has permissions
             // to see/use current student hops
-            promisify(mApi().hops.isHopsAvailable.read(id), "callback")().then(
-              async (hopsAvailable: boolean) => {
+            hopsApi
+              .isHopsAvailable({
+                studentIdentifier: id,
+              })
+              .then(async (hopsAvailable) => {
                 dispatch({
                   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                   payload: {
@@ -624,11 +628,13 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                     value: hopsPhase[0].value,
                   },
                 });
-              }
-            );
+              });
 
-            promisify(mApi().pedagogy.form.access.read(id), "callback")().then(
-              (pedagogyFormAvaibility: PedagogyFormAvailability) => {
+            pedagogyApi
+              .getPedagogyFormAccess({
+                studentIdentifier: id,
+              })
+              .then((pedagogyFormAvaibility) => {
                 dispatch({
                   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                   payload: {
@@ -636,8 +642,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                     value: pedagogyFormAvaibility,
                   },
                 });
-              }
-            );
+              });
           }),
 
         usergroupApi
@@ -747,16 +752,13 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 ),
                 Promise.all(
                   workspacesWithAddons.map(async (workspace, index) => {
-                    const activityLogs: ActivityLogType[] = <ActivityLogType[]>(
-                      await promisify(
-                        mApi().activitylogs.user.workspace.read(id, {
-                          workspaceEntityId: workspace.id,
-                          from: new Date(new Date().getFullYear() - 2, 0),
-                          to: new Date(),
-                        }),
-                        "callback"
-                      )()
-                    );
+                    const activityLogs =
+                      await activitylogsApi.getWorkspaceActivityLogs({
+                        userId: id,
+                        workspaceEntityId: workspace.id,
+                        from: new Date(new Date().getFullYear() - 2, 0),
+                        to: new Date(),
+                      });
                     workspacesWithAddons[index].activityLogs = activityLogs;
                   })
                 ),
@@ -834,6 +836,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     getState: () => StateType
   ) => {
     const guiderApi = MApi.getGuiderApi();
+    const activitylogsApi = MApi.getActivitylogsApi();
 
     try {
       const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
@@ -852,25 +855,25 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       });
 
       const promises = [
-        promisify(
-          mApi().activitylogs.user.workspace.read(id, {
+        activitylogsApi
+          .getWorkspaceActivityLogs({
+            userId: id,
             from: new Date(new Date().getFullYear() - 2, 0),
             to: new Date(),
+          })
+          .then((activityLogs) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: { property: "activityLogs", value: activityLogs },
+            });
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "activityLogState",
+                value: <LoadingState>"READY",
+              },
+            });
           }),
-          "callback"
-        )().then((activityLogs: ActivityLogType[]) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "activityLogs", value: activityLogs },
-          });
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: {
-              property: "activityLogState",
-              value: <LoadingState>"READY",
-            },
-          });
-        }),
       ];
       if (!historyLoaded || forceLoad) {
         dispatch({
@@ -911,16 +914,14 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                   ),
                   Promise.all(
                     workspacesWithAddons.map(async (workspace, index) => {
-                      const activityLogs: ActivityLogType[] = <
-                        ActivityLogType[]
-                      >await promisify(
-                        mApi().activitylogs.user.workspace.read(id, {
+                      const activityLogs =
+                        await activitylogsApi.getWorkspaceActivityLogs({
+                          userId: id,
                           workspaceEntityId: workspace.id,
                           from: new Date(new Date().getFullYear() - 2, 0),
                           to: new Date(),
-                        }),
-                        "callback"
-                      )();
+                        });
+
                       workspacesWithAddons[index].activityLogs = activityLogs;
                     })
                   ),

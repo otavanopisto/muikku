@@ -1,9 +1,4 @@
 import * as React from "react";
-import {
-  NotesItemRead,
-  NotesItemUpdate,
-  NotesItemStatus,
-} from "~/@types/notes";
 import { IconButton } from "~/components/general/button";
 import Link from "~/components/general/link";
 import * as moment from "moment";
@@ -12,13 +7,14 @@ import NotesItemEdit from "./notes-item-edit";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 import { useTranslation } from "react-i18next";
+import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
 
 /**
  * NotesListItemProps
  */
 export interface NotesListItemProps {
   archived: boolean;
-  notesItem: NotesItemRead;
+  notesItem: Note;
   containerModifier?: string[];
   active?: boolean;
   loggedUserIsCreator?: boolean;
@@ -27,15 +23,15 @@ export interface NotesListItemProps {
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
     notesItemId: number,
-    notesItem: NotesItemUpdate
+    updateNoteRequest: UpdateNoteRequest
   ) => void;
   onUpdateNotesItemStatus?: (
     notesItemId: number,
-    newStatus: NotesItemStatus
+    newStatus: NoteStatusType
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,
-    updatedNotesItem: NotesItemUpdate,
+    updateNoteRequest: UpdateNoteRequest,
     onSuccess?: () => void
   ) => void;
   openInformationToDialog?: boolean;
@@ -143,7 +139,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * @param newStatus newStatus
      */
     const handleUpdateNotesItemStatusClick =
-      (newStatus: NotesItemStatus) =>
+      (newStatus: NoteStatusType) =>
       (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         e.stopPropagation();
 
@@ -180,7 +176,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
-    if (overdue && status !== NotesItemStatus.APPROVED) {
+    if (overdue && status !== "APPROVED") {
       updatedModifiers.push("overdue");
     }
 
@@ -240,7 +236,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
 
-      if (overdue && status !== NotesItemStatus.APPROVED) {
+      if (overdue && status !== "APPROVED") {
         statuses.push(
           <div
             key="note-overdue"
@@ -252,7 +248,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
 
       switch (status) {
-        case NotesItemStatus.ONGOING:
+        case "ONGOING":
           statuses.push(
             <div
               key="note-ongoing"
@@ -262,7 +258,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             </div>
           );
           break;
-        case NotesItemStatus.APPROVAL_PENDING:
+        case "APPROVAL_PENDING":
           statuses.push(
             <div
               key="note-pending"
@@ -272,7 +268,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             </div>
           );
           break;
-        case NotesItemStatus.APPROVED:
+        case "APPROVED":
           statuses.push(
             <div
               key="note-approved"
@@ -301,14 +297,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
 
       if (loggedUserIsOwner) {
-        if (status === NotesItemStatus.ONGOING) {
+        if (status === "ONGOING") {
           content = (
             <div className="dropdown__container-item">
               <Link
                 className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick(
-                  NotesItemStatus.APPROVAL_PENDING
-                )}
+                onClick={handleUpdateNotesItemStatusClick("APPROVAL_PENDING")}
               >
                 {t("actions.send")}
               </Link>
@@ -319,9 +313,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               <div className="dropdown__container-item">
                 <Link
                   className="link link--full link--tasks-dropdown"
-                  onClick={handleUpdateNotesItemStatusClick(
-                    NotesItemStatus.APPROVED
-                  )}
+                  onClick={handleUpdateNotesItemStatusClick("APPROVED")}
                 >
                   {t("actions.done")}
                 </Link>
@@ -329,14 +321,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             );
           }
         }
-        if (status === NotesItemStatus.APPROVAL_PENDING) {
+        if (status === "APPROVAL_PENDING") {
           content = (
             <div className="dropdown__container-item">
               <Link
                 className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick(
-                  NotesItemStatus.ONGOING
-                )}
+                onClick={handleUpdateNotesItemStatusClick("ONGOING")}
               >
                 {t("actions.cancel")}
               </Link>
@@ -344,14 +334,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           );
         }
 
-        if (status === NotesItemStatus.APPROVED) {
+        if (status === "APPROVED") {
           content = (
             <div className="dropdown__container-item">
               <Link
                 className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick(
-                  NotesItemStatus.ONGOING
-                )}
+                onClick={handleUpdateNotesItemStatusClick("ONGOING")}
               >
                 {t("actions.incomplete")}
               </Link>
@@ -359,18 +347,16 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           );
         }
       } else if (loggedUserIsCreator && !loggedUserIsOwner) {
-        if (status === NotesItemStatus.ONGOING) {
+        if (status === "ONGOING") {
           return;
         }
-        if (status === NotesItemStatus.APPROVAL_PENDING) {
+        if (status === "APPROVAL_PENDING") {
           content = (
             <>
               <div className="dropdown__container-item">
                 <Link
                   className="link link--full link--tasks-dropdown"
-                  onClick={handleUpdateNotesItemStatusClick(
-                    NotesItemStatus.APPROVED
-                  )}
+                  onClick={handleUpdateNotesItemStatusClick("APPROVED")}
                 >
                   {t("actions.approve")}
                 </Link>
@@ -378,9 +364,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               <div className="dropdown__container-item">
                 <Link
                   className="link link--full link--tasks-dropdown"
-                  onClick={handleUpdateNotesItemStatusClick(
-                    NotesItemStatus.ONGOING
-                  )}
+                  onClick={handleUpdateNotesItemStatusClick("ONGOING")}
                 >
                   {t("actions.incomplete")}
                 </Link>
@@ -388,14 +372,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             </>
           );
         }
-        if (status === NotesItemStatus.APPROVED) {
+        if (status === "APPROVED") {
           content = (
             <div className="dropdown__container-item">
               <Link
                 className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick(
-                  NotesItemStatus.APPROVAL_PENDING
-                )}
+                onClick={handleUpdateNotesItemStatusClick("APPROVAL_PENDING")}
               >
                 {t("actions.incomplete")}
               </Link>
