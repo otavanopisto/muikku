@@ -77,6 +77,7 @@ export default async function runApp(
   }
 
   const props: any = beforeCreateApp ? await beforeCreateApp(newStore) : {};
+
   render(
     React.createElement(
       Provider,

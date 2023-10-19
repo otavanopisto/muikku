@@ -6,7 +6,6 @@ import Dialog, {
 import Tabs from "~/components/general/tabs";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
@@ -14,8 +13,7 @@ import { StatusType } from "~/reducers/base/status";
 import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
-  GuiderType,
-  PedagogyFormAvailability,
+  GuiderState,
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
@@ -33,9 +31,11 @@ import { getName } from "~/util/modifiers";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
 import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
+import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm, {
   UPPERSECONDARY_PEDAGOGYFORM,
 } from "~/components/general/pedagogical-support-form";
+import { PedagogyFormAccess } from "~/generated/client";
 
 export type tabs =
   | "STUDIES"
@@ -48,14 +48,13 @@ export type tabs =
 /**
  * StudentDialogProps
  */
-interface StudentDialogProps {
+interface StudentDialogProps extends WithTranslation<["common"]> {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
-  guider: GuiderType;
+  guider: GuiderState;
   currentStudentStatus: GuiderCurrentStudentStateType;
   onClose?: () => void;
   onOpen?: () => void;
-  i18n: i18nType;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
@@ -163,17 +162,13 @@ class StudentDialog extends React.Component<
     const tabs = [
       {
         id: "STUDIES",
-        name: this.props.i18n.text.get(
-          "plugin.guider.user.tabs.title.situation"
-        ),
+        name: this.props.i18n.t("labels.situation", { ns: "guider" }),
         type: "guider-student",
         component: <StateOfStudies />,
       },
       {
         id: "GUIDANCE_RELATIONS",
-        name: this.props.i18n.text.get(
-          "plugin.guider.user.tabs.title.guidanceRelations"
-        ),
+        name: this.props.i18n.t("labels.relations", { ns: "guider" }),
         type: "guider-student",
         component: (
           <GuidanceRelation contactLogsPerPage={this.contactLogsPerPage} />
@@ -181,9 +176,7 @@ class StudentDialog extends React.Component<
       },
       {
         id: "STUDY_HISTORY",
-        name: this.props.i18n.text.get(
-          "plugin.guider.user.tabs.title.studyHistory"
-        ),
+        name: this.props.i18n.t("labels.studyHistory", { ns: "guider" }),
         type: "guider-student",
         component: <StudyHistory />,
       },
@@ -340,7 +333,6 @@ class StudentDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,
@@ -362,7 +354,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(StudentDialog)
+);
 
 /**
  * Returns role string for pedagogical support form
@@ -370,7 +364,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);
  * @param pedagogyFormAvailable pedagogyFormAvailable
  * @returns role
  */
-const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAvailability) => {
+const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
   if (pedagogyFormAvailable.specEdTeacher) {
     return "SPECIAL_ED_TEACHER";
   }

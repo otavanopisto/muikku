@@ -1,6 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
@@ -19,6 +18,7 @@ import {
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import variables from "~/sass/_exports.scss";
+import { useTranslation } from "react-i18next";
 
 type studyHistoryAside = "history" | "library";
 
@@ -26,8 +26,7 @@ type studyHistoryAside = "history" | "library";
  * StudyHistory props
  */
 interface StudyHistoryProps {
-  i18n: i18nType;
-  guider: GuiderType;
+  guider: GuiderState;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
 }
 
@@ -41,6 +40,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
+  const { t } = useTranslation("guider");
 
   if (
     !props.guider.currentStudent ||
@@ -50,7 +50,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     return null;
   }
 
-  const { i18n, addFileToCurrentStudent } = props;
+  const { addFileToCurrentStudent } = props;
   const {
     activityLogs,
     activityLogState,
@@ -90,14 +90,14 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onClick={() => handleNavigationClick("history")}
         isActive={navigationActive === "history" ? true : false}
       >
-        {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.history")}
+        {t("labels.history")}
       </NavigationElement>
       <NavigationElement
         id={"studyLibrary"}
         onClick={() => handleNavigationClick("library")}
         isActive={navigationActive === "library" ? true : false}
       >
-        {i18n.text.get("plugin.guider.user.tabs.studyHistory.aside.library")}
+        {t("labels.library")}
       </NavigationElement>
     </Navigation>
   );
@@ -123,23 +123,21 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onFileSuccess={(file: File, data: UserFileType) => {
           addFileToCurrentStudent(data);
         }}
-        hintText={i18n.text.get("plugin.guider.user.details.files.hint")}
-        fileTooLargeErrorText={i18n.text.get(
-          "plugin.guider.user.details.files.fileFieldUpload.fileSizeTooLarge"
-        )}
+        hintText={t("content.addAttachmentInstruction")}
+        fileTooLargeErrorText={t("notifications.sizeTooLarge", { ns: "files" })}
         files={files}
         fileIdKey="id"
         fileNameKey="title"
         fileUrlGenerator={(f) => `/rest/guider/files/${f.id}/content`}
         deleteDialogElement={FileDeleteDialog}
         modifier="guider"
-        emptyText={i18n.text.get("plugin.guider.user.details.files.empty")}
+        emptyText={t("content.empty", { ns: "files" })}
         uploadingTextProcesser={(percent: number) =>
-          i18n.text.get("plugin.guider.user.details.files.uploading", percent)
+          t("notifications.uploading", { ns: "files", progress: percent })
         }
-        notificationOfSuccessText={i18n.text.get(
-          "plugin.guider.fileUpload.successful"
-        )}
+        notificationOfSuccessText={t("notifications.uploadSuccess", {
+          ns: "files",
+        })}
         displayNotificationOnSuccess
       />
     </div>
@@ -149,7 +147,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     <React.Fragment key="history-component">
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {i18n.text.get("plugin.guider.user.details.workspaces")}
+          {t("labels.workspaces", { ns: "workspace" })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {pastWorkspacesState === "READY" ? (
@@ -161,7 +159,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       </ApplicationSubPanel>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {i18n.text.get("plugin.guider.user.details.statistics")}
+          {t("labels.stats", { ns: "common" })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {activityLogState === "READY" ? (
@@ -180,7 +178,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const libraryComponent = (
     <ApplicationSubPanel key="library-component">
       <ApplicationSubPanel.Header>
-        {i18n.text.get("plugin.guider.user.details.files")}
+        {t("labels.files", { ns: "common" })}
       </ApplicationSubPanel.Header>
       <ApplicationSubPanel.Body>{userFiles}</ApplicationSubPanel.Body>
     </ApplicationSubPanel>
@@ -226,7 +224,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guider: state.guider,
   };
 }

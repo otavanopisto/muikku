@@ -1,16 +1,11 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
 import StudentDialog from "~/components/organization/dialogs/edit-student";
 import StaffDialog from "~/components/organization/dialogs/edit-staff";
 import User from "~/components/general/user";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList from "~/components/general/application-list";
-
 import "~/sass/elements/application-list.scss";
-import {
-  UserPanelUsersType,
-  UsersListType,
-} from "~/reducers/main-function/users";
+import { UserSearchResultWithExtraProperties } from "~/reducers/main-function/users";
 import PagerV2 from "~/components/general/pagerV2";
 import { Role } from "~/reducers/base/status";
 
@@ -18,8 +13,7 @@ import { Role } from "~/reducers/base/status";
  * UserPanelProps
  */
 interface UserPanelProps {
-  i18n: i18nType;
-  users: UserPanelUsersType;
+  users: UserSearchResultWithExtraProperties;
   usersPerPage?: number;
   searchString?: string | null;
   pageChange?: (q: string, first: number, last: number) => any;
@@ -105,11 +99,11 @@ export default class UserPanel extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const results = this.props.users.results as UsersListType;
+    const results = this.props.users.results;
     return (
       <ApplicationSubPanel modifier="organization-users">
         <ApplicationSubPanel.Header modifier="organization-users">
-          {this.props.i18n.text.get(this.props.title)}
+          {this.props.title}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body modifier="organization-users">
           {this.props.users.results.length > 0 ? (
@@ -151,7 +145,7 @@ export default class UserPanel extends React.Component<
             </ApplicationList>
           ) : (
             <div className="empty">
-              <span>{this.props.i18n.text.get(this.props.onEmpty)}</span>
+              <span>{this.props.onEmpty}</span>
             </div>
           )}
 

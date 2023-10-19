@@ -8,6 +8,8 @@
   border-radius: 100%;
   color: $color-environment-link-icon-color;
   display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
   font-size: $avatar-mobile-font-size;
   height: $avatar-mobile-size;
   justify-content: center;
@@ -36,6 +38,7 @@
   font-family: $branded-font-family;
   height: $avatar-mobile-size;
   justify-content: center;
+  overflow: hidden;
   width: $avatar-mobile-size;
 
   @include breakpoint($breakpoint-pad) {
@@ -55,6 +58,11 @@
     height: $avatar-desktop-small-size;
     width: $avatar-desktop-small-size;
   }
+}
+
+.avatar-img {
+  position: absolute;
+  z-index: 1;
 }
 
 .avatar--category-1 {

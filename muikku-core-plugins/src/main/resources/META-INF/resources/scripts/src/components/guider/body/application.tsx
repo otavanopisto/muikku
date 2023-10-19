@@ -1,18 +1,16 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
-import { i18nType } from "reducers/base/i18n";
 import Students from "./application/students";
 import Toolbar from "./application/toolbar";
-import { StateType } from "~/reducers";
+import { withTranslation, WithTranslation } from "react-i18next";
 import Select from "react-select";
 
 /**
  * GuiderApplicationProps
  */
-interface GuiderApplicationProps {
+interface GuiderApplicationProps extends WithTranslation<["common"]> {
   aside: JSX.Element;
-  i18n: i18nType;
 }
 
 /**
@@ -36,23 +34,30 @@ class GuiderApplication extends React.Component<
   }
 
   /**
+   * componentDidMount
+   */
+  componentDidMount() {
+    this.props.i18n.setDefaultNamespace("guider");
+  }
+
+  /**
    * render
    */
   render() {
-    const title = this.props.i18n.text.get("plugin.guider.guider");
+    const title = this.props.i18n.t("labels.guider");
     const toolbar = <Toolbar />;
 
     const options = [
       {
         value: "all",
-        label: this.props.i18n.text.get("plugin.guider.students.all"),
+        label: this.props.i18n.t("labels.all", { ns: "users" }),
       },
     ];
 
     const primaryOption = (
       <div className="form-element form-element--main-action">
         <label htmlFor="selectUsers" className="visually-hidden">
-          {this.props.i18n.text.get("plugin.coursepicker.select.label")}
+          {this.props.i18n.t("labels.workspaceTypeSelect", { ns: "workspace" })}
         </label>
         <Select
           id="selectUsers"
@@ -83,20 +88,12 @@ class GuiderApplication extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  */
 function mapDispatchToProps() {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GuiderApplication);
+export default withTranslation(["guider", "workspace", "users"])(
+  connect(null, mapDispatchToProps)(GuiderApplication)
+);

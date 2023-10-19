@@ -64,7 +64,7 @@ import { registerLocale } from "react-datepicker";
 import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
-import { DiscussionPatchType } from "~/reducers/discussion";
+import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
 import {
   loadWholeWorkspaceHelp,
@@ -72,6 +72,8 @@ import {
   loadWorkspaceCompositeMaterialReplies,
   setCurrentWorkspaceMaterialsActiveNodeId,
 } from "~/actions/workspaces/material";
+import i18n from "../locales/i18n";
+import ReadspeakerProvider from "~/components/context/readspeaker-context";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -443,7 +445,7 @@ export default class Workspace extends React.Component<
       ) {
         this.props.store.dispatch(
           loadAnnouncementsAsAClient({
-            hideEnvironmentAnnouncements: "true",
+            hideEnvironmentAnnouncements: true,
             workspaceEntityId: state.status.currentWorkspaceId,
           }) as Action
         );
@@ -478,7 +480,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.helpPage.title")
+          i18n.t("labels.instructions", { ns: "workspace" })
         )
       );
       this.props.store.dispatch(
@@ -538,9 +540,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.discussions.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.discussion"))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -583,14 +583,14 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.announcements.pageTitle")
+          i18n.t("labels.announcement", { ns: "messaging", count: 0 })
         )
       );
 
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({
-          hideEnvironmentAnnouncements: "true",
+          hideEnvironmentAnnouncements: true,
           workspaceEntityId: state.status.currentWorkspaceId,
         }) as Action
       );
@@ -629,9 +629,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.announcer.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.announcer"))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -677,7 +675,7 @@ export default class Workspace extends React.Component<
 
     if (location.includes("subs")) {
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           current: state.discussion.current && undefined,
           areaId: undefined,
         };
@@ -706,7 +704,7 @@ export default class Workspace extends React.Component<
         );
 
       if (location.length <= 2) {
-        const payload: DiscussionPatchType = {
+        const payload: DiscussionStatePatch = {
           areaId: undefined,
         };
 
@@ -877,7 +875,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.materials.pageTitle")
+          i18n.t("labels.materials", { ns: "materials" })
         )
       );
       this.props.store.dispatch(
@@ -993,21 +991,17 @@ export default class Workspace extends React.Component<
         if (!state.status.canCurrentWorkspaceSignup) {
           this.props.store.dispatch(
             displayNotification(
-              state.i18n.text.get(
-                "plugin.workspace.materials.cannotSignUpWarning"
-              ),
+              i18n.t("content.cannotSignUpWarning", { ns: "workspace" }),
               "notice"
             ) as Action
           );
         } else {
           this.props.store.dispatch(
             displayNotification(
-              state.i18n.text.get(
-                "plugin.workspace.materials.notSignedUpWarning"
-              ) +
-                ` <a href="#signup">${state.i18n.text.get(
-                  "plugin.workspace.materials.notSignedUpWarningLink"
-                )}</a>`,
+              i18n.t("content.notSignedUpWarning", { ns: "materials" }) +
+                ` <a href="#signup">${i18n.t("actions.notSignedUpWarning", {
+                  ns: "materials",
+                })}</a>`,
               "notice"
             ) as Action
           );
@@ -1048,11 +1042,8 @@ export default class Workspace extends React.Component<
         }
       );
 
-      const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.users.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.users", { ns: "users" }))
       );
       this.loadWorkspaceUsersData();
       this.loadChatSettings();
@@ -1084,9 +1075,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.journal.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.journal", { ns: "journal" }))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -1150,9 +1139,7 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.management.pageTitle")
-        )
+        titleActions.updateTitle(i18n.t("labels.settings", { ns: "common" }))
       );
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(
@@ -1196,11 +1183,7 @@ export default class Workspace extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          state.i18n.text.get("plugin.workspace.permissions.pageTitle")
-        )
-      );
+      this.props.store.dispatch(titleActions.updateTitle("Permissions"));
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1245,11 +1228,7 @@ export default class Workspace extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
-        titleActions.updateTitle(
-          this.props.store
-            .getState()
-            .i18n.text.get("plugin.evaluation.evaluation")
-        )
+        titleActions.updateTitle(i18n.t("labels.evaluation"))
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
@@ -1307,59 +1286,62 @@ export default class Workspace extends React.Component<
    */
   render() {
     return (
-      <BrowserRouter>
-        <div id="root">
-          <Notifications></Notifications>
-          <DisconnectedWarningDialog />
-          <EasyToUseFunctions />
-          <Route
-            exact
-            path="/workspace/:workspaceUrl/"
-            render={this.renderWorkspaceHome}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/help"
-            render={this.renderWorkspaceHelp}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/discussions"
-            render={this.renderWorkspaceDiscussions}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/announcements"
-            render={this.renderWorkspaceAnnouncements}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/announcer"
-            render={this.renderWorkspaceAnnouncer}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/materials"
-            render={this.renderWorkspaceMaterials}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/users"
-            render={this.renderWorkspaceUsers}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/journal"
-            render={this.renderWorkspaceJournal}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/workspace-management"
-            render={this.renderWorkspaceManagement}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/permissions"
-            render={this.renderWorkspacePermissions}
-          />
-          <Route
-            path="/workspace/:workspaceUrl/evaluation"
-            render={this.renderWorkspaceEvaluation}
-          />
-          <Chat />
-        </div>
-      </BrowserRouter>
+      <ReadspeakerProvider>
+        <BrowserRouter>
+          <div id="root">
+            <Notifications></Notifications>
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+
+            <Route
+              exact
+              path="/workspace/:workspaceUrl/"
+              render={this.renderWorkspaceHome}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/help"
+              render={this.renderWorkspaceHelp}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/discussions"
+              render={this.renderWorkspaceDiscussions}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/announcements"
+              render={this.renderWorkspaceAnnouncements}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/announcer"
+              render={this.renderWorkspaceAnnouncer}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/materials"
+              render={this.renderWorkspaceMaterials}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/users"
+              render={this.renderWorkspaceUsers}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/journal"
+              render={this.renderWorkspaceJournal}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/workspace-management"
+              render={this.renderWorkspaceManagement}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/permissions"
+              render={this.renderWorkspacePermissions}
+            />
+            <Route
+              path="/workspace/:workspaceUrl/evaluation"
+              render={this.renderWorkspaceEvaluation}
+            />
+            <Chat />
+          </div>
+        </BrowserRouter>
+      </ReadspeakerProvider>
     );
   }
 }

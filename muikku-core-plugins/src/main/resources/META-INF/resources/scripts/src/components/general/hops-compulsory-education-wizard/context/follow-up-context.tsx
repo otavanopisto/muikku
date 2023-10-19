@@ -1,18 +1,17 @@
 import * as React from "react";
-import { FollowUp } from "~/@types/shared";
 import * as moment from "moment";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
+import MApi, { isMApiError } from "~/api/api";
+import { HopsGoals } from "~/generated/client";
 
 /**
  * FollowUpGoalsState
  */
 export interface FollowUpGoalsState {
   isLoading: boolean;
-  followUp: FollowUp;
+  followUp: HopsGoals;
 }
 
 /**
@@ -45,6 +44,8 @@ const FollowUpStateContext = React.createContext<
   FollowUpGoalsState | undefined
 >(undefined);
 
+const hopsApi = MApi.getHopsApi();
+
 /**
  * Provider for FollowUpData
  *
@@ -74,10 +75,9 @@ function FollowUpProvider(providerProps: FollowUpProviderProps) {
         // Loaded and filtered student activity
         const [loadedFollowUp] = await Promise.all([
           (async () => {
-            const followUp = (await promisify(
-              mApi().hops.student.hopsGoals.read(studentId),
-              "callback"
-            )()) as FollowUp;
+            const followUp = await hopsApi.getStudentHopsGoals({
+              studentIdentifier: studentId,
+            });
 
             return followUp;
           })(),
@@ -103,6 +103,10 @@ function FollowUpProvider(providerProps: FollowUpProviderProps) {
         }
       } catch (err) {
         if (componentMounted.current) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(err.message, "error");
           setFollowUpData((followUpData) => ({
             ...followUpData,
@@ -119,11 +123,11 @@ function FollowUpProvider(providerProps: FollowUpProviderProps) {
     /**
      * Handles changes when ever there has happened some changes with defined message
      *
-     * @param data FollowUp. As its plain json, it needs to be parsed
+     * @param data HopsGoals. As its plain json, it needs to be parsed
      */
     const onAnswerSavedAtServer = (data: unknown) => {
       if (typeof data === "string") {
-        const followUp: FollowUp = JSON.parse(data);
+        const followUp: HopsGoals = JSON.parse(data);
 
         if (componentMounted.current) {
           setFollowUpData((followUpData) => ({
@@ -171,15 +175,19 @@ function FollowUpProvider(providerProps: FollowUpProviderProps) {
  */
 const updateFollowUpData = async (
   studentId: string,
-  dataToUpdate: FollowUp,
+  dataToUpdate: HopsGoals,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   try {
-    await promisify(
-      mApi().hops.student.hopsGoals.create(studentId, dataToUpdate),
-      "callback"
-    )();
+    await hopsApi.saveStudentHopsGoals({
+      studentIdentifier: studentId,
+      saveStudentHopsGoalsRequest: dataToUpdate,
+    });
   } catch (err) {
+    if (!isMApiError(err)) {
+      throw err;
+    }
+
     displayNotification(err.message, "error");
   }
 };

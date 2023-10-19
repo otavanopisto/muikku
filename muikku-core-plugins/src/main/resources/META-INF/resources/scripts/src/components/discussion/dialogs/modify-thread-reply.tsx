@@ -1,6 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -10,19 +8,19 @@ import {
   modifyReplyFromCurrentThread,
   ModifyReplyFromCurrentThreadTriggerType,
 } from "~/actions/discussion";
-import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-
 import "~/sass/elements/form.scss";
+import { DiscussionThreadReply } from "~/generated/client";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * ModifyThreadReplyProps
  */
-interface ModifyThreadReplyProps {
-  i18n: i18nType;
+interface ModifyThreadReplyProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  reply?: DiscussionThreadReplyType;
+  reply?: DiscussionThreadReply;
   modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType;
 }
 
@@ -114,7 +112,7 @@ class ModifyThreadReply extends SessionStateComponent<
    * modifyReply
    * @param closeDialog closeDialog
    */
-  modifyReply(closeDialog: () => any) {
+  modifyReply(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -147,21 +145,19 @@ class ModifyThreadReply extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.reply.edit.topic") +
+      this.props.i18n.t("labels.edit") +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     /**
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -179,21 +175,21 @@ class ModifyThreadReply extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
           onClick={this.modifyReply.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -201,9 +197,7 @@ class ModifyThreadReply extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -212,7 +206,7 @@ class ModifyThreadReply extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="modify-reply-thread"
-        title={this.props.i18n.text.get("plugin.discussion.reply.edit.topic")}
+        title={this.props.i18n.t("labels.edit")}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -224,16 +218,6 @@ class ModifyThreadReply extends SessionStateComponent<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -241,4 +225,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyReplyFromCurrentThread }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModifyThreadReply);
+export default withTranslation(["messaging"])(
+  connect(null, mapDispatchToProps)(ModifyThreadReply)
+);

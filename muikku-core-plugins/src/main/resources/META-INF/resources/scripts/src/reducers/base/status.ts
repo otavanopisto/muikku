@@ -7,71 +7,7 @@
 //4. it works :D
 
 import { ActionType } from "~/actions";
-
-/**
- * WhoAmIType
- */
-export interface WhoAmIType {
-  studyTimeEnd: string;
-  studyTimeLeftStr: string;
-  studyStartDate: string;
-  studyEndDate: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  phoneNumbers: any;
-  displayName: string;
-  curriculumIdentifier: string;
-  curriculumName: string;
-  firstName: string;
-  lastName: string;
-  hasEvaluationFees: boolean;
-  hasImage: boolean;
-  id: number;
-  /**
-   * Whether user is active
-   */
-  isActive: boolean;
-  /**
-   * PYRAMUS-STAFF-XX or PYRAMUS-STUDENT-XX type identifier
-   */
-  identifier: string;
-  organizationIdentifier: string;
-  locale: string;
-  nickName: string;
-  isDefaultOrganization: boolean;
-  permissions: string[];
-  roles: Role[];
-  studyProgrammeName: string;
-  studyProgrammeIdentifier: string;
-  addresses: string;
-  emails: string;
-  services: Services;
-}
-
-/**
- * Servies that are active or available for user.
- * Some of these are linked to permissions.
- */
-export interface Services {
-  /**
-   * Chat service
-   */
-  chat: {
-    isActive: boolean;
-    isAvailable: boolean;
-  };
-  /**
-   * Forum service (enviromental)
-   */
-  environmentForum: {
-    isAvailable: boolean;
-  };
-  /**
-   * Worklist service
-   */
-  worklist: {
-    isAvailable: boolean;
-  };
-}
+import { Role, UserWhoAmIServices } from "~/generated/client";
 
 /**
  * StatusType
@@ -87,7 +23,7 @@ export interface StatusType {
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
-  services: Services;
+  services: UserWhoAmIServices;
   currentWorkspaceInfo?: {
     id: number;
     organizationEntityId: number;
@@ -130,20 +66,6 @@ export interface ProfileStatusType {
   permissions: string[];
   curriculumName: string;
 }
-
-export enum Role {
-  TEACHER = "TEACHER",
-  STUDENT = "STUDENT",
-  ADMINISTRATOR = "ADMINISTRATOR",
-  MANAGER = "MANAGER",
-  STUDY_PROGRAMME_LEADER = "STUDY_PROGRAMME_LEADER",
-  STUDY_GUIDER = "STUDY_GUIDER",
-  CUSTOM = "CUSTOM",
-}
-
-/* const workspaceIdNode = document.querySelector(
-  'meta[name="muikku:workspaceId"]'
-); */
 
 // _MUIKKU_LOCALE should be taken from the html
 /**
@@ -217,6 +139,28 @@ export default function status(
         ...actionPayloadWoPermissions,
         loggedIn: !!action.payload.userId,
         isActiveUser: action.payload.isActiveUser,
+        permissions: { ...state.permissions, ...action.payload.permissions },
+      };
+    }
+
+    case "UPDATE_STATUS_WORKSPACE_PERMISSIONS": {
+      const actionPayloadWoPermissions = { ...action.payload };
+      delete actionPayloadWoPermissions["permissions"];
+
+      // TODO remove when JSF removed
+      const stateBasedCloneWoPermissions: any = {};
+      Object.keys(actionPayloadWoPermissions).forEach((k) => {
+        stateBasedCloneWoPermissions[k] = (state as any)[k];
+      });
+
+      const permissionsBasedClone: any = {};
+      Object.keys(action.payload.permissions || {}).forEach((k) => {
+        permissionsBasedClone[k] = (state as any).permissions[k];
+      });
+
+      return {
+        ...state,
+        ...actionPayloadWoPermissions,
         permissions: { ...state.permissions, ...action.payload.permissions },
       };
     }

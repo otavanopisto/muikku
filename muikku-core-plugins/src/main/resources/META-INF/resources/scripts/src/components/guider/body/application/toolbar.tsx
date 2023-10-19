@@ -1,16 +1,12 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import * as queryString from "query-string";
 import GuiderToolbarLabels from "./toolbar/labels";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/form.scss";
-import {
-  GuiderType,
-  GuiderStudentListType,
-} from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import {
   ApplicationPanelToolbar,
@@ -31,13 +27,15 @@ import {
   ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
+import { Student } from "~/generated/client";
+import { AnyActionType } from "~/actions";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderToolbarProps
  */
-interface GuiderToolbarProps {
-  i18n: i18nType;
-  guider: GuiderType;
+interface GuiderToolbarProps extends WithTranslation {
+  guider: GuiderState;
   status: StatusType;
   toggleAllStudents: ToggleAllStudentsTriggerType;
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
@@ -79,12 +77,10 @@ class GuiderToolbar extends React.Component<
    * componentDidUpdate
    * @param prevProps prevProps
    * @param prevState prevState
-   * @param snapshot snapshot
    */
   componentDidUpdate(
     prevProps: Readonly<GuiderToolbarProps>,
-    prevState: Readonly<GuiderToolbarState>,
-    snapshot?: any
+    prevState: Readonly<GuiderToolbarState>
   ) {
     if (
       !this.state.focused &&
@@ -169,9 +165,7 @@ class GuiderToolbar extends React.Component<
    * @param users array of GuiderStudents
    * @returns {Array} an Array of ContactRecipientType
    */
-  turnSelectedUsersToContacts = (
-    users: GuiderStudentListType
-  ): ContactRecipientType[] => {
+  turnSelectedUsersToContacts = (users: Student[]): ContactRecipientType[] => {
     const contacts: ContactRecipientType[] = [];
     users.map((user) => {
       contacts.push({
@@ -258,9 +252,10 @@ class GuiderToolbar extends React.Component<
               id="searchUsers"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
-              placeholder={this.props.i18n.text.get(
-                "plugin.guider.search.placeholder"
-              )}
+              placeholder={this.props.i18n.t("labels.search", {
+                ns: "users",
+                context: "students",
+              })}
               value={this.state.searchquery}
             />
           </ApplicationPanelToolsContainer>
@@ -276,7 +271,6 @@ class GuiderToolbar extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guider: state.guider,
     status: state.status,
   };
@@ -286,7 +280,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       removeFromGuiderSelectedStudents,
@@ -296,4 +290,6 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GuiderToolbar);
+export default withTranslation(["guider"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderToolbar)
+);

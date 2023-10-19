@@ -19,6 +19,7 @@ import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
+import i18n from "~/locales/i18n";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -449,9 +450,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
               if (file.size >= MAX_ATTACHMENT_SIZE) {
                 reject(
                   new Error(
-                    getState().i18n.text.get(
-                      "plugin.workspace.fileFieldUpload.fileSizeTooLarge"
-                    )
+                    i18n.t("notifications.sizeTooLarge", { ns: "files" })
                   )
                 );
                 return;
@@ -547,9 +546,10 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 
         dispatch(
           actions.displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.materialsManagement.attachment.notification.success"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "materials",
+              context: "attachment",
+            }),
             "success"
           )
         );
@@ -904,13 +904,40 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           throw err;
         }
 
+        let isConflictError = false;
+
+        // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
+        if (err.message) {
+          const message = JSON.parse(err.message);
+          if (message.reason === "CONTAINS_ANSWERS") {
+            isConflictError = true;
+          }
+        }
+
         if (data.updateLinked) {
+          let showRemoveLinkedAnswersDialogForPublish = false;
+
+          if (isConflictError) {
+            showRemoveLinkedAnswersDialogForPublish = true;
+          } else {
+            dispatch(
+              displayNotification(
+                i18n.t("notifications.updateError", {
+                  ns: "materials",
+                  context: "page",
+                }),
+                "error"
+              )
+            );
+          }
+
           dispatch({
             type: "UPDATE_MATERIAL_CONTENT_NODE",
+
             payload: {
               showUpdateLinkedMaterialsDialogForPublish: false,
               showUpdateLinkedMaterialsDialogForPublishCount: 0,
-              showRemoveLinkedAnswersDialogForPublish: true,
+              showRemoveLinkedAnswersDialogForPublish,
               showRemoveAnswersDialogForPublish: false,
               material: data.material,
               update: data.material,
@@ -923,14 +950,11 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         }
 
         let showRemoveAnswersDialogForPublish = false;
-        if (!data.removeAnswers && err.message) {
-          try {
-            const message = JSON.parse(err.message);
-            if (message.reason === "CONTAINS_ANSWERS") {
-              showRemoveAnswersDialogForPublish = true;
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+
+        if (!data.removeAnswers) {
+          if (isConflictError) {
+            showRemoveAnswersDialogForPublish = true;
+          }
         }
 
         if (!data.dontTriggerReducerActions) {
@@ -953,9 +977,10 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         if (!showRemoveAnswersDialogForPublish) {
           dispatch(
             displayNotification(
-              getState().i18n.text.get(
-                "plugin.workspace.management.notification.failedToUpdateMaterialPage"
-              ),
+              i18n.t("notifications.updateError", {
+                ns: "materials",
+                context: "page",
+              }),
               "error"
             )
           );
@@ -993,11 +1018,13 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadWorkspaceMaterials"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "materials",
+              context: "materials",
+            }),
             "error"
           )
         );
@@ -1042,11 +1069,13 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadMaterialAnswers"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "materials",
+              context: "answers",
+            }),
             "error"
           )
         );
@@ -1160,11 +1189,10 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         if (!showRemoveAnswersDialogForDelete) {
           if (data.material.children && data.material.children.length) {
             // ERROR section has child nodes
+
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
-                  "plugin.workspace.materialsManagement.sectionDeleteNotEmptyMessage"
-                ),
+                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
                 "error"
               )
             );
@@ -1172,9 +1200,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
             // ERROR generic delete failure
             dispatch(
               displayNotification(
-                getState().i18n.text.get(
-                  "plugin.workspace.materialsManagement.deleteFailed.notification"
-                ),
+                i18n.t("notifications.removeError", { ns: "materials" }),
                 "error"
               )
             );
@@ -1215,11 +1241,13 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
         if (!(err instanceof MApiError)) {
           throw err;
         }
+
         dispatch(
           displayNotification(
-            getState().i18n.text.get(
-              "plugin.workspace.management.notification.failedToLoadWorkspaceHelp"
-            ),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "instructions",
+            }),
             "error"
           )
         );

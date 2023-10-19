@@ -1,15 +1,12 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
+import MApi from "~/api/api";
 import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import {
-  ProfileStatusType,
-  StatusType,
-  WhoAmIType,
-} from "~/reducers/base/status";
+import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { WorkspaceBasicInfo } from "~/reducers/workspaces";
 import promisify from "~/util/promisify";
-import { Role } from "../../reducers/base/status";
+import i18n from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -22,6 +19,11 @@ export type UPDATE_STATUS_HAS_IMAGE = SpecificActionType<
 >;
 export type UPDATE_STATUS = SpecificActionType<
   "UPDATE_STATUS",
+  Partial<StatusType>
+>;
+
+export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
   Partial<StatusType>
 >;
 
@@ -60,9 +62,9 @@ async function loadWhoAMI(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   whoAmIReadyCb: () => void
 ) {
-  const whoAmI = <WhoAmIType>(
-    await promisify(mApi().user.whoami.read(), "callback")()
-  );
+  const userApi = MApi.getUserApi();
+
+  const whoAmI = await userApi.getWhoAmI();
 
   const isStudent = whoAmI.roles ? whoAmI.roles.includes(Role.STUDENT) : false;
   
@@ -144,6 +146,8 @@ async function loadWhoAMI(
     },
   });
 
+  i18n.changeLanguage(whoAmI.locale);
+
   dispatch({
     type: "LOCALE_UPDATE",
     payload: whoAmI.locale,
@@ -163,21 +167,21 @@ async function loadWorkspacePermissions(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   readyCb: () => void
 ) {
+  const coursepickerApi = MApi.getCoursepickerApi();
+
   const permissions = <string[]>(
     await promisify(
       mApi().workspace.workspaces.permissions.read(workspaceId),
       "callback"
     )()
   );
-  const canCurrentWorkspaceSignup = <boolean>(
-    await promisify(
-      mApi().coursepicker.workspaces.canSignup.read(workspaceId),
-      "callback"
-    )()
-  );
+
+  const canCurrentWorkspaceSignup = await coursepickerApi.workspaceCanSignUp({
+    workspaceId,
+  });
 
   dispatch({
-    type: "UPDATE_STATUS",
+    type: "UPDATE_STATUS_WORKSPACE_PERMISSIONS",
     payload: {
       permissions: {
         WORKSPACE_ACCESS_EVALUATION: permissions.includes(
@@ -300,14 +304,10 @@ const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissions
     ) => {
       const state = getState();
 
+      const discussionApi = MApi.getDiscussionApi();
+
       const areaPermissions = state.status.services.environmentForum.isAvailable
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          <any>(
-            await promisify(
-              mApi().forum.environmentAreaPermissions.read(),
-              "callback"
-            )()
-          )
+        ? await discussionApi.getDiscussionEnvironmentAreaPermissions()
         : null;
 
       dispatch({

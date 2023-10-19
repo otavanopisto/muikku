@@ -1,18 +1,16 @@
 import notificationActions from "~/actions/base/notifications";
 import equals = require("deep-equal");
-
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
-
 import { AnyActionType } from "~/actions";
 import {
-  GuiderType,
+  GuiderState,
   GuiderActiveFiltersType,
   GuiderStudentsStateType,
-  GuiderStudentListType,
-  GuiderPatchType,
+  GuiderStatePatch,
 } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
+import MApi, { isMApiError } from "~/api/api";
+import { Dispatch } from "react-redux";
+import i18n from "~/locales/i18n";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
@@ -27,7 +25,7 @@ const MAX_LOADED_AT_ONCE = 25;
 export async function loadStudentsHelper(
   filters: GuiderActiveFiltersType | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => any,
+  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   getState: () => StateType
 ) {
   dispatch({
@@ -35,8 +33,10 @@ export async function loadStudentsHelper(
     payload: null,
   });
 
+  const guiderApi = MApi.getGuiderApi();
+
   const state = getState();
-  const guider: GuiderType = state.guider;
+  const guider: GuiderState = state.guider;
   const flagOwnerIdentifier: string = state.status.userSchoolDataIdentifier;
 
   //Avoid loading courses again for the first time if it's the same location
@@ -84,16 +84,26 @@ export async function loadStudentsHelper(
   };
 
   if (actualFilters.query) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (params as any).q = actualFilters.query;
   }
 
   try {
-    let students: GuiderStudentListType = <GuiderStudentListType>(
-      await promisify(
-        mApi().guider.students.cacheClear().read(params),
-        "callback"
-      )()
-    );
+    let students = await guiderApi.getGuiderStudents({
+      firstResult,
+      maxResults,
+      flags: actualFilters.labelFilters.length
+        ? actualFilters.labelFilters
+        : undefined,
+      workspaceIds: actualFilters.workspaceFilters.length
+        ? actualFilters.workspaceFilters
+        : undefined,
+      userGroupIds: actualFilters.userGroupFilters.length
+        ? actualFilters.userGroupFilters
+        : undefined,
+      flagOwnerIdentifier,
+      q: actualFilters.query,
+    });
 
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
@@ -109,7 +119,7 @@ export async function loadStudentsHelper(
     }
 
     //Create the payload for updating all the communicator properties
-    const payload: GuiderPatchType = {
+    const payload: GuiderStatePatch = {
       studentsState: "READY",
       students: concat
         ? guider.students.concat(actualStudents)
@@ -123,13 +133,17 @@ export async function loadStudentsHelper(
       payload,
     });
   } catch (err) {
-    if (!(err instanceof MApiError)) {
+    if (!isMApiError(err)) {
       throw err;
     }
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        getState().i18n.text.get("plugin.guider.errorMessage.users"),
+        i18n.t("notifications.loadError", {
+          ns: "users",
+          count: 0,
+          context: "students",
+        }),
         "error"
       )
     );

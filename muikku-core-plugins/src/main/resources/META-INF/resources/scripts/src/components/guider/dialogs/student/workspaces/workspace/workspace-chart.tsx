@@ -1,19 +1,17 @@
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import { WorkspaceType } from "~/reducers/workspaces";
 import GraphFilter from "~/components/general/graph/filters/graph-filter";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let AmCharts: any = null;
 
 /**
  * CurrentStudentWorkspaceStatisticsProps
  */
-interface CurrentStudentWorkspaceStatisticsProps {
-  i18n: i18nType;
+interface CurrentStudentWorkspaceStatisticsProps extends WithTranslation {
   workspace: WorkspaceType;
 }
 
@@ -59,7 +57,8 @@ class CurrentStudentStatistics extends React.Component<
   CurrentStudentWorkspaceStatisticsState
 > {
   /**
-   * @param props
+   * constructor
+   * @param props props
    */
   constructor(props: CurrentStudentWorkspaceStatisticsProps) {
     super(props);
@@ -118,6 +117,7 @@ class CurrentStudentStatistics extends React.Component<
    * zoomSaveHandler
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   zoomSaveHandler(e: any) {
     if (!ignoreZoomed) {
       zoomStartDate = e.startDate;
@@ -130,6 +130,7 @@ class CurrentStudentStatistics extends React.Component<
    * zoomApplyHandler
    * @param e e
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   zoomApplyHandler(e: any) {
     if (zoomStartDate !== null && zoomEndDate !== null) {
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
@@ -152,7 +153,7 @@ class CurrentStudentStatistics extends React.Component<
       WORKSPACE_VISIT: 0,
     });
     this.props.workspace.activityLogs.map((log) => {
-      const date = log.timestamp.slice(0, 10);
+      const date = log.timestamp.toISOString().slice(0, 10);
       const entry = chartDataMap.get(date) || {};
       switch (log.type) {
         case "EVALUATION_REQUESTED":
@@ -174,6 +175,8 @@ class CurrentStudentStatistics extends React.Component<
     const sortedKeys = Array.from(chartDataMap.keys()).sort((a, b) =>
       a > b ? 1 : -1
     );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const data: any = [];
     sortedKeys.forEach((key) => {
       const value = chartDataMap.get(key);
@@ -187,8 +190,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "WORKSPACE_VISIT",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.visitsLabel") +
-          " <b>[[WORKSPACE_VISIT]]</b>",
+          this.props.i18n.t("labels.graph", {
+            ns: "guider",
+            context: "visits",
+          }) + " <b>[[WORKSPACE_VISIT]]</b>",
         fillAlphas: 0.7,
         lineAlpha: 0.2,
         lineColor: "#43cd80",
@@ -205,8 +210,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_ASSIGNMENTDONE",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.assignmentsLabel") +
-          " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
+          this.props.i18n.t("labels.evaluables", {
+            count: 0,
+            ns: "materials",
+          }) + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         fillAlphas: 0.9,
         lineAlpha: 0.2,
         lineColor: "#ce01bd",
@@ -222,7 +229,7 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_EXERCISEDONE",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.exercisesLabel") +
+          this.props.i18n.t("labels.exercises", { count: 0, ns: "materials" }) +
           " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         fillAlphas: 0.9,
         lineAlpha: 0.2,
@@ -329,14 +336,4 @@ class CurrentStudentStatistics extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-export default connect(mapStateToProps)(CurrentStudentStatistics);
+export default withTranslation()(CurrentStudentStatistics);

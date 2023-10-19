@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
@@ -11,15 +10,14 @@ import {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import { UserGroupType } from "~/reducers/user-index";
+import { UserGroup } from "~/generated/client";
 
 /**
  * CourseProps
  */
 interface CourseProps {
-  i18n: i18nType;
   status: StatusType;
-  usergroup: UserGroupType;
+  usergroup: UserGroup;
 }
 
 /**
@@ -74,7 +72,6 @@ class Workspace extends React.Component<CourseProps, CourseState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }

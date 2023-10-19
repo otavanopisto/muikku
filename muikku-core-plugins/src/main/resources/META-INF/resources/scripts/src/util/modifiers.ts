@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UserType } from "~/reducers/user-index";
+import { User } from "~/generated/client";
 import $ from "~/lib/jquery";
 import { MaterialContentNodeListType } from "~/reducers/workspaces";
 
@@ -228,7 +228,7 @@ export function getName(user: any, hasFullNamePermission: boolean) {
  * @param version version
  */
 export function getUserImageUrl(
-  user: UserType | number,
+  user: User | number,
   type?: number | string,
   version?: number
 ) {
