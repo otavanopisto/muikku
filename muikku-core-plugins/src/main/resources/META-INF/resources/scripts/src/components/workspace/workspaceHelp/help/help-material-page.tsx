@@ -36,6 +36,7 @@ interface HelpMaterialProps extends WithTranslation {
   isViewRestricted: boolean;
   workspace: WorkspaceType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  readspeakerComponent?: JSX.Element;
 }
 
 /**
@@ -109,6 +110,7 @@ class WorkspaceMaterial extends React.Component<
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
+            readspeakerComponent={this.props.readspeakerComponent}
           >
             {(props, state, stateConfiguration) => (
               <div>
