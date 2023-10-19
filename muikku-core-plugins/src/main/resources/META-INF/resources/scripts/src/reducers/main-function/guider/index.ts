@@ -1,6 +1,5 @@
 import { ActionType } from "~/actions";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { PurchaseType, PurchaseProductType } from "../profile";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
@@ -15,6 +14,8 @@ import {
   UserStudentAddress,
   UserStudentEmail,
   UserStudentPhoneNumber,
+  CeeposOrder,
+  CeeposPurchaseProduct,
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
@@ -98,7 +99,7 @@ export interface GuiderStudentUserProfileType {
   currentWorkspaces: WorkspaceType[];
   pastWorkspaces: WorkspaceType[];
   activityLogs: ActivityLogEntry[];
-  purchases: PurchaseType[];
+  purchases: CeeposOrder[];
   hopsPhase?: string;
   hopsAvailable: boolean;
   pedagogyFormAvailable: PedagogyFormAccess;
@@ -111,7 +112,7 @@ export interface GuiderState {
   students: Student[];
   studentsState: GuiderStudentsStateType;
   activeFilters: GuiderActiveFiltersType;
-  availablePurchaseProducts: PurchaseProductType[];
+  availablePurchaseProducts: CeeposPurchaseProduct[];
   availableFilters: GuiderFiltersType;
   hasMore: boolean;
   toolbarLock: boolean;
@@ -169,7 +170,7 @@ function sortLabels(labelA: UserFlag, labelB: UserFlag) {
  * @param b a second type of purchas
  * @returns sorted orders by date
  */
-function sortOrders(a: PurchaseType, b: PurchaseType) {
+function sortOrders(a: CeeposOrder, b: CeeposOrder) {
   const dateA = new Date(a.created).getTime();
   const dateB = new Date(b.created).getTime();
   return dateA > dateB ? -1 : 1;
@@ -543,7 +544,7 @@ export const guider: Reducer<GuiderState> = (
         currentStudent: {
           ...state.currentStudent,
           purchases: state.currentStudent.purchases.filter(
-            (purchace: PurchaseType) => purchace.id !== action.payload.id
+            (purchace: CeeposOrder) => purchace.id !== action.payload.id
           ),
         },
       };
@@ -554,7 +555,7 @@ export const guider: Reducer<GuiderState> = (
         currentStudent: {
           ...state.currentStudent,
           purchases: state.currentStudent.purchases.map(
-            (purchace: PurchaseType) => {
+            (purchace: CeeposOrder) => {
               if (purchace.id == action.payload.id) {
                 return Object.assign({}, purchace, action.payload);
               }

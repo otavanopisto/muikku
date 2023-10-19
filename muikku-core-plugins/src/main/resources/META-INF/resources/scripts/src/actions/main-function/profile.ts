@@ -11,13 +11,13 @@ import {
 } from "~/actions/base/status";
 import {
   ProfileProperty,
-  PurchaseType,
   WorklistSection,
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
 import {
+  CeeposOrder,
   UserStudentAddress,
   UserWithSchoolData,
   WorklistBillingStateType,
@@ -243,7 +243,7 @@ export type SET_WORKLIST = SpecificActionType<
 >;
 export type SET_PURCHASE_HISTORY = SpecificActionType<
   "SET_PURCHASE_HISTORY",
-  Array<PurchaseType>
+  Array<CeeposOrder>
 >;
 
 /**
@@ -1200,19 +1200,23 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
         const studentId = state.status.userSchoolDataIdentifier;
-        const historia: PurchaseType[] = (await promisify(
-          mApi().ceepos.user.orders.read(studentId),
-          "callback"
-        )()) as any;
+
+        const orderHistory: CeeposOrder[] = await ceeposApi.getCeeposUserOrders(
+          {
+            userIdentifier: studentId,
+          }
+        );
 
         dispatch({
           type: "SET_PURCHASE_HISTORY",
-          payload: historia,
+          payload: orderHistory,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
