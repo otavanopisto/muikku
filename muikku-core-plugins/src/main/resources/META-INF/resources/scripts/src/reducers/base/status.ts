@@ -99,8 +99,6 @@ export default function status(
     case "LOGOUT": {
       // chat listens to this event to close the connection
       (window as any).ON_LOGOUT && (window as any).ON_LOGOUT();
-      // remove the old session on logout
-      window.sessionStorage.removeItem("strophe-bosh-session");
       // trigger the logout
       window.location.replace("/logout");
 
