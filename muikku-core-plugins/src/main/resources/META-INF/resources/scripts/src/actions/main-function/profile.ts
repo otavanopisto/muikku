@@ -471,55 +471,6 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
   };
 
 /**
- * loadProfileChatSettings
- */
-const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
-  function loadProfileChatSettings() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-      if (state.profile.chatSettings) {
-        return;
-      }
-      try {
-        const chatSettings: any = await promisify(
-          mApi().chat.settings.cacheClear().read(),
-          "callback"
-        )();
-
-        if (chatSettings && chatSettings.visibility) {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: chatSettings,
-          });
-        } else {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: {
-              visibility: "DISABLED",
-              nick: null,
-            },
-          });
-        }
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        } else {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: {
-              visibility: "DISABLED",
-              nick: null,
-            },
-          });
-        }
-      }
-    };
-  };
-
-/**
  * updateProfileChatSettings
  * @param data data
  */
@@ -1235,7 +1186,6 @@ export {
   loadProfileUsername,
   loadProfileAddress,
   updateProfileAddress,
-  loadProfileChatSettings,
   updateProfileChatSettings,
   uploadProfileImage,
   deleteProfileImage,

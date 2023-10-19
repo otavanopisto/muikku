@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "reducers";
 import { StatusType } from "~/reducers/base/status";
-import ChatSettings from "./application/chat-settings";
 import ContactInformation from "./application/contact-information";
 import GeneralInformation from "./application/general-information";
 import Security from "./application/security";
@@ -44,7 +43,6 @@ class ProfileApplication extends React.Component<
           title={this.props.status.profile.displayName}
           asideBefore={this.props.aside}
         >
-          <ChatSettings />
           <ContactInformation />
           <GeneralInformation />
           <Security />
