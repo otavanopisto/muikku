@@ -724,6 +724,7 @@ export default class Workspace extends React.Component<
           loadDiscussionThreadsFromServer({
             areaId: parseInt(location[0]) || null,
             page: parseInt(location[1]) || 1,
+            forceRefresh: true,
           }) as Action
         );
       } else {
