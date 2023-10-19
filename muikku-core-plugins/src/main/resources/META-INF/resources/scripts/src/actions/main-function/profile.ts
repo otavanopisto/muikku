@@ -25,7 +25,7 @@ import {
   WorklistSummary,
   WorklistTemplate,
 } from "~/generated/client";
-import i18n, { localizeTime } from "~/locales/i18n";
+import i18n, { localize } from "~/locales/i18n";
 
 /**
  * LoadProfilePropertiesSetTriggerType
@@ -716,10 +716,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
           },
         });
 
-        let displayName = localizeTime.date(
-          worklistItem.entryDate,
-          "MMMM YYYY"
-        );
+        let displayName = localize.date(worklistItem.entryDate, "MMMM YYYY");
         displayName = displayName[0].toUpperCase() + displayName.substr(1);
 
         const expectedSummary: WorklistSummary = {

@@ -8,7 +8,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import ApplicationList from "~/components/general/application-list";
 import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
@@ -457,10 +457,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   {t("labels.feedbackDate", { ns: "journal" })}:
                 </div>
                 <div className="journal__meta-item-data">
-                  {localizeTime.date(
-                    journalsData.journalFeedback.created,
-                    "L LT"
-                  )}
+                  {localize.date(journalsData.journalFeedback.created, "L LT")}
                 </div>
               </div>
               <div className="journal__meta-item">

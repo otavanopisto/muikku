@@ -1,5 +1,5 @@
 import { CeeposOrder } from "~/generated/client";
-import i18n, { localizeTime } from "~/locales/i18n";
+import i18n, { localize } from "~/locales/i18n";
 
 /**
  * getErrorMessageContent
@@ -34,7 +34,7 @@ export function getErrorMessageContent(order: CeeposOrder, message?: string) {
     "<div><b>" +
     i18n.t("labels.created") +
     "</b>: " +
-    localizeTime.date(order.created) +
+    localize.date(order.created) +
     "</div>" +
     "</div>";
 

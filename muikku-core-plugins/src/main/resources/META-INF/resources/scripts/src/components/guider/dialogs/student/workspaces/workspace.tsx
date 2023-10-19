@@ -18,7 +18,7 @@ import {
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { WorkspaceActivity } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -243,7 +243,7 @@ class StudentWorkspace extends React.Component<
              * Add date to string if date is present
              */
             if (a.date) {
-              resultingStateText += " - " + localizeTime.date(a.date);
+              resultingStateText += " - " + localize.date(a.date);
             }
 
             return (
@@ -501,14 +501,14 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
       if (props.givenDateAttributeLocale) {
         output += t(props.givenDateAttributeLocale, {
           defaultValue: "Locale does not exist",
-          value: localizeTime.date(
+          value: localize.date(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
             ]
           ),
         });
       } else {
-        output += localizeTime.date(
+        output += localize.date(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
@@ -562,7 +562,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
             t("labels.evaluated", {
               ns: "workspace",
               context: "in",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
@@ -584,7 +584,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
             t("labels.evaluated", {
               ns: "workspace",
               context: "in",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) +
             " - " +
             status

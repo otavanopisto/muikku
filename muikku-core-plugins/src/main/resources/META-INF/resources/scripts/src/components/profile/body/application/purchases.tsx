@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { ProfileState } from "~/reducers/main-function/profile";
 import ApplicationList, {
   ApplicationListItem,
@@ -135,12 +135,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {localizeTime.date(p.created)}
+                            {localize.date(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")} :{" "}
-                              {localizeTime.date(p.paid)}
+                              {localize.date(p.paid)}
                             </span>
                           ) : null}
                         </span>
@@ -202,12 +202,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {localizeTime.date(p.created)}
+                            {localize.date(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")}:{" "}
-                              {localizeTime.date(p.paid)}
+                              {localize.date(p.paid)}
                             </span>
                           ) : null}
                         </span>

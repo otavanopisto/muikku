@@ -2,7 +2,7 @@ import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 import { GuiderState } from "~/reducers/main-function/guider";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -316,12 +316,12 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       </span>
                       <span>
                         {this.props.i18n.t("labels.created")}:{" "}
-                        {localizeTime.date(p.created)}
+                        {localize.date(p.created)}
                       </span>
                       {p.paid ? (
                         <span>
                           {this.props.i18n.t("labels.paid")}:{" "}
-                          {localizeTime.date(p.paid)}
+                          {localize.date(p.paid)}
                         </span>
                       ) : null}
                     </span>

@@ -920,6 +920,7 @@ export const workspaces: Reducer<WorkspacesType> = (
       };
     }
 
+    // This case might return when modular assessment request is implemented
     /* case "UPDATE_WORKSPACE_ASSESSMENT_STATE":
       return {
         ...state,
@@ -1341,6 +1342,7 @@ export const workspaces: Reducer<WorkspacesType> = (
   }
 };
 
+// This method might be useful in the future
 /* function processWorkspaceToHaveNewAssessmentStateAndDate(
   id: number,
   assessmentState: WorkspaceAssessementStateType,

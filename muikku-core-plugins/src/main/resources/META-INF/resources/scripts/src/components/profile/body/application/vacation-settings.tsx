@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -333,9 +333,7 @@ class VacationSettings extends React.Component<
                       "profileVacationStart"
                     )}
                     maxDate={this.state.profileVacationEnd}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.profileVacationStart}
                     dateFormat="P"
                   />
@@ -354,9 +352,7 @@ class VacationSettings extends React.Component<
                       "profileVacationEnd"
                     )}
                     minDate={this.state.profileVacationStart}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.profileVacationEnd}
                     dateFormat="P"
                   />

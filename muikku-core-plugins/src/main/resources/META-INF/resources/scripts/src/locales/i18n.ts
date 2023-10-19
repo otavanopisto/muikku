@@ -29,7 +29,7 @@ i18n.use(initReactI18next).init({
 /**Localize
  * Helper functions for  time localization
  */
-export class LocalizeTime {
+export class Localize {
   lang;
   /**
    * constructor
@@ -58,6 +58,8 @@ export class LocalizeTime {
    */
   set language(lang: string) {
     this.lang = lang;
+    document.querySelector("html").lang = lang;
+    i18n.changeLanguage(lang);
   }
 
   /**
@@ -134,6 +136,6 @@ export class LocalizeTime {
   }
 }
 
-export const localizeTime = new LocalizeTime(lang);
+export const localize = new Localize(lang);
 
 export default i18n;
