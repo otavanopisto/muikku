@@ -406,6 +406,79 @@ paths:
                 $ref: "#/components/schemas/ErrorModel"
 
   #ASSESSMENTREQUEST
+  /rest/assessmentrequest/workspace/{workspaceEntityId}/paidAssessmentRequest:
+    post:
+      operationId: createPaidAssessmentRequest
+      summary: Create paid assessment request
+      description: Create paid assessment request
+      tags:
+        - AssessmentRequest
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/PaidAssessmentRequestCreateRequestBody"
+      responses:
+        "200":
+          description: Paid assessment request created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    description: Url to which the user should be redirected to complete payment
+                    type: string
+                  id:
+                    description: Paid assessment request id
+                    type: integer
+                    format: int64
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "500":
+          description: Internal server error
+
+  /rest/assessmentrequest/workspace/{workspaceEntityId}/assessmentPrice:
+    get:
+      operationId: getWorkspaceAssessmentPrice
+      summary: Get assessment price
+      description: Get assessment price
+      tags:
+        - AssessmentRequest
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Workspace assessment price successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  price:
+                    description: Workspace assessment price
+                    type: number
+                    format: double
+        "400":
+          description: Invalid request was sent to the server
+        "404":
+          description: Workspace assessment price not found
+        "500":
+          description: Internal server error
+
   /rest/assessmentrequest/workspace/{workspaceEntityId}/assessmentRequests:
     get:
       operationId: getWorkspaceAssessmentRequests
@@ -7230,7 +7303,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                $ref: "#/components/schemas/UserCredential"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10227,6 +10300,18 @@ components:
                 type: array
                 items:
                   type: integer
+
+    PaidAssessmentRequestCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: PaidAssessmentRequestCreateRequestBody object
+            required:
+              - requestText
+            properties:
+              requestText:
+                type: string
 
     PedagogyFormCreateRequestBody:
       required: true
@@ -13860,6 +13945,23 @@ components:
         - LIST_ALL,
         - ONLY_TEMPLATES
         - ONLY_WORKSPACES
+
+    UserCredential:
+      type: object
+      description: UserCredential object
+      required:
+        - id
+        - username
+        - password
+        - salt
+        - userEntityId
+      properties:
+        oldPassword:
+          type: string
+        newPassword:
+          type: string
+        username:
+          type: string
 
     UserSearchResult:
       description: StaffSearchResult object. Holding the search results of staff search and the total hit count.

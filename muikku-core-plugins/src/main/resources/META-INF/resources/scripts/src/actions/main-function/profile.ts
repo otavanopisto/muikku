@@ -1,7 +1,7 @@
-import promisify, { promisifyNewConstructor } from "~/util/promisify";
+import { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
+import { MApiError } from "~/lib/mApi";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
@@ -327,11 +327,10 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
     ) => {
+      const userpluginApi = MApi.getUserpluginApi();
+
       try {
-        const credentials: any = await promisify(
-          mApi().userplugin.credentials.read(),
-          "callback"
-        )();
+        const credentials = await userpluginApi.getUserPluginCredentials();
 
         if (credentials && credentials.username) {
           dispatch({
