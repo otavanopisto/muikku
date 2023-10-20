@@ -1,7 +1,6 @@
 import { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { MApiError } from "~/lib/mApi";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
@@ -505,9 +504,11 @@ const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
           data.fail && data.fail();
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        // Commented out for now and will replaced with ne
+        // after the new chat is implemented
+        /* if (!(err instanceof MApiError)) {
           throw err;
-        }
+        } */
 
         data.fail && data.fail();
       }
