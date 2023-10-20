@@ -210,6 +210,25 @@ public class MeRESTService {
   public Response listGuardiansDependents() {
     List<GuardiansDependent> guardiansDependents = userController.listGuardiansDependents(sessionController.getLoggedUser());
 
-    return Response.ok(guardiansDependents).build();
+    List<GuardiansDependentRestModel> restModels = new ArrayList<>();
+    for (GuardiansDependent guardiansDependent : guardiansDependents) {
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(guardiansDependent.getUserIdentifier());
+      boolean hasProfilePicture = userEntityFileController.hasProfilePicture(userEntity);
+      
+      restModels.add(new GuardiansDependentRestModel(
+          guardiansDependent.getUserIdentifier().toId(),
+          guardiansDependent.getFirstName(),
+          guardiansDependent.getLastName(),
+          guardiansDependent.getNickName(),
+          guardiansDependent.getStudyProgrammeName(),
+          hasProfilePicture,
+          guardiansDependent.getEmail(),
+          guardiansDependent.getPhoneNumber(),
+          guardiansDependent.getAddress()
+      ));
+    }
+    
+    return Response.ok(restModels).build();
   }
+
 }

@@ -13025,6 +13025,7 @@ components:
       enum:
         - TEACHER
         - STUDENT
+        - STUDENT_PARENT
         - ADMINISTRATOR
         - MANAGER
         - STUDY_PROGRAMME_LEADER

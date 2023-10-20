@@ -12,4 +12,12 @@ public interface GuardiansDependent {
 
   String getNickName();
   
+  String getStudyProgrammeName();
+
+  String getEmail();
+  
+  String getPhoneNumber();
+  
+  String getAddress();
+  
 }

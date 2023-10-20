@@ -94,6 +94,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.StudentParent;
+import fi.otavanopisto.pyramus.rest.model.StudentParentChild;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriod;
@@ -1722,20 +1723,24 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return null;
     }
     
-    BridgeResponse<fi.otavanopisto.pyramus.rest.model.Student[]> studentParentStudents = pyramusClient.responseGet(
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.StudentParentChild[]> studentParentStudents = pyramusClient.responseGet(
         String.format("/studentparents/studentparents/%d/students", studentParentId),
-        fi.otavanopisto.pyramus.rest.model.Student[].class);
+        fi.otavanopisto.pyramus.rest.model.StudentParentChild[].class);
     
     List<GuardiansDependent> result = new ArrayList<>();
     
     if (studentParentStudents.ok()) {
-      for (Student student : studentParentStudents.getEntity()) {
+      for (StudentParentChild student : studentParentStudents.getEntity()) {
         result.add(new PyramusGuardiansDependent(
-            identifierMapper.getStudentIdentifier(student.getId()), 
+            identifierMapper.getStudentIdentifier(student.getStudentId()), 
             student.getFirstName(), 
             student.getLastName(), 
-            student.getNickname())
-        );
+            student.getNickname(),
+            student.getStudyProgrammeName(),
+            student.getDefaultEmail(),
+            student.getDefaultPhoneNumber(),
+            student.getDefaultAddress()
+        ));
       }
     }
     
