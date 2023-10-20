@@ -13391,7 +13391,7 @@ components:
               type: string
             lastName:
               type: string
-            nickname:
+            nickName:
               type: string
             studyProgrammeName:
               type: string

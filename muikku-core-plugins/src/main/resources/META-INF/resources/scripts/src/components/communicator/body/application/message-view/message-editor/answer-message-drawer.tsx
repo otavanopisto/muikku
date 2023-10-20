@@ -7,7 +7,6 @@ import {
   SendMessageTriggerType,
   sendMessage,
 } from "~/actions/main-function/messages/index";
-import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
@@ -18,6 +17,7 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/environment-dialog.scss";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { CommunicatorSignature } from "~/generated/client";
 
 /**
  * AnswerMessageDrawerProps
@@ -28,7 +28,7 @@ interface AnswerMessageDrawerProps extends WithTranslation {
   messageId?: number;
   extraNamespace?: string;
   initialSelectedItems?: Array<ContactRecipientType>;
-  signature: MessageSignatureType;
+  signature: CommunicatorSignature;
   sendMessage: SendMessageTriggerType;
   initialSubject?: string;
   initialMessage?: string;
