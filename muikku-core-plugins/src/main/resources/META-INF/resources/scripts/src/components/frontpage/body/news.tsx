@@ -39,7 +39,7 @@ class FrontpageNews extends React.Component<
               <div className="card__content">
                 <FrontpageFeed
                   queryOptions={{ numItems: 8 }}
-                  feedReadTarget="nettilukio,nettipk"
+                  feedReadTarget={["nettilukio ", "nettipk"]}
                 ></FrontpageFeed>
               </div>
             </div>

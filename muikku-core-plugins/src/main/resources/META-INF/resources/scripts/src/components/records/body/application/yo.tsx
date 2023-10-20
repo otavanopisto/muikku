@@ -6,10 +6,8 @@ import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { HOPSState } from "~/reducers/main-function/hops";
 import {
-  YOType,
-  YOEligibilityType,
-  YOEligibilityStatusType,
-  SubjectEligibilitySubjectsType,
+  MatriculationState,
+  MatriculationSubjectEligibilityState,
 } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -22,6 +20,10 @@ import { updateYOTriggerType } from "../../../../actions/main-function/records/y
 import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import {
+  MatriculationEligibility,
+  MatriculationEligibilityStatus,
+} from "~/generated/client";
 
 /**
  * YOProps
@@ -29,17 +31,17 @@ import { AnyActionType } from "~/actions";
 interface YOProps extends WithTranslation {
   records: RecordsType;
   hops: HOPSState;
-  yo: YOType;
+  yo: MatriculationState;
   updateYO: updateYOTriggerType;
-  eligibilitySubjects: SubjectEligibilitySubjectsType;
+  eligibilitySubjects: MatriculationSubjectEligibilityState;
 }
 
 /**
  * YOState
  */
 interface YOState {
-  eligibility?: YOEligibilityType;
-  eligibilityStatus?: YOEligibilityStatusType;
+  eligibility?: MatriculationEligibility;
+  eligibilityStatus?: MatriculationEligibilityStatus;
   err?: string;
   succesfulEnrollments: number[];
 }

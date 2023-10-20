@@ -2813,14 +2813,26 @@ paths:
           in: path
           description: Feed read target
           required: true
+          explode: true
           schema:
-            type: string
+            type: array
+            items:
+              type: string
         - name: numItems
           in: query
           description: Max results
           schema:
-            type: integer
+            type: number
             default: 10
+        - name: order
+          in: query
+          description: Order
+          schema:
+            type: string
+            enum:
+              - DESCENDING
+              - ASCENDING
+            default: DESCENDING
       responses:
         "200":
           description: Feeds
@@ -2829,7 +2841,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AnyValue"
+                  $ref: "#/components/schemas/FeedEntry"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6104,7 +6116,7 @@ paths:
 
   /rest/records/matriculationEligibility:
     get:
-      operationId: getMatriculationEligibility
+      operationId: getMatriculationSubjectEligibility
       summary: Get matriculation eligibility
       description: Get matriculation eligibility
       tags:
@@ -6122,7 +6134,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                $ref: "#/components/schemas/MatriculationSubjectEligibility"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6135,12 +6147,6 @@ paths:
       description: Get matriculation subjects
       tags:
         - Records
-      parameters:
-        - name: matriculationSubjectsLoaded
-          in: query
-          description: Subject code
-          schema:
-            type: boolean
       responses:
         "200":
           description: Matriculation subjects
@@ -6175,7 +6181,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                $ref: "#/components/schemas/MatriculationEligibility"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7306,6 +7312,24 @@ paths:
                 $ref: "#/components/schemas/UserCredential"
         "400":
           description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updateUserPluginCredentials
+      summary: Update user plugin credentials
+      description: Update user plugin credentials
+      tags:
+        - Userplugin
+      requestBody:
+        $ref: "#/components/requestBodies/UserCredentialUpdateRequestBody"
+      responses:
+        "204":
+          description: User plugin credentials updated successfully
+        "403":
+          description: User plugin credentials update forbidden
+        "409":
+          description: User plugin credentials update conflict
         "500":
           description: Internal server error
 
@@ -10378,6 +10402,25 @@ components:
             allOf:
               - $ref: "#/components/schemas/Credentials"
 
+    UserCredentialUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: UserCredentialUpdateRequestBody object
+            required:
+              - oldPassword
+              - username
+              - newPassword
+            properties:
+              oldPassword:
+                type: string
+              newPassword:
+                type: string
+              username:
+                type: string
+
     UserFlagCreateRequestBody:
       content:
         application/json:
@@ -11989,6 +12032,37 @@ components:
         - ASSESSMENT
         - SUPPLEMENTATIONREQUEST
 
+    FeedEntry:
+      type: object
+      description: FeedEntry object
+      required:
+        - title
+        - link
+        - author
+        - description
+        - publicationDate
+        - image
+        - feed
+      properties:
+        title:
+          description: Title of the feed entry
+          type: string
+        link:
+          description: Link to the feed entry
+          type: string
+        description:
+          description: Description of the feed entry
+          type: string
+        publicationDate:
+          description: Publication date of the feed entry
+          type: string
+          format: date-time
+        image:
+          description: Image url of the feed entry
+          type: string
+        feed:
+          type: string
+
     UserStudentFlag:
       type: object
       description: UserStudentFlag object
@@ -12324,6 +12398,62 @@ components:
         lang:
           $ref: "#/components/schemas/LocaleType"
 
+    MatriculationEligibilityStatus:
+      type: string
+      enum:
+        - ELIGIBLE
+        - NOT_ELIGIBLE
+
+    MatriculationEligibility:
+      type: object
+      description: MatriculationEligibility object
+      required:
+        - status
+        - coursesCompleted
+        - coursesRequired
+        - creditPoints
+        - creditPointsRequired
+      properties:
+        status:
+          $ref: "#/components/schemas/MatriculationEligibilityStatus"
+        coursesCompleted:
+          type: integer
+        coursesRequired:
+          type: integer
+        creditPoints:
+          type: number
+        creditPointsRequired:
+          type: number
+
+    MatriculationSubjectEligibility:
+      type: object
+      description: Matriculation eligibility by subject
+      required:
+        - eligible
+        - requirePassingGrades
+        - acceptedCourseCount
+        - acceptedTransferCreditCount
+        - schoolDataSource
+      properties:
+        eligible:
+          description: If the subject is eligible for matriculation exam
+          type: boolean
+        requirePassingGrades:
+          description: Number of required passing grades
+          type: number
+          nullable: true
+        acceptedCourseCount:
+          description: Number of accepted courses
+          type: number
+          nullable: true
+        acceptedTransferCreditCount:
+          description: Number of accepted transfer credits
+          type: number
+          nullable: true
+        schoolDataSource:
+          description: Data source of the school
+          type: string
+
     MatriculationSubject:
       type: object
       description: MatriculationSubject object
@@ -12424,6 +12554,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         enrolled:
           type: boolean
         enrollmentDate:
@@ -13950,11 +14081,9 @@ components:
       type: object
       description: UserCredential object
       required:
-        - id
+        - oldPassword
+        - newPassword
         - username
-        - password
-        - salt
-        - userEntityId
       properties:
         oldPassword:
           type: string

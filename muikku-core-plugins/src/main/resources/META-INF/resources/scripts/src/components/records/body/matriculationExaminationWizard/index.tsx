@@ -25,7 +25,7 @@ import {
 import { StatusType } from "~/reducers/base/status";
 import { HOPSState } from "~/reducers/main-function/hops";
 import { ExamEnrollmentDegreeStructure } from "~/@types/shared";
-import { YOType } from "~/reducers/main-function/records/yo";
+import { MatriculationState } from "~/reducers/main-function/records/yo";
 import {
   MatriculationExaminationDraft,
   ExaminationInformation,
@@ -131,7 +131,7 @@ interface MatriculationExaminationWizardProps extends WithTranslation {
   onDone: () => any;
   updateEnrollemnts: (examId: number) => void;
   hops: HOPSState;
-  yo: YOType;
+  yo: MatriculationState;
 }
 
 /**
