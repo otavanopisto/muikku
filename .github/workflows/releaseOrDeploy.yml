@@ -19,11 +19,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}-${{ secrets.GA_CACHE_KEY }}
+          cache: 'maven'
       - name: Prepare maven settings
         run: python prepare-maven.py
       - name: Build with Maven
