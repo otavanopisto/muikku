@@ -75,9 +75,12 @@
 }
 
 .evaluation-card__header {
+  align-items: center;
   background: $color-evaluation-card-header-background;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
+  display: flex;
+  justify-content: space-between;
   padding: 5px;
 }
 

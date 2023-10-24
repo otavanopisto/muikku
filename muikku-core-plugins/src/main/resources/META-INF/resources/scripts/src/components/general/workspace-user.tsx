@@ -35,15 +35,25 @@ export default function WorkspaceUser(props: workspaceUserProps) {
     <Dropdown
       alignSelfVertically="top"
       openByHover
-      content={<p>Opiskelijalle on tehty pedagogisen tuen suunnitelma</p>}
+      content={
+        <span id={`pedagogyPlan-` + props.student.userEntityId}>
+          Opiskelijalle on tehty pedagogisen tuen suunnitelma
+        </span>
+      }
     >
-      <IconButton icon="book" disabled />
+      <div className="label label--pedagogy-plan">
+        <span
+          className="label__text label__text--pedagogy-plan"
+          aria-labelledby={`pedagogyPlan-` + props.student.userEntityId}
+        >
+          P
+        </span>
+      </div>
     </Dropdown>
   ) : null;
 
   const actionButtons = props.student.active ? (
-    <ApplicationListItemContentActions>
-      {pedagogyFormIcon}
+    <>
       <IconButton
         buttonModifiers="workspace-users-contact"
         icon="envelope"
@@ -54,16 +64,15 @@ export default function WorkspaceUser(props: workspaceUserProps) {
         icon="trash"
         onClick={props.onSetToggleStatus}
       />
-    </ApplicationListItemContentActions>
+    </>
   ) : (
-    <ApplicationListItemContentActions>
-      {pedagogyFormIcon}
+    <>
       <IconButton
         buttonModifiers="workspace-users-unarchive"
         icon="back"
         onClick={props.onSetToggleStatus}
       />
-    </ApplicationListItemContentActions>
+    </>
   );
 
   return (
@@ -87,6 +96,7 @@ export default function WorkspaceUser(props: workspaceUserProps) {
       >
         <div className="application-list__item-content-primary-data">
           {filterHighlight(getName(props.student, true), props.highlight)}
+          <div className="labels">{pedagogyFormIcon}</div>
         </div>
         <div className="application-list__item-content-secondary-data">
           {props.student.studyProgrammeName

@@ -289,9 +289,35 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
   return (
     <div className={`evaluation-card ${cardModifier} ${cardStateClass}`}>
       <div className="evaluation-card__header">
-        <div className="evaluation-card__header-title">{studentName}</div>
-        <div className="evaluation-card__heder-description">
-          {rest.studyProgramme}
+        <div className="evaluation-card__header-primary">
+          <div className="evaluation-card__header-title">{studentName}</div>
+          <div className="evaluation-card__heder-description">
+            {rest.studyProgramme}
+          </div>
+        </div>
+        <div className="evaluation-card__header-secondary">
+          <div className="labels">
+            {rest.hasPedagogyForm ? (
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <span id={`pedagogyPlan-` + rest.userEntityId}>
+                    Opiskelijalle on tehty pedagogisen tuen suunnitelma
+                  </span>
+                }
+              >
+                <div className="label label--pedagogy-plan">
+                  <span
+                    className="label__text label__text--pedagogy-plan"
+                    aria-labelledby={`pedagogyPlan-` + rest.userEntityId}
+                  >
+                    P
+                  </span>
+                </div>
+              </Dropdown>
+            ) : null}
+          </div>
         </div>
       </div>
       <div className="evaluation-card__content">
@@ -363,17 +389,6 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
             }
             icon="star-empty"
           />
-          {rest.hasPedagogyForm ? (
-            <Dropdown
-              alignSelfVertically="top"
-              openByHover
-              content={
-                <p>Opiskelijalle on tehty pedagogisen tuen suunnitelma</p>
-              }
-            >
-              <IconButton icon="book" disabled />
-            </Dropdown>
-          ) : null}
         </div>
 
         <div className="evaluation-card__button-set">

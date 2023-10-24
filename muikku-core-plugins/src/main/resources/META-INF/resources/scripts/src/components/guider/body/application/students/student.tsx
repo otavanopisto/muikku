@@ -106,6 +106,7 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                 </span>
               </div>
             ) : null}
+
             {this.props.student.flags.length
               ? this.props.student.flags.map((flag) => (
                   <div className="label" key={flag.id}>
@@ -119,17 +120,24 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
               : null}
 
             {this.props.student.hasPedagogyForm ? (
-              <div className="label">
-                <Dropdown
-                  alignSelfVertically="top"
-                  openByHover
-                  content={
-                    <p>Opiskelijalle on tehty pedagogisen tuen suunnitelma</p>
-                  }
-                >
-                  <span className="label__icon icon-book"></span>
-                </Dropdown>
-              </div>
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <span id={`pedagogyPlan-` + this.props.index}>
+                    Opiskelijalle on tehty pedagogisen tuen suunnitelma
+                  </span>
+                }
+              >
+                <div className="label label--pedagogy-plan">
+                  <span
+                    className="label__text label__text--pedagogy-plan"
+                    aria-labelledby={`pedagogyPlan-` + this.props.index}
+                  >
+                    P
+                  </span>
+                </div>
+              </Dropdown>
             ) : null}
           </div>
         </ApplicationListItemFooter>
