@@ -1,11 +1,10 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import mApi from "~/lib/mApi";
-import { ProfileType } from "~/reducers/main-function/profile";
+import { ProfileState } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
@@ -15,13 +14,14 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * SecurityProps
  */
-interface SecurityProps {
-  i18n: i18nType;
-  profile: ProfileType;
+interface SecurityProps extends WithTranslation<["common"]> {
+  profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   loadProfileUsername: LoadProfileUsernameTriggerType;
@@ -44,7 +44,7 @@ interface SecurityState {
 class Security extends React.Component<SecurityProps, SecurityState> {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: SecurityProps) {
     super(props);
@@ -63,9 +63,10 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: SecurityProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: SecurityProps) {
     if (
       nextProps.profile.username !== null &&
       nextProps.profile.username !== this.state.username
@@ -85,9 +86,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     if (newPassword1 && newPassword2 == "") {
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.emptypass"
-        ),
+        this.props.t("validation.password"),
         "error"
       );
       return;
@@ -95,9 +94,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     if (newPassword1 !== newPassword2) {
       this.props.displayNotification(
-        this.props.i18n.text.get(
-          "plugin.profile.changePassword.dialog.notif.failconfirm"
-        ),
+        this.props.t("validation.password", { context: "match" }),
         "error"
       );
       return;
@@ -115,6 +112,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
     mApi()
       .userplugin.credentials.update(values)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .callback((err: any, result: any) => {
         this.setState({
           locked: false,
@@ -123,16 +121,12 @@ class Security extends React.Component<SecurityProps, SecurityState> {
         if (err) {
           if (result.status === 403) {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.unauthorized"
-              ),
+              this.props.t("notifications.403", { context: "password" }),
               "error"
             );
           } else if (result.status === 409) {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.alreadyinuse"
-              ),
+              this.props.t("notifications.409", { context: "userName" }),
               "error"
             );
           } else {
@@ -141,16 +135,16 @@ class Security extends React.Component<SecurityProps, SecurityState> {
         } else {
           if (values.newPassword === "") {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.username.successful"
-              ),
+              this.props.t("notifications.updateSuccess", {
+                context: "credentials",
+              }),
               "success"
             );
           } else {
             this.props.displayNotification(
-              this.props.i18n.text.get(
-                "plugin.profile.changePassword.dialog.notif.successful"
-              ),
+              this.props.t("notifications.updateSuccess", {
+                context: "password",
+              }),
               "success"
             );
           }
@@ -162,10 +156,11 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
   /**
    * updateField
-   * @param field
-   * @param e
+   * @param field field
+   * @param e e
    */
   updateField(field: string, e: React.ChangeEvent<HTMLInputElement>) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nField: any = {};
     nField[field] = e.target.value;
     this.setState(nField);
@@ -184,16 +179,14 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       <section>
         <form className="form">
           <h2 className="application-panel__content-header">
-            {this.props.i18n.text.get("plugin.profile.titles.security")}
+            {this.props.t("labels.signIn")}
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileUsername">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changePassword.dialog.usernameField.label"
-                    )}
+                    {this.props.t("labels.userName")}
                   </label>
                   <input
                     id="profileUsername"
@@ -207,9 +200,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileOldPassword">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changePassword.dialog.oldPasswordField.label"
-                    )}
+                    {this.props.t("labels.oldPassword")}
                   </label>
                   <input
                     id="profileOldPassword"
@@ -224,9 +215,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileNewPassword1">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changePassword.dialog.newPasswordField1.label"
-                    )}
+                    {this.props.t("labels.password1")}
                   </label>
                   <input
                     id="profileNewPassword1"
@@ -240,9 +229,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
               <div className="form__row">
                 <div className="form-element">
                   <label htmlFor="profileNewPassword2">
-                    {this.props.i18n.text.get(
-                      "plugin.profile.changePassword.dialog.newPasswordField2.label"
-                    )}
+                    {this.props.t("labels.password2")}
                   </label>
                   <input
                     id="profileNewPassword2"
@@ -264,7 +251,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
                   onClick={this.update}
                   disabled={this.state.locked}
                 >
-                  {this.props.i18n.text.get("plugin.profile.save.button")}
+                  {this.props.t("actions.save")}
                 </Button>
               </div>
             </div>
@@ -277,11 +264,10 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
 /**
  * mapStateToProps
- * @param state
+ * @param state state
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     profile: state.profile,
     status: state.status,
   };
@@ -289,13 +275,15 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Security);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(Security)
+);

@@ -1,15 +1,13 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi from "~/lib/mApi";
-import { StateType } from "~/reducers";
-import { LocaleReadResponse, LocaleType } from "~/reducers/base/locales";
-import promisify from "~/util/promisify";
+import { LocaleType } from "~/reducers/base/locales";
 import notificationActions from "~/actions/base/notifications";
+import i18n, { localize } from "~/locales/i18n";
+import MApi, { isMApiError } from "~/api/api";
 
 // ACTIONS for locale
-export type LOCALE_SET = SpecificActionType<"LOCALE_SET", string>;
-
-export type LOCALE_UPDATE = SpecificActionType<"LOCALE_UPDATE", string>;
+export type LOCALE_SET = SpecificActionType<"LOCALE_SET", LocaleType>;
+export type LOCALE_UPDATE = SpecificActionType<"LOCALE_UPDATE", LocaleType>;
 
 // TRIGGER types for locale
 
@@ -37,17 +35,17 @@ export interface LoadLocaleTriggerType {
  * @param data locale
  */
 const setLocale: SetLocaleTriggerType = function setLocale(data) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
-  ) => {
-    const state = getState();
+  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+    const meApi = MApi.getMeApi();
 
     try {
-      await promisify(
-        mApi().me.locale.create({ lang: data.locale }),
-        "callback"
-      )();
+      await meApi.setLocale({
+        setLocaleRequest: {
+          lang: data.locale,
+        },
+      });
+
+      localize.language = data.locale;
 
       dispatch({
         type: "LOCALE_SET",
@@ -58,10 +56,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          state.i18n.text.get(
-            "plugin.notification.locale.changing.error",
-            err.message
-          ),
+          i18n.t("notifications.updateError"),
           "error"
         )
       );
@@ -73,29 +68,28 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
  * loadLocale
  */
 const loadLocale: LoadLocaleTriggerType = function loadLocale() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
-  ) => {
-    const state = getState();
+  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+    const meApi = MApi.getMeApi();
 
     try {
-      const locale = (await promisify(
-        mApi().me.locale.read(),
-        "callback"
-      )()) as LocaleReadResponse;
+      const locale = await meApi.getLocale();
+
+      localize.language = locale.lang;
 
       dispatch({
         type: "LOCALE_UPDATE",
         payload: locale.lang,
       });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       dispatch(
         notificationActions.displayNotification(
-          state.i18n.text.get(
-            "plugin.notification.locale.loading.error",
-            err.message
-          ),
+          i18n.t("notifications.loadError", {
+            context: "locales",
+          }),
           "error"
         )
       );

@@ -1,15 +1,10 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "~/reducers";
-import {
-  StoredWorklistItem,
-  WorklistBillingState,
-} from "~/reducers/main-function/profile";
 import { ButtonPill } from "~/components/general/button";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import "~/sass/elements/glyph.scss";
-import { i18nType } from "~/reducers/base/i18n";
+import { localize } from "~/locales/i18n";
 import WorkListEditable from "./work-list-editable";
 import {
   DeleteProfileWorklistItemTriggerType,
@@ -20,6 +15,9 @@ import {
 import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "~/lib/moment";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
+import { WorklistBillingStateType, WorklistItem } from "~/generated/client";
 
 // get today date in order to be able to calculate the 10 days
 // and next month rule that allows for modification since
@@ -31,9 +29,8 @@ const previousMonth = moment().subtract(1, "months");
 /**
  * WorkListRowProps
  */
-interface WorkListRowProps {
-  i18n: i18nType;
-  item: StoredWorklistItem;
+interface WorkListRowProps extends WithTranslation {
+  item: WorklistItem;
   deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType;
   editProfileWorklistItem: EditProfileWorklistItemTriggerType;
   currentMonthDayLimit: number;
@@ -186,8 +183,8 @@ class WorkListRow extends React.Component<
     // it must be current month, or if it's previous month the current month
     // should be less than 10 days or whatever the limit is specified
     const canBeEdited =
-      this.props.item.state !== WorklistBillingState.PAID &&
-      this.props.item.state !== WorklistBillingState.APPROVED &&
+      this.props.item.state !== WorklistBillingStateType.Paid &&
+      this.props.item.state !== WorklistBillingStateType.Approved &&
       (isCurrentMonth ||
         (isPreviousMonth &&
           dayOfCurrentMonth <= this.props.currentMonthDayLimit));
@@ -198,37 +195,42 @@ class WorkListRow extends React.Component<
     let entryStateClass;
     switch (this.props.item.state) {
       case "ENTERED":
-        entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.ENTERED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "ENTERED",
+        });
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
       case "PROPOSED":
-        entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.PROPOSED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "PROPOSED",
+        });
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-PROPOSED";
         break;
       case "APPROVED":
-        entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.APPROVED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "APPROVED",
+        });
         entryStateIcon = "icon-thumb-up";
         entryStateClass = "state-APPROVED";
         break;
       case "PAID":
-        entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.PAID"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "PAID",
+        });
         entryStateIcon = "icon-lock";
         entryStateClass = "state-PAID";
         break;
       default:
-        entryStateText = this.props.i18n.text.get(
-          "plugin.profile.worklist.states.ENTERED"
-        );
+        entryStateText = this.props.t("labels.state", {
+          ns: "worklist",
+          context: "ENTERED",
+        });
         entryStateIcon = "icon-check";
         entryStateClass = "state-ENTERED";
         break;
@@ -244,7 +246,7 @@ class WorkListRow extends React.Component<
           {this.props.item.description}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
-          {this.props.i18n.time.format(this.props.item.entryDate)}
+          {localize.date(this.props.item.entryDate)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
           {this.props.item.price}
@@ -284,24 +286,16 @@ class WorkListRow extends React.Component<
 }
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },
     dispatch
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkListRow);
+export default withTranslation(["common"])(
+  connect(null, mapDispatchToProps)(WorkListRow)
+);

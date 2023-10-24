@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { i18nType } from "~/reducers/base/i18n";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -26,7 +25,6 @@ interface TableOfContentPDFDialogProps {
   workspace?: WorkspaceType;
   isOpen?: boolean;
   onClose?: () => void;
-  i18n: i18nType;
   status: StatusType;
 }
 
@@ -94,7 +92,6 @@ const TableOfContentPDFDialog = (props: TableOfContentPDFDialogProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }

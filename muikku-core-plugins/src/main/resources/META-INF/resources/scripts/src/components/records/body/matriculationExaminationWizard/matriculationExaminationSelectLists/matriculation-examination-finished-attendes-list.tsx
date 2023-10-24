@@ -12,6 +12,7 @@ import { MatriculationExaminationFinishedInputGroup } from "./matriculation-exam
 interface MatriculationExaminationFinishedAttendesListProps {
   onChange?: (
     modifiedExaminationCompletedSubjectList: ExaminationFinishedSubject[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) => any;
   readOnly?: boolean;
   enrolledAttendances?: ExaminationEnrolledSubject[];
@@ -37,26 +38,22 @@ const defaultUseSelectProps = {
 /**
  * MatriculationExaminationCompletedSelectsList
  * @param props props
- * @param props.onChange onChange
- * @param props.examinationFinishedList examinationFinishedList
- * @param props.enrolledAttendances enrolledAttendances
- * @param props.pastOptions pastOptions
- * @param props.onDeleteRow  onDeleteRow
- * @param props.readOnly readOnly
- * @returns
+ * @returns JSX.Element
  */
 export const MatriculationExaminationFinishedAttendesList: React.FC<
   MatriculationExaminationFinishedAttendesListProps
-> = ({
-  onChange,
-  examinationFinishedList,
-  enrolledAttendances,
-  pastOptions,
-  onDeleteRow,
-  readOnly,
-  ...useSelectProps
-}) => {
-  useSelectProps = { ...defaultUseSelectProps, ...useSelectProps };
+> = (props) => {
+  const {
+    onChange,
+    examinationFinishedList,
+    enrolledAttendances,
+    pastOptions,
+    onDeleteRow,
+    readOnly,
+    ...useSelectPropsRest
+  } = props;
+
+  const useSelectProps = { ...defaultUseSelectProps, ...useSelectPropsRest };
 
   /**
    * Handles matriculation examation finished subject group change

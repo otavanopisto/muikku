@@ -1,9 +1,8 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
+import MApi from "~/api/api";
+import { useTranslation } from "react-i18next";
 
 /**
  * UseFollowUpGoalsState
@@ -13,19 +12,19 @@ export interface UseAssignmentsState {
   workspace: WorkspaceType;
 }
 
+const recordsApi = MApi.getRecordsApi();
+
 /**
  * Custom hook for student study hours
  *
  * @param userEntityId userEntityId
  * @param workspaceId workspaceId
- * @param i18n i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useRecordWorkspace = (
   userEntityId: string,
   workspaceId: number,
-  i18n: i18nType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [recordWorkspace, setRecordWorkspace] =
@@ -33,10 +32,10 @@ export const useRecordWorkspace = (
       isLoading: false,
       workspace: null,
     });
+  const { t } = useTranslation("studies");
 
   React.useEffect(() => {
     let isCancelled = false;
-
     /**
      * loadStudentActivityListData
      * Loads student activity data
@@ -54,12 +53,10 @@ export const useRecordWorkspace = (
         /**
          * Loaded and filtered student activity
          */
-        const workspace = (await promisify(
-          mApi().records.workspaces.read(workspaceId, {
-            userIdentifier: userEntityId,
-          }),
-          "callback"
-        )()) as WorkspaceType;
+        const workspace = (await recordsApi.getRecordsWorkspace({
+          workspaceId: workspaceId,
+          userIdentifier: userEntityId,
+        })) as WorkspaceType;
 
         if (!isCancelled) {
           setRecordWorkspace((recordWorkspaceData) => ({
@@ -71,9 +68,10 @@ export const useRecordWorkspace = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${i18n.text.get(
-              "plugin.records.errormessage.workspaceAssignmentsEvaluatedLoadFailed"
-            )}, ${err.message}`,
+            t("notifications.loadError", {
+              context: "workspaceAssignments",
+              error: err.message,
+            }),
             "error"
           );
           setRecordWorkspace((recordWorkspaceData) => ({
@@ -89,7 +87,7 @@ export const useRecordWorkspace = (
     return () => {
       isCancelled = true;
     };
-  }, [workspaceId, displayNotification, i18n, userEntityId]);
+  }, [workspaceId, displayNotification, userEntityId]);
 
   return recordWorkspace;
 };

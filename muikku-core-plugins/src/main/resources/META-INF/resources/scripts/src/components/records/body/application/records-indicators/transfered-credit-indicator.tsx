@@ -1,18 +1,15 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
+import { localize } from "~/locales/i18n";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * TransfereCreditValueIndicatorProps
  */
 interface TransfereCreditIndicatorProps {
   transferCredit: RecordWorkspaceActivity;
-  i18n: i18nType;
 }
 
 /**
@@ -23,7 +20,9 @@ interface TransfereCreditIndicatorProps {
 const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   props
 ) => {
-  const { i18n, transferCredit } = props;
+  const { transferCredit } = props;
+
+  const { t } = useTranslation(["studies", "common"]);
 
   // this shouldn't come to this, but just in case
   if (transferCredit === null) {
@@ -38,10 +37,10 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
       openByHover
       content={
         <span>
-          {i18n.text.get(
-            "plugin.records.transferCreditsDate",
-            i18n.time.format(assessment.date)
-          ) + getShortenGradeExtension(assessment.grade)}
+          {t("content.transferCreditsDate", {
+            ns: "studies",
+            date: localize.date(assessment.date),
+          }) + getShortenGradeExtension(assessment.grade)}
         </span>
       }
     >
@@ -56,24 +55,4 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TransfereCreditIndicator);
+export default TransfereCreditIndicator;

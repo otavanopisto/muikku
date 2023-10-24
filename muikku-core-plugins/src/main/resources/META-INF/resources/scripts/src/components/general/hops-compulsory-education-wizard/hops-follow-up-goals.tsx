@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import {
   StudySector,
-  FollowUp,
   FollowUpStudies,
   FollowUpGoal,
 } from "../../../@types/shared";
@@ -19,16 +18,17 @@ import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { i18nType } from "~/reducers/base/i18n";
+import { localize } from "~/locales/i18n";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { updateFollowUpData, useFollowUp } from "./context/follow-up-context";
+import { HopsGoals } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * FollowUpGoalsProps
  */
 interface HopsFollowUpGoalsProps {
-  i18n: i18nType;
   disabled: boolean;
   studentId: string;
   studyTimeEnd: string | null;
@@ -43,8 +43,8 @@ interface HopsFollowUpGoalsProps {
  * @returns JSX.Element
  */
 const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
-  const { disabled, i18n } = props;
-
+  const { disabled } = props;
+  const { t } = useTranslation("hops");
   const followUpData = useFollowUp();
 
   /**
@@ -53,11 +53,11 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
    * @param key key
    * @param value value
    */
-  const handleGoalsChange = <T extends keyof FollowUp>(
+  const handleGoalsChange = <T extends keyof HopsGoals>(
     key: T,
-    value: FollowUp[T]
+    value: HopsGoals[T]
   ) => {
-    const updatedFollowUpData: FollowUp = {
+    const updatedFollowUpData: HopsGoals = {
       ...followUpData.followUp,
       [key]: value,
     };
@@ -74,13 +74,16 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
       <div className="hops-container__row">
         <div className="hops__form-element-container">
           <label htmlFor="graduationGoalMonth" className="hops__label">
-            Milloin haluat valmistua?
+            {t("labels.graduationQuestion")}
           </label>
           <DatePicker
             id="graduationGoalMonth"
             onChange={(date) => handleGoalsChange("graduationGoal", date)}
-            selected={followUpData.followUp.graduationGoal}
-            locale={outputCorrectDatePickerLocale(i18n.time.getLocale())}
+            selected={
+              followUpData.followUp.graduationGoal &&
+              moment(followUpData.followUp.graduationGoal).toDate()
+            }
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="MM/yyyy"
             showMonthYearPicker
             showFullMonthYearPicker
@@ -96,7 +99,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
       <div className="hops-container__row">
         <div className="hops__form-element-container">
           <label htmlFor="followUpGoal" className="hops__label">
-            Mitä aiot tehdä Nettiperuskoulun jälkeen:
+            {t("labels.followUpQuestion")}
           </label>
           <select
             id="followUpGoal"
@@ -107,13 +110,16 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
             className="hops__select"
             disabled={disabled}
           >
-            <option value="">Valitse...</option>
+            <option value="">{t("labels.select")}</option>
             <option value={FollowUpGoal.POSTGRADUATE_STUDIES}>
-              Jatko-opinnot
+              {t("labels.planToStudy")}
             </option>
-            <option value={FollowUpGoal.WORKING_LIFE}>Aion mennä töihin</option>
-
-            <option value={FollowUpGoal.DONT_KNOW}>En tiedä vielä</option>
+            <option value={FollowUpGoal.WORKING_LIFE}>
+              {t("labels.planToWork")}
+            </option>
+            <option value={FollowUpGoal.DONT_KNOW}>
+              {t("labels.planUnknown")}
+            </option>
           </select>
         </div>
 
@@ -129,7 +135,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
         >
           <div className="hops__form-element-container">
             <label htmlFor="followUpStudies" className="hops__label">
-              Mihin aiot hakea:
+              {t("labels.followUpStudyQuestion")}
             </label>
             <select
               id="followUpStudies"
@@ -140,19 +146,18 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               className="hops__select"
               disabled={disabled}
             >
-              <option value="">Valitse...</option>
-
+              <option value="">{t("labels.select")}</option>
               <option value={FollowUpStudies.VOCATIONAL_SCHOOL}>
-                ammatillinen toinen aste
+                {t("labels.schoolVocational")}
               </option>
               <option value={FollowUpStudies.UPPER_SECONDARY_SCHOOL}>
-                lukio
+                {t("labels.schoolGymnasium")}
               </option>
-
-              <option value={FollowUpStudies.SOMETHING_ELSE}>joku muu?</option>
+              <option value={FollowUpStudies.SOMETHING_ELSE}>
+                {t("labels.else")}
+              </option>
             </select>
           </div>
-
           <AnimateHeight
             height={
               followUpData.followUp.followUpStudies ===
@@ -193,7 +198,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
         >
           <div className="hops__form-element-container">
             <label htmlFor="studySector" className="hops__label">
-              Koulutusala:
+              {t("labels.educationSector")}
             </label>
             <select
               id="studySector"
@@ -204,16 +209,26 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               className="hops__select"
               disabled={disabled}
             >
-              <option value="">Valitse...</option>
+              <option value=""> {t("labels.select")}</option>
               <option value={StudySector.SOCIAL_HEALT_SECTOR}>
-                sosiaali- ja terveysala
+                {t("labels.socialAndHealth")}
               </option>
-              <option value={StudySector.TRADE_SECTOR}>kauppa</option>
-              <option value={StudySector.TRANSPORT_SECTOR}>liikenne</option>
-              <option value={StudySector.EDUCATION_SECTOR}>kasvatus</option>
-              <option value={StudySector.INDUSTRY_SECTOR}>teollisuus</option>
-              <option value={StudySector.ART_SECTOR}>taide</option>
-              <option value={StudySector.SOMETHING_ELSE}>joku muu?</option>
+              <option value={StudySector.TRADE_SECTOR}>
+                {t("labels.trade")}
+              </option>
+              <option value={StudySector.TRANSPORT_SECTOR}>
+                {t("labels.transport")}
+              </option>
+              <option value={StudySector.EDUCATION_SECTOR}>
+                {t("labels.education")}
+              </option>
+              <option value={StudySector.INDUSTRY_SECTOR}>
+                {t("labels.industry")}
+              </option>
+              <option value={StudySector.ART_SECTOR}>{t("labels.arts")}</option>
+              <option value={StudySector.SOMETHING_ELSE}>
+                {t("labels.else")}
+              </option>
             </select>
           </div>
 
@@ -267,7 +282,6 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     websocketState: state.websocket,
-    i18n: state.i18n,
   };
 }
 

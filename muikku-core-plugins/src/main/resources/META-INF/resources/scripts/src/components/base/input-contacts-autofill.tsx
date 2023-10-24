@@ -7,28 +7,30 @@
 import * as React from "react";
 import Autocomplete from "~/components/general/autocomplete";
 import TagInput from "~/components/general/tag-input";
-import promisify from "~/util/promisify";
 import { filterHighlight, getName } from "~/util/modifiers";
-import mApi from "~/lib/mApi";
 import { WorkspaceType } from "~/reducers/workspaces";
-import {
-  WorkspaceStaffListType,
-  ContactRecipientType,
-  UserGroupType,
-  UserType,
-  UserStaffType,
-} from "~/reducers/user-index";
+import { ContactRecipientType } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
+import {
+  User,
+  UserGroup,
+  UserStaff,
+  WorkspaceBasicInfo,
+  UserStaffSearchResult,
+} from "~/generated/client";
+import MApi from "~/api/api";
 
 /**
  * InputContactsAutofillLoaders
  */
 export interface InputContactsAutofillLoaders {
-  studentsLoader?: (searchString: string) => any;
-  staffLoader?: (searchString: string) => any;
-  userGroupsLoader?: (searchString: string) => any;
-  workspacesLoader?: (searchString: string) => any;
+  studentsLoader?: (searchString: string) => () => Promise<User[]>;
+  staffLoader?: (searchString: string) => () => Promise<UserStaffSearchResult>;
+  userGroupsLoader?: (searchString: string) => () => Promise<UserGroup[]>;
+  workspacesLoader?: (
+    searchString: string
+  ) => () => Promise<WorkspaceBasicInfo[]>;
 }
 
 /**
@@ -124,7 +126,8 @@ export default class c extends React.Component<
    * componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems });
     }
@@ -211,16 +214,14 @@ export default class c extends React.Component<
     const getStudentsLoader = () =>
       loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
-        : promisify(
-            mApi().user.users.read({
+        : () =>
+            MApi.getUserApi().getUsers({
               q: textInput,
               maxResults: 20,
               onlyDefaultUsers: checkHasPermission(
                 this.props.userPermissionIsOnlyDefaultUsers
               ),
-            }),
-            "callback"
-          );
+            });
 
     /**
      * getUserGroupsLoader
@@ -228,13 +229,11 @@ export default class c extends React.Component<
     const getUserGroupsLoader = () =>
       loaders.userGroupsLoader
         ? loaders.userGroupsLoader(textInput)
-        : promisify(
-            mApi().usergroup.groups.read({
+        : () =>
+            MApi.getUsergroupApi().getUsergroups({
               q: textInput,
               maxResults: 20,
-            }),
-            "callback"
-          );
+            });
 
     /**
      * getWorkspacesLoader
@@ -242,16 +241,14 @@ export default class c extends React.Component<
     const getWorkspacesLoader = () =>
       loaders.workspacesLoader
         ? loaders.workspacesLoader(textInput)
-        : promisify(
-            mApi().coursepicker.workspaces.read({
+        : () =>
+            MApi.getCoursepickerApi().getCoursepickerWorkspaces({
               q: textInput,
               maxResults: 20,
               myWorkspaces: checkHasPermission(
                 this.props.workspacePermissionIsOnlyMyWorkspaces
               ),
-            }),
-            "callback"
-          );
+            });
 
     /**
      * getStaffLoader
@@ -259,13 +256,8 @@ export default class c extends React.Component<
     const getStaffLoader = () =>
       loaders.staffLoader
         ? loaders.staffLoader(textInput)
-        : promisify(
-            mApi().user.staffMembers.read({
-              q: textInput,
-              maxResults: 20,
-            }),
-            "callback"
-          );
+        : () =>
+            MApi.getUserApi().getStaffMembers({ q: textInput, maxResults: 20 });
 
     /**
      * searchResults
@@ -273,7 +265,7 @@ export default class c extends React.Component<
     const searchResults = await Promise.all([
       checkHasPermission(this.props.hasUserPermission)
         ? getStudentsLoader()()
-            .then((result: any[]) => result || [])
+            .then((result) => result || [])
             .catch((err: any): any[] => [])
         : [],
       checkHasPermission(this.props.hasGroupPermission)
@@ -288,7 +280,7 @@ export default class c extends React.Component<
         : [],
       checkHasPermission(this.props.hasStaffPermission, false)
         ? getStaffLoader()()
-            .then((result: WorkspaceStaffListType) => result.results || [])
+            .then((result: UserStaffSearchResult) => result.results || [])
             .catch((err: any): any[] => [])
         : [],
     ]);
@@ -297,7 +289,7 @@ export default class c extends React.Component<
      * userItems
      */
     const userItems: ContactRecipientType[] = searchResults[0].map(
-      (item: UserType): ContactRecipientType => ({
+      (item: User): ContactRecipientType => ({
         type: "user",
         value: {
           id: item.id,
@@ -312,7 +304,7 @@ export default class c extends React.Component<
      * userGroupItems
      */
     const userGroupItems: ContactRecipientType[] = searchResults[1].map(
-      (item: UserGroupType): ContactRecipientType => ({
+      (item: UserGroup): ContactRecipientType => ({
         type: "usergroup",
         value: {
           id: item.id,
@@ -341,7 +333,7 @@ export default class c extends React.Component<
      * staffItems
      */
     const staffItems: ContactRecipientType[] = searchResults[3].map(
-      (item: UserStaffType): ContactRecipientType => ({
+      (item: UserStaff): ContactRecipientType => ({
         type: "staff",
         value: {
           id: item.userEntityId,

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
@@ -9,6 +8,7 @@ import {
   WorkspaceType,
   MaterialCompositeRepliesType,
   WorkspaceEditModeStateType,
+  WorkspaceAssessementStateType,
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
@@ -28,12 +28,12 @@ import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WorkspaceMaterialProps
  */
-interface WorkspaceMaterialProps {
-  i18n: i18nType;
+interface WorkspaceMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
   materialContentNode: MaterialContentNodeType;
@@ -43,7 +43,7 @@ interface WorkspaceMaterialProps {
   showEvenIfHidden: boolean;
   workspace: WorkspaceType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
-  readspeakerComponent: JSX.Element;
+  readspeakerComponent?: JSX.Element;
 }
 
 /**
@@ -125,6 +125,39 @@ class WorkspaceMaterial extends React.Component<
       }
     }
 
+    let isDisabled = false;
+
+    // Values to indicate pending state
+    const pendingValues: WorkspaceAssessementStateType[] = [
+      "pending",
+      "pending_fail",
+      "pending_pass",
+    ];
+
+    if (this.props.workspace.activity) {
+      // Get the number of modules
+      const valueToCheck = this.props.workspace.activity.assessmentState.length;
+      let passValueCount = 0;
+
+      this.props.workspace.activity.assessmentState.forEach((activity) => {
+        // Check if any of the modules are in pending state
+        if (pendingValues.includes(activity.state)) {
+          isDisabled = true;
+        }
+        // Check if module is passed and increment counter
+        if (activity.state === "pass") {
+          passValueCount++;
+        }
+      });
+
+      // there must be at least one assessmentState and
+      // If all modules are passed, materials are disabled.
+      // This is to prevent students from changing their answers after passing grades are given
+      if (valueToCheck > 0 && passValueCount === valueToCheck) {
+        isDisabled = true;
+      }
+    }
+
     return (
       <LazyLoader
         useChildrenAsLazy={true}
@@ -149,8 +182,8 @@ class WorkspaceMaterial extends React.Component<
             material={this.props.materialContentNode}
             workspace={this.props.workspace}
             compositeReplies={this.props.compositeReplies}
-            answerable={this.props.status.loggedIn}
-            readOnly={!this.props.status.loggedIn}
+            answerable={this.props.status.loggedIn && !isDisabled}
+            readOnly={!this.props.status.loggedIn || isDisabled}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
@@ -208,7 +241,6 @@ class WorkspaceMaterial extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
   };
@@ -222,4 +254,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial)
+);

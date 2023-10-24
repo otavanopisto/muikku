@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
@@ -12,15 +11,16 @@ import {
   LoadMoreUserTriggerType,
   loadMoreUserGroups,
 } from "~/actions/main-function/users";
-import { UserGroupType } from "~/reducers/user-index";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
+import { UserGroup } from "~/generated/client";
+import { AnyActionType } from "~/actions";
+import { useTranslation } from "react-i18next";
 
 /**
  * OrganizationUserGroupsProps
  */
 interface OrganizationUserGroupsProps {
-  i18n: i18nType;
-  userGroups: Array<UserGroupType>;
+  userGroups: UserGroup[];
   userGroupsState: WorkspacesStateType;
   userGroupsHasMore: boolean;
   loadMoreUserGroups: LoadMoreUserTriggerType;
@@ -33,6 +33,8 @@ interface OrganizationUserGroupsProps {
 const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
   props
 ) => {
+  const { t } = useTranslation(["users", "common"]);
+
   const { userGroups, userGroupsState, userGroupsHasMore, loadMoreUserGroups } =
     props;
   const lastUserGroupRef = useInfinityScroll(
@@ -47,9 +49,10 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18n.text.get(
-            "plugin.organization.userGroups.error.loadError"
-          )}
+          {t("notifications.loadError", {
+            ns: "users",
+            context: "userGroups",
+          })}
         </span>
       </div>
     );
@@ -57,9 +60,10 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     return (
       <div className="empty">
         <span>
-          {props.i18n.text.get(
-            "plugin.organization.userGroups.searchResult.empty"
-          )}
+          {t("content.notFound", {
+            ns: "users",
+            context: "userGroups",
+          })}
         </span>
       </div>
     );
@@ -68,7 +72,7 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
     <div>
       <ApplicationList>
         {userGroups &&
-          userGroups.map((userGroup: UserGroupType, index) => {
+          userGroups.map((userGroup: UserGroup, index) => {
             if (userGroups.length === index + 1) {
               // This div wrapper exists because callback ref must return
               // an element and a class component returns a mounted instance
@@ -99,7 +103,6 @@ const OrganizationUserGroups: React.FC<OrganizationUserGroupsProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     userGroups: state.userGroups.list,
     userGroupsState: state.userGroups.state,
     userGroupsHasMore: state.userGroups.hasMore,
@@ -110,7 +113,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ loadMoreUserGroups }, dispatch);
 }
 

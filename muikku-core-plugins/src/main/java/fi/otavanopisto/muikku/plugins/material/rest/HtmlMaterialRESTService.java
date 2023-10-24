@@ -97,10 +97,29 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
+    if (entity.getRemoveAnswers()) {
+      logger.log(Level.WARNING, String.format("Update material %d by user %d with forced answer removal", id, sessionController.getLoggedUserEntity().getId()));
+    }
+    
     try {
+      
+      // #6638: When remove answers flag is on, refuse update for non-admins if material is published or has student answers
+      
+      if (entity.getRemoveAnswers() && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS)) {
+        if (workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial) || htmlMaterialController.hasStudentAnswers(htmlMaterial)) {
+          logger.log(Level.WARNING, String.format("Update material %d by user %d denied due to material containing student answers", id, sessionController.getLoggedUserEntity().getId()));
+          return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
+        }
+      }
+      
+      // Actual update
+      
       htmlMaterial = htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, entity.getContent(), entity.getRemoveAnswers());
     }
     catch (WorkspaceMaterialContainsAnswersExeption e) {
+      
+      // #6638: When remove answers flag is off, either refuse update for non-admins dealing with materials in published workspaces, or notify frontend of the conflict
+      
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(htmlMaterial)) {
         logger.log(Level.WARNING, String.format("Update material %d by user %d denied due to material containing answers", id, sessionController.getLoggedUserEntity().getId()));
         return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();

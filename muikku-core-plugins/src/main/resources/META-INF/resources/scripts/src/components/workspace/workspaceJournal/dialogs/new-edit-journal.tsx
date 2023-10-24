@@ -3,13 +3,11 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import { i18nType } from "reducers/base/i18n";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import equals = require("deep-equal");
-import { WorkspaceJournalType } from "~/reducers/workspaces";
 import {
   CreateWorkspaceJournalForCurrentWorkspaceTriggerType,
   createWorkspaceJournalForCurrentWorkspace,
@@ -17,13 +15,14 @@ import {
   updateWorkspaceJournalInCurrentWorkspace,
 } from "~/actions/workspaces/journals";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * NewEditJournalProps
  */
-interface NewEditJournalProps {
+interface NewEditJournalProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
-  i18n: i18nType;
   journal?: WorkspaceJournalWithComments;
   createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType;
   updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType;
@@ -171,7 +170,7 @@ class NewEditJournal extends SessionStateComponent<
    * createOrModifyJournal
    * @param closeDialog closeDialog
    */
-  createOrModifyJournal(closeDialog: () => any) {
+  createOrModifyJournal(closeDialog: () => void) {
     this.setState({ locked: true });
     if (!this.props.journal) {
       this.props.createWorkspaceJournalForCurrentWorkspace({
@@ -231,29 +230,25 @@ class NewEditJournal extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
+    t("labels.content");
+
     const editorTitle = this.props.journal
-      ? this.props.i18n.text.get("plugin.workspace.journal.editEntry.title") +
+      ? t("labels.edit", { ns: "journal" }) + " - " + t("labels.content")
+      : t("labels.create", { ns: "journal" }) +
         " - " +
-        this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.content"
-        )
-      : this.props.i18n.text.get("plugin.workspace.journal.newEntry.title") +
-        " - " +
-        this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.content"
-        );
+        t("labels.edit", { ns: "journal" });
 
     /**
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="journalTitle" className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.workspace.journal.entry.title.label"
-            )}
+            {t("labels.title")}
           </label>
           <input
             id="journalTitle"
@@ -268,11 +263,7 @@ class NewEditJournal extends SessionStateComponent<
       </div>,
       <div className="env-dialog__row env-dialog__row--ckeditor" key="3">
         <div className="env-dialog__form-element-container">
-          <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.workspace.journal.entry.content.label"
-            )}
-          </label>
+          <label className="env-dialog__label">{t("labels.content")}</label>
           <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
             {this.state.text}
           </CKEditor>
@@ -284,25 +275,21 @@ class NewEditJournal extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           className="button button--dialog-execute"
           onClick={this.createOrModifyJournal.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.workspace.journal.save.button.label"
-          )}
+          {t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.workspace.journal.cancel.button.label"
-          )}
+          {t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -310,9 +297,7 @@ class NewEditJournal extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.announcer.createannouncement.button.clearDraft"
-            )}
+            {t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -324,12 +309,8 @@ class NewEditJournal extends SessionStateComponent<
         onOpen={this.checkAgainstStoredState}
         title={
           this.props.journal
-            ? this.props.i18n.text.get(
-                "plugin.workspace.journal.editEntry.title"
-              )
-            : this.props.i18n.text.get(
-                "plugin.workspace.journal.newEntry.title"
-              )
+            ? t("labels.edit", { ns: "journal" })
+            : t("labels.create", { ns: "journal" })
         }
         content={content}
         footer={footer}
@@ -346,9 +327,7 @@ class NewEditJournal extends SessionStateComponent<
  * @returns object
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
+  return {};
 }
 
 /**
@@ -366,4 +345,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewEditJournal);
+export default withTranslation(["journal", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(NewEditJournal)
+);

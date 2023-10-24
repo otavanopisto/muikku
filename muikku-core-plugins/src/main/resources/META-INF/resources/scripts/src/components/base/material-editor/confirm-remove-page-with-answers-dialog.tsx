@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -14,15 +13,16 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   setWorkspaceMaterialEditorState,
 } from "~/actions/workspaces/material";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ConfirmDeletePageWithAnswersDialogProps
  */
-interface ConfirmDeletePageWithAnswersDialogProps {
-  i18n: i18nType;
+interface ConfirmDeletePageWithAnswersDialogProps extends WithTranslation {
   materialEditor: WorkspaceMaterialEditorType;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDeleteSuccess: () => any;
 }
 
@@ -58,7 +58,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
    * confirm
    * @param closeDialog closeDialog
    */
-  confirm(closeDialog: () => any) {
+  confirm(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -90,9 +90,9 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
 
   /**
    * cancel
-   * @param closeDialog
+   * @param closeDialog closeDialog
    */
-  cancel(closeDialog?: () => any) {
+  cancel(closeDialog?: () => void) {
     closeDialog && closeDialog();
     this.props.setWorkspaceMaterialEditorState({
       ...this.props.materialEditor,
@@ -103,16 +103,18 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
    * render
    */
   render() {
+    const { t } = this.props;
+
     /**
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => (
+    const content = (closeDialog: () => void) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.text"
-          )}
+          {t("content.confirm", {
+            ns: "materials",
+          })}
         </span>
       </div>
     );
@@ -121,25 +123,21 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.confirm.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.confirmButton"
-          )}
+          {t("actions.confirmSave")}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.cancel.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.cancelButton"
-          )}
+          {t("actions.cancel")}
         </Button>
       </div>
     );
@@ -149,9 +147,9 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
         modifier="confirm-remove-answer-dialog"
         isOpen={this.props.materialEditor.showRemoveAnswersDialogForDelete}
         onClose={this.cancel}
-        title={this.props.i18n.text.get(
-          "plugin.workspace.materialsManagement.confirmRemovePageWithAnswers.title"
-        )}
+        title={t("labels.pageRemoval", {
+          ns: "materials",
+        })}
         content={content}
         footer={footer}
       />
@@ -165,7 +163,6 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     materialEditor: state.workspaces.materialEditor,
   };
 }
@@ -181,7 +178,9 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConfirmDeletePageWithAnswersDialog);
+export default withTranslation(["materials", "common"])(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ConfirmDeletePageWithAnswersDialog)
+);

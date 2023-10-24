@@ -1,6 +1,4 @@
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { DiscussionThreadReplyType } from "~/reducers/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
@@ -9,18 +7,17 @@ import {
   modifyReplyFromCurrentThread,
   ModifyReplyFromCurrentThreadTriggerType,
 } from "~/actions/discussion";
-import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-
 import "~/sass/elements/form.scss";
+import { DiscussionThreadReply } from "~/generated/client";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * ModifyThreadReplyDrawerProps
  */
-interface ModifyThreadReplyDrawerProps {
-  i18n: i18nType;
-  reply?: DiscussionThreadReplyType;
+interface ModifyThreadReplyDrawerProps extends WithTranslation {
+  reply?: DiscussionThreadReply;
   modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType;
   onClickCancel: () => void;
 }
@@ -42,7 +39,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
 > {
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: ModifyThreadReplyDrawerProps) {
     super(props, "discussion-modify-thread-reply");
@@ -87,7 +84,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
 
   /**
    * componentWillReceiveProps
-   * @param nextProps
+   * @param nextProps nextProps
    */
   componentWillReceiveProps(nextProps: ModifyThreadReplyDrawerProps) {
     if (nextProps.reply.id !== this.props.reply.id) {
@@ -104,7 +101,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
 
   /**
    * onCKEditorChange
-   * @param text
+   * @param text text
    */
   onCKEditorChange(text: string) {
     this.setStateAndStore({ text }, this.props.reply.id);
@@ -154,9 +151,9 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.editmessage.topic") +
+      this.props.i18n.t("labels.edit", { ns: "messaging" }) +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     /**
      * content
@@ -165,9 +162,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -190,14 +185,14 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
           onClick={this.modifyReply.bind(this)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.t("actions.save")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnCancelClick}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -205,9 +200,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -218,7 +211,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get("plugin.discussion.editmessage.topic")}
+              {this.props.i18n.t("labels.edit", { ns: "messaging" })}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -230,24 +223,13 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
 }
 
 /**
- * mapStateToProps
- * @param state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-/**
  * mapDispatchToProps
- * @param dispatch
+ * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ modifyReplyFromCurrentThread }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ModifyThreadReplyDrawer);
+export default withTranslation(["messaging"])(
+  connect(null, mapDispatchToProps)(ModifyThreadReplyDrawer)
+);

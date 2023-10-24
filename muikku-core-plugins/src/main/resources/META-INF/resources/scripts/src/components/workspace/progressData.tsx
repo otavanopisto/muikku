@@ -1,29 +1,34 @@
-import { WorkspaceActivityType } from "~/reducers/workspaces";
-import { i18nType } from "reducers/base/i18n";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
-
 import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/wcag.scss";
+import { WorkspaceActivity } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
+
+/**
+ * ProgressDataProps
+ */
+interface ProgressDataProps extends WithTranslation {
+  activity: WorkspaceActivity;
+  title?: string;
+  modifier?: string;
+}
 
 /**
  * ProgressData
  */
-export default class ProgressData extends React.Component<
-  {
-    activity: WorkspaceActivityType;
-    i18n: i18nType;
-    title?: string;
-    modifier?: string;
-  },
+class ProgressData extends React.Component<
+  ProgressDataProps,
   Record<string, unknown>
 > {
   /**
    * render
    */
   render() {
+    const { t } = this.props;
+
     if (!this.props.activity) {
       return null;
     }
@@ -60,31 +65,29 @@ export default class ProgressData extends React.Component<
               content={
                 <div>
                   <div className="workspace-activity__menu-title">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.progress.evaluable.title"
-                    )}
+                    {t("labels.evaluables", { ns: "materials", count: 0 })}
                   </div>
                   <div className="workspace-activity__menu-label">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.progress.evaluable.done"
-                    )}{" "}
+                    {t("labels.assignments", {
+                      ns: "materials",
+                      context: "returned",
+                    })}{" "}
                     <span className="workspace-activity__menu-data">
                       {evaluablesDone}
                     </span>
                   </div>
                   <div className="workspace-activity__menu-label">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.progress.evaluable.total"
-                    )}{" "}
+                    {t("labels.totalAssignments", { ns: "materials" })}{" "}
                     <span className="workspace-activity__menu-data">
                       {this.props.activity.evaluablesTotal}
                     </span>
                   </div>
                   {this.props.activity.evaluablesTotal ? (
                     <div className="workspace-activity__menu-label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.progress.evaluable.passed"
-                      )}{" "}
+                      {t("labels.assignments", {
+                        ns: "materials",
+                        context: "passed",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesPassed}
                       </span>
@@ -92,9 +95,10 @@ export default class ProgressData extends React.Component<
                   ) : null}
                   {this.props.activity.evaluablesSubmitted ? (
                     <div className="workspace-activity__menu-label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.progress.evaluable.unevaluated"
-                      )}{" "}
+                      {t("labels.evaluables", {
+                        ns: "materials",
+                        context: "unevaluated",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesSubmitted}
                       </span>
@@ -102,9 +106,10 @@ export default class ProgressData extends React.Component<
                   ) : null}
                   {this.props.activity.evaluablesFailed ? (
                     <div className="workspace-activity__menu-label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.progress.evaluable.failed"
-                      )}{" "}
+                      {t("labels.evaluables", {
+                        ns: "materials",
+                        context: "failed",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesFailed}
                       </span>
@@ -112,9 +117,10 @@ export default class ProgressData extends React.Component<
                   ) : null}
                   {this.props.activity.evaluablesIncomplete ? (
                     <div className="workspace-activity__menu-label">
-                      {this.props.i18n.text.get(
-                        "plugin.workspace.progress.evaluable.incomplete"
-                      )}{" "}
+                      {t("labels.assignments", {
+                        ns: "materials",
+                        context: "incomplete",
+                      })}{" "}
                       <span className="workspace-activity__menu-data">
                         {this.props.activity.evaluablesIncomplete}
                       </span>
@@ -128,7 +134,7 @@ export default class ProgressData extends React.Component<
                   containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
                   options={{
                     strokeWidth: 10,
-                    duration: 1000,
+                    duration: 0,
                     color: "#ce01bd",
                     trailColor: "#ebebeb",
                     easing: "easeInOut",
@@ -162,22 +168,19 @@ export default class ProgressData extends React.Component<
               content={
                 <div>
                   <div className="workspace-activity__menu-title">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.progress.exercise.title"
-                    )}
+                    {t("labels.exercises", { ns: "materials", count: 0 })}
                   </div>
                   <div className="workspace-activity__menu-label">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.progress.exercise.done"
-                    )}{" "}
+                    {t("labels.assignments", {
+                      ns: "materials",
+                      context: "done",
+                    })}{" "}
                     <span className="workspace-activity__menu-data">
                       {this.props.activity.exercisesAnswered}
                     </span>
                   </div>
                   <div className="workspace-activity__menu-label">
-                    {this.props.i18n.text.get(
-                      "plugin.workspace.progress.exercise.total"
-                    )}{" "}
+                    {t("labels.totalAssignments", { ns: "materials" })}{" "}
                     <span className="workspace-activity__menu-data">
                       {this.props.activity.exercisesTotal}
                     </span>
@@ -190,7 +193,7 @@ export default class ProgressData extends React.Component<
                   containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
                   options={{
                     strokeWidth: 10,
-                    duration: 1000,
+                    duration: 0,
                     color: "#ff9900",
                     trailColor: "#ebebeb",
                     easing: "easeInOut",
@@ -224,3 +227,5 @@ export default class ProgressData extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(ProgressData);

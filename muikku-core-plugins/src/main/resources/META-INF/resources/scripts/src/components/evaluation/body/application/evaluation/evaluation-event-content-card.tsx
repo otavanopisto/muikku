@@ -1,9 +1,4 @@
 import * as React from "react";
-import {
-  EvaluationEvent,
-  EvaluationEnum,
-  AssessmentRequest,
-} from "~/@types/evaluation";
 import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
@@ -12,19 +7,23 @@ import { StateType } from "~/reducers/index";
 import { Dispatch, bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
+import {
+  EvaluationAssessmentRequest,
+  EvaluationEvent,
+  EvaluationEventType,
+} from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationEventContentCardProps extends EvaluationEvent {
-  i18n: i18nType;
   showModifyLink: boolean;
   showDeleteLink: boolean;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   onClickEdit: (
     eventId: string,
     workspaceSubjectIdentifier: string | null,
@@ -43,7 +42,6 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
   const [height, setHeight] = React.useState<0 | "auto">(0);
 
   const {
-    i18n,
     showModifyLink,
     showDeleteLink,
     onClickEdit,
@@ -61,38 +59,40 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
     workspaceSubjectIdentifier,
   } = event;
 
+  const { t } = useTranslation(["evaluation", "common"]);
+
   /**
    * arrowClassMod
    *
    * @param typeMsg typeMsg
    * @returns arrow class modifier
    */
-  const evalEventClassMod = (typeMsg: EvaluationEnum) => {
+  const evalEventClassMod = (typeMsg: EvaluationEventType) => {
     let mod = "";
 
     switch (typeMsg) {
-      case EvaluationEnum.EVALUATION_FAIL:
+      case "EVALUATION_FAIL":
         mod = "state-FAILED";
         break;
-      case EvaluationEnum.EVALUATION_IMPROVED:
+      case "EVALUATION_IMPROVED":
         mod = "state-IMPROVED";
         break;
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST:
-      case EvaluationEnum.EVALUATION_REQUEST:
+      case "INTERIM_EVALUATION_REQUEST":
+      case "EVALUATION_REQUEST":
         mod = "state-REQUESTED";
         break;
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED:
-      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+      case "INTERIM_EVALUATION_REQUEST_CANCELLED":
+      case "EVALUATION_REQUEST_CANCELLED":
         mod = "state-REQUESTED-CANCELLED";
         break;
-      case EvaluationEnum.SUPPLEMENTATION_REQUEST:
+      case "SUPPLEMENTATION_REQUEST":
         mod = "state-INCOMPLETE";
         break;
 
-      case EvaluationEnum.INTERIM_EVALUATION:
-      case EvaluationEnum.EVALUATION_PASS:
+      case "INTERIM_EVALUATION":
+      case "EVALUATION_PASS":
         mod = "state-PASSED";
         break;
 
@@ -139,40 +139,35 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
    * @param typeMsg typeMsg
    * @param grade grade
    */
-  const renderTypeMessage = (typeMsg: EvaluationEnum, grade: string | null) => {
+  const renderTypeMessage = (
+    typeMsg: EvaluationEventType,
+    grade: string | null
+  ) => {
     switch (typeMsg) {
-      case EvaluationEnum.EVALUATION_REQUEST:
+      case "EVALUATION_REQUEST":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18n.text.get(
-              "plugin.evaluation.evaluationModal.events.evaluationRequest.1"
-            )}{" "}
+            {t("content.evaluationRequest1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-REQUESTED">
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.evaluationRequest.2"
-              )}
+              {t("content.evaluationRequest2", { ns: "evaluation" })}
             </span>
           </div>
         );
 
-      case EvaluationEnum.EVALUATION_PASS:
+      case "EVALUATION_PASS":
         return (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.gradePass.1"
-              )}{" "}
+              {t("content.gradePass1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-PASSED">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradePass.2"
-                )}
+                {t("content.gradePass2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ? (
@@ -183,23 +178,19 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </>
         );
 
-      case EvaluationEnum.EVALUATION_FAIL:
+      case "EVALUATION_FAIL":
         return (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.gradeFail.1"
-              )}{" "}
+              {t("content.gradeFail1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-FAILED">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradeFail.2"
-                )}
+                {t("content.gradeFail2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ? (
@@ -210,23 +201,19 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </>
         );
 
-      case EvaluationEnum.EVALUATION_IMPROVED:
+      case "EVALUATION_IMPROVED":
         return (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.gradeImproved.1"
-              )}{" "}
+              {t("content.gradeImproved1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-IMPROVED">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.gradeImproved.2"
-                )}
+                {t("content.gradeImproved2", { ns: "evaluation" })}
               </span>
             </div>
             {grade !== null ? (
@@ -237,103 +224,83 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
           </>
         );
 
-      case EvaluationEnum.SUPPLEMENTATION_REQUEST:
+      case "SUPPLEMENTATION_REQUEST":
         return (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.supplementationRequest.1"
-              )}{" "}
+              {t("content.supplementationRequest1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-INCOMPLETE">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.supplementationRequest.2"
-                )}
+                {t("content.supplementationRequest2", { ns: "evaluation" })}
               </span>
             </div>
-            {grade !== null ||
-            type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
+            {grade !== null || type === "SUPPLEMENTATION_REQUEST" ? (
               <div className="evaluation-modal__event-grade state-INCOMPLETE">
-                {EvaluationEnum.SUPPLEMENTATION_REQUEST ? "T" : grade}
+                T
               </div>
             ) : null}
           </>
         );
 
-      case EvaluationEnum.EVALUATION_REQUEST_CANCELLED:
+      case "EVALUATION_REQUEST_CANCELLED":
         return (
           <>
             <div className="evaluation-modal__event-meta">
               <span className="evaluation-modal__event-author">{author}</span>{" "}
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.1"
-              )}{" "}
+              {t("content.evaluationRequestCancel1", { ns: "evaluation" })}{" "}
               {subjectTitle ? (
                 <span className="evaluation-modal__event-author">
                   {`(${subjectTitle}) `}
                 </span>
               ) : null}
               <span className="evaluation-modal__event-type state-CANCELLED">
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.evaluationRequestCancel.2"
-                )}
+                {t("content.evaluationRequestCancel2", { ns: "evaluation" })}
               </span>
             </div>
-            {grade !== null ||
-            type === EvaluationEnum.SUPPLEMENTATION_REQUEST ? (
+            {grade !== null || type === "SUPPLEMENTATION_REQUEST" ? (
               <div className="evaluation-modal__event-grade state-INCOMPLETE">
-                {EvaluationEnum.SUPPLEMENTATION_REQUEST ? "T" : grade}
+                T
               </div>
             ) : null}
           </>
         );
 
-      case EvaluationEnum.INTERIM_EVALUATION:
+      case "INTERIM_EVALUATION":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18n.text.get(
-              "plugin.evaluation.evaluationModal.events.interimEvaluation.1"
-            )}{" "}
+            {t("content.interimEvaluation1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-CANCELLED">
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluation.2"
-              )}
+              {t("content.interimEvaluation2", { ns: "evaluation" })}
             </span>
           </div>
         );
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST:
+      case "INTERIM_EVALUATION_REQUEST":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18n.text.get(
-              "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.1"
-            )}{" "}
+            {t("content.interimEvaluationRequest1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-REQUESTED">
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluationRequest.2"
-              )}
+              {t("content.interimEvaluationRequest2", { ns: "evaluation" })}
             </span>
           </div>
         );
 
-      case EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED:
+      case "INTERIM_EVALUATION_REQUEST_CANCELLED":
         return (
           <div className="evaluation-modal__event-meta">
             <span className="evaluation-modal__event-author">{author}</span>{" "}
-            {i18n.text.get(
-              "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.1"
-            )}{" "}
+            {t("content.interimEvaluationRequestCancel1", { ns: "evaluation" })}{" "}
             <span className="evaluation-modal__event-type state-CANCELLED">
-              {i18n.text.get(
-                "plugin.evaluation.evaluationModal.events.interimEvaluationRequestCancel.2"
-              )}
+              {t("content.interimEvaluationRequestCancel2", {
+                ns: "evaluation",
+              })}
             </span>
           </div>
         );
@@ -388,21 +355,17 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
                 onClick={onClickEdit(
                   identifier,
                   workspaceSubjectIdentifier,
-                  type === EvaluationEnum.SUPPLEMENTATION_REQUEST
+                  type === "SUPPLEMENTATION_REQUEST"
                 )}
               >
-                {i18n.text.get(
-                  "plugin.evaluation.evaluationModal.events.editButton"
-                )}
+                {t("actions.edit")}
               </Link>
             )}
 
             {showDeleteLink && (
               <DeleteDialog eventData={event}>
                 <Link className="link link--evaluation link--evaluation-delete">
-                  {i18n.text.get(
-                    "plugin.evaluation.evaluationModal.events.deleteButton"
-                  )}
+                  {t("actions.remove")}
                 </Link>
               </DeleteDialog>
             )}
@@ -418,9 +381,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
+  return {};
 }
 
 /**

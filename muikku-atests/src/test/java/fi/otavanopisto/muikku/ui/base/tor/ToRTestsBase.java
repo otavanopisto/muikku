@@ -214,7 +214,7 @@ public class ToRTestsBase extends AbstractUITest {
         navigate("/records#records", false);
         waitForPresent(".application-list__header-secondary");
         waitAndClick(".application-list__header-secondary .button--assignments-and-exercieses");
-        waitForPresent(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED");
+        waitUntilHasText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED");
         assertText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED", "E");
         waitAndClick(".dialog--studies .tabs__tab-data--assignments.active .application-list__item-header--studies-assignment");
         waitForVisible(".dialog--studies .tabs__tab-data--assignments.active .material-page__assignment-assessment-grade-data");
@@ -264,7 +264,7 @@ public class ToRTestsBase extends AbstractUITest {
       
       waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
-      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
+      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
 
       waitForVisible(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label");
       assertTextIgnoreCase(".application-sub-panel__summary-item-state--not-eligible + div.application-sub-panel__summary-item-label", "Matematiikka, pitkä");
@@ -302,10 +302,10 @@ public class ToRTestsBase extends AbstractUITest {
       
       waitForVisible(".tabs__tab-data--yo");
       waitForVisible(".button--yo-signup");
-      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kokeeseen (12.12.2025 asti)");
+      assertTextIgnoreCase(".button--yo-signup", "Ilmoittaudu YO-kirjoituksiin (12.12.2025 asti)");
 
       waitForVisible(".application-sub-panel__notification-body--studies-yo-subjects>div");
-      assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään ainetta kirjoitettavaksesi. Valitse aineet HOPS-lomakkeelta.");
+      assertTextIgnoreCase(".application-sub-panel__notification-body--studies-yo-subjects>div", "Et ole valinnut yhtään kirjoitettavaa ainetta. Valitse aineet HOPS-lomakkeelta.");
     }finally {
       archiveUserByEmail(student.getEmail());
       mockBuilder.wiremockReset();
@@ -334,13 +334,13 @@ public class ToRTestsBase extends AbstractUITest {
       waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title");
       assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(1) .application-sub-panel__item-title", "Opintojen alkamispäivä");
       waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date");
-      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "01.01.2012");
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-start-date span", "1.1.2012");
 //  TODO: This.
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(2) .application-sub-panel__item-title", "Opinto-oikeuden päättymispäivä");
 //        waitForPresent(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date");
 //        assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item-data--study-end-date span", "10.11.2021");
-      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Ohjaajasi");        
+      assertTextIgnoreCase(".application-sub-panel__body--studies-summary-info .application-sub-panel__item:nth-child(3) .application-sub-panel__item-title", "Opinto-ohjaaja");        
       findElementOrReloadAndFind(".item-list--student-counselors .item-list__user-name", 5, 5000);
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-name", "Admin User");
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");

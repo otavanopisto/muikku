@@ -1,6 +1,4 @@
 import * as React from "react";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
@@ -11,19 +9,21 @@ import {
   SendMessageTriggerType,
 } from "~/actions/main-function/messages";
 import { AnyActionType } from "~/actions";
-import { i18nType } from "~/reducers/base/i18n";
-import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
+import MApi from "~/api/api";
+import { WithTranslation, withTranslation } from "react-i18next";
+import { CommunicatorSignature } from "~/generated/client";
 
 /**
  * CommunicatorNewMessageProps
  */
-interface CommunicatorNewMessageProps {
+interface CommunicatorNewMessageProps extends WithTranslation {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   replyThreadId?: number;
   replyToAll?: boolean;
@@ -31,13 +31,14 @@ interface CommunicatorNewMessageProps {
   extraNamespace?: string;
   initialSelectedItems?: Array<ContactRecipientType>;
   refreshInitialSelectedItemsOnOpen?: boolean;
-  i18n: i18nType;
-  signature: MessageSignatureType;
+  signature: CommunicatorSignature;
   sendMessage: SendMessageTriggerType;
   initialSubject?: string;
   initialMessage?: string;
   status: StatusType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpen?: () => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose?: () => any;
   onRecipientChange?: (selectedItems: ContactRecipientType[]) => void;
   isOpen?: boolean;
@@ -198,7 +199,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
    * sendMessage
    * @param closeDialog closeDialog
    */
-  sendMessage(closeDialog: () => any) {
+  sendMessage(closeDialog: () => void) {
     this.setState({
       locked: true,
     });
@@ -274,31 +275,27 @@ class CommunicatorNewMessage extends SessionStateComponent<
    * inputContactsAutofillLoaders
    */
   inputContactsAutofillLoaders() {
+    const communicatorApi = MApi.getCommunicatorApi();
+
     return {
       /**
        * studentsLoader
        * @param searchString searchString
        */
-      studentsLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsUsersSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      studentsLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsUserSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
       /**
        * workspacesLoader
        * @param searchString searchString
        */
-      workspacesLoader: (searchString: string) =>
-        promisify(
-          mApi().communicator.recipientsWorkspacesSearch.read({
-            q: searchString,
-            maxResults: 20,
-          }),
-          "callback"
-        ),
+      workspacesLoader: (searchString: string) => () =>
+        communicatorApi.getCommunicatorRecipientsWorkspacesSearch({
+          q: searchString,
+          maxResults: 20,
+        }),
     };
   }
 
@@ -308,17 +305,15 @@ class CommunicatorNewMessage extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.communicator.createmessage.label") +
+      this.props.t("labels.create", { ns: "messaging", context: "message" }) +
       " - " +
-      this.props.i18n.text.get(
-        "plugin.communicator.createmessage.title.content"
-      );
+      this.props.t("labels.content");
 
     /**
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => any) => [
+    const content = (closeDialog: () => void) => [
       <InputContactsAutofill
         identifier="communicatorRecipients"
         modifier="new-message"
@@ -331,12 +326,11 @@ class CommunicatorNewMessage extends SessionStateComponent<
         hasWorkspacePermission={
           this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
         }
-        placeholder={this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.recipients"
-        )}
-        label={this.props.i18n.text.get(
-          "plugin.communicator.createmessage.title.recipients"
-        )}
+        placeholder={this.props.t("labels.search", { context: "recipients" })}
+        label={this.props.t("labels.recipients", {
+          ns: "messaging",
+          count: 0,
+        })}
         selectedItems={this.state.selectedItems}
         onChange={this.setSelectedItems}
         autofocus={!this.props.initialSelectedItems}
@@ -344,9 +338,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
       <div className="env-dialog__row" key="new-message-2">
         <div className="env-dialog__form-element-container">
           <label htmlFor="messageTitle" className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.title.subject"
-            )}
+            {this.props.t("labels.title", {
+              ns: "messaging",
+              context: "message",
+            })}
           </label>
           <input
             id="messageTitle"
@@ -364,9 +359,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
       >
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.title.content"
-            )}
+            {this.props.t("labels.content")}
           </label>
           <CKEditor editorTitle={editorTitle} onChange={this.onCKEditorChange}>
             {this.state.text}
@@ -386,9 +379,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
             onChange={this.onSignatureToggleClick}
           />
           <label htmlFor="messageSignature" className="env-dialog__input-label">
-            {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.checkbox.signature"
-            )}
+            {this.props.t("labels.addSignature", { ns: "messaging" })}
           </label>
           <span className="env-dialog__input-description">
             <i
@@ -405,25 +396,21 @@ class CommunicatorNewMessage extends SessionStateComponent<
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">
         <Button
           buttonModifiers="dialog-execute"
           onClick={this.sendMessage.bind(this, closeDialog)}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.send"
-          )}
+          {this.props.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={closeDialog}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get(
-            "plugin.communicator.createmessage.button.cancel"
-          )}
+          {this.props.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -431,9 +418,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.communicator.createmessage.button.clearDraft"
-            )}
+            {this.props.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -442,9 +427,10 @@ class CommunicatorNewMessage extends SessionStateComponent<
     return (
       <EnvironmentDialog
         modifier="new-message"
-        title={this.props.i18n.text.get(
-          "plugin.communicator.createmessage.label"
-        )}
+        title={this.props.t("labels.create", {
+          ns: "messaging",
+          context: "message",
+        })}
         content={content}
         footer={footer}
         onOpen={this.checkAgainstStoredState}
@@ -460,11 +446,9 @@ class CommunicatorNewMessage extends SessionStateComponent<
 /**
  * mapStateToProps
  * @param state state
- * @returns
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     signature: state.messages && state.messages.signature,
     status: state.status,
   };
@@ -473,13 +457,11 @@ function mapStateToProps(state: StateType) {
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
- * @returns
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ sendMessage }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommunicatorNewMessage);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(CommunicatorNewMessage)
+);

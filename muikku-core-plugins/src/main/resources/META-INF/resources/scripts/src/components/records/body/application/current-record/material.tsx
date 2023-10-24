@@ -1,5 +1,5 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
+import { localize } from "~/locales/i18n";
 import {
   AssignmentType,
   MaterialCompositeRepliesType,
@@ -20,14 +20,14 @@ import {
 } from "~/components/general/application-list";
 import AnimateHeight from "react-animate-height";
 import Dropdown from "~/components/general/dropdown";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * MaterialProps
  */
-interface MaterialProps {
+interface MaterialProps extends WithTranslation {
   material: MaterialContentNodeType;
   workspace: WorkspaceType;
-  i18n: i18nType;
   status: StatusType;
   compositeReply: MaterialCompositeRepliesType;
   open: boolean;
@@ -47,10 +47,7 @@ interface MaterialState {
 /**
  * Material
  */
-export default class Material extends React.Component<
-  MaterialProps,
-  MaterialState
-> {
+class Material extends React.Component<MaterialProps, MaterialState> {
   /**
    * constructor
    * @param props props
@@ -112,11 +109,7 @@ export default class Material extends React.Component<
             <Dropdown
               openByHover
               content={
-                <span>
-                  {this.props.i18n.time.format(
-                    compositeReply.evaluationInfo.date
-                  )}
-                </span>
+                <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span
@@ -132,11 +125,7 @@ export default class Material extends React.Component<
             <Dropdown
               openByHover
               content={
-                <span>
-                  {this.props.i18n.time.format(
-                    compositeReply.evaluationInfo.date
-                  )}
-                </span>
+                <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span
@@ -262,3 +251,5 @@ export default class Material extends React.Component<
     );
   }
 }
+
+export default withTranslation(["common"])(Material);

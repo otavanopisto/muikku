@@ -1,12 +1,6 @@
 import * as React from "react";
-import { i18nType } from "~/reducers/base/i18n";
-import {
-  DiscussionType,
-  DiscussionUserType,
-  DiscussionThreadReplyType,
-  DiscussionThreadReplyListType,
-  DiscussionThreadType,
-} from "~/reducers/discussion";
+import { DiscussionState } from "~/reducers/discussion";
+import { localize } from "~/locales/i18n";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
 import { IconButton } from "~/components/general/button";
@@ -38,13 +32,15 @@ import {
   unsubscribeDiscussionThread,
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
+import { DiscussionThread } from "~/generated/client";
+import * as moment from "moment";
+import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * CurrentThreadProps
  */
-interface DiscussionCurrentThreadProps {
-  discussion: DiscussionType;
-  i18n: i18nType;
+interface DiscussionCurrentThreadProps extends WithTranslation {
+  discussion: DiscussionState;
   userId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   permissions: any;
@@ -80,6 +76,25 @@ class DiscussionCurrentThread extends React.Component<
       hiddenParentsLists: [],
     };
   }
+
+  /**
+   * If thread is locked, user can't reply to it
+   *
+   * @param thread thread
+   * @returns boolean
+   */
+  isThreadLocked = (thread: DiscussionThread) => {
+    switch (thread.lock) {
+      case "ALL":
+        return true;
+
+      case "STUDENTS":
+        return this.props.status.isStudent;
+
+      default:
+        return false;
+    }
+  };
 
   /**
    * getToPage
@@ -165,7 +180,7 @@ class DiscussionCurrentThread extends React.Component<
    * @param isSubscribed isSubscribed
    */
   handleSubscribeOrUnsubscribeClick =
-    (thread: DiscussionThreadType, isSubscribed: boolean) =>
+    (thread: DiscussionThread, isSubscribed: boolean) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       e.stopPropagation();
       if (isSubscribed) {
@@ -200,8 +215,7 @@ class DiscussionCurrentThread extends React.Component<
         this.props.discussion.current.forumAreaId
       ] || {};
 
-    const userCreator: DiscussionUserType =
-      this.props.discussion.current.creator;
+    const userCreator = this.props.discussion.current.creator;
 
     const userCategory =
       this.props.discussion.current.creator.id > 10
@@ -222,29 +236,42 @@ class DiscussionCurrentThread extends React.Component<
           firstName={userCreator.firstName}
           hasImage={userCreator.hasImage}
           userCategory={userCategory}
-          avatarAriaLabel={this.props.i18n.text.get(
-            "plugin.wcag.userAvatar.label"
-          )}
+          avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
+            ns: "messaging",
+          })}
         />
       );
     }
 
-    const student: boolean = this.props.status.isStudent === true;
+    // Logged in user is student
+    const student: boolean = this.props.status.isStudent;
+
+    // Creator and logged in user are same
     const threadOwner: boolean =
       this.props.userId === this.props.discussion.current.creator.id;
+
+    // User can edit if user is thread owner or user has editMessages permission
+    const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
+
+    // If thread is locked, user can't reply to it
+    const threadLocked = this.isThreadLocked(this.props.discussion.current);
+
+    // Lock icon is shown if some value exists in lock property
+    const showLockIcon = !!this.props.discussion.current.lock;
+
+    // User can remove thread if user is thread owner or user has removeThread permission
     const canRemoveThread: boolean =
       (!student && threadOwner) ||
       areaPermissions.removeThread ||
       this.props.permissions.WORKSPACE_DELETE_FORUM_THREAD;
-    let studentCanRemoveThread: boolean = threadOwner ? true : false;
-    const canEditThread: boolean = threadOwner || areaPermissions.editMessages;
-    const threadLocked: boolean = this.props.discussion.current.locked === true;
-    const replies: DiscussionThreadReplyListType =
-      this.props.discussion.currentReplies;
+
+    const replies = this.props.discussion.currentReplies;
+
+    // student can remove thread if student is thread owner
+    let studentCanRemoveThread: boolean = threadOwner;
 
     // If the thread has someone elses messages, student can't remove the thread
-
-    if (studentCanRemoveThread == true) {
+    if (studentCanRemoveThread) {
       for (let i = 0; i < replies.length; i++) {
         if (this.props.userId !== replies[i].creator.id) {
           studentCanRemoveThread = false;
@@ -255,7 +282,7 @@ class DiscussionCurrentThread extends React.Component<
     return (
       <DiscussionCurrentThreadListContainer
         sticky={this.props.discussion.current.sticky}
-        locked={this.props.discussion.current.locked}
+        locked={showLockIcon}
         title={
           <h2 className="application-list__title">
             <span className="application-list__title-main">
@@ -266,9 +293,9 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.discussion.unsubscribe.thread"
-                  )}
+                  content={this.props.i18n.t("labels.unsubscribe", {
+                    ns: "messaging",
+                  })}
                 >
                   <IconButton
                     icon="bookmark-full"
@@ -283,9 +310,9 @@ class DiscussionCurrentThread extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="discussion-tooltip"
-                  content={this.props.i18n.text.get(
-                    "plugin.discussion.subscribe.thread"
-                  )}
+                  content={this.props.i18n.t("labels.subscribe", {
+                    ns: "messaging",
+                  })}
                 >
                   <IconButton
                     icon="bookmark-empty"
@@ -310,9 +337,7 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {this.props.i18n.time.format(
-                    this.props.discussion.current.created
-                  )}
+                  {localize.date(this.props.discussion.current.created)}
                 </span>
               </span>
             }
@@ -335,38 +360,40 @@ class DiscussionCurrentThread extends React.Component<
               <DiscussionThreadBody
                 html={this.props.discussion.current.message}
               >
-                {this.props.discussion.current.created !==
-                this.props.discussion.current.lastModified ? (
-                  <span className="application-list__item-edited">
-                    {this.props.i18n.text.get(
-                      "plugin.discussion.content.isEdited",
-                      this.props.i18n.time.format(
-                        this.props.discussion.current.lastModified
-                      )
+                {!moment(this.props.discussion.current.created).isSame(
+                  this.props.discussion.current.lastModified
+                ) ? (
+                  <div className="application-list__item-edited">
+                    {this.props.i18n.t(
+                      "labels.edited",
+
+                      {
+                        context: "in",
+                        ns: "messaging",
+                        time: localize.date(
+                          this.props.discussion.current.lastModified
+                        ),
+                      }
                     )}
-                  </span>
+                  </div>
                 ) : null}
               </DiscussionThreadBody>
               {userCreator !== null ? (
                 <DiscussionThreadFooter hasActions>
-                  {!threadLocked || !student ? (
+                  {!threadLocked || threadOwner ? (
                     <Link
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("answer")}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.message"
-                      )}
+                      {this.props.i18n.t("actions.reply", { ns: "messaging" })}
                     </Link>
                   ) : null}
-                  {!threadLocked || !student ? (
+                  {!threadLocked || threadOwner ? (
                     <Link
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("quote")}
                     >
-                      {this.props.i18n.text.get(
-                        "plugin.discussion.reply.quote"
-                      )}
+                      {this.props.i18n.t("actions.quote")}
                     </Link>
                   ) : null}
                   {canEditThread ? (
@@ -374,15 +401,13 @@ class DiscussionCurrentThread extends React.Component<
                       className="link link--application-list"
                       onClick={this.handleOnReplyClick("modify")}
                     >
-                      {this.props.i18n.text.get("plugin.discussion.reply.edit")}
+                      {this.props.i18n.t("actions.edit")}
                     </Link>
                   ) : null}
                   {canRemoveThread || studentCanRemoveThread ? (
                     <DeleteThreadComponent>
                       <Link className="link link--application-list">
-                        {this.props.i18n.text.get(
-                          "plugin.discussion.reply.delete"
-                        )}
+                        {this.props.i18n.t("actions.remove")}
                       </Link>
                     </DeleteThreadComponent>
                   ) : null}
@@ -407,73 +432,71 @@ class DiscussionCurrentThread extends React.Component<
           ) : null}
         </DiscussionCurrentThreadElement>
 
-        {this.props.discussion.currentReplies.map(
-          (reply: DiscussionThreadReplyType) => {
-            // user can be null in situtations where whole user is removed completely
-            // from muikku. Then there is no reply.creator to use.
-            const user: DiscussionUserType = reply.creator;
+        {this.props.discussion.currentReplies.map((reply) => {
+          // user can be null in situtations where whole user is removed completely
+          // from muikku. Then there is no reply.creator to use.
+          const user = reply.creator;
 
-            // By default setting remove message is false
-            let canRemoveMessage = false;
+          // By default setting remove message is false
+          let canRemoveMessage = false;
 
-            // By default setting edit message is false
-            let canEditMessage = false;
-            let avatar;
+          // By default setting edit message is false
+          let canEditMessage = false;
+          let avatar;
 
-            if (!user) {
-              // This is what it shows when the user is not ready
-              // Also if reply creator is null aka deleted
-              // These situtations don't allow changing user specific color, so
-              // color is same for all of those cases
-              avatar = <div className="avatar avatar--category-1"></div>;
-            } else {
-              const userCategory =
-                reply.creator.id > 10
-                  ? (reply.creator.id % 10) + 1
-                  : reply.creator.id;
-              canRemoveMessage =
-                this.props.userId === reply.creator.id ||
-                areaPermissions.removeThread;
-              canEditMessage =
-                this.props.userId === reply.creator.id ||
-                areaPermissions.editMessages;
-              avatar = (
-                <Avatar
-                  key={reply.id}
-                  id={user.id}
-                  firstName={user.firstName}
-                  hasImage={user.hasImage}
-                  userCategory={userCategory}
-                />
-              );
-            }
-
-            // Checks if element parent has hide its siblings
-            const isHiddenElement = this.state.hiddenParentsLists.includes(
-              reply.parentReplyId
-            );
-
-            // Checks if element has siblings that are hidden
-            const parentHasHiddenSiblings =
-              this.state.hiddenParentsLists.includes(reply.id);
-
-            return (
-              <DiscussionThreadReply
+          if (!user) {
+            // This is what it shows when the user is not ready
+            // Also if reply creator is null aka deleted
+            // These situtations don't allow changing user specific color, so
+            // color is same for all of those cases
+            avatar = <div className="avatar avatar--category-1"></div>;
+          } else {
+            const userCategory =
+              reply.creator.id > 10
+                ? (reply.creator.id % 10) + 1
+                : reply.creator.id;
+            canRemoveMessage =
+              this.props.userId === reply.creator.id ||
+              areaPermissions.removeThread;
+            canEditMessage =
+              this.props.userId === reply.creator.id ||
+              areaPermissions.editMessages;
+            avatar = (
+              <Avatar
                 key={reply.id}
-                discussionItem={reply}
-                user={user}
-                isStudent={student}
-                avatar={avatar}
-                isHidden={isHiddenElement}
-                parentHasHiddenSiblings={parentHasHiddenSiblings}
-                canEditMessage={canEditMessage}
-                canRemoveMessage={canRemoveMessage}
-                threadLocked={threadLocked}
-                onHideShowSubRepliesClick={this.onHideShowSubRepliesClick}
+                id={user.id}
+                firstName={user.firstName}
+                hasImage={user.hasImage}
+                userCategory={userCategory}
               />
             );
           }
-        )}
+
+          // Checks if element parent has hide its siblings
+          const isHiddenElement = this.state.hiddenParentsLists.includes(
+            reply.parentReplyId
+          );
+
+          // Checks if element has siblings that are hidden
+          const parentHasHiddenSiblings =
+            this.state.hiddenParentsLists.includes(reply.id);
+
+          return (
+            <DiscussionThreadReply
+              key={reply.id}
+              discussionItem={reply}
+              user={user}
+              isStudent={student}
+              avatar={avatar}
+              isHidden={isHiddenElement}
+              parentHasHiddenSiblings={parentHasHiddenSiblings}
+              canEditMessage={canEditMessage}
+              canRemoveMessage={canRemoveMessage}
+              threadLocked={threadLocked}
+              onHideShowSubRepliesClick={this.onHideShowSubRepliesClick}
+            />
+          );
+        })}
 
         <PagerV2
           previousLabel=""
@@ -497,7 +520,6 @@ class DiscussionCurrentThread extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     discussion: state.discussion,
     userId: state.status.userId,
     permissions: state.status.permissions,
@@ -519,7 +541,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionCurrentThread);
+export default withTranslation(["messaging"])(
+  connect(mapStateToProps, mapDispatchToProps)(DiscussionCurrentThread)
+);

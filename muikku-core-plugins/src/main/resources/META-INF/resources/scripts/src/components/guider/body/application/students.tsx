@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
-import { i18nType } from "~/reducers/base/i18n";
 import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -22,29 +21,29 @@ import {
   RemoveFromGuiderSelectedStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
-import Student from "./students/student";
+import StudentListItem from "./students/student";
 import { StateType } from "~/reducers";
 import {
   GuiderStudentsStateType,
   GuiderStudentUserProfileType,
-  GuiderStudentType,
-  GuiderType,
+  GuiderState,
 } from "~/reducers/main-function/guider";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
+import { Student } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * GuiderStudentsProps
  */
-interface GuiderStudentsProps {
-  i18n: i18nType;
+interface GuiderStudentsProps extends WithTranslation<["common"]> {
   guiderStudentsState: GuiderStudentsStateType;
   guiderStudentsHasMore: boolean;
   loadMoreStudents: LoadMoreStudentsTriggerType;
   guiderStudentsCurrent: GuiderStudentUserProfileType;
-  guider: GuiderType;
+  guider: GuiderState;
   addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType;
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
@@ -111,7 +110,7 @@ class GuiderStudents extends BodyScrollLoader<
    * onStudentClick
    * @param student student
    */
-  onStudentClick(student: GuiderStudentType) {
+  onStudentClick(student: Student) {
     const locationData = queryString.parse(
       document.location.hash.split("?")[1] || "",
       { arrayFormat: "bracket" }
@@ -130,14 +129,20 @@ class GuiderStudents extends BodyScrollLoader<
     } else if (this.props.guiderStudentsState === "ERROR") {
       return (
         <div className="empty">
-          {this.props.i18n.text.get("plugin.guider.errorMessage.users")}
+          {this.props.i18n.t("notifications.loadError", {
+            ns: "orders",
+            context: "student",
+          })}
         </div>
       );
     } else if (this.props.guider.students.length === 0) {
       return (
         <div className="empty">
           <span>
-            {this.props.i18n.text.get("plugin.guider.errorMessage.nostudents")}
+            {this.props.i18n.t("content.empty", {
+              ns: "users",
+              context: "students",
+            })}
           </span>
         </div>
       );
@@ -161,42 +166,39 @@ class GuiderStudents extends BodyScrollLoader<
             }
             dataState={this.props.guiderStudentsState}
           >
-            {this.props.guider.students.map(
-              (student: GuiderStudentType, index: number) => {
-                const isSelected =
-                  this.props.guider.selectedStudentsIds.includes(student.id);
-                return {
-                  as: ApplicationListItem,
-                  className: "user user--guider",
-                  onSelect: this.props.addToGuiderSelectedStudents.bind(
-                    null,
-                    student
-                  ),
-                  onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
-                    null,
-                    student
-                  ),
-                  onEnter: this.onStudentClick.bind(this, student),
-                  isSelected,
-                  key: student.id,
-                  checkboxId: `user-select-${index}`,
-                  checkboxClassName: "user__selector",
-                  /**
-                   * contents
-                   * @param checkbox checkbox
-                   */
-                  contents: (
-                    checkbox: React.ReactElement<HTMLInputElement>
-                  ) => (
-                    <Student
-                      index={index}
-                      checkbox={checkbox}
-                      student={student}
-                    />
-                  ),
-                };
-              }
-            )}
+            {this.props.guider.students.map((student, index: number) => {
+              const isSelected = this.props.guider.selectedStudentsIds.includes(
+                student.id
+              );
+              return {
+                as: ApplicationListItem,
+                className: "user user--guider",
+                onSelect: this.props.addToGuiderSelectedStudents.bind(
+                  null,
+                  student
+                ),
+                onDeselect: this.props.removeFromGuiderSelectedStudents.bind(
+                  null,
+                  student
+                ),
+                onEnter: this.onStudentClick.bind(this, student),
+                isSelected,
+                key: student.id,
+                checkboxId: `user-select-${index}`,
+                checkboxClassName: "user__selector",
+                /**
+                 * contents
+                 * @param checkbox checkbox
+                 */
+                contents: (checkbox: React.ReactElement<HTMLInputElement>) => (
+                  <StudentListItem
+                    index={index}
+                    checkbox={checkbox}
+                    student={student}
+                  />
+                ),
+              };
+            })}
           </SelectableList>
         </BodyScrollKeeper>
       </>
@@ -210,7 +212,6 @@ class GuiderStudents extends BodyScrollLoader<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guiderStudentsState: state.guider.studentsState,
     guiderStudentsHasMore: state.guider.hasMore,
     guiderStudentsCurrent: state.guider.currentStudent,
@@ -233,4 +234,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GuiderStudents);
+export default withTranslation(["users"])(
+  connect(mapStateToProps, mapDispatchToProps)(GuiderStudents)
+);

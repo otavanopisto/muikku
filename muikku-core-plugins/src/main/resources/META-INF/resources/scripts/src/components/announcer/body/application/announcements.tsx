@@ -1,9 +1,10 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
-import { i18nType } from "~/reducers/base/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -31,17 +32,16 @@ import ApplicationList, {
   ApplicationListHeaderPrimary,
   ApplicationListItemDate,
 } from "~/components/general/application-list";
-import { UserIndexType } from "~/reducers/user-index";
+import { UserIndexState } from "~/reducers/user-index";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
-import { AnyActionType } from "~/actions";
 
 /**
  * AnnouncementsProps
  */
-interface AnnouncementsProps {
-  i18n: i18nType;
+interface AnnouncementsProps extends WithTranslation {
   announcements: AnnouncementsStateType;
-  userIndex: UserIndexType;
+  userIndex: UserIndexState;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
@@ -114,9 +114,9 @@ class Announcements extends React.Component<
                           htmlFor={`announcementSelect-` + announcement.id}
                           className="visually-hidden"
                         >
-                          {this.props.i18n.text.get(
-                            "plugin.wcag.announcementSelect.label"
-                          )}
+                          {this.props.i18n.t("content.empty", {
+                            context: "announcements",
+                          })}
                         </label>
                         {checkbox}
                       </div>
@@ -125,12 +125,8 @@ class Announcements extends React.Component<
                     <ApplicationListItemHeader>
                       <ApplicationListHeaderPrimary>
                         <ApplicationListItemDate
-                          startDate={this.props.i18n.time.format(
-                            announcement.startDate
-                          )}
-                          endDate={this.props.i18n.time.format(
-                            announcement.endDate
-                          )}
+                          startDate={localize.date(announcement.startDate)}
+                          endDate={localize.date(announcement.endDate)}
                         />
                       </ApplicationListHeaderPrimary>
                     </ApplicationListItemHeader>
@@ -176,9 +172,7 @@ class Announcements extends React.Component<
                           tabIndex={0}
                           className="link link--application-list"
                         >
-                          {this.props.i18n.text.get(
-                            "plugin.announcer.link.edit"
-                          )}
+                          {this.props.i18n.t("actions.edit")}
                         </Link>
                       </NewEditAnnouncement>
                       {this.props.announcements.location !== "archived" ? (
@@ -187,9 +181,7 @@ class Announcements extends React.Component<
                             tabIndex={0}
                             className="link link--application-list"
                           >
-                            {this.props.i18n.text.get(
-                              "plugin.announcer.link.delete"
-                            )}
+                            {this.props.i18n.t("actions.remove")}
                           </Link>
                         </DeleteAnnouncementDialog>
                       ) : null}
@@ -212,7 +204,6 @@ class Announcements extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     announcements: state.announcements,
     userIndex: state.userIndex,
   };
@@ -233,4 +224,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Announcements);
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(Announcements)
+);

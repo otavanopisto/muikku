@@ -1,8 +1,8 @@
 import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
-import { i18nType } from "~/reducers/base/i18n";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { Role, StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -19,20 +19,17 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import {
-  PurchaseProductType,
-  PurchaseType,
-} from "~/reducers/main-function/profile";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { CeeposOrder, CeeposPurchaseProduct } from "~/generated/client";
 
 /**
  * CeeposProps
  */
-interface CeeposProps {
-  i18n: i18nType;
+interface CeeposProps extends WithTranslation {
   status: StatusType;
-  guider: GuiderType;
+  guider: GuiderState;
   locale: string;
   deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType;
   completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType;
@@ -42,11 +39,11 @@ interface CeeposProps {
  * CeeposState
  */
 interface CeeposState {
-  isConfirmDialogOpenFor: PurchaseProductType | null;
+  isConfirmDialogOpenFor: CeeposPurchaseProduct | null;
   isDeleteDialogOpen: boolean;
-  orderToBeDeleted: PurchaseType | null;
+  orderToBeDeleted: CeeposOrder | null;
   isCompleteDialogOpen: boolean;
-  orderToBeCompleted: PurchaseType | null;
+  orderToBeCompleted: CeeposOrder | null;
 }
 
 /**
@@ -87,7 +84,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * @param closeDropdown closeDropdown
    */
   beginOrderCreationProcess(
-    p: PurchaseProductType,
+    p: CeeposPurchaseProduct,
     closeDropdown?: () => void
   ) {
     this.setState({
@@ -100,7 +97,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * beginOrderDeleteProcess
    * @param order order object of purchase
    */
-  beginOrderDeleteProcess(order: PurchaseType) {
+  beginOrderDeleteProcess(order: CeeposOrder) {
     this.setState({
       isDeleteDialogOpen: true,
       orderToBeDeleted: order,
@@ -130,7 +127,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * beginOrderManualCompleteProcess
    * @param order order object of purchase
    */
-  beginOrderManualCompleteProcess(order: PurchaseType) {
+  beginOrderManualCompleteProcess(order: CeeposOrder) {
     this.setState({
       isCompleteDialogOpen: true,
       orderToBeCompleted: order,
@@ -167,11 +164,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      */
     const orderDeleteDialogContent = (closeDialog: () => void) => (
       <div>
-        <span>
-          {this.props.i18n.text.get(
-            "plugin.guider.orderDeleteDialog.description"
-          )}
-        </span>
+        <span>{this.props.i18n.t("content.removing", { ns: "orders" })}</span>
       </div>
     );
 
@@ -185,15 +178,13 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.acceptOrderDelete}
         >
-          {this.props.i18n.text.get("plugin.guider.orderDeleteDialog.okButton")}
+          {this.props.i18n.t("actions.confirmRemove", { ns: "orders" })}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.declineOrderDelete}
         >
-          {this.props.i18n.text.get(
-            "plugin.guider.orderDeleteDialog.cancelButton"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -205,9 +196,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     const orderCompleteDialogContent = (closeDialog: () => void) => (
       <div>
         <span>
-          {this.props.i18n.text.get(
-            "plugin.guider.orderCompleteDialog.description"
-          )}
+          {this.props.i18n.t("content.finishingOrder", { ns: "orders" })}
         </span>
       </div>
     );
@@ -222,17 +211,13 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           buttonModifiers={["standard-ok", "execute"]}
           onClick={this.acceptOrderManualComplete}
         >
-          {this.props.i18n.text.get(
-            "plugin.guider.orderCompleteDialog.okButton"
-          )}
+          {this.props.i18n.t("actions.confirmSave", { ns: "orders" })}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
           onClick={this.declineOrderManualComplete}
         >
-          {this.props.i18n.text.get(
-            "plugin.guider.orderCompleteDialog.cancelButton"
-          )}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -317,29 +302,26 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       {p.product.Description}
                     </span>
                     <span className="application-list__header-primary-description">
-                      {this.props.i18n.text.get(
-                        "plugin.guider.purchases.description." + p.state
-                      )}
+                      {this.props.i18n.t(`states.${p.state}`, {
+                        ns: "orders",
+                        context: "counselor",
+                      })}
                     </span>
                     <span className="application-list__header-primary-meta">
                       <span>
-                        {this.props.i18n.text.get(
-                          "plugin.guider.purchases.orderId"
-                        )}
+                        {this.props.i18n.t("labels.id", {
+                          ns: "orders",
+                        })}
                         : {p.id}
                       </span>
                       <span>
-                        {this.props.i18n.text.get(
-                          "plugin.guider.purchases.date.created"
-                        )}
-                        : {this.props.i18n.time.format(p.created)}
+                        {this.props.i18n.t("labels.created")}:{" "}
+                        {localize.date(p.created)}
                       </span>
                       {p.paid ? (
                         <span>
-                          {this.props.i18n.text.get(
-                            "plugin.guider.purchases.date.paid"
-                          )}
-                          : {this.props.i18n.time.format(p.paid)}
+                          {this.props.i18n.t("labels.paid")}:{" "}
+                          {localize.date(p.paid)}
                         </span>
                       ) : null}
                     </span>
@@ -356,9 +338,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                             icon="trash"
                             buttonModifiers={["delete-student-order", "fatal"]}
                           >
-                            {this.props.i18n.text.get(
-                              "plugin.guider.purchase.deleteOrderLink"
-                            )}
+                            {this.props.i18n.t("actions.remove", {
+                              ns: "orders",
+                            })}
                           </Button>
                         ) : null}
 
@@ -378,9 +360,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                               "execute",
                             ]}
                           >
-                            {this.props.i18n.text.get(
-                              "plugin.guider.purchase.completeOrderLink"
-                            )}
+                            {this.props.i18n.t("actions.finalize", {
+                              ns: "orders",
+                            })}
                           </Button>
                         ) : null}
                       </span>
@@ -393,7 +375,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
           </ApplicationList>
         ) : (
           <div className="empty">
-            <span>{this.props.i18n.text.get("plugin.guider.noPurchases")}</span>
+            <span>
+              {this.props.i18n.t("content.noPurchases", { ns: "orders" })}
+            </span>
           </div>
         )}
 
@@ -401,9 +385,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         <Dialog
           modifier="dialog-delete-order"
           isOpen={!!this.state.isDeleteDialogOpen}
-          title={this.props.i18n.text.get(
-            "plugin.guider.orderDeleteDialog.title"
-          )}
+          title={this.props.i18n.t("labels.remove", { ns: "orders" })}
           onClose={this.declineOrderDelete}
           content={orderDeleteDialogContent}
           footer={orderDeleteDialogFooter}
@@ -413,9 +395,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
         <Dialog
           modifier="dialog-complete-order"
           isOpen={!!this.state.isCompleteDialogOpen}
-          title={this.props.i18n.text.get(
-            "plugin.guider.orderCompleteDialog.title"
-          )}
+          title={this.props.i18n.t("labels.complete", { ns: "orders" })}
           onClose={this.declineOrderManualComplete}
           content={orderCompleteDialogContent}
           footer={orderCompleteDialogFooter}
@@ -431,7 +411,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     guider: state.guider,
     locale: state.locales.current,
     status: state.status,
@@ -452,4 +431,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Ceepos);
+export default withTranslation(["orders"])(
+  connect(mapStateToProps, mapDispatchToProps)(Ceepos)
+);

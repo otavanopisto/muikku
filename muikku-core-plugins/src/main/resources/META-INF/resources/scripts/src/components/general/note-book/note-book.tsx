@@ -1,11 +1,10 @@
 import * as React from "react";
 import NoteEditor from "./note-editor";
-import { NoteBookState, WorkspaceNote } from "~/reducers/notebook/notebook";
+import { NoteBookState } from "~/reducers/notebook/notebook";
 import { StateType } from "~/reducers";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   LoadNotebookEntries,
   loadNotebookEntries,
@@ -36,7 +35,9 @@ import { useScroll } from "./hooks/useScroll";
 import { useDragDropManager } from "react-dnd";
 import Dropdown from "~/components/general/dropdown";
 import { useLocalStorage } from "usehooks-ts";
+import { useTranslation } from "react-i18next";
 import NoteBookPDFDialog from "./notebook-pdf-dialog";
+import { WorkspaceNote } from "~/generated/client";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -59,7 +60,6 @@ export const HTML5toTouch: MultiBackendOptions = {
  * NoteBookProps
  */
 interface NoteBookProps {
-  i18n: i18nType;
   status: StatusType;
   currentWorkspace: WorkspaceType;
   notebook: NoteBookState;
@@ -93,6 +93,8 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
     []
   );
   const [editOrder, setEditOrder] = React.useState<boolean>(false);
+
+  const { t } = useTranslation("notebook");
 
   React.useEffect(() => {
     if (notes === null) {
@@ -292,7 +294,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
   return (
     <div className="notebook">
       <div className="notebook__actions">
-        <Dropdown openByHover content={<p>Lisää muistiinpano</p>}>
+        <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
           <IconButton
             icon="plus"
             buttonModifiers={["notebook-action"]}
@@ -300,7 +302,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>Järjestele muistiinpanoja</p>}>
+        <Dropdown openByHover content={<p>{t("actions.organize")}</p>}>
           <IconButton
             icon="move"
             buttonModifiers={["notebook-action"]}
@@ -308,7 +310,10 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>Avaa kaikki</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.openAll", { ns: "common" })}</p>}
+        >
           <IconButton
             icon="arrow-down"
             buttonModifiers={["notebook-action"]}
@@ -316,7 +321,10 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>Sulje kaikki</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.closeAll", { ns: "common" })}</p>}
+        >
           <IconButton
             icon="arrow-up"
             buttonModifiers={["notebook-action"]}
@@ -343,8 +351,6 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         >
           <NoteEditor />
         </div>
-
-        {/* TODO: lokalisointi*/}
         <NoteList>
           {notebook.state === "LOADING" ? (
             <div className="empty-loader" />
@@ -354,7 +360,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
             )
           ) : (
             <div className="empty">
-              <span>Ei muistiinpanoja</span>
+              <span>{t("content.empty")}</span>
             </div>
           )}
         </NoteList>
@@ -369,7 +375,6 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     notebook: state.notebook,
     status: state.status,
     currentWorkspace: state.workspaces.currentWorkspace,

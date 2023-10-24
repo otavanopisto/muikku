@@ -1,4 +1,3 @@
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -8,19 +7,18 @@ import {
   editContactLogEventComment,
   EditContactLogEventCommentTriggerType,
 } from "~/actions/main-function/guider";
-import { ContactTypes } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
-import { ContactLogEventComment } from "~/reducers/main-function/guider";
+import { ContactLogEventComment, ContactType } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * EditContactLogEventCommentStateProps
  */
-interface EditContactLogEventCommentProps {
-  i18n: i18nType;
+interface EditContactLogEventCommentProps extends WithTranslation<["common"]> {
   status: StatusType;
   comment: ContactLogEventComment;
   studentUserEntityId: number;
@@ -34,7 +32,7 @@ interface EditContactLogEventCommentProps {
 interface EditContactLogEventCommentState {
   text: string;
   date: Date;
-  type: ContactTypes;
+  type: ContactType;
   locked: boolean;
 }
 
@@ -82,7 +80,7 @@ class EditContactLogEventComment extends SessionStateComponent<
    */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setStateAndStore(
-      { type: e.target.value as ContactTypes },
+      { type: e.target.value as ContactType },
       this.props.comment.id + "-edit-comment"
     );
   };
@@ -143,17 +141,15 @@ class EditContactLogEventComment extends SessionStateComponent<
    */
   render() {
     const editorTitle =
-      this.props.i18n.text.get("plugin.discussion.answertomessage.topic") +
+      this.props.i18n.t("labels.reply", { ns: "messaging" }) +
       " - " +
-      this.props.i18n.text.get("plugin.discussion.createmessage.content");
+      this.props.i18n.t("labels.content");
 
     const content = (
       <div className="env-dialog__row env-dialog__row--ckeditor">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.content"
-            )}
+            {this.props.i18n.t("labels.content")}
           </label>
           <CKEditor
             editorTitle={editorTitle}
@@ -173,14 +169,14 @@ class EditContactLogEventComment extends SessionStateComponent<
           onClick={this.editContactEventComment}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.send")}
+          {this.props.i18n.t("actions.send")}
         </Button>
         <Button
           buttonModifiers="dialog-cancel"
           onClick={this.handleOnEditorClose}
           disabled={this.state.locked}
         >
-          {this.props.i18n.text.get("plugin.discussion.createmessage.cancel")}
+          {this.props.i18n.t("actions.cancel")}
         </Button>
         {this.recovered ? (
           <Button
@@ -188,9 +184,7 @@ class EditContactLogEventComment extends SessionStateComponent<
             onClick={this.clearUp}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.discussion.createmessage.clearDraft"
-            )}
+            {this.props.i18n.t("actions.remove", { context: "draft" })}
           </Button>
         ) : null}
       </div>
@@ -201,9 +195,7 @@ class EditContactLogEventComment extends SessionStateComponent<
         <section className="env-dialog__wrapper">
           <div className="env-dialog__content">
             <header className="env-dialog__header">
-              {this.props.i18n.text.get(
-                "plugin.guider.user.dialog.editContactLogComment.title"
-              )}
+              {this.props.i18n.t("labels.edit", { context: "comment" })}
             </header>
             <section className="env-dialog__body">{content}</section>
             <footer className="env-dialog__footer">{footer}</footer>
@@ -221,7 +213,6 @@ class EditContactLogEventComment extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
@@ -235,7 +226,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ editContactLogEventComment }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EditContactLogEventComment);
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(EditContactLogEventComment)
+);

@@ -1,19 +1,24 @@
 import * as React from "react";
 import { WorkspaceType } from "~/reducers/workspaces";
-import { i18nType } from "~/reducers/base/i18n";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/form.scss";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { StateType } from "~/reducers";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
+import { localize } from "~/locales/i18n";
 
 /**
  * StepProps
  */
-interface StepProps {
+interface StepProps extends WithTranslation {
   workspace: WorkspaceType;
-  i18n: i18nType;
   getStore: () => CopyWizardStoreType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore: (u: CopyWizardStoreUpdateType) => any;
 }
 
@@ -25,7 +30,7 @@ interface StepState {}
 /**
  * Step
  */
-export default class Step extends React.Component<StepProps, StepState> {
+class Step extends React.Component<StepProps, StepState> {
   /**
    * constructor
    * @param props props
@@ -136,6 +141,8 @@ export default class Step extends React.Component<StepProps, StepState> {
    * render
    */
   render() {
+    const { t } = this.props;
+
     const copyMaterials =
       this.props.getStore().copyMaterials !== "NO" ? (
         <div className="form__fieldset-content form__fieldset-content--horizontal">
@@ -148,9 +155,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               checked={this.props.getStore().copyMaterials === "CLONE"}
             />
             <label htmlFor="copyMaterialsAsClone">
-              {this.props.i18n.text.get(
-                "plugin.workspacecopywizard.workspaceMaterials.copyMaterials.label"
-              )}
+              {t("labels.copy", { ns: "workspace", context: "materials" })}
             </label>
           </div>
           <div className="form-element form-element--checkbox-radiobutton">
@@ -162,9 +167,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               checked={this.props.getStore().copyMaterials === "LINK"}
             />
             <label htmlFor="copyMaterialsAsLink">
-              {this.props.i18n.text.get(
-                "plugin.workspacecopywizard.workspaceMaterials.linkMaterials.label"
-              )}
+              {t("labels.linkMaterials", { ns: "workspace" })}
             </label>
           </div>
         </div>
@@ -178,9 +181,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form__row">
                 <div className="form-element form-element--workspace-name">
                   <label htmlFor="workspaceName">
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceName.label"
-                    )}
+                    {t("labels.name", { ns: "workspace" })}
                   </label>
                   <input
                     id="workspaceName"
@@ -193,9 +194,7 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form__row">
                 <div className="form-element form-element--workspace-name-extension">
                   <label htmlFor="workspaceExtension">
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceExtension.label"
-                    )}
+                    {t("labels.nameExtension", { ns: "workspace" })}
                   </label>
                   <input
                     id="workspaceExtension"
@@ -208,36 +207,28 @@ export default class Step extends React.Component<StepProps, StepState> {
               <div className="form__row form__row--split">
                 <div className="form-element form-element__copy-workspace-start-date">
                   <label htmlFor="workspaceStartDate">
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceStartDate.label"
-                    )}
+                    {t("labels.begingDate", { ns: "workspace" })}
                   </label>
                   <DatePicker
                     className="form-element__input form-element__input--workspace-data"
                     id="workspaceStartDate"
                     onChange={this.updateStartDate}
                     maxDate={this.props.getStore().endDate}
-                    locale={outputCorrectDatePickerLocale(
-                      this.props.i18n.time.getLocale()
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.props.getStore().beginDate}
                     dateFormat="P"
                   />
                 </div>
                 <div className="form-element form-element__copy-workspace-end-date">
                   <label htmlFor="workspaceEndDate">
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceEndDate.label"
-                    )}
+                    {t("labels.endDate", { ns: "workspace" })}
                   </label>
                   <DatePicker
                     className="form-element__input form-element__input--workspace-data"
                     id="workspaceEndDate"
                     onChange={this.updateEndDate}
                     minDate={this.props.getStore().beginDate}
-                    locale={outputCorrectDatePickerLocale(
-                      this.props.i18n.time.getLocale()
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.props.getStore().endDate}
                     dateFormat="P"
                   />
@@ -247,15 +238,9 @@ export default class Step extends React.Component<StepProps, StepState> {
             <div className="form__subdivision">
               <div className="form__row">
                 <div className="form-element form-element--copy-workspace-ckeditor">
-                  <label>
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceDescription.label"
-                    )}
-                  </label>
+                  <label>{t("labels.content")}</label>
                   <CKEditor
-                    editorTitle={this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceDescription.label"
-                    )}
+                    editorTitle={t("labels.content")}
                     onChange={this.onDescriptionChange}
                   >
                     {this.props.getStore().description}
@@ -267,9 +252,7 @@ export default class Step extends React.Component<StepProps, StepState> {
           <div className="form__row">
             <fieldset className="form__fieldset">
               <legend className="form__legend">
-                {this.props.i18n.text.get(
-                  "plugin.workspacecopywizard.workspaceOtherSettings.label"
-                )}
+                {t("labels.otherCopySettings", { ns: "workspace" })}
               </legend>
               <div className="form__fieldset-content form__fieldset-content--horizontal">
                 <div className="form-element form-element--checkbox-radiobutton">
@@ -280,9 +263,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                     checked={this.props.getStore().copyMaterials !== "NO"}
                   />
                   <label htmlFor="copyMaterials">
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceMaterials.label"
-                    )}
+                    {t("labels.materials", { ns: "workspace" })}
                   </label>
                 </div>
                 <div className="form-element form-element--checkbox-radiobutton">
@@ -293,9 +274,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                     checked={this.props.getStore().copyBackgroundPicture}
                   />
                   <label htmlFor="copyBackground">
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceFiles.label"
-                    )}
+                    {t("labels.coverImage", { ns: "workspace" })}
                   </label>
                 </div>
                 <div className="form-element form-element--checkbox-radiobutton">
@@ -306,9 +285,7 @@ export default class Step extends React.Component<StepProps, StepState> {
                     checked={this.props.getStore().copyDiscussionAreas}
                   />
                   <label htmlFor="copyDiscussion">
-                    {this.props.i18n.text.get(
-                      "plugin.workspacecopywizard.workspaceDiscussionsAreas.label"
-                    )}
+                    {t("labels.discussions", { ns: "workspace" })}
                   </label>
                 </div>
               </div>
@@ -317,9 +294,7 @@ export default class Step extends React.Component<StepProps, StepState> {
           <div className="form__row">
             <fieldset className="form__fieldset">
               <legend className="form__legend">
-                {this.props.i18n.text.get(
-                  "plugin.workspacecopywizard.materialCopyType.label"
-                )}
+                {t("labels.materialCopyType", { ns: "workspace" })}
               </legend>
               {copyMaterials}
             </fieldset>
@@ -329,3 +304,5 @@ export default class Step extends React.Component<StepProps, StepState> {
     );
   }
 }
+
+export default withTranslation(["workspace", "common"])(Step);

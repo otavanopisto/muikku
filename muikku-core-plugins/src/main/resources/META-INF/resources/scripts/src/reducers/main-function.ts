@@ -2,7 +2,6 @@ import { easyToUse } from "./easy-to-use-functions/index";
 import { notifications } from "./base/notifications";
 import { locales } from "./base/locales";
 import status from "./base/status";
-import i18n from "./base/i18n";
 import { title } from "./base/title";
 import websocket from "./util/websocket";
 import { messages } from "./main-function/messages";
@@ -26,13 +25,11 @@ import { organizationSummary } from "~/reducers/organization/summary";
 import { combineReducers } from "redux";
 import { evaluations } from "./main-function/evaluation/index";
 import { ceepos } from "./main-function/ceepos";
-import { calendar } from "./main-function/calendar";
 import { organizationWorkspaces } from "./workspaces/organization";
 import { contacts } from "./base/contacts";
 
 export default combineReducers({
   announcements,
-  calendar,
   ceepos,
   contacts,
   discussion,
@@ -41,7 +38,6 @@ export default combineReducers({
   evaluations,
   guider,
   hops,
-  i18n,
   locales,
   messages,
   notifications,

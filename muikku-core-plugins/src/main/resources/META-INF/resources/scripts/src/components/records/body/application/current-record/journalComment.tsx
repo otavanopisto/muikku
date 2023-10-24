@@ -1,21 +1,21 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
-import { JournalComment } from "~/@types/journal";
 import { AnyActionType } from "~/actions";
 import {
   ApplicationListItem,
   ApplicationListItemBody,
 } from "~/components/general/application-list";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { StateType } from "~/reducers";
-import { i18nType } from "~/reducers/base/i18n";
+import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
 /**
  * JournalCommentProps
  */
-interface JournalCommentProps extends JournalComment {
-  i18n: i18nType;
+interface JournalCommentProps extends WorkspaceJournalComment {
   status: StatusType;
 }
 
@@ -24,19 +24,17 @@ interface JournalCommentProps extends JournalComment {
  * @param props props
  * @returns JSX.Element
  */
-const JournalComment: React.FC<JournalCommentProps> = (props) => {
-  const { comment, i18n, status, created, id, firstName, lastName, authorId } =
-    props;
-
+const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
+  const { comment, status, created, id, firstName, lastName, authorId } = props;
   const creatorIsMe = status.userId === authorId;
-
+  const { t } = useTranslation();
   const creatorName = creatorIsMe
-    ? i18n.text.get("plugin.records.journal.comments.creator.me")
+    ? t("labels.self")
     : `${firstName} ${lastName}`;
 
-  const formatedDate = `${i18n.time.format(created, "l")} - ${i18n.time.format(
+  const formatedDate = `${localize.date(created, "l")} - ${localize.date(
     created,
-    "LT"
+    "h:mm"
   )}`;
 
   return (
@@ -59,7 +57,6 @@ const JournalComment: React.FC<JournalCommentProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
   };
 }
@@ -72,4 +69,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(JournalComment);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WorkspaceJournalComment);

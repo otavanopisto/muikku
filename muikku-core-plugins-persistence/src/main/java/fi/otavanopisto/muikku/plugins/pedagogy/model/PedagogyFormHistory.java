@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -59,6 +61,14 @@ public class PedagogyFormHistory {
   public void setCreated(Date created) {
     this.created = created;
   }
+  
+  public PedagogyFormHistoryType getType() {
+    return type;
+  }
+
+  public void setType(PedagogyFormHistoryType type) {
+    this.type = type;
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,5 +91,9 @@ public class PedagogyFormHistory {
   @Column (updatable=false, nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
+  
+  @Enumerated (EnumType.STRING)
+  @Column (nullable = false)
+  private PedagogyFormHistoryType type;
 
 }

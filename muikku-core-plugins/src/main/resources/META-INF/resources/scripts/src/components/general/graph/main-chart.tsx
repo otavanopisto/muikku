@@ -4,25 +4,24 @@
  * https://docs.amcharts.com/3/javascriptcharts
  */
 
-import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
-import { WorkspaceListType, ActivityLogType } from "~/reducers/workspaces";
+import { WorkspaceType } from "~/reducers/workspaces";
 import WorkspaceFilter from "./filters/workspace-filter";
 import GraphFilter from "./filters/graph-filter";
+import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
+import { ActivityLogEntry } from "~/generated/client";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let AmCharts: any = null;
 
 /**
  * CurrentStudentStatisticsProps
  */
-interface CurrentStudentStatisticsProps {
-  activityLogs?: Array<ActivityLogType>;
-  i18n: i18nType;
-  workspaces?: WorkspaceListType;
+interface CurrentStudentStatisticsProps extends WithTranslation {
+  activityLogs?: Array<ActivityLogEntry>;
+  workspaces?: WorkspaceType[];
 }
 
 /**
@@ -65,11 +64,11 @@ enum Graph {
   MATERIAL_ASSIGNMENTDONE = "assignments",
   MATERIAL_EXERCISEDONE = "exercises",
   WORKSPACE_VISIT = "visits",
-  FORUM_NEWMESSAGE = "discussion-messages",
-  EVALUATION_REQUESTED = "evaluation-requested",
-  EVALUATION_PASSED = "evaluation-passed",
-  EVALUATION_FAILED = "evaluation-failed",
-  EVALUATION_INCOMPLETED = "evaluation-incompleted",
+  FORUM_NEWMESSAGE = "discussionMessages",
+  EVALUATION_REQUESTED = "evaluationRequest",
+  EVALUATION_PASSED = "passed",
+  EVALUATION_FAILED = "failed",
+  EVALUATION_INCOMPLETED = "incomplete",
 }
 
 // some stored global variables for this chart
@@ -258,7 +257,7 @@ class CurrentStudentStatistics extends React.Component<
     });
     if (this.props.activityLogs) {
       this.props.activityLogs.map((log) => {
-        const date = log.timestamp.slice(0, 10);
+        const date = log.timestamp.toISOString().slice(0, 10);
         const entry = chartDataMap.get(date) || {};
         switch (log.type) {
           case "SESSION_LOGGEDIN":
@@ -305,7 +304,7 @@ class CurrentStudentStatistics extends React.Component<
         });
         if (!this.state.filteredWorkspaces.includes(workspace.id)) {
           workspace.activityLogs.map((log) => {
-            const date = log.timestamp.slice(0, 10);
+            const date = log.timestamp.toISOString().slice(0, 10);
             const entry = chartDataMap.get(date) || {};
             switch (log.type) {
               case "EVALUATION_REQUESTED":
@@ -366,8 +365,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_ASSIGNMENTDONE",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.assignmentsLabel") +
-          " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "assignments",
+          }) + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         fillAlphas: 1,
         lineAlpha: 0.2,
         lineColor: "#ce01bd",
@@ -383,8 +384,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_EXERCISEDONE",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.exercisesLabel") +
-          " <b>[[MATERIAL_EXERCISEDONE]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "exercises",
+          }) + " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         fillAlphas: 1,
         lineAlpha: 0.2,
         lineColor: "#ff9900",
@@ -400,8 +403,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "FORUM_NEWMESSAGE",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.discussion-messagesLabel") +
-          " <b>[[FORUM_NEWMESSAGE]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "discussions",
+          }) + " <b>[[FORUM_NEWMESSAGE]]</b>",
         fillAlphas: 1,
         lineAlpha: 0.2,
         lineColor: "#62c3eb",
@@ -418,8 +423,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "SESSION_LOGGEDIN",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.loginsLabel") +
-          " <b>[[SESSION_LOGGEDIN]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "logins",
+          }) + " <b>[[SESSION_LOGGEDIN]]</b>",
         bullet: "round",
         bulletSize: 12,
         fillAlphas: 0,
@@ -439,8 +446,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "WORKSPACE_VISIT",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.visitsLabel") +
-          " <b>[[WORKSPACE_VISIT]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "visits",
+          }) + " <b>[[WORKSPACE_VISIT]]</b>",
         bullet: "round",
         bulletSize: 8,
         fillAlphas: 0,
@@ -460,8 +469,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "EVALUATION_REQUESTED",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.evaluation-requestedLabel") +
-          " <b>[[EVALUATION_REQUESTED]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "evaluationRequest",
+          }) + " <b>[[EVALUATION_REQUESTED]]</b>",
         bullet: "diamond",
         bulletSize: 12,
         fillAlphas: 0,
@@ -481,9 +492,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "EVALUATION_GOTINCOMPLETED",
         balloonText:
-          this.props.i18n.text.get(
-            "plugin.guider.evaluation-incompletedLabel"
-          ) + " <b>[[EVALUATION_GOTINCOMPLETED]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "incomplete",
+          }) + " <b>[[EVALUATION_GOTINCOMPLETED]]</b>",
         bullet: "square",
         bulletSize: 12,
         fillAlphas: 0,
@@ -503,8 +515,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "EVALUATION_GOTPASSED",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.evaluation-passedLabel") +
-          " <b>[[EVALUATION_GOTPASSED]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "passed",
+          }) + " <b>[[EVALUATION_GOTPASSED]]</b>",
         bullet: "triangleUp",
         bulletSize: 12,
         fillAlphas: 0,
@@ -525,8 +539,10 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "EVALUATION_GOTFAILED",
         balloonText:
-          this.props.i18n.text.get("plugin.guider.evaluation-failedLabel") +
-          " <b>[[EVALUATION_GOTFAILED]]</b>",
+          this.props.t("labels.graph", {
+            ns: "guider",
+            context: "failed",
+          }) + " <b>[[EVALUATION_GOTFAILED]]</b>",
         bullet: "triangleDown",
         bulletSize: 12,
         fillAlphas: 0,
@@ -651,15 +667,4 @@ class CurrentStudentStatistics extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    i18n: state.i18n,
-  };
-}
-
-export default connect(mapStateToProps)(CurrentStudentStatistics);
+export default withTranslation("common")(CurrentStudentStatistics);

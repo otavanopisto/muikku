@@ -12,15 +12,6 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
-import {
-  AssessmentRequest,
-  BilledPrice,
-  EvaluationEnum,
-  EvaluationGradeSystem,
-} from "~/@types/evaluation";
-import { i18nType } from "~/reducers/base/i18n";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
@@ -28,16 +19,23 @@ import {
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
+import {
+  EvaluationAssessmentRequest,
+  EvaluationEventType,
+  EvaluationGradeScale,
+} from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
+import MApi from "~/api/api";
+import { BilledPrice } from "~/generated/client";
 
 /**
  * WorkspaceEditorProps
  */
-interface WorkspaceEditorProps {
-  i18n: i18nType;
+interface WorkspaceEditorProps extends WithTranslation {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -59,7 +57,7 @@ interface WorkspaceEditorState {
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
   locked: boolean;
-  activeGradeSystems: EvaluationGradeSystem[];
+  activeGradeSystems: EvaluationGradeScale[];
 }
 
 /**
@@ -77,7 +75,7 @@ class WorkspaceEditor extends SessionStateComponent<
   WorkspaceEditorProps,
   WorkspaceEditorState
 > {
-  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+  private unknownGradeSystemIsUsed: EvaluationGradeScale;
 
   /**
    * constructor
@@ -287,26 +285,27 @@ class WorkspaceEditor extends SessionStateComponent<
   loadExistingBilledPrice = async (
     assessmentIdentifier: string
   ): Promise<BilledPrice | undefined> => {
+    const worklistApi = MApi.getWorklistApi();
+
     const { workspaceEntityId } = this.props.selectedAssessment;
 
     let existingBilledPriceObject = undefined;
     /**
      * If existing price object is found
      */
-    await promisify(
-      mApi().worklist.billedPrice.read({
+    await worklistApi
+      .getBilledPrice({
         workspaceEntityId: workspaceEntityId,
         assessmentIdentifier,
-      }),
-      "callback"
-    )().then(
-      (data) => {
-        existingBilledPriceObject = data as BilledPrice;
-      },
-      (reject) => {
-        existingBilledPriceObject = undefined;
-      }
-    );
+      })
+      .then(
+        (data) => {
+          existingBilledPriceObject = data;
+        },
+        (reject) => {
+          existingBilledPriceObject = undefined;
+        }
+      );
 
     return existingBilledPriceObject;
   };
@@ -627,10 +626,10 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param type type
    * @returns boolean if graded
    */
-  isGraded = (type: EvaluationEnum) =>
-    type === EvaluationEnum.EVALUATION_PASS ||
-    type === EvaluationEnum.EVALUATION_FAIL ||
-    type === EvaluationEnum.EVALUATION_IMPROVED;
+  isGraded = (type: EvaluationEventType) =>
+    type === "EVALUATION_PASS" ||
+    type === "EVALUATION_FAIL" ||
+    type === "EVALUATION_IMPROVED";
 
   /**
    * Check if evaluation is graded
@@ -664,7 +663,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns Array of price options
    */
   parsePriceOptions = (): EvaluationPriceObject[] | undefined => {
-    const { i18n, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
+    const { t, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
     const { evaluationAssessmentEvents } = this.props.evaluations;
     let { basePriceFromServer } = this.state;
 
@@ -697,7 +696,7 @@ class WorkspaceEditor extends SessionStateComponent<
       (type === "new" && this.hasGradedEvaluations()) ||
       (type === "edit" &&
         latestEvent &&
-        latestEvent.type === EvaluationEnum.EVALUATION_IMPROVED);
+        latestEvent.type === "EVALUATION_IMPROVED");
 
     /**
      * Default options
@@ -719,9 +718,10 @@ class WorkspaceEditor extends SessionStateComponent<
        * Full billing -> available for course evaluations and raised grades
        */
       priceOptionsArray.push({
-        name: `${i18n.text.get(
-          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionFull"
-        )} ${basePriceFromServer.toFixed(2)} €`,
+        name: `${t("labels.billing", {
+          ns: "evaluation",
+          context: "full",
+        })} ${basePriceFromServer.toFixed(2)} €`,
         value: basePriceFromServer,
       });
 
@@ -730,9 +730,10 @@ class WorkspaceEditor extends SessionStateComponent<
        */
       if (!isRaised) {
         priceOptionsArray.push({
-          name: `${i18n.text.get(
-            "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionHalf"
-          )} ${(basePriceFromServer / 2).toFixed(2)} €`,
+          name: `${t("labels.billing", {
+            ns: "evaluation",
+            context: "half",
+          })} ${(basePriceFromServer / 2).toFixed(2)} €`,
           value: basePriceFromServer / 2,
         });
       }
@@ -741,9 +742,10 @@ class WorkspaceEditor extends SessionStateComponent<
        * No billing -> available for course evaluations and raised grades
        */
       priceOptionsArray.push({
-        name: `${i18n.text.get(
-          "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionNone"
-        )} 0,00 €`,
+        name: `${t("labels.billing", {
+          ns: "evaluation",
+          context: "none",
+        })} 0,00 €`,
         value: 0,
       });
 
@@ -765,9 +767,10 @@ class WorkspaceEditor extends SessionStateComponent<
            * ...then add a custom option with the current price
            */
           priceOptionsArray.push({
-            name: `${i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingOptionCustom"
-            )} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
+            name: `${t("labels.billing", {
+              ns: "evaluation",
+              context: "else",
+            })} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
             value: this.state.existingBilledPriceObject.price,
           });
         }
@@ -802,6 +805,8 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
+    const { t } = this.props;
+
     const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
@@ -860,9 +865,7 @@ class WorkspaceEditor extends SessionStateComponent<
         <div className="form__row">
           <div className="form-element">
             <label htmlFor="workspaceEvaluationGrade">
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.assignmentGradeLabel"
-              )}
+              {t("labels.grade", { ns: "workspace" })}
             </label>
             <select
               id="workspaceEvaluationGrade"
@@ -886,9 +889,7 @@ class WorkspaceEditor extends SessionStateComponent<
           <div className="form__row">
             <div className="form-element">
               <label htmlFor="workspaceEvaluationBilling">
-                {this.props.i18n.text.get(
-                  "plugin.evaluation.evaluationModal.workspaceEvaluationForm.billingLabel"
-                )}
+                {t("labels.billing")}
               </label>
               <select
                 id="workspaceEvaluationBilling"
@@ -909,18 +910,14 @@ class WorkspaceEditor extends SessionStateComponent<
             onClick={this.handleEvaluationSave}
             disabled={this.state.locked}
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.saveButtonLabel"
-            )}
+            {t("actions.save")}
           </Button>
           <Button
             onClick={this.props.onClose}
             disabled={this.state.locked}
             buttonModifiers="dialog-cancel"
           >
-            {this.props.i18n.text.get(
-              "plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"
-            )}
+            {t("actions.cancel")}
           </Button>
           {this.recovered && (
             <Button
@@ -928,9 +925,7 @@ class WorkspaceEditor extends SessionStateComponent<
               onClick={this.handleDeleteEditorDraft}
               disabled={this.state.locked}
             >
-              {this.props.i18n.text.get(
-                "plugin.evaluation.evaluationModal.workspaceEvaluationForm.deleteDraftButtonLabel"
-              )}
+              {t("actions.remove", { context: "draft" })}
             </Button>
           )}
         </div>
@@ -945,7 +940,6 @@ class WorkspaceEditor extends SessionStateComponent<
  */
 function mapStateToProps(state: StateType) {
   return {
-    i18n: state.i18n,
     status: state.status,
     evaluations: state.evaluations,
     locale: state.locales,
@@ -963,4 +957,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceEditor);
+export default withTranslation(["evaluation", "workspace", "common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceEditor)
+);
