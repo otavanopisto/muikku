@@ -8,7 +8,7 @@ import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { Panel } from "~/components/general/panel";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 
@@ -144,7 +144,7 @@ class AnnouncementsPanel extends React.Component<
                 {announcement.caption}
               </span>
               <span className="item-list__announcement-date">
-                {localizeTime.date(announcement.startDate)}
+                {localize.date(announcement.startDate)}
               </span>
               {announcement.workspaces && announcement.workspaces.length ? (
                 <div className="labels item-list__announcement-workspaces">

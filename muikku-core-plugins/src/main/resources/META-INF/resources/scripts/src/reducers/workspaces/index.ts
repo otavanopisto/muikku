@@ -1,7 +1,7 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import { SelectItem } from "~/actions/workspaces/index";
-import { WorkspaceJournal } from "~/generated/client";
+import { ActivityLogEntry, WorkspaceJournal } from "~/generated/client";
 import {
   AudioAssessment,
   EvaluationType,
@@ -432,7 +432,7 @@ export interface WorkspaceType {
   staffMemberSelect?: UserSelectType;
   producers?: WorkspaceProducerType[];
   contentDescription?: MaterialContentNodeType;
-  activityLogs?: ActivityLogType[];
+  activityLogs?: ActivityLogEntry[];
   students?: WorkspaceStudentSearchResult;
   inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;
@@ -920,6 +920,7 @@ export const workspaces: Reducer<WorkspacesType> = (
       };
     }
 
+    // This case might return when modular assessment request is implemented
     /* case "UPDATE_WORKSPACE_ASSESSMENT_STATE":
       return {
         ...state,
@@ -1341,6 +1342,7 @@ export const workspaces: Reducer<WorkspacesType> = (
   }
 };
 
+// This method might be useful in the future
 /* function processWorkspaceToHaveNewAssessmentStateAndDate(
   id: number,
   assessmentState: WorkspaceAssessementStateType,

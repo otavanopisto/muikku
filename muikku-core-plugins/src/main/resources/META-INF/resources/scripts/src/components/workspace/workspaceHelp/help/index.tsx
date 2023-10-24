@@ -35,6 +35,7 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
+import ReadSpeakerReader from "~/components/general/readspeaker";
 
 /**
  * HelpMaterialsProps
@@ -463,6 +464,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       return null;
     }
 
+    const readSpeakerParameters: string[] = [];
+
     const isEditable = this.props.workspaceEditMode.active;
 
     const createSectionElementWhenEmpty =
@@ -492,6 +495,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const results: JSX.Element[] = [];
 
     this.props.materials.forEach((section, index) => {
+      readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
+
       // If first section, then above it is "add new section" icon button
       // And it is only showed when editing is active
       if (index === 0 && isEditable) {
@@ -584,7 +589,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&
-        section.children.forEach((node) => {
+        section.children.forEach((node, pageI) => {
           // this is the next sibling for the content node that is to be added, aka the current
           const nextSibling = node;
 
@@ -647,12 +652,50 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             );
           }
 
+          let readSpeakerComponent = undefined;
+
+          if (!this.props.workspaceEditMode.active) {
+            const arrayOfSectionsToRemoved = Array(
+              pageI === 0 ? index : index + 1
+            )
+              .fill(0)
+              .map((_, i) => i);
+
+            const arrayOfPagesToRemoved = Array(pageI)
+              .fill(0)
+              .map((_, i) => i);
+
+            let contentToRead = [
+              ...this.props.materials
+                .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
+                .map((section) => `sectionId${section.workspaceMaterialId}`),
+            ];
+
+            if (pageI !== 0) {
+              contentToRead = [
+                ...section.children
+                  .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
+                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                ...contentToRead,
+              ];
+            }
+
+            readSpeakerComponent = (
+              <ReadSpeakerReader
+                entityId={pageI + 1}
+                readParameterType="readid"
+                readParameters={contentToRead}
+              />
+            );
+          }
+
           // Actual page material
           // Nothing is shown is workspace or material "compositeReplies" are missing or
           // editing is not active and material is hided and showEvenIfHidden is false
           const material =
             !this.props.workspace || (!isEditable && node.hidden) ? null : (
               <ContentPanelItem
+                id={`pageId${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
               >
@@ -669,6 +712,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   materialContentNode={node}
                   workspace={this.props.workspace}
                   isViewRestricted={false}
+                  readspeakerComponent={readSpeakerComponent}
                 />
               </ContentPanelItem>
             );
@@ -685,6 +729,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
+          id={`sectionId${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -761,6 +806,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
         ref="content-panel"
+        readspeakerComponent={
+          <ReadSpeakerReader
+            readParameterType="readid"
+            readParameters={readSpeakerParameters}
+          />
+        }
       >
         {results}
         {emptyMessage}

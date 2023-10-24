@@ -1,33 +1,25 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import { AnyActionType } from "~/actions";
-import { localizeTime } from "~/locales/i18n";
-import { StateType } from "~/reducers";
+import { localize } from "~/locales/i18n";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
-import {
-  NotesItemRead,
-  NotesItemUpdate,
-  NotesItemPriority,
-} from "~/@types/notes";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Note, NotePriorityType, UpdateNoteRequest } from "~/generated/client";
 
 /**
  * NotesItemEditProps
  */
 interface NotesItemEditProps extends WithTranslation {
-  selectedNotesItem?: NotesItemRead;
+  selectedNotesItem?: Note;
   children: React.ReactElement;
   onNotesItemSaveUpdateClick?: (
     journalId: number,
-    updatedNotesItem: NotesItemUpdate,
+    updateNoteRequest: UpdateNoteRequest,
     onSuccess?: () => void
   ) => void;
 }
@@ -36,7 +28,7 @@ interface NotesItemEditProps extends WithTranslation {
  * NotesItemEditState
  */
 interface NotesItemEditState {
-  notesItem: NotesItemUpdate;
+  notesItem: UpdateNoteRequest;
   locked: boolean;
 }
 
@@ -92,9 +84,9 @@ class NotesItemEdit extends SessionStateComponent<
    * @param key name of updated property
    * @param value of updated property
    */
-  handleNotesItemChange = <T extends keyof NotesItemUpdate>(
+  handleNotesItemChange = <T extends keyof UpdateNoteRequest>(
     key: T,
-    value: NotesItemUpdate[T]
+    value: UpdateNoteRequest[T]
   ) => {
     const updateNotesItem = { ...this.state.notesItem };
 
@@ -141,24 +133,24 @@ class NotesItemEdit extends SessionStateComponent<
             onChange={(e) =>
               this.handleNotesItemChange(
                 "priority",
-                e.target.value as NotesItemPriority
+                e.target.value as NotePriorityType
               )
             }
             value={this.state.notesItem.priority}
           >
-            <option value={NotesItemPriority.HIGH}>
+            <option value={NotePriorityType.High}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
                 context: "high",
               })}
             </option>
-            <option value={NotesItemPriority.NORMAL}>
+            <option value={NotePriorityType.Normal}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
                 context: "normal",
               })}
             </option>
-            <option value={NotesItemPriority.LOW}>
+            <option value={NotePriorityType.Low}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
                 context: "low",
@@ -182,7 +174,7 @@ class NotesItemEdit extends SessionStateComponent<
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={new Date()}
             maxDate={this.state.notesItem.dueDate}
@@ -200,7 +192,7 @@ class NotesItemEdit extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
               this.state.notesItem.startDate !== null

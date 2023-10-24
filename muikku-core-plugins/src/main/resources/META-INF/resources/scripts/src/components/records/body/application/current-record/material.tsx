@@ -1,5 +1,5 @@
 import * as React from "react";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import {
   AssignmentType,
   MaterialCompositeRepliesType,
@@ -109,9 +109,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>
-                  {localizeTime.date(compositeReply.evaluationInfo.date)}
-                </span>
+                <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span
@@ -127,9 +125,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>
-                  {localizeTime.date(compositeReply.evaluationInfo.date)}
-                </span>
+                <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span

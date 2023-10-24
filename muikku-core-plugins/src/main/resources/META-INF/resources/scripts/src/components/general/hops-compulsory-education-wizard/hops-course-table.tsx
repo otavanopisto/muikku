@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  SchoolSubject,
-  StudentActivityByStatus,
-  StudentActivityCourse,
-  StudentCourseChoice,
-  SupervisorOptionalSuggestion,
-} from "~/@types/shared";
+import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import {
   Table,
   TableHead,
@@ -29,6 +23,11 @@ import {
 import HopsSuggestionList from "./hops-suggested-list";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
+import {
+  OptionalCourseSuggestion,
+  StudentCourseChoice,
+  StudentStudyActivity,
+} from "~/generated/client";
 
 /**
  * CourseTableProps
@@ -72,7 +71,7 @@ interface HopsCourseTableProps extends Partial<StudentActivityByStatus> {
   /**
    * List of student choices
    */
-  supervisorOptionalSuggestionsList?: SupervisorOptionalSuggestion[];
+  supervisorOptionalSuggestionsList?: OptionalCourseSuggestion[];
 
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
   updateSuggestionOptional?: (
@@ -164,7 +163,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
 
         // Table data content options with default values
         let canBeSelected = true;
-        let courseSuggestions: StudentActivityCourse[] = [];
+        let courseSuggestions: StudentStudyActivity[] = [];
 
         let selectedByStudent = false;
         let suggestedBySupervisor = false;
@@ -256,7 +255,7 @@ const HopsCourseTable: React.FC<HopsCourseTableProps> = (props) => {
           props.useCase === "hops-planning";
 
         /**
-         * Suggestion list is shown only if not disabled, for supervisor only
+         * WorkspaceSuggestion list is shown only if not disabled, for supervisor only
          * and there can be made selections
          */
         const showSuggestionList =

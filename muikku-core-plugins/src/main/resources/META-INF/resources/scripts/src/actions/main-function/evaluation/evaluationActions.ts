@@ -739,6 +739,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
         evaluationWorkspaces = (await promisify(
           mApi().workspace.workspaces.read({
             userId: state.status.userId,
+            maxResults: 500,
           }),
           "callback"
         )()) as WorkspaceType[];

@@ -53,6 +53,8 @@ insert into PluginSettingKey(plugin, name) select 'ceepos', 'returnAddress' from
 insert into PluginSettingKey(plugin, name) select 'ceepos', 'notificationAddress' from PluginSettingKey where plugin = 'ceepos' and name = 'notificationAddress' having count(*) = 0;
 insert into CeeposProduct (code, description, price, type,line) values ('demo_004', 'Nettilukion opiskelumaksu 6 kk', 10000, 'STUDYTIME','nettilukio');
 insert into CeeposProduct (code, description, price, type,line) values ('demo_005', 'Nettilukion opiskelumaksu 12 kk', 15000, 'STUDYTIME','nettilukio');
+insert into CeeposProduct (code, description, price, type,line) values ('demo_001', 'Arviointimaksu', 0, 'ASSESSMENTREQUEST','aineopiskelu');
+insert into CeeposProduct (code, description, price, type,line) values ('demo_002', 'Arviointimaksu (valtiorahoitteinen)', 0, 'ASSESSMENTREQUEST_FUNDED','aineopiskelu');
 
 insert into PluginSetting (value, key_id) select 'demo_005', id from PluginSettingKey where plugin = 'ceepos' and name = '12MonthCode';
 insert into PluginSetting (value, key_id) select 'demo_004', id from PluginSettingKey where plugin = 'ceepos' and name = '6MonthCode';

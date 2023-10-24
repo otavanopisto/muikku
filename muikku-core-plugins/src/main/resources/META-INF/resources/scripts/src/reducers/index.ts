@@ -28,7 +28,6 @@ import { ProfileState } from "./main-function/profile";
 import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
-import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
 import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
@@ -65,7 +64,6 @@ export interface StateType {
   profile?: ProfileState;
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
-  calendar?: Calendar;
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
   notebook?: NoteBookState;
