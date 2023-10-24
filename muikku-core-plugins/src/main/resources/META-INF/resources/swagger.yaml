@@ -5323,7 +5323,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MatriculationEnrollemnt"
+                  $ref: "#/components/schemas/MatriculationEnrollment"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12540,9 +12540,9 @@ components:
           items:
             $ref: "#/components/schemas/AnyValue"
 
-    MatriculationEnrollemnt:
+    MatriculationEnrollment:
       type: object
-      description: MatriculationEnrollemnt object
+      description: MatriculationEnrollment object
       required:
         - id
         - enrolled

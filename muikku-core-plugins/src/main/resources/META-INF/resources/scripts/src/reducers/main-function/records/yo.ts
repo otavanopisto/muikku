@@ -3,7 +3,7 @@ import { Reducer } from "redux";
 import {
   MatriculationEligibility,
   MatriculationEligibilityStatus,
-  MatriculationEnrollemnt,
+  MatriculationEnrollment,
   MatriculationSubject,
 } from "~/generated/client";
 export type MatriculationStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
@@ -38,7 +38,7 @@ export interface MatriculationSubjectEligibilityState {
  */
 export interface MatriculationState {
   status: MatriculationStatusType;
-  enrollment: MatriculationEnrollemnt[];
+  enrollment: MatriculationEnrollment[];
   subjects: MatriculationSubject[];
   eligibility: MatriculationEligibility;
   eligibilityStatus: MatriculationEligibilityStatus;
