@@ -12,10 +12,10 @@ import {
   UpdateStaffmemberTriggerType,
 } from "~/actions/main-function/users";
 import { StateType } from "~/reducers";
-import { Role, StatusType } from "~/reducers/base/status";
+import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { User } from "~/generated/client";
+import { User, Role } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 

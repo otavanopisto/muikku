@@ -7,7 +7,7 @@ import ApplicationList from "~/components/general/application-list";
 import "~/sass/elements/application-list.scss";
 import { UserSearchResultWithExtraProperties } from "~/reducers/main-function/users";
 import PagerV2 from "~/components/general/pagerV2";
-import { Role } from "~/reducers/base/status";
+import { Role } from "~/generated/client";
 
 /**
  * UserPanelProps
@@ -115,18 +115,18 @@ export default class UserPanel extends React.Component<
                     lastName: user.lastName,
                     email: user.email,
                     id: user.id,
-                    roles: user.roles ? user.roles : [ Role.STUDENT ],
+                    roles: user.roles ? user.roles : [ Role.Student ],
                     studyProgrammeIdentifier: user.studyProgrammeIdentifier,
                   };
                   const actions =
-                    data.roles.includes(Role.STUDENT) ? (
+                    data.roles.includes(Role.Student) ? (
                       <div>
                         <StudentDialog data={data}>
                           <span className="icon-pencil"></span>
                         </StudentDialog>
                       </div>
-                    ) : data.roles.includes(Role.ADMINISTRATOR) ||
-                      data.roles.includes(Role.STUDY_PROGRAMME_LEADER) ? (
+                    ) : data.roles.includes(Role.Administrator) ||
+                      data.roles.includes(Role.StudyProgrammeLeader) ? (
                         /*
                         * TODO does this need the title-attribute? .. title={data.roles}
                         */
