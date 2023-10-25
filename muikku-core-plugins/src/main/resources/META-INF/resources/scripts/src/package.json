@@ -43,6 +43,7 @@
     "audio-recorder-polyfill": "0.4.1",
     "css-loader": "5.2.7",
     "deep-equal": "2.0.5",
+    "focus-trap-react": "^10.2.3",
     "fork-ts-checker-webpack-plugin": "7.2.1",
     "framer-motion": "6.5.1",
     "html-parse-stringify": "3.0.1",
