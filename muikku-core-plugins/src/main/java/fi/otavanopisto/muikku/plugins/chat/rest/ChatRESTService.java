@@ -67,6 +67,14 @@ public class ChatRESTService {
   
   // TODO Permissions
   
+  @Path("/stats")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @Produces(MediaType.TEXT_PLAIN)
+  public Response stats() {
+    return Response.ok(chatController.usageStatistics()).build();
+  }
+  
   @Path("/room")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)

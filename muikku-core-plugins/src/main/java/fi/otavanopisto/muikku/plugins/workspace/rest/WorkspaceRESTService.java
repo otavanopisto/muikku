@@ -142,6 +142,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -865,7 +866,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getViewLink(),
         rootFolder.getId(),
         helpFolder.getId(),
-        frontPage.getParent().getId())).build();
+        frontPage.getParent().getId(),
+        chatController.isChatEnabled(workspaceEntity))).build();
   }
 
   @GET
@@ -1018,7 +1020,9 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspace.setWorkspaceTypeId(typeIdentifier);
       workspaceController.updateWorkspace(workspace);
     }
-
+    
+    String roomName = constructWorkspaceChatRoomName(workspace);
+    chatController.toggleWorkspaceChatRoom(workspaceEntity, roomName, payload.getChatEnabled(), sessionController.getLoggedUserEntity());
 
     String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
@@ -1034,7 +1038,63 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getViewLink(),
         payload.getRootFolderId(),
         helpFolder.getId(),
-        frontPage.getParent().getId())).build();
+        frontPage.getParent().getId(),
+        payload.getChatEnabled())).build();
+  }
+  
+  private String constructWorkspaceChatRoomName(Workspace workspace) {
+    if (workspace.getSubjects() != null && workspace.getSubjects().size() > 1) {
+      /**
+       *  Workspaces that have multiple subjects use naming convention of
+       *  
+       *  When nameExtension exists:
+       *  workspace.name - workspace.nameExtension
+       *  
+       *  Otherwise:
+       *  workspace.name
+       */
+
+      StringBuilder roomName = new StringBuilder();
+      roomName.append(workspace.getName());
+      if (!StringUtils.isBlank(workspace.getNameExtension())) {
+        roomName.append(" - ");
+        roomName.append(workspace.getNameExtension());
+      }
+
+      return roomName.toString();
+    }
+    else {
+      /**
+       * Workspaces that have only one subject
+       * 
+       * When nameExtension exists:
+       * subjectCode + courseNumber - nameExtension
+       * 
+       * Otherwise:
+       * subjectCode + courseNumber - name
+       */
+
+      WorkspaceSubject workspaceSubject = workspace.getSubjects() != null ? workspace.getSubjects().get(0) : null;
+      String subjectCode = workspaceSubject != null ? courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier()).getCode() : null;
+      StringBuilder roomName = new StringBuilder();
+      if (!StringUtils.isBlank(subjectCode)) {
+        roomName.append(subjectCode);
+      }
+      if ((workspaceSubject != null) && (workspaceSubject.getCourseNumber() != null)) {
+        roomName.append(workspaceSubject.getCourseNumber());
+      }
+      if (!StringUtils.isBlank(roomName)) {
+        roomName.append(" - ");
+      }
+      // Prefer just name extension but fall back to workspace name if extension is not available
+      if (!StringUtils.isBlank(workspace.getNameExtension())) {
+        roomName.append(workspace.getNameExtension());
+      }
+      else {
+        roomName.append(workspace.getName());
+      }
+      return roomName.toString();
+    }
   }
 
   private boolean isEqualDateTime(OffsetDateTime dateTime1, OffsetDateTime dateTime2) {

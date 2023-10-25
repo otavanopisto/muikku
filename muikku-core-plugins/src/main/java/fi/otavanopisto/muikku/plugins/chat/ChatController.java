@@ -73,6 +73,20 @@ public class ChatController {
     userSessions = new ConcurrentHashMap<>();
   }
   
+  public String usageStatistics() {
+    StringBuffer sb = new StringBuffer();
+    sb.append(userSessions.size() + " active chat users\n");
+    for (Long l : userSessions.keySet()) {
+      sb.append("- " + l + " (" + userNicks.get(l) + ") with " + userSessions.get(l).size() + " sessions\n");
+    }
+    sb.append("\n");
+    sb.append(roomUsers.size() + " tracked public rooms\n");
+    for (Long l : roomUsers.keySet()) {
+      sb.append("- " + l + " with " + roomUsers.get(l).size() + " users\n");
+    }
+    return sb.toString();
+  }
+  
   public void processSessionCreated(UserEntity userEntity, String sessionId) {
     ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
     if (chatUser != null && !chatUser.getArchived()) {
@@ -238,7 +252,7 @@ public class ChatController {
   
   public void createPublicRoom(String name, String description, UserEntity creator) {
     ChatRoom chatRoom = chatRoomDAO.create(name, description, creator.getId());
-    ChatRoomRestModel room = new ChatRoomRestModel(chatRoom.getId(), chatRoom.getName(), chatRoom.getDescription());
+    ChatRoomRestModel room = toRestModel(chatRoom);
     
     // Inform all active chat users of a new public room
     
@@ -263,54 +277,17 @@ public class ChatController {
     chatRoom = chatRoomDAO.update(chatRoom, name, description, modifier.getId());
     ChatRoomRestModel room = new ChatRoomRestModel(chatRoom.getId(), chatRoom.getName(), chatRoom.getDescription());
     
-    // Inform all active chat users of a modified public room
+    // Inform all active chat users of an updated public room
     
     ObjectMapper mapper = new ObjectMapper();
     try {
-      webSocketMessenger.sendMessage("chat:room-modified", mapper.writeValueAsString(room), getActiveUsers());
+      webSocketMessenger.sendMessage("chat:room-updated", mapper.writeValueAsString(room), getActiveUsers());
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
     }
   }
   
-  public void createWorkspaceRoom(String name, Long workspaceEntityId, UserEntity creator) {
-    
-    // Basic validation
-    
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      logger.severe(String.format("Workspace %d not found", workspaceEntityId));
-      return;
-    }
-    
-    // Room creation
-    
-    ChatRoom chatRoom = chatRoomDAO.create(name, workspaceEntityId, creator.getId());
-    ChatRoomRestModel room = new ChatRoomRestModel(chatRoom.getId(), chatRoom.getName(), chatRoom.getWorkspaceEntityId());
-    
-    // Figure out which of the active chat users need to be informed
-    
-    Set<Long> userIds = new HashSet<>();
-    List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
-    userIds = workspaceUsers.stream().map(wue -> wue.getUserSchoolDataIdentifier().getUserEntity().getId()).collect(Collectors.toSet());
-    workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
-    userIds.addAll(workspaceUsers.stream().map(wue -> wue.getUserSchoolDataIdentifier().getUserEntity().getId()).collect(Collectors.toSet()));
-    userIds.retainAll(getActiveUsers());
-    
-    // Inform relevant users of a new workspace room
-    
-    if (!userIds.isEmpty()) {
-      ObjectMapper mapper = new ObjectMapper();
-      try {
-        webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(room), userIds);
-      }
-      catch (JsonProcessingException e) {
-        logger.severe(String.format("Message parse failure: %s", e.getMessage()));
-      }
-    }
-  }
-
   public void removeRoom(ChatRoom chatRoom, UserEntity remover) {
     
     // Remove
@@ -356,6 +333,74 @@ public class ChatController {
   
   public boolean isChatEnabled(UserEntity userEntity) {
     return userEntity == null ? false : chatUserDAO.findByUserEntityIdAndArchived(userEntity.getId(), false) != null;
+  }
+  
+  public void toggleWorkspaceChatRoom(WorkspaceEntity workspaceEntity, String roomName, boolean enabled, UserEntity modifier) {
+    ChatRoom room = chatRoomDAO.findByWorkspaceEntityId(workspaceEntity.getId());
+    
+    // Handle no change situations
+    
+    if (!enabled && (room == null || room.getArchived())) {
+      return;
+    }
+    else if (enabled && !room.getArchived() && StringUtils.equals(room.getName(), roomName)) {
+      return;
+    }
+    
+    // Toggle accordingly
+    
+    boolean created = false;
+    boolean updated = false;
+    boolean deleted = false;
+    if (enabled) {
+      if (room ==  null) {
+        room = chatRoomDAO.create(roomName, workspaceEntity.getId(), modifier.getId());
+        created = true;
+      }
+      else if (room.getArchived()) {
+        room = chatRoomDAO.update(room, roomName, Boolean.FALSE, modifier.getId());
+        created = true;
+      }
+      else if (!StringUtils.equals(room.getName(), roomName)) {
+        room = chatRoomDAO.update(room, roomName, room.getDescription(), modifier.getId());
+        updated = true;
+      }
+    }
+    else {
+      room = chatRoomDAO.update(room, room.getName(), Boolean.TRUE, modifier.getId());
+      deleted = true;
+    }
+    
+    // Figure out which of the active chat users need to be informed
+    
+    Set<Long> userIds = new HashSet<>();
+    List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
+    userIds = workspaceUsers.stream().map(wue -> wue.getUserSchoolDataIdentifier().getUserEntity().getId()).collect(Collectors.toSet());
+    workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+    userIds.addAll(workspaceUsers.stream().map(wue -> wue.getUserSchoolDataIdentifier().getUserEntity().getId()).collect(Collectors.toSet()));
+    userIds.retainAll(getActiveUsers());
+    if (!userIds.isEmpty()) {
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+        if (created) {
+          webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(room), userIds);
+        }
+        else if (updated) {
+          webSocketMessenger.sendMessage("chat:room-updated", mapper.writeValueAsString(room), userIds);
+        }
+        else if (deleted) {
+          roomUsers.remove(room.getId());
+          webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new DeletedChatRoomRestModel(room.getId())), userIds);
+        }
+      }
+      catch (JsonProcessingException e) {
+        logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+      }
+    }
+  }
+  
+  public boolean isChatEnabled(WorkspaceEntity workspaceEntity) {
+    return workspaceEntity == null ? false : chatRoomDAO.findByWorkspaceEntityIdAndArchived(workspaceEntity.getId(), Boolean.FALSE) != null;
   }
   
   public ChatUser getChatUser(UserEntity userEntity) {
@@ -477,6 +522,16 @@ public class ChatController {
     msg.setEditedDateTime(message.getEdited());
     msg.setArchived(message.getArchived());
     return msg;
+  }
+  
+  public ChatRoomRestModel toRestModel(ChatRoom room) {
+    ChatRoomRestModel restRoom = new ChatRoomRestModel();
+    restRoom.setId(room.getId());
+    restRoom.setName(room.getName());
+    restRoom.setDescription(room.getDescription());
+    restRoom.setType(room.getType());
+    restRoom.setWorkspaceEntityId(room.getWorkspaceEntityId());
+    return restRoom;
   }
   
   private Set<Long> getActiveUsers() {
