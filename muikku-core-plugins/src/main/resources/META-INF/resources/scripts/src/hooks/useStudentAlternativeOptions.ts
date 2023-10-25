@@ -1,7 +1,5 @@
 import * as React from "react";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { sleep } from "~/helper-functions/shared";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { AlternativeStudyOption } from "~/generated/client";
