@@ -578,7 +578,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       OffsetDateTime date = OffsetDateTime.now(ZoneOffset.UTC);
       Builder mockBuilder = mocker();
 
-      try {
+      try{
         Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
         mockBuilder
         .addStaffMember(admin)
@@ -586,24 +586,25 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockLogin(admin)
         .addCourse(course1)
         .build();
+        
         login();
+  
         Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
         CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-        mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
+        MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         mockBuilder
           .addCourseStaffMember(course1.getId(), courseStaffMember)
           .addCourseStudent(course1.getId(), mockCourseStudent)
           .build();
-        try {
-          WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
 
-          WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(),
-              "Test", "text/html;editor=CKEditor",
-              "<p><object type=\"application/vnd.muikku.field.journal\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb&quot;}\" />"
-              + "<input name=\"muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb\" type=\"file\" /></object></p>",
-              "JOURNAL");
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(),
+            "Test", "text/html;editor=CKEditor",
+            "<p><object type=\"application/vnd.muikku.field.journal\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb&quot;}\" />"
+            + "<input name=\"muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb\" type=\"file\" /></object></p>",
+            "JOURNAL");
           try {
             String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
                 + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
@@ -611,6 +612,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             logout();
             mockBuilder.mockLogin(student);
             login();
+            
             navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
             waitForPresent(".content-panel__chapter-title-text");
             addTextToCKEditor(".material-page__journalfield-wrapper", contentInput);
@@ -683,18 +685,15 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             waitForVisible(".dialog--studies");
             waitForVisible(".journal--feedback");
             assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);
-//            TODO: This can be enabled when records show date without zeros in it.
-//            assertTextStartsWith(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
+            assertTextStartsWith(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
             assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
           } finally {
-            archiveUserByEmail(student.getEmail());
             deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+            deleteWorkspace(workspace.getId());
+            archiveUserByEmail(student.getEmail());
           }
         } finally {
-          deleteWorkspace(workspace.getId());
-        }
-      } finally {
-        mockBuilder.wiremockReset();
+          mockBuilder.wiremockReset();
       }
     }
   
