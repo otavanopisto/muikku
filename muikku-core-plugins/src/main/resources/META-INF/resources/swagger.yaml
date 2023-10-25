@@ -1102,6 +1102,7 @@ paths:
             application/json:
               schema:
                 type: integer
+                format: int64
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -2042,6 +2043,7 @@ paths:
           description: Minimum visits
           schema:
             type: integer
+            format: int64
         - name: publicity
           in: query
           description: Publicity restriction
@@ -4436,6 +4438,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: workspaceIds
           in: query
           description: Workspace ids
@@ -4443,6 +4446,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: userGroupIds
           in: query
           description: User group ids
@@ -4450,6 +4454,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: flagOwnerIdentifier
           in: query
           description: Falg owner identifier
@@ -6785,6 +6790,7 @@ paths:
           description: Workspace entity id
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Staff members results object
@@ -6860,6 +6866,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: includeInactiveStudents
           in: query
           description: Include inactive students
@@ -7408,6 +7415,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
       responses:
         "200":
           description: User groups results object
@@ -7903,6 +7911,7 @@ paths:
           description: Min visits
           schema:
             type: integer
+            format: int64
         - name: publicity
           in: query
           description: Publicity restriction
@@ -9892,6 +9901,7 @@ components:
                 type: string
               color:
                 type: integer
+                format: int64
 
     CommunicatorUpdateLabelRequestBody:
       content:
@@ -9911,6 +9921,7 @@ components:
                 type: string
               color:
                 type: integer
+                format: int64
 
     InterimEvaluationRequestCreateRequestBody:
       required: true
@@ -10551,6 +10562,7 @@ components:
                 type: boolean
               owner:
                 type: integer
+                format: int64
               startDate:
                 type: string
                 format: date-time
@@ -11105,9 +11117,11 @@ components:
               description:
                 type: string
               price:
-                type: integer
+                type: number
+                format: double
               factor:
-                type: integer
+                type: number
+                format: double
               billingNumber:
                 type: integer
 
@@ -11137,9 +11151,11 @@ components:
               description:
                 type: string
               price:
-                type: integer
+                type: number
+                format: double
               factor:
-                type: integer
+                type: number
+                format: double
               billingNumber:
                 type: integer
 
@@ -11670,7 +11686,8 @@ components:
         editable:
           type: boolean
         price:
-          type: integer
+          type: number
+          format: double
 
     CeeposOrderStateType:
       type: string
@@ -11867,6 +11884,7 @@ components:
           format: int64
         entry:
           type: integer
+          format: int64
         commentDate:
           type: string
           format: date-time
@@ -12189,6 +12207,7 @@ components:
         student:
           description: userEntityId of student
           type: integer
+          format: int64
         workspaceEntityId:
           type: integer
           format: int64
@@ -13263,9 +13282,11 @@ components:
         workspaceMaterialId:
           description: The id of the workspace material
           type: integer
+          format: int64
         workspaceMaterialReplyId:
           description: The id of the workspace material reply
           type: integer
+          format: int64
 
     MaterialAssigmentType:
       description: Material assignment type enum
@@ -13801,6 +13822,7 @@ components:
                 type: string
               labelColor:
                 type: integer
+                format: int64
         sender:
           type: object
           properties:
@@ -13936,6 +13958,7 @@ components:
           type: string
         color:
           type: integer
+          format: int64
 
     Course:
       type: object
@@ -14393,6 +14416,7 @@ components:
           type: boolean
         userEntityId:
           type: integer
+          format: int64
         matriculationEligibility:
           type: boolean
         ceeposLine:
@@ -14901,6 +14925,7 @@ components:
           type: string
         userEntityId:
           type: integer
+          format: int64
         lastLogin:
           type: string
         archived:
@@ -16142,9 +16167,11 @@ components:
         description:
           type: string
         price:
-          type: integer
+          type: number
+          format: double
         factor:
-          type: integer
+          type: number
+          format: double
         billingNumber:
           nullable: true
           type: integer
@@ -16182,9 +16209,11 @@ components:
         description:
           type: string
         price:
-          type: integer
+          type: number
+          format: double
         factor:
-          type: integer
+          type: number
+          format: double
         billingNumber:
           type: integer
         courseAssessment:
