@@ -42,8 +42,7 @@ import { SelectItem } from "~/actions/workspaces/index";
 import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   CreateWorkspaceType,
-  WorkspaceType,
-  WorkspaceAccessType,
+  WorkspaceDataType,
   WorkspacesActiveFiltersType,
 } from "~/reducers/workspaces";
 import "~/sass/elements/course.scss";
@@ -51,6 +50,7 @@ import { TagItem } from "~/components/general/tag-input";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { AnyActionType } from "~/actions";
+import { WorkspaceAccess } from "~/generated/client";
 
 /**
  * ValidationType
@@ -69,7 +69,7 @@ interface OrganizationNewWorkspaceProps extends WithTranslation {
   children?: React.ReactElement<any>;
   data?: CreateWorkspaceType;
   users: UsersSelectState;
-  templates: WorkspaceType[];
+  templates: WorkspaceDataType[];
   activeFilters: WorkspacesActiveFiltersType;
   loadStudents: LoadUsersTriggerType;
   loadStaff: LoadUsersTriggerType;
@@ -86,7 +86,7 @@ interface OrganizationNewWorkspaceState {
   template: SelectItem;
   templateSearch: string;
   workspaceName: string;
-  workspaceAccess: WorkspaceAccessType;
+  workspaceAccess: WorkspaceAccess;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   beginDate: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -194,7 +194,7 @@ class OrganizationNewWorkspace extends React.Component<
    * selectTemplateMobile
    * @param template template
    */
-  selectTemplateMobile = (template: WorkspaceType) => {
+  selectTemplateMobile = (template: WorkspaceDataType) => {
     const validation: ValidationType = Object.assign(this.state.validation, {
       templateSelected: true,
     });
@@ -283,7 +283,7 @@ class OrganizationNewWorkspace extends React.Component<
    * setWorkspaceAccess
    * @param value value
    */
-  setWorkspaceAccess(value: WorkspaceAccessType) {
+  setWorkspaceAccess(value: WorkspaceAccess) {
     this.setState({ workspaceAccess: value });
   }
 
@@ -476,7 +476,7 @@ class OrganizationNewWorkspace extends React.Component<
             <DialogRow modifiers="new-workspace">
               <ApplicationList modifiers="workspace-templates">
                 {this.props.templates.length > 0 ? (
-                  this.props.templates.map((template: WorkspaceType) => {
+                  this.props.templates.map((template: WorkspaceDataType) => {
                     const templateSelected =
                       this.state.template &&
                       this.state.template.id === template.id;

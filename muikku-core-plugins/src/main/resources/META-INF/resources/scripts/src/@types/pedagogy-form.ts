@@ -1,4 +1,4 @@
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 
 // used for frontend logic
 const useRoles = [
@@ -76,7 +76,7 @@ export interface SupportActionImplementation {
   /**
    * The details of the action
    */
-  course?: WorkspaceType;
+  course?: WorkspaceDataType;
   /**
    * The extra information of the action
    */

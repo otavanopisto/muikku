@@ -10,8 +10,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import Dropdown from "~/components/general/dropdown";
 import {
-  WorkspaceType,
-  WorkspaceAssessementStateType,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import EvaluationRequestDialog from "./evaluation-request-dialog";
@@ -21,10 +20,13 @@ import {
   updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
-import { Assessment } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import i18n from "~/locales/i18n";
+import {
+  WorkspaceAssessmentState,
+  WorkspaceAssessmentStateType,
+} from "~/generated/client";
 
 /**
  * ItemDataElement
@@ -51,7 +53,7 @@ interface WorkspaceNavbarProps extends WithTranslation {
   status: StatusType;
   title: string;
   workspaceUrl: string;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   workspaceEditMode: WorkspaceEditModeStateType;
   updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType;
 }
@@ -486,7 +488,7 @@ export default withTranslation(["workspace", "users", "common"])(
  */
 function getTextForAssessmentState(
   canCancelRequest: boolean,
-  state: WorkspaceAssessementStateType
+  state: WorkspaceAssessmentStateType
 ) {
   let text;
   switch (state) {
@@ -520,7 +522,7 @@ function getTextForAssessmentState(
  * @param state state
  * @returns icon
  */
-function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
+function getIconForAssessmentState(state: WorkspaceAssessmentStateType) {
   let icon;
   switch (state) {
     case "unassessed":
@@ -557,7 +559,7 @@ function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
  * @param state state
  * @returns classname
  */
-function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
+function getClassNameForAssessmentState(state: WorkspaceAssessmentStateType) {
   let className;
   switch (state) {
     case "pending":
@@ -595,11 +597,13 @@ function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
  * @param assessmentStates assessmentStates
  * @returns assessment state
  */
-function getPrioritizedAssessmentState(assessmentStates: Assessment[]) {
+function getPrioritizedAssessmentState(
+  assessmentStates: WorkspaceAssessmentState[]
+) {
   /**
    * Priority array
    */
-  const assessmentPriorityOrder: WorkspaceAssessementStateType[] = [
+  const assessmentPriorityOrder: WorkspaceAssessmentStateType[] = [
     "fail",
     "incomplete",
     "pending",
@@ -632,7 +636,7 @@ function getPrioritizedAssessmentState(assessmentStates: Assessment[]) {
  * @returns boolean if current request can be canceled
  */
 function canCancelAssessmentRequest(
-  assessmentState: Assessment | Assessment[]
+  assessmentState: WorkspaceAssessmentState | WorkspaceAssessmentState[]
 ) {
   /**
    * If "aka" combination workspace

@@ -1,14 +1,17 @@
-import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
 import Link from "~/components/general/link";
+import { MaterialContentNode } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**
  * Pdf
  * @param props props
  * @param props.material material
  */
-export default function Pdf(props: { material: MaterialContentNodeType }) {
+export default function Pdf(props: {
+  material: MaterialContentNodeWithIdAndLogic;
+}) {
   const { t } = useTranslation(["files", "common"]);
 
   return (

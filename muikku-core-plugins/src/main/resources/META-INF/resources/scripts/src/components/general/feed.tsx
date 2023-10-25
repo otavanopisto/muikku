@@ -4,19 +4,13 @@ import "~/sass/elements/feed.scss";
 import "~/sass/elements/wcag.scss";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { FeedEntry } from "~/generated/client";
 
 /**
  * FeedProps
  */
 interface FeedProps extends WithTranslation {
-  entries: Array<{
-    publicationDate: string;
-    description: string;
-    link: string;
-    title: string;
-    image: string;
-    feed: string;
-  }>;
+  entries: FeedEntry[];
 }
 
 /**

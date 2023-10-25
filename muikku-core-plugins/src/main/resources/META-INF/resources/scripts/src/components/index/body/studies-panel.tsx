@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceMaterialReferenceType,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
@@ -24,7 +24,7 @@ import ItemList from "~/components/general/item-list";
  */
 interface WorkspacesPanelProps extends WithTranslation {
   status: StatusType;
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
   lastWorkspaces: WorkspaceMaterialReferenceType[];
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -142,19 +142,24 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
         <Panel.BodyContent>
           <ItemList modifier="workspaces">
             {workspaces
-              .sort((workspaceA: WorkspaceType, workspaceB: WorkspaceType) => {
-                if (
-                  workspaceA.name.toLocaleLowerCase() <
-                  workspaceB.name.toLocaleLowerCase()
-                ) {
-                  return -1;
+              .sort(
+                (
+                  workspaceA: WorkspaceDataType,
+                  workspaceB: WorkspaceDataType
+                ) => {
+                  if (
+                    workspaceA.name.toLocaleLowerCase() <
+                    workspaceB.name.toLocaleLowerCase()
+                  ) {
+                    return -1;
+                  }
+                  if (workspaceA.name > workspaceB.name) {
+                    return 1;
+                  }
+                  return 0;
                 }
-                if (workspaceA.name > workspaceB.name) {
-                  return 1;
-                }
-                return 0;
-              })
-              .map((workspace: WorkspaceType) => (
+              )
+              .map((workspace: WorkspaceDataType) => (
                 <ItemList.Item
                   modifier="workspaces"
                   as={Link}

@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  WorkspaceType,
-  Assessment,
-  WorkspaceForumStatisticsType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
 import WorkspaceChart from "./workspace/workspace-chart";
 import "~/sass/elements/application-list.scss";
@@ -16,7 +12,11 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
-import { WorkspaceActivity } from "~/generated/client";
+import {
+  WorkspaceActivity,
+  DiscussionWorkspaceStatistic,
+  WorkspaceAssessmentState,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
  * StudentWorkspaceProps
  */
 interface StudentWorkspaceProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**
@@ -63,7 +63,7 @@ class StudentWorkspace extends React.Component<
    * is in "incomplete" state
    * @param assessments assessments
    */
-  showWorkspacePercents = (assessments?: Assessment[]) => {
+  showWorkspacePercents = (assessments?: WorkspaceAssessmentState[]) => {
     if (assessments) {
       for (const assessment of assessments) {
         if (!assessment.grade || assessment.state === "incomplete") {
@@ -80,7 +80,7 @@ class StudentWorkspace extends React.Component<
    * @param assessment assessment
    * @returns object containing state text and class modifier
    */
-  getAssessmentStateText = (assessment: Assessment) => {
+  getAssessmentStateText = (assessment: WorkspaceAssessmentState) => {
     let stateText;
 
     switch (assessment.state) {
@@ -346,7 +346,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceForumStatisticsType>
+              <CourseActivityRow<DiscussionWorkspaceStatistic>
                 conditionalAttributeLocale="content.numberOfMessages"
                 givenDateAttributeLocale="content.lastMessage"
                 labelTranslationString="labels.discussionMessages"
@@ -448,16 +448,16 @@ export default withTranslation(["guider"])(StudentWorkspace);
  * CourseActivityRowProps
  */
 interface CourseActivityRowProps<C> {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   labelTranslationString: string;
   conditionalAttribute: keyof C;
   conditionalAttributeLocale?: string;
   givenDateAttribute?: string;
   givenDateAttributeLocale?: string;
   /**
-   * mainAttribute is type as WorkspaceType as component is not used any where else
+   * mainAttribute is type as WorkspaceDataType as component is not used any where else
    */
-  mainAttribute: keyof WorkspaceType;
+  mainAttribute: keyof WorkspaceDataType;
 }
 
 /**
@@ -535,7 +535,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
  * GuiderAssessmentProps
  */
 interface GuiderAssessmentProps {
-  assessment?: Assessment;
+  assessment?: WorkspaceAssessmentState;
 }
 
 /**

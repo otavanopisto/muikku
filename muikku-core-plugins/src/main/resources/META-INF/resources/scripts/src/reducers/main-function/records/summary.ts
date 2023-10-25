@@ -1,10 +1,9 @@
 import { ActionType } from "actions";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { Reducer } from "redux";
 import { ActivityLogEntry, UserWithSchoolData } from "~/generated/client";
 
 export type SummaryStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
-export type SummaryWorkspaceListType = WorkspaceType[];
 
 /**
  * SummaryStudyTime
@@ -63,7 +62,7 @@ export interface SummaryType {
  */
 export interface GraphDataType {
   activity: ActivityLogEntry[];
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
 }
 
 /**

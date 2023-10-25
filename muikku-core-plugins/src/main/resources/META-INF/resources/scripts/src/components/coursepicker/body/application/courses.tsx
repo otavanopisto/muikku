@@ -14,7 +14,7 @@ import {
   loadMoreWorkspacesFromServer,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
-import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -25,7 +25,7 @@ interface CoursepickerWorkspacesProps extends WithTranslation<["common"]> {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
 }
 
 /**
@@ -81,7 +81,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
 
     return (
       <ApplicationList>
-        {this.props.workspaces.map((workspace: WorkspaceType) => (
+        {this.props.workspaces.map((workspace: WorkspaceDataType) => (
           <Course key={workspace.id} workspace={workspace} />
         ))}
         {this.props.workspacesState === "LOADING_MORE" ? (

@@ -10,14 +10,10 @@
 //please remove it
 
 import * as React from "react";
-
-import mApi from "~/lib/mApi";
 import {
-  WorkspaceType,
-  MaterialContentNodeType,
-  MaterialCompositeRepliesType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
@@ -31,7 +27,6 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/material-page.scss";
 import { UsedAs } from "~/@types/shared";
@@ -43,8 +38,9 @@ import {
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
-import i18n from "~/locales/i18n";
+import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
+import MApi from "~/api/api";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -195,9 +191,9 @@ const STATES = [
  * MaterialLoaderProps
  */
 export interface MaterialLoaderProps {
-  material: MaterialContentNodeType;
-  folder?: MaterialContentNodeType;
-  workspace: WorkspaceType;
+  material: MaterialContentNodeWithIdAndLogic;
+  folder?: MaterialContentNodeWithIdAndLogic;
+  workspace: WorkspaceDataType;
   status: StatusType;
   modifiers?: string | Array<string>;
   id?: string;
@@ -252,7 +248,7 @@ export interface MaterialLoaderProps {
    * used
    */
   loadCompositeReplies?: boolean;
-  compositeReplies?: MaterialCompositeRepliesType;
+  compositeReplies?: MaterialCompositeReply;
 
   readOnly?: boolean;
 
@@ -290,7 +286,7 @@ interface DefaultMaterialLoaderProps {
  */
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
-  compositeRepliesInState: MaterialCompositeRepliesType;
+  compositeRepliesInState: MaterialCompositeReply;
   compositeRepliesInStateLoaded: boolean;
 
   //whether the answers are visible and checked
@@ -306,8 +302,7 @@ interface MaterialLoaderState {
 
 //A cheap cache for material replies and composite replies used by the hack
 const materialRepliesCache: { [key: string]: any } = {};
-const compositeRepliesCache: { [key: string]: MaterialCompositeRepliesType } =
-  {};
+const compositeRepliesCache: { [key: string]: MaterialCompositeReply } = {};
 
 //Treat this class with care it uses a lot of hacks to be efficient
 //The compositeReplies which answers are ignored and only used for setting the initial replies
@@ -483,6 +478,8 @@ class MaterialLoader extends React.Component<
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
+    const workspaceApi = MApi.getWorkspaceApi();
+
     let userEntityIdToLoad = this.props.status.userId;
 
     if (usedAs === "evaluationTool" && userEntityId) {
@@ -492,19 +489,17 @@ class MaterialLoader extends React.Component<
     //TODO maybe we should get rid of this way to load the composite replies
     //after all it's learned that this is part of the workspace
     if (this.props.loadCompositeReplies) {
-      let compositeRepliesInState: MaterialCompositeRepliesType =
+      let compositeRepliesInState: MaterialCompositeReply =
         compositeRepliesCache[
           this.props.workspace.id + "-" + this.props.material.assignment.id
         ];
       if (!compositeRepliesInState) {
-        compositeRepliesInState = (await promisify(
-          mApi().workspace.workspaces.materials.compositeMaterialReplies.read(
-            this.props.workspace.id,
-            this.props.material.assignment.id,
-            { userEntityId: userEntityIdToLoad }
-          ),
-          "callback"
-        )()) as MaterialCompositeRepliesType;
+        compositeRepliesInState =
+          await workspaceApi.getWorkspaceCompositeMaterialReplies({
+            workspaceEntityId: this.props.workspace.id,
+            workspaceMaterialId: this.props.material.assignment.id,
+            userEntityId: userEntityIdToLoad,
+          });
 
         materialRepliesCache[
           this.props.workspace.id + "-" + this.props.material.assignment.id

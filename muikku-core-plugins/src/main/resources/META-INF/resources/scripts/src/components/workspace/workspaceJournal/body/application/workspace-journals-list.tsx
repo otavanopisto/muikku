@@ -11,7 +11,7 @@ import { StatusType } from "~/reducers/base/status";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
-import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import {
   LoadMoreCurrentWorkspaceJournalsFromServerTriggerType,
@@ -27,7 +27,7 @@ interface WorkspaceJournalsListProps extends WithTranslation {
   workspaceJournalsState: WorkspacesStateType;
   workspaceJournalsHasMore: boolean;
   loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   journalsState: JournalsState;
   status: StatusType;
 }

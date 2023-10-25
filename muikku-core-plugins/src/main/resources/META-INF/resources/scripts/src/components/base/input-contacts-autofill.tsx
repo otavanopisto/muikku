@@ -8,7 +8,7 @@ import * as React from "react";
 import Autocomplete from "~/components/general/autocomplete";
 import TagInput from "~/components/general/tag-input";
 import { filterHighlight, getName } from "~/util/modifiers";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { ContactRecipientType } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
@@ -318,7 +318,7 @@ export default class c extends React.Component<
      * workspaceItems
      */
     const workspaceItems: ContactRecipientType[] = searchResults[2].map(
-      (item: WorkspaceType): ContactRecipientType => ({
+      (item: WorkspaceDataType): ContactRecipientType => ({
         type: "workspace",
         value: {
           id: item.id,

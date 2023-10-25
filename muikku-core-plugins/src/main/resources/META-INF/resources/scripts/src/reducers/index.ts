@@ -7,7 +7,7 @@ import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
 import { HOPSState } from "./main-function/hops";
 import { MessagesState } from "./main-function/messages";
-import { WorkspacesType } from "./workspaces";
+import { WorkspacesState } from "./workspaces";
 import {
   UsersState,
   UserGroupsState,
@@ -19,8 +19,8 @@ import { UserIndexState } from "./user-index";
 import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
 import {
-  YOType,
-  SubjectEligibilitySubjectsType,
+  MatriculationState,
+  MatriculationSubjectEligibilityState,
 } from "./main-function/records/yo";
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
@@ -42,8 +42,8 @@ export interface StateType {
   contacts: ContactsState;
   title: string;
   websocket?: WebsocketStateType;
-  yo?: YOType;
-  eligibilitySubjects?: SubjectEligibilitySubjectsType;
+  yo?: MatriculationState;
+  eligibilitySubjects?: MatriculationSubjectEligibilityState;
   credentials?: CredentialsState;
   announcements?: AnnouncementsState;
   hops?: HOPSState;
@@ -53,9 +53,9 @@ export interface StateType {
   userIndex?: UserIndexState;
   userSelect?: UsersSelectState;
   userGroups?: UserGroupsState;
-  workspaces?: WorkspacesType;
+  workspaces?: WorkspacesState;
   organizationSummary?: OrganizationSummaryType;
-  organizationWorkspaces?: WorkspacesType;
+  organizationWorkspaces?: WorkspacesState;
   discussion?: DiscussionState;
   organizationUsers?: UsersState;
   guider?: GuiderState;

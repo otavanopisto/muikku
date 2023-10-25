@@ -3,8 +3,8 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import MaterialLoader from "~/components/base/material-loader";
 import {
-  MaterialContentNodeType,
-  WorkspaceType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import {
@@ -23,6 +23,7 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
+import { MaterialContentNode } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -31,10 +32,10 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface HelpMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialContentNode: MaterialContentNodeType;
-  folder: MaterialContentNodeType;
+  materialContentNode: MaterialContentNodeWithIdAndLogic;
+  folder: MaterialContentNodeWithIdAndLogic;
   isViewRestricted: boolean;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
   readspeakerComponent?: JSX.Element;
 }

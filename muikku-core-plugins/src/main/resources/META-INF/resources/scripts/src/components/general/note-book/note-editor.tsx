@@ -10,7 +10,7 @@ import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import {
@@ -32,7 +32,7 @@ interface NoteEditorProps extends WithTranslation {
   /**
    * If used in workspace, this is the current workspace
    */
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   /**
    * If editor is used
    */

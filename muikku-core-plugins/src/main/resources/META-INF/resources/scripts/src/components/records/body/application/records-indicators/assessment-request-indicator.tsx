@@ -1,14 +1,14 @@
 import * as React from "react";
 import { localize } from "~/locales/i18n";
-import { Assessment } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { WorkspaceAssessmentState } from "~/generated/client";
 
 /**
  * AssessmentRequestIndicatorProps
  */
 interface AssessmentRequestIndicatorProps {
-  assessment: Assessment;
+  assessment: WorkspaceAssessmentState;
 }
 
 /**
