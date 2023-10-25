@@ -1,5 +1,4 @@
-import { MaterialAssignmentType } from "../reducers/workspaces/index";
-import { WorkspaceJournalComment } from "~/generated/client";
+import { WorkspaceJournalComment, WorkspaceMaterial } from "~/generated/client";
 
 /**
  * EvaluationJournalFilters
@@ -101,7 +100,7 @@ export type EvaluationStateType = "LOADING" | "READY" | "ERROR";
  * EvaluationAssigmentData
  */
 export interface EvaluationAssigmentData {
-  assigments: MaterialAssignmentType[];
+  assigments: WorkspaceMaterial[];
 }
 
 /**

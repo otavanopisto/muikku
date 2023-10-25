@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as moment from "moment";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { MatriculationExaminationEnrollmentInfo as Step1 } from "./matriculation-examination-enrollment-info";
 import { MatriculationExaminationEnrollmentInformation as Step2 } from "./matriculation-examination-enrollment-information";
 import { MatriculationExaminationEnrollmentInformationNew as Step2New } from "./matriculation-examination-enrollment-information-new";
@@ -25,7 +25,7 @@ import {
 import { StatusType } from "~/reducers/base/status";
 import { HOPSState } from "~/reducers/main-function/hops";
 import { ExamEnrollmentDegreeStructure } from "~/@types/shared";
-import { YOType } from "~/reducers/main-function/records/yo";
+import { MatriculationState } from "~/reducers/main-function/records/yo";
 import {
   MatriculationExaminationDraft,
   ExaminationInformation,
@@ -123,7 +123,7 @@ export const EXAMINATION_SUCCESS_GRADES_MAP = [
  * MatriculationExaminationWizardProps
  */
 interface MatriculationExaminationWizardProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
   examId: number;
   compulsoryEducationEligible: boolean;
@@ -131,7 +131,7 @@ interface MatriculationExaminationWizardProps extends WithTranslation {
   onDone: () => any;
   updateEnrollemnts: (examId: number) => void;
   hops: HOPSState;
-  yo: YOType;
+  yo: MatriculationState;
 }
 
 /**

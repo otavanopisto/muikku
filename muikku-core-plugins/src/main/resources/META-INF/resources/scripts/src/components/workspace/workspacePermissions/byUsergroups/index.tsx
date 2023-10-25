@@ -7,10 +7,10 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/form.scss";
 import ContentPanel from "~/components/general/content-panel";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { bindActionCreators } from "redux";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
@@ -19,7 +19,7 @@ import { AnyActionType } from "~/actions";
  * PermissionsByUsergroupsProps
  */
 interface PermissionsByUsergroupsProps extends WithTranslation<["common"]> {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
