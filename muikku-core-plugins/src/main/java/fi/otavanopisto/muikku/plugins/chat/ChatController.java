@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,11 +22,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatRoomDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatUserDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatMessageRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.DeletedChatRoomRestModel;
@@ -51,6 +55,9 @@ public class ChatController {
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private ChatMessageDAO chatMessageDAO;
 
   @Inject
   private ChatUserDAO chatUserDAO;
@@ -95,21 +102,126 @@ public class ChatController {
     }
     if (!users.contains(userEntity.getId())) {
       users.add(userEntity.getId());
+    }
+    else {
+      
+      // User was already in room. Notify only them, just in case
+      
+      users = Set.of(userEntity.getId());
+    }
 
-      // Inform all room users of the new user
-      
-      ObjectMapper mapper = new ObjectMapper();
-      try {
-        RoomJoinedRestModel roomJoined = new RoomJoinedRestModel(chatRoom.getId(), userEntity.getId(), userNicks.get(userEntity.getId()));
-        webSocketMessenger.sendMessage("chat:room-joined", mapper.writeValueAsString(roomJoined), users);
-      }
-      catch (JsonProcessingException e) {
-        logger.severe(String.format("Message parse failure: %s", e.getMessage()));
-      }
-      
+    // Inform all room users of the new user
+    
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      RoomJoinedRestModel roomJoined = new RoomJoinedRestModel(chatRoom.getId(), userEntity.getId(), userNicks.get(userEntity.getId()));
+      webSocketMessenger.sendMessage("chat:room-joined", mapper.writeValueAsString(roomJoined), users);
+    }
+    catch (JsonProcessingException e) {
+      logger.severe(String.format("Message parse failure: %s", e.getMessage()));
     }
   }
   
+  public void leaveRoom(UserEntity userEntity, ChatRoom chatRoom) {
+    Set<Long> users = roomUsers.get(chatRoom.getId());
+    Set<Long> usersToInform = new HashSet<>(users);
+    if (users != null && users.contains(userEntity.getId())) {
+      users.remove(userEntity.getId());
+    }
+    else {
+      
+      // User never was in the room. Notify only them, just in case
+      
+      usersToInform = Set.of(userEntity.getId());
+    }
+
+    // Inform room users of the user that has left (including the leaving user)
+    
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      RoomLeftRestModel roomLeft = new RoomLeftRestModel(chatRoom.getId(), userEntity.getId());
+      webSocketMessenger.sendMessage("chat:room-left", mapper.writeValueAsString(roomLeft), usersToInform);
+    }
+    catch (JsonProcessingException e) {
+      logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+    }
+  }
+  
+  public void postMessage(ChatRoom room, UserEntity userEntity, String message) {
+    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), room.getId(), null, getNick(userEntity), message);
+
+    // Inform all room users of the new message
+    
+    Set<Long> users = roomUsers.get(room.getId());
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      ChatMessageRestModel msg = toRestModel(chatMessage);
+      webSocketMessenger.sendMessage("chat:message-sent", mapper.writeValueAsString(msg), users);
+    }
+    catch (JsonProcessingException e) {
+      logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+    }
+  }
+  
+  public void postMessage(UserEntity targetUserEntity, UserEntity userEntity, String message) {
+    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), null, targetUserEntity.getId(), getNick(userEntity), message);
+
+    // Inform both parties of the private conversation about a new private message
+    
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      ChatMessageRestModel msg = toRestModel(chatMessage);
+      webSocketMessenger.sendMessage("chat:message-sent", mapper.writeValueAsString(msg), Set.of(targetUserEntity.getId(), userEntity.getId()));
+    }
+    catch (JsonProcessingException e) {
+      logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+    }
+  }
+  
+  public void updateMessage(ChatMessage message, String content, UserEntity modifier) {
+    ChatMessage chatMessage = chatMessageDAO.update(message, content, modifier.getId());
+    
+    // Inform suitable parties about updated message
+    
+    Set<Long> usersToInform;
+    if (chatMessage.getTargetUserEntityId() != null) {
+      usersToInform = Set.of(chatMessage.getSourceUserEntityId(), chatMessage.getTargetUserEntityId());
+    }
+    else {
+      usersToInform = roomUsers.get(chatMessage.getTargetRoomId());
+    }
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      ChatMessageRestModel msg = toRestModel(chatMessage);
+      webSocketMessenger.sendMessage("chat:message-edited", mapper.writeValueAsString(msg), usersToInform);
+    }
+    catch (JsonProcessingException e) {
+      logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+    }
+  }
+  
+  public void deleteMessage(ChatMessage message, UserEntity modifier) {
+    ChatMessage chatMessage = chatMessageDAO.archive(message, modifier.getId());
+    
+    // Inform suitable parties about deleted message
+    
+    Set<Long> usersToInform;
+    if (chatMessage.getTargetUserEntityId() != null) {
+      usersToInform = Set.of(chatMessage.getSourceUserEntityId(), chatMessage.getTargetUserEntityId());
+    }
+    else {
+      usersToInform = roomUsers.get(chatMessage.getTargetRoomId());
+    }
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      ChatMessageRestModel msg = toRestModel(chatMessage);
+      webSocketMessenger.sendMessage("chat:message-deleted", mapper.writeValueAsString(msg), usersToInform);
+    }
+    catch (JsonProcessingException e) {
+      logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+    }
+  }
+
   public String getNick(UserEntity userEntity) {
     return userNicks.get(userEntity.getId());
   }
@@ -122,25 +234,6 @@ public class ChatController {
   public boolean isInRoom(UserEntity userEntity, ChatRoom chatRoom) {
     Set<Long> users = roomUsers.get(chatRoom.getId()) ;
     return users != null && users.contains(userEntity.getId());
-  }
-  
-  public void leaveRoom(UserEntity userEntity, ChatRoom chatRoom) {
-    Set<Long> users = roomUsers.get(chatRoom.getId());
-    if (users != null && users.contains(userEntity.getId())) {
-
-      // Inform all room users of the user that has left (including the leaving user)
-      
-      ObjectMapper mapper = new ObjectMapper();
-      try {
-        RoomLeftRestModel roomLeft = new RoomLeftRestModel(chatRoom.getId(), userEntity.getId());
-        webSocketMessenger.sendMessage("chat:room-joined", mapper.writeValueAsString(roomLeft), users);
-      }
-      catch (JsonProcessingException e) {
-        logger.severe(String.format("Message parse failure: %s", e.getMessage()));
-      }
-
-      users.remove(userEntity.getId());
-    }
   }
   
   public void createPublicRoom(String name, String description, UserEntity creator) {
@@ -160,6 +253,10 @@ public class ChatController {
   
   public ChatRoom findChatRoomByIdAndArchived(Long roomId, Boolean archived) {
     return chatRoomDAO.findByIdAndArchived(roomId, archived);
+  }
+  
+  public ChatMessage findChatMessageByIdAndArchived(Long messageId, Boolean archived) {
+    return chatMessageDAO.findByIdAndArchived(messageId, archived);
   }
 
   public void updatePublicRoom(ChatRoom chatRoom, String name, String description, UserEntity modifier) {
@@ -243,6 +340,18 @@ public class ChatController {
       }
     }
     return rooms;
+  }
+  
+  public List<ChatMessage> listMessages(UserEntity sourceUserEntity, UserEntity targetUserEntity, Date earlierThan, Integer count) {
+    List<ChatMessage> messages = chatMessageDAO.listBySourceUserAndTargetUserAndDate(sourceUserEntity.getId(), targetUserEntity.getId(), earlierThan, count);
+    Collections.reverse(messages);
+    return messages;
+  }
+
+  public List<ChatMessage> listMessages(ChatRoom chatRoom, Date earlierThan, Integer count) {
+    List<ChatMessage> messages = chatMessageDAO.listByTargetRoomAndDate(chatRoom.getId(), earlierThan, count);
+    Collections.reverse(messages);
+    return messages;
   }
   
   public boolean isChatEnabled(UserEntity userEntity) {
@@ -354,6 +463,20 @@ public class ChatController {
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
     }
+  }
+  
+  public ChatMessageRestModel toRestModel(ChatMessage message) {
+    ChatMessageRestModel msg = new ChatMessageRestModel();
+    msg.setId(message.getId());
+    msg.setSourceUserEntityId(message.getSourceUserEntityId());
+    msg.setTargetRoomId(message.getTargetRoomId());
+    msg.setTargetUserEntityId(message.getTargetUserEntityId());
+    msg.setNick(message.getNick());
+    msg.setMessage(message.getArchived() ? null : message.getMessage());
+    msg.setSentDateTime(message.getSent());
+    msg.setEditedDateTime(message.getEdited());
+    msg.setArchived(message.getArchived());
+    return msg;
   }
   
   private Set<Long> getActiveUsers() {

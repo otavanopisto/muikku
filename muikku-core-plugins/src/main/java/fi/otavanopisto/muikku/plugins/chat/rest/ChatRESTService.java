@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -10,12 +11,14 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -25,12 +28,15 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
+import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -234,6 +240,137 @@ public class ChatRESTService {
     return Response.ok(restRooms).build();
   }
   
+  @Path("/publicmessage/{ID}")
+  @POST
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response postPublicMessage(@PathParam("ID") Long id, PublicMessageRestModel payload) {
+    if (StringUtils.isEmpty(payload.getMessage())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
+    }
+    ChatRoom room = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
+    if (room == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
+    }
+    chatController.postMessage(room, sessionController.getLoggedUserEntity(), payload.getMessage());
+    return Response.status(Status.NO_CONTENT).build();
+  }
+  
+  @Path("/privatemessage/{ID}")
+  @POST
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response postPrivateMessage(@PathParam("ID") Long id, PublicMessageRestModel payload) {
+    if (StringUtils.isEmpty(payload.getMessage())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
+    }
+    UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
+    if (targetUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
+    }
+    chatController.postMessage(targetUserEntity, sessionController.getLoggedUserEntity(), payload.getMessage());
+    return Response.status(Status.NO_CONTENT).build();
+  }
+  
+  @Path("/message/{ID}")
+  @PUT
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateMessage(@PathParam("ID") Long id, UpdateMessageRestModel payload) {
+    
+    // Validation
+    
+    if (StringUtils.isEmpty(payload.getMessage())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
+    }
+    ChatMessage chatMessage = chatController.findChatMessageByIdAndArchived(id, Boolean.FALSE);
+    if (chatMessage == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Message %d not found", id)).build();
+    }
+    if (!sessionController.getLoggedUserEntity().getId().equals(chatMessage.getSourceUserEntityId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    
+    UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
+    if (targetUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
+    }
+    chatController.updateMessage(chatMessage, payload.getMessage(), sessionController.getLoggedUserEntity());
+    return Response.status(Status.NO_CONTENT).build();
+  }
+
+  @Path("/message/{ID}")
+  @DELETE
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteMessage(@PathParam("ID") Long id) {
+    
+    // Validation
+    
+    ChatMessage chatMessage = chatController.findChatMessageByIdAndArchived(id, Boolean.FALSE);
+    if (chatMessage == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Message %d not found", id)).build();
+    }
+    if (!sessionController.getLoggedUserEntity().getId().equals(chatMessage.getSourceUserEntityId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    chatController.deleteMessage(chatMessage, sessionController.getLoggedUserEntity());
+    return Response.status(Status.NO_CONTENT).build();
+  }
+  
+  @Path("/privatemessages/{ID}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listPrivateMessages(@PathParam("ID") Long id, @QueryParam("count") @DefaultValue ("25") Integer count, @QueryParam("earlierThan") ISO8601UTCTimestamp earlierThanISO) {
+    UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
+    if (targetUserEntity == null) {
+    }
+    Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
+    List<ChatMessage> messages = chatController.listMessages(sessionController.getLoggedUserEntity(), targetUserEntity, earlierThan, count);
+    List<ChatMessageRestModel> restMessages = new ArrayList<>();
+    for (ChatMessage message : messages) {
+      restMessages.add(chatController.toRestModel(message));
+    }
+    return Response.ok(restMessages).build();
+  }
+
+  @Path("/publicmessages/{ID}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listPublicMessages(@PathParam("ID") Long id, @QueryParam("count") @DefaultValue ("25") Integer count, @QueryParam("earlierThan") ISO8601UTCTimestamp earlierThanISO) {
+    ChatRoom chatRoom = chatController.findChatRoomByIdAndArchived(id,  Boolean.FALSE);
+    if (chatRoom == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
+    }
+    Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
+    List<ChatMessage> messages = chatController.listMessages(chatRoom, earlierThan, count);
+    List<ChatMessageRestModel> restMessages = new ArrayList<>();
+    for (ChatMessage message : messages) {
+      restMessages.add(chatController.toRestModel(message));
+    }
+    return Response.ok(restMessages).build();
+  }
+
+  @Path("/messages/{ID}/authorInfo")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getMessageAuthorInfo(@PathParam("ID") Long id) {
+    ChatMessage chatMessage = chatController.findChatMessageByIdAndArchived(id, Boolean.FALSE);
+    if (chatMessage == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Message %d not found", id)).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(chatMessage.getSourceUserEntityId());
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", chatMessage.getSourceUserEntityId())).build();
+    }
+    ChatUser chatUser = chatController.getChatUser(userEntity);
+    UserEntityName userEntityName = userEntityController.getName(userEntity, true);
+    MessageAuthorInfoRestModel authorInfo = new MessageAuthorInfoRestModel();
+    authorInfo.setUserEntityId(userEntity.getId());
+    authorInfo.setNick(chatUser.getNick());
+    authorInfo.setName(userEntityName.getDisplayNameWithLine());
+    authorInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
+    return Response.ok(authorInfo).build();
+  }
+
   @Path("/settings")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
