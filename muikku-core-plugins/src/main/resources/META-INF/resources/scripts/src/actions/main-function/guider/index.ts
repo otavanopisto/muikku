@@ -747,7 +747,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                   workspacesWithAddons.map(async (workspace, index) => {
                     const activityLogs =
                       await activitylogsApi.getWorkspaceActivityLogs({
-                        userId: id,
+                        userIdentifier: id,
                         workspaceEntityId: workspace.id,
                         from: new Date(new Date().getFullYear() - 2, 0),
                         to: new Date(),
@@ -851,7 +851,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       const promises = [
         activitylogsApi
           .getWorkspaceActivityLogs({
-            userId: id,
+            userIdentifier: id,
             from: new Date(new Date().getFullYear() - 2, 0),
             to: new Date(),
           })
@@ -908,7 +908,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                     workspacesWithAddons.map(async (workspace, index) => {
                       const activityLogs =
                         await activitylogsApi.getWorkspaceActivityLogs({
-                          userId: id,
+                          userIdentifier: id,
                           workspaceEntityId: workspace.id,
                           from: new Date(new Date().getFullYear() - 2, 0),
                           to: new Date(),

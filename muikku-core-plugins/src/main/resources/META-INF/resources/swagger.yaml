@@ -1,3 +1,8 @@
+# Please use following rules when editing this file:
+# - id parameters and other similiar named properties always are type number and format int64
+# - identifiers and other similiar named properties are always type string
+# - use as precice format for properties as possible (e.g. use date-time instead of string) because it helps generate better client code
+# - create schemas for all request and use references to them in paths
 openapi: 3.0.3
 info:
   version: 1.0.0
@@ -79,16 +84,16 @@ paths:
   #      description: Internal server error
 
   #ACTIVITYLOGS
-  /rest/activitylogs/user/{userId}:
+  /rest/activitylogs/user/{userIdentifier}:
     get:
       operationId: getUserActivityLogs
       summary: Get activity logs
       tags:
         - Activitylogs
       parameters:
-        - name: userId
+        - name: userIdentifier
           in: path
-          description: User id
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -120,16 +125,16 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/activitylogs/user/{userId}/workspace:
+  /rest/activitylogs/user/{userIdentifier}/workspace:
     get:
       operationId: getWorkspaceActivityLogs
       summary: Get activity logs
       tags:
         - Activitylogs
       parameters:
-        - name: userId
+        - name: userIdentifier
           in: path
-          description: User id
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -460,7 +465,7 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
@@ -494,7 +499,7 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
@@ -541,7 +546,7 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
@@ -584,7 +589,7 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
@@ -791,7 +796,7 @@ paths:
       parameters:
         - name: userIdentifier
           in: path
-          description: User identifier
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -828,7 +833,7 @@ paths:
       parameters:
         - name: userIdentifier
           in: path
-          description: User identifier
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -861,7 +866,7 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
@@ -888,7 +893,7 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
