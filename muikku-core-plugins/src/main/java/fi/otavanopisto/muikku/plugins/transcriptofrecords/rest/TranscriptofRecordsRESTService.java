@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +39,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -57,9 +59,13 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
@@ -167,7 +173,75 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         workspaceIdentifier,
         includeTransferCredits,
         includeAssignmentStatistics);
+    
+    Integer allCourseCredits = 0;
+    Integer mandatoryCourseCredits = 0;
+    
+    for (WorkspaceActivity activity : activityInfo.getActivities()) {
+      
+      for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
+
+        List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
+        Integer size = assessmentStatesList.size() - 1;
+        
+        if (!assessmentStatesList.isEmpty()) {
+          WorkspaceAssessmentState assessmentState = assessmentStatesList.get(size);
+          if (assessmentState.getState() == WorkspaceAssessmentState.PASS) {
+            if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
+              int units = workspaceActivitySubject.getCourseLength().intValue();
+              
+               // All completed courses
+               allCourseCredits = Integer.sum(units, allCourseCredits);
+               
+               
+               // Search for finding out course mandaority
+               SearchProvider searchProvider = getProvider("elastic-search");
+               if (searchProvider != null) {
+                 
+                 WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
+                 workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+                 SearchResult sr = searchProvider.findWorkspace(workspaceIdentifier);
+                 
+                 List<Map<String, Object>> results = sr.getResults();
+                 for (Map<String, Object> result : results) {
+                   
+                   String educationTypeId = (String) result.get("educationTypeIdentifier");
+
+                   Mandatority mandatority = null;
+
+                   if (StringUtils.isNotBlank(educationTypeId)) {
+                     SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+
+                     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+                     
+                     mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
+                         ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
+                     
+                  }
+                   if (mandatority != null && mandatority == Mandatority.MANDATORY) {
+                     mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                   }
+                }
+              } 
+            }
+          }
+        }
+      }
+    }
+    
+    activityInfo.setCompletedCourseCredits(allCourseCredits);
+    activityInfo.setMandatoryCourseCredits(mandatoryCourseCredits);
+    
     return Response.ok(activityInfo).build();
+  }
+  
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
   }
   
   @GET

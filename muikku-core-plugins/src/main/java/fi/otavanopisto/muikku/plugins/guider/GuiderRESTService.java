@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -60,7 +61,9 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceWithStudyPointsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
@@ -73,6 +76,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -568,7 +572,8 @@ public class GuiderRESTService extends PluginRESTService {
     }
 
     List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
-
+    Integer allCourseCredits = 0;
+    Integer mandatoryCourseCredits = 0;
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
@@ -594,13 +599,45 @@ public class GuiderRESTService extends PluginRESTService {
 
       EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
       for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
+        ToRWorkspaceRestModel toRWorkspaceRestModel = workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping);
+        
+        for (WorkspaceSubjectRestModel workspaceSubject : toRWorkspaceRestModel.getSubjects()) {
+          List<WorkspaceAssessmentState> assessmentStatesList = toRWorkspaceRestModel.getActivity().getAssessmentState();
+          Integer size = assessmentStatesList.size() - 1;
+          
+          if (!assessmentStatesList.isEmpty()) {
+            WorkspaceAssessmentState assessmentState = toRWorkspaceRestModel.getActivity().getAssessmentState().get(size);
+            
+            // If the student has completed the course, we need to find the courses with the symbol 'op' and calculate the points for them
+            if (assessmentState.getState() == WorkspaceAssessmentState.PASS) {
+              if (workspaceSubject.getCourseLengthSymbol().getSymbol().equals("op")){
+                int units = workspaceSubject.getCourseLength().intValue();
+                
+                // All completed courses
+                allCourseCredits = Integer.sum(units, allCourseCredits);
+                
+                // Making another calculation for completed mandatory courses
+                if (toRWorkspaceRestModel.getMandatority() != null && toRWorkspaceRestModel.getMandatority() == Mandatority.MANDATORY) {
+                  mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                }
+              }
+            }
+          }
+        }
+          
         workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
-
-    return Response.ok(workspaces).build();
+    
+    ToRWorkspaceWithStudyPointsRestModel torWorkspaceWithStudyPoints = new ToRWorkspaceWithStudyPointsRestModel();
+      
+    torWorkspaceWithStudyPoints.setWorkspaces(workspaces);
+    torWorkspaceWithStudyPoints.setCompletedCourseCredits(allCourseCredits);
+    torWorkspaceWithStudyPoints.setMandatoryCourseCredits(mandatoryCourseCredits);
+    
+    return Response.ok(torWorkspaceWithStudyPoints).build();
   }
 
   @GET
