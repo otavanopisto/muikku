@@ -77,7 +77,8 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
         className="application-list__header-container application-list__header-container--sorter"
       >
         <h3 className="application-list__header application-list__header--sorter">
-          {recordGroup.lineCategory}
+          {recordGroup.lineCategory} Opintopisteet: 99 (pakolliset), 100
+          (Yhteensä)
         </h3>
         <div className={`icon-sort-alpha-${creditSortDirection}`}></div>
       </div>

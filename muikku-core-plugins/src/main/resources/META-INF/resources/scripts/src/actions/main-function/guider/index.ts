@@ -722,12 +722,12 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             studentId: id,
             active: true,
           })
-          .then(async (workspaces) => {
+          .then(async (workspacesWithCredits) => {
             // Note that this is a workaround for the fact that the API returns different type that current
             // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
             // what returned data is.
             const workspacesWithAddons =
-              workspaces as unknown as WorkspaceDataType[];
+              workspacesWithCredits.workspaces as WorkspaceDataType[];
 
             if (workspacesWithAddons && workspacesWithAddons.length) {
               await Promise.all([
@@ -883,12 +883,12 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
               studentId: id,
               active: false,
             })
-            .then(async (workspaces) => {
+            .then(async (workspacesWithCredit) => {
               // Note that this is a workaround for the fact that the API returns different type that current
               // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
               // what returned data is.
               const workspacesWithAddons =
-                workspaces as unknown as WorkspaceDataType[];
+                workspacesWithCredit.workspaces as WorkspaceDataType[];
 
               if (workspacesWithAddons && workspacesWithAddons.length) {
                 await Promise.all([

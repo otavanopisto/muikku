@@ -1,6 +1,4 @@
 import actions from "../../base/notifications";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
