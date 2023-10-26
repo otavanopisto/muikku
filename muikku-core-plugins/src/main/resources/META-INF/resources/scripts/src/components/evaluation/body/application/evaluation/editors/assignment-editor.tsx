@@ -7,8 +7,6 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import { MaterialAssignmentType } from "~/reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -19,11 +17,11 @@ import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
-import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
+import { MaterialCompositeReply, WorkspaceMaterial } from "~/generated/client";
 import {
   AssessmentWithAudio,
   AudioAssessment,
@@ -42,8 +40,8 @@ import MApi, { isMApiError } from "~/api/api";
 interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: MaterialEvaluation;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialAssignment: WorkspaceMaterial;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;
@@ -287,8 +285,6 @@ class AssignmentEditor extends SessionStateComponent<
               ...(dataToSave as SaveWorkspaceAssigmentAssessmentRequest),
             },
           });
-
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,

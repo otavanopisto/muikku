@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/course.scss";
@@ -169,7 +169,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyStartDate
-              ? localizeTime.date(
+              ? localize.date(
                   this.props.guider.currentStudent.basic.studyStartDate
                 )
               : "-"}
@@ -180,7 +180,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyEndDate
-              ? localizeTime.date(
+              ? localize.date(
                   this.props.guider.currentStudent.basic.studyEndDate
                 )
               : "-"}
@@ -191,7 +191,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyTimeEnd
-              ? localizeTime.date(
+              ? localize.date(
                   this.props.guider.currentStudent.basic.studyTimeEnd
                 )
               : "-"}
@@ -291,7 +291,7 @@ class StateOfStudies extends React.Component<
           >
             <ApplicationSubPanelItem.Content>
               {this.props.guider.currentStudent.basic.lastLogin
-                ? localizeTime.date(
+                ? localize.date(
                     this.props.guider.currentStudent.basic.lastLogin,
                     "LLL"
                   )
@@ -311,7 +311,7 @@ class StateOfStudies extends React.Component<
                 key={notification}
               >
                 <ApplicationSubPanelItem.Content>
-                  {localizeTime.date(
+                  {localize.date(
                     this.props.guider.currentStudent.notifications[notification]
                   )}
                 </ApplicationSubPanelItem.Content>

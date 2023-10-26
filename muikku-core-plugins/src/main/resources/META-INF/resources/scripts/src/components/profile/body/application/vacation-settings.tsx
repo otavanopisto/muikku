@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,8 +10,6 @@ import { ProfileState } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
-  updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import {
@@ -33,7 +31,6 @@ interface VacationSettingsProps extends WithTranslation {
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
-  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
 /**
@@ -333,9 +330,7 @@ class VacationSettings extends React.Component<
                       "profileVacationStart"
                     )}
                     maxDate={this.state.profileVacationEnd}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.profileVacationStart}
                     dateFormat="P"
                   />
@@ -354,9 +349,7 @@ class VacationSettings extends React.Component<
                       "profileVacationEnd"
                     )}
                     minDate={this.state.profileVacationStart}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.state.profileVacationEnd}
                     dateFormat="P"
                   />
@@ -485,7 +478,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { saveProfileProperty, displayNotification, updateProfileChatSettings },
+    { saveProfileProperty, displayNotification },
     dispatch
   );
 }

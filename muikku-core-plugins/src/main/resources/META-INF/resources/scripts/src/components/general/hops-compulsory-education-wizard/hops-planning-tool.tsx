@@ -27,7 +27,7 @@ import { filterSpecialSubjects } from "~/helper-functions/shared";
 import Dropdown from "../dropdown";
 import { useSupervisorOptionalSuggestions } from "~/hooks/useSupervisorOptionalSuggestion";
 import { HopsUsePlace } from "./index";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { useFollowUp } from "./context/follow-up-context";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -134,7 +134,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     /**
      * Localized moment initialzied to variable
      */
-    const localizedMoment = localizeTime.getLocalizedMoment;
+    const localizedMoment = localize.getLocalizedMoment;
 
     /**
      * Time in months need to be study. Based on calculation from hours total to complete and study hours per week
@@ -486,8 +486,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
    * @returns number of years + months
    */
   const showAsReadableTime = (nd: number) => {
-    const localizedMoment = localizeTime.getLocalizedMoment;
-    const momentDuration = localizeTime.duration;
+    const localizedMoment = localize.getLocalizedMoment;
+    const momentDuration = localize.duration;
 
     /**
      * Current date

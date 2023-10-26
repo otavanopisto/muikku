@@ -265,7 +265,6 @@ import {
 } from "./main-function/ceepos";
 
 // Guidance events are no longer being
-import { UPDATE_CALENDAR_EVENTS_STATUS } from "./main-function/calendar";
 import { SET_ACTIVE_EASY_TO_USE_TOOL } from "./easy-to-use-functions";
 import { UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS } from "./workspaces/index";
 import {
@@ -520,7 +519,6 @@ export type ActionType =
   | SET_HOPS_PHASE
   | UPDATE_CURRENT_WORKSPACE_ACTIVITY
   | UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS
-  | UPDATE_CALENDAR_EVENTS_STATUS
   | UPDATE_AVAILABLE_CURRICULUMS
   | OPEN_NOTIFICATION_DIALOG
   | CLOSE_NOTIFICATION_DIALOG

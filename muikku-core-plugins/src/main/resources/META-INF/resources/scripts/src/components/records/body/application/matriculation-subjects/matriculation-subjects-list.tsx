@@ -1,11 +1,10 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import MatriculationSubjectType, {
-  MatriculationSubjectCode,
-} from "./matriculation-subject-type";
+import { MatriculationSubjectCode } from "./matriculation-subject-type";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
+import MApi, { isMApiError } from "~/api/api";
+import { MatriculationSubject } from "~/generated/client";
 
 /**
  * Interface representing MatriculationSubjectsList component properties
@@ -21,7 +20,7 @@ interface MatriculationSubjectsListProps extends WithTranslation {
  *
  */
 interface MatriculationSubjectsListState {
-  matriculationSubjects: MatriculationSubjectType[];
+  matriculationSubjects: MatriculationSubject[];
   selectedMatriculationSubjects: string[];
   loading: boolean;
 }
@@ -123,26 +122,29 @@ class MatriculationSubjectsList extends React.Component<
    *
    * Reads available matriculation subjects from REST API
    */
-  componentDidMount() {
+  async componentDidMount() {
+    const recordsApi = MApi.getRecordsApi();
+
     if (!this.state.loading) {
       this.setState({
         loading: true,
       });
 
-      mApi()
-        .records.matriculationSubjects.read()
-        .callback(
-          (err: Error, matriculationSubjects: MatriculationSubjectType[]) => {
-            if (!err) {
-              this.setState({
-                matriculationSubjects: matriculationSubjects,
-                loading: false,
-                selectedMatriculationSubjects: this.props
-                  .initialMatriculationSubjects || [""],
-              });
-            }
-          }
-        );
+      try {
+        const matriculationSubjects =
+          await recordsApi.getMatriculationSubjects();
+
+        this.setState({
+          matriculationSubjects: matriculationSubjects,
+          loading: false,
+          selectedMatriculationSubjects: this.props
+            .initialMatriculationSubjects || [""],
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+      }
     }
   }
 
@@ -181,7 +183,7 @@ class MatriculationSubjectsList extends React.Component<
                 {t("labels.select", { ns: "hops" })}
               </option>
               {this.state.matriculationSubjects.map(
-                (subject: MatriculationSubjectType, index: number) => (
+                (subject, index: number) => (
                   <option key={index} value={subject.code}>
                     {this.getMatriculationSubjectNameByCode(
                       subject.code as MatriculationSubjectCode

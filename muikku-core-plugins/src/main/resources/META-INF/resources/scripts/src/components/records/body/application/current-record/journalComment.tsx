@@ -8,7 +8,7 @@ import {
 } from "~/components/general/application-list";
 import { WorkspaceJournalComment } from "~/generated/client";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
@@ -32,10 +32,10 @@ const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
     ? t("labels.self")
     : `${firstName} ${lastName}`;
 
-  const formatedDate = `${localizeTime.date(
+  const formatedDate = `${localize.date(created, "l")} - ${localize.date(
     created,
-    "l"
-  )} - ${localizeTime.date(created, "h:mm")}`;
+    "h:mm"
+  )}`;
 
   return (
     <ApplicationListItem key={id}>

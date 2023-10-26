@@ -1,5 +1,5 @@
 import * as React from "react";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 import Dropdown from "~/components/general/dropdown";
@@ -39,7 +39,7 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
         <span>
           {t("content.transferCreditsDate", {
             ns: "studies",
-            date: localizeTime.date(assessment.date),
+            date: localize.date(assessment.date),
           }) + getShortenGradeExtension(assessment.grade)}
         </span>
       }

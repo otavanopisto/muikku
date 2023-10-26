@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Link from "../../general/link";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MessageThread } from "~/generated/client";
@@ -60,7 +60,7 @@ class LastMessagesPanel extends React.Component<
                     {thread.caption}
                   </span>
                   <span className="item-list__latest-message-date">
-                    {localizeTime.date(thread.created)}
+                    {localize.date(thread.created)}
                   </span>
                 </span>
               </Link>
