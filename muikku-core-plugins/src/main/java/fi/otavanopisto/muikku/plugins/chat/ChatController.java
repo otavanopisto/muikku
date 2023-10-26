@@ -124,7 +124,7 @@ public class ChatController {
       users = Set.of(userEntity.getId());
     }
 
-    // Inform all room users of the new user
+    // Inform room users of the new user
     
     ObjectMapper mapper = new ObjectMapper();
     try {

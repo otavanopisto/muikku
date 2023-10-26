@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
+import fi.otavanopisto.muikku.plugins.chat.ChatPermissions;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
@@ -65,11 +66,9 @@ public class ChatRESTService {
   @Inject
   private HttpServletRequest httpRequest;
   
-  // TODO Permissions
-  
   @Path("/stats")
   @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(ChatPermissions.STATISTICS)
   @Produces(MediaType.TEXT_PLAIN)
   public Response stats() {
     return Response.ok(chatController.usageStatistics()).build();
@@ -77,7 +76,7 @@ public class ChatRESTService {
   
   @Path("/room")
   @POST
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
   public Response createRoom(ChatRoomRestModel payload) {
     
     // Validation
@@ -97,7 +96,7 @@ public class ChatRESTService {
 
   @Path("/room/{ID}")
   @PUT
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
   public Response updateRoom(@PathParam("ID") Long id, ChatRoomRestModel payload) {
     
     // Validation
@@ -127,7 +126,7 @@ public class ChatRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response joinRoom(@PathParam("ID") Long id) {
     
-    // Validation
+    // Validation and access checks
     
     ChatRoom room = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
     if (room == null) {
@@ -184,7 +183,7 @@ public class ChatRESTService {
     if (room == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
     }
-    if (chatController.isInRoom(sessionController.getLoggedUserEntity(), room)) {
+    if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), room)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -209,7 +208,7 @@ public class ChatRESTService {
 
   @Path("/room/{ID}")
   @DELETE
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
   public Response deleteRoom(@PathParam("ID") Long id) {
     
     // Validation
@@ -259,6 +258,9 @@ public class ChatRESTService {
     if (room == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
     }
+    if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), room)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     chatController.postMessage(room, sessionController.getLoggedUserEntity(), payload.getMessage());
     return Response.status(Status.NO_CONTENT).build();
   }
@@ -273,6 +275,9 @@ public class ChatRESTService {
     UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
     if (targetUserEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
+    }
+    if (targetUserEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Cannot message self").build();
     }
     chatController.postMessage(targetUserEntity, sessionController.getLoggedUserEntity(), payload.getMessage());
     return Response.status(Status.NO_CONTENT).build();
@@ -317,7 +322,9 @@ public class ChatRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("Message %d not found", id)).build();
     }
     if (!sessionController.getLoggedUserEntity().getId().equals(chatMessage.getSourceUserEntityId())) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!sessionController.hasEnvironmentPermission(ChatPermissions.DELETE_MESSAGE)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     chatController.deleteMessage(chatMessage, sessionController.getLoggedUserEntity());
@@ -330,6 +337,7 @@ public class ChatRESTService {
   public Response listPrivateMessages(@PathParam("ID") Long id, @QueryParam("count") @DefaultValue ("25") Integer count, @QueryParam("earlierThan") ISO8601UTCTimestamp earlierThanISO) {
     UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
     if (targetUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
     }
     Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
     List<ChatMessage> messages = chatController.listMessages(sessionController.getLoggedUserEntity(), targetUserEntity, earlierThan, count);
@@ -348,6 +356,9 @@ public class ChatRESTService {
     if (chatRoom == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
     }
+    if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), chatRoom)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
     List<ChatMessage> messages = chatController.listMessages(chatRoom, earlierThan, count);
     List<ChatMessageRestModel> restMessages = new ArrayList<>();
@@ -359,7 +370,7 @@ public class ChatRESTService {
 
   @Path("/messages/{ID}/authorInfo")
   @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit(ChatPermissions.MESSAGE_AUTHOR_INFO)
   public Response getMessageAuthorInfo(@PathParam("ID") Long id) {
     ChatMessage chatMessage = chatController.findChatMessageByIdAndArchived(id, Boolean.FALSE);
     if (chatMessage == null) {
