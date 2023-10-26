@@ -1,6 +1,6 @@
 import { SchoolSubject } from "../@types/shared";
 
-export const schoolCourseTable: SchoolSubject[] = [
+export const schoolCourseTableCompulsory: SchoolSubject[] = [
   {
     name: "Äidinkieli ja kirjallisuus",
     subjectCode: "äi",
@@ -563,34 +563,6 @@ export const schoolCourseTable: SchoolSubject[] = [
       },
     ],
   },
-];
-
-export const subjectsNotIncludedInNettilukio = [
-  "ÄIM",
-  "EAA",
-  "RAA",
-  "RUA",
-  "SAA",
-  "VEA",
-  "RAB2",
-  "SAB2",
-  "ARB3",
-  "ENB3",
-  "IAB3",
-  "KIB3",
-  "KXB3",
-  "KOB3",
-  "LAB3",
-  "POB3",
-  "RAB3",
-  "RUB3",
-  "SMB3",
-  "UK",
-  "UI",
-  "UJ",
-  "UX",
-  "MU",
-  "KT",
 ];
 
 export const schoolCourseTableUppersecondary: SchoolSubject[] = [

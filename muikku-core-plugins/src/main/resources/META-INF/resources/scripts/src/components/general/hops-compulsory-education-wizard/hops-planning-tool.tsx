@@ -1,7 +1,6 @@
 import * as React from "react";
 import { TextField } from "./text-field";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
-import { schoolCourseTable } from "../../../mock/mock-data";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
 import {
   LANGUAGE_SUBJECTS,
@@ -18,13 +17,14 @@ import {
 import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { AnyActionType } from "~/actions";
-import { filterSpecialSubjects } from "~/helper-functions/shared";
 import Dropdown from "../dropdown";
 import { HopsUsePlace } from "./index";
 import { localize } from "~/locales/i18n";
 import { useFollowUp } from "./context/follow-up-context";
 import { useStudyProgressContextState } from "../study-progress/context";
 import StudyProgress from "../study-progress";
+import { schoolCourseTableCompulsory } from "~/mock/mock-data";
+import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -85,8 +85,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     props.displayNotification
   );
 
-  const filteredSchoolCourseTable = filterSpecialSubjects(
-    schoolCourseTable,
+  const filteredSchoolCourseTable = filterCompulsorySubjects(
+    schoolCourseTableCompulsory,
     studyProgress.options
   );
 

@@ -24,14 +24,14 @@ import {
   useStudyProgressContextUpdater,
   useStudyProgressStaticDataContext,
 } from "./context";
+import SuggestionList from "./suggestion-list";
+import { StudentStudyActivity } from "~/generated/client";
+import { SchoolSubject } from "~/@types/shared";
 import {
   compulsoryOrUpperSecondary,
   filterMatrix,
   showSubject,
-} from "~/helper-functions/shared";
-import SuggestionList from "./suggestion-list";
-import { StudentStudyActivity } from "~/generated/client";
-import { SchoolSubject } from "~/@types/shared";
+} from "~/helper-functions/study-matrix";
 
 /**
  * CourseTableProps

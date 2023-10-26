@@ -15,17 +15,17 @@ import Dropdown from "~/components/general/dropdown";
 import Button from "~/components/general/button";
 import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
 import {
-  compulsoryOrUpperSecondary,
-  filterMatrix,
-  showSubject,
-} from "~/helper-functions/shared";
-import {
   useStudyProgressContextState,
   useStudyProgressContextUpdater,
   useStudyProgressStaticDataContext,
 } from "./context";
 import SuggestionList from "./suggestion-list";
 import { StudentStudyActivity } from "~/generated/client";
+import {
+  compulsoryOrUpperSecondary,
+  filterMatrix,
+  showSubject,
+} from "~/helper-functions/study-matrix";
 
 /**
  * CourseListProps
@@ -71,6 +71,7 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
 
   const matrix = compulsoryOrUpperSecondary(studyProgrammeName);
 
+  // If study programme name doesn't have a matrix, return empty matrix indicator
   if (matrix === null) {
     return (
       <div className="list">
