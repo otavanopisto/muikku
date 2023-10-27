@@ -40,14 +40,14 @@ interface MaterialProps extends WithTranslation {
 /**
  * MaterialState
  */
-interface MaterialState {}
+interface MaterialState {
+  opened: boolean;
+}
 
 /**
  * Material
  */
 class Material extends React.Component<MaterialProps, MaterialState> {
-  refElement = React.createRef<HTMLDivElement>();
-
   /**
    * constructor
    * @param props props
@@ -55,32 +55,19 @@ class Material extends React.Component<MaterialProps, MaterialState> {
   constructor(props: MaterialProps) {
     super(props);
 
-    this.state = {};
+    this.toggleOpened = this.toggleOpened.bind(this);
+
+    this.state = {
+      opened: false,
+    };
   }
 
   /**
-   * componentDidMount
+   * toggleOpened
    */
-  componentDidMount() {
-    this.refElement.current.addEventListener("keyup", this.handleKeyUp);
+  toggleOpened() {
+    this.setState({ opened: !this.state.opened });
   }
-
-  /**
-   * componentWillUnmount
-   */
-  componentWillUnmount() {
-    this.refElement.current.removeEventListener("keyup", this.handleKeyUp);
-  }
-
-  /**
-   * handleKeyUp
-   * @param e e
-   */
-  handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === " ") {
-      this.refElement.current.click();
-    }
-  };
 
   /**
    * indicatorClassModifier
@@ -189,9 +176,6 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             this.props.material.id,
             this.props.material.assignment.assignmentType
           )}
-          tabIndex={0}
-          role="button"
-          ref={this.refElement}
         >
           {this.renderIndicator()}
           <span className="application-list__header-primary">
@@ -199,7 +183,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
           </span>
         </ApplicationListItemHeader>
 
-        <ApplicationListItemBody aria-expanded={this.props.open}>
+        <ApplicationListItemBody>
           <AnimateHeight height={this.props.open ? "auto" : 0}>
             <MaterialLoader
               material={this.props.material}

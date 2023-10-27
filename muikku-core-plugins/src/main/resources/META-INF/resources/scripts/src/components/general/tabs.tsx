@@ -1,10 +1,12 @@
 import "~/sass/elements/tabs.scss";
 import * as React from "react";
+import { connect } from "react-redux";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/scss";
 import "swiper/scss/a11y";
 import "swiper/scss/pagination";
 import { A11y, Pagination } from "swiper";
+import { StateType } from "~/reducers";
 import variables from "~/sass/_exports.scss";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 
@@ -163,7 +165,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
               modifier ? "tabs__tab-labels--" + modifier : ""
             }`}
           >
-            {tabs.map((tab) => (
+            {tabs.map((tab: Tab) => (
               <div
                 className={`tabs__tab ${
                   modifier ? "tabs__tab--" + modifier : ""
@@ -173,7 +175,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                 key={tab.id}
                 id={tab.id}
                 onClick={onTabChange.bind(this, tab.id, tab.hash)}
-                tabIndex={0}
               >
                 {tab.name}
               </div>
@@ -182,14 +183,13 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           </div>
           <div className="tabs__tab-data-container">
             {tabs
-              .filter((t) => renderAllComponents || t.id === activeTab)
-              .map((t) => (
+              .filter((t: Tab) => renderAllComponents || t.id === activeTab)
+              .map((t: Tab) => (
                 <div
                   key={t.id}
                   className={`tabs__tab-data ${
                     t.type ? "tabs__tab-data--" + t.type : ""
                   }  ${t.id === activeTab ? "active" : ""}`}
-                  tabIndex={0}
                 >
                   {t.component}
                 </div>
@@ -263,7 +263,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
           pagination={paginationConfig}
           className="tabs__tab-data-container tabs__tab-data-container--mobile"
         >
-          {tabs.map((t) => (
+          {tabs.map((t: Tab) => (
             <SwiperSlide key={t.id}>
               <div className="tabs__mobile-tab">
                 <div className="tabs__pagination-container"> </div>
@@ -281,13 +281,12 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
       ) : (
         <>
           <div className="tabs__tab-labels tabs__tab-labels--desktop">
-            {tabs.map((tab) => (
+            {tabs.map((tab, index) => (
               <div
                 className={`tabs__tab tabs__tab--mobile-only-tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } `}
                 key={tab.id}
-                tabIndex={0}
               >
                 {tab.name}
               </div>
@@ -300,7 +299,6 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
                 className={`tabs__tab-data ${
                   t.type ? "tabs__tab-data--" + t.type : ""
                 }`}
-                tabIndex={0}
               >
                 {t.component}
               </div>

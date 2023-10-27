@@ -201,40 +201,50 @@ interface ApplicationListItemHeaderProps
 }
 
 /**
- * ApplicationListItemHeader
- * @param props props
+ * ApplicationListItemHeaderState
  */
-export const ApplicationListItemHeader = React.forwardRef<
-  HTMLDivElement,
-  ApplicationListItemHeaderProps
->((props, ref) => {
-  const newProps: ApplicationListItemHeaderProps = Object.assign({}, props);
-  const modifiers =
-    props.modifiers && props.modifiers instanceof Array
-      ? props.modifiers
-      : [props.modifiers];
-  delete newProps["modifiers"];
+interface ApplicationListItemHeaderState {}
 
-  return (
-    <div
-      {...newProps}
-      ref={ref}
-      className={`application-list__item-header ${
-        props.className ? props.className : ""
-      } ${
-        props.modifiers
-          ? modifiers
-              .map((m) => `application-list__item-header--${m}`)
-              .join(" ")
-          : ""
-      }`}
-    >
-      {props.children}
-    </div>
-  );
-});
+/**
+ * ApplicationListItemHeader
+ */
+export class ApplicationListItemHeader extends React.Component<
+  ApplicationListItemHeaderProps,
+  ApplicationListItemHeaderState
+> {
+  /**
+   * Component render method
+   * @returns JSX.Elemenet
+   */
+  render() {
+    const newProps: ApplicationListItemHeaderProps = Object.assign(
+      {},
+      this.props
+    );
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
+    delete newProps["modifiers"];
 
-ApplicationListItemHeader.displayName = "ApplicationListItemHeader";
+    return (
+      <div
+        {...newProps}
+        className={`application-list__item-header ${
+          this.props.className ? this.props.className : ""
+        } ${
+          this.props.modifiers
+            ? modifiers
+                .map((m) => `application-list__item-header--${m}`)
+                .join(" ")
+            : ""
+        }`}
+      >
+        {this.props.children}
+      </div>
+    );
+  }
+}
 
 /**
  * ApplicationListHeaderPrimaryProps
