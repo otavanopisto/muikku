@@ -13789,6 +13789,7 @@ components:
         - completedCourseCredits
         - mandatoryCourseCredits
         - workspaces
+        - showCredits
       properties:
         completedCourseCredits:
           description: Completed course credits. Is always at least 0.
@@ -13801,6 +13802,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/RecordsWorkspace"
+        showCredits:
+          description: Should the credits be shown. Currently only OPS 2021 student will have this as true
+          type: boolean
 
     PublicityRestriction:
       type: string
@@ -13898,6 +13902,7 @@ components:
         - activities
         - completedCourseCredits
         - mandatoryCourseCredits
+        - showCredits
       properties:
         lineName:
           description: Name of the "Studyprogramme"
@@ -13919,6 +13924,9 @@ components:
         mandatoryCourseCredits:
           description: Mandatory course credits. Is always at least 0.
           type: integer
+        showCredits:
+          description: Should the credits be shown. Currently only OPS 2021 student will have this as true
+          type: boolean
 
     Role:
       type: string
