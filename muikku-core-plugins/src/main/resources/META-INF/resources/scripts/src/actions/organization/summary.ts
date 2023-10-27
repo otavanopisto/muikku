@@ -1,8 +1,7 @@
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import {
   OrganizationContact,
   OrganizationStudentsSummary,
@@ -41,15 +40,6 @@ export type UPDATE_SUMMARY_STATUS = SpecificActionType<
   OrganizationSummaryStatusType
 >;
 
-// julkaistut/julkaisemattomat kurssit:
-// mApi().organizationWorkspaceManagement.overview.read()
-
-// aktiiviset/epäaktiiviset opiskelijat:
-// mApi().organizationUserManagement.studentsSummary.read()
-
-// yhteyshenkilöt
-// mApi().organizationUserManagement.contactPersons.read()
-
 /**
  * loadOrganizationSummary
  */
@@ -86,7 +76,7 @@ const loadOrganizationSummary: LoadSummaryTriggerType =
           payload: <OrganizationSummaryStatusType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(

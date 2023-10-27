@@ -9,10 +9,7 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
-import {
-  WorkspacesType,
-  WorkspaceOrganizationFilterType,
-} from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -20,7 +17,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
   status: StatusType;
 }
 
@@ -131,7 +128,7 @@ class NavigationAside extends React.Component<
             name={this.props.t("labels.organization", { ns: "workspace" })}
           >
             {this.props.workspaces.availableFilters.organizations.map(
-              (organization: WorkspaceOrganizationFilterType) => {
+              (organization) => {
                 const isActive =
                   this.props.workspaces.activeFilters.organizationFilters.includes(
                     organization.identifier

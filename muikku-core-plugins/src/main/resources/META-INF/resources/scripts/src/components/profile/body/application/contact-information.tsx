@@ -10,8 +10,6 @@ import {
   SaveProfilePropertyTriggerType,
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
-  updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators, Dispatch } from "redux";
 import {
@@ -30,7 +28,6 @@ interface ContactInformationProps extends WithTranslation<["common"]> {
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
-  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
   updateProfileAddress: UpdateProfileAddressTriggerType;
 }
 
@@ -578,7 +575,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       saveProfileProperty,
       displayNotification,
-      updateProfileChatSettings,
       updateProfileAddress,
     },
     dispatch

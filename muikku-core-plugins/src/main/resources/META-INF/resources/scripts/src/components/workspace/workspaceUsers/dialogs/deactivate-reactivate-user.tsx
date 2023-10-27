@@ -10,7 +10,7 @@ import {
   ToggleActiveStateOfStudentOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { getName } from "~/util/modifiers";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -21,7 +21,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface DeactivateReactivateUserDialogProps extends WithTranslation {
   user: WorkspaceStudent;
   toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 
   isOpen: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

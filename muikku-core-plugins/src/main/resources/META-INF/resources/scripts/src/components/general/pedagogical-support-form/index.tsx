@@ -25,7 +25,11 @@ import { UserRole } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
 
 // Visibility settings which study programmes have access to the form
-export const UPPERSECONDARY_PEDAGOGYFORM = ["Nettilukio"];
+export const UPPERSECONDARY_PEDAGOGYFORM = [
+  "Nettilukio",
+  "Aikuislukio",
+  "Nettilukio/yksityisopiskelu (aineopintoina)",
+];
 
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.

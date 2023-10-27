@@ -1,10 +1,8 @@
 import * as React from "react";
 import EvaluationMaterial from "./evaluation-material";
 import {
-  WorkspaceType,
-  MaterialContentNodeType,
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
+  WorkspaceDataType,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -13,7 +11,6 @@ import { bindActionCreators } from "redux";
 import * as moment from "moment";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
-import mApi from "~/lib/mApi";
 import SlideDrawer from "./slide-drawer";
 import AssignmentEditor from "./editors/assignment-editor";
 import { StateType } from "~/reducers/index";
@@ -22,9 +19,10 @@ import {
   updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
-import promisify from "~/util/promisify";
 import ExerciseEditor from "./editors/exercise-editor";
 import {
+  WorkspaceMaterial,
+  MaterialCompositeReply,
   AssessmentWithAudio,
   EvaluationAssessmentRequest,
 } from "~/generated/client";
@@ -35,14 +33,14 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * EvaluationCardProps
  */
 interface EvaluationAssessmentAssignmentProps extends WithTranslation {
-  workspace: WorkspaceType;
-  assigment: MaterialAssignmentType;
+  workspace: WorkspaceDataType;
+  assigment: WorkspaceMaterial;
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: EvaluationAssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   showAsHidden: boolean;
-  compositeReply?: MaterialCompositeRepliesType;
+  compositeReply?: MaterialCompositeReply;
   onClickOpen?: (id: number) => void;
   onSave?: (materialId: number) => void;
 }
@@ -53,7 +51,7 @@ interface EvaluationAssessmentAssignmentProps extends WithTranslation {
 interface EvaluationAssessmentAssignmentState {
   openContent: boolean;
   openDrawer: boolean;
-  materialNode?: MaterialContentNodeType;
+  materialNode?: MaterialContentNodeWithIdAndLogic;
   isLoading: boolean;
   openAssignmentType?: "EVALUATED" | "EXERCISE";
   isRecording: boolean;
@@ -116,6 +114,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    */
   loadMaterialData = async () => {
     const evaluationApi = MApi.getEvaluationApi();
+    const materialsApi = MApi.getMaterialsApi();
 
     const { workspace, assigment, selectedAssessment } = this.props;
 
@@ -129,10 +128,9 @@ class EvaluationAssessmentAssignment extends React.Component<
 
     const [loadedMaterial] = await Promise.all([
       (async () => {
-        const material = (await promisify(
-          mApi().materials.html.read(assigment.materialId),
-          "callback"
-        )()) as MaterialContentNodeType;
+        const material = await materialsApi.getHtmlMaterial({
+          id: assigment.materialId,
+        });
 
         const evaluation = await evaluationApi.getWorkspaceMaterialEvaluations({
           workspaceId: workspace.id,
@@ -140,12 +138,14 @@ class EvaluationAssessmentAssignment extends React.Component<
           userEntityId,
         });
 
-        const loadedMaterial: MaterialContentNodeType = Object.assign(
-          material,
+        const loadedMaterial: MaterialContentNodeWithIdAndLogic = Object.assign(
+          {},
           {
+            ...material,
             evaluation: evaluation[0],
             assignment: this.props.assigment,
             path: this.props.assigment.path,
+            contentHiddenForUser: false,
           }
         );
 
@@ -168,7 +168,7 @@ class EvaluationAssessmentAssignment extends React.Component<
     /**
      * Get initial values that needs to be updated
      */
-    const updatedMaterial: MaterialContentNodeType = {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
       ...this.state.materialNode,
     };
 
@@ -299,7 +299,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param compositeReply compositeReply
    * @returns Assignment function button class
    */
-  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) => {
+  assignmentFunctionClass = (compositeReply?: MaterialCompositeReply) => {
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
@@ -326,7 +326,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param compositeReply compositeReply
    * @returns classMod
    */
-  assigmentGradeClass = (compositeReply?: MaterialCompositeRepliesType) => {
+  assigmentGradeClass = (compositeReply?: MaterialCompositeReply) => {
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
@@ -353,7 +353,7 @@ class EvaluationAssessmentAssignment extends React.Component<
    * @param compositeReply compositeReply
    * @returns JSX.Element
    */
-  renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
+  renderAssignmentMeta = (compositeReply?: MaterialCompositeReply) => {
     const { t } = this.props;
 
     if (compositeReply) {

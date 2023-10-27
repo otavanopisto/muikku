@@ -18,7 +18,7 @@ import {
   updateSelectedNotePosition,
 } from "../../../actions/notebook/notebook";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceType } from "~/reducers/workspaces/index";
+import { WorkspaceDataType } from "~/reducers/workspaces/index";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/notebook.scss";
 import NoteList, { NoteListItem } from "./note-list";
@@ -61,7 +61,7 @@ export const HTML5toTouch: MultiBackendOptions = {
  */
 interface NoteBookProps {
   status: StatusType;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   notebook: NoteBookState;
   loadNotebookEntries: LoadNotebookEntries;
   updateNotebookEntriesOrder: UpdateNotebookEntriesOrder;

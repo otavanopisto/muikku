@@ -14,7 +14,7 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { suitabilityMap } from "~/@shared/suitability";
 import { Curriculum } from "~/generated/client";
@@ -26,7 +26,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface CourseProps extends WithTranslation<["common"]> {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   availableCurriculums: Curriculum[];
 }
 

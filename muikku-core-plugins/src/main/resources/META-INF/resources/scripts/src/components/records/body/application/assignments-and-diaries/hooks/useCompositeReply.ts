@@ -1,16 +1,15 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces";
 import { useTranslation } from "react-i18next";
+import { MaterialCompositeReply } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseCompositeReplyState {
   isLoading: boolean;
-  compositeReplies: MaterialCompositeRepliesType[];
+  compositeReplies: MaterialCompositeReply[];
 }
 
 /**
@@ -20,6 +19,8 @@ const initialState: UseCompositeReplyState = {
   isLoading: false,
   compositeReplies: [],
 };
+
+const workspaceApi = MApi.getWorkspaceApi();
 
 /**
  * Custom hook for student study hours
@@ -66,12 +67,10 @@ export const useCompositeReply = (
         const [compositeReplies] = await Promise.all([
           (async () => {
             const compositeRepliesList =
-              <MaterialCompositeRepliesType[]>await promisify(
-                mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
-                  userEntityId,
-                }),
-                "callback"
-              )() || [];
+              await workspaceApi.getWorkspaceCompositeReplies({
+                workspaceEntityId: workspaceId,
+                userEntityId: userEntityId,
+              });
 
             return compositeRepliesList;
           })(),
@@ -86,6 +85,10 @@ export const useCompositeReply = (
         }
       } catch (err) {
         if (!isCancelled) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(
             `${t("notifications.loadError", {
               ns: "studies",

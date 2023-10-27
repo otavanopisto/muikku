@@ -1,6 +1,6 @@
 import * as React from "react";
 import EnvironmentDialog from "~/components/general/environment-dialog";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
@@ -174,7 +174,7 @@ class NotesItemEdit extends SessionStateComponent<
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={new Date()}
             maxDate={this.state.notesItem.dueDate}
@@ -192,7 +192,7 @@ class NotesItemEdit extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
               this.state.notesItem.startDate !== null

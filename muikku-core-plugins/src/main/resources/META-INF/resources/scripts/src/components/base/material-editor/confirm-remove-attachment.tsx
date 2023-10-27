@@ -7,13 +7,14 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import {
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { MaterialContentNode } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -21,7 +22,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface ConfirmRemoveAttachmentProps extends WithTranslation {
   materialEditor: WorkspaceMaterialEditorType;
-  file: MaterialContentNodeType;
+  file: MaterialContentNodeWithIdAndLogic;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any;

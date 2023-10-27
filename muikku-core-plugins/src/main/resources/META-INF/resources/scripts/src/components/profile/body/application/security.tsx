@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
-import mApi from "~/lib/mApi";
 import { ProfileState } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
@@ -16,6 +15,7 @@ import {
 } from "~/actions/base/notifications";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 
 /**
  * SecurityProps
@@ -80,7 +80,9 @@ class Security extends React.Component<SecurityProps, SecurityState> {
   /**
    * update
    */
-  public update() {
+  public async update() {
+    const userpluginApi = MApi.getUserpluginApi();
+
     const newPassword1 = this.state.newPassword;
     const newPassword2 = this.state.newPasswordConfirm;
 
@@ -110,48 +112,59 @@ class Security extends React.Component<SecurityProps, SecurityState> {
       newPassword: this.state.newPassword,
     };
 
-    mApi()
-      .userplugin.credentials.update(values)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .callback((err: any, result: any) => {
-        this.setState({
-          locked: false,
-        });
-
-        if (err) {
-          if (result.status === 403) {
-            this.props.displayNotification(
-              this.props.t("notifications.403", { context: "password" }),
-              "error"
-            );
-          } else if (result.status === 409) {
-            this.props.displayNotification(
-              this.props.t("notifications.409", { context: "userName" }),
-              "error"
-            );
-          } else {
-            this.props.displayNotification(err.message, "error");
-          }
-        } else {
-          if (values.newPassword === "") {
-            this.props.displayNotification(
-              this.props.t("notifications.updateSuccess", {
-                context: "credentials",
-              }),
-              "success"
-            );
-          } else {
-            this.props.displayNotification(
-              this.props.t("notifications.updateSuccess", {
-                context: "password",
-              }),
-              "success"
-            );
-          }
-
-          this.props.loadProfileUsername();
-        }
+    try {
+      await userpluginApi.updateUserPluginCredentials({
+        updateUserPluginCredentialsRequest: values,
       });
+
+      this.setState({
+        locked: false,
+        username: "",
+        oldPassword: "",
+        newPassword: "",
+        newPasswordConfirm: "",
+      });
+
+      if (values.newPassword === "") {
+        this.props.displayNotification(
+          this.props.t("notifications.updateSuccess", {
+            context: "credentials",
+          }),
+          "success"
+        );
+      } else {
+        this.props.displayNotification(
+          this.props.t("notifications.updateSuccess", {
+            context: "password",
+          }),
+          "success"
+        );
+      }
+
+      this.props.loadProfileUsername();
+    } catch (err) {
+      this.setState({
+        locked: false,
+      });
+
+      if (!isMApiError(err)) {
+        throw err;
+      } else if (isResponseError(err)) {
+        if (err.response.status === 403) {
+          this.props.displayNotification(
+            this.props.t("notifications.403", { context: "password" }),
+            "error"
+          );
+        } else if (err.response.status === 409) {
+          this.props.displayNotification(
+            this.props.t("notifications.409", { context: "userName" }),
+            "error"
+          );
+        }
+      } else {
+        this.props.displayNotification(err.message, "error");
+      }
+    }
   }
 
   /**
