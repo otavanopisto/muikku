@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.util.List;
 
-public class ToRWorkspaceWithStudyPointsRestModel {
+public class ToRWorkspaceWithCourseCreditsRestModel {
 
   public int getCompletedCourseCredits() {
     return completedCourseCredits;
@@ -25,7 +25,15 @@ public class ToRWorkspaceWithStudyPointsRestModel {
     this.workspaces = workspaces;
   }
 
+  public boolean isShowCredits() {
+    return showCredits;
+  }
+  public void setShowCredits(boolean showCredits) {
+    this.showCredits = showCredits;
+  }
+
   private int completedCourseCredits;
   private int mandatoryCourseCredits;
   private List<ToRWorkspaceRestModel> workspaces;
+  private boolean showCredits;
 }

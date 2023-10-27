@@ -61,7 +61,7 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceWithStudyPointsRestModel;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceWithCourseCreditsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
@@ -173,6 +173,9 @@ public class GuiderRESTService extends PluginRESTService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private GuiderController guiderController;
 
   @GET
   @Path("/students")
@@ -568,7 +571,11 @@ public class GuiderRESTService extends PluginRESTService {
     }
 
     if (CollectionUtils.isEmpty(workspaceEntities)) {
-      return Response.ok(Collections.emptyList()).build();
+      ToRWorkspaceWithCourseCreditsRestModel restModel = new ToRWorkspaceWithCourseCreditsRestModel();
+      restModel.setCompletedCourseCredits(0);
+      restModel.setMandatoryCourseCredits(0);
+      restModel.setWorkspaces(Collections.emptyList());
+      return Response.ok(restModel).build();
     }
 
     List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
@@ -609,8 +616,21 @@ public class GuiderRESTService extends PluginRESTService {
             WorkspaceAssessmentState assessmentState = toRWorkspaceRestModel.getActivity().getAssessmentState().get(size);
             
             // If the student has completed the course, we need to find the courses with the symbol 'op' and calculate the points for them
-            if (assessmentState.getState() == WorkspaceAssessmentState.PASS) {
-              if (workspaceSubject.getCourseLengthSymbol().getSymbol().equals("op")){
+            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+              Set<String> curriculumIdentifiers = toRWorkspaceRestModel.getCurriculumIdentifiers();
+              
+              // Curriculum should be 'OPS 2021' 
+              Boolean correctCurriculum = false;
+              for (String curriculumIdentifier : curriculumIdentifiers) {
+                SchoolDataIdentifier cI = SchoolDataIdentifier.fromId(curriculumIdentifier);
+                String curriculumName = guiderController.getCurriculumName(cI);
+                if (curriculumName != null && curriculumName.equals("OPS 2021")) {
+                  correctCurriculum = true;
+                  break;
+                }
+              }
+              
+              if (workspaceSubject.getCourseLengthSymbol().getSymbol().equals("op") && correctCurriculum){
                 int units = workspaceSubject.getCourseLength().intValue();
                 
                 // All completed courses
@@ -624,20 +644,28 @@ public class GuiderRESTService extends PluginRESTService {
             }
           }
         }
-          
         workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
     
-    ToRWorkspaceWithStudyPointsRestModel torWorkspaceWithStudyPoints = new ToRWorkspaceWithStudyPointsRestModel();
+    ToRWorkspaceWithCourseCreditsRestModel torWorkspaceWithCourseCredits = new ToRWorkspaceWithCourseCreditsRestModel();
       
-    torWorkspaceWithStudyPoints.setWorkspaces(workspaces);
-    torWorkspaceWithStudyPoints.setCompletedCourseCredits(allCourseCredits);
-    torWorkspaceWithStudyPoints.setMandatoryCourseCredits(mandatoryCourseCredits);
+    torWorkspaceWithCourseCredits.setWorkspaces(workspaces);
+    torWorkspaceWithCourseCredits.setCompletedCourseCredits(allCourseCredits);
+    torWorkspaceWithCourseCredits.setMandatoryCourseCredits(mandatoryCourseCredits);
+    torWorkspaceWithCourseCredits.setShowCredits(false);
+
+    User user = userController.findUserByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     
-    return Response.ok(torWorkspaceWithStudyPoints).build();
+    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
+    
+    if (curriculumName != null && curriculumName.equals("OPS 2021")) {
+      torWorkspaceWithCourseCredits.setShowCredits(true);
+    }
+    
+    return Response.ok(torWorkspaceWithCourseCredits).build();
   }
 
   @GET
