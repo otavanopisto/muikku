@@ -42,6 +42,9 @@ export interface RecordWorkspaceActivitiesWithLineCategory {
   lineCategory: string;
   credits: RecordWorkspaceActivityByLine[];
   transferCredits: RecordWorkspaceActivityByLine[];
+  showCredits: boolean;
+  completedCourseCredits: number;
+  mandatoryCourseCredits: number;
 }
 
 /**
