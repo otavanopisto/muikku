@@ -202,9 +202,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   allCourseCredits = Integer.sum(units, allCourseCredits);
                   
                   
+                  // Mandatority for transferred courses
+                  // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
+                  if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+                    Mandatority mandatority = activity.getMandatority();
+                    if (mandatority != null && mandatority == Mandatority.MANDATORY) {
+                      mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                   }
+                  }
+                  
                   // Search for finding out course mandaority
                   SearchProvider searchProvider = getProvider("elastic-search");
-                  if (searchProvider != null) {
+                  
+                  if (searchProvider != null && activity.getId() != null) {
                     
                     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
                     workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
@@ -228,6 +238,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                       }
                       if (mandatority != null && mandatority == Mandatority.MANDATORY) {
                        mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                       
+                       activity.setMandatority(mandatority);
                       }
                     }
                   } 
