@@ -29,7 +29,7 @@ interface PedagogyPDFProps {
  * @returns JSX.Element
  */
 const PedagogyPDF = (props: PedagogyPDFProps) => {
-  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+  const { t } = useTranslation(["pedagogySupportPlan", "common", "users"]);
   const { data } = props;
 
   const formData = JSON.parse(props.data.formData) as FormData;
@@ -65,21 +65,24 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>{t("labels.creator", { ns: "pedagogySupportPlan" })}</Text>
+            <Text style={styles.infoFieldLabelSameRow}>
+              {t("labels.creator", { ns: "pedagogySupportPlan" })}
+            </Text>
             <Text style={styles.infoFieldValueSameRow}>
               {opinion.creatorName},{" "}
               {opinion.updatedDate
-                ? `${moment(opinion.creationDate).format(
-                    "DD.MM.YYYY"
-                  )} (${t("labels.updated", { ns: "common" })} ${moment(opinion.updatedDate).format(
-                    "DD.MM.YYYY"
-                  )})`
+                ? `${moment(opinion.creationDate).format("DD.MM.YYYY")} (${t(
+                    "labels.updated",
+                    { ns: "common" }
+                  )} ${moment(opinion.updatedDate).format("DD.MM.YYYY")})`
                 : moment(opinion.creationDate).format("DD.MM.YYYY")}
             </Text>
           </View>
 
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>{t("labels.entry", { ns: "pedagogySupportPlan" })}</Text>
+            <Text style={styles.infoFieldLabelSameRow}>
+              {t("labels.entry", { ns: "pedagogySupportPlan" })}
+            </Text>
             <View style={styles.infoFieldValueSameRow}>
               <Html stylesheet={htmlStyles}>{opinion.opinion || "-"}</Html>
             </View>
@@ -88,7 +91,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       </View>
     ))) || (
     <View>
-      <Text style={styles.empty}>{t("content.empty", { ns: "pedagogySupportPlan", content: "opinnion" })}</Text>
+      <Text style={styles.empty}>
+        {t("content.empty", { ns: "pedagogySupportPlan", context: "opinnion" })}
+      </Text>
     </View>
   );
 
@@ -98,21 +103,24 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <View key={i} style={styles.opinionContainer}>
         <View style={styles.opinionInfo} wrap={false}>
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>{t("labels.creator", { ns: "pedagogySupportPlan" })}</Text>
+            <Text style={styles.infoFieldLabelSameRow}>
+              {t("labels.creator", { ns: "pedagogySupportPlan" })}
+            </Text>
             <Text style={styles.infoFieldValueSameRow}>
               {opinion.creatorName},{" "}
               {opinion.updatedDate
-                ? `${moment(opinion.creationDate).format(
-                    "DD.MM.YYYY"
-                  )} (${t("labels.updated", { ns: "common" })} ${moment(opinion.updatedDate).format(
-                    "DD.MM.YYYY"
-                  )})`
+                ? `${moment(opinion.creationDate).format("DD.MM.YYYY")} (${t(
+                    "labels.updated",
+                    { ns: "common" }
+                  )} ${moment(opinion.updatedDate).format("DD.MM.YYYY")})`
                 : moment(opinion.creationDate).format("DD.MM.YYYY")}
             </Text>
           </View>
 
           <View style={styles.infoFieldContainerSameRow}>
-            <Text style={styles.infoFieldLabelSameRow}>{t("labels.entry", { ns: "pedagogySupportPlan" })}</Text>
+            <Text style={styles.infoFieldLabelSameRow}>
+              {t("labels.entry", { ns: "pedagogySupportPlan" })}
+            </Text>
             <View style={styles.infoFieldValueSameRow}>
               <Html stylesheet={htmlStyles}>{opinion.opinion || "-"}</Html>
             </View>
@@ -121,7 +129,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       </View>
     ))) || (
     <View>
-      <Text style={styles.empty}>{t("content.empty", { ns: "pedagogySupportPlan", content: "opinnion" })}</Text>
+      <Text style={styles.empty}>
+        {t("content.empty", { ns: "pedagogySupportPlan", context: "opinnion" })}
+      </Text>
     </View>
   );
 
@@ -135,11 +145,16 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       </View>
       <View style={styles.headerInfoContainer}>
         <View style={styles.headerInfoContainerMain}>
-          <Text style={styles.headerTitle}>Pedagogisen tuen suunnitelma</Text>
+          <Text style={styles.headerTitle}>
+            {t("labels.title", { ns: "pedagogySupportPlan" })}
+          </Text>
         </View>
         <View style={styles.headerInfoContainerAside}>
           <View style={styles.headerInfoContainerAsidePrimary}>
-            <Text style={styles.headerSubtitle}>Salassa pidettävä</Text>
+            <Text style={styles.headerSubtitle}>
+              {" "}
+              {t("labels.confidential", { ns: "pedagogySupportPlan" })}
+            </Text>
             <Text style={styles.headerSubtitle}>
               {moment().format("D.M.YYYY")}
             </Text>
@@ -161,7 +176,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
     data.studentInfo.lastName || ""
   } ${
     (data.studentInfo.dateOfBirth &&
-      `(syntymäaika ${moment(data.studentInfo.dateOfBirth).format(
+      `(${t("labels.dateOfBirth", {
+        ns: "common",
+      }).toLowerCase()} ${moment(data.studentInfo.dateOfBirth).format(
         "DD.MM.YYYY"
       )})`) ||
     ""
@@ -172,7 +189,11 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
   const studentPhone = `${data?.studentInfo?.phoneNumber || ""}`;
 
   const studentAddress = `${
-    data?.studentInfo?.streetAddress || "Ei osoitetietoa"
+    data?.studentInfo?.streetAddress ||
+    t("content.empty", {
+      ns: "pedagogySupportPlan",
+      context: "address",
+    })
   }`;
 
   const studentZipCodeAndCity = `${data?.studentInfo?.zipCode || ""} ${
@@ -190,10 +211,17 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       }
       <Page style={styles.body} size="A4">
         {pageHeader}
-        <Text style={styles.pageTitle}>Perus- ja asiakirjatiedot</Text>
+        <Text style={styles.pageTitle}>
+          {t("labels.basicInfo", {
+            ns: "pedagogySupportPlan",
+            context: "document",
+          })}
+        </Text>
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Opiskelija</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.student", { ns: "users", count: 1 })}
+          </Text>
           <Text style={styles.infoFieldValue}>{studentName}</Text>
           <Text style={styles.infoFieldValue}>{studentPhone}</Text>
           <Text style={styles.infoFieldValue}>{studentEmail}</Text>
@@ -202,9 +230,12 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         </View>
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Asiakirjan laatija</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.authorOfDocument", { ns: "pedagogySupportPlan" })}
+          </Text>
           <Text style={styles.infoFieldValue}>
-            {documentCreator}, erityisopettaja
+            {documentCreator},{" "}
+            {t("labels.specialEducationTeacher", { ns: "users", count: 1 })}
           </Text>
           <Text style={styles.infoFieldValue}>
             {data.ownerInfo.phoneNumber}
@@ -213,7 +244,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         </View>
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Asiakirjan laatimispäivä</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.documentCreatedDate", { ns: "pedagogySupportPlan" })}
+          </Text>
           <Text style={styles.infoFieldValue}>
             {moment(data.created).format("DD.MM.YYYY")}
           </Text>
@@ -221,7 +254,7 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>
-            Asiakirjan laatimiseen osallistuneet
+            {t("labels.documentParticipants", { ns: "pedagogySupportPlan" })}
           </Text>
           <Text style={styles.infoFieldValue}>
             {formData?.documentParticipants || "-"}
@@ -229,7 +262,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         </View>
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Yhteistyötahot</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.cooperativePartners", { ns: "pedagogySupportPlan" })}
+          </Text>
           <Text style={styles.infoFieldValue}>
             {formData?.cooperativePartners || "-"}
           </Text>
@@ -241,16 +276,25 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       }
       <Page style={styles.body} size="A4">
         {pageHeader}
-        <Text style={styles.pageTitle}>Tuen perusteet</Text>
+        <Text style={styles.pageTitle}>
+          {t("labels.basisForSupport", { ns: "pedagogySupportPlan" })}
+        </Text>
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Opiskelijan vahvuudet</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.studentStrengths", { ns: "pedagogySupportPlan" })}
+          </Text>
           <Text style={styles.infoFieldValue}>
             {formData?.studentStrengths || "-"}
           </Text>
         </View>
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Pedagogisen tuen perusteet</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.basisForSupport", {
+              ns: "pedagogySupportPlan",
+              context: "pedagogy",
+            })}
+          </Text>
           {formData?.supportReasons?.length > 0 ? (
             <>
               {formData?.supportReasons?.map((value, i) => (
@@ -266,16 +310,28 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         {formData?.supportReasons?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Muu peruste</Text>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.basisElse", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
             <Text style={styles.infoFieldValue}>
               {formData?.supportReasonOther || "-"}
             </Text>
           </View>
         ) : null}
 
-        <Text style={styles.pageTitle}>Suunnitelma</Text>
+        <Text style={styles.pageTitle}>
+          {t("labels.plan", {
+            ns: "pedagogySupportPlan",
+          })}
+        </Text>
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>Suunnitellut tukitoimet</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.plannedActions", {
+              ns: "pedagogySupportPlan",
+            })}
+          </Text>
           {formData?.supportActions?.length > 0 ? (
             <>
               {formData?.supportActions?.map((value, i) => (
@@ -291,7 +347,11 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         {formData?.supportActions?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Muu toimenpide</Text>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.actionElse", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
             <Text style={styles.infoFieldValue}>
               {formData?.supportActionOther || "-"}
             </Text>
@@ -300,7 +360,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>
-            Ennakkosuunnitelma ylioppilaskirjoituksiin
+            {t("labels.matriculationPrePlan", {
+              ns: "pedagogySupportPlan",
+            })}
           </Text>
           {(formData?.matriculationExaminationSupport?.length > 0 &&
             formData?.matriculationExaminationSupport?.map((value, i) => (
@@ -312,7 +374,11 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         {formData?.matriculationExaminationSupport?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>Muu toimenpide</Text>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.actionElse", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
             <Text style={styles.infoFieldValue}>
               {formData?.matriculationExaminationSupportOther || "-"}
             </Text>
@@ -325,14 +391,24 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       }
       <Page style={styles.body} size="A4">
         {pageHeader}
-        <Text style={styles.pageTitle}>Toteutetut tukitoimet</Text>
+        <Text style={styles.pageTitle}>
+          {" "}
+          {t("labels.implementedActions", {
+            ns: "pedagogySupportPlan",
+          })}
+        </Text>
         {(formData?.supportActionsImplemented &&
           formData?.supportActionsImplemented.length > 0 &&
           formData?.supportActionsImplemented.map((iAction, i) => (
             <View key={i} style={styles.implementedActionContainer}>
               <View style={styles.implementationInfo} wrap={false}>
                 <View style={styles.infoFieldContainerSameRow}>
-                  <Text style={styles.infoFieldLabelSameRow}>Tukitoimi</Text>
+                  <Text style={styles.infoFieldLabelSameRow}>
+                    {" "}
+                    {t("labels.supportAction", {
+                      ns: "pedagogySupportPlan",
+                    })}
+                  </Text>
                   <Text style={styles.infoFieldValueSameRow}>
                     {supportActionTranslationByValue[iAction.action]},{" "}
                     {moment(iAction.date).format("DD.MM.YYYY")}
@@ -341,7 +417,11 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
                 {iAction?.course?.name ? (
                   <View style={styles.infoFieldContainerSameRow}>
-                    <Text style={styles.infoFieldLabelSameRow}>Kurssi</Text>
+                    <Text style={styles.infoFieldLabelSameRow}>
+                      {t("labels.course", {
+                        ns: "common",
+                      })}
+                    </Text>
                     <Text style={styles.infoFieldValueSameRow}>
                       {iAction?.course?.name}
                     </Text>
@@ -350,7 +430,11 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
                 {iAction?.extraInfoDetails ? (
                   <View style={styles.infoFieldContainerSameRow}>
-                    <Text style={styles.infoFieldLabelSameRow}>Lisätietoa</Text>
+                    <Text style={styles.infoFieldLabelSameRow}>
+                      {t("labels.additionalInfo", {
+                        ns: "pedagogySupportPlan",
+                      })}
+                    </Text>
                     <Text style={styles.infoFieldValueSameRow}>
                       {iAction?.extraInfoDetails}
                     </Text>
@@ -360,7 +444,12 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
             </View>
           ))) || (
           <View>
-            <Text style={styles.empty}>Ei toteutettuja tukitoimia</Text>
+            <Text style={styles.empty}>
+              {t("content.empty", {
+                ns: "pedagogySupportPlan",
+                context: "actions",
+              })}
+            </Text>
           </View>
         )}
       </Page>
@@ -371,7 +460,10 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <Page style={styles.body} size="A4">
         {pageHeader}
         <Text style={styles.pageTitle}>
-          Opiskelijan näkemys tuen vaikuttavuudesta
+          {t("labels.opinionOfSupport", {
+            ns: "pedagogySupportPlan",
+            context: "student",
+          })}
         </Text>
 
         {studentOpinion}
@@ -384,7 +476,10 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
       <Page style={styles.body} size="A4">
         {pageHeader}
         <Text style={styles.pageTitle}>
-          Oppilaitoksen näkemys tuen vaikuttavuudesta
+          {t("labels.opinionOfSupport", {
+            ns: "pedagogySupportPlan",
+            context: "school",
+          })}
         </Text>
 
         {schoolOpinion}

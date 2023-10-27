@@ -17,6 +17,7 @@ import {
   supportReasonsOptions,
 } from "../helpers";
 import { usePedagogyContext } from "../context/pedagogy-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * NeedOfSupportInformationProps
@@ -32,6 +33,7 @@ interface NeedOfSupportInformationProps {}
 const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
   props
 ) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
   const { userRole, editIsActive } = usePedagogyContext();
 
@@ -127,7 +129,10 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Opiskelijan vahvuudet ja tuen perusteet
+          {t("labels.studentStrengths", {
+            ns: "pedagogySupportPlan",
+            context: "basisForSupport",
+          })}
         </legend>
 
         <div className="hops-container__row">
@@ -148,7 +153,10 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <label htmlFor="needOfPedagogySupport" className="hops__label">
-              Pedagogisen tuen perusteet
+              {t("labels.basisForSupport", {
+                ns: "pedagogySupportPlan",
+                context: "pedagogy",
+              })}
             </label>
             <Select
               id="needOfPedagogySupport"
@@ -167,8 +175,16 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   )) ||
                 undefined
               }
-              placeholder="Valitse..."
-              noOptionsMessage={() => "Ei enempää vaihtoehtoja"}
+              placeholder={t("labels.basisForSupport", {
+                ns: "pedagogySupportPlan",
+                context: "pedagogy",
+              })}
+              noOptionsMessage={() =>
+                t("content.empty", {
+                  ns: "pedagogySupportPlan",
+                  context: "options",
+                })
+              }
               options={supportReasonsOptions}
               onChange={handleSupportReasonChange}
               isSearchable={false}
@@ -180,11 +196,17 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
         <AnimateHeight
           height={formData?.supportReasons.includes("other") ? "auto" : 0}
         >
+          {t("labels.select", {
+            ns: "common",
+          })}
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <Textarea
                 id="reasonOther"
-                label="Muu peruste"
+                label={t("labels.other", {
+                  ns: "pedagogySupportPlan",
+                  context: "support",
+                })}
                 className="hops__textarea"
                 onChange={(e) =>
                   handleTextAreaChange("supportReasonOther", e.target.value)
@@ -198,12 +220,18 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       </fieldset>
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Suunnitelma</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.plan", {
+            ns: "pedagogySupportPlan",
+          })}
+        </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <label htmlFor="suggestedSupportActions" className="hops__label">
-              Suunnitellut tukitoimet
+              {t("labels.plannedActions", {
+                ns: "pedagogySupportPlan",
+              })}
             </label>
             <Select
               id="suggestedSupportActions"
@@ -222,8 +250,15 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   )) ||
                 undefined
               }
-              placeholder="Valitse..."
-              noOptionsMessage={() => "Ei enempää vaihtoehtoja"}
+              placeholder={t("labels.select", {
+                ns: "common",
+              })}
+              noOptionsMessage={() =>
+                t("content.empty", {
+                  ns: "pedagogySupportPlan",
+                  context: "options",
+                })
+              }
               options={supportActionsOptions}
               onChange={handleSupportActionChange}
               isSearchable={false}
@@ -238,7 +273,10 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             <div className="hops__form-element-container">
               <Textarea
                 id="otherSupportMeasures"
-                label="Muu toimenpide"
+                label={t("labels.other", {
+                  ns: "pedagogySupportPlan",
+                  context: "action",
+                })}
                 className="hops__textarea"
                 onChange={(e) =>
                   handleTextAreaChange("supportActionOther", e.target.value)
@@ -256,7 +294,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               htmlFor="prePlansForMatriculationExam"
               className="hops__label"
             >
-              Ennakkosuunnitelma ylioppilaskirjoituksiin
+              {t("labels.matriculationPrePlan", {
+                ns: "pedagogySupportPlan",
+              })}
             </label>
             <Select
               id="prePlansForMatriculationExam"
@@ -277,8 +317,15 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   )) ||
                 undefined
               }
-              placeholder="Valitse..."
-              noOptionsMessage={() => "Ei enempää vaihtoehtoja"}
+              placeholder={t("labels.select", {
+                ns: "common",
+              })}
+              noOptionsMessage={() =>
+                t("content.empty", {
+                  ns: "pedagogySupportPlan",
+                  context: "options",
+                })
+              }
               options={matriculationSupportActionsOptions}
               onChange={handleMatriculationSupportActionChange}
               isSearchable={false}
@@ -297,7 +344,10 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             <div className="hops__form-element-container">
               <Textarea
                 id="matriculationSupportOther"
-                label="Muu toimenpide"
+                label={t("labels.other", {
+                  ns: "pedagogySupportPlan",
+                  context: "action",
+                })}
                 className="hops__textarea"
                 onChange={(e) =>
                   handleTextAreaChange(

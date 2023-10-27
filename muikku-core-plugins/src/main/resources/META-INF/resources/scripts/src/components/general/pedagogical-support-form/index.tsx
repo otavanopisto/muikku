@@ -50,7 +50,7 @@ interface UpperSecondaryPedagogicalSupportWizardFormmProps {
 const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
   UpperSecondaryPedagogicalSupportWizardFormmProps
 > = (props) => {
-  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+  const { t } = useTranslation(["pedagogySupportPlan"]);
   const usePedagogyValues = usePedagogy(
     props.studentId,
     props.displayNotification
@@ -66,7 +66,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
   const listOfStepObjects: WizardStep[] = [
     {
       index: 0,
-      name: t("labels.basicInfo", { ns: "pedagogySupportPlan" }),
+      name: t("labels.step1", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step1 status={props.status} />
@@ -75,7 +75,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 1,
-      name: t("labels.document", { ns: "pedagogySupportPlan" }),
+      name: t("labels.step2", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step2 />
@@ -84,7 +84,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 2,
-      name: t("labels.needOfSupport", { ns: "pedagogySupportPlan" }),
+      name: t("labels.step3", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step3 />
@@ -93,7 +93,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 3,
-      name: t("labels.supportActionsDone", { ns: "pedagogySupportPlan" }),
+      name: t("labels.step4", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step4 status={props.status} />
@@ -102,7 +102,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 4,
-      name: t("labels.followUpAndAssessment", { ns: "pedagogySupportPlan" }),
+      name: t("labels.step5", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step5 status={props.status} />
@@ -111,7 +111,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 5,
-      name: t("labels.approvalAndPermissions", { ns: "pedagogySupportPlan" }),
+      name: t("labels.step6", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step6 />

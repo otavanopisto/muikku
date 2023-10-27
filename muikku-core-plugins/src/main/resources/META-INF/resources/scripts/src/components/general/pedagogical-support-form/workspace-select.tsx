@@ -65,12 +65,17 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       className="react-select-override react-select-override--hops"
       classNamePrefix="react-select-override"
       isClearable
-      placeholder={t("labels.search", { ns: "pedagogySupportPlan", context: "course" })}
+      placeholder={t("labels.search", {
+        ns: "pedagogySupportPlan",
+        context: "course",
+      })}
       options={options}
       value={selectedValue}
       onChange={handleSelectChange}
       onInputChange={handleTextInput}
-      noOptionsMessage={() => t("content.empty", { ns: "common", context: "courses" })}
+      noOptionsMessage={() =>
+        t("content.empty", { ns: "common", context: "courses" })
+      }
       isLoading={loadingWorkspaces}
       isDisabled={disabled}
     />

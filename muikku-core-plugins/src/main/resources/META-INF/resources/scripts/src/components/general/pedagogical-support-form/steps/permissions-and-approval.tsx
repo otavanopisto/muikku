@@ -3,6 +3,7 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import Button from "~/components/general/button";
+import { useTranslation } from "react-i18next";
 
 /**
  * PermissionsAndApprovalProps
@@ -18,6 +19,7 @@ interface PermissionsAndApprovalProps {}
 const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props
 ) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { formIsApproved, data, userRole, sendToStudent, editIsActive } =
     usePedagogyContext();
 
@@ -26,28 +28,26 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
       {data.state === "ACTIVE" && userRole === "SPECIAL_ED_TEACHER" ? (
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">
-            Lähetä suunnitelma hyväksyttäväksi
+            {t("labels.sendForApproval", {
+              ns: "pedagogySupportPlan",
+            })}
           </legend>
           <div className="hops-container__info">
             <div className="hops-container__state state-INFO">
               <div className="hops-container__state-icon icon-notification"></div>
               <div className="hops-container__state-text">
-                Pedagogisen tuen suunnitelma laaditaan yhteistyössä opiskelijan
-                kanssa. Suunnitelma jaetaan opiskelijalle Lähetä-painikkeen
-                avulla. Opiskelija voi joko hyväksyä suunnitelman tai ottaa
-                yhteyttä erityisopettajaan. Hyväksytyn suunnitelman näkevät
-                erityisopettajan ja rehtorin lisäksi opiskelijaa opettava ja
-                ohjaava henkilökunta. Alaikäisten opiskelijoiden kohdalla
-                suunnitelman tietoja voidaan myös jakaa heidän huoltajilleen.
+                {t("content.planSendInformation", {
+                  ns: "pedagogySupportPlan",
+                })}
               </div>
             </div>
             {editIsActive && (
               <div className="hops-container__state state-WARNING">
                 <div className="hops-container__state-icon icon-notification"></div>
                 <div className="hops-container__state-text">
-                  Sinulla on muokkaus aktiivisena. Tallenna tai peruuta
-                  muokkaus, jonka jälkeen voit lähettää suunnitelman
-                  opiskelijalle
+                  {t("content.planEditingActive", {
+                    ns: "pedagogySupportPlan",
+                  })}
                 </div>
               </div>
             )}
@@ -58,7 +58,9 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
                 onClick={sendToStudent}
                 disabled={editIsActive}
               >
-                Lähetä
+                {t("actions.send", {
+                  ns: "common",
+                })}
               </Button>
             </div>
           </div>
@@ -66,7 +68,11 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
       ) : null}
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Hyväksyminen</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.approving", {
+            ns: "pedagogySupportPlan",
+          })}
+        </legend>
         <div className="hops-container__row">
           <div
             className="hops__form-element-container hops__form-element-container--single-row"
@@ -81,7 +87,9 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
               defaultChecked={formIsApproved}
             ></input>
             <label htmlFor="fromFamilyMember" className="hops__label">
-              Olen lukenut suunnitelman ja hyväksyn sen sisällön.
+              {t("content.planAcceptance", {
+                ns: "pedagogySupportPlan",
+              })}
             </label>
           </div>
         </div>
