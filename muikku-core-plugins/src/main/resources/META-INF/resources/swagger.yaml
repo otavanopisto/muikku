@@ -4370,9 +4370,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/RecordsWorkspace"
+                $ref: "#/components/schemas/RecordsWorkspacesWithCourseCredit"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -13784,6 +13782,30 @@ components:
             activity:
               $ref: "#/components/schemas/WorkspaceActivity"
 
+    RecordsWorkspacesWithCourseCredit:
+      type: object
+      description: RecordsWorkspacesWithCourseCredit object
+      required:
+        - completedCourseCredits
+        - mandatoryCourseCredits
+        - workspaces
+        - showCredits
+      properties:
+        completedCourseCredits:
+          description: Completed course credits. Is always at least 0.
+          type: integer
+        mandatoryCourseCredits:
+          description: Mandatory course credits. Is always at least 0.
+          type: integer
+        workspaces:
+          description: List of workspaces
+          type: array
+          items:
+            $ref: "#/components/schemas/RecordsWorkspace"
+        showCredits:
+          description: Should the credits be shown. Currently only OPS 2021 student will have this as true
+          type: boolean
+
     PublicityRestriction:
       type: string
       enum:
@@ -13878,17 +13900,34 @@ components:
         - lineCategory
         - defaultLine
         - activities
+        - completedCourseCredits
+        - mandatoryCourseCredits
+        - showCredits
       properties:
         lineName:
+          description: Name of the "Studyprogramme"
           type: string
         lineCategory:
+          description: Category of the "Studyprogramme"
           type: string
         defaultLine:
+          description: Is the default line
           type: boolean
         activities:
+          description: List of activities
           type: array
           items:
             $ref: "#/components/schemas/RecordWorkspaceActivity"
+        completedCourseCredits:
+          description: Completed course credits. Is always at least 0.
+          type: integer
+        mandatoryCourseCredits:
+          description: Mandatory course credits. Is always at least 0.
+          type: integer
+        showCredits:
+          description: Should the credits be shown. Currently only OPS 2021 student will have this as true
+          type: boolean
+
     Role:
       type: string
       enum:

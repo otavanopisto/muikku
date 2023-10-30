@@ -1,6 +1,4 @@
 import actions from "../../base/notifications";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -195,6 +193,9 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           [category: string]: {
             credits: RecordWorkspaceActivityByLine[];
             transferedCredits: RecordWorkspaceActivityByLine[];
+            completedCourseCredits: number;
+            mandatoryCourseCredits: number;
+            showCredits: boolean;
           };
         } = {};
 
@@ -228,15 +229,14 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                 workspaceActivity.lineCategory
               ].transferedCredits.concat(transferedCredits);
           } else {
-            // If category does not exist in helper object, create it
+            // If category does not exist in helper object, create it and initialize it
             helperObject[workspaceActivity.lineCategory] = {
-              credits: [],
-              transferedCredits: [],
+              credits: credits || [],
+              transferedCredits: transferedCredits || [],
+              completedCourseCredits: workspaceActivity.completedCourseCredits,
+              mandatoryCourseCredits: workspaceActivity.mandatoryCourseCredits,
+              showCredits: workspaceActivity.showCredits,
             };
-
-            helperObject[workspaceActivity.lineCategory].credits = credits;
-            helperObject[workspaceActivity.lineCategory].transferedCredits =
-              transferedCredits;
           }
         });
 
@@ -246,6 +246,9 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             lineCategory: a[0],
             credits: a[1].credits,
             transferCredits: a[1].transferedCredits,
+            showCredits: a[1].showCredits,
+            completedCourseCredits: a[1].completedCourseCredits,
+            mandatoryCourseCredits: a[1].mandatoryCourseCredits,
           }));
 
         //and that should do it, it should give us the precious data we need in the order we need it to be
