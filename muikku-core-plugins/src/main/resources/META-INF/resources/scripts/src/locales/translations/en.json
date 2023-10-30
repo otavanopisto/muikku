@@ -1971,7 +1971,7 @@
   "pedagogySupportPlan": {
     "actions": {
       "add": "$t(common:actions.add)",
-      "add_newRow": "Lisää uusi rivi",
+      "add_row": "Lisää rivi",
       "approve": "Hyväksy suunnitelma",
       "confirmCancel": "Olen varma, peruuta muutokset"
     },
@@ -1982,8 +1982,8 @@
       "empty_address": "Ei osoitetietoa",
       "empty_events": "Ei tapahtumia",
       "empty_opinnion": "Mielipidettä ei ole asetettu",
-      "empty_options": "Ei enempää vaiohtoehtoja",
-      "empty_schgoolAssessment": "Ei koulun arvioita",
+      "empty_options": "Ei enempää vaihtoehtoja",
+      "empty_schoolAssessment": "Ei koulun arvioita",
       "empty_studentAssessment": "Ei opiskelijan arvioita",
       "notActivated": "Pedagogisen tuen suunnitelmaa ei ole aktivoitu.",
       "notActivated_student": "Pedagogisen tuen suunnitelmaa ei ole aktivoitu, ole yhteydessä erityisopettajaasi.",

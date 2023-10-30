@@ -157,7 +157,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
                     <p>
                       {t("content.notActivated", {
                         ns: "pedagogySupportPlan",
-                        context: "student",
+                        context: props.userRole.toLowerCase(),
                       })}
                     </p>
                   ) : (
