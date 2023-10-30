@@ -644,6 +644,7 @@ public class GuiderRESTService extends PluginRESTService {
             }
           }
         }
+        
         workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
       }
     } else {
@@ -661,7 +662,7 @@ public class GuiderRESTService extends PluginRESTService {
     
     String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
     
-    if (curriculumName != null && curriculumName.equals("OPS 2021")) {
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (user.getStudyProgrammeName() != null && user.getStudyProgrammeName().equals("Nettilukio"))) {
       torWorkspaceWithCourseCredits.setShowCredits(true);
     }
     

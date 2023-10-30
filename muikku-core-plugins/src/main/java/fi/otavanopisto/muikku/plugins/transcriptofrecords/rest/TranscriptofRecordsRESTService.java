@@ -261,7 +261,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
     
-    if (curriculumName != null && curriculumName.equals("OPS 2021")) {
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
       activityInfo.setShowCredits(true);
     }
     
