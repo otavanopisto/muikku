@@ -30,6 +30,10 @@
   </sql>
 
   <sql>
+    alter table UserSchoolDataIdentifier drop foreign key FK66x1cvhwsknh6authq49660qs;
+  </sql>
+  
+  <sql>
     alter table UserSchoolDataIdentifier drop column role_id;
   </sql>
   
