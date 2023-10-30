@@ -16,6 +16,7 @@
       "confirmSave": "Olen varma",
       "confirmRemove": "Hyväksy poisto",
       "create": "Luo",
+      "create_comment": "Uusi kommentti",
       "draft": "Luonnos",
       "edit": "Muokkaa",
       "edit_comment": "Muokkaa kommenttia",
@@ -1461,7 +1462,7 @@
       "evaluated_withPassedGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_withNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
       "evaluationHasFee": "Maksullinen arviointi",
-      "evaluationRequestMessage": "Viesti kurssin opettajalle",
+      "evaluationRequestMessage": "Vapaaehtoinen viesti kurssin opettajalle",
       "failed": "Keskeytynyt",
       "goto": "Siirry kurssille",
       "grade": "Arvosana",
@@ -1642,6 +1643,7 @@
       "removing": "Oletko varma, että haluat poistaa oppimispäiväkirjamerkinnän?"
     },
     "labels": {
+      "comment": "Kommentoi oppimispäiväkirjamerkintää",
       "create": "Uusi oppimispäiväkirjamerkintä",
       "edit": "Muokkaa merkintää",
       "feedback": "Oppimispäiväkirjan kokonaispalaute",
