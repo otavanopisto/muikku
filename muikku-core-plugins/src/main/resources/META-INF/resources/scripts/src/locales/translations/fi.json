@@ -349,6 +349,9 @@
       "contactLog": "Yhteydenotot",
       "contactInfo_student": "Opiskelijan yhteystiedot",
       "contactInfo_guardian": "Huoltajan tai yhteyshenkilön yhteystiedot",
+      "courseCredits": "Opintopisteet",
+      "courseCreditsMandatory": "Pakolliset: {{mandatoryCredits}}",
+      "courseCreditsTotal": "Yhteensä: {{totalCredits}}",
       "created_interimEvaluation": "Välipalaute annettu",
       "discussionMessages": "Keskusteluviestit",
       "endDate": "Opintojen päättymispäivä",
@@ -434,6 +437,7 @@
     "labels": {
       "abiStatus": "Abistatus",
       "activity": "Aktiivisuus",
+      "courseCredits": "Opintopisteet {{mandatoryCredits}} (Pakolliset) {{totalCredits}} (Yhteensä)",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "completedWorkspaces": "Olet suorittanut yhteensä",
       "coursesForYou:": "Kursseja sinulle",

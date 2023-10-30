@@ -100,6 +100,11 @@ export interface GuiderStudentUserProfileType {
   pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
   purchases: CeeposOrder[];
+  courseCredits: {
+    completedCourseCredits: number;
+    mandatoryCourseCredits: number;
+    showCredits: boolean;
+  };
   hopsPhase?: string;
   hopsAvailable: boolean;
   pedagogyFormAvailable: PedagogyFormAccess;
@@ -225,6 +230,11 @@ const initialGuiderState: GuiderState = {
       courseTeacher: false,
       specEdTeacher: false,
       guidanceCounselor: false,
+    },
+    courseCredits: {
+      completedCourseCredits: 0,
+      mandatoryCourseCredits: 0,
+      showCredits: false,
     },
   },
 };

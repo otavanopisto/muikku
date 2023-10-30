@@ -349,6 +349,9 @@
       "contactLog": "Contact log",
       "contactInfo_student": "Student contact info",
       "contactInfo_guardian": "Guardian contact info",
+      "courseCredits": "Course credits",
+      "courseCreditsMandatory": "Mandatory: {{mandatoryCredits}}",
+      "courseCreditsTotal": "In total: {{totalCredits}}",
       "created_interimEvaluation": "Interim evaluation given",
       "discussionMessages": "Discussion messages",
       "endDate": "Studies end date",
@@ -434,6 +437,7 @@
     "labels": {
       "abiStatus": "Abi status",
       "activity": "Activity",
+      "courseCredits": "Course credits {{mandatoryCredits}} (mandatory) {{totalCredits}} (Summary)",
       "evaluablesDone": "{{percent}}% of assignments done",
       "completedWorkspaces": "You have completed",
       "coursesForYou:": "Courses for you",

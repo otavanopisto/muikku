@@ -73,7 +73,11 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   let categoryName = recordGroup.lineCategory;
 
   if (recordGroup.showCredits) {
-    categoryName += ` - Opintopisteet: ${recordGroup.mandatoryCourseCredits} (pakolliset) ${recordGroup.completedCourseCredits} (Yhteensä)`;
+    categoryName += ` - ${t("labels.courseCredits", {
+      ns: "studies",
+      mandatoryCredits: recordGroup.mandatoryCourseCredits,
+      totalCredits: recordGroup.completedCourseCredits,
+    })}`;
   }
 
   return (

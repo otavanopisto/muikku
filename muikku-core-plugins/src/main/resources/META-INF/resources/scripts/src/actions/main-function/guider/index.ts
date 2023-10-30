@@ -766,6 +766,32 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             });
           }),
 
+        // This fetch is for course credits
+        guiderApi
+          .getStudentWorkspaces({
+            studentId: id,
+            active: false,
+          })
+          .then(
+            ({
+              completedCourseCredits,
+              mandatoryCourseCredits,
+              showCredits,
+            }) => {
+              dispatch({
+                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                payload: {
+                  property: "courseCredits",
+                  value: {
+                    completedCourseCredits,
+                    mandatoryCourseCredits,
+                    showCredits,
+                  },
+                },
+              });
+            }
+          ),
+
         canListUserOrders &&
           ceeposApi
             .getCeeposUserOrders({ userIdentifier: id })
