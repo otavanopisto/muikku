@@ -2,12 +2,9 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
   <sql>
-  </sql>
-
-  <sql>
     create table UserSchoolDataIdentifierRoles (
        userSchoolDataIdentifier_id bigint not null,
-        role bigint not null
+       role bigint not null
     );
   </sql>
 
@@ -31,8 +28,6 @@
     from UserSchoolDataIdentifier
     where role_id is not null;
   </sql>
-
-TODO drop foreign key
 
   <sql>
     alter table UserSchoolDataIdentifier drop column role_id;
