@@ -5,9 +5,10 @@ public class ChatUserRestModel {
   public ChatUserRestModel() {
   }
 
-  public ChatUserRestModel(Long id, String nick, ChatUserType type) {
+  public ChatUserRestModel(Long id, String nick, String name, ChatUserType type) {
     this.id = id;
     this.nick = nick;
+    this.name = name;
     this.type = type;
   }
 
@@ -35,8 +36,17 @@ public class ChatUserRestModel {
     this.type = type;
   }
   
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   private Long id;
   private String nick;
+  private String name;
   private ChatUserType type;
 
 }

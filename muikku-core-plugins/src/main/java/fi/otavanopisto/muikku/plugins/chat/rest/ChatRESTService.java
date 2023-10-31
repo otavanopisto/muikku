@@ -190,9 +190,13 @@ public class ChatRESTService {
     for (Long userEntityId : userEntityIds) {
       UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
       if (userEntity != null) {
+        String name = chatController.isStaffMember(sessionController.getLoggedUserEntity())
+            ? userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine()
+            : null;
         restUsers.add(new ChatUserRestModel(
             userEntityId,
             chatController.getNick(userEntity),
+            name,
             chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT));
       }
     }
@@ -224,9 +228,13 @@ public class ChatRESTService {
     for (Long userEntityId : userEntityIds) {
       UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
       if (userEntity != null) {
+        String name = chatController.isStaffMember(sessionController.getLoggedUserEntity())
+            ? userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine()
+            : null;
         restUsers.add(new ChatUserRestModel(
             userEntityId,
             chatController.getNick(userEntity),
+            name,
             chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT));
       }
     }
@@ -402,6 +410,9 @@ public class ChatRESTService {
   @GET
   @RESTPermit(ChatPermissions.MESSAGE_AUTHOR_INFO)
   public Response getMessageAuthorInfo(@PathParam("ID") Long id) {
+    if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     ChatMessage chatMessage = chatController.findChatMessageByIdAndArchived(id, Boolean.FALSE);
     if (chatMessage == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Message %d not found", id)).build();
@@ -412,11 +423,11 @@ public class ChatRESTService {
     }
     ChatUser chatUser = chatController.getChatUser(userEntity);
     UserEntityName userEntityName = userEntityController.getName(userEntity, true);
-    UserInfoRestModel userInfo = new UserInfoRestModel();
-    userInfo.setUserEntityId(userEntity.getId());
+    ChatUserRestModel userInfo = new ChatUserRestModel();
+    userInfo.setId(userEntity.getId());
     userInfo.setNick(chatUser.getNick());
     userInfo.setName(userEntityName.getDisplayNameWithLine());
-    userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
+    userInfo.setType(chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT);
     return Response.ok(userInfo).build();
   }
 
@@ -424,14 +435,17 @@ public class ChatRESTService {
   @GET
   @RESTPermit(ChatPermissions.USER_INFO)
   public Response getUserInfo(@PathParam("ID") Long id) {
+    if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     UserEntity userEntity = userEntityController.findUserEntityById(id);
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
     }
     ChatUser chatUser = chatController.getChatUser(userEntity);
     UserEntityName userEntityName = userEntityController.getName(userEntity, true);
-    UserInfoRestModel userInfo = new UserInfoRestModel();
-    userInfo.setUserEntityId(userEntity.getId());
+    ChatUserRestModel userInfo = new ChatUserRestModel();
+    userInfo.setId(userEntity.getId());
     userInfo.setNick(chatUser.getNick());
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
