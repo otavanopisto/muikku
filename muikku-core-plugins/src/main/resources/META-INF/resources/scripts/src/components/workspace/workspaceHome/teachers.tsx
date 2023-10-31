@@ -1,14 +1,14 @@
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { getName } from "~/util/modifiers";
 import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
 import moment from "~/lib/moment";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/buttons.scss";
@@ -21,7 +21,7 @@ import i18n from "~/locales/i18n";
  * WorkspaceTeachersProps
  */
 interface WorkspaceTeachersProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
 }
 
@@ -126,12 +126,12 @@ class WorkspaceTeachers extends React.Component<
                         <div className="item-list__user-vacation-period">
                           {t("labels.away", { ns: "workspace" })}
                           &nbsp;
-                          {localizeTime.date(
+                          {localize.date(
                             teacher.properties["profile-vacation-start"]
                           )}
                           {teacher.properties["profile-vacation-end"]
                             ? "–" +
-                              localizeTime.date(
+                              localize.date(
                                 teacher.properties["profile-vacation-end"]
                               )
                             : null}
@@ -253,7 +253,7 @@ export default withTranslation(["workspace", "messaging", "users", "common"])(
  */
 export function getWorkspaceMessage(
   status: StatusType,
-  workspace: WorkspaceType,
+  workspace: WorkspaceDataType,
   html?: boolean
 ) {
   if (!workspace) {

@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
-import { PurchaseType } from "./profile";
 import { Reducer } from "redux";
+import { CeeposOrder } from "~/generated/client";
 
 export type CeeposStateStatusType = "LOADING" | "ERROR" | "READY";
 export type CeeposPayStatusCodeType = string;
@@ -11,7 +11,7 @@ export type CeeposPayStatusCodeType = string;
 export interface CeeposState {
   state: CeeposStateStatusType;
   payStatusMessage: CeeposPayStatusCodeType;
-  purchase: PurchaseType;
+  purchase: CeeposOrder;
 }
 
 /**

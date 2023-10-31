@@ -1,11 +1,6 @@
 import * as React from "react";
-import {
-  NotesLocation,
-  NotesItemFilters,
-  NotesItemRead,
-  NotesItemUpdate,
-  NotesItemStatus,
-} from "~/@types/notes";
+import { NotesLocation, NotesItemFilters } from "~/@types/notes";
+import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
 import { sortNotesItemsBy } from "./helpers/filters";
 import NotesListItem from "./notes-item-list-item";
 import NotesItemListWithoutAnimation from "./notes-list-test";
@@ -14,7 +9,7 @@ import NotesItemListWithoutAnimation from "./notes-list-test";
  * NotesItemListContentProps
  */
 interface NotesItemListContentProps {
-  notesItems: NotesItemRead[];
+  notesItems: Note[];
   usePlace: NotesLocation;
   userId: number;
   isLoadingList: boolean;
@@ -23,15 +18,15 @@ interface NotesItemListContentProps {
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
     notesItemId: number,
-    notesItem: NotesItemUpdate
+    updateNoteRequest: UpdateNoteRequest
   ) => void;
   onUpdateNotesItemStatus?: (
     notesItemId: number,
-    newStatus: NotesItemStatus
+    newStatus: NoteStatusType
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,
-    updatedNotesItem: NotesItemUpdate,
+    updateNoteRequest: UpdateNoteRequest,
     onSuccess?: () => void
   ) => void;
 }

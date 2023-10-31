@@ -9,11 +9,9 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
-  WorkspaceType,
-  MaterialContentNodeListType,
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
-  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 import ContentPanel, {
   ContentPanelItem,
@@ -35,14 +33,16 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MaterialViewRestriction } from "~/generated/client";
+import ReadSpeakerReader from "~/components/general/readspeaker";
 
 /**
  * HelpMaterialsProps
  */
 interface HelpMaterialsProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
-  materials: MaterialContentNodeListType;
+  workspace: WorkspaceDataType;
+  materials: MaterialContentNodeWithIdAndLogic[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;
@@ -70,7 +70,7 @@ const DEFAULT_OFFSET = 67;
  * Help
  */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
-  private flattenedMaterial: MaterialContentNodeListType;
+  private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
   /**
    * constructor
    * @param props props
@@ -134,7 +134,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * toggleSectionHiddenStatus
    * @param section section
    */
-  toggleSectionHiddenStatus(section: MaterialContentNodeType) {
+  toggleSectionHiddenStatus(section: MaterialContentNodeWithIdAndLogic) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
       material: section,
@@ -153,9 +153,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param includesSection includesSection
    */
   getMaterialsOptionListDropdown(
-    section: MaterialContentNodeType,
-    nextSection: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSection: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     includesSection: boolean
   ) {
     const { t } = this.props;
@@ -199,7 +199,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * startupEditor
    * @param section section
    */
-  startupEditor(section: MaterialContentNodeType) {
+  startupEditor(section: MaterialContentNodeWithIdAndLogic) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: section,
@@ -235,8 +235,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param nextSibling nextSibling
    */
   createPage(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
   ) {
     const { t } = this.props;
 
@@ -260,8 +260,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param e e
    */
   createPageFromBinary(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.props.createWorkspaceMaterialContentNode(
@@ -282,7 +282,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * createSection
    * @param nextSibling nextSibling
    */
-  createSection(nextSibling: MaterialContentNodeType) {
+  createSection(nextSibling: MaterialContentNodeWithIdAndLogic) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -303,8 +303,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param nextSibling nextSibling
    */
   pastePage(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
   ) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
@@ -436,10 +436,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const { t } = this.props;
 
     switch (viewRestrict) {
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         return t("content.viewRestricted", { ns: "materials" });
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         return t("content.viewRestricted_workspaceMembers", {
           ns: "materials",
         });
@@ -463,6 +463,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       return null;
     }
 
+    const readSpeakerParameters: string[] = [];
+
     const isEditable = this.props.workspaceEditMode.active;
 
     const createSectionElementWhenEmpty =
@@ -485,13 +487,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const emptyMessage =
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
-          {t("content.empty", { ns: "materials", context: "materials" })}
+          {t("content.empty", { ns: "workspace", context: "instructions" })}
         </div>
       ) : null;
 
     const results: JSX.Element[] = [];
 
     this.props.materials.forEach((section, index) => {
+      readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
+
       // If first section, then above it is "add new section" icon button
       // And it is only showed when editing is active
       if (index === 0 && isEditable) {
@@ -573,9 +577,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       // section is restricted for logged in users and users is not logged in...
       // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
       const isSectionViewRestricted =
-        (section.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+        (section.viewRestrict === MaterialViewRestriction.LoggedIn &&
           !this.props.status.loggedIn) ||
-        (section.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+        (section.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
           !this.props.workspace.isCourseMember &&
           (this.props.status.isStudent || !this.props.status.loggedIn));
 
@@ -584,7 +588,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&
-        section.children.forEach((node) => {
+        section.children.forEach((node, pageI) => {
           // this is the next sibling for the content node that is to be added, aka the current
           const nextSibling = node;
 
@@ -647,12 +651,50 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             );
           }
 
+          let readSpeakerComponent = undefined;
+
+          if (!this.props.workspaceEditMode.active) {
+            const arrayOfSectionsToRemoved = Array(
+              pageI === 0 ? index : index + 1
+            )
+              .fill(0)
+              .map((_, i) => i);
+
+            const arrayOfPagesToRemoved = Array(pageI)
+              .fill(0)
+              .map((_, i) => i);
+
+            let contentToRead = [
+              ...this.props.materials
+                .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
+                .map((section) => `sectionId${section.workspaceMaterialId}`),
+            ];
+
+            if (pageI !== 0) {
+              contentToRead = [
+                ...section.children
+                  .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
+                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                ...contentToRead,
+              ];
+            }
+
+            readSpeakerComponent = (
+              <ReadSpeakerReader
+                entityId={pageI + 1}
+                readParameterType="readid"
+                readParameters={contentToRead}
+              />
+            );
+          }
+
           // Actual page material
           // Nothing is shown is workspace or material "compositeReplies" are missing or
           // editing is not active and material is hided and showEvenIfHidden is false
           const material =
             !this.props.workspace || (!isEditable && node.hidden) ? null : (
               <ContentPanelItem
+                id={`pageId${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
               >
@@ -669,6 +711,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   materialContentNode={node}
                   workspace={this.props.workspace}
                   isViewRestricted={false}
+                  readspeakerComponent={readSpeakerComponent}
                 />
               </ContentPanelItem>
             );
@@ -685,6 +728,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
+          id={`sectionId${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -761,6 +805,12 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
         ref="content-panel"
+        readspeakerComponent={
+          <ReadSpeakerReader
+            readParameterType="readid"
+            readParameters={readSpeakerParameters}
+          />
+        }
       >
         {results}
         {emptyMessage}

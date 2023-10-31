@@ -5,21 +5,23 @@
  */
 
 import * as React from "react";
-import { ActivityLogType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import WorkspaceFilter from "./filters/workspace-filter";
 import GraphFilter from "./filters/graph-filter";
 import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
+import { ActivityLogEntry } from "~/generated/client";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let AmCharts: any = null;
 
 /**
  * CurrentStudentStatisticsProps
  */
 interface CurrentStudentStatisticsProps extends WithTranslation {
-  activityLogs?: Array<ActivityLogType>;
-  workspaces?: WorkspaceType[];
+  activityLogs?: Array<ActivityLogEntry>;
+  workspaces?: WorkspaceDataType[];
 }
 
 /**
@@ -255,7 +257,7 @@ class CurrentStudentStatistics extends React.Component<
     });
     if (this.props.activityLogs) {
       this.props.activityLogs.map((log) => {
-        const date = log.timestamp.slice(0, 10);
+        const date = log.timestamp.toISOString().slice(0, 10);
         const entry = chartDataMap.get(date) || {};
         switch (log.type) {
           case "SESSION_LOGGEDIN":
@@ -302,7 +304,7 @@ class CurrentStudentStatistics extends React.Component<
         });
         if (!this.state.filteredWorkspaces.includes(workspace.id)) {
           workspace.activityLogs.map((log) => {
-            const date = log.timestamp.slice(0, 10);
+            const date = log.timestamp.toISOString().slice(0, 10);
             const entry = chartDataMap.get(date) || {};
             switch (log.type) {
               case "EVALUATION_REQUESTED":

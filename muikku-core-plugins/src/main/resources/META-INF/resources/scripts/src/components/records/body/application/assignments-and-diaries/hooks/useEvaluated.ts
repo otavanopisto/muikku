@@ -1,20 +1,16 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import {
-  MaterialAssignmentType,
-  MaterialContentNodeType,
-} from "~/reducers/workspaces";
 import { AssignmentsTabType } from "../assignments-and-diaries";
 import { useTranslation } from "react-i18next";
+import MApi, { isMApiError } from "~/api/api";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseAssignmentsState {
   isLoading: boolean;
-  evaluatedAssignments: MaterialContentNodeType[];
+  evaluatedAssignments: MaterialContentNodeWithIdAndLogic[];
 }
 
 /**
@@ -24,6 +20,9 @@ const initialState: UseAssignmentsState = {
   isLoading: false,
   evaluatedAssignments: [],
 };
+
+const materialsApi = MApi.getMaterialsApi();
+const workspaceApi = MApi.getWorkspaceApi();
 
 /**
  * Custom hook for student study hours
@@ -65,34 +64,27 @@ export const useEvaluatedAssignments = (
          */
         const [materials] = await Promise.all([
           (async () => {
-            const assignments = <Array<MaterialAssignmentType>>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EVALUATED",
-                }),
-                "callback"
-              )() || [];
+            const assignments = await workspaceApi.getWorkspaceMaterials({
+              workspaceEntityId: workspaceId,
+              assignmentType: "EVALUATED",
+            });
 
             const [materials] = await Promise.all([
               Promise.all(
                 assignments.map((assignment) =>
-                  promisify(
-                    mApi().materials.html.read(assignment.materialId),
-                    "callback"
-                  )().then(
-                    (assignments: MaterialContentNodeType) => assignments
-                  )
+                  materialsApi.getHtmlMaterial({
+                    id: assignment.materialId,
+                  })
                 )
               ),
             ]);
 
             return materials.map(
-              (material, index) => <MaterialContentNodeType>Object.assign(
-                  material,
-                  {
-                    assignment: assignments[index],
-                    path: assignments[index].path,
-                  }
-                )
+              (material, index) =>
+                <MaterialContentNodeWithIdAndLogic>Object.assign(material, {
+                  assignment: assignments[index],
+                  path: assignments[index].path,
+                })
             );
           })(),
         ]);
@@ -106,6 +98,10 @@ export const useEvaluatedAssignments = (
         }
       } catch (err) {
         if (!isCancelled) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
           displayNotification(
             t("notifications.loadError", {
               ns: "studies",

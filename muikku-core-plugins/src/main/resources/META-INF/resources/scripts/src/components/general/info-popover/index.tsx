@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/popper.scss";
 import {
   displayNotification,
@@ -259,8 +259,8 @@ function ContactVacation(props: ContactVacationProps) {
     <div className="item-list__user-vacation-period">
       {t("labels.away")}
       &nbsp;
-      {localizeTime.date(info.vacationStart)}
-      {info.vacationEnd ? `- ${localizeTime.date(info.vacationEnd)}` : null}
+      {localize.date(info.vacationStart)}
+      {info.vacationEnd ? `- ${localize.date(info.vacationEnd)}` : null}
     </div>
   );
 }

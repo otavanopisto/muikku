@@ -1,6 +1,6 @@
 import * as React from "react";
 import Avatar from "~/components/general/avatar";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import LazyLoader from "~/components/general/lazy-loader";
 import { IconButton } from "~/components/general/button";
@@ -17,7 +17,7 @@ import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
  */
 interface workspaceUserProps {
   student: WorkspaceStudent;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
   highlight: string;
   onSendMessage?: () => any;

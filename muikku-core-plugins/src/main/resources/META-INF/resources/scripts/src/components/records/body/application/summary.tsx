@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/glyph.scss";
@@ -84,7 +84,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-start-date">
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyStartDate
-                    ? localizeTime.date(
+                    ? localize.date(
                         this.props.summary.data.studentsDetails.studyStartDate
                       )
                     : t("content.empty", {
@@ -104,7 +104,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 <span className="application-sub-panel__single-entry">
                   {this.props.summary.data.studentsDetails.studyEndDate ||
                   this.props.summary.data.studentsDetails.studyTimeEnd
-                    ? localizeTime.date(
+                    ? localize.date(
                         this.props.summary.data.studentsDetails.studyEndDate ||
                           this.props.summary.data.studentsDetails.studyTimeEnd
                       )
@@ -175,12 +175,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                                   context: "xa",
                                 })}
                                 &nbsp;
-                                {localizeTime.date(
+                                {localize.date(
                                   counselor.properties["profile-vacation-start"]
                                 )}
                                 {counselor.properties["profile-vacation-end"]
                                   ? "–" +
-                                    localizeTime.date(
+                                    localize.date(
                                       counselor.properties[
                                         "profile-vacation-end"
                                       ]

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DiscussionState } from "~/reducers/discussion";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { Dispatch, connect } from "react-redux";
 import Link from "~/components/general/link";
 import { IconButton } from "~/components/general/button";
@@ -337,7 +337,7 @@ class DiscussionCurrentThread extends React.Component<
             aside={
               <span style={{ display: "flex", alignItems: "center" }}>
                 <span>
-                  {localizeTime.date(this.props.discussion.current.created)}
+                  {localize.date(this.props.discussion.current.created)}
                 </span>
               </span>
             }
@@ -370,7 +370,7 @@ class DiscussionCurrentThread extends React.Component<
                       {
                         context: "in",
                         ns: "messaging",
-                        time: localizeTime.date(
+                        time: localize.date(
                           this.props.discussion.current.lastModified
                         ),
                       }

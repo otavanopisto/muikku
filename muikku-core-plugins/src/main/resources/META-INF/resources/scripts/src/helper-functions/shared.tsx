@@ -1,5 +1,5 @@
 import { SchoolSubject } from "~/@types/shared";
-import { AlternativeStudyObject } from "~/hooks/useStudentAlternativeOptions";
+import { AlternativeStudyOption } from "~/generated/client";
 
 /**
  * sleep
@@ -18,7 +18,7 @@ export const sleep = (m: number) => new Promise((r) => setTimeout(r, m));
  */
 export const filterSpecialSubjects = (
   schoolCourseTable: SchoolSubject[],
-  options: AlternativeStudyObject
+  options: AlternativeStudyOption
 ) => {
   let alteredShoolCourseTable = schoolCourseTable;
 

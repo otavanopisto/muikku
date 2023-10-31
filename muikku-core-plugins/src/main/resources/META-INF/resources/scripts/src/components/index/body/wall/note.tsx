@@ -1,9 +1,4 @@
 import * as React from "react";
-import {
-  NotesItemRead,
-  NotesItemStatus,
-  NotesItemUpdate,
-} from "~/@types/notes";
 import AnimateHeight from "react-animate-height";
 import { isOverdue } from "~/helper-functions/dates";
 import * as moment from "moment";
@@ -11,15 +6,16 @@ import { useTranslation } from "react-i18next";
 import NotesItemEdit from "~/components/general/notes/notes-item-edit";
 import Link from "~/components/general/link";
 import "~/sass/elements/note.scss";
+import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
 /**
  * NoteProps
  */
 interface NoteProps {
   modifier?: string;
   isCreator: boolean;
-  onStatusUpdate: (id: number, status: NotesItemStatus) => void;
-  onUpdate: (id: number, update: NotesItemUpdate) => void;
-  note: NotesItemRead;
+  onStatusUpdate: (id: number, status: NoteStatusType) => void;
+  onUpdate: (id: number, update: UpdateNoteRequest) => void;
+  note: Note;
 }
 
 /**
@@ -27,7 +23,7 @@ interface NoteProps {
  * @param props NoteProps
  * @returns JSX.Element
  */
-export const Note: React.FC<NoteProps> = (props) => {
+export const NoteComponent: React.FC<NoteProps> = (props) => {
   const { modifier, note, isCreator, onStatusUpdate, onUpdate } = props;
   const { t } = useTranslation("tasks");
   const overdue = isOverdue(note.dueDate);
@@ -47,9 +43,9 @@ export const Note: React.FC<NoteProps> = (props) => {
    */
   const handleStatusChange = () => {
     if (isCreator) {
-      onStatusUpdate(note.id, NotesItemStatus.APPROVED);
+      onStatusUpdate(note.id, "APPROVED");
     } else {
-      onStatusUpdate(note.id, NotesItemStatus.APPROVAL_PENDING);
+      onStatusUpdate(note.id, "APPROVAL_PENDING");
     }
   };
 

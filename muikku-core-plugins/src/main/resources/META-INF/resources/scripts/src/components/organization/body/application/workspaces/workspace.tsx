@@ -7,7 +7,7 @@ import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import {
   WorkspacesActiveFiltersType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import WorkspaceDialog from "~/components/organization/dialogs/edit-workspace";
 import {
@@ -24,7 +24,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface CourseProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   activeFilters: WorkspacesActiveFiltersType;
 }
 

@@ -24,7 +24,11 @@ import PedagogyToolbar from "./pedagogy-toolbar";
 import { UserRole } from "~/@types/pedagogy-form";
 
 // Visibility settings which study programmes have access to the form
-export const UPPERSECONDARY_PEDAGOGYFORM = ["Nettilukio"];
+export const UPPERSECONDARY_PEDAGOGYFORM = [
+  "Nettilukio",
+  "Aikuislukio",
+  "Nettilukio/yksityisopiskelu (aineopintoina)",
+];
 
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.

@@ -12,7 +12,10 @@ import {
   SignupIntoWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { bindActionCreators } from "redux";
-import { WorkspaceSignUpDetails, WorkspaceType } from "~/reducers/workspaces";
+import {
+  WorkspaceSignUpDetails,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -24,10 +27,10 @@ interface WorkspaceSignupDialogProps extends WithTranslation {
   children?: React.ReactElement<any>;
   isOpen?: boolean;
   onClose?: () => void;
-  workspace?: WorkspaceType;
+  workspace?: WorkspaceDataType;
   status: StatusType;
   workspaceSignUpDetails?: WorkspaceSignUpDetails;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   signupIntoWorkspace: SignupIntoWorkspaceTriggerType;
 }
 

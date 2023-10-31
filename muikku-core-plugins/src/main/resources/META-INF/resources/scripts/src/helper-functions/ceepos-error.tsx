@@ -1,12 +1,12 @@
-import i18n, { localizeTime } from "~/locales/i18n";
-import { PurchaseType } from "~/reducers/main-function/profile";
+import { CeeposOrder } from "~/generated/client";
+import i18n, { localize } from "~/locales/i18n";
 
 /**
  * getErrorMessageContent
  * @param order  order
  * @param message  message
  */
-export function getErrorMessageContent(order: PurchaseType, message?: string) {
+export function getErrorMessageContent(order: CeeposOrder, message?: string) {
   /**
    * errorMessage which can come from backend or from localization properties
    */
@@ -34,7 +34,7 @@ export function getErrorMessageContent(order: PurchaseType, message?: string) {
     "<div><b>" +
     i18n.t("labels.created") +
     "</b>: " +
-    localizeTime.date(order.created) +
+    localize.date(order.created) +
     "</div>" +
     "</div>";
 
@@ -46,7 +46,7 @@ export function getErrorMessageContent(order: PurchaseType, message?: string) {
  * @param order order
  * @returns title
  */
-export function getErrorMessageTitle(order: PurchaseType) {
+export function getErrorMessageTitle(order: CeeposOrder) {
   // Error message's prefilled title
   const title: string =
     order.product.Description + " - " + "[" + order.id + "]";

@@ -22,7 +22,7 @@ import {
   WorkspaceJournal,
   EvaluationAssessmentRequest,
 } from "~/generated/client";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -242,7 +242,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                     {t("labels.feedbackDate", { ns: "journal" })}:
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
-                    {localizeTime.date(journalFeedback.created, "l")}
+                    {localize.date(journalFeedback.created, "l")}
                   </span>
                 </div>
               </div>
@@ -252,13 +252,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleJournalFeedbackEditorStateClick}
                   disabled={feedbackEditorOpen}
                 >
-                  {t("actions.cancel")}
+                  {t("actions.edit", { ns: "common" })}
                 </Link>
 
                 {!feedbackEditorOpen && (
                   <DeleteJournalFeedback journalFeedback={journalFeedback}>
                     <Link className="link link--evaluation link--evaluation-delete">
-                      {t("actions.remove")}
+                      {t("actions.remove", { ns: "common" })}
                     </Link>
                   </DeleteJournalFeedback>
                 )}
@@ -355,8 +355,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleSortFunctionClick}
                   icon={
                     sortByCreationDate === "asc"
-                      ? "sort-amount-asc"
-                      : "sort-amount-desc"
+                      ? "sort-amount-desc"
+                      : "sort-amount-asc"
                   }
                   buttonModifiers={["evaluation-journal-sorter"]}
                 />

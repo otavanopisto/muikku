@@ -8,11 +8,11 @@
       "cancel": "Peruuta",
       "close": "Sulje",
       "closeAll": "Sulje kaikki",
-      "comment": "Kommentoi",
       "confirmCancel": "Kyllä, peruuta",
       "confirmSave": "Olen varma",
       "confirmRemove": "Hyväksy poisto",
       "create": "Luo",
+      "create_comment": "Uusi kommentti",
       "draft": "Luonnos",
       "edit": "Muokkaa",
       "edit_comment": "Muokkaa kommenttia",
@@ -251,7 +251,7 @@
       "test": "Testaa URL"
     },
     "content": {
-      "appointmentCalendar": "Voit laittaa tähän linkin ajanvarauskalenteriisi. Linkki näkyy yhteystiedoissasi kursseilla ja opiskelijan opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testauspainikkeesta.",
+      "appointmentCalendar": "Voit laittaa tähän linkin ajanvarauskalenteriisi. Linkki näkyy yhteystiedoissasi kursseilla ja opiskelijan Opinnot-näkymässä. Ennen tallennusta osoitteen toiminta kannattaa varmistaa testauspainikkeesta.",
       "changePassword": "Ole hyvä ja syötä alla olevat tiedot",
       "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
       "removing": "Oletko varma, että haluat poistaa kuvan profiilistasi?",
@@ -1325,8 +1325,8 @@
     },
     "content": {
       "empty": "Ei muistiinpanoja",
-      "defaultPosition": "Oletuksena uusi muistiinpano luodaan listan viimeiseksi. Voit myös valita sijainnin listasta. Valintalaatikon valinta tallentuu muistiin.",
-      "defaultPosition_bottom": "Oletuksena uusi muistiinpano luodaan listan viimeiseksi. Voit myös valita sijainnin listasta. Valintalaatikon valinta tallentuu muistiin.",
+      "defaultPosition": "Uusi muistiinpano luodaan listan ensimmäiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
+      "defaultPosition_bottom": "Uusi muistiinpano luodaan listan viimeiseksi. Voit myös vaihtaa oletussijainnin alaspudotusvalikosta. Valintasi tallentuu muistiin. Voit järjestellä tehtyjä muistiinpanoja Järjestele muistiinpanoja -työkalulla, joka löytyy muistiinpanojen yläosasta.",
       "remove": "Oletko varma, että haluat poistaa muistiinpanon?"
     },
     "labels": {
@@ -1450,7 +1450,7 @@
       "evaluated_withPassedGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_withNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
       "evaluationHasFee": "Maksullinen arviointi",
-      "evaluationRequestMessage": "Viesti kurssin opettajalle",
+      "evaluationRequestMessage": "Vapaaehtoinen viesti kurssin opettajalle",
       "failed": "Keskeytynyt",
       "goto": "Siirry kurssille",
       "grade": "Arvosana",
@@ -1631,6 +1631,7 @@
       "removing": "Oletko varma, että haluat poistaa oppimispäiväkirjamerkinnän?"
     },
     "labels": {
+      "comment": "Kommentoi oppimispäiväkirjamerkintää",
       "create": "Uusi oppimispäiväkirjamerkintä",
       "edit": "Muokkaa merkintää",
       "feedback": "Oppimispäiväkirjan kokonaispalaute",
@@ -1707,7 +1708,7 @@
       "evaluateStudent": "Arvioi opiskelija",
       "evaluateAssignment": "Arvioi tehtävä",
       "grade": "Arvioi",
-      "grade_journal": "Arvioi oppimispäiväkirja",
+      "grade_journal": "Oppimispäiväkirjan kokonaispalaute",
       "grade_overall": "Anna kokonaispalaute",
       "grade_workspace": "Anna kurssiarvio",
       "improveGrade": "Anna korotus",

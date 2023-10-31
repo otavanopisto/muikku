@@ -1,6 +1,6 @@
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import * as React from "react";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { StatusType } from "~/reducers/base/status";
@@ -15,7 +15,7 @@ import { Announcement } from "~/generated/client";
  */
 interface WorkspaceAnnouncementsProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   announcements: Announcement[];
 }
 
@@ -72,7 +72,7 @@ class WorkspaceAnnouncements extends React.Component<
                         {a.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {localizeTime.date(a.startDate)}
+                        {localize.date(a.startDate)}
                       </span>
                     </span>
                   </Link>

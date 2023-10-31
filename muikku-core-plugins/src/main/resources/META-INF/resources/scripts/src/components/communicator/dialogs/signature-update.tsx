@@ -8,11 +8,11 @@ import {
   updateSignature,
   UpdateSignatureTriggerType,
 } from "~/actions/main-function/messages";
-import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { CommunicatorSignature } from "~/generated/client";
 
 const KEYCODES = {
   ENTER: 13,
@@ -27,7 +27,7 @@ interface CommunicatorSignatureUpdateDialogProps extends WithTranslation {
   isOpen: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: () => any;
-  signature: MessageSignatureType;
+  signature: CommunicatorSignature;
   updateSignature: UpdateSignatureTriggerType;
 }
 
