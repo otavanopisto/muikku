@@ -5,6 +5,7 @@ import { FormData, Opinion, OpinionType } from "~/@types/pedagogy-form";
 import { AddNewOpinionBox, OpinionItem, OpinionList } from "../opinions-list";
 import { StatusType } from "~/reducers/base/status";
 import { usePedagogyContext } from "../context/pedagogy-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * MonitoringAndEvaluationProps
@@ -21,6 +22,7 @@ interface MonitoringAndEvaluationProps {
 const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
   props
 ) => {
+  const { t } = useTranslation("pedagogySupportPlan");
   const { status } = props;
   const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
   const { userRole, editIsActive } = usePedagogyContext();
@@ -93,7 +95,12 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       />
     ))) || (
     <div className="empty">
-      <span>Ei opiskelijan arvioita</span>
+      <span>
+        {t("content.empty", {
+          ns: "pedagogySupportPlan",
+          context: "studentAssessment",
+        })}
+      </span>
     </div>
   );
 
@@ -121,7 +128,12 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       );
     })) || (
     <div className="empty">
-      <span>Ei koulun arvioita</span>
+      <span>
+        {t("content.empty", {
+          ns: "pedagogySupportPlan",
+          context: "schoolAssessment",
+        })}
+      </span>
     </div>
   );
 
@@ -129,7 +141,10 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Opiskelijan näkemys tuen vaikuttavuudesta
+          {t("labels.opinionOfSupport", {
+            ns: "pedagogySupportPlan",
+            context: "student",
+          })}
         </legend>
         <OpinionList>
           {studentOpinionEntries}
@@ -143,7 +158,10 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Oppilaitoksen näkemys tuen vaikuttavuudesta
+          {t("labels.opinionOfSupport", {
+            ns: "pedagogySupportPlan",
+            context: "school",
+          })}
         </legend>
         <OpinionList>
           {schoolOpinionEntries}
