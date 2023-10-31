@@ -31,7 +31,7 @@ interface IndexBodyProps extends WithTranslation {
 
 const IndexBody: React.FC<IndexBodyProps> = (props) => {
   const status = props.status;
-  const fakeIsGuardian = true;
+  const fakeIsGuardian = false;
   const { t } = useTranslation("frontPage");
   return (
     <div>
