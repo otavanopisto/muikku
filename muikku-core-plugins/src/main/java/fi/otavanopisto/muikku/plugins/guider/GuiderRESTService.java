@@ -656,7 +656,7 @@ public class GuiderRESTService extends PluginRESTService {
           }
         }
         
-        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
+        workspaces.add(toRWorkspaceRestModel);
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
