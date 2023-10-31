@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { getName } from "~/util/modifiers";
 import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
@@ -21,7 +21,7 @@ import i18n from "~/locales/i18n";
  * WorkspaceTeachersProps
  */
 interface WorkspaceTeachersProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
 }
 
@@ -245,7 +245,7 @@ export default withTranslation(["workspace", "messaging", "users", "common"])(
  */
 export function getWorkspaceMessage(
   status: StatusType,
-  workspace: WorkspaceType,
+  workspace: WorkspaceDataType,
   html?: boolean
 ) {
   if (!workspace) {

@@ -7,7 +7,7 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
-import { WorkspaceType } from "~/reducers/workspaces/index";
+import { WorkspaceDataType } from "~/reducers/workspaces/index";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { loadStudentsOfWorkspace } from "~/actions/workspaces";
@@ -32,7 +32,7 @@ import { WorkspaceStudentSearchResult } from "~/generated/client";
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   journalsState: JournalsState;
   status: StatusType;
   loadStudents: LoadUsersOfWorkspaceTriggerType;

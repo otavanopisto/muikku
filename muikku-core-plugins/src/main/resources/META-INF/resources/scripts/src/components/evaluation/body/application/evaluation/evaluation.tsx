@@ -22,15 +22,13 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationJournalEventList from "./evaluation-journal-event-list";
 import EvaluationAssessmentList from "./evaluation-assessment-list";
 import {
   EvaluationAssessmentRequest,
   WorkspaceSubject,
+  MaterialCompositeReply,
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -41,7 +39,7 @@ interface EvaluationDrawerProps extends WithTranslation {
   status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   /**
    * Assessment that is opened
    */
@@ -269,7 +267,7 @@ export class Evaluation extends React.Component<
    * @returns boolean whether to show assignment or not
    */
   showAsHiddenEvaluationAssignment = (
-    compositeReply?: MaterialCompositeRepliesType
+    compositeReply?: MaterialCompositeReply
   ): boolean => compositeReply && compositeReply.submitted !== null;
 
   /**
@@ -625,7 +623,7 @@ export class Evaluation extends React.Component<
     ) {
       workspaces.push({
         ...this.props.currentWorkspace,
-      } as WorkspaceType);
+      } as WorkspaceDataType);
     }
 
     return (

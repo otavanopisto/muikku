@@ -3,7 +3,7 @@ import { connect, Dispatch } from "react-redux";
 import Select from "react-select";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { OptionDefault } from "../react-select/types";
 import { useWorkspaces } from "./hooks/useWorkspaces";
 import {
@@ -18,11 +18,11 @@ interface WorkspaceSelectProps {
   /**
    * Selected value
    */
-  selectedValue?: OptionDefault<WorkspaceType>;
+  selectedValue?: OptionDefault<WorkspaceDataType>;
   /**
    * On change
    */
-  onChange: (selectedWorkspace?: OptionDefault<WorkspaceType>) => void;
+  onChange: (selectedWorkspace?: OptionDefault<WorkspaceDataType>) => void;
   /**
    * If select is disabled
    */
@@ -44,11 +44,11 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
    * handleSelectChange
    * @param option option
    */
-  const handleSelectChange = (option: OptionDefault<WorkspaceType>) => {
+  const handleSelectChange = (option: OptionDefault<WorkspaceDataType>) => {
     onChange(option);
   };
 
-  const options: OptionDefault<WorkspaceType>[] = workspaces.map(
+  const options: OptionDefault<WorkspaceDataType>[] = workspaces.map(
     (workspace) => ({
       value: workspace,
       label: workspace.nameExtension

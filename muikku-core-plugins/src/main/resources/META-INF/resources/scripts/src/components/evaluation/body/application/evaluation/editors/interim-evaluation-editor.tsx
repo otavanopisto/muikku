@@ -7,8 +7,6 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import { MaterialAssignmentType } from "~/reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -23,7 +21,6 @@ import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import AnimateHeight from "react-animate-height";
 import { CKEditorConfig } from "../evaluation";
-import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { LocaleState } from "~/reducers/base/locales";
@@ -34,6 +31,8 @@ import {
   EvaluationGradeScale,
   MaterialEvaluation,
   SaveWorkspaceAssigmentAssessmentRequest,
+  MaterialCompositeReply,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -44,8 +43,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface InterimEvaluationEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: MaterialEvaluation;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialAssignment: WorkspaceMaterial;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;
@@ -198,8 +197,6 @@ class InterimEvaluationEditor extends SessionStateComponent<
             ...dataToSave,
           },
         });
-
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,

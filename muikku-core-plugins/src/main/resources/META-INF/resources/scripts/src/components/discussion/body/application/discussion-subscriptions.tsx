@@ -36,7 +36,7 @@ import {
   UnsubscribeDiscustionArea,
   unsubscribeDiscussionArea,
 } from "~/actions/discussion/index";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { DiscussionArea as DiscussionAreaComponent } from "./threads/area";
 import {
   ApplicationListItemBody,
@@ -56,7 +56,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface DiscussionSubscriptionsProps extends WithTranslation {
   discussion: DiscussionState;
   status: StatusType;
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
   /**
    * Redux action method to subscribe discussion thread
    */

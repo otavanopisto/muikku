@@ -10,8 +10,6 @@ import { ProfileState } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
-  updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import {
@@ -33,7 +31,6 @@ interface VacationSettingsProps extends WithTranslation {
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
-  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
 /**
@@ -481,7 +478,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { saveProfileProperty, displayNotification, updateProfileChatSettings },
+    { saveProfileProperty, displayNotification },
     dispatch
   );
 }

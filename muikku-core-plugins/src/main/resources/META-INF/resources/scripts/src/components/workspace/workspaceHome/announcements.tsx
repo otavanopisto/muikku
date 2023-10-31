@@ -1,4 +1,4 @@
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import * as React from "react";
 import { localize } from "~/locales/i18n";
 import { connect } from "react-redux";
@@ -15,7 +15,7 @@ import { Announcement } from "~/generated/client";
  */
 interface WorkspaceAnnouncementsProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   announcements: Announcement[];
 }
 

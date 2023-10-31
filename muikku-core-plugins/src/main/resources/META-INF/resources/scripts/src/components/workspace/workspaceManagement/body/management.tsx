@@ -2,15 +2,8 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import {
-  WorkspaceType,
-  WorkspaceChatStatusType,
-  WorkspaceAccessType,
-  WorkspaceTypeType,
-  WorkspaceProducerType,
+  WorkspaceDataType,
   WorkspaceUpdateType,
-  WorkspaceDetailsType,
-  WorkspacePermissionsType,
-  Language,
   languageOptions,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
@@ -50,6 +43,15 @@ import { SearchFormElement } from "~/components/general/form-element";
 import * as moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
+import {
+  Language,
+  WorkspaceAccess,
+  WorkspaceChatStatus,
+  WorkspaceDetails,
+  WorkspaceMaterialProducer,
+  WorkspaceSignupGroup,
+  WorkspaceType,
+} from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -60,8 +62,8 @@ const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
  */
 interface ManagementPanelProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
-  workspaceTypes: Array<WorkspaceTypeType>;
+  workspace: WorkspaceDataType;
+  workspaceTypes: WorkspaceType[];
   updateWorkspace: UpdateWorkspaceTriggerType;
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType;
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;
@@ -76,19 +78,19 @@ interface ManagementPanelState {
   workspaceName: string;
   workspaceLanguage: Language;
   workspacePublished: boolean;
-  workspaceAccess: WorkspaceAccessType;
+  workspaceAccess: WorkspaceAccess;
   workspaceExtension: string;
   workspaceType: string;
   workspaceStartDate: Date | null;
   workspaceEndDate: Date | null;
   workspaceSignupStartDate: Date | null;
   workspaceSignupEndDate: Date | null;
-  workspaceProducers: Array<WorkspaceProducerType>;
+  workspaceProducers: Array<WorkspaceMaterialProducer>;
   workspaceDescription: string;
   workspaceLicense: string;
   workspaceHasCustomImage: boolean;
-  workspacePermissions: Array<WorkspacePermissionsType>;
-  workspaceChatStatus: WorkspaceChatStatusType;
+  workspacePermissions: Array<WorkspaceSignupGroup>;
+  workspaceChatStatus: WorkspaceChatStatus;
   workspaceUsergroupNameFilter: string;
   currentWorkspaceProducerInputValue: string;
   newWorkspaceImageSrc?: string;
@@ -277,7 +279,7 @@ class ManagementPanel extends React.Component<
    * setWorkspaceChatTo
    * @param value value
    */
-  setWorkspaceChatTo(value: WorkspaceChatStatusType) {
+  setWorkspaceChatTo(value: WorkspaceChatStatus) {
     this.setState({
       workspaceChatStatus: value,
     });
@@ -287,7 +289,7 @@ class ManagementPanel extends React.Component<
    * setWorkspaceAccessTo
    * @param value value
    */
-  setWorkspaceAccessTo(value: WorkspaceAccessType) {
+  setWorkspaceAccessTo(value: WorkspaceAccess) {
     this.setState({
       workspaceAccess: value,
     });
@@ -526,7 +528,7 @@ class ManagementPanel extends React.Component<
    * togglePermissionIn
    * @param permission permission
    */
-  togglePermissionIn(permission: WorkspacePermissionsType) {
+  togglePermissionIn(permission: WorkspaceSignupGroup) {
     this.setState({
       workspacePermissions: this.state.workspacePermissions.map((pte) => {
         if (pte.userGroupEntityId === permission.userGroupEntityId) {
@@ -628,7 +630,7 @@ class ManagementPanel extends React.Component<
       payload = Object.assign({ chatStatus: workspaceChatStatus }, payload);
     }
 
-    const workspaceDetails: WorkspaceDetailsType = {
+    const workspaceDetails: WorkspaceDetails = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.state.workspaceType,
       beginDate:
@@ -652,7 +654,7 @@ class ManagementPanel extends React.Component<
           : null,
     };
 
-    const currentWorkspaceAsDetails: WorkspaceDetailsType = {
+    const currentWorkspaceAsDetails: WorkspaceDetails = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
       typeId: this.props.workspace.details.typeId,
       beginDate: moment(this.props.workspace.details.beginDate).toISOString(),
@@ -673,7 +675,7 @@ class ManagementPanel extends React.Component<
     if (
       !equals(this.props.workspace.permissions, this.state.workspacePermissions)
     ) {
-      const permissionsArray: WorkspacePermissionsType[] = [];
+      const permissionsArray: WorkspaceSignupGroup[] = [];
 
       this.state.workspacePermissions.forEach((permission) => {
         const originalPermission = this.props.workspace.permissions.find(

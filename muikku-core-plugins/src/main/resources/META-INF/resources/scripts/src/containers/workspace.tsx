@@ -1064,7 +1064,10 @@ export default class Workspace extends React.Component<
                 }) as Action
               );
             }
-            if (!workspace.journals) {
+            if (
+              state.journals.state !== "READY" &&
+              state.journals.journals.length === 0
+            ) {
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 // This happens if teacher/admin uses diary
                 this.props.store.dispatch(

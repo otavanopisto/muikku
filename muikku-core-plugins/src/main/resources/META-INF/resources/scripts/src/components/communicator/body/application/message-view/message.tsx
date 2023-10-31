@@ -11,7 +11,6 @@ import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/link.scss";
 import AnswerMessageDrawer from "./message-editor/answer-message-drawer";
-import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
@@ -20,6 +19,7 @@ import InfoPopover from "~/components/general/info-popover";
 // Message imported as IMessage to avoid conflict with Message component
 // Component can be renamed to something else if needed later
 import {
+  CommunicatorSignature,
   Message as IMessage,
   MessageThreadLabel,
   User,
@@ -31,7 +31,7 @@ import {
 interface MessageProps extends WithTranslation {
   message: IMessage;
   status: StatusType;
-  signature: MessageSignatureType;
+  signature: CommunicatorSignature;
   labels?: MessageThreadLabel[];
 }
 

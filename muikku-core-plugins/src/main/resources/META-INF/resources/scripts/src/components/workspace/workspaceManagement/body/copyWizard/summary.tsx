@@ -1,26 +1,22 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { localize } from "~/locales/i18n";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
 
 /**
  * StepProps
  */
 interface StepProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   getStore: () => CopyWizardStoreType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore: (u: CopyWizardStoreUpdateType) => any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
-  resultingWorkspace?: WorkspaceType;
+  resultingWorkspace?: WorkspaceDataType;
   step?: CopyCurrentWorkspaceStepType;
 }
 

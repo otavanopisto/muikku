@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import GraphFilter from "~/components/general/graph/filters/graph-filter";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
@@ -12,7 +12,7 @@ let AmCharts: any = null;
  * CurrentStudentWorkspaceStatisticsProps
  */
 interface CurrentStudentWorkspaceStatisticsProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**

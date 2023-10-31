@@ -1,8 +1,4 @@
 import * as React from "react";
-import {
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
-} from "~/reducers/workspaces/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
@@ -12,7 +8,6 @@ import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import mApi from "~/lib/mApi";
 import { StateType } from "reducers";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
@@ -27,6 +22,8 @@ import {
   EvaluationAssessmentRequest,
   MaterialEvaluation,
   SaveWorkspaceAssigmentAssessmentRequest,
+  MaterialCompositeReply,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -37,8 +34,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: MaterialEvaluation;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialAssignment: WorkspaceMaterial;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   updateMaterialEvaluationData: (
@@ -171,8 +168,6 @@ class ExerciseEditor extends SessionStateComponent<
             ...dataToSave,
           },
         });
-
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,
