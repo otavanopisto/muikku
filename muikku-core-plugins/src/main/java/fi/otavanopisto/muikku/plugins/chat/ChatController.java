@@ -245,9 +245,17 @@ public class ChatController {
     return userNicks.get(userEntity.getId());
   }
   
+  public Set<Long> listUsers() {
+    return Collections.unmodifiableSet(userSessions.keySet()); 
+  }
+  
   public Set<Long> listRoomUsers(ChatRoom chatRoom) {
     Set<Long> users = roomUsers.get(chatRoom.getId());
     return users == null ? Collections.emptySet() : Collections.unmodifiableSet(users);
+  }
+  
+  public boolean isInChat(UserEntity userEntity) {
+    return userSessions.containsKey(userEntity.getId());
   }
   
   public boolean isInRoom(UserEntity userEntity, ChatRoom chatRoom) {

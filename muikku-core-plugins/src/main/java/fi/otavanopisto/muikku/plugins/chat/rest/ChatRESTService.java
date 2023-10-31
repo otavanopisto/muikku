@@ -172,6 +172,36 @@ public class ChatRESTService {
     return Response.status(Status.NO_CONTENT).build();
   }
 
+  @Path("/users")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUsers() {
+    
+    // Validation
+    
+    if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Action
+    
+    List<ChatUserRestModel> restUsers = new ArrayList<>();
+    Set<Long> userEntityIds = chatController.listUsers();
+    for (Long userEntityId : userEntityIds) {
+      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      if (userEntity != null) {
+        restUsers.add(new ChatUserRestModel(
+            userEntityId,
+            chatController.getNick(userEntity),
+            chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT));
+      }
+    }
+    
+    // Response
+    
+    return Response.ok(restUsers).build();
+  }
+
   @Path("/room/{ID}/users")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
