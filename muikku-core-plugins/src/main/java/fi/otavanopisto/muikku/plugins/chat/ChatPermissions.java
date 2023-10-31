@@ -31,6 +31,10 @@ public class ChatPermissions  extends AbstractMuikkuPermissionCollection impleme
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER } )
   public static final String MESSAGE_AUTHOR_INFO = "CHAT_MESSAGE_AUTHOR_INFO";
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER } )
+  public static final String USER_INFO = "CHAT_USER_INFO";
+
   @Override
   public List<String> listPermissions() {
     return listPermissions(ChatPermissions.class);

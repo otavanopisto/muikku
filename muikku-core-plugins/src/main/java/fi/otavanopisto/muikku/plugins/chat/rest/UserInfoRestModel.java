@@ -1,11 +1,11 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
-public class MessageAuthorInfoRestModel {
+public class UserInfoRestModel {
   
-  public MessageAuthorInfoRestModel() {
+  public UserInfoRestModel() {
   }
   
-  public MessageAuthorInfoRestModel(Long userEntityId, String nick, String name, ChatUserType type) {
+  public UserInfoRestModel(Long userEntityId, String nick, String name, ChatUserType type) {
     this.userEntityId = userEntityId;
     this.nick = nick;
     this.name = name;

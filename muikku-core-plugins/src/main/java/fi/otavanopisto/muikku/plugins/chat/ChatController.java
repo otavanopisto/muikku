@@ -38,6 +38,7 @@ import fi.otavanopisto.muikku.plugins.chat.rest.RoomJoinedRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.RoomLeftRestModel;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @ApplicationScoped
@@ -50,6 +51,9 @@ public class ChatController {
   @Inject
   private WebSocketMessenger webSocketMessenger;
   
+  @Inject
+  private UserEntityController userEntityController;
+
   @Inject
   private WorkspaceEntityController workspaceEntityController;
   
@@ -69,6 +73,7 @@ public class ChatController {
   public void init() {
     roomUsers = new ConcurrentHashMap<>();
     userNicks = new ConcurrentHashMap<>();
+    staffUsers = new HashSet<>();
     sessionUsers = new ConcurrentHashMap<>();
     userSessions = new ConcurrentHashMap<>();
   }
@@ -90,7 +95,7 @@ public class ChatController {
   public void processSessionCreated(UserEntity userEntity, String sessionId) {
     ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
     if (chatUser != null && !chatUser.getArchived()) {
-      handleUserEnter(userEntity.getId(), sessionId, chatUser.getNick());
+      handleUserEnter(userEntity, sessionId, chatUser.getNick());
     }
   }
 
@@ -331,6 +336,10 @@ public class ChatController {
     return messages;
   }
   
+  public boolean isStaffMember(UserEntity userEntity) {
+    return staffUsers.contains(userEntity.getId());
+  }
+  
   public boolean isChatEnabled(UserEntity userEntity) {
     return userEntity == null ? false : chatUserDAO.findByUserEntityIdAndArchived(userEntity.getId(), false) != null;
   }
@@ -422,7 +431,7 @@ public class ChatController {
     
     if (enabled && !wasEnabled) {
       chatUser = chatUserDAO.update(chatUser, enabled, nick);
-      handleUserEnter(userEntity.getId(), sessionId, nick);
+      handleUserEnter(userEntity, sessionId, nick);
     }
     else if (!enabled && wasEnabled) {
       chatUser = chatUserDAO.update(chatUser, enabled, nick);
@@ -444,25 +453,28 @@ public class ChatController {
     }
   }
   
-  private void handleUserEnter(Long userEntityId, String sessionId, String nick) {
+  private void handleUserEnter(UserEntity userEntity, String sessionId, String nick) {
     
+    // Make note of the user's nick and type
+    
+    userNicks.put(userEntity.getId(), nick);
+    if (!userEntityController.isStudent(userEntity)) {
+      staffUsers.add(userEntity.getId());
+    }
+
     // Add session data for the user
     
-    sessionUsers.put(sessionId, userEntityId);
+    sessionUsers.put(sessionId, userEntity.getId());
     Set<String> sessions;
-    if (userSessions.containsKey(userEntityId)) {
-      sessions = userSessions.get(userEntityId);
+    if (userSessions.containsKey(userEntity.getId())) {
+      sessions = userSessions.get(userEntity.getId());
       sessions.add(sessionId);
     }
     else {
       sessions = new HashSet<>();
-      userSessions.put(userEntityId, sessions);
+      userSessions.put(userEntity.getId(), sessions);
     }
     sessions.add(sessionId);
-    
-    // Make note of the user's nick
-    
-    userNicks.put(userEntityId, nick);
   }
 
   private void handleUserLeave(Long userEntityId) {
@@ -476,6 +488,8 @@ public class ChatController {
       }
     }
     userSessions.remove(userEntityId);
+    userNicks.remove(userEntityId);
+    staffUsers.remove(userEntityId);
     
     // If the user was in any room, notify room participants about leaving
     
@@ -499,7 +513,7 @@ public class ChatController {
   }
   
   private void handleNickChange(Long userEntityId, String nick) {
-    userNicks.put(userEntityId,  nick);
+    userNicks.put(userEntityId, nick);
     ObjectMapper mapper = new ObjectMapper();
     try {
       NickChangeRestModel nickChange = new NickChangeRestModel(userEntityId, nick); 
@@ -543,6 +557,9 @@ public class ChatController {
   
   // UserEntityId -> Nick
   private ConcurrentHashMap<Long, String> userNicks;
+
+  // Staff member userEntityIds
+  private HashSet<Long> staffUsers;
   
   // HttpSessionId -> UserEntityId
   private ConcurrentHashMap<String, Long> sessionUsers;

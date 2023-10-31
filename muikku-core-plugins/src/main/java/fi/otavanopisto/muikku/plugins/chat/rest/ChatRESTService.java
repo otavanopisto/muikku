@@ -197,7 +197,7 @@ public class ChatRESTService {
         restUsers.add(new ChatUserRestModel(
             userEntityId,
             chatController.getNick(userEntity),
-            userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF));
+            chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT));
       }
     }
     
@@ -382,12 +382,30 @@ public class ChatRESTService {
     }
     ChatUser chatUser = chatController.getChatUser(userEntity);
     UserEntityName userEntityName = userEntityController.getName(userEntity, true);
-    MessageAuthorInfoRestModel authorInfo = new MessageAuthorInfoRestModel();
-    authorInfo.setUserEntityId(userEntity.getId());
-    authorInfo.setNick(chatUser.getNick());
-    authorInfo.setName(userEntityName.getDisplayNameWithLine());
-    authorInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
-    return Response.ok(authorInfo).build();
+    UserInfoRestModel userInfo = new UserInfoRestModel();
+    userInfo.setUserEntityId(userEntity.getId());
+    userInfo.setNick(chatUser.getNick());
+    userInfo.setName(userEntityName.getDisplayNameWithLine());
+    userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
+    return Response.ok(userInfo).build();
+  }
+
+  @Path("/users/{ID}")
+  @GET
+  @RESTPermit(ChatPermissions.USER_INFO)
+  public Response getUserInfo(@PathParam("ID") Long id) {
+    UserEntity userEntity = userEntityController.findUserEntityById(id);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
+    }
+    ChatUser chatUser = chatController.getChatUser(userEntity);
+    UserEntityName userEntityName = userEntityController.getName(userEntity, true);
+    UserInfoRestModel userInfo = new UserInfoRestModel();
+    userInfo.setUserEntityId(userEntity.getId());
+    userInfo.setNick(chatUser.getNick());
+    userInfo.setName(userEntityName.getDisplayNameWithLine());
+    userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
+    return Response.ok(userInfo).build();
   }
 
   @Path("/settings")
