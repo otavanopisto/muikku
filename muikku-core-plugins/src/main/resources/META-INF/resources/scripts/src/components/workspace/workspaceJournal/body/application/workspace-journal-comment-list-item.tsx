@@ -147,7 +147,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                {t("actions.edit")}
+                {t("actions.edit", { ns: "common", context: "comment" })}
               </Link>
 
               <DeleteJournalComment

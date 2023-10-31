@@ -1,18 +1,20 @@
 import MainFunctionNavbar from "../base/main-function/navbar";
 import ScreenContainer from "../general/screen-container";
-import AnnouncementsPanel from "./body/announcements-panel";
-import LastMessagesPanel from "./body/latest-messages-panel";
-import WallPanel from "./body/wall-panel";
-import WorkspacesPanel from "./body/workspaces-panel";
-import StudiesPanel from "./body/studies-panel";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
-import StudiesEnded from "./body/studies-ended";
+
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
-import { withTranslation, WithTranslation } from "react-i18next";
+import {
+  useTranslation,
+  withTranslation,
+  WithTranslation,
+} from "react-i18next";
+import StudentComponent from "./layouts/student";
+import TeacherComponent from "./layouts/teacher";
+import GuardianComponent from "./layouts/guardian";
 
 /**
  * IndexBodyProps
@@ -21,50 +23,33 @@ interface IndexBodyProps extends WithTranslation {
   status: StatusType;
 }
 
-//TODO css get rid of ordered container
 /**
  * IndexBody
  */
-class IndexBody extends React.Component<
-  IndexBodyProps,
-  Record<string, unknown>
-> {
-  /**
-   * render
-   */
-  render() {
-    return (
-      <div>
-        <MainFunctionNavbar activeTrail="index" />
-        {this.props.status.isActiveUser ? (
-          <ScreenContainer viewModifiers="index">
-            <h1 className="visually-hidden">
-              {this.props.t("wcag.indexViewHeader", { ns: "frontPage" })}
-            </h1>
-            <div className="panel-group panel-group--studies">
-              {this.props.status.isStudent ? (
-                <StudiesPanel />
-              ) : (
-                <WorkspacesPanel />
-              )}
-            </div>
-            <div className="panel-group panel-group--info">
-              {this.props.status.isStudent ? <WallPanel /> : null}
-              <LastMessagesPanel />
-            </div>
 
-            <AnnouncementsPanel overflow={true} />
-          </ScreenContainer>
+//Turn this into a functional component
+
+const IndexBody: React.FC<IndexBodyProps> = (props) => {
+  const status = props.status;
+  const fakeIsGuardian = false;
+  const { t } = useTranslation("frontPage");
+  return (
+    <div>
+      <MainFunctionNavbar activeTrail="index" />
+      <ScreenContainer viewModifiers="index">
+        <h1 className="visually-hidden">{t("wcag.indexViewHeader")}</h1>
+        {status.isStudent ? (
+          <StudentComponent studiesEnded={status.isActiveUser} />
+        ) : fakeIsGuardian ? (
+          <GuardianComponent />
         ) : (
-          <ScreenContainer viewModifiers="index">
-            <StudiesEnded />
-          </ScreenContainer>
+          <TeacherComponent />
         )}
-        <CheckContactInfoDialog />
-      </div>
-    );
-  }
-}
+      </ScreenContainer>
+      <CheckContactInfoDialog />
+    </div>
+  );
+};
 
 /**
  * mapStateToProps
