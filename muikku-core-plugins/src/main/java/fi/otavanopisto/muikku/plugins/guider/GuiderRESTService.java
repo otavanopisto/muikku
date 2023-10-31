@@ -70,10 +70,15 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
+import fi.otavanopisto.muikku.schooldata.entity.Optionality;
+import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
@@ -176,6 +181,12 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private GuiderController guiderController;
+  
+  @Inject
+  private GradingController gradingController;
+  
+  @Inject
+  private CourseMetaController courseMetaController;
 
   @GET
   @Path("/students")
@@ -570,6 +581,7 @@ public class GuiderRESTService extends PluginRESTService {
           : workspaceUserEntityController.listInactiveWorkspaceEntitiesByUserEntity(userEntity);
     }
 
+    // Frontend needs rest model even if workspace list is null
     if (CollectionUtils.isEmpty(workspaceEntities)) {
       ToRWorkspaceWithCourseCreditsRestModel restModel = new ToRWorkspaceWithCourseCreditsRestModel();
       restModel.setCompletedCourseCredits(0);
@@ -615,15 +627,14 @@ public class GuiderRESTService extends PluginRESTService {
           if (!assessmentStatesList.isEmpty()) {
             WorkspaceAssessmentState assessmentState = toRWorkspaceRestModel.getActivity().getAssessmentState().get(size);
             
-            // If the student has completed the course, we need to find the courses with the symbol 'op' and calculate the points for them
+            // If the student has completed the course, we need to find the courses with the symbol 'op' and calculate the points of them
             if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
               Set<String> curriculumIdentifiers = toRWorkspaceRestModel.getCurriculumIdentifiers();
               
               // Curriculum should be 'OPS 2021' 
               Boolean correctCurriculum = false;
               for (String curriculumIdentifier : curriculumIdentifiers) {
-                SchoolDataIdentifier cI = SchoolDataIdentifier.fromId(curriculumIdentifier);
-                String curriculumName = guiderController.getCurriculumName(cI);
+                String curriculumName = guiderController.getCurriculumName(SchoolDataIdentifier.fromId(curriculumIdentifier));
                 if (curriculumName != null && curriculumName.equals("OPS 2021")) {
                   correctCurriculum = true;
                   break;
@@ -651,6 +662,29 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
     
+    // Count credits also from transfer credits
+    
+    List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(userIdentifier);
+    
+    for (TransferCredit transferCredit : transferCredits) {
+      String curriculumName = guiderController.getCurriculumName(transferCredit.getCurriculumIdentifier());
+      
+      // Curriculum check
+      if (curriculumName != null && curriculumName.equals("OPS 2021")) {
+        CourseLengthUnit lengthUnit = courseMetaController.findCourseLengthUnit(transferCredit.getLengthUnitIdentifier());
+        // Length unit symbol
+        if (lengthUnit.getSymbol().equals("op")) {
+          
+          allCourseCredits = Integer.sum(transferCredit.getLength().intValue(), allCourseCredits);
+          
+          if (transferCredit.getOptionality() == Optionality.MANDATORY) {
+            mandatoryCourseCredits = Integer.sum(transferCredit.getLength().intValue(), mandatoryCourseCredits);
+          }
+        }
+      }
+    }
+    
+    // To rest model
     ToRWorkspaceWithCourseCreditsRestModel torWorkspaceWithCourseCredits = new ToRWorkspaceWithCourseCreditsRestModel();
       
     torWorkspaceWithCourseCredits.setWorkspaces(workspaces);
@@ -662,6 +696,7 @@ public class GuiderRESTService extends PluginRESTService {
     
     String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
     
+    // An indicator that shows if the credits should be shown
     if (curriculumName != null && curriculumName.equals("OPS 2021") && (user.getStudyProgrammeName() != null && user.getStudyProgrammeName().equals("Nettilukio"))) {
       torWorkspaceWithCourseCredits.setShowCredits(true);
     }
