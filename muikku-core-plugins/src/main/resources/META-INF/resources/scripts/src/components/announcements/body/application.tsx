@@ -35,9 +35,8 @@ class AnnouncementsApplication extends React.Component<AnnouncementsApplicationP
    * @returns JSX.Element
    */
   render() {
-    const title = this.props.i18n.t("labels.announcement", {
+    const title = this.props.i18n.t("labels.announcements", {
       ns: "messaging",
-      count: 0,
     });
     return (
       <ReadingPanel

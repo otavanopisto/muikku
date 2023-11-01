@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
@@ -15,7 +15,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
 }
 
 /**

@@ -1,14 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch, bindActionCreators } from "redux";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { CeeposState } from "~/reducers/main-function/ceepos";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
@@ -22,6 +20,8 @@ import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
+import MApi, { isMApiError } from "~/api/api";
+import { CeeposReturnLink } from "~/generated/client";
 
 /**
  * CeeposDoneProps
@@ -46,7 +46,7 @@ export interface ReturnLink {
  * CeeposDoneState
  */
 interface CeeposDoneState {
-  returnLink: ReturnLink;
+  returnLink: CeeposReturnLink;
 }
 
 /**
@@ -71,15 +71,20 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
    * componentDidMount
    */
   async componentDidMount() {
+    const ceeposApi = MApi.getCeeposApi();
+
     try {
       const searchParams = new URLSearchParams(window.location.search);
 
-      const returnLink: ReturnLink = (await promisify(
-        mApi().ceepos.order.returnLink.read(searchParams.get("Id")),
-        "callback"
-      )()) as ReturnLink;
+      const returnLink = await ceeposApi.getCeeposReturnLink({
+        orderId: parseInt(searchParams.get("Id")),
+      });
       this.setState({ returnLink });
     } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
+
       this.props.displayNotification(
         this.props.t("notifications.loadError", {
           context: "link",
@@ -129,7 +134,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                   ns: "orders",
                 })}
               </div>
-              <div>{localizeTime.date(this.props.ceepos.purchase.created)}</div>
+              <div>{localize.date(this.props.ceepos.purchase.created)}</div>
             </div>
             {this.props.ceepos.purchase.paid &&
             this.props.ceepos.purchase.paid !== null ? (
@@ -140,7 +145,7 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
                     ns: "orders",
                   })}
                 </div>
-                <div>{localizeTime.date(this.props.ceepos.purchase.paid)}</div>
+                <div>{localize.date(this.props.ceepos.purchase.paid)}</div>
               </div>
             ) : null}
           </div>

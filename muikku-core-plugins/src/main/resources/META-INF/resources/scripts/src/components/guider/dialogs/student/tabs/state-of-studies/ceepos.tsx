@@ -2,7 +2,7 @@ import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 import { GuiderState } from "~/reducers/main-function/guider";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -19,14 +19,10 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import {
-  PurchaseProductType,
-  PurchaseType,
-} from "~/reducers/main-function/profile";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Role } from "~/generated/client"
+import { CeeposOrder, CeeposPurchaseProduct, Role } from "~/generated/client";
 
 /**
  * CeeposProps
@@ -43,11 +39,11 @@ interface CeeposProps extends WithTranslation {
  * CeeposState
  */
 interface CeeposState {
-  isConfirmDialogOpenFor: PurchaseProductType | null;
+  isConfirmDialogOpenFor: CeeposPurchaseProduct | null;
   isDeleteDialogOpen: boolean;
-  orderToBeDeleted: PurchaseType | null;
+  orderToBeDeleted: CeeposOrder | null;
   isCompleteDialogOpen: boolean;
-  orderToBeCompleted: PurchaseType | null;
+  orderToBeCompleted: CeeposOrder | null;
 }
 
 /**
@@ -88,7 +84,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * @param closeDropdown closeDropdown
    */
   beginOrderCreationProcess(
-    p: PurchaseProductType,
+    p: CeeposPurchaseProduct,
     closeDropdown?: () => void
   ) {
     this.setState({
@@ -101,7 +97,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * beginOrderDeleteProcess
    * @param order order object of purchase
    */
-  beginOrderDeleteProcess(order: PurchaseType) {
+  beginOrderDeleteProcess(order: CeeposOrder) {
     this.setState({
       isDeleteDialogOpen: true,
       orderToBeDeleted: order,
@@ -131,7 +127,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
    * beginOrderManualCompleteProcess
    * @param order order object of purchase
    */
-  beginOrderManualCompleteProcess(order: PurchaseType) {
+  beginOrderManualCompleteProcess(order: CeeposOrder) {
     this.setState({
       isCompleteDialogOpen: true,
       orderToBeCompleted: order,
@@ -320,12 +316,12 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       </span>
                       <span>
                         {this.props.i18n.t("labels.created")}:{" "}
-                        {localizeTime.date(p.created)}
+                        {localize.date(p.created)}
                       </span>
                       {p.paid ? (
                         <span>
                           {this.props.i18n.t("labels.paid")}:{" "}
-                          {localizeTime.date(p.paid)}
+                          {localize.date(p.paid)}
                         </span>
                       ) : null}
                     </span>

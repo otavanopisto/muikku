@@ -8,11 +8,9 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
-  MaterialContentNodeListType,
-  WorkspaceType,
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
-  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
@@ -29,6 +27,10 @@ import {
   setWholeWorkspaceHelp,
   updateWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import {
+  MaterialContentNode,
+  MaterialViewRestriction,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -36,9 +38,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface ContentProps extends WithTranslation {
   status: StatusType;
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNodeWithIdAndLogic[];
   activeNodeId: number;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType;
   workspaceEditMode: WorkspaceEditModeStateType;
@@ -50,7 +52,7 @@ interface ContentProps extends WithTranslation {
  * ContentState
  */
 interface ContentState {
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNodeWithIdAndLogic[];
 }
 
 /**
@@ -231,7 +233,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
     const material = this.state.materials[parentBaseIndex].children[baseIndex];
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
-      (cn: MaterialContentNodeType) =>
+      (cn: MaterialContentNodeWithIdAndLogic) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
     );
 
@@ -273,8 +275,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * @param target target
    */
   onInteractionBetweenSections(
-    base: MaterialContentNodeType,
-    target: MaterialContentNodeType
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic
   ) {
     this.hotInsertBeforeSection(
       this.state.materials.findIndex(
@@ -292,8 +294,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * @param target target
    */
   onInteractionBetweenSubnodes(
-    base: MaterialContentNodeType,
-    target: MaterialContentNodeType | number
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic | number
   ) {
     const parentBaseIndex = this.state.materials.findIndex(
       (m) => m.workspaceMaterialId === base.parentId
@@ -337,10 +339,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   ) => {
     if (section) {
       switch (viewRestrict) {
-        case MaterialViewRestriction.LOGGED_IN:
+        case MaterialViewRestriction.LoggedIn:
           return "toc__section-container--view-restricted-to-logged-in";
 
-        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        case MaterialViewRestriction.WorkspaceMembers:
           return "toc__section-container--view-restricted-to-members";
 
         default:
@@ -348,10 +350,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       }
     } else {
       switch (viewRestrict) {
-        case MaterialViewRestriction.LOGGED_IN:
+        case MaterialViewRestriction.LoggedIn:
           return "toc__item--view-restricted-to-logged-in";
 
-        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        case MaterialViewRestriction.WorkspaceMembers:
           return "toc__item--view-restricted-to-members";
 
         default:
@@ -371,10 +373,10 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     const { t } = this.props;
 
     switch (viewRestrict) {
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         return t("content.viewRestricted", { ns: "materials" });
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         return t("content.viewRestricted_workspaceMembers", {
           ns: "materials",
         });
@@ -390,7 +392,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * @param section section
    * @returns boolean if section is active
    */
-  isSectionActive = (section: MaterialContentNodeType) => {
+  isSectionActive = (section: MaterialContentNodeWithIdAndLogic) => {
     const { activeNodeId } = this.props;
 
     for (const m of section.children) {
@@ -422,16 +424,16 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
         {this.state.materials.map((node, nodeIndex) => {
           // Boolean if there is view Restriction for toc topic
           const isTocTopicViewRestricted =
-            node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-            node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
+            node.viewRestrict === MaterialViewRestriction.LoggedIn ||
+            node.viewRestrict === MaterialViewRestriction.WorkspaceMembers;
 
           // section is restricted in following cases:
           // section is restricted for logged in users and users is not logged in...
           // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
           const isTocTopicViewRestrictedFromUser =
-            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+            (node.viewRestrict === MaterialViewRestriction.LoggedIn &&
               !this.props.status.loggedIn) ||
-            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+            (node.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
               !this.props.workspace.isCourseMember &&
               (this.props.status.isStudent || !this.props.status.loggedIn));
 
@@ -475,9 +477,9 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     // Boolean if there is view Restriction for toc element
                     const isTocElementViewRestricted =
                       subnode.viewRestrict ===
-                        MaterialViewRestriction.LOGGED_IN ||
+                        MaterialViewRestriction.LoggedIn ||
                       subnode.viewRestrict ===
-                        MaterialViewRestriction.WORKSPACE_MEMBERS;
+                        MaterialViewRestriction.WorkspaceMembers;
 
                     const isAssignment = subnode.assignmentType === "EVALUATED";
                     const isExercise = subnode.assignmentType === "EXERCISE";

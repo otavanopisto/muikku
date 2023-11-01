@@ -9,7 +9,6 @@ import {
   SendMessageTriggerType,
 } from "~/actions/main-function/messages";
 import { AnyActionType } from "~/actions";
-import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
@@ -18,6 +17,7 @@ import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { CommunicatorSignature } from "~/generated/client";
 
 /**
  * CommunicatorNewMessageProps
@@ -31,7 +31,7 @@ interface CommunicatorNewMessageProps extends WithTranslation {
   extraNamespace?: string;
   initialSelectedItems?: Array<ContactRecipientType>;
   refreshInitialSelectedItemsOnOpen?: boolean;
-  signature: MessageSignatureType;
+  signature: CommunicatorSignature;
   sendMessage: SendMessageTriggerType;
   initialSubject?: string;
   initialMessage?: string;
@@ -329,7 +329,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
         placeholder={this.props.t("labels.search", { context: "recipients" })}
         label={this.props.t("labels.recipients", {
           ns: "messaging",
-          count: 0,
+          count: this.state.selectedItems.length,
         })}
         selectedItems={this.state.selectedItems}
         onChange={this.setSelectedItems}

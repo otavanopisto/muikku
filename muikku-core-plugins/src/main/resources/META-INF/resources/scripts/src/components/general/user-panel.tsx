@@ -7,7 +7,7 @@ import ApplicationList from "~/components/general/application-list";
 import "~/sass/elements/application-list.scss";
 import { UserSearchResultWithExtraProperties } from "~/reducers/main-function/users";
 import PagerV2 from "~/components/general/pagerV2";
-import { Role } from "~/generated/client"
+import { Role } from "~/generated/client";
 
 /**
  * UserPanelProps

@@ -15,7 +15,7 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { User } from "~/generated/client";
+import { User, Role } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Role } from "~/generated/client"
@@ -198,7 +198,7 @@ class OrganizationUser extends React.Component<
               {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {t("labels.teacher", { ns: "users", count: 1 })}
+              {t("labels.teacher", { ns: "users" })}
             </option>
           </SelectFormElement>
         </DialogRow>

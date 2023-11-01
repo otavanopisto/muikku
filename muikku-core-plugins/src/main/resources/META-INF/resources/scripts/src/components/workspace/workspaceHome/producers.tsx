@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import "~/sass/elements/producers.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -9,7 +9,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * ProducersProps
  */
 interface ProducersProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**
@@ -38,7 +38,7 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
     return (
       <div className="producers">
         <span className="producers__title">
-          {t("labels.producer", { ns: "workspace", count: 0 })}:
+          {t("labels.producers", { ns: "workspace" })}:
         </span>
         {this.props.workspace.producers.map((producer, index) => {
           let textForTheName = producer.name;

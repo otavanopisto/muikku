@@ -13,5 +13,4 @@ runApp(reducer, App, async (store) => {
   // happen if the user session expired and he got to the homepage
   // but the chat was still active
   tabOrMouse();
-  window.sessionStorage.removeItem("strophe-bosh-session");
 });

@@ -7,7 +7,7 @@ export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type NoteDefaultLocation = "TOP" | "BOTTOM";
 
 /**
- * WorkspaceJournalsType
+ * NoteBookState
  */
 export interface NoteBookState {
   notes?: WorkspaceNote[] | null;

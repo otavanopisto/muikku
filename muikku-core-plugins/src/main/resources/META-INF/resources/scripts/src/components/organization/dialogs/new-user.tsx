@@ -21,7 +21,7 @@ import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { CreateUserType } from "~/reducers/user-index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
-import { Role } from "~/generated/client"
+import { Role } from "~/generated/client";
 
 /**
  * OrganizationUserProps
@@ -254,13 +254,13 @@ class OrganizationUser extends React.Component<
             updateField={this.updateField}
           >
             <option value="STUDENT">
-              {t("labels.student", { ns: "users", count: 1 })}
+              {t("labels.student", { ns: "users" })}
             </option>
             <option value="MANAGER">
               {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {t("labels.teacher", { ns: "users", count: 1 })}
+              {t("labels.teacher", { ns: "users" })}
             </option>
           </SelectFormElement>
         </DialogRow>
