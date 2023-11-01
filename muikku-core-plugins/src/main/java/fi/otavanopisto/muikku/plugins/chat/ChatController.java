@@ -296,6 +296,10 @@ public class ChatController {
   public boolean isStaffMember(UserEntity userEntity) {
     return staffUsers.contains(userEntity.getId());
   }
+
+  public boolean isStudent(UserEntity userEntity) {
+    return !staffUsers.contains(userEntity.getId());
+  }
   
   public boolean isChatEnabled(UserEntity userEntity) {
     return userEntity == null ? false : chatUserDAO.findByUserEntityIdAndArchived(userEntity.getId(), false) != null;
