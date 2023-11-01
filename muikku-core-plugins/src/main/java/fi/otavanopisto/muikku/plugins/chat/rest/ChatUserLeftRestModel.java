@@ -5,18 +5,18 @@ public class ChatUserLeftRestModel {
   public ChatUserLeftRestModel() {
   }
   
-  public ChatUserLeftRestModel(Long userEntityId) {
-    this.userEntityId = userEntityId;
+  public ChatUserLeftRestModel(Long id) {
+    this.id = id;
+  }
+  
+  public Long getId() {
+    return id;
   }
 
-  public Long getUserEntityId() {
-    return userEntityId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
-  public void setUserEntityId(Long id) {
-    this.userEntityId = id;
-  }
-
-  private Long userEntityId;
+  private Long id;
 
 }

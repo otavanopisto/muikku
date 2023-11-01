@@ -190,7 +190,7 @@ public class ChatRESTService {
   @Path("/publicmessage/{ID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response postPublicMessage(@PathParam("ID") Long id, PublicMessageRestModel payload) {
+  public Response postPublicMessage(@PathParam("ID") Long id, MessageContentRestModel payload) {
     if (StringUtils.isEmpty(payload.getMessage())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
     }
@@ -208,7 +208,7 @@ public class ChatRESTService {
   @Path("/privatemessage/{ID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response postPrivateMessage(@PathParam("ID") Long id, PublicMessageRestModel payload) {
+  public Response postPrivateMessage(@PathParam("ID") Long id, MessageContentRestModel payload) {
     if (StringUtils.isEmpty(payload.getMessage())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
     }
@@ -226,7 +226,7 @@ public class ChatRESTService {
   @Path("/message/{ID}")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateMessage(@PathParam("ID") Long id, UpdateMessageRestModel payload) {
+  public Response updateMessage(@PathParam("ID") Long id, MessageContentRestModel payload) {
     
     // Validation
     

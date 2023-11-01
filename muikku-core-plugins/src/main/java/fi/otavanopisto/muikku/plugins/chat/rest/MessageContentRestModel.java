@@ -1,22 +1,22 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
-public class UpdateMessageRestModel {
+public class MessageContentRestModel {
   
-  public UpdateMessageRestModel() {
+  public MessageContentRestModel() {
   }
-
-  public UpdateMessageRestModel(String message) {
+  
+  public MessageContentRestModel(String message) {
     this.message = message;
   }
   
   public String getMessage() {
     return message;
   }
-
+  
   public void setMessage(String message) {
     this.message = message;
   }
-
+  
   private String message;
 
 }

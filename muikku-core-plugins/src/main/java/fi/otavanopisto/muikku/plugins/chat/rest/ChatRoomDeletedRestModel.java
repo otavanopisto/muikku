@@ -5,18 +5,18 @@ public class ChatRoomDeletedRestModel {
   public ChatRoomDeletedRestModel() {
   }
   
-  public ChatRoomDeletedRestModel(Long roomId) {
-    this.roomId = roomId;
+  public ChatRoomDeletedRestModel(Long id) {
+    this.id = id;
+  }
+  
+  public Long getId() {
+    return id;
   }
 
-  public Long getRoomId() {
-    return roomId;
+  public void setId(Long id) {
+    this.id = id;
   }
 
-  public void setRoomId(Long roomId) {
-    this.roomId = roomId;
-  }
-
-  private Long roomId;
+  private Long id;
   
 }
