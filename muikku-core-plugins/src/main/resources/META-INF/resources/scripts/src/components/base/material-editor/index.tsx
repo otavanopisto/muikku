@@ -7,12 +7,9 @@ import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
-  WorkspaceType,
-  MaterialContentNodeType,
-  MaterialViewRestriction,
-  AssignmentType,
-  Language,
+  WorkspaceDataType,
   languageOptions,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -44,6 +41,11 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
+import {
+  Language,
+  MaterialAssigmentType,
+  MaterialViewRestriction,
+} from "~/generated/client";
 
 /**
  * MaterialEditorProps
@@ -81,8 +83,8 @@ const CKEditorConfig = (
   /* eslint-disable camelcase */
   locale: string,
   contextPath: string,
-  workspace: WorkspaceType,
-  materialNode: MaterialContentNodeType,
+  workspace: WorkspaceDataType,
+  materialNode: MaterialContentNodeWithIdAndLogic,
   disablePlugins: boolean
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
@@ -226,7 +228,7 @@ type PageTypeLocales =
  * MaterialPageTypeConfic
  */
 interface MaterialPageTypeConfic {
-  type: AssignmentType | null;
+  type: MaterialAssigmentType | null;
   classNameMod: string;
   text: PageTypeLocales;
 }
@@ -370,14 +372,15 @@ class MaterialEditor extends React.Component<
       update: {
         viewRestrict:
           this.props.editorState.currentDraftNodeValue.viewRestrict ===
-          MaterialViewRestriction.NONE
-            ? MaterialViewRestriction.WORKSPACE_MEMBERS
+          MaterialViewRestriction.None
+            ? MaterialViewRestriction.WorkspaceMembers
             : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-              MaterialViewRestriction.WORKSPACE_MEMBERS
-            ? MaterialViewRestriction.LOGGED_IN
+              MaterialViewRestriction.WorkspaceMembers
+            ? MaterialViewRestriction.LoggedIn
             : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-                MaterialViewRestriction.LOGGED_IN &&
-              MaterialViewRestriction.NONE,
+              MaterialViewRestriction.LoggedIn
+            ? MaterialViewRestriction.None
+            : MaterialViewRestriction.None,
       },
       isDraft: true,
     });
@@ -389,7 +392,7 @@ class MaterialEditor extends React.Component<
    * @param onClose onClose
    */
   handleChangeAssignmentType =
-    (type: AssignmentType, onClose: () => void) =>
+    (type: MaterialAssigmentType, onClose: () => void) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.props.updateWorkspaceMaterialContentNode({
         workspace: this.props.editorState.currentNodeWorkspace,
@@ -592,21 +595,21 @@ class MaterialEditor extends React.Component<
     switch (this.props.locationPage) {
       case "Help": {
         switch (viewRestriction) {
-          case MaterialViewRestriction.NONE:
+          case MaterialViewRestriction.None:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "materialVisibilityForMemebers",
             });
             break;
 
-          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          case MaterialViewRestriction.WorkspaceMembers:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "instructionVisibility",
             });
             break;
 
-          case MaterialViewRestriction.LOGGED_IN:
+          case MaterialViewRestriction.LoggedIn:
             localeString = t("labels.remove", {
               ns: "materials",
               context: "instructionVisibilityRestriction",
@@ -621,21 +624,21 @@ class MaterialEditor extends React.Component<
       }
       case "Materials": {
         switch (viewRestriction) {
-          case MaterialViewRestriction.NONE:
+          case MaterialViewRestriction.None:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "materialVisibilityForMemebers",
             });
             break;
 
-          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          case MaterialViewRestriction.WorkspaceMembers:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "materialVisibilityForLoggedIn",
             });
             break;
 
-          case MaterialViewRestriction.LOGGED_IN:
+          case MaterialViewRestriction.LoggedIn:
             localeString = t("labels.remove", {
               ns: "materials",
               context: "materialVisibilityRestriction",
@@ -849,10 +852,10 @@ class MaterialEditor extends React.Component<
       if (
         !equals(
           this.props.editorState.currentNodeValue[
-            point as keyof MaterialContentNodeType
+            point as keyof MaterialContentNodeWithIdAndLogic
           ],
           this.props.editorState.currentDraftNodeValue[
-            point as keyof MaterialContentNodeType
+            point as keyof MaterialContentNodeWithIdAndLogic
           ]
         )
       ) {
@@ -891,15 +894,15 @@ class MaterialEditor extends React.Component<
     ];
 
     switch (this.props.editorState.currentDraftNodeValue.viewRestrict) {
-      case MaterialViewRestriction.NONE:
+      case MaterialViewRestriction.None:
         viewRestrictionButtonModifiers.push("material-editor-enabled");
         break;
 
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         viewRestrictionButtonModifiers.push("material-editor-disabled");
         break;
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         viewRestrictionButtonModifiers.push("material-editor-members-only");
         break;
 
@@ -1174,7 +1177,7 @@ class MaterialEditor extends React.Component<
             {this.props.editorState.canSetProducers ? (
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
-                  {t("labels.producer", { ns: "users", count: 0 })}
+                  {t("labels.producers", { ns: "users" })}
                 </h3>
                 {this.props.editorState.currentDraftNodeValue.producers ? (
                   <div className="material-editor__add-producer-container">
@@ -1275,7 +1278,7 @@ class MaterialEditor extends React.Component<
               deleteDialogElement={ConfirmRemoveAttachment}
               hintText={t("content.add", { ns: "materials", context: "file" })}
               deleteFileText={t("actions.remove")}
-              downloadFileText={t("actions.download", { count: 1 })}
+              downloadFileText={t("actions.download")}
               showURL
               notificationOfSuccessText={t("notifications.uploadSuccess", {
                 ns: "files",

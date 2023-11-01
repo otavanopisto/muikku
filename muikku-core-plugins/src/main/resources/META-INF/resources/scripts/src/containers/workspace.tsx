@@ -560,7 +560,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          i18n.t("labels.announcement", { ns: "messaging", count: 0 })
+          i18n.t("labels.announcements", { ns: "messaging" })
         )
       );
 
@@ -1064,7 +1064,10 @@ export default class Workspace extends React.Component<
                 }) as Action
               );
             }
-            if (!workspace.journals) {
+            if (
+              state.journals.state !== "READY" &&
+              state.journals.journals.length === 0
+            ) {
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 // This happens if teacher/admin uses diary
                 this.props.store.dispatch(

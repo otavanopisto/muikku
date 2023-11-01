@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
@@ -27,7 +27,7 @@ import {
 export interface GuiderFiltersType {
   labels: UserFlag[];
   userGroups: UserGroup[];
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
 }
 
 export type GuiderStudentsStateType =
@@ -96,8 +96,8 @@ export interface GuiderStudentUserProfileType {
   hops: HopsUppersecondary;
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
-  currentWorkspaces: WorkspaceType[];
-  pastWorkspaces: WorkspaceType[];
+  currentWorkspaces: WorkspaceDataType[];
+  pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
   purchases: CeeposOrder[];
   hopsPhase?: string;

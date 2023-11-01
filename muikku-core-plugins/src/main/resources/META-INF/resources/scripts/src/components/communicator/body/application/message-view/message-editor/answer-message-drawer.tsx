@@ -275,11 +275,11 @@ class AnswerMessageDrawer extends SessionStateComponent<
           }
           placeholder={this.props.t("labels.recipients", {
             ns: "messaging",
-            count: 0,
+            count: this.state.selectedItems.length,
           })}
           label={this.props.t("labels.recipients", {
             ns: "messaging",
-            count: 0,
+            count: this.state.selectedItems.length,
           })}
           selectedItems={this.state.selectedItems}
           onChange={this.setSelectedItems}

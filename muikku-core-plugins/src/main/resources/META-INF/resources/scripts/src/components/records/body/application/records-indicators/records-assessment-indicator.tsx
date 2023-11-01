@@ -1,18 +1,15 @@
 import * as React from "react";
-import { StateType } from "~/reducers";
 import { localize } from "~/locales/i18n";
-import { Assessment } from "~/reducers/workspaces";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { WorkspaceAssessmentState } from "~/generated/client";
 
 /**
  * AssessmentProps
  */
 interface RecordsAssessmentIndicatorProps {
-  assessment?: Assessment;
+  assessment?: WorkspaceAssessmentState;
   isCombinationWorkspace: boolean;
 }
 

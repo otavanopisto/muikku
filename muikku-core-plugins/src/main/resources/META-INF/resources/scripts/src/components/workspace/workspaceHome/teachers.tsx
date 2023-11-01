@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { getName } from "~/util/modifiers";
 import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
@@ -21,7 +21,7 @@ import i18n from "~/locales/i18n";
  * WorkspaceTeachersProps
  */
 interface WorkspaceTeachersProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
 }
 
@@ -51,6 +51,11 @@ class WorkspaceTeachers extends React.Component<
   render() {
     const { t } = this.props;
 
+    const teacherCount =
+      (this.props.workspace &&
+        this.props.workspace.staffMembers &&
+        this.props.workspace.staffMembers.results.length) ||
+      0;
     if (!this.props.status.loggedIn || this.props.status.profile.studyEndDate) {
       return null;
     }
@@ -59,7 +64,10 @@ class WorkspaceTeachers extends React.Component<
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
           <h2 className="panel__header-title">
-            {t("labels.teacher", { ns: "users", count: 0 })}
+            {t("labels.teacher", {
+              ns: "users",
+              count: teacherCount,
+            })}
           </h2>
         </div>
         {this.props.workspace &&
@@ -245,7 +253,7 @@ export default withTranslation(["workspace", "messaging", "users", "common"])(
  */
 export function getWorkspaceMessage(
   status: StatusType,
-  workspace: WorkspaceType,
+  workspace: WorkspaceDataType,
   html?: boolean
 ) {
   if (!workspace) {

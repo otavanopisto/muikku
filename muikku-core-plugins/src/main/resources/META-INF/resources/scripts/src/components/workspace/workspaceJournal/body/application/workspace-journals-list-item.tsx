@@ -11,7 +11,7 @@ import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
@@ -34,7 +34,7 @@ import { localize } from "~/locales/i18n";
 interface WorkspaceJournalsListItemProps extends WithTranslation {
   status: StatusType;
   journal: WorkspaceJournalWithComments;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   asCurrent: boolean;
   showCommentList: boolean;
   setCurrentJournal: SetCurrentJournalTriggerType;
