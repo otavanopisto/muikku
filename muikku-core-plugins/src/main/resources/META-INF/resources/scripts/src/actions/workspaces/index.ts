@@ -302,7 +302,6 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
             i18n.t("notifications.loadError", {
               ns: "workspace",
               context: "workspaces",
-              count: 0,
             }),
             "error"
           )
@@ -686,7 +685,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             i18n.t("notifications.loadError", {
               ns: "workspace",
               context: "workspaces",
-              count: 0,
             }),
             "error"
           )

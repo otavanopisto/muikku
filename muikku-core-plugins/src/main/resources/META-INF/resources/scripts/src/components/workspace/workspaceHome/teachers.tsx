@@ -51,6 +51,11 @@ class WorkspaceTeachers extends React.Component<
   render() {
     const { t } = this.props;
 
+    const teacherCount =
+      (this.props.workspace &&
+        this.props.workspace.staffMembers &&
+        this.props.workspace.staffMembers.results.length) ||
+      0;
     if (!this.props.status.loggedIn || this.props.status.profile.studyEndDate) {
       return null;
     }
@@ -59,7 +64,10 @@ class WorkspaceTeachers extends React.Component<
         <div className="panel__header">
           <div className="panel__header-icon panel__header-icon--workspace-teachers icon-user"></div>
           <h2 className="panel__header-title">
-            {t("labels.teacher", { ns: "users", count: 0 })}
+            {t("labels.teacher", {
+              ns: "users",
+              count: teacherCount,
+            })}
           </h2>
         </div>
         {this.props.workspace &&

@@ -232,7 +232,10 @@ export async function loadWorkspacesHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        i18n.t("notifications.loadError", { count: 0, ns: "workspace" }),
+        i18n.t("notifications.loadError", {
+          ns: "workspace",
+          context: "workspaces",
+        }),
         "error"
       )
     );

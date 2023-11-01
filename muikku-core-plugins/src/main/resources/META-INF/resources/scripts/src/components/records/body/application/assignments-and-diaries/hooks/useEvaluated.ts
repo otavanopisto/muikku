@@ -103,10 +103,11 @@ export const useEvaluatedAssignments = (
           }
 
           displayNotification(
-            `${t("notifications.loadError", {
+            t("notifications.loadError", {
               ns: "studies",
               context: "workspaceAssignments",
-            })}, ${err.message}`,
+              error: "err.message",
+            }),
             "error"
           );
           setEvaluatedAssignmentsData((evaluatedAssignmentsData) => ({
