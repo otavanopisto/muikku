@@ -302,9 +302,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       return (
         <section>
-          <h2 className="application-panel__content-header">
-            {t("labels.summary", { ns: "studies" })}
-          </h2>
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">

@@ -225,6 +225,7 @@
       "password_match": "Syötetyt salasanat eivät vastaa toisiaan"
     },
     "wcag": {
+      "active": "Aktiivinen",
       "alternateNavigation": "Muikun käyttäjäprofiilin ja kielivalinnan navigaatio",
       "chooseRulersColor": "Valitse lukiviivaimen taustaväri",
       "clickThroughRuler": "Lukiviivaimen läpiklikkaus",
@@ -233,6 +234,7 @@
       "currentPage": "Olet sivulla",
       "decreaseRuler": "Pienennä lukiviivaimen korkeutta",
       "externalLink": "Avautuu uuteen välilehteen",
+      "goToTab": "Siirry välilehdelle",
       "increaseRuler": "Suurenna lukiviivaimen korkeutta",
       "invertRulersColors": "Käännä lukiviivaimen värit",
       "localeMenu": "Muikun käyttöliittymän kielivalikko",
@@ -240,6 +242,7 @@
       "openRulersToolbar": "Avaa lukiviivaimen työkalut",
       "pinRuler": "Kiinnitä lukiviivain",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
+      "tab": "Välilehti {{current}}/{{tabCount}}",
       "uploadPicture": "Lisää profiilin kuva",
       "preset1": "Esiasetettu teema 1",
       "preset2": "Esiasetettu teema 2",

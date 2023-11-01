@@ -149,6 +149,19 @@
 
 .tabs__tab-data-container--mobile-tabs {
   display: flex;
+  flex-direction: column-reverse;
+
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
+.tabs__tab-data-container--desktop-tabs {
+  display: none;
+
+  @include breakpoint($breakpoint-pad) {
+    display: block;
+  }
 }
 
 .tabs__tab-data {
@@ -327,6 +340,8 @@
 .tabs__pagination-container--bullets {
   align-items: center;
   display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
 
   span {
     margin-right: 4px;
