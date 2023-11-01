@@ -26,7 +26,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.chat.ChatPermissions;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
@@ -34,11 +33,9 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
 import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
-import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
-import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -56,12 +53,6 @@ public class ChatRESTService {
   
   @Inject
   private UserEntityController userEntityController;
-
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
-  
-  @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private HttpServletRequest httpRequest;
@@ -121,57 +112,6 @@ public class ChatRESTService {
     return Response.status(Status.NO_CONTENT).build();
   }
   
-  @Path("/room/{ID}/join")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response joinRoom(@PathParam("ID") Long id) {
-    
-    // Validation and access checks
-    
-    ChatRoom room = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
-    if (room == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
-    }
-    if (room.getType() == ChatRoomType.WORKSPACE) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(room.getWorkspaceEntityId());
-      if (workspaceEntity == null) {
-        return Response.status(Status.NOT_FOUND).entity(String.format("Workspace %d not found", room.getWorkspaceEntityId())).build();
-      }
-      if (!workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    
-    // Action
-    
-    chatController.joinRoom(sessionController.getLoggedUserEntity(), room);
-    
-    // Response
-    
-    return Response.status(Status.NO_CONTENT).build();
-  }
-
-  @Path("/room/{ID}/leave")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response leaveRoom(@PathParam("ID") Long id) {
-    
-    // Validation
-    
-    ChatRoom room = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
-    if (room == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
-    }
-    
-    // Action
-    
-    chatController.leaveRoom(sessionController.getLoggedUserEntity(), room);
-    
-    // Response
-    
-    return Response.status(Status.NO_CONTENT).build();
-  }
-
   @Path("/users")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -190,45 +130,7 @@ public class ChatRESTService {
     for (Long userEntityId : userEntityIds) {
       UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
       if (userEntity != null) {
-        String name = chatController.isStaffMember(sessionController.getLoggedUserEntity())
-            ? userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine()
-            : null;
-        restUsers.add(new ChatUserRestModel(
-            userEntityId,
-            chatController.getNick(userEntity),
-            name,
-            chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT));
-      }
-    }
-    
-    // Response
-    
-    return Response.ok(restUsers).build();
-  }
-
-  @Path("/room/{ID}/users")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listRoomUsers(@PathParam("ID") Long id) {
-    
-    // Validation
-    
-    ChatRoom room = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
-    if (room == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
-    }
-    if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), room)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // Action
-    
-    List<ChatUserRestModel> restUsers = new ArrayList<>();
-    Set<Long> userEntityIds = chatController.listRoomUsers(room);
-    for (Long userEntityId : userEntityIds) {
-      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-      if (userEntity != null) {
-        String name = chatController.isStaffMember(sessionController.getLoggedUserEntity())
+        String name = chatController.isStaffMember(userEntity) || chatController.isStaffMember(sessionController.getLoggedUserEntity())
             ? userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine()
             : null;
         restUsers.add(new ChatUserRestModel(

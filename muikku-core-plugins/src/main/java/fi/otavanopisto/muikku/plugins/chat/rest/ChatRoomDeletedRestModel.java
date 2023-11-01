@@ -1,11 +1,11 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
-public class DeletedChatRoomRestModel {
+public class ChatRoomDeletedRestModel {
   
-  public DeletedChatRoomRestModel() {
+  public ChatRoomDeletedRestModel() {
   }
   
-  public DeletedChatRoomRestModel(Long roomId) {
+  public ChatRoomDeletedRestModel(Long roomId) {
     this.roomId = roomId;
   }
 
