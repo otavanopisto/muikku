@@ -238,6 +238,7 @@
       "alternateNavigation": "Muikun käyttäjäprofiilin ja kielivalinnan navigaatio",
       "chooseRulersColor": "Valitse lukiviivaimen taustaväri",
       "clickThroughRuler": "Lukiviivaimen läpiklikkaus",
+      "closeMaterial": "Sulje tehtäväsisältö",
       "closeRuler": "Sulje lukiviivain",
       "closeRulersToolbar": "Sulje lukiviivaimen työkalut",
       "currentPage": "Olet sivulla",
@@ -247,6 +248,7 @@
       "invertRulersColors": "Käännä lukiviivaimen värit",
       "localeMenu": "Muikun käyttöliittymän kielivalikko",
       "mainNavigation": "Muikun päänavigaatio",
+      "openMaterial": "Avaa tehtäväsisältö",
       "openRulersToolbar": "Avaa lukiviivaimen työkalut",
       "pinRuler": "Kiinnitä lukiviivain",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
@@ -1686,6 +1688,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_entry": "Oppimispäiväkirjamerkinnän muokkaus epäonnistui",
       "updateError_comment": "Oppimispäiväkirjamerkinnän kommentin muokkaus epäonnistui: {{error}}"
+    },
+    "wcag": {
+      "closeContent": "Sulje päiväkirjamerkinnän sisältö",
+      "closeComments": "Sulje päiväkirjamerkinnän kommentit",
+      "showContent": "Näytä päiväkirjamerkinnän sisältö",
+      "showComments": "Näytä päiväkirjamerkinnän kommentit"
     }
   },
   "files": {
@@ -1852,6 +1860,12 @@
       "updateError_evaluation": "Virhe arvioinnin päivittämisessä: {{error}}",
       "updateError_pricing": "Virhe kurssin maksutietojen päivittämisessä: {{error}}",
       "updateError_sorting": "Virhe lajittelutietojen päivittämisessä: {{error}}"
+    },
+    "wcag": {
+      "evaluationAssessmentFailed": "Hylätty arviointi",
+      "evaluationAssessmentPassed": "Hyväksytty arviointi",
+      "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
+      "evaluationAssessmentUnassessed": "Arvioimaton"
     }
   },
   "calendar": {

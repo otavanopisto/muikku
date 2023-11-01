@@ -234,6 +234,7 @@
       "alternateNavigation": "Navigation for user profile and language selection of Muikku",
       "chooseRulersColor": "Choose the background color of reading ruler",
       "clickThroughRuler": "Allow clicking through the reading ruler",
+      "closeMaterial": "Close assignment content",
       "closeRuler": "Close the reading ruler",
       "closeRulersToolbar": "Close the reading ruler's toolbar",
       "currentPage": "Current page is",
@@ -243,6 +244,7 @@
       "invertRulersColors": "Reverses the colors of the reading ruler",
       "localeMenu": "Language selection menu of Muikku",
       "mainNavigation": "Main navigation of Muikku",
+      "openMaterial": "Open assignment content",
       "openRulersToolbar": "Open the toolbar of reading ruler",
       "pinRuler": "Pin the reading ruler to the screen",
       "profileMenu": "User profile menu of Muikku",
@@ -1679,6 +1681,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_entry": "Updating the entry failed",
       "updateError_comment": "Updating the comment failed: {{error}}"
+    },
+    "wcag": {
+      "closeContent": "Close the journal entry content",
+      "closeComments": "Close the journal entry comments",
+      "showContent": "Show the journal entry content",
+      "showComments": "Show the journal entry comments"
     }
   },
   "files": {
@@ -1845,6 +1853,12 @@
       "updateError_evaluation": "Updating the evaluation failed: {{error}}",
       "updateError_pricing": "Updating the course pricing information failed: {{error}}",
       "updateError_sorting": "Updating the sorting information failed: {{error}}"
+    },
+    "wcag": {
+      "evaluationAssessmentFailed": "Failed assessment",
+      "evaluationAssessmentPassed": "Passed assessment",
+      "evaluationAssessmentIncomplete": "Incomplete assessment",
+      "evaluationAssessmentUnassessed": "Unassessed assessment"
     }
   },
   "calendar": {

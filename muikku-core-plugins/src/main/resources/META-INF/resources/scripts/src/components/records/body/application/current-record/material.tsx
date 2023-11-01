@@ -21,7 +21,6 @@ import Dropdown from "~/components/general/dropdown";
 import {
   MaterialAssigmentType,
   MaterialCompositeReply,
-  MaterialContentNode,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -34,18 +33,13 @@ interface MaterialProps extends WithTranslation {
   status: StatusType;
   compositeReply: MaterialCompositeReply;
   open: boolean;
-  onMaterialClick: (
-    id: number,
-    type: MaterialAssigmentType
-  ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onMaterialOpen: (id: number, type: MaterialAssigmentType) => void;
 }
 
 /**
  * MaterialState
  */
-interface MaterialState {
-  opened: boolean;
-}
+interface MaterialState {}
 
 /**
  * Material
@@ -58,22 +52,34 @@ class Material extends React.Component<MaterialProps, MaterialState> {
   constructor(props: MaterialProps) {
     super(props);
 
-    this.toggleOpened = this.toggleOpened.bind(this);
-
-    this.state = {
-      opened: false,
-    };
+    this.state = {};
   }
 
   /**
-   * toggleOpened
+   * Handles material click
    */
-  toggleOpened() {
-    this.setState({ opened: !this.state.opened });
-  }
+  handleMaterialClick = () => {
+    this.props.onMaterialOpen(
+      this.props.material.id,
+      this.props.material.assignment.assignmentType
+    );
+  };
 
   /**
-   * indicatorClassModifier
+   * Handles key up event
+   * @param e e
+   */
+  handleMaterialKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== " ") return;
+
+    this.props.onMaterialOpen(
+      this.props.material.id,
+      this.props.material.assignment.assignmentType
+    );
+  };
+
+  /**
+   * Checks and returns class modifier for indicator
    */
   checkIndicatorClassModifier = () => {
     const { compositeReply, material } = this.props;
@@ -98,15 +104,32 @@ class Material extends React.Component<MaterialProps, MaterialState> {
   };
 
   /**
-   * renderIndicator
+   * Renders indicator
    * @returns JSX.Element
    */
   renderIndicator = () => {
-    const { compositeReply } = this.props;
+    const { compositeReply, t } = this.props;
 
     if (compositeReply && compositeReply.evaluationInfo) {
       switch (compositeReply.state) {
         case "PASSED":
+          return (
+            <Dropdown
+              openByHover
+              content={
+                <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
+              }
+            >
+              <span
+                aria-label={t("wcag.evaluationAssessmentPassed", {
+                  ns: "evaluation",
+                })}
+                className={`application-list__indicator-badge application-list__indicator-badge--task ${this.checkIndicatorClassModifier()}`}
+              >
+                {shortenGrade(compositeReply.evaluationInfo.grade)}
+              </span>
+            </Dropdown>
+          );
         case "FAILED":
           return (
             <Dropdown
@@ -116,6 +139,9 @@ class Material extends React.Component<MaterialProps, MaterialState> {
               }
             >
               <span
+                aria-label={t("wcag.evaluationAssessmentFailed", {
+                  ns: "evaluation",
+                })}
                 className={`application-list__indicator-badge application-list__indicator-badge--task ${this.checkIndicatorClassModifier()}`}
               >
                 {shortenGrade(compositeReply.evaluationInfo.grade)}
@@ -132,6 +158,9 @@ class Material extends React.Component<MaterialProps, MaterialState> {
               }
             >
               <span
+                aria-label={t("wcag.evaluationAssessmentIncomplete", {
+                  ns: "evaluation",
+                })}
                 className={`application-list__indicator-badge application-list__indicator-badge--task state-INCOMPLETE`}
               >
                 T
@@ -142,6 +171,9 @@ class Material extends React.Component<MaterialProps, MaterialState> {
         default:
           return (
             <span
+              aria-label={t("wcag.evaluationAssessmentUnassessed", {
+                ns: "evaluation",
+              })}
               className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
             >
               N
@@ -152,6 +184,9 @@ class Material extends React.Component<MaterialProps, MaterialState> {
 
     return (
       <span
+        aria-label={t("wcag.evaluationAssessmentUnassessed", {
+          ns: "evaluation",
+        })}
         className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
       >
         N
@@ -163,8 +198,11 @@ class Material extends React.Component<MaterialProps, MaterialState> {
    * render
    */
   render() {
+    const { t, open } = this.props;
+
     return (
       <ApplicationListItem
+        tabIndex={-1}
         key={this.props.material.id}
         className={`application-list__item assignment ${
           this.props.compositeReply &&
@@ -174,11 +212,12 @@ class Material extends React.Component<MaterialProps, MaterialState> {
         }`}
       >
         <ApplicationListItemHeader
+          role="button"
+          tabIndex={0}
           modifiers="studies-assignment"
-          onClick={this.props.onMaterialClick(
-            this.props.material.id,
-            this.props.material.assignment.assignmentType
-          )}
+          onClick={this.handleMaterialClick}
+          onKeyUp={this.handleMaterialKeyUp}
+          aria-label={open ? t("wcag.closeMaterial") : t("wcag.openMaterial")}
         >
           {this.renderIndicator()}
           <span className="application-list__header-primary">
@@ -187,7 +226,10 @@ class Material extends React.Component<MaterialProps, MaterialState> {
         </ApplicationListItemHeader>
 
         <ApplicationListItemBody>
-          <AnimateHeight height={this.props.open ? "auto" : 0}>
+          <AnimateHeight
+            height={this.props.open ? "auto" : 0}
+            aria-expanded={this.props.open}
+          >
             <MaterialLoader
               material={this.props.material}
               workspace={this.props.workspace}
@@ -227,11 +269,6 @@ class Material extends React.Component<MaterialProps, MaterialState> {
                 }
                 return (
                   <div>
-                    <MaterialLoaderContent
-                      {...props}
-                      {...state}
-                      stateConfiguration={stateConfiguration}
-                    />
                     {hasEvaluation && (
                       <div
                         className={`material-page__assignment-assessment ${evalStateClassName}`}
@@ -244,6 +281,11 @@ class Material extends React.Component<MaterialProps, MaterialState> {
                         <MaterialLoaderAssesment {...props} {...state} />
                       </div>
                     )}
+                    <MaterialLoaderContent
+                      {...props}
+                      {...state}
+                      stateConfiguration={stateConfiguration}
+                    />
                   </div>
                 );
               }}
@@ -255,4 +297,4 @@ class Material extends React.Component<MaterialProps, MaterialState> {
   }
 }
 
-export default withTranslation(["common"])(Material);
+export default withTranslation(["common", "evaluation"])(Material);

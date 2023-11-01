@@ -26,9 +26,7 @@ interface JournalProps {
   displayNotification: DisplayNotificationTriggerType;
   journal: WorkspaceJournal;
   open: boolean;
-  onJournalClick: (
-    id: number
-  ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onJournalOpen: (id: number) => void;
 }
 
 /**
@@ -37,7 +35,7 @@ interface JournalProps {
  * @returns JSX.Element
  */
 const Journal: React.FC<JournalProps> = (props) => {
-  const { displayNotification, journal, onJournalClick, open } = props;
+  const { displayNotification, journal, onJournalOpen, open } = props;
   const [showComments, setShowComments] = React.useState<boolean>(false);
   const { t } = useTranslation("journal");
   const { journalComments, loadJournalComments } = useJournalComments(
@@ -47,24 +45,69 @@ const Journal: React.FC<JournalProps> = (props) => {
   );
 
   /**
-   * handleShowCommentsClick
+   * Toggle show comments state
+   */
+  const toggleShowComments = async () => {
+    await loadJournalComments();
+    setShowComments(!showComments);
+  };
+
+  /**
+   * handleJournalClick
+   */
+  const handleJournalClick = () => {
+    onJournalOpen(journal.id);
+  };
+
+  /**
+   * Handles key up event for journal
+   * @param e e
+   */
+  const handleJournalKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== " ") return;
+
+    onJournalOpen(journal.id);
+  };
+
+  /**
+   * Handles click event for show comments
    * @param e event
    */
   const handleShowCommentsClick = async (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    await loadJournalComments();
-    setShowComments(!showComments);
+    toggleShowComments();
+  };
+
+  /**
+   * Handles key up event for show comments
+   * @param e e
+   */
+  const handleShowCommentsKeyUp = async (
+    e: React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    if (e.key !== " ") return;
+
+    e.stopPropagation();
+    toggleShowComments();
   };
 
   const arrowClass = showComments ? "open" : "closed";
 
   return (
-    <ApplicationListItem className="journal journal--studies" key={journal.id}>
+    <ApplicationListItem
+      key={journal.id}
+      className="journal journal--studies"
+      tabIndex={-1}
+    >
       <ApplicationListItemHeader
+        role="button"
+        tabIndex={0}
         className="application-list__item-header--journal-entry"
-        onClick={onJournalClick(journal.id)}
+        onClick={handleJournalClick}
+        onKeyUp={handleJournalKeyUp}
+        aria-label={open ? t("wcag.closeContent") : t("wcag.showContent")}
       >
         <div
           className={`application-list__item-header-main application-list__item-header-main--journal-entry ${
@@ -82,13 +125,19 @@ const Journal: React.FC<JournalProps> = (props) => {
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">
-        <AnimateHeight height={open ? "auto" : 0}>
+        <AnimateHeight height={open ? "auto" : 0} aria-expanded={open}>
           <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
             <CkeditorContentLoader html={journal.content} />
           </article>
 
           <div
+            role="button"
+            tabIndex={0}
             onClick={handleShowCommentsClick}
+            onKeyUp={handleShowCommentsKeyUp}
+            aria-label={
+              showComments ? t("wcag.showContent") : t("wcag.showComments")
+            }
             style={{ display: "flex", alignItems: "center" }}
           >
             <div className={`icon-arrow-right ${arrowClass}`} />
@@ -97,7 +146,10 @@ const Journal: React.FC<JournalProps> = (props) => {
             </div>
           </div>
 
-          <AnimateHeight height={showComments ? "auto" : 0}>
+          <AnimateHeight
+            height={showComments ? "auto" : 0}
+            aria-expanded={showComments}
+          >
             {journalComments.isLoading ? (
               <div className="loader-empty" />
             ) : journalComments.journalComments.length === 0 ? (
