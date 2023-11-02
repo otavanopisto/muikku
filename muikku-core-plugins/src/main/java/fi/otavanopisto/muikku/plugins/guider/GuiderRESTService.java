@@ -566,6 +566,17 @@ public class GuiderRESTService extends PluginRESTService {
 
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
 
+    User user = userController.findUserByUserEntityDefaults(userEntity);
+    
+    String curriculumName = getCurriculumName(user.getCurriculumIdentifier());
+    
+    boolean showCredits = false;
+    
+    // An indicator that shows if the credits should be shown
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (user.getStudyProgrammeName() != null && user.getStudyProgrammeName().equals("Nettilukio"))) {
+      showCredits = true;
+    }
+    
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
     
@@ -587,12 +598,14 @@ public class GuiderRESTService extends PluginRESTService {
       restModel.setCompletedCourseCredits(0);
       restModel.setMandatoryCourseCredits(0);
       restModel.setWorkspaces(Collections.emptyList());
+      restModel.setShowCredits(showCredits);
       return Response.ok(restModel).build();
     }
 
     List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
     Integer allCourseCredits = 0;
     Integer mandatoryCourseCredits = 0;
+    
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
@@ -620,27 +633,29 @@ public class GuiderRESTService extends PluginRESTService {
       for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
         ToRWorkspaceRestModel toRWorkspaceRestModel = workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping);
         
-        for (WorkspaceSubjectRestModel workspaceSubject : toRWorkspaceRestModel.getSubjects()) {
-          List<WorkspaceAssessmentState> assessmentStatesList = toRWorkspaceRestModel.getActivity().getAssessmentState();
-          Integer size = assessmentStatesList.size() - 1;
+        
+        List<WorkspaceAssessmentState> assessmentStatesList = toRWorkspaceRestModel.getActivity().getAssessmentState();
+        Integer size = assessmentStatesList.size() - 1;
           
-          if (!assessmentStatesList.isEmpty()) {
-            WorkspaceAssessmentState assessmentState = toRWorkspaceRestModel.getActivity().getAssessmentState().get(size);
+        if (!assessmentStatesList.isEmpty() && showCredits) {
+          WorkspaceAssessmentState assessmentState = toRWorkspaceRestModel.getActivity().getAssessmentState().get(size);
+          
+          // If the student has completed the course, we need to find the courses with the symbol 'op' and calculate the points of them
+          if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+            Set<String> curriculumIdentifiers = toRWorkspaceRestModel.getCurriculumIdentifiers();
             
-            // If the student has completed the course, we need to find the courses with the symbol 'op' and calculate the points of them
-            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-              Set<String> curriculumIdentifiers = toRWorkspaceRestModel.getCurriculumIdentifiers();
-              
-              // Curriculum should be 'OPS 2021' 
-              Boolean correctCurriculum = false;
-              for (String curriculumIdentifier : curriculumIdentifiers) {
-                String curriculumName = guiderController.getCurriculumName(SchoolDataIdentifier.fromId(curriculumIdentifier));
-                if (curriculumName != null && curriculumName.equals("OPS 2021")) {
-                  correctCurriculum = true;
-                  break;
-                }
+            // Curriculum should be 'OPS 2021' 
+            Boolean correctCurriculum = false;
+            
+            for (String curriculumIdentifier : curriculumIdentifiers) {
+              curriculumName = getCurriculumName(SchoolDataIdentifier.fromId(curriculumIdentifier));
+
+              if (curriculumName != null && curriculumName.equals("OPS 2021")) {
+                correctCurriculum = true;
+                break;
               }
-              
+            }
+            for (WorkspaceSubjectRestModel workspaceSubject : toRWorkspaceRestModel.getSubjects()) {
               if (workspaceSubject.getCourseLengthSymbol().getSymbol().equals("op") && correctCurriculum){
                 int units = workspaceSubject.getCourseLength().intValue();
                 
@@ -667,7 +682,7 @@ public class GuiderRESTService extends PluginRESTService {
     List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(userIdentifier);
     
     for (TransferCredit transferCredit : transferCredits) {
-      String curriculumName = guiderController.getCurriculumName(transferCredit.getCurriculumIdentifier());
+      curriculumName = getCurriculumName(transferCredit.getCurriculumIdentifier());
       
       // Curriculum check
       if (curriculumName != null && curriculumName.equals("OPS 2021")) {
@@ -690,18 +705,19 @@ public class GuiderRESTService extends PluginRESTService {
     torWorkspaceWithCourseCredits.setWorkspaces(workspaces);
     torWorkspaceWithCourseCredits.setCompletedCourseCredits(allCourseCredits);
     torWorkspaceWithCourseCredits.setMandatoryCourseCredits(mandatoryCourseCredits);
-    torWorkspaceWithCourseCredits.setShowCredits(false);
-
-    User user = userController.findUserByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
-    
-    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
-    
-    // An indicator that shows if the credits should be shown
-    if (curriculumName != null && curriculumName.equals("OPS 2021") && (user.getStudyProgrammeName() != null && user.getStudyProgrammeName().equals("Nettilukio"))) {
-      torWorkspaceWithCourseCredits.setShowCredits(true);
-    }
+    torWorkspaceWithCourseCredits.setShowCredits(showCredits);
     
     return Response.ok(torWorkspaceWithCourseCredits).build();
+  }
+  
+  private String getCurriculumName(SchoolDataIdentifier curriculumIdentifier){
+    Map<SchoolDataIdentifier, String> curriculumNames = new HashMap<>();
+    
+    if (!curriculumNames.containsKey(curriculumIdentifier)) {
+      curriculumNames.put(curriculumIdentifier, guiderController.getCurriculumName(curriculumIdentifier));
+    }
+    
+    return curriculumNames.get(curriculumIdentifier);
   }
 
   @GET

@@ -181,68 +181,81 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     Integer allCourseCredits = 0;
     Integer mandatoryCourseCredits = 0;
+    boolean showCredits = false;
     
-    for (WorkspaceActivity activity : activityInfo.getActivities()) {
-      
-      for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
-
+    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+    
+    // Find student's curriculum to tell whether the score will be shown to the user
+    
+    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
+    
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
+      showCredits = true;
+    }
+    
+    SearchProvider searchProvider = getProvider("elastic-search");
+    
+    if (showCredits) {
+      for (WorkspaceActivity activity : activityInfo.getActivities()) {
+        
         List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
         Integer size = assessmentStatesList.size() - 1;
         
         if (!assessmentStatesList.isEmpty()) {
           WorkspaceAssessmentState assessmentState = assessmentStatesList.get(size);
           if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-            if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
-              
-              for (WorkspaceActivityCurriculum curriculum : activity.getCurriculums()) {
-                if (curriculum.getName().equals("OPS 2021")) {
-                  int units = workspaceActivitySubject.getCourseLength().intValue();
-                  
-                  // All completed courses
-                  allCourseCredits = Integer.sum(units, allCourseCredits);
-                  
-                  
-                  // Mandatority for transferred courses
-                  // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
-                  if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-                    Mandatority mandatority = activity.getMandatority();
-                    if (mandatority != null && mandatority == Mandatority.MANDATORY) {
-                      mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                   }
-                  }
-                  
-                  // Search for finding out course mandaority
-                  SearchProvider searchProvider = getProvider("elastic-search");
-                  
-                  if (searchProvider != null && activity.getId() != null) {
+            for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
+  
+              if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
+                
+                for (WorkspaceActivityCurriculum curriculum : activity.getCurriculums()) {
+                  if (curriculum.getName().equals("OPS 2021")) {
+                    int units = workspaceActivitySubject.getCourseLength().intValue();
                     
-                    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
-                    workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-                    SearchResult sr = searchProvider.findWorkspace(workspaceIdentifier);
+                    // All completed courses
+                    allCourseCredits = Integer.sum(units, allCourseCredits);
                     
-                    List<Map<String, Object>> results = sr.getResults();
-                    for (Map<String, Object> result : results) {
-                      
-                      String educationTypeId = (String) result.get("educationTypeIdentifier");
-
-                      Mandatority mandatority = null;
-
-                      if (StringUtils.isNotBlank(educationTypeId)) {
-                        SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
-                        
-                        EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-                        
-                        mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
-                            ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
-                        
-                      }
+                    // Mandatority for transferred courses
+                    // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
+                    if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+                      Mandatority mandatority = activity.getMandatority();
                       if (mandatority != null && mandatority == Mandatority.MANDATORY) {
-                       mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                       
-                       activity.setMandatority(mandatority);
-                      }
+                        mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                     }
                     }
-                  } 
+                    
+                    // Search for finding out course mandaority
+                    
+                    if (searchProvider != null && activity.getId() != null) {
+                      
+                      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
+                      workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+                      SearchResult sr = searchProvider.findWorkspace(workspaceIdentifier);
+                      
+                      List<Map<String, Object>> results = sr.getResults();
+                      for (Map<String, Object> result : results) {
+                        
+                        String educationTypeId = (String) result.get("educationTypeIdentifier");
+  
+                        Mandatority mandatority = null;
+  
+                        if (StringUtils.isNotBlank(educationTypeId)) {
+                          SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                          
+                          EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+                          
+                          mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
+                              ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
+                          
+                        }
+                        if (mandatority != null && mandatority == Mandatority.MANDATORY) {
+                         mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                         
+                         activity.setMandatority(mandatority);
+                        }
+                      }
+                    } 
+                  }
                 }
               }
             }
@@ -253,17 +266,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     activityInfo.setCompletedCourseCredits(allCourseCredits);
     activityInfo.setMandatoryCourseCredits(mandatoryCourseCredits);
-    activityInfo.setShowCredits(false);
-    
-    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
-    
-    // Find student's curriculum to tell whether the score will be shown to the user
-    
-    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
-    
-    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
-      activityInfo.setShowCredits(true);
-    }
+    activityInfo.setShowCredits(showCredits);
     
     return Response.ok(activityInfo).build();
   }
