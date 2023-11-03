@@ -11866,6 +11866,7 @@ components:
         - workspaceUrlName
         - workspaceUserEntityId
         - workspaceUserIdentifier
+        - hasPedagogyForm
       properties:
         id:
           type: integer
@@ -11909,6 +11910,8 @@ components:
           type: integer
         workspaceUserIdentifier:
           type: string
+        hasPedagogyForm:
+          type: boolean
 
     EvaluationSupplementationRequest:
       type: object
@@ -13927,6 +13930,7 @@ components:
         - matriculationEligibility
         - ceeposLine
         - flags
+        - hasPedagogyForm
       properties:
         curriculumIdentifier:
           type: string
@@ -13987,6 +13991,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UserStudentFlag"
+        hasPedagogyForm:
+          type: boolean
 
     StudentInfo:
       type: object
@@ -15236,6 +15242,7 @@ components:
             - nickname
             - studyProgrammeName
             - active
+            - hasPedagogyForm
           properties:
             nickname:
               description: The nickname of the user
@@ -15245,6 +15252,8 @@ components:
               type: string
             active:
               description: If the user is active
+              type: boolean
+            hasPedagogyForm:
               type: boolean
 
     WorkspaceUserBase:
