@@ -567,8 +567,9 @@ public class GuiderRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
 
     User user = userController.findUserByUserEntityDefaults(userEntity);
+    Map<SchoolDataIdentifier, String> curriculumNameCache = new HashMap<>();
     
-    String curriculumName = getCurriculumName(user.getCurriculumIdentifier());
+    String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
     
     boolean showCredits = false;
     
@@ -648,7 +649,7 @@ public class GuiderRESTService extends PluginRESTService {
             Boolean correctCurriculum = false;
             
             for (String curriculumIdentifier : curriculumIdentifiers) {
-              curriculumName = getCurriculumName(SchoolDataIdentifier.fromId(curriculumIdentifier));
+              curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
 
               if (curriculumName != null && curriculumName.equals("OPS 2021")) {
                 correctCurriculum = true;
@@ -682,7 +683,7 @@ public class GuiderRESTService extends PluginRESTService {
     List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(userIdentifier);
     
     for (TransferCredit transferCredit : transferCredits) {
-      curriculumName = getCurriculumName(transferCredit.getCurriculumIdentifier());
+      curriculumName = getCurriculumName(curriculumNameCache, transferCredit.getCurriculumIdentifier());
       
       // Curriculum check
       if (curriculumName != null && curriculumName.equals("OPS 2021")) {
@@ -710,14 +711,13 @@ public class GuiderRESTService extends PluginRESTService {
     return Response.ok(torWorkspaceWithCourseCredits).build();
   }
   
-  private String getCurriculumName(SchoolDataIdentifier curriculumIdentifier){
-    Map<SchoolDataIdentifier, String> curriculumNames = new HashMap<>();
+  private String getCurriculumName(Map<SchoolDataIdentifier, String> curriculumNameCache, SchoolDataIdentifier curriculumIdentifier){
     
-    if (!curriculumNames.containsKey(curriculumIdentifier)) {
-      curriculumNames.put(curriculumIdentifier, guiderController.getCurriculumName(curriculumIdentifier));
+    if (!curriculumNameCache.containsKey(curriculumIdentifier)) {
+      curriculumNameCache.put(curriculumIdentifier, guiderController.getCurriculumName(curriculumIdentifier));
     }
     
-    return curriculumNames.get(curriculumIdentifier);
+    return curriculumNameCache.get(curriculumIdentifier);
   }
 
   @GET
