@@ -5,11 +5,13 @@ public class ChatUserRestModel {
   public ChatUserRestModel() {
   }
 
-  public ChatUserRestModel(Long id, String nick, String name, ChatUserType type) {
+  public ChatUserRestModel(Long id, String nick, String name, ChatUserType type, boolean hasImage, boolean isOnline) {
     this.id = id;
     this.nick = nick;
     this.name = name;
     this.type = type;
+    this.hasImage = hasImage;
+    this.isOnline = isOnline;
   }
 
   public Long getId() {
@@ -44,9 +46,27 @@ public class ChatUserRestModel {
     this.name = name;
   }
 
+  public Boolean getHasImage() {
+    return hasImage;
+  }
+
+  public void setHasImage(Boolean hasImage) {
+    this.hasImage = hasImage;
+  }
+
+  public Boolean getIsOnline() {
+    return isOnline;
+  }
+
+  public void setIsOnline(Boolean isOnline) {
+    this.isOnline = isOnline;
+  }
+
   private Long id;
   private String nick;
   private String name;
   private ChatUserType type;
+  private Boolean hasImage;
+  private Boolean isOnline;
 
 }

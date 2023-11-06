@@ -35,6 +35,7 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
 import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -53,6 +54,9 @@ public class ChatRESTService {
   
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
 
   @Inject
   private HttpServletRequest httpRequest;
@@ -133,11 +137,15 @@ public class ChatRESTService {
         String name = chatController.isStaffMember(userEntity) || chatController.isStaffMember(sessionController.getLoggedUserEntity())
             ? userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine()
             : null;
+        boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+        boolean isOnline = chatController.isInChat(userEntity);
         restUsers.add(new ChatUserRestModel(
             userEntityId,
             chatController.getNick(userEntity),
             name,
-            chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT));
+            chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT,
+            hasImage,
+            isOnline));
       }
     }
     
@@ -337,6 +345,8 @@ public class ChatRESTService {
     userInfo.setNick(chatUser.getNick());
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT);
+    userInfo.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+    userInfo.setIsOnline(chatController.isInChat(userEntity));
     return Response.ok(userInfo).build();
   }
 
@@ -358,6 +368,8 @@ public class ChatRESTService {
     userInfo.setNick(chatUser.getNick());
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
+    userInfo.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+    userInfo.setIsOnline(chatController.isInChat(userEntity));
     return Response.ok(userInfo).build();
   }
 

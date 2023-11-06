@@ -40,6 +40,7 @@ import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserLeftRestModel;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @ApplicationScoped
@@ -54,6 +55,9 @@ public class ChatController {
   
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -446,10 +450,12 @@ public class ChatController {
       }
     }
     
+    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+    
     // Notify everyone of a new user
     
     String name = userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine();
-    ChatUserRestModel userRestModel = new ChatUserRestModel(userEntity.getId(), nick, null, getUserType(userEntity));
+    ChatUserRestModel userRestModel = new ChatUserRestModel(userEntity.getId(), nick, null, getUserType(userEntity), hasImage, true);
     ObjectMapper mapper = new ObjectMapper();
     try {
       if (isStaffMember(userEntity)) {
