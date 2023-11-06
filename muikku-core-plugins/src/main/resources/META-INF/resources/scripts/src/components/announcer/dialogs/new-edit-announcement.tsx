@@ -9,7 +9,7 @@ import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import {
   createAnnouncement,
   CreateAnnouncementTriggerType,
@@ -47,7 +47,7 @@ interface NewEditAnnouncementProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
   workspaceId: number;
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
 }
 
 /**

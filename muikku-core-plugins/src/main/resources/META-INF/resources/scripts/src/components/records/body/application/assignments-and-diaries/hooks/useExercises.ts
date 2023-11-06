@@ -1,20 +1,16 @@
 import * as React from "react";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import {
-  MaterialAssignmentType,
-  MaterialContentNodeType,
-} from "~/reducers/workspaces";
 import { AssignmentsTabType } from "../assignments-and-diaries";
 import { useTranslation } from "react-i18next";
+import MApi from "~/api/api";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**
  * UseFollowUpGoalsState
  */
 export interface UseAssignmentExerciseState {
   isLoading: boolean;
-  exerciseAssignments: MaterialContentNodeType[];
+  exerciseAssignments: MaterialContentNodeWithIdAndLogic[];
 }
 
 /**
@@ -25,12 +21,14 @@ const initialState: UseAssignmentExerciseState = {
   exerciseAssignments: [],
 };
 
+const materialsApi = MApi.getMaterialsApi();
+const workspaceApi = MApi.getWorkspaceApi();
+
 /**
  * Custom hook for student study hours
  *
  * @param workspaceId workspaceId
  * @param tabOpen tabOpen
- * @param i18n i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
@@ -64,34 +62,27 @@ export const useExerciseAssignments = (
          */
         const [materials] = await Promise.all([
           (async () => {
-            const assignments = <Array<MaterialAssignmentType>>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EXERCISE",
-                }),
-                "callback"
-              )() || [];
+            const assignments = await workspaceApi.getWorkspaceMaterials({
+              workspaceEntityId: workspaceId,
+              assignmentType: "EXERCISE",
+            });
 
             const [materials] = await Promise.all([
               Promise.all(
                 assignments.map((assignment) =>
-                  promisify(
-                    mApi().materials.html.read(assignment.materialId),
-                    "callback"
-                  )().then(
-                    (assignments: MaterialContentNodeType) => assignments
-                  )
+                  materialsApi.getHtmlMaterial({
+                    id: assignment.materialId,
+                  })
                 )
               ),
             ]);
 
             return materials.map(
-              (material, index) => <MaterialContentNodeType>Object.assign(
-                  material,
-                  {
-                    assignment: assignments[index],
-                    path: assignments[index].path,
-                  }
-                )
+              (material, index) =>
+                <MaterialContentNodeWithIdAndLogic>Object.assign(material, {
+                  assignment: assignments[index],
+                  path: assignments[index].path,
+                })
             );
           })(),
         ]);
@@ -106,9 +97,10 @@ export const useExerciseAssignments = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${t("notifications.loadError", {
+            t("notifications.loadError", {
               context: "workspaceAssignments",
-            })}, ${err.message}`,
+              error: err.message,
+            }),
             "error"
           );
           setExerciseAssignmentsData((exerciseAssignmentsData) => ({

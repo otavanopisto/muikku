@@ -193,7 +193,7 @@ class StudentDialog extends React.Component<
     ) {
       tabs.splice(1, 0, {
         id: "PEDAGOGICAL_SUPPORT",
-        name: "Pedagogisen tuen suunnitelma",
+        name: this.props.t("labels.title", { ns: "pedagogySupportPlan" }),
         type: "guider-student",
         component: (
           <UpperSecondaryPedagogicalSupportWizardForm

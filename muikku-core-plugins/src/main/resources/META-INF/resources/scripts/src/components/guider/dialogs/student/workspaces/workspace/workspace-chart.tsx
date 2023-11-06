@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import GraphFilter from "~/components/general/graph/filters/graph-filter";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
@@ -12,7 +12,7 @@ let AmCharts: any = null;
  * CurrentStudentWorkspaceStatisticsProps
  */
 interface CurrentStudentWorkspaceStatisticsProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**
@@ -211,7 +211,6 @@ class CurrentStudentStatistics extends React.Component<
         id: "MATERIAL_ASSIGNMENTDONE",
         balloonText:
           this.props.i18n.t("labels.evaluables", {
-            count: 0,
             ns: "materials",
           }) + " <b>[[MATERIAL_ASSIGNMENTDONE]]</b>",
         fillAlphas: 0.9,
@@ -229,7 +228,7 @@ class CurrentStudentStatistics extends React.Component<
       graphs.push({
         id: "MATERIAL_EXERCISEDONE",
         balloonText:
-          this.props.i18n.t("labels.exercises", { count: 0, ns: "materials" }) +
+          this.props.i18n.t("labels.exercises", { ns: "materials" }) +
           " <b>[[MATERIAL_EXERCISEDONE]]</b>",
         fillAlphas: 0.9,
         lineAlpha: 0.2,

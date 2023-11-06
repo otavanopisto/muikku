@@ -1,7 +1,6 @@
-import promisify, { promisifyNewConstructor } from "~/util/promisify";
+import { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
@@ -275,7 +274,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
           });
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -310,7 +309,7 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -327,11 +326,10 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
     ) => {
+      const userpluginApi = MApi.getUserpluginApi();
+
       try {
-        const credentials: any = await promisify(
-          mApi().userplugin.credentials.read(),
-          "callback"
-        )();
+        const credentials = await userpluginApi.getUserPluginCredentials();
 
         if (credentials && credentials.username) {
           dispatch({
@@ -340,7 +338,7 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -506,9 +504,11 @@ const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
           data.fail && data.fail();
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        // Commented out for now and will replaced with ne
+        // after the new chat is implemented
+        /* if (!(err instanceof MApiError)) {
           throw err;
-        }
+        } */
 
         data.fail && data.fail();
       }
@@ -1172,7 +1172,10 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
         }
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "orders", count: 0 }),
+            i18n.t("notifications.loadError", {
+              ns: "orders",
+              context: "orders",
+            }),
             "error"
           )
         );

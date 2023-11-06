@@ -1,17 +1,12 @@
 import actions from "../../base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   SummaryDataType,
   SummaryStatusType,
 } from "~/reducers/main-function/records/summary";
-import {
-  WorkspaceForumStatisticsType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
 import i18n from "~/locales/i18n";
 import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
@@ -42,6 +37,8 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     const recordsApi = MApi.getRecordsApi();
     const evaluationApi = MApi.getEvaluationApi();
     const userApi = MApi.getUserApi();
+    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+    const workspaceApi = MApi.getWorkspaceApi();
     const activitylogsApi = MApi.getActivitylogsApi();
 
     try {
@@ -89,14 +86,10 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         });
       });
 
-      // User workspaces
-      const workspaces = <WorkspaceType[]>await promisify(
-        mApi().workspace.workspaces.read({
-          userIdentifier: pyramusId,
-          includeInactiveWorkspaces: true,
-        }),
-        "callback"
-      )();
+      const workspaces = (await workspaceApi.getWorkspaces({
+        userIdentifier: pyramusId,
+        includeInactiveWorkspaces: true,
+      })) as WorkspaceDataType[];
 
       if (workspaces && workspaces.length) {
         await Promise.all([
@@ -111,14 +104,12 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           ),
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const statistics: WorkspaceForumStatisticsType = <
-                WorkspaceForumStatisticsType
-              >await promisify(
-                mApi().workspace.workspaces.forumStatistics.read(workspace.id, {
+              const statistics =
+                await workspaceDiscussionApi.getWorkspaceDiscussionStatistics({
+                  workspaceEntityId: workspace.id,
                   userIdentifier: pyramusId,
-                }),
-                "callback"
-              )();
+                });
+
               workspaces[index].forumStatistics = statistics;
             })
           ),
@@ -163,7 +154,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         payload: <SummaryStatusType>"READY",
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(

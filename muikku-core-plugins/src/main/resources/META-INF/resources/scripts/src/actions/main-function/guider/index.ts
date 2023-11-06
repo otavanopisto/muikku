@@ -1,4 +1,3 @@
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   GuiderActiveFiltersType,
@@ -9,13 +8,9 @@ import {
   GuiderState,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
-import promisify from "~/util/promisify";
 import { UserFileType } from "reducers/user-index";
 import notificationActions from "~/actions/base/notifications";
-import {
-  WorkspaceForumStatisticsType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { colorIntToHex } from "~/util/modifiers";
 import { Dispatch } from "react-redux";
@@ -119,7 +114,7 @@ export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-  WorkspaceType[]
+  WorkspaceDataType[]
 >;
 export type UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS = SpecificActionType<
   "UPDATE_GUIDER_AVAILABLE_FILTERS_USERGROUPS",
@@ -558,6 +553,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
+    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
     const ceeposApi = MApi.getCeeposApi();
     const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
@@ -731,21 +727,19 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
             // what returned data is.
             const workspacesWithAddons =
-              workspaces as unknown as WorkspaceType[];
+              workspaces as unknown as WorkspaceDataType[];
 
             if (workspacesWithAddons && workspacesWithAddons.length) {
               await Promise.all([
                 Promise.all(
                   workspacesWithAddons.map(async (workspace, index) => {
-                    const statistics: WorkspaceForumStatisticsType = <
-                      WorkspaceForumStatisticsType
-                    >await promisify(
-                      mApi().workspace.workspaces.forumStatistics.read(
-                        workspace.id,
-                        { userIdentifier: id }
-                      ),
-                      "callback"
-                    )();
+                    const statistics =
+                      await workspaceDiscussionApi.getWorkspaceDiscussionStatistics(
+                        {
+                          workspaceEntityId: workspace.id,
+                          userIdentifier: id,
+                        }
+                      );
                     workspacesWithAddons[index].forumStatistics = statistics;
                   })
                 ),
@@ -793,7 +787,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
@@ -801,7 +795,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           i18n.t("notifications.loadError", {
             ns: "users",
             context: "student",
-            count: 1,
           }),
           "error"
         )
@@ -834,6 +827,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
     const guiderApi = MApi.getGuiderApi();
     const activitylogsApi = MApi.getActivitylogsApi();
 
@@ -893,21 +887,19 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
               // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
               // what returned data is.
               const workspacesWithAddons =
-                workspaces as unknown as WorkspaceType[];
+                workspaces as unknown as WorkspaceDataType[];
 
               if (workspacesWithAddons && workspacesWithAddons.length) {
                 await Promise.all([
                   Promise.all(
                     workspacesWithAddons.map(async (workspace, index) => {
-                      const statistics: WorkspaceForumStatisticsType = <
-                        WorkspaceForumStatisticsType
-                      >await promisify(
-                        mApi().workspace.workspaces.forumStatistics.read(
-                          workspace.id,
-                          { userIdentifier: id }
-                        ),
-                        "callback"
-                      )();
+                      const statistics =
+                        await workspaceDiscussionApi.getWorkspaceDiscussionStatistics(
+                          {
+                            workspaceEntityId: workspace.id,
+                            userIdentifier: id,
+                          }
+                        );
                       workspacesWithAddons[index].forumStatistics = statistics;
                     })
                   ),
@@ -951,15 +943,14 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         payload: null,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.loadError", {
             ns: "users",
-            context: "students",
-            count: 1,
+            context: "student",
           }),
           "error"
         )
@@ -1055,8 +1046,7 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
               ns: "users",
-              context: "students",
-              count: 1,
+              context: "student",
             }),
             "error"
           )
@@ -1895,27 +1885,30 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
       const currentUser = getState().status.userSchoolDataIdentifier;
       try {
+        const workspaces = (await workspaceApi.getWorkspaces({
+          userIdentifier: currentUser,
+          includeInactiveWorkspaces: true,
+          maxResults: 500,
+          orderBy: ["alphabet"],
+        })) as WorkspaceDataType[];
+
         dispatch({
           type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
-          payload: <WorkspaceType[]>await promisify(
-              mApi().workspace.workspaces.read({
-                userIdentifier: currentUser,
-                includeInactiveWorkspaces: true,
-                maxResults: 500,
-                orderBy: "alphabet",
-              }),
-              "callback"
-            )() || [],
+          payload: workspaces || [],
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "workspace", count: 0 }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "workspaces",
+            }),
             "error"
           )
         );

@@ -66,7 +66,7 @@ function Record(props: RecordProps) {
 
         <Link
           className="voice-recorder__download-button icon-download"
-          title={t("actions.download", { count: 1 })}
+          title={t("actions.download")}
           href={record.url}
           openInNewTab={record.name}
         />

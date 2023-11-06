@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Step1 from "./form";
 import Step2 from "./summary";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -21,7 +21,7 @@ import { AnyActionType } from "~/actions";
  * CopyWizardProps
  */
 interface CopyWizardProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
@@ -33,7 +33,7 @@ interface CopyWizardProps extends WithTranslation {
 interface CopyWizardState {
   store: CopyWizardStoreType;
   locked: boolean;
-  resultingWorkspace?: WorkspaceType;
+  resultingWorkspace?: WorkspaceDataType;
   step?: CopyCurrentWorkspaceStepType;
 }
 

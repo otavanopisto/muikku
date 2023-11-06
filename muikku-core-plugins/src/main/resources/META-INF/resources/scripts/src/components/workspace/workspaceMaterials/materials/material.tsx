@@ -4,11 +4,9 @@ import { Dispatch, connect } from "react-redux";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
-  MaterialContentNodeType,
-  WorkspaceType,
-  MaterialCompositeRepliesType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
-  WorkspaceAssessementStateType,
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
@@ -28,6 +26,10 @@ import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import {
+  MaterialCompositeReply,
+  WorkspaceAssessmentStateType,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -36,12 +38,12 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface WorkspaceMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialContentNode: MaterialContentNodeType;
-  folder: MaterialContentNodeType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialContentNode: MaterialContentNodeWithIdAndLogic;
+  folder: MaterialContentNodeWithIdAndLogic;
+  compositeReplies: MaterialCompositeReply;
   isViewRestricted: boolean;
   showEvenIfHidden: boolean;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
   readspeakerComponent?: JSX.Element;
 }
@@ -128,7 +130,7 @@ class WorkspaceMaterial extends React.Component<
     let isDisabled = false;
 
     // Values to indicate pending state
-    const pendingValues: WorkspaceAssessementStateType[] = [
+    const pendingValues: WorkspaceAssessmentStateType[] = [
       "pending",
       "pending_fail",
       "pending_pass",

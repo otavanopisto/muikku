@@ -7,7 +7,7 @@ import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import {
   WorkspacesActiveFiltersType,
-  WorkspaceType,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import WorkspaceDialog from "~/components/organization/dialogs/edit-workspace";
 import {
@@ -24,7 +24,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface CourseProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   activeFilters: WorkspacesActiveFiltersType;
 }
 
@@ -108,9 +108,7 @@ class Workspace extends React.Component<CourseProps, CourseState> {
                   <span>{this.props.workspace.educationTypeName}</span>
                 </div>
                 <div>
-                  <label>
-                    {t("labels.teacher", { ns: "users", count: 1 })}:
-                  </label>
+                  <label>{t("labels.teacher", { ns: "users" })}:</label>
                   <span className="application-list__item-body">
                     {this.props.workspace.teachers.map((teacher, index) => {
                       const teacherCount = this.props.workspace.teachers.length;

@@ -13,12 +13,9 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import {
-  MaterialContentNodeListType,
-  WorkspaceType,
-  MaterialCompositeRepliesListType,
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
-  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 
 import "~/sass/elements/buttons.scss";
@@ -45,16 +42,21 @@ import { IconButton } from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { withTranslation, WithTranslation } from "react-i18next";
 import TableOfContentPDFDialog from "./table-of-content-pdf-dialog";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+  MaterialViewRestriction,
+} from "~/generated/client";
 
 /**
  * ContentProps
  */
 interface ContentProps extends WithTranslation {
   status: StatusType;
-  materials: MaterialContentNodeListType;
-  materialReplies: MaterialCompositeRepliesListType;
+  materials: MaterialContentNodeWithIdAndLogic[];
+  materialReplies: MaterialCompositeReply[];
   activeNodeId: number;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType;
   workspaceEditMode: WorkspaceEditModeStateType;
@@ -66,7 +68,7 @@ interface ContentProps extends WithTranslation {
  * ContentState
  */
 interface ContentState {
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNodeWithIdAndLogic[];
   assignmentTypeFilters: string[];
   sessionId: string;
 }
@@ -103,7 +105,7 @@ class ContentComponent extends SessionStateComponent<
   ContentState
 > {
   private storedLastUpdateServerExecution: Function;
-  private originalMaterials: MaterialContentNodeListType;
+  private originalMaterials: MaterialContentNodeWithIdAndLogic[];
   private topicRefs: ToggleOpenHandle[];
 
   /**
@@ -284,7 +286,7 @@ class ContentComponent extends SessionStateComponent<
     const materialFromState = materialParentFromState.children[baseIndex];
     const workspaceId = materialFromState.workspaceMaterialId;
 
-    let material: MaterialContentNodeType;
+    let material: MaterialContentNodeWithIdAndLogic;
     this.originalMaterials.forEach((cn) => {
       cn.children.forEach((ccn) => {
         if (ccn.workspaceMaterialId === materialFromState.workspaceMaterialId) {
@@ -294,7 +296,7 @@ class ContentComponent extends SessionStateComponent<
     });
 
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
-      (cn: MaterialContentNodeType) =>
+      (cn: MaterialContentNodeWithIdAndLogic) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
     );
 
@@ -342,8 +344,8 @@ class ContentComponent extends SessionStateComponent<
    * @param target target
    */
   onInteractionBetweenSections(
-    base: MaterialContentNodeType,
-    target: MaterialContentNodeType
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic
   ) {
     this.hotInsertBeforeSection(
       this.state.materials.findIndex(
@@ -370,8 +372,8 @@ class ContentComponent extends SessionStateComponent<
    * @param target target
    */
   onInteractionBetweenSubnodes(
-    base: MaterialContentNodeType,
-    target: MaterialContentNodeType | number
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic | number
   ) {
     const parentBaseIndex = this.state.materials.findIndex(
       (m) => m.workspaceMaterialId === base.parentId
@@ -467,10 +469,10 @@ class ContentComponent extends SessionStateComponent<
   ) => {
     if (section) {
       switch (viewRestrict) {
-        case MaterialViewRestriction.LOGGED_IN:
+        case MaterialViewRestriction.LoggedIn:
           return "view-restricted-to-logged-in";
 
-        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        case MaterialViewRestriction.WorkspaceMembers:
           return "view-restricted-to-members";
 
         default:
@@ -478,10 +480,10 @@ class ContentComponent extends SessionStateComponent<
       }
     } else {
       switch (viewRestrict) {
-        case MaterialViewRestriction.LOGGED_IN:
+        case MaterialViewRestriction.LoggedIn:
           return "toc__item--view-restricted-to-logged-in";
 
-        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        case MaterialViewRestriction.WorkspaceMembers:
           return "toc__item--view-restricted-to-members";
 
         default:
@@ -501,10 +503,10 @@ class ContentComponent extends SessionStateComponent<
     const { t } = this.props;
 
     switch (viewRestrict) {
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         return t("content.viewRestricted", { ns: "materials" });
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         return t("content.viewRestricted_workspaceMembers", {
           ns: "materials",
         });
@@ -520,7 +522,7 @@ class ContentComponent extends SessionStateComponent<
    * @param section section
    * @returns boolean if section is active
    */
-  isSectionActive = (section: MaterialContentNodeType) => {
+  isSectionActive = (section: MaterialContentNodeWithIdAndLogic) => {
     const { activeNodeId } = this.props;
 
     for (const m of section.children) {
@@ -609,7 +611,7 @@ class ContentComponent extends SessionStateComponent<
                         htmlFor="exercise-page-filter"
                         className="filter-item__label"
                       >
-                        {t("labels.exercises", { ns: "materials", count: 0 })}
+                        {t("labels.exercises", { ns: "materials" })}
                       </label>
                     </div>
                   </div>
@@ -630,7 +632,6 @@ class ContentComponent extends SessionStateComponent<
                       >
                         {t("labels.evaluables", {
                           ns: "materials",
-                          count: 0,
                         })}
                       </label>
                     </div>
@@ -700,16 +701,16 @@ class ContentComponent extends SessionStateComponent<
         {this.state.materials.map((node, nodeIndex) => {
           // Boolean if there is view Restriction for toc topic
           const isTocTopicViewRestricted =
-            node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-            node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
+            node.viewRestrict === MaterialViewRestriction.LoggedIn ||
+            node.viewRestrict === MaterialViewRestriction.WorkspaceMembers;
 
           // section is restricted in following cases:
           // section is restricted for logged in users and users is not logged in...
           // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
           const isTocTopicViewRestrictedFromUser =
-            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+            (node.viewRestrict === MaterialViewRestriction.LoggedIn &&
               !this.props.status.loggedIn) ||
-            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+            (node.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
               !this.props.workspace.isCourseMember &&
               (this.props.status.isStudent || !this.props.status.loggedIn));
 
@@ -762,10 +763,9 @@ class ContentComponent extends SessionStateComponent<
                 node.children.map((subnode) => {
                   // Boolean if there is view Restriction for toc element
                   const isTocElementViewRestricted =
+                    subnode.viewRestrict === MaterialViewRestriction.LoggedIn ||
                     subnode.viewRestrict ===
-                      MaterialViewRestriction.LOGGED_IN ||
-                    subnode.viewRestrict ===
-                      MaterialViewRestriction.WORKSPACE_MEMBERS;
+                      MaterialViewRestriction.WorkspaceMembers;
 
                   const isAssignment = subnode.assignmentType === "EVALUATED";
                   const isExercise = subnode.assignmentType === "EXERCISE";
