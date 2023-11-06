@@ -90,7 +90,7 @@ interface ManagementPanelState {
   workspaceLicense: string;
   workspaceHasCustomImage: boolean;
   workspacePermissions: Array<WorkspaceSignupGroup>;
-  workspaceChatStatus: WorkspaceChatStatus;
+  /* workspaceChatStatus: WorkspaceChatStatus; */
   workspaceUsergroupNameFilter: string;
   currentWorkspaceProducerInputValue: string;
   newWorkspaceImageSrc?: string;
@@ -137,7 +137,7 @@ class ManagementPanel extends React.Component<
           : "",
       workspaceLicense: "",
       workspaceHasCustomImage: false,
-      workspaceChatStatus: null,
+      /* workspaceChatStatus: null, */
       workspacePermissions: [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
@@ -151,7 +151,7 @@ class ManagementPanel extends React.Component<
     this.setWorkspacePublishedTo = this.setWorkspacePublishedTo.bind(this);
     this.setWorkspaceAccessTo = this.setWorkspaceAccessTo.bind(this);
     this.updateWorkspaceType = this.updateWorkspaceType.bind(this);
-    this.setWorkspaceChatTo = this.setWorkspaceChatTo.bind(this);
+    /* this.setWorkspaceChatTo = this.setWorkspaceChatTo.bind(this); */
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
     this.updateSignupStartDate = this.updateSignupStartDate.bind(this);
@@ -232,9 +232,9 @@ class ManagementPanel extends React.Component<
       workspaceHasCustomImage: nextProps.workspace
         ? nextProps.workspace.hasCustomImage
         : false,
-      workspaceChatStatus: nextProps.workspace
+      /* workspaceChatStatus: nextProps.workspace
         ? nextProps.workspace.chatStatus
-        : null,
+        : null, */
       workspacePermissions:
         nextProps.workspace && nextProps.workspace.permissions
           ? nextProps.workspace.permissions
@@ -279,11 +279,11 @@ class ManagementPanel extends React.Component<
    * setWorkspaceChatTo
    * @param value value
    */
-  setWorkspaceChatTo(value: WorkspaceChatStatus) {
+  /* setWorkspaceChatTo(value: WorkspaceChatStatus) {
     this.setState({
       workspaceChatStatus: value,
     });
-  }
+  } */
 
   /**
    * setWorkspaceAccessTo
@@ -623,12 +623,12 @@ class ManagementPanel extends React.Component<
     }
 
     // Chat
-    const workspaceChatStatus = this.state.workspaceChatStatus;
-    const currentWorkspaceChatStatus = this.props.workspace.chatStatus;
+    /* const workspaceChatStatus = this.state.workspaceChatStatus;
+    const currentWorkspaceChatStatus = this.props.workspace.chatStatus; */
 
-    if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
+    /* if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
       payload = Object.assign({ chatStatus: workspaceChatStatus }, payload);
-    }
+    } */
 
     const workspaceDetails: WorkspaceDetails = {
       externalViewUrl: this.props.workspace.details.externalViewUrl,
@@ -652,6 +652,7 @@ class ManagementPanel extends React.Component<
         this.state.workspaceSignupEndDate !== null
           ? this.state.workspaceSignupEndDate.toISOString()
           : null,
+      chatEnabled: false
     };
 
     const currentWorkspaceAsDetails: WorkspaceDetails = {
@@ -666,6 +667,7 @@ class ManagementPanel extends React.Component<
         this.props.workspace.details.signupStart
       ).toISOString(),
       signupEnd: moment(this.props.workspace.details.signupEnd).toISOString(),
+      chatEnabled: this.props.workspace.details.chatEnabled,
     };
 
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
@@ -1171,7 +1173,7 @@ class ManagementPanel extends React.Component<
                     <legend className="form__legend">
                       {t("labels.chatStatus", { ns: "workspace" })}
                     </legend>
-                    <div className="form__fieldset-content form__fieldset-content--horizontal">
+                    {/* <div className="form__fieldset-content form__fieldset-content--horizontal">
                       <div className="form-element form-element--checkbox-radiobutton">
                         <input
                           id="chatEnabled"
@@ -1204,7 +1206,7 @@ class ManagementPanel extends React.Component<
                           {t("labels.chatDisabled", { ns: "workspace" })}
                         </label>
                       </div>
-                    </div>
+                    </div> */}
                   </fieldset>
                 </div>
               </div>

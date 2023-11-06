@@ -28,7 +28,7 @@ import {
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
-  loadWorkspaceChatStatus,
+  /* loadWorkspaceChatStatus, */
   setAvailableCurriculums,
   loadLastWorkspacesFromServer,
 } from "~/actions/workspaces";
@@ -1130,7 +1130,7 @@ export default class Workspace extends React.Component<
                 loadWorkspaceDetailsInCurrentWorkspace() as Action
               );
             }
-            this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
+            /* this.props.store.dispatch(loadWorkspaceChatStatus() as Action); */
           },
         }) as Action
       );
