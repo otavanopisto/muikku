@@ -71,6 +71,7 @@ import {
   loadProfilePurchases,
 } from "~/actions/main-function/profile";
 import RecordsBody from "../components/records/body";
+import GuardianBody from "../components/guardian/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
@@ -160,6 +161,7 @@ export default class MainFunction extends React.Component<
     this.renderAnnouncementsBody = this.renderAnnouncementsBody.bind(this);
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
+    this.renderGuardianBody = this.renderGuardianBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
@@ -974,6 +976,40 @@ export default class MainFunction extends React.Component<
   }
 
   /**
+   * renderGuardianBody
+   */
+  renderGuardianBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      const state = this.props.store.getState();
+
+      if (state.status.isActiveUser) {
+        this.props.store.dispatch(loadContactGroup("counselors") as Action);
+      }
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
+      this.props.store.dispatch(
+        titleActions.updateTitle(i18n.t("labels.studies"))
+      );
+      this.props.store.dispatch(
+        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
+      );
+      this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
+
+      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+    }
+
+    return <GuardianBody />;
+  }
+
+  /**
    * renderEvaluationBody
    */
   renderEvaluationBody() {
@@ -1092,6 +1128,7 @@ export default class MainFunction extends React.Component<
             />
             <Route path="/announcer" render={this.renderAnnouncerBody} />
             <Route path="/guider" render={this.renderGuiderBody} />
+            <Route path="/guardian" render={this.renderGuardianBody} />
             <Route path="/profile" render={this.renderProfileBody} />
             <Route path="/records" render={this.renderRecordsBody} />
             <Route path="/evaluation" render={this.renderEvaluationBody} />

@@ -1,4 +1,6 @@
 import * as React from "react";
+import AnnouncementsPanel from "./panels/announcements-panel";
+import StudentsPanel from "./panels/students-panel";
 /**
  * GuardianComponentProps
  */
@@ -8,6 +10,11 @@ import * as React from "react";
  * GuardianComponent
  * @returns JSX.Element
  */
-const GuardianComponent: React.FC = () => <div>asdasd</div>;
+const GuardianComponent: React.FC = () => (
+  <>
+    <StudentsPanel />
+    <AnnouncementsPanel />
+  </>
+);
 
 export default GuardianComponent;

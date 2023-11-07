@@ -16,6 +16,7 @@ import "~/sass/elements/loaders.scss";
 interface ApplicationPanelProps {
   modifier?: string;
   title?: React.ReactElement<any> | string;
+  titleActions?: JSX.Element;
   icon?: React.ReactElement<any> | string;
   panelTabs?: Array<Tab>;
   onTabChange?: (id: string, hash?: string | Tab) => any;
@@ -97,6 +98,9 @@ export default class ApplicationPanel extends React.Component<
                 </span>
               ) : null}
             </h1>
+          ) : null}
+          {this.props.titleActions ? (
+            <div>{this.props.titleActions}</div>
           ) : null}
           {this.props.panelTabs ? (
             <Tabs

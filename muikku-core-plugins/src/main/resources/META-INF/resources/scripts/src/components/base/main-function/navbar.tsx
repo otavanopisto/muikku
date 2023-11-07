@@ -117,6 +117,15 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
+        modifier: "guardian",
+        trail: "guardian",
+        text: t("labels.dependant", { count: 0 }),
+        href: "/guardian",
+        icon: "users",
+        to: true,
+        condition: this.props.status.permissions.GUARDIAN_VIEW,
+      },
+      {
         modifier: "announcer",
         trail: "announcer",
         text: t("labels.announcer"),
@@ -144,8 +153,6 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.permissions.ORGANIZATION_VIEW,
       },
     ];
-
-    t("labels.forgotPasswordLink");
 
     return (
       <Navbar

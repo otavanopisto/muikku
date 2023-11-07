@@ -88,6 +88,8 @@
       "signIn": "Sign in",
       "date": "Date",
       "dates": "Dates",
+      "dependant_one": "Dependant",
+      "dependant_other": "Dependants",
       "default": "Default",
       "description": "Description",
       "discussion": "Discussion",

@@ -89,6 +89,8 @@
       "date": "Päivämäärä",
       "dates": "Päivämäärät",
       "default": "Oletus",
+      "dependant_one": "Huollettava",
+      "dependant_other": "Huollettavat",
       "description": "Kuvaus",
       "discussion": "Keskustelu",
       "edit": "Muokkaa",

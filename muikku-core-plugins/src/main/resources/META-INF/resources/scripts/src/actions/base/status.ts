@@ -98,6 +98,7 @@ async function loadWhoAMI(
         FORUM_UPDATEENVIRONMENTFORUM: whoAmI.permissions.includes(
           "FORUM_UPDATEENVIRONMENTFORUM"
         ),
+        GUARDIAN_VIEW: whoAmI.permissions.includes("GUARDIAN_VIEW"),
         GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes(
