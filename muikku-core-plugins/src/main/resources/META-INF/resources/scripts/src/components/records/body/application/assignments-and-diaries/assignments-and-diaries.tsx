@@ -457,7 +457,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   {t("labels.feedbackDate", { ns: "journal" })}:
                 </div>
                 <div className="journal__meta-item-data">
-                  {localize.date(journalsData.journalFeedback.created, "L LT")}
+                  {localize.date(journalsData.journalFeedback.created, "l LT")}
                 </div>
               </div>
               <div className="journal__meta-item">
