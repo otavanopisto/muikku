@@ -413,7 +413,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         delete originalWorkspace["isCourseMember"];
         delete originalWorkspace["activityLogs"];
         delete originalWorkspace["permissions"];
-        delete originalWorkspace["chatStatus"];
+        /* delete originalWorkspace["chatStatus"]; */
 
         // Delete details from update so it wont fail
 

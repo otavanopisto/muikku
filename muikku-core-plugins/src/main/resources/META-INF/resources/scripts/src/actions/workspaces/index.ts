@@ -503,7 +503,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const chatApi = MApi.getChatApi();
+      /* const chatApi = MApi.getChatApi(); */
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
       const evaluationApi = MApi.getEvaluationApi();
@@ -540,7 +540,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let producers: WorkspaceMaterialProducer[];
         let isCourseMember: boolean;
         let details: WorkspaceDetails;
-        let chatStatus: WorkspaceChatStatus;
+        /* let chatStatus: WorkspaceChatStatus; */
         const status = state.status;
 
         [
@@ -561,8 +561,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           isCourseMember,
           // eslint-disable-next-line prefer-const
           details,
-          // eslint-disable-next-line prefer-const
-          chatStatus,
         ] = (await Promise.all([
           reuseExistantValue(true, workspace, () =>
             workspaceApi.getWorkspace({
@@ -650,13 +648,13 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )
             : null,
 
-          state.status.loggedIn
+          /* state.status.loggedIn
             ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
                 chatApi.getWorkspaceChatSettings({
                   workspaceEntityId: data.workspaceId,
                 })
               )
-            : null,
+            : null, */
         ])) as any;
 
         workspace.assessmentRequests = assessmentRequests;
@@ -667,7 +665,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.producers = producers;
         workspace.isCourseMember = isCourseMember;
         workspace.details = details;
-        workspace.chatStatus = chatStatus;
+        /* workspace.chatStatus = chatStatus; */
 
         dispatch({
           type: "SET_CURRENT_WORKSPACE",
@@ -1344,7 +1342,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const chatApi = MApi.getChatApi();
     const workspaceApi = MApi.getWorkspaceApi();
 
     const actualOriginal: WorkspaceDataType = { ...data.workspace };
@@ -1362,7 +1359,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["isCourseMember"];
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
-    delete actualOriginal["chatStatus"];
     delete actualOriginal["inactiveStudents"];
 
     try {
@@ -1378,7 +1374,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       delete data.update["details"];
       delete data.update["permissions"];
       delete data.update["producers"];
-      delete data.update["chatStatus"];
 
       if (data.update) {
         await workspaceApi.updateWorkspace({
@@ -1406,7 +1401,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       }
 
       // Update workspace chat status (enabled/disabled)
-      if (newChatStatus) {
+      /* if (newChatStatus) {
         await chatApi.updateWorkspaceChatSettings({
           workspaceEntityId: data.workspace.id,
           updateWorkspaceChatSettingsRequest: {
@@ -1417,7 +1412,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
         // Add chat status back to the update object
         data.update.chatStatus = newChatStatus;
-      }
+      } */
 
       // Then permissions - if any
       if (newPermissions) {
@@ -1933,7 +1928,7 @@ export type UpdateWorkspaceStateType =
 /**
  * loadWorkspaceChatStatus
  */
-const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
+/* const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
   function loadWorkspaceChatStatus() {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -1971,7 +1966,7 @@ const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
         );
       }
     };
-  };
+  }; */
 
 /**
  * loadWorkspaceDetailsInCurrentWorkspace
@@ -2507,7 +2502,6 @@ export {
   cancelAssessmentAtWorkspace,
   updateWorkspace,
   loadStaffMembersOfWorkspace,
-  loadWorkspaceChatStatus,
   updateAssignmentState,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
