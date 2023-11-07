@@ -7,28 +7,20 @@ public class ChatRoomRestModel {
   public ChatRoomRestModel() {
   }
 
-  public ChatRoomRestModel(Long id, String name, String description) {
-    this.id = id;
+  public ChatRoomRestModel(String identifier, String name, String description) {
+    this.setIdentifier(identifier);
     this.name = name;
     this.description = description;
     this.type = ChatRoomType.PUBLIC;
   }
 
-  public ChatRoomRestModel(Long id, String name, Long workspaceEntityId) {
-    this.id = id;
+  public ChatRoomRestModel(String identifier, String name, Long workspaceEntityId) {
+    this.setIdentifier(identifier);
     this.name = name;
     this.workspaceEntityId = workspaceEntityId;
     this.type = ChatRoomType.WORKSPACE;
   }
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-  
   public String getName() {
     return name;
   }
@@ -61,7 +53,15 @@ public class ChatRoomRestModel {
     this.workspaceEntityId = workspaceEntityId;
   }
   
-  private Long id;
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
+  private String identifier;
   private String name;
   private String description;
   private ChatRoomType type;

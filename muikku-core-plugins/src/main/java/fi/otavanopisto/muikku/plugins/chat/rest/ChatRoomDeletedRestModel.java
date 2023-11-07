@@ -5,18 +5,18 @@ public class ChatRoomDeletedRestModel {
   public ChatRoomDeletedRestModel() {
   }
   
-  public ChatRoomDeletedRestModel(Long id) {
-    this.id = id;
+  public ChatRoomDeletedRestModel(String identifier) {
+    this.setIdentifier(identifier);
   }
   
-  public Long getId() {
-    return id;
+  public String getIdentifier() {
+    return identifier;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
   }
 
-  private Long id;
+  private String identifier;
   
 }

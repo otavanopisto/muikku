@@ -89,10 +89,15 @@ public class ChatRESTService {
     return Response.status(Status.NO_CONTENT).build();
   }
 
-  @Path("/room/{ID}")
+  @Path("/room/{IDENTIFIER}")
   @PUT
   @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
-  public Response updateRoom(@PathParam("ID") Long id, ChatRoomRestModel payload) {
+  public Response updateRoom(@PathParam("IDENTIFIER") String identifier, ChatRoomRestModel payload) {
+    
+    Long id = extractId(identifier);
+    if (isUserIdentifier(identifier)) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid room identifier %s", identifier)).build();
+    }
     
     // Validation
     
@@ -154,10 +159,15 @@ public class ChatRESTService {
     return Response.ok(restUsers).build();
   }
 
-  @Path("/room/{ID}")
+  @Path("/room/{IDENTIFIER}")
   @DELETE
   @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
-  public Response deleteRoom(@PathParam("ID") Long id) {
+  public Response deleteRoom(@PathParam("IDENTIFIER") String identifier) {
+    
+    Long id = extractId(identifier);
+    if (isUserIdentifier(identifier)) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid room identifier %s", identifier)).build();
+    }
     
     // Validation
     
@@ -171,7 +181,7 @@ public class ChatRESTService {
     
     // Remove
     
-    chatController.removeRoom(chatRoom, sessionController.getLoggedUserEntity());
+    chatController.deleteRoom(chatRoom, sessionController.getLoggedUserEntity());
     
     // Response
     
@@ -186,7 +196,7 @@ public class ChatRESTService {
     List<ChatRoomRestModel> restRooms = new ArrayList<>();
     for (ChatRoom room : rooms) {
       ChatRoomRestModel restRoom = new ChatRoomRestModel();
-      restRoom.setId(room.getId());
+      restRoom.setIdentifier("room-" + room.getId());
       restRoom.setName(room.getName());
       restRoom.setDescription(room.getDescription());
       restRoom.setType(room.getType());
@@ -195,46 +205,47 @@ public class ChatRESTService {
     return Response.ok(restRooms).build();
   }
   
-  @Path("/publicmessage/{ID}")
+  @Path("/message/{IDENTIFIER}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response postPublicMessage(@PathParam("ID") Long id, MessageContentRestModel payload) {
+  public Response postMessage(@PathParam("IDENTIFIER") String identifier, MessageContentRestModel payload) {
     if (StringUtils.isEmpty(payload.getMessage())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
     }
-    ChatRoom room = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
-    if (room == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
+    Long id = extractId(identifier);
+    if (isUserIdentifier(identifier)) {
+      
+      // Post private message
+      
+      UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
+      if (targetUserEntity == null) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
+      }
+      if (targetUserEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+        return Response.status(Status.BAD_REQUEST).entity("Cannot message self").build();
+      }
+      
+      // For the time being, we do not support private messaging between students
+      
+      if (chatController.isStudent(sessionController.getLoggedUserEntity()) && chatController.isStudent(targetUserEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      
+      chatController.postMessage(targetUserEntity, sessionController.getLoggedUserEntity(), payload.getMessage());
     }
-    if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), room)) {
-      return Response.status(Status.FORBIDDEN).build();
+    else {
+      
+      // Post public room message
+
+      ChatRoom room = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
+      if (room == null) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
+      }
+      if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), room)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      chatController.postMessage(room, sessionController.getLoggedUserEntity(), payload.getMessage());
     }
-    chatController.postMessage(room, sessionController.getLoggedUserEntity(), payload.getMessage());
-    return Response.status(Status.NO_CONTENT).build();
-  }
-  
-  @Path("/privatemessage/{ID}")
-  @POST
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response postPrivateMessage(@PathParam("ID") Long id, MessageContentRestModel payload) {
-    if (StringUtils.isEmpty(payload.getMessage())) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
-    }
-    UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
-    if (targetUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
-    }
-    if (targetUserEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Cannot message self").build();
-    }
-    
-    // For the time being, we do not support private messaging between students
-    
-    if (chatController.isStudent(sessionController.getLoggedUserEntity()) && chatController.isStudent(targetUserEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    chatController.postMessage(targetUserEntity, sessionController.getLoggedUserEntity(), payload.getMessage());
     return Response.status(Status.NO_CONTENT).build();
   }
   
@@ -286,36 +297,40 @@ public class ChatRESTService {
     return Response.status(Status.NO_CONTENT).build();
   }
   
-  @Path("/privatemessages/{ID}")
+  @Path("/messages/{IDENTIFIER}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listPrivateMessages(@PathParam("ID") Long id, @QueryParam("count") @DefaultValue ("25") Integer count, @QueryParam("earlierThan") ISO8601UTCTimestamp earlierThanISO) {
-    UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
-    if (targetUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
+  public Response listMessages(@PathParam("IDENTIFIER") String identifier, @QueryParam("count") @DefaultValue ("25") Integer count, @QueryParam("earlierThan") ISO8601UTCTimestamp earlierThanISO) {
+    List<ChatMessage> messages;
+    Long id = extractId(identifier);
+    if (isUserIdentifier(identifier)) {
+      
+      // List private messages
+      
+      UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
+      if (targetUserEntity == null) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
+      }
+      Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
+      messages = chatController.listMessages(sessionController.getLoggedUserEntity(), targetUserEntity, earlierThan, count);
     }
-    Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
-    List<ChatMessage> messages = chatController.listMessages(sessionController.getLoggedUserEntity(), targetUserEntity, earlierThan, count);
-    List<ChatMessageRestModel> restMessages = new ArrayList<>();
-    for (ChatMessage message : messages) {
-      restMessages.add(chatController.toRestModel(message));
+    else {
+      
+      // List public room messages
+      
+      ChatRoom chatRoom = chatController.findChatRoomByIdAndArchived(id, Boolean.FALSE);
+      if (chatRoom == null) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
+      }
+      if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), chatRoom)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
+      messages = chatController.listMessages(chatRoom, earlierThan, count);
     }
-    return Response.ok(restMessages).build();
-  }
-
-  @Path("/publicmessages/{ID}")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listPublicMessages(@PathParam("ID") Long id, @QueryParam("count") @DefaultValue ("25") Integer count, @QueryParam("earlierThan") ISO8601UTCTimestamp earlierThanISO) {
-    ChatRoom chatRoom = chatController.findChatRoomByIdAndArchived(id,  Boolean.FALSE);
-    if (chatRoom == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Room %d not found", id)).build();
-    }
-    if (!chatController.isInRoom(sessionController.getLoggedUserEntity(), chatRoom)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    Date earlierThan = earlierThanISO == null ? new Date() : earlierThanISO.getDate();
-    List<ChatMessage> messages = chatController.listMessages(chatRoom, earlierThan, count);
+    
+    // Convert to REST models
+    
     List<ChatMessageRestModel> restMessages = new ArrayList<>();
     for (ChatMessage message : messages) {
       restMessages.add(chatController.toRestModel(message));
@@ -410,6 +425,15 @@ public class ChatRESTService {
         sessionController.getLoggedUserEntity(),
         session == null ? null : session.getId());
     return Response.status(Status.NO_CONTENT).build();    
+  }
+  
+  private boolean isUserIdentifier(String identifier) {
+    return StringUtils.startsWith("user-", identifier);
+  }
+  
+  private Long extractId(String identifier) {
+    int i = identifier.indexOf('-');
+    return Long.valueOf(identifier.substring(i + 1));
   }
 
 }

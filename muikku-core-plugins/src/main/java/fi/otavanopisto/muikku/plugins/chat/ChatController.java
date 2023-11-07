@@ -241,7 +241,7 @@ public class ChatController {
 
   public void updatePublicRoom(ChatRoom chatRoom, String name, String description, UserEntity modifier) {
     chatRoom = chatRoomDAO.update(chatRoom, name, description, modifier.getId());
-    ChatRoomRestModel room = new ChatRoomRestModel(chatRoom.getId(), chatRoom.getName(), chatRoom.getDescription());
+    ChatRoomRestModel room = new ChatRoomRestModel("room-" + chatRoom.getId(), chatRoom.getName(), chatRoom.getDescription());
     
     // Inform all active chat users of an updated public room
     
@@ -254,7 +254,7 @@ public class ChatController {
     }
   }
   
-  public void removeRoom(ChatRoom chatRoom, UserEntity remover) {
+  public void deleteRoom(ChatRoom chatRoom, UserEntity remover) {
     
     // Remove
     
@@ -265,7 +265,7 @@ public class ChatController {
     
     ObjectMapper mapper = new ObjectMapper();
     try {
-      webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new ChatRoomDeletedRestModel(chatRoom.getId())), listUsers());
+      webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new ChatRoomDeletedRestModel("room-" + chatRoom.getId())), listUsers());
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
@@ -364,7 +364,7 @@ public class ChatController {
         }
         else if (deleted) {
           roomUsers.remove(room.getId());
-          webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new ChatRoomDeletedRestModel(room.getId())), userIds);
+          webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new ChatRoomDeletedRestModel("room-" + room.getId())), userIds);
         }
       }
       catch (JsonProcessingException e) {
@@ -552,8 +552,12 @@ public class ChatController {
     ChatMessageRestModel msg = new ChatMessageRestModel();
     msg.setId(message.getId());
     msg.setSourceUserEntityId(message.getSourceUserEntityId());
-    msg.setTargetRoomId(message.getTargetRoomId());
-    msg.setTargetUserEntityId(message.getTargetUserEntityId());
+    if (message.getTargetRoomId() != null) {
+      msg.setTargetIdentifier("room-" + message.getTargetRoomId());
+    }
+    else {
+      msg.setTargetIdentifier("user-" + message.getTargetRoomId());
+    }
     msg.setNick(message.getNick());
     msg.setMessage(message.getArchived() ? null : message.getMessage());
     msg.setSentDateTime(message.getSent());
@@ -564,7 +568,7 @@ public class ChatController {
   
   public ChatRoomRestModel toRestModel(ChatRoom room) {
     ChatRoomRestModel restRoom = new ChatRoomRestModel();
-    restRoom.setId(room.getId());
+    restRoom.setIdentifier("room-" + room.getId());
     restRoom.setName(room.getName());
     restRoom.setDescription(room.getDescription());
     restRoom.setType(room.getType());

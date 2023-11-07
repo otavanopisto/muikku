@@ -20,22 +20,6 @@ public class ChatMessageRestModel {
     this.sourceUserEntityId = sourceUserEntityId;
   }
   
-  public Long getTargetUserEntityId() {
-    return targetUserEntityId;
-  }
-  
-  public void setTargetUserEntityId(Long targetUserEntityId) {
-    this.targetUserEntityId = targetUserEntityId;
-  }
-  
-  public Long getTargetRoomId() {
-    return targetRoomId;
-  }
-  
-  public void setTargetRoomId(Long targetRoomId) {
-    this.targetRoomId = targetRoomId;
-  }
-  
   public String getNick() {
     return nick;
   }
@@ -76,10 +60,17 @@ public class ChatMessageRestModel {
     this.archived = archived;
   }
   
+  public String getTargetIdentifier() {
+    return targetIdentifier;
+  }
+
+  public void setTargetIdentifier(String targetIdentifier) {
+    this.targetIdentifier = targetIdentifier;
+  }
+
   private Long id;
   private Long sourceUserEntityId;
-  private Long targetUserEntityId;
-  private Long targetRoomId;
+  private String targetIdentifier;
   private String nick;
   private String message;
   private Date sentDateTime;
