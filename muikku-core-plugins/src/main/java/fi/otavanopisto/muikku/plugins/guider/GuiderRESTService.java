@@ -574,7 +574,7 @@ public class GuiderRESTService extends PluginRESTService {
     boolean showCredits = false;
     
     // An indicator that shows if the credits should be shown
-    if (curriculumName != null && curriculumName.equals("OPS 2021") && (user.getStudyProgrammeName() != null && user.getStudyProgrammeName().equals("Nettilukio"))) {
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (user.getStudyProgrammeEducationType() != null && user.getStudyProgrammeEducationType().equals("lukio"))) {
       showCredits = true;
     }
     
