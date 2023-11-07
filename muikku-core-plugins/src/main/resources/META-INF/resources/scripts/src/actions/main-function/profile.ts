@@ -1,7 +1,6 @@
-import promisify, { promisifyNewConstructor } from "~/util/promisify";
+import { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
@@ -11,13 +10,13 @@ import {
 } from "~/actions/base/status";
 import {
   ProfileProperty,
-  PurchaseType,
   WorklistSection,
 } from "~/reducers/main-function/profile";
 import moment from "~/lib/moment";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
 import {
+  CeeposOrder,
   UserStudentAddress,
   UserWithSchoolData,
   WorklistBillingStateType,
@@ -25,7 +24,7 @@ import {
   WorklistSummary,
   WorklistTemplate,
 } from "~/generated/client";
-import i18n, { localizeTime } from "~/locales/i18n";
+import i18n, { localize } from "~/locales/i18n";
 
 /**
  * LoadProfilePropertiesSetTriggerType
@@ -243,7 +242,7 @@ export type SET_WORKLIST = SpecificActionType<
 >;
 export type SET_PURCHASE_HISTORY = SpecificActionType<
   "SET_PURCHASE_HISTORY",
-  Array<PurchaseType>
+  Array<CeeposOrder>
 >;
 
 /**
@@ -275,7 +274,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
           });
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -310,7 +309,7 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -327,11 +326,10 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
     ) => {
+      const userpluginApi = MApi.getUserpluginApi();
+
       try {
-        const credentials: any = await promisify(
-          mApi().userplugin.credentials.read(),
-          "callback"
-        )();
+        const credentials = await userpluginApi.getUserPluginCredentials();
 
         if (credentials && credentials.username) {
           dispatch({
@@ -340,7 +338,7 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -471,55 +469,6 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
   };
 
 /**
- * loadProfileChatSettings
- */
-const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
-  function loadProfileChatSettings() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-      if (state.profile.chatSettings) {
-        return;
-      }
-      try {
-        const chatSettings: any = await promisify(
-          mApi().chat.settings.cacheClear().read(),
-          "callback"
-        )();
-
-        if (chatSettings && chatSettings.visibility) {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: chatSettings,
-          });
-        } else {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: {
-              visibility: "DISABLED",
-              nick: null,
-            },
-          });
-        }
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        } else {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: {
-              visibility: "DISABLED",
-              nick: null,
-            },
-          });
-        }
-      }
-    };
-  };
-
-/**
  * updateProfileChatSettings
  * @param data data
  */
@@ -555,9 +504,11 @@ const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
           data.fail && data.fail();
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        // Commented out for now and will replaced with ne
+        // after the new chat is implemented
+        /* if (!(err instanceof MApiError)) {
           throw err;
-        }
+        } */
 
         data.fail && data.fail();
       }
@@ -716,10 +667,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
           },
         });
 
-        let displayName = localizeTime.date(
-          worklistItem.entryDate,
-          "MMMM YYYY"
-        );
+        let displayName = localize.date(worklistItem.entryDate, "MMMM YYYY");
         displayName = displayName[0].toUpperCase() + displayName.substr(1);
 
         const expectedSummary: WorklistSummary = {
@@ -1203,24 +1151,31 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
         const studentId = state.status.userSchoolDataIdentifier;
-        const historia: PurchaseType[] = (await promisify(
-          mApi().ceepos.user.orders.read(studentId),
-          "callback"
-        )()) as any;
+
+        const orderHistory: CeeposOrder[] = await ceeposApi.getCeeposUserOrders(
+          {
+            userIdentifier: studentId,
+          }
+        );
 
         dispatch({
           type: "SET_PURCHASE_HISTORY",
-          payload: historia,
+          payload: orderHistory,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "orders", count: 0 }),
+            i18n.t("notifications.loadError", {
+              ns: "orders",
+              context: "orders",
+            }),
             "error"
           )
         );
@@ -1234,7 +1189,6 @@ export {
   loadProfileUsername,
   loadProfileAddress,
   updateProfileAddress,
-  loadProfileChatSettings,
   updateProfileChatSettings,
   uploadProfileImage,
   deleteProfileImage,

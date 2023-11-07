@@ -4,8 +4,6 @@ import { Dispatch } from "react-redux";
 import {
   MessagesStateType,
   MessagesStatePatch,
-  MessageThreadUpdateType,
-  MessageRecepientType,
   MessagesNavigationItem,
 } from "~/reducers/main-function/messages";
 import { displayNotification } from "~/actions/base/notifications";
@@ -84,7 +82,7 @@ export type UPDATE_ONE_MESSAGE_THREAD = SpecificActionType<
   "UPDATE_ONE_MESSAGE_THREAD",
   {
     thread: MessageThread;
-    update: MessageThreadUpdateType;
+    update: Partial<MessageThread>;
   }
 >;
 export type UPDATE_MESSAGES_SIGNATURE = SpecificActionType<
@@ -477,8 +475,6 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
       }
       dispatch(updateUnreadMessageThreadsCount());
 
-      /* mApi().communicator.sentitems.cacheClear(); */
-
       message.success && message.success();
 
       const state = getState();
@@ -509,8 +505,7 @@ const sendMessage: SendMessageTriggerType = function sendMessage(message) {
           state.messages.location === "inbox" ||
           state.messages.location === "unread";
         const weAreOneOfTheRecepients = result.recipients.find(
-          (recipient: MessageRecepientType) =>
-            recipient.userEntityId === status.userId
+          (recipient) => recipient.userEntityId === status.userId
         );
         const isInboxOrUnreadAndWeAreOneOfTheRecepients =
           isInboxOrUnread && weAreOneOfTheRecepients;
@@ -851,8 +846,6 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
         }
       }
 
-      mApi().communicator[getApiId(item)].cacheClear();
-
       if (!dontLockToolbar) {
         dispatch({
           type: "UNLOCK_TOOLBAR",
@@ -1188,8 +1181,7 @@ const loadMessageThread: LoadMessageThreadTriggerType =
           displayNotification(
             i18n.t("notifications.loadError", {
               ns: "messaging",
-              // this is a temporary fix, will be further fixed in 6697
-              count: 0,
+              constext: "messages",
             }),
             "error"
           )

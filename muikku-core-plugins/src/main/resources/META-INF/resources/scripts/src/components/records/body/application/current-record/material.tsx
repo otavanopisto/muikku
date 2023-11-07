@@ -1,10 +1,8 @@
 import * as React from "react";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import {
-  AssignmentType,
-  MaterialCompositeRepliesType,
-  MaterialContentNodeType,
-  WorkspaceType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade } from "~/util/modifiers";
@@ -20,20 +18,25 @@ import {
 } from "~/components/general/application-list";
 import AnimateHeight from "react-animate-height";
 import Dropdown from "~/components/general/dropdown";
+import {
+  MaterialAssigmentType,
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * MaterialProps
  */
 interface MaterialProps extends WithTranslation {
-  material: MaterialContentNodeType;
-  workspace: WorkspaceType;
+  material: MaterialContentNodeWithIdAndLogic;
+  workspace: WorkspaceDataType;
   status: StatusType;
-  compositeReply: MaterialCompositeRepliesType;
+  compositeReply: MaterialCompositeReply;
   open: boolean;
   onMaterialClick: (
     id: number,
-    type: AssignmentType
+    type: MaterialAssigmentType
   ) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
@@ -109,9 +112,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>
-                  {localizeTime.date(compositeReply.evaluationInfo.date)}
-                </span>
+                <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span
@@ -127,9 +128,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
             <Dropdown
               openByHover
               content={
-                <span>
-                  {localizeTime.date(compositeReply.evaluationInfo.date)}
-                </span>
+                <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
               }
             >
               <span

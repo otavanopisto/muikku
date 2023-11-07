@@ -34,6 +34,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 
 public class NewEvaluationTestsBase extends AbstractUITest {
@@ -58,9 +59,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
 
-      Double price = 75d;
-      WorklistBasePriceRestModel courseBasePrices = new WorklistBasePriceRestModel();
-      courseBasePrices.put(course1.getCourseModules().iterator().next().getId(), price);
+      Double price = 0d;
+      CourseAssessmentPrice courseBasePrice = new CourseAssessmentPrice(price);
       
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -82,8 +82,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       try {
       logout();
+      
       mockBuilder
-        .mockLogin(student);
+        .mockLogin(student)
+        .mockCompositeGradingScales()
+        .mockCourseAssessmentPrice(course1.getId(), courseBasePrice);
       login();
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -102,31 +105,32 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
-        .mockCompositeGradingScales()
         .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, dateNow)
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockWorkspaceBasePrice(course1.getId(), courseBasePrices)
         .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2))
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
+      
       sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
       waitAndClick(".button--standard-ok");
       assertPresent(".notification-queue__items .notification-queue__item--success");
 
-      
       waitAndClick(".link--workspace-assessment");
+
+      waitForVisible(".dialog .dialog__content");
+      waitAndClick(".button--standard-ok");      
+      assertPresent(".notification-queue__items .notification-queue__item--success");
+      
       courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
       mockBuilder
         .addCourseStudent(course1.getId(), courseStudent)
-        .mockAssessmentRequests(student.getId(), course1.getId(), null, null, false, false, dateNow)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", true, false, dateNow)
         .build();
-      waitForVisible(".dialog .dialog__content");
-      waitAndClick(".button--standard-ok");
-
-      assertPresent(".notification-queue__items .notification-queue__item--success");
-
+      
+      refresh();
+      
       waitAndClick(".link--workspace-assessment");
       waitForVisible(".dialog .dialog__content");
 
@@ -138,9 +142,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
       waitAndClick(".button--standard-ok");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      logout();      
       
-      mockBuilder.mockLogin(admin);
+      logout();
+      
+      mockBuilder.mockLogin(admin).mockWorkspaceBilledPrice(String.valueOf(price/2));
       login();
       assertPresent(".navbar__item--communicator .indicator");
       navigate("/communicator", false);
@@ -167,7 +172,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       addTextToCKEditor("Test evaluation.");
       
       selectOption("#workspaceEvaluationGrade", "PYRAMUS-1");
-      selectOption("#workspaceEvaluationBilling", "37.5");
       mockBuilder
       .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), dateNow, true)
       .mockStaffCompositeCourseAssessmentRequests()
@@ -177,7 +181,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED_PASS));
       mockBuilder
         .mockCourseAssessments(course1, courseStudent, admin)
-        .mockWorkspaceBilledPrice(String.valueOf(price/2))
         .addCourseStudent(course1.getId(), courseStudent)
         .mockCourseActivities();
       
@@ -185,10 +188,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitForPresent(".dialog--evaluation-archive-student.dialog--visible .button--standard-ok");
       waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".dialog--evaluation-archive-student.dialog--visible", 3, 2000);
       assertText(".evaluation-modal__event .evaluation-modal__event-grade.state-PASSED", "Excellent");
-      EqualToJsonPattern jsonPattern = new EqualToJsonPattern("{\"price\": 37.5}", true, true);
-      verify(putRequestedFor(urlEqualTo("/1/worklist/billedPrice"))
-          .withRequestBody(jsonPattern)
-          .withHeader("Content-Type", equalTo("application/json")));
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -579,7 +578,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       OffsetDateTime date = OffsetDateTime.now(ZoneOffset.UTC);
       Builder mockBuilder = mocker();
 
-      try {
+      try{
         Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
         mockBuilder
         .addStaffMember(admin)
@@ -587,24 +586,25 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .mockLogin(admin)
         .addCourse(course1)
         .build();
+        
         login();
+  
         Workspace workspace = createWorkspace(course1, Boolean.TRUE);
 
         CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
-        MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-        mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
+        MockCourseStudent mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         mockBuilder
           .addCourseStaffMember(course1.getId(), courseStaffMember)
           .addCourseStudent(course1.getId(), mockCourseStudent)
           .build();
-        try {
-          WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceFolder workspaceFolder = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
 
-          WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(),
-              "Test", "text/html;editor=CKEditor",
-              "<p><object type=\"application/vnd.muikku.field.journal\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb&quot;}\" />"
-              + "<input name=\"muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb\" type=\"file\" /></object></p>",
-              "JOURNAL");
+        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(),
+            "Test", "text/html;editor=CKEditor",
+            "<p><object type=\"application/vnd.muikku.field.journal\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb&quot;}\" />"
+            + "<input name=\"muikku-field-YxZ7XNIvcBgn2HDTl9qj2Wyb\" type=\"file\" /></object></p>",
+            "JOURNAL");
           try {
             String contentInput = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam convallis mattis purus pharetra sagittis. Mauris eget ullamcorper leo. Donec et sollicitudin neque. Mauris in dapibus augue."
                 + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
@@ -612,6 +612,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             logout();
             mockBuilder.mockLogin(student);
             login();
+            
             navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
             waitForPresent(".content-panel__chapter-title-text");
             addTextToCKEditor(".material-page__journalfield-wrapper", contentInput);
@@ -684,18 +685,15 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             waitForVisible(".dialog--studies");
             waitForVisible(".journal--feedback");
             assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);
-//            TODO: This can be enabled when records show date without zeros in it.
-//            assertTextStartsWith(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
+            assertTextStartsWith(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
             assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
           } finally {
-            archiveUserByEmail(student.getEmail());
             deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+            deleteWorkspace(workspace.getId());
+            archiveUserByEmail(student.getEmail());
           }
         } finally {
-          deleteWorkspace(workspace.getId());
-        }
-      } finally {
-        mockBuilder.wiremockReset();
+          mockBuilder.wiremockReset();
       }
     }
   

@@ -65,7 +65,6 @@ import {
   loadProfilePropertiesSet,
   loadProfileUsername,
   loadProfileAddress,
-  loadProfileChatSettings,
   setProfileLocation,
   loadProfileWorklistTemplates,
   loadProfileWorklistSections,
@@ -91,7 +90,6 @@ import {
 } from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
-import Chat from "../components/chat/chat";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
 import CeeposPay from "../components/ceepos/pay";
@@ -236,21 +234,6 @@ export default class MainFunction extends React.Component<
       this.loadProfileData(window.location.hash.replace("#", "").split("?")[0]);
     }
   }
-
-  /**
-   * loadChatSettings
-   */
-  loadChatSettings = (): void => {
-    if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
-      if (!this.loadedChatSettings) {
-        this.loadedChatSettings = true;
-        this.props.store.dispatch(loadProfileChatSettings() as Action);
-      }
-    } else if (!this.subscribedChatSettings) {
-      this.subscribedChatSettings = true;
-      this.props.store.subscribe(this.loadChatSettings);
-    }
-  };
 
   /**
    * updateFirstTime
@@ -601,7 +584,6 @@ export default class MainFunction extends React.Component<
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
       }
-      this.loadChatSettings();
     }
 
     return <CousePickerBody />;
@@ -637,7 +619,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         titleActions.updateTitle(i18n.t("labels.site"))
       );
-      this.loadChatSettings();
     }
     return <IndexBody />;
   }
@@ -748,7 +729,6 @@ export default class MainFunction extends React.Component<
         }) as Action
       );
       this.props.store.dispatch(loadStudyprogrammes() as Action);
-      this.loadChatSettings();
     }
     return <OrganizationAdministrationBody />;
   }
@@ -794,8 +774,6 @@ export default class MainFunction extends React.Component<
           this.loadCommunicatorData(currentLocation);
         }
       }
-
-      this.loadChatSettings();
     }
 
     return <CommunicatorBody />;
@@ -831,8 +809,6 @@ export default class MainFunction extends React.Component<
           this.loadDiscussionData(currentLocation);
         }) as Action
       );
-
-      this.loadChatSettings();
     }
     return <DiscussionBody />;
   }
@@ -847,7 +823,7 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          i18n.t("labels.announcement", { ns: "messaging", count: 0 })
+          i18n.t("labels.announcements", { ns: "messaging" })
         )
       );
       this.props.store.dispatch(
@@ -866,7 +842,6 @@ export default class MainFunction extends React.Component<
           parseInt(window.location.hash.replace("#", ""))
         );
       }
-      this.loadChatSettings();
     }
     return <AnnouncementsBody />;
   }
@@ -897,8 +872,6 @@ export default class MainFunction extends React.Component<
           window.location.hash.replace("#", "").split("/")
         );
       }
-
-      this.loadChatSettings();
     }
 
     return <AnnouncerBody />;
@@ -927,8 +900,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(updateUserGroupFilters() as Action);
 
       this.loadGuiderData();
-
-      this.loadChatSettings();
     }
     return <GuiderBody />;
   }
@@ -955,8 +926,6 @@ export default class MainFunction extends React.Component<
       } else {
         this.props.store.dispatch(loadProfileAddress() as Action);
       }
-
-      this.loadChatSettings();
 
       if (!window.location.hash) {
         window.location.hash = "#general";
@@ -999,7 +968,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
       this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
-      this.loadChatSettings();
     }
 
     return <RecordsBody />;
@@ -1037,7 +1005,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadEvaluationSortFunctionFromServer() as Action
       );
-      this.loadChatSettings();
     }
 
     return <EvaluationBody />;
@@ -1130,7 +1097,6 @@ export default class MainFunction extends React.Component<
             <Route path="/evaluation" render={this.renderEvaluationBody} />
             <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
             <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
-            <Chat />
           </InfoPopperProvider>
         </div>
       </BrowserRouter>

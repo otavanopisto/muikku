@@ -252,7 +252,10 @@ export async function loadMessagesHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        i18n.t("notifications.loadError", { ns: "messaging" }),
+        i18n.t("notifications.loadError", {
+          ns: "messaging",
+          context: "messages",
+        }),
         "error"
       )
     );

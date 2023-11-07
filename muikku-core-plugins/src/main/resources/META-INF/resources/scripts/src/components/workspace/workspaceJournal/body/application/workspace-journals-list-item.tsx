@@ -11,7 +11,7 @@ import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
@@ -26,7 +26,7 @@ import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * JournalProps
@@ -34,7 +34,7 @@ import { localizeTime } from "~/locales/i18n";
 interface WorkspaceJournalsListItemProps extends WithTranslation {
   status: StatusType;
   journal: WorkspaceJournalWithComments;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   asCurrent: boolean;
   showCommentList: boolean;
   setCurrentJournal: SetCurrentJournalTriggerType;
@@ -168,9 +168,7 @@ class WorkspaceJournalsListItem extends React.Component<
             </div>
 
             <div className="application-list__item-header-aside">
-              <span>
-                {localizeTime.date(this.props.journal.created, "L LT")}
-              </span>
+              <span>{localize.date(this.props.journal.created, "L LT")}</span>
             </div>
           </ApplicationListItemHeader>
           <ApplicationListItemBody className="application-list__item-body">

@@ -8,9 +8,10 @@ import { StatusType } from "~/reducers/base/status";
 import PagerV2 from "../../pagerV2";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { buildAddress } from "../helpers";
-import { HistoryEntryType } from "~/@types/pedagogy-form";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { PedagogyHistoryEntryType } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * BasicInformationProps
@@ -28,11 +29,12 @@ const itemsPerPage = 5;
  * @returns JSX.Element
  */
 const BasicInformation: React.FC<BasicInformationProps> = (props) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { status } = props;
   const { data } = usePedagogyContext();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
   const [historyFilters, setHistoryFilters] = React.useState<
-    HistoryEntryType[]
+    PedagogyHistoryEntryType[]
   >(["EDIT", "VIEW"]);
 
   /**
@@ -49,7 +51,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
    * @param filter filter
    */
   const handleClickHistoryFilter =
-    (filter: HistoryEntryType) =>
+    (filter: PedagogyHistoryEntryType) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (historyFilters.includes(filter)) {
         unstable_batchedUpdates(() => {
@@ -70,7 +72,11 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
    */
   const renderHistory = () => {
     if (!data || data.history.length === 0) {
-      return <p>Ei tapahtumia</p>;
+      return (
+        <p>
+          {t("content.empty", { ns: "pedagogySupportPlan", context: "events" })}
+        </p>
+      );
     }
 
     const offset = currentPage * itemsPerPage;
@@ -129,13 +135,15 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Perustiedot</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.basicInfo", { ns: "pedagogySupportPlan" })}
+        </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
               id="studentName"
-              label="Nimi"
+              label={t("labels.name", { ns: "common" })}
               type="text"
               value={
                 data
@@ -152,7 +160,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="dateOfBirth"
-              label="Syntymäaika"
+              label={t("labels.dateOfBirth", { ns: "common" })}
               type="text"
               value={
                 (data?.studentInfo?.dateOfBirth &&
@@ -168,7 +176,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="phoneNumber"
-              label="Puhelinnumero"
+              label={t("labels.phone", { ns: "common" })}
               type="text"
               value={data?.studentInfo?.phoneNumber || "-"}
               disabled
@@ -180,7 +188,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="email"
-              label="Sähköposti"
+              label={t("labels.email", { ns: "common" })}
               type="text"
               value={data?.studentInfo?.email || "-"}
               disabled
@@ -192,7 +200,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="address"
-              label="Osoite"
+              label={t("labels.address", { ns: "common" })}
               type="text"
               value={data ? `${buildAddress(data.studentInfo)}` : "-"}
               disabled
@@ -202,7 +210,9 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
         </div>
       </fieldset>
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Historia</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.history", { ns: "common" })}
+        </legend>
         <div
           style={{
             display: "flex",
@@ -222,7 +232,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
                 : "none",
             }}
           >
-            Muokkaustapahtumat
+            {t("labels.events", { ns: "pedagogySupportPlan", context: "edit" })}
           </div>
           <div
             className={`hops-container__history-filter ${
@@ -238,7 +248,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
                 : "none",
             }}
           >
-            Katselutapahtumat
+            {t("labels.events", { ns: "pedagogySupportPlan", context: "view" })}
           </div>
         </div>
         <div className="hops-container__info">{renderHistory()}</div>

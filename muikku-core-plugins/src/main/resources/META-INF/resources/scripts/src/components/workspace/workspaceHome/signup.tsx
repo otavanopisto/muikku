@@ -1,7 +1,7 @@
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import "~/sass/elements/panel.scss";
@@ -12,7 +12,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface SignUpPanelProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**

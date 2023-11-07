@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import MApi from "~/api/api";
 import { useTranslation } from "react-i18next";
 
@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
  */
 export interface UseAssignmentsState {
   isLoading: boolean;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 const recordsApi = MApi.getRecordsApi();
@@ -56,7 +56,7 @@ export const useRecordWorkspace = (
         const workspace = (await recordsApi.getRecordsWorkspace({
           workspaceId: workspaceId,
           userIdentifier: userEntityId,
-        })) as WorkspaceType;
+        })) as WorkspaceDataType;
 
         if (!isCancelled) {
           setRecordWorkspace((recordWorkspaceData) => ({

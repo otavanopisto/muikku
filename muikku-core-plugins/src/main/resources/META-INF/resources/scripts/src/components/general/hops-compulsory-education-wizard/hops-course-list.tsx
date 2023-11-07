@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-  SchoolSubject,
-  StudentActivityByStatus,
-  StudentActivityCourse,
-  StudentCourseChoice,
-  SupervisorOptionalSuggestion,
-} from "~/@types/shared";
+import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
 import HopsSuggestionList from "./hops-suggested-list";
 import {
   ListContainer,
@@ -24,6 +18,11 @@ import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import Dropdown from "~/components/general/dropdown";
 import Button from "~/components/general/button";
 import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
+import {
+  OptionalCourseSuggestion,
+  StudentCourseChoice,
+  StudentStudyActivity,
+} from "~/generated/client";
 
 /**
  * CourseListProps
@@ -61,7 +60,7 @@ interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
   /**
    * List of student choices
    */
-  supervisorOptionalSuggestionsList?: SupervisorOptionalSuggestion[];
+  supervisorOptionalSuggestionsList?: OptionalCourseSuggestion[];
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
   updateSuggestionOptional?: (
     params: UpdateSupervisorOptionalSuggestionParams
@@ -117,7 +116,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
 
       // List item options with default values
       let canBeSelected = true;
-      let courseSuggestions: StudentActivityCourse[] = [];
+      let courseSuggestions: StudentStudyActivity[] = [];
 
       let selectedByStudent = false;
       let suggestedBySupervisor = false;
@@ -209,7 +208,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         props.useCase === "hops-planning";
 
       /**
-       * Suggestion list is shown only if not disabled, for supervisor only
+       * WorkspaceSuggestion list is shown only if not disabled, for supervisor only
        * and there can be made selections
        */
       const showSuggestionList =

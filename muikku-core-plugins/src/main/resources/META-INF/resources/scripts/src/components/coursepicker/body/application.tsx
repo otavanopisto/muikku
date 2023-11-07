@@ -9,7 +9,10 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/react-select-override.scss";
 import Select from "react-select";
 import { StateType } from "~/reducers";
-import { WorkspaceBaseFilterType, WorkspacesType } from "~/reducers/workspaces";
+import {
+  WorkspaceBaseFilterType,
+  WorkspacesState,
+} from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -23,7 +26,7 @@ type CoursepickerFilterOption = OptionDefault<WorkspaceBaseFilterType>;
 interface CoursepickerApplicationProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside: React.ReactElement<any>;
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
   status: StatusType;
 }
 

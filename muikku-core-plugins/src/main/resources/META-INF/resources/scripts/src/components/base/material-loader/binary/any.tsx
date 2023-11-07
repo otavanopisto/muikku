@@ -1,14 +1,17 @@
-import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
 import Link from "~/components/general/link";
+import { MaterialContentNode } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**
  * Any
  * @param props props
  * @param props.material material
  */
-export default function Any(props: { material: MaterialContentNodeType }) {
+export default function Any(props: {
+  material: MaterialContentNodeWithIdAndLogic;
+}) {
   const { t } = useTranslation(["files", "common"]);
 
   return (

@@ -14,7 +14,6 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
-  PedagogyFormAvailability,
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
@@ -36,6 +35,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm, {
   UPPERSECONDARY_PEDAGOGYFORM,
 } from "~/components/general/pedagogical-support-form";
+import { PedagogyFormAccess } from "~/generated/client";
 
 export type tabs =
   | "STUDIES"
@@ -193,7 +193,7 @@ class StudentDialog extends React.Component<
     ) {
       tabs.splice(1, 0, {
         id: "PEDAGOGICAL_SUPPORT",
-        name: "Pedagogisen tuen suunnitelma",
+        name: this.props.t("labels.title", { ns: "pedagogySupportPlan" }),
         type: "guider-student",
         component: (
           <UpperSecondaryPedagogicalSupportWizardForm
@@ -364,7 +364,7 @@ export default withTranslation(["common"])(
  * @param pedagogyFormAvailable pedagogyFormAvailable
  * @returns role
  */
-const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAvailability) => {
+const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
   if (pedagogyFormAvailable.specEdTeacher) {
     return "SPECIAL_ED_TEACHER";
   }

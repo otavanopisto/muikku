@@ -93,6 +93,7 @@ import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
@@ -284,6 +285,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceRestModels workspaceRestModels;
+  
+  @Inject
+  private PedagogyController pedagogyController;
 
   @GET
   @Path("/workspaceTypes")
@@ -1247,7 +1251,8 @@ public class WorkspaceRESTService extends PluginRESTService {
               String.valueOf(elasticUser.get("lastName")),
               elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
               hasImage,
-              activeUserIds.contains(workspaceUserEntity.getId())));
+              activeUserIds.contains(workspaceUserEntity.getId()),
+              pedagogyController.getHasPedagogyForm(studentIdentifier.toId())));
         }
       }
 
@@ -1803,7 +1808,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaceMaterials.isEmpty()) {
-      return Response.noContent().build();
+      return Response.ok(Collections.emptyList()).build();
     }
 
     return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
@@ -1832,7 +1837,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaceMaterials.isEmpty()) {
-      return Response.noContent().build();
+    	return Response.ok(Collections.emptyList()).build();
     }
 
     return Response.ok(workspaceMaterials).build();
@@ -1970,9 +1975,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         result.add(compositeReply);
       }
-
+      
       if (result.isEmpty()) {
-        return Response.noContent().build();
+        return Response.ok(Collections.emptyList()).build();
       }
     }
     catch (WorkspaceFieldIOException e) {
@@ -2910,7 +2915,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         elasticUser.get("lastName").toString(),
         elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
         hasImage,
-        workspaceUserEntity.getActive());
+        workspaceUserEntity.getActive(),
+        pedagogyController.getHasPedagogyForm(schoolDataIdentifier.toId()));
 
     return Response.ok(workspaceStudentRestModel).build();
   }
@@ -3646,5 +3652,4 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     return null;
   }
-
 }

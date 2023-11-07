@@ -32,14 +32,19 @@ const Avatar = (props: AvatarProps) => {
   }, [id, userCategory]);
 
   return hasImage ? (
-    <object
+    <div
       className={`avatar-container ${
         props.size ? "avatar-container--" + props.size : ""
       } rs_skip_always`}
-      data={getUserImageUrl(id)}
-      type="image/jpeg"
-      aria-label={avatarAriaLabel}
     >
+      <img
+        src={getUserImageUrl(id)}
+        alt=""
+        aria-label={avatarAriaLabel}
+        className={`avatar avatar-img ${
+          props.size ? "avatar--" + props.size : ""
+        }`}
+      />
       <div
         className={`avatar avatar--category-${category} ${
           props.size ? "avatar--" + props.size : ""
@@ -47,7 +52,7 @@ const Avatar = (props: AvatarProps) => {
       >
         {firstName[0]}
       </div>
-    </object>
+    </div>
   ) : (
     <div
       className={`avatar-container ${

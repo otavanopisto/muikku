@@ -1,25 +1,25 @@
 import actions from "../base/notifications";
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import {
   CeeposStateStatusType,
   CeeposPayStatusCodeType,
 } from "~/reducers/main-function/ceepos";
-import { PurchaseType } from "~/reducers/main-function/profile";
 import i18n from "~/locales/i18n";
+import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
+import { CeeposOrder } from "~/generated/client";
 
 /**
  * LoadCeeposPurchaseTriggerType
  */
 export interface LoadCeeposPurchaseTriggerType {
-  (purchaseId: number): AnyActionType;
+  (orderId: number): AnyActionType;
 }
 
 export type UPDATE_CEEPOS_PURCHASE = SpecificActionType<
   "UPDATE_CEEPOS_PURCHASE",
-  PurchaseType
+  CeeposOrder
 >;
 export type UPDATE_CEEPOS_STATE = SpecificActionType<
   "UPDATE_CEEPOS_STATE",
@@ -32,14 +32,16 @@ export type UPDATE_CEEPOS_PAY_STATUS = SpecificActionType<
 
 /**
  * loadCeeposPurchase
- * @param purchaseId id of the purchase
+ * @param orderId id of the purchase
  */
 const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
-  function loadCeeposPurchase(purchaseId) {
+  function loadCeeposPurchase(orderId) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
         dispatch({
           type: "UPDATE_CEEPOS_STATE",
@@ -47,14 +49,15 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
         });
 
         const studentId = getState().status.userSchoolDataIdentifier;
-        const purchase = (await promisify(
-          mApi().ceepos.user.order.read(studentId, purchaseId),
-          "callback"
-        )()) as PurchaseType;
+
+        const order = await ceeposApi.getCeeposUserOrder({
+          userIdentifier: studentId,
+          orderId: orderId,
+        });
 
         dispatch({
           type: "UPDATE_CEEPOS_PURCHASE",
-          payload: purchase,
+          payload: order,
         });
 
         dispatch({
@@ -62,13 +65,16 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
           payload: <CeeposStateStatusType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "orders", count: 1 }),
+            i18n.t("notifications.loadError", {
+              ns: "orders",
+              context: "order",
+            }),
             "error"
           )
         );
@@ -83,14 +89,16 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
 
 /**
  * loadCeeposPurchase
- * @param purchaseId id of the purchase
+ * @param orderId id of the purchase
  */
 const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
-  function loadCeeposPurchase(purchaseId) {
+  function loadCeeposPurchase(orderId) {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
         dispatch({
           type: "UPDATE_CEEPOS_STATE",
@@ -98,10 +106,9 @@ const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
         });
 
         if (getState().status.isActiveUser) {
-          const value: string = (await promisify(
-            mApi().ceepos.pay.create(purchaseId),
-            "callback"
-          )()) as string;
+          const value = await ceeposApi.createCeeposPay({
+            orderId: orderId,
+          });
 
           location.href = value;
         }

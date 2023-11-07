@@ -653,7 +653,7 @@ public class HopsRestService {
 
   }
 
-  @DELETE
+  @PUT
   @Path("/student/{STUDENTIDENTIFIER}/toggleSuggestion")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response removeSuggestion(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsSuggestionRestModel payload) {
