@@ -22,6 +22,10 @@ public class ChatUserRestModel {
     this.id = id;
   }
   
+  public String getIdentifier() {
+    return "user-" + id;
+  }
+  
   public String getNick() {
     return nick;
   }
