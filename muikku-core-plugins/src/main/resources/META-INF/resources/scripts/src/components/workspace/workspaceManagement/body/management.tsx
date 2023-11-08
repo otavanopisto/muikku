@@ -46,7 +46,6 @@ import { AnyActionType } from "~/actions/index";
 import {
   Language,
   WorkspaceAccess,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
@@ -652,7 +651,7 @@ class ManagementPanel extends React.Component<
         this.state.workspaceSignupEndDate !== null
           ? this.state.workspaceSignupEndDate.toISOString()
           : null,
-      chatEnabled: false
+      chatEnabled: false,
     };
 
     const currentWorkspaceAsDetails: WorkspaceDetails = {
@@ -1162,7 +1161,7 @@ class ManagementPanel extends React.Component<
               </div>
             ) : null}
           </section>
-          {this.props.status.permissions.CHAT_AVAILABLE ? (
+          {/* {this.props.status.permissions.CHAT_AVAILABLE ? (
             <section className="application-sub-panel application-sub-panel--workspace-settings">
               <h2 className="application-sub-panel__header">
                 {t("labels.chat")}
@@ -1173,7 +1172,8 @@ class ManagementPanel extends React.Component<
                     <legend className="form__legend">
                       {t("labels.chatStatus", { ns: "workspace" })}
                     </legend>
-                    {/* <div className="form__fieldset-content form__fieldset-content--horizontal">
+
+                    <div className="form__fieldset-content form__fieldset-content--horizontal">
                       <div className="form-element form-element--checkbox-radiobutton">
                         <input
                           id="chatEnabled"
@@ -1206,12 +1206,12 @@ class ManagementPanel extends React.Component<
                           {t("labels.chatDisabled", { ns: "workspace" })}
                         </label>
                       </div>
-                    </div> */}
+                    </div>
                   </fieldset>
                 </div>
               </div>
             </section>
-          ) : null}
+          ) : null} */}
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header">
               {t("labels.signUpRights", { ns: "workspace" })}

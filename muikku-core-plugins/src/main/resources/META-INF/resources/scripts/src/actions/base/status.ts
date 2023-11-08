@@ -110,8 +110,8 @@ async function loadWhoAMI(
         PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
         LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
-        CHAT_ACTIVE: whoAmI.services.chat.isActive,
-        CHAT_AVAILABLE: whoAmI.services.chat.isAvailable,
+        /* CHAT_ACTIVE: whoAmI.services.chat.isActive,
+        CHAT_AVAILABLE: whoAmI.services.chat.isAvailable, */
         FORUM_ACCESSENVIRONMENTFORUM:
           whoAmI.services.environmentForum.isAvailable &&
           whoAmI.permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),

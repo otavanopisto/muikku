@@ -16,9 +16,9 @@ import {
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-sub-panel.scss";
-import { SimpleActionExecutor } from "~/actions/executor";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import MApi from "~/api/api";
 
 /**
  * ChatSettingsProps
@@ -35,8 +35,8 @@ interface ChatSettingsProps extends WithTranslation<["common"]> {
  * ChatSettingState
  */
 interface ChatSettingState {
-  chatVisibility: string;
-  chatNickname: string;
+  chatEnable: boolean;
+  chatNick: string;
   locked: boolean;
 }
 
@@ -59,101 +59,55 @@ class ChatSettings extends React.Component<
     this.onChatVisibilityChange = this.onChatVisibilityChange.bind(this);
 
     this.state = {
-      chatVisibility:
-        (props.profile.chatSettings && props.profile.chatSettings.visibility) ||
-        null,
-      chatNickname:
-        (props.profile.chatSettings && props.profile.chatSettings.nick) || "",
+      chatEnable: false,
+      chatNick: "",
       locked: false,
     };
   }
 
   /**
-   * componentWillReceiveProps
-   * @param nextProps nextProps
+   * componentDidMount
    */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: ChatSettingsProps) {
-    if (
-      nextProps.profile.chatSettings &&
-      nextProps.profile.chatSettings.visibility &&
-      (!this.props.profile.chatSettings ||
-        this.props.profile.chatSettings.visibility !==
-          nextProps.profile.chatSettings.visibility)
-    ) {
-      this.setState({
-        chatVisibility: nextProps.profile.chatSettings.visibility,
-      });
-    } else if (
-      !nextProps.profile.chatSettings ||
-      typeof nextProps.profile.chatSettings.visibility === "undefined"
-    ) {
-      this.setState({
-        chatVisibility: "DISABLED",
-      });
-    }
+  componentDidMount = async () => {
+    const chatApi = MApi.getChatApi();
 
-    if (
-      nextProps.profile.chatSettings &&
-      nextProps.profile.chatSettings.nick &&
-      (!this.props.profile.chatSettings ||
-        this.props.profile.chatSettings.nick !==
-          nextProps.profile.chatSettings.nick)
-    ) {
-      this.setState({
-        chatNickname: nextProps.profile.chatSettings.nick,
-      });
-    }
-  }
+    this.setState({ locked: true });
+
+    const settings = await chatApi.getChatSettings();
+
+    this.setState({
+      locked: false,
+      chatEnable: settings.enabled,
+      chatNick: settings.nick || "",
+    });
+  };
 
   /**
    * save
    */
-  save() {
+  async save() {
+    const chatApi = MApi.getChatApi();
+    const { chatEnable, chatNick } = this.state;
+
     this.setState({ locked: true });
 
-    const executor = new SimpleActionExecutor();
-    executor
-      .addAction(
-        this.props.profile.chatSettings &&
-          ((this.props.profile.chatSettings.visibility || null) !==
-            this.state.chatVisibility ||
-            (this.props.profile.chatSettings.nick || null) !==
-              this.state.chatNickname),
-        () => {
-          this.props.updateProfileChatSettings({
-            visibility: this.state.chatVisibility,
-            nick: this.state.chatNickname,
-            success: executor.succeeded,
-            fail: executor.failed,
-          });
-        }
-      )
-      .onAllSucceed(() => {
-        this.props.displayNotification(
-          this.props.t("notifications.saveSuccess"),
-          "success"
-        );
+    await chatApi.updateChatSettings({
+      updateChatSettingsRequest: {
+        enabled: chatEnable,
+        nick: chatNick,
+      },
+    });
 
-        this.setState({ locked: false });
-      })
-      .onOneFails(() => {
-        this.props.displayNotification(
-          this.props.t("notifications.saveError"),
-          "error"
-        );
-
-        this.setState({ locked: false });
-      });
+    this.setState({ locked: false });
   }
 
   /**
    * onChatVisibilityChange
    * @param e e
    */
-  onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>) {
+  onChatVisibilityChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      chatVisibility: e.target.value,
+      chatEnable: e.target.checked,
     });
   }
 
@@ -163,7 +117,7 @@ class ChatSettings extends React.Component<
    */
   onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      chatNickname: e.target.value,
+      chatNick: e.target.value,
     });
   }
 
@@ -172,10 +126,7 @@ class ChatSettings extends React.Component<
    * @returns JSX.Element
    */
   public render() {
-    if (
-      this.props.profile.location !== "chat" ||
-      !this.props.status.permissions.CHAT_AVAILABLE
-    ) {
+    if (this.props.profile.location !== "chat") {
       return null;
     }
 
@@ -189,49 +140,31 @@ class ChatSettings extends React.Component<
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
-                  <label htmlFor="chatVisibility">
+                  <label htmlFor="chatNick">
                     {this.props.t("labels.chatVisibility", { ns: "profile" })}
                   </label>
-                  <select
-                    id="chatVisibility"
-                    className="form-element__select"
-                    value={
-                      this.state.chatVisibility !== null
-                        ? this.state.chatVisibility
-                        : "DISABLED"
-                    }
+                  <input
+                    id="chatNick"
+                    className="form-element__input"
+                    type="checkbox"
+                    checked={this.state.chatEnable}
                     onChange={this.onChatVisibilityChange}
-                  >
-                    <option value="VISIBLE_TO_ALL">
-                      {this.props.t("labels.chatVisibility", {
-                        ns: "profile",
-                        context: "all",
-                      })}
-                    </option>
-                    <option value="DISABLED">
-                      {this.props.t("labels.chatVisibility", {
-                        ns: "profile",
-                        context: "disabled",
-                      })}
-                    </option>
-                  </select>
+                    disabled={this.state.locked}
+                  />
                 </div>
               </div>
               <div className="form__row">
                 <div className="form-element">
-                  <label htmlFor="chatNickname">
+                  <label htmlFor="chatNick">
                     {this.props.t("labels.nick", { ns: "profile" })}
                   </label>
                   <input
-                    id="chatNickname"
+                    id="chatNick"
                     className="form-element__input"
                     type="text"
                     onChange={this.onChatNicknameChange}
-                    value={
-                      this.state.chatNickname !== null
-                        ? this.state.chatNickname
-                        : ""
-                    }
+                    value={this.state.chatNick}
+                    disabled={this.state.locked}
                   />
                 </div>
 

@@ -693,6 +693,29 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
+  /rest/chat/message/{targetIdentifier}:
+    post:
+      operationId: createChatMessage
+      summary: Create chat message. Doesn't return anything, look websocket for response with message "chat:message-sent" with JSON content ChatMessage.
+      tags:
+        - Chat
+      parameters:
+        - name: targetIdentifier
+          in: path
+          description: Target identifier (room-123 or user-123 depending use case)
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/ChatMessageCreateRequestBody"
+      responses:
+        "204":
+          description: Chat message created successfully
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
   /rest/chat/message/{messageId}:
     put:
       operationId: updateChatMessage
@@ -742,112 +765,25 @@ paths:
         "404":
           description: Chat message not found
 
-  /rest/chat/publicmessage/{roomId}:
-    post:
-      operationId: createChatPublicMessage
-      summary: Create chat public message. Doesn't return anything, look websocket for response with message "chat:message-sent" with JSON content ChatMessage.
-      tags:
-        - Chat
-      parameters:
-        - name: roomId
-          in: path
-          description: Chat room id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/ChatPublicMessageCreateRequestBody"
-      responses:
-        "204":
-          description: Chat public message created successfully
-        "400":
-          description: Invalid request was sent to the server
-        "403":
-          description: Attempted to make a call with unauthorized client
-
-  /rest/chat/publicmessages/{roomId}:
+  /rest/chat/messages/{targetIdentifier}:
     get:
-      operationId: getChatPublicMessages
-      summary: Get chat public messages by room id.
+      operationId: getChatMessagesByTarget
+      summary: Get chat messages by target identifier (room-123 or user-123).
       tags:
         - Chat
       parameters:
-        - name: roomId
+        - name: targetIdentifier
           in: path
-          description: Chat room id
+          description: Target identifier (room-123 or user-123 depending use case)
           required: true
-          schema:
-            type: integer
-            format: int64
-        - name: count
-          in: query
-          description: Count
-          schema:
-            type: integer
-        - name: earlierThan
-          in: query
-          description: Earlier than
           schema:
             type: string
-            format: date-time
-      responses:
-        "200":
-          description: Chat public messages successfully retrieved
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ChatMessage"
-        "400":
-          description: Invalid request was sent to the server
-        "403":
-          description: Attempted to make a call with unauthorized client
-
-  /rest/chat/privatemessage/{roomId}:
-    post:
-      operationId: createChatPrivateMessage
-      summary: Create chat private message. Doesn't return anything, look websocket for response with message "chat:message-sent" with JSON content ChatMessage.
-      tags:
-        - Chat
-      parameters:
-        - name: roomId
-          in: path
-          description: Chat room id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/ChatPrivateMessageCreateRequestBody"
-      responses:
-        "204":
-          description: Chat private message created successfully
-        "400":
-          description: Invalid request was sent to the server
-        "403":
-          description: Attempted to make a call with unauthorized client
-
-  /rest/chat/privatemessages/{roomId}:
-    get:
-      operationId: getChatPrivateMessages
-      summary: Get chat private messages by room id.
-      tags:
-        - Chat
-      parameters:
-        - name: roomId
-          in: path
-          description: Chat room id
-          required: true
-          schema:
-            type: integer
-            format: int64
         - name: count
           in: query
-          description: Count
+          description: Count of latest messages to retrieve. Default is 25.
           schema:
             type: integer
+            default: 25
         - name: earlierThan
           in: query
           description: Earlier than
@@ -8665,7 +8601,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{materialId}:
+  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}:
     put:
       operationId: updateWorkspaceMaterial
       summary: Updates workspace material and returns updated workspace material
@@ -8678,9 +8614,9 @@ paths:
           required: true
           schema:
             type: integer
-        - name: materialId
+        - name: workspaceMaterialId
           in: path
-          description: Material id
+          description: Workspace material id
           required: true
           schema:
             type: integer
@@ -8709,9 +8645,9 @@ paths:
           required: true
           schema:
             type: integer
-        - name: materialId
+        - name: workspaceMaterialId
           in: path
-          description: Material id
+          description: Workspace material id
           required: true
           schema:
             type: integer
@@ -9151,7 +9087,7 @@ paths:
             type: integer
         - name: folderId
           in: path
-          description: Folder id
+          description: Folder id aka "workspaceMaterialId"
           required: true
           schema:
             type: integer
@@ -9182,7 +9118,7 @@ paths:
             type: integer
         - name: folderId
           in: path
-          description: Folder id
+          description: Folder id aka "workspaceMaterialId"
           required: true
           schema:
             type: integer
@@ -9753,6 +9689,18 @@ components:
               - requestText
             properties:
               requestText:
+                type: string
+
+    ChatMessageCreateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: ChatMessageCreateRequestBody object
+            required:
+              - message
+            properties:
+              message:
                 type: string
 
     ChatMessageUpdateRequestBody:
@@ -11722,7 +11670,7 @@ components:
       required:
         - id
         - sourceUserEntityId
-        - targetUserEntityId
+        - targetIdentifier
         - targetRoomId
         - nick
         - message
@@ -11738,15 +11686,9 @@ components:
           description: Id of the user who sent the message.
           type: integer
           format: int64
-        targetUserEntityId:
-          description: If private message, this is the target user id. If group message, this is null.
-          type: integer
-          format: int64
-          nullable: true
-        targetRoomId:
-          description: If group message, this is the target room id. Otherwise, this is null.
-          type: integer
-          format: int64
+        targetIdentifier:
+          description: Example "room-123" for rooms or "user-123" for private message etc.
+          type: string
         nick:
           description: Nickname of the user who sent the message.
           type: string
@@ -11837,8 +11779,9 @@ components:
           description: Whether the user has chat enabled.
           type: boolean
         nick:
-          description: Nickname of the user.
+          description: Nickname of the user. Null if not set.
           type: string
+          nullable: true
 
     CeeposOrderStateType:
       type: string
@@ -13584,6 +13527,7 @@ components:
         - html
         - contentType
         - contentHiddenForUser
+        - assignmentType
       properties:
         title:
           description: The title of the material
@@ -13626,7 +13570,9 @@ components:
           type: integer
         assignmentType:
           description: The type of the assignment
-          $ref: "#/components/schemas/MaterialAssigmentType"
+          allOf:
+            - $ref: "#/components/schemas/MaterialAssigmentType"
+          nullable: true
         correctAnswers:
           description: The correct answers of the assignment
           $ref: "#/components/schemas/MaterialAnswersType"

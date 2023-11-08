@@ -118,6 +118,9 @@ import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
 import { Announcement, User } from "~/generated/client";
+import Chat from "~/components/chat";
+import { ChatContextProvider } from "~/components/chat/context/chat-context";
+import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 
 moment.locale("fi");
 
@@ -1074,6 +1077,12 @@ export default class MainFunction extends React.Component<
     return (
       <BrowserRouter>
         <div id="root">
+          <ChatWebsocketContextProvider websocket={this.props.websocket}>
+            <ChatContextProvider>
+              <Chat />
+            </ChatContextProvider>
+          </ChatWebsocketContextProvider>
+
           <InfoPopperProvider>
             <Notifications></Notifications>
             <DisconnectedWarningDialog />
