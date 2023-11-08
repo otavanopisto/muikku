@@ -1367,7 +1367,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       const appliedProducers = data.update.producers;
       const unchangedPermissions: WorkspaceSignupGroup[] = [];
       const currentWorkspace = getState().workspaces.currentWorkspace;
-      const newChatStatus = data.update.chatStatus;
 
       // I left the workspace image out of this, because it never is in the application state anyway
       // These need to be removed from the object for the basic stuff to not fail
@@ -1399,20 +1398,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
         data.update.additionalInfo = additionalInfo;
       }
-
-      // Update workspace chat status (enabled/disabled)
-      /* if (newChatStatus) {
-        await chatApi.updateWorkspaceChatSettings({
-          workspaceEntityId: data.workspace.id,
-          updateWorkspaceChatSettingsRequest: {
-            chatStatus: newChatStatus,
-            workspaceEntityId: data.workspace.id,
-          },
-        });
-
-        // Add chat status back to the update object
-        data.update.chatStatus = newChatStatus;
-      } */
 
       // Then permissions - if any
       if (newPermissions) {

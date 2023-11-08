@@ -42,10 +42,14 @@ function usePeople() {
      * onChatUserJoinedMsg
      * @param data user joined chat.
      */
-    const onChatUserJoinedMsg = (data: ChatUser) => {
+    const onChatUserJoinedMsg = (data: unknown) => {
       console.log("onChatUserJoinedMsg", data);
+
       if (componentMounted.current) {
-        setPeople((people) => [...people, data]);
+        if (typeof data === "string") {
+          const dataTyped: ChatUser = JSON.parse(data);
+          setPeople((people) => [...people, dataTyped]);
+        }
       }
     };
 
@@ -56,18 +60,26 @@ function usePeople() {
      */
     const onChatUserLeftMsg = (data: { id: number }) => {
       console.log("onChatUserLeftMsg", data);
+
       if (componentMounted.current) {
-        setPeople((people) => {
-          const index = people.findIndex((person) => person.id === data.id);
+        if (typeof data === "string") {
+          const dataTyped: {
+            id: number;
+          } = JSON.parse(data);
+          setPeople((people) => {
+            const index = people.findIndex(
+              (person) => person.id === dataTyped.id
+            );
 
-          if (index !== -1) {
-            const newPeople = [...people];
-            newPeople.splice(index, 1);
-            return newPeople;
-          }
+            if (index !== -1) {
+              const newPeople = [...people];
+              newPeople.splice(index, 1);
+              return newPeople;
+            }
 
-          return people;
-        });
+            return people;
+          });
+        }
       }
     };
 

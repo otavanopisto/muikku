@@ -43,8 +43,12 @@ function useRooms() {
      * @param data created ChatRoom.
      */
     const onChatRoomCreateMsg = (data: ChatRoom) => {
+      console.log("onChatRoomCreateMsg", data);
       if (componentMounted.current) {
-        setRooms((rooms) => [...rooms, data]);
+        if (typeof data === "string") {
+          const dataTyped: ChatRoom = JSON.parse(data);
+          setRooms((rooms) => [...rooms, dataTyped]);
+        }
       }
     };
 
@@ -52,17 +56,22 @@ function useRooms() {
      * onChatRoomUpdateMsg
      * @param data updated ChatRoom.
      */
-    const onChatRoomUpdateMsg = (data: ChatRoom) => {
+    const onChatRoomUpdateMsg = (data: unknown) => {
+      console.log("onChatRoomUpdateMsg", data);
       if (componentMounted.current) {
-        setRooms((rooms) => {
-          const index = rooms.findIndex((room) => room.id === data.id);
+        if (typeof data === "string") {
+          const dataTyped: ChatRoom = JSON.parse(data);
 
-          if (index !== -1) {
-            rooms[index] = data;
-          }
+          setRooms((rooms) => {
+            const index = rooms.findIndex((room) => room.id === dataTyped.id);
 
-          return [...rooms];
-        });
+            if (index !== -1) {
+              rooms[index] = dataTyped;
+            }
+
+            return [...rooms];
+          });
+        }
       }
     };
 
@@ -71,17 +80,21 @@ function useRooms() {
      *
      * @param data deleted ChatRoom.
      */
-    const onChatRoomDeleteMsg = (data: ChatRoom) => {
+    const onChatRoomDeleteMsg = (data: unknown) => {
+      console.log("onChatRoomDeleteMsg", data);
       if (componentMounted.current) {
-        setRooms((rooms) => {
-          const index = rooms.findIndex((room) => room.id === data.id);
+        if (typeof data === "string") {
+          const dataTyped: ChatRoom = JSON.parse(data);
+          setRooms((rooms) => {
+            const index = rooms.findIndex((room) => room.id === dataTyped.id);
 
-          if (index !== -1) {
-            rooms[index] = data;
-          }
+            if (index !== -1) {
+              rooms[index] = dataTyped;
+            }
 
-          return [...rooms];
-        });
+            return [...rooms];
+          });
+        }
       }
     };
 

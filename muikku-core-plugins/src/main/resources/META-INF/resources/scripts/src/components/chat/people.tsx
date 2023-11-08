@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ChatUser } from "~/generated/client";
+import Avatar from "../general/avatar";
 import { useChatContext } from "./context/chat-context";
 
 /**
@@ -52,10 +53,26 @@ function PeopleItem(props: PeopleItemProps) {
       className="people-item"
       style={{
         display: "flex",
+        alignItems: "center",
+        backgroundColor: "grey",
+        borderRadius: "50px 0 0 50px",
+        color: "white",
+        marginBottom: "10px",
       }}
     >
-      <div className="people-item__avatar"></div>
-      <div className="people-item__name">{user.nick}</div>
+      <div
+        className="people-item__avatar"
+        style={{
+          marginRight: "10px",
+        }}
+      >
+        <Avatar
+          id={user.id}
+          hasImage={user.hasImage}
+          firstName={user.nick[0]}
+        />
+      </div>
+      <div className="people-item__name">{user.nick} ONLINE</div>
     </div>
   );
 }

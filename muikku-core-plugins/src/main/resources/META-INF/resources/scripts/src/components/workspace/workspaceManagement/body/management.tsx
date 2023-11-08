@@ -89,7 +89,7 @@ interface ManagementPanelState {
   workspaceLicense: string;
   workspaceHasCustomImage: boolean;
   workspacePermissions: Array<WorkspaceSignupGroup>;
-  /* workspaceChatStatus: WorkspaceChatStatus; */
+  workspaceChatEnabled: boolean;
   workspaceUsergroupNameFilter: string;
   currentWorkspaceProducerInputValue: string;
   newWorkspaceImageSrc?: string;
@@ -136,7 +136,7 @@ class ManagementPanel extends React.Component<
           : "",
       workspaceLicense: "",
       workspaceHasCustomImage: false,
-      /* workspaceChatStatus: null, */
+      workspaceChatEnabled: false,
       workspacePermissions: [],
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
@@ -150,7 +150,7 @@ class ManagementPanel extends React.Component<
     this.setWorkspacePublishedTo = this.setWorkspacePublishedTo.bind(this);
     this.setWorkspaceAccessTo = this.setWorkspaceAccessTo.bind(this);
     this.updateWorkspaceType = this.updateWorkspaceType.bind(this);
-    /* this.setWorkspaceChatTo = this.setWorkspaceChatTo.bind(this); */
+    this.setWorkspaceChatTo = this.setWorkspaceChatTo.bind(this);
     this.updateStartDate = this.updateStartDate.bind(this);
     this.updateEndDate = this.updateEndDate.bind(this);
     this.updateSignupStartDate = this.updateSignupStartDate.bind(this);
@@ -231,9 +231,10 @@ class ManagementPanel extends React.Component<
       workspaceHasCustomImage: nextProps.workspace
         ? nextProps.workspace.hasCustomImage
         : false,
-      /* workspaceChatStatus: nextProps.workspace
-        ? nextProps.workspace.chatStatus
-        : null, */
+      workspaceChatEnabled:
+        nextProps.workspace && nextProps.workspace.details
+          ? nextProps.workspace.details.chatEnabled
+          : false,
       workspacePermissions:
         nextProps.workspace && nextProps.workspace.permissions
           ? nextProps.workspace.permissions
@@ -276,13 +277,13 @@ class ManagementPanel extends React.Component<
 
   /**
    * setWorkspaceChatTo
-   * @param value value
+   * @param e e
    */
-  /* setWorkspaceChatTo(value: WorkspaceChatStatus) {
+  setWorkspaceChatTo(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      workspaceChatStatus: value,
+      workspaceChatEnabled: !this.state.workspaceChatEnabled,
     });
-  } */
+  }
 
   /**
    * setWorkspaceAccessTo
@@ -651,7 +652,7 @@ class ManagementPanel extends React.Component<
         this.state.workspaceSignupEndDate !== null
           ? this.state.workspaceSignupEndDate.toISOString()
           : null,
-      chatEnabled: false,
+      chatEnabled: this.state.workspaceChatEnabled,
     };
 
     const currentWorkspaceAsDetails: WorkspaceDetails = {
@@ -1161,57 +1162,50 @@ class ManagementPanel extends React.Component<
               </div>
             ) : null}
           </section>
-          {/* {this.props.status.permissions.CHAT_AVAILABLE ? (
-            <section className="application-sub-panel application-sub-panel--workspace-settings">
-              <h2 className="application-sub-panel__header">
-                {t("labels.chat")}
-              </h2>
-              <div className="application-sub-panel__body">
-                <div className="form__row">
-                  <fieldset className="form__fieldset">
-                    <legend className="form__legend">
-                      {t("labels.chatStatus", { ns: "workspace" })}
-                    </legend>
 
-                    <div className="form__fieldset-content form__fieldset-content--horizontal">
-                      <div className="form-element form-element--checkbox-radiobutton">
-                        <input
-                          id="chatEnabled"
-                          name="chat-enabled"
-                          type="radio"
-                          checked={this.state.workspaceChatStatus === "ENABLED"}
-                          onChange={this.setWorkspaceChatTo.bind(
-                            this,
-                            "ENABLED"
-                          )}
-                        />
-                        <label htmlFor="chatEnabled">
-                          {t("labels.chatEnabled", { ns: "workspace" })}
-                        </label>
-                      </div>
-                      <div className="form-element form-element--checkbox-radiobutton">
+          <section className="application-sub-panel application-sub-panel--workspace-settings">
+            <h2 className="application-sub-panel__header">
+              {t("labels.chat")}
+            </h2>
+            <div className="application-sub-panel__body">
+              <div className="form__row">
+                <fieldset className="form__fieldset">
+                  <legend className="form__legend">
+                    {t("labels.chatStatus", { ns: "workspace" })}
+                  </legend>
+
+                  <div className="form__fieldset-content form__fieldset-content--horizontal">
+                    <div className="form-element form-element--checkbox-radiobutton">
+                      <input
+                        id="chatEnabled"
+                        name="chat-enabled"
+                        type="checkbox"
+                        checked={this.state.workspaceChatEnabled}
+                        onChange={this.setWorkspaceChatTo}
+                      />
+                      <label htmlFor="chatEnabled">
+                        {t("labels.chatEnabled", { ns: "workspace" })}
+                      </label>
+                    </div>
+                    {/* <div className="form-element form-element--checkbox-radiobutton">
                         <input
                           id="chatDisabled"
                           name="chat-disabled"
                           type="radio"
-                          checked={
-                            this.state.workspaceChatStatus === "DISABLED"
-                          }
-                          onChange={this.setWorkspaceChatTo.bind(
-                            this,
-                            "DISABLED"
-                          )}
+                          value="DISABLED"
+                          checked={!this.state.workspaceChatEnabled}
+                          onChange={this.setWorkspaceChatTo}
                         />
                         <label htmlFor="chatDisabled">
                           {t("labels.chatDisabled", { ns: "workspace" })}
                         </label>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
+                      </div> */}
+                  </div>
+                </fieldset>
               </div>
-            </section>
-          ) : null} */}
+            </div>
+          </section>
+
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header">
               {t("labels.signUpRights", { ns: "workspace" })}
