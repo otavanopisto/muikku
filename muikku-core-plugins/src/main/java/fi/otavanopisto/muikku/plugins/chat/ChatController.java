@@ -405,6 +405,9 @@ public class ChatController {
     else if (enabled && previousNick != null && !StringUtils.equals(previousNick, nick)) {
       handleNickChange(userEntity.getId(), nick);
     }
+    else {
+      return; // nothing changed
+    }
     
     // Inform the user of the changed settings
 
