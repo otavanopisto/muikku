@@ -14748,7 +14748,7 @@ components:
           type: string
           format: date-time
           nullable: true
-        singupEnd:
+        signupEnd:
           description: The date when the workspace signup closes
           type: string
           format: date-time
