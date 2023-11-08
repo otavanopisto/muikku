@@ -53,7 +53,17 @@ public class WebSocketMessenger {
     return ticket;
   }
   
-  public void sendMessage(String eventType, String message, Set<Long> recipients) {
+  public void sendMessage(String eventType, String data, Set<Long> recipients) {
+    WebSocketMessage message = new WebSocketMessage(eventType, data);
+    ObjectMapper mapper = new ObjectMapper();
+    String strMessage = null;
+    try {
+      strMessage = mapper.writeValueAsString(message);
+    }
+    catch (Exception e) {
+      logger.warning("Unable to serialize websocket message");
+      return;
+    }
     for (String ticket : sessions.keySet()) {
       WebSocketSessionInfo sessionInfo = sessions.get(ticket);
       try {
@@ -65,7 +75,7 @@ public class WebSocketMessenger {
           continue;
         }
         if (sessionInfo.getUserEntityId() != null && recipients.contains(sessionInfo.getUserEntityId())) {
-          sessionInfo.getSession().getBasicRemote().sendText(message);
+          sessionInfo.getSession().getBasicRemote().sendText(strMessage);
           sessionInfo.access();
         }
       }
