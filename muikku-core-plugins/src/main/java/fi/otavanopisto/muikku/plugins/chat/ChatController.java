@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -273,16 +274,18 @@ public class ChatController {
   }
   
   public List<ChatRoom> listRooms(UserEntity userEntity) {
+    List<ChatRoom> userRooms = new ArrayList<>();
     List<ChatRoom> rooms = chatRoomDAO.listByArchived(Boolean.FALSE);
     for (ChatRoom room : rooms) {
       if (room.getType() == ChatRoomType.WORKSPACE) {
         WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(room.getWorkspaceEntityId());
         if (workspaceEntity == null || !workspaceUserEntityController.isWorkspaceMember(userEntity.defaultSchoolDataIdentifier(), workspaceEntity)) {
-          rooms.remove(room);
+          continue;
         }
       }
+      userRooms.add(room);
     }
-    return rooms;
+    return userRooms;
   }
   
   public List<ChatMessage> listMessages(UserEntity sourceUserEntity, UserEntity targetUserEntity, Date earlierThan, Integer count) {
