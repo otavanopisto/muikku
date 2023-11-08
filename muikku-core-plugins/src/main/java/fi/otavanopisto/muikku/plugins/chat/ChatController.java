@@ -360,10 +360,10 @@ public class ChatController {
       ObjectMapper mapper = new ObjectMapper();
       try {
         if (created) {
-          webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(room), userIds);
+          webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(toRestModel(room)), userIds);
         }
         else if (updated) {
-          webSocketMessenger.sendMessage("chat:room-updated", mapper.writeValueAsString(room), userIds);
+          webSocketMessenger.sendMessage("chat:room-updated", mapper.writeValueAsString(toRestModel(room)), userIds);
         }
         else if (deleted) {
           roomUsers.remove(room.getId());

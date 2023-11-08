@@ -8,14 +8,14 @@ public class ChatRoomRestModel {
   }
 
   public ChatRoomRestModel(String identifier, String name, String description) {
-    this.setIdentifier(identifier);
+    this.identifier = identifier;
     this.name = name;
     this.description = description;
     this.type = ChatRoomType.PUBLIC;
   }
 
   public ChatRoomRestModel(String identifier, String name, Long workspaceEntityId) {
-    this.setIdentifier(identifier);
+    this.identifier = identifier;
     this.name = name;
     this.workspaceEntityId = workspaceEntityId;
     this.type = ChatRoomType.WORKSPACE;
