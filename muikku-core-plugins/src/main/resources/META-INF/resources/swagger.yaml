@@ -8359,7 +8359,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{materialId}:
+  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}:
     put:
       operationId: updateWorkspaceMaterial
       summary: Updates workspace material and returns updated workspace material
@@ -8372,9 +8372,9 @@ paths:
           required: true
           schema:
             type: integer
-        - name: materialId
+        - name: workspaceMaterialId
           in: path
-          description: Material id
+          description: Workspace material id
           required: true
           schema:
             type: integer
@@ -8403,9 +8403,9 @@ paths:
           required: true
           schema:
             type: integer
-        - name: materialId
+        - name: workspaceMaterialId
           in: path
-          description: Material id
+          description: Workspace material id
           required: true
           schema:
             type: integer
@@ -8830,7 +8830,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/folders/{folderId}:
+  /rest/workspace/workspaces/{workspaceId}/folders/{workspaceFolderId}:
     put:
       operationId: updateWorkspaceFolder
       summary: Updates and returns workspace folder
@@ -8843,9 +8843,9 @@ paths:
           required: true
           schema:
             type: integer
-        - name: folderId
+        - name: workspaceFolderId
           in: path
-          description: Folder id
+          description: aka "workspaceMaterialId"
           required: true
           schema:
             type: integer
@@ -8874,9 +8874,9 @@ paths:
           required: true
           schema:
             type: integer
-        - name: folderId
+        - name: workspaceFolderId
           in: path
-          description: Folder id
+          description: aka "workspaceMaterialId"
           required: true
           schema:
             type: integer
@@ -13082,6 +13082,7 @@ components:
         - html
         - contentType
         - contentHiddenForUser
+        - assignmentType
       properties:
         title:
           description: The title of the material
@@ -13124,7 +13125,9 @@ components:
           type: integer
         assignmentType:
           description: The type of the assignment
-          $ref: "#/components/schemas/MaterialAssigmentType"
+          allOf:
+            - $ref: "#/components/schemas/MaterialAssigmentType"
+          nullable: true
         correctAnswers:
           description: The correct answers of the assignment
           $ref: "#/components/schemas/MaterialAnswersType"
