@@ -201,6 +201,7 @@ public class ChatRESTService {
       restRoom.setDescription(room.getDescription());
       restRoom.setType(room.getType());
       restRoom.setWorkspaceEntityId(room.getWorkspaceEntityId());
+      restRooms.add(restRoom);
     }
     return Response.ok(restRooms).build();
   }
