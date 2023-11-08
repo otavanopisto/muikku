@@ -469,7 +469,7 @@ public class ChatController {
 
         // If the new user is student, only staff may know their real name
 
-        Set<Long> studentUsers = Set.copyOf(userSessions.keySet());
+        Set<Long> studentUsers = new HashSet<Long>(userSessions.keySet());
         studentUsers.removeAll(staffUsers);
         if (!studentUsers.isEmpty()) {
           webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), studentUsers);
