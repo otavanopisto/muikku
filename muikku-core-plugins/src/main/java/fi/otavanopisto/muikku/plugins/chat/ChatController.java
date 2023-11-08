@@ -317,7 +317,7 @@ public class ChatController {
     if (!enabled && (room == null || room.getArchived())) {
       return;
     }
-    else if (enabled && !room.getArchived() && StringUtils.equals(room.getName(), roomName)) {
+    else if (enabled && (room != null && !room.getArchived() && StringUtils.equals(room.getName(), roomName))) {
       return;
     }
     
