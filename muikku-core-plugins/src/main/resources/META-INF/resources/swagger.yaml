@@ -14728,24 +14728,42 @@ components:
         - endDate
         - viewLink
         - subjects
+        - signupStart
+        - signupEnd
+        - workspaceTypeId
+        - workspaceType
       properties:
         beginDate:
           description: The date when the workspace begins
           type: string
           format: date-time
+          nullable: true
         endDate:
           description: The date when the workspace ends
           type: string
           format: date-time
+          nullable: true
+        signupStart:
+          description: The date when the workspace signup opens
+          type: string
+          format: date-time
+          nullable: true
+        singupEnd:
+          description: The date when the workspace signup closes
+          type: string
+          format: date-time
+          nullable: true
         viewLink:
           description: Link to the workspace
           type: string
         workspaceTypeId:
           description: The id of the workspace type
           type: integer
+          nullable: true
         workspaceType:
           description: Workspace type of the workspace
           type: string
+          nullable: true
         educationType:
           description: Education type of the workspace
           type: object
