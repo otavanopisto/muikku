@@ -63,7 +63,7 @@ public class ChatRESTService {
   
   @Path("/stats")
   @GET
-  @RESTPermit(ChatPermissions.STATISTICS)
+  @RESTPermit(ChatPermissions.CHAT_STATISTICS)
   @Produces(MediaType.TEXT_PLAIN)
   public Response stats() {
     return Response.ok(chatController.usageStatistics()).build();
@@ -71,7 +71,7 @@ public class ChatRESTService {
   
   @Path("/room")
   @POST
-  @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
+  @RESTPermit(ChatPermissions.CHAT_MANAGE_PUBLIC_ROOMS)
   public Response createRoom(ChatRoomRestModel payload) {
     
     // Validation
@@ -91,7 +91,7 @@ public class ChatRESTService {
 
   @Path("/room/{IDENTIFIER}")
   @PUT
-  @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
+  @RESTPermit(ChatPermissions.CHAT_MANAGE_PUBLIC_ROOMS)
   public Response updateRoom(@PathParam("IDENTIFIER") String identifier, ChatRoomRestModel payload) {
     
     Long id = extractId(identifier);
@@ -161,7 +161,7 @@ public class ChatRESTService {
 
   @Path("/room/{IDENTIFIER}")
   @DELETE
-  @RESTPermit(ChatPermissions.MANAGE_PUBLIC_ROOMS)
+  @RESTPermit(ChatPermissions.CHAT_MANAGE_PUBLIC_ROOMS)
   public Response deleteRoom(@PathParam("IDENTIFIER") String identifier) {
     
     Long id = extractId(identifier);
@@ -288,7 +288,7 @@ public class ChatRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("Message %d not found", id)).build();
     }
     if (!sessionController.getLoggedUserEntity().getId().equals(chatMessage.getSourceUserEntityId())) {
-      if (!sessionController.hasEnvironmentPermission(ChatPermissions.DELETE_MESSAGE)) {
+      if (!sessionController.hasEnvironmentPermission(ChatPermissions.CHAT_DELETE_MESSAGE)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -340,7 +340,7 @@ public class ChatRESTService {
 
   @Path("/messages/{ID}/authorInfo")
   @GET
-  @RESTPermit(ChatPermissions.MESSAGE_AUTHOR_INFO)
+  @RESTPermit(ChatPermissions.CHAT_MESSAGE_AUTHOR_INFO)
   public Response getMessageAuthorInfo(@PathParam("ID") Long id) {
     if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
@@ -367,7 +367,7 @@ public class ChatRESTService {
 
   @Path("/users/{ID}")
   @GET
-  @RESTPermit(ChatPermissions.USER_INFO)
+  @RESTPermit(ChatPermissions.CHAT_USER_INFO)
   public Response getUserInfo(@PathParam("ID") Long id) {
     if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();

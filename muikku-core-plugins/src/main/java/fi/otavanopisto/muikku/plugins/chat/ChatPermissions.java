@@ -17,23 +17,23 @@ public class ChatPermissions  extends AbstractMuikkuPermissionCollection impleme
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
-  public static final String STATISTICS = "CHAT_STATISTICS";
+  public static final String CHAT_STATISTICS = "CHAT_STATISTICS";
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
-  public static final String MANAGE_PUBLIC_ROOMS = "CHAT_MANAGE_PUBLIC_ROOMS";
+  public static final String CHAT_MANAGE_PUBLIC_ROOMS = "CHAT_MANAGE_PUBLIC_ROOMS";
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER } )
-  public static final String DELETE_MESSAGE = "CHAT_DELETE_MESSAGE";
+  public static final String CHAT_DELETE_MESSAGE = "CHAT_DELETE_MESSAGE";
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER } )
-  public static final String MESSAGE_AUTHOR_INFO = "CHAT_MESSAGE_AUTHOR_INFO";
+  public static final String CHAT_MESSAGE_AUTHOR_INFO = "CHAT_MESSAGE_AUTHOR_INFO";
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER } )
-  public static final String USER_INFO = "CHAT_USER_INFO";
+  public static final String CHAT_USER_INFO = "CHAT_USER_INFO";
 
   @Override
   public List<String> listPermissions() {
