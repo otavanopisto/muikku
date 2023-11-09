@@ -161,7 +161,11 @@ public class ChatController {
       usersToInform = Set.of(chatMessage.getSourceUserEntityId(), chatMessage.getTargetUserEntityId());
     }
     else {
-      usersToInform = roomUsers.get(chatMessage.getTargetRoomId());
+      ChatRoom room = null;
+      if (message.getTargetRoomId() != null) {
+        room = chatRoomDAO.findById(chatMessage.getTargetRoomId());
+      }
+      usersToInform = room == null ? listUsers() : listRoomUsers(room);
     }
     ObjectMapper mapper = new ObjectMapper();
     try {
@@ -183,7 +187,11 @@ public class ChatController {
       usersToInform = Set.of(chatMessage.getSourceUserEntityId(), chatMessage.getTargetUserEntityId());
     }
     else {
-      usersToInform = roomUsers.get(chatMessage.getTargetRoomId());
+      ChatRoom room = null;
+      if (message.getTargetRoomId() != null) {
+        room = chatRoomDAO.findById(chatMessage.getTargetRoomId());
+      }
+      usersToInform = room == null ? listUsers() : listRoomUsers(room);
     }
     ObjectMapper mapper = new ObjectMapper();
     try {
@@ -204,6 +212,9 @@ public class ChatController {
   }
   
   public Set<Long> listRoomUsers(ChatRoom chatRoom) {
+    if (chatRoom.getType() == ChatRoomType.PUBLIC) {
+      return listUsers();
+    }
     Set<Long> users = roomUsers.get(chatRoom.getId());
     return users == null ? Collections.emptySet() : Collections.unmodifiableSet(users);
   }
@@ -213,6 +224,9 @@ public class ChatController {
   }
   
   public boolean isInRoom(UserEntity userEntity, ChatRoom chatRoom) {
+    if (chatRoom.getType() == ChatRoomType.PUBLIC) {
+      return true;
+    }
     Set<Long> users = roomUsers.get(chatRoom.getId()) ;
     return users != null && users.contains(userEntity.getId());
   }
@@ -355,8 +369,22 @@ public class ChatController {
     userIds = workspaceUsers.stream().map(wue -> wue.getUserSchoolDataIdentifier().getUserEntity().getId()).collect(Collectors.toSet());
     workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
     userIds.addAll(workspaceUsers.stream().map(wue -> wue.getUserSchoolDataIdentifier().getUserEntity().getId()).collect(Collectors.toSet()));
+    
+    // userIds now contains all workspace students and teachers, so narrow it down to only those currently in chat
+    
     userIds.retainAll(listUsers());
     if (!userIds.isEmpty()) {
+      
+      // Add chat using workspace users to the newly created workspace room 
+      
+      if (created) {
+        for (Long userId : userIds) {
+          addRoomUser(room.getId(), userId);
+        }
+      }
+      
+      // Notify the people about the room having been created, updated, or deleted
+      
       ObjectMapper mapper = new ObjectMapper();
       try {
         if (created) {
