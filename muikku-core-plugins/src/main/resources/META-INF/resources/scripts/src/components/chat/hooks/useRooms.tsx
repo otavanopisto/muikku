@@ -66,10 +66,12 @@ function useRooms() {
             );
 
             if (index !== -1) {
+              const updateRooms = [...rooms];
               rooms[index] = dataTyped;
+              return updateRooms;
             }
 
-            return [...rooms];
+            return rooms;
           });
         }
       }

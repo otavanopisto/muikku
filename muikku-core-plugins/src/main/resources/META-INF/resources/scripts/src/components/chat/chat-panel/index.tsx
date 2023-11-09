@@ -29,6 +29,10 @@ interface ChatPanelProps {
 const ChatPrivatePanel = (props: ChatPanelProps) => {
   const [minimized, setMinimized] = React.useState<boolean>(false);
 
+  const { chatMsgs, newMessage, setNewMessage, postMessage } = useMessages(
+    props.targetIdentifier
+  );
+
   /**
    * toggleMinized
    */
@@ -77,27 +81,30 @@ const ChatPrivatePanel = (props: ChatPanelProps) => {
 
         <div className="chat__panel-body chat__panel-body--chatroom">
           <div className="chat__messages-container chat__messages-container--private">
-            {/* {this.state.messages.map((message, index) => (
-            <ChatMessage
-              key={index}
-              chatType="private"
-              canToggleInfo={!this.state.isStudent}
-              message={message}
-            />
-          ))} */}
+            {chatMsgs.map((msg) => (
+              <ChatMessage
+                key={msg.id}
+                msg={msg}
+                senderIsMe={props.userId === msg.sourceUserEntityId}
+              />
+            ))}
             <div className="chat__messages-last-message"></div>
           </div>
         </div>
-        <form className="chat__panel-footer chat__panel-footer--chatroom">
-          <textarea className="chat__memofield chat__memofield--muc-message" />
+        <div className="chat__panel-footer chat__panel-footer--chatroom">
+          <textarea
+            className="chat__memofield chat__memofield--muc-message"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
           <button
             className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private"
             type="submit"
-            value=""
+            onClick={postMessage}
           >
             <span className="icon-arrow-right"></span>
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );
@@ -222,11 +229,11 @@ const ChatPublicPanel = (props: ChatPanelProps) => {
             <div
               className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}
             >
-              {chatMsgs.map((message) => (
+              {chatMsgs.map((msg) => (
                 <ChatMessage
-                  key={message.id}
-                  msg={message}
-                  senderIsMe={message.sourceUserEntityId === props.userId}
+                  key={msg.id}
+                  msg={msg}
+                  senderIsMe={msg.sourceUserEntityId === props.userId}
                 />
               ))}
               <div className="chat__messages-last-message"></div>

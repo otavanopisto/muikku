@@ -9,7 +9,7 @@ import { useChatTabs } from "./chat-tabs/context/hooks/useChatTabs";
 import { useChatContext } from "./context/chat-context";
 import { ChatRoomContextProvider } from "./context/chat-room-context";
 import { PeopleList } from "./people";
-import { RoomsList } from "./rooms";
+import { Rooms } from "./rooms";
 
 /**
  * Chat
@@ -35,7 +35,7 @@ const Chat = () => {
       name: "Huoneet",
       component: (
         <AnimatedTab previousStep={previousStep}>
-          <RoomsList />
+          <Rooms />
         </AnimatedTab>
       ),
     },

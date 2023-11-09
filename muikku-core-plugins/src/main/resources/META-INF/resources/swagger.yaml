@@ -626,20 +626,19 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  /rest/chat/room/{roomId}:
+  /rest/chat/room/{identifier}:
     put:
       operationId: updateChatRoom
       summary: Update chat room. Doesn't return anything, look websocket for response with message "chat:room-updated" with JSON content ChatRoom.
       tags:
         - Chat
       parameters:
-        - name: roomId
+        - name: identifier
           in: path
           description: Chat room id
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/ChatRoomUpdateRequestBody"
       responses:
@@ -658,13 +657,12 @@ paths:
       tags:
         - Chat
       parameters:
-        - name: roomId
+        - name: identifier
           in: path
           description: Chat room id
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "204":
           description: Chat room deleted successfully
@@ -11704,6 +11702,7 @@ components:
           description: Time when the message was edited. Null if message is not edited. ISO 8601.
           type: string
           format: date-time
+          nullable: true
         archived:
           description: Whether the message is "deleted".
           type: boolean

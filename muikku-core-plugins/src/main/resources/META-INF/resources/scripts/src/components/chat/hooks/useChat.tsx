@@ -41,6 +41,8 @@ function useChat(userId: number) {
     loadingRooms,
     people,
     rooms,
+    publicRooms: rooms.filter((r) => r.type === "PUBLIC"),
+    privateRooms: rooms.filter((r) => r.type === "WORKSPACE"),
     searchPeople,
     searchRooms,
     setRoomsSelected,

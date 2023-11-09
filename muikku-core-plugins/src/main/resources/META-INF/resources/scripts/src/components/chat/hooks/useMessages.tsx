@@ -59,24 +59,24 @@ function useMessages(targetIdentifier: string) {
    * editMessage
    * @param msg msg
    */
-  const editMessage = async (msg: ChatMessage) => {
+  /* const editMessage = async (msg: ChatMessage) => {
     await chatApi.updateChatMessage({
       messageId: msg.id,
       updateChatMessageRequest: {
         message: msg.message,
       },
     });
-  };
+  }; */
 
   /**
    * deleteMessage
    * @param msg msg
    */
-  const deleteMessage = async (msg: ChatMessage) => {
+  /* const deleteMessage = async (msg: ChatMessage) => {
     await chatApi.deleteChatMessage({
       messageId: msg.id,
     });
-  };
+  }; */
 
   React.useEffect(() => {
     /**
@@ -102,7 +102,16 @@ function useMessages(targetIdentifier: string) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          setChatMsgs((msgs) => [...msgs, dataTyped]);
+          setChatMsgs((msgs) => {
+            const index = msgs.findIndex((msg) => msg.id === dataTyped.id);
+
+            if (index !== -1) {
+              const updatedMsgs = [...msgs];
+              updatedMsgs[index] = dataTyped;
+              return updatedMsgs;
+            }
+            return msgs;
+          });
         }
       }
     };
