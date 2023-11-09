@@ -594,7 +594,7 @@ public class ChatController {
       msg.setTargetIdentifier("room-" + message.getTargetRoomId());
     }
     else {
-      msg.setTargetIdentifier("user-" + message.getTargetRoomId());
+      msg.setTargetIdentifier("user-" + message.getTargetUserEntityId());
     }
     msg.setNick(message.getNick());
     msg.setMessage(message.getArchived() ? null : message.getMessage());
