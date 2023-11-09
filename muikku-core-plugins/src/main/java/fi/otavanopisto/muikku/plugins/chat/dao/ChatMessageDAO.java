@@ -68,8 +68,16 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), sourceUserId),
-        criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), targetUserId),
+        criteriaBuilder.or(
+          criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), sourceUserId),
+            criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), targetUserId)
+          ),
+          criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), targetUserId),
+            criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), sourceUserId)
+          )
+        ),
         criteriaBuilder.lessThan(root.get(ChatMessage_.sent), earlierThan)
       )
     );
