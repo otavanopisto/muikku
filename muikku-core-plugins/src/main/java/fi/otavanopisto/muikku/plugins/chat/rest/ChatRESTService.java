@@ -429,7 +429,7 @@ public class ChatRESTService {
   }
   
   private boolean isUserIdentifier(String identifier) {
-    return StringUtils.startsWith("user-", identifier);
+    return StringUtils.startsWith(identifier, "user-");
   }
   
   private Long extractId(String identifier) {
