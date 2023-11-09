@@ -11711,16 +11711,15 @@ components:
     ChatRoom:
       type: object
       required:
-        - id
+        - identifier
         - name
         - description
         - type
         - workspaceEntityId
       properties:
-        id:
-          description: Id of the room.
-          type: integer
-          format: int64
+        identifier:
+          description: Identifier of the room. Example "room-123"
+          type: string
         name:
           description: Name of the room. Unique.
           type: string
@@ -11744,6 +11743,7 @@ components:
       type: object
       required:
         - id
+        - identifier
         - nick
         - type
         - hasImage
@@ -11753,6 +11753,9 @@ components:
           description: Id of the user.
           type: integer
           format: int64
+        identifier:
+          description: Identifier of the user. Example "user-123"
+          type: string
         nick:
           description: Nickname of the user.
           type: string

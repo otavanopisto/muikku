@@ -119,7 +119,7 @@ import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
 import { Announcement, User } from "~/generated/client";
 import Chat from "~/components/chat";
-import { ChatContextProvider } from "~/components/chat/context/chat-context";
+import ChatContextProvider from "~/components/chat/context/chat-context";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 
 moment.locale("fi");

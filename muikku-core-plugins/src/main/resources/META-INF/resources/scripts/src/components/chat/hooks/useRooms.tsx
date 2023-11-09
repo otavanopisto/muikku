@@ -43,7 +43,6 @@ function useRooms() {
      * @param data created ChatRoom.
      */
     const onChatRoomCreateMsg = (data: ChatRoom) => {
-      console.log("onChatRoomCreateMsg", data);
       if (componentMounted.current) {
         if (typeof data === "string") {
           const dataTyped: ChatRoom = JSON.parse(data);
@@ -57,13 +56,14 @@ function useRooms() {
      * @param data updated ChatRoom.
      */
     const onChatRoomUpdateMsg = (data: unknown) => {
-      console.log("onChatRoomUpdateMsg", data);
       if (componentMounted.current) {
         if (typeof data === "string") {
           const dataTyped: ChatRoom = JSON.parse(data);
 
           setRooms((rooms) => {
-            const index = rooms.findIndex((room) => room.id === dataTyped.id);
+            const index = rooms.findIndex(
+              (room) => room.identifier === dataTyped.identifier
+            );
 
             if (index !== -1) {
               rooms[index] = dataTyped;
@@ -81,18 +81,24 @@ function useRooms() {
      * @param data deleted ChatRoom.
      */
     const onChatRoomDeleteMsg = (data: unknown) => {
-      console.log("onChatRoomDeleteMsg", data);
       if (componentMounted.current) {
         if (typeof data === "string") {
-          const dataTyped: ChatRoom = JSON.parse(data);
+          const dataTyped: {
+            identifier: string;
+          } = JSON.parse(data);
+
           setRooms((rooms) => {
-            const index = rooms.findIndex((room) => room.id === dataTyped.id);
+            const index = rooms.findIndex(
+              (room) => room.identifier === dataTyped.identifier
+            );
 
             if (index !== -1) {
-              rooms[index] = dataTyped;
+              const updatedRooms = [...rooms];
+              updatedRooms.splice(index, 1);
+              return updatedRooms;
             }
 
-            return [...rooms];
+            return rooms;
           });
         }
       }

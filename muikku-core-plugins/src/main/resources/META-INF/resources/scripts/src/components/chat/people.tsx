@@ -48,6 +48,17 @@ interface PeopleItemProps {
 function PeopleItem(props: PeopleItemProps) {
   const { user } = props;
 
+  const { setPeopleSelected } = useChatContext();
+
+  const handlePeopleClick = React.useCallback(() => {
+    setPeopleSelected((peopleSelected) => {
+      if (peopleSelected.includes(user.id)) {
+        return peopleSelected.filter((r) => r !== user.id);
+      }
+      return [...peopleSelected, user.id];
+    });
+  }, [user.id, setPeopleSelected]);
+
   return (
     <div
       className="people-item"
@@ -59,6 +70,7 @@ function PeopleItem(props: PeopleItemProps) {
         color: "white",
         marginBottom: "10px",
       }}
+      onClick={handlePeopleClick}
     >
       <div
         className="people-item__avatar"

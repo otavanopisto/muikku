@@ -7,12 +7,13 @@ export type UseChat = ReturnType<typeof useChat>;
 
 /**
  * useChat
+ * @param userId userId
  */
-function useChat() {
+function useChat(userId: number) {
   const { searchPeople, people, loadingPeople } = usePeople();
   const { searchRooms, rooms, loadingRooms } = useRooms();
   const [peopleSelected, setPeopleSelected] = React.useState<number[]>([]);
-  const [roomsSelected, setRoomsSelected] = React.useState<number[]>([]);
+  const [roomsSelected, setRoomsSelected] = React.useState<string[]>([]);
 
   // Whether to show the control box or bubble
   const [minimized, setMinimized] = React.useState<boolean>(false);
@@ -25,7 +26,7 @@ function useChat() {
 
   // These are the public rooms that are opened
   const openPublicRooms = React.useMemo(
-    () => rooms.filter((r) => roomsSelected.includes(r.id)),
+    () => rooms.filter((r) => roomsSelected.includes(r.identifier)),
     [roomsSelected, rooms]
   );
 
@@ -35,6 +36,7 @@ function useChat() {
   }, [minimized]);
 
   return {
+    userId,
     loadingPeople,
     loadingRooms,
     people,

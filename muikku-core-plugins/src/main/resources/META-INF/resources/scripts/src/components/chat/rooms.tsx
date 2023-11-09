@@ -26,7 +26,7 @@ function RoomsList() {
       }}
     >
       {rooms.map((room) => (
-        <RoomItem key={room.id} room={room} />
+        <RoomItem key={room.identifier} room={room} />
       ))}
     </div>
   );
@@ -46,16 +46,32 @@ interface PeopleItemProps {
  */
 function RoomItem(props: PeopleItemProps) {
   const { room } = props;
+  const { setRoomsSelected } = useChatContext();
+
+  const handleRoomClick = React.useCallback(() => {
+    setRoomsSelected((roomsSelected) => {
+      if (roomsSelected.includes(room.identifier)) {
+        return roomsSelected.filter((r) => r !== room.identifier);
+      }
+      return [...roomsSelected, room.identifier];
+    });
+  }, [room.identifier, setRoomsSelected]);
 
   return (
     <div
       className="people-item"
       style={{
         display: "flex",
+        alignItems: "center",
+        backgroundColor: "grey",
+        borderRadius: "50px 0 0 50px",
+        color: "white",
+        padding: "10px",
+        marginBottom: "10px",
       }}
+      onClick={handleRoomClick}
     >
-      <div className="people-item__avatar"></div>
-      <div className="people-item__name"></div>
+      <div className="people-item__name">{room.name} AKTIIVINEN</div>
     </div>
   );
 }

@@ -28,7 +28,6 @@ import MApi, { isMApiError } from "~/api/api";
 import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
@@ -656,6 +655,8 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
               )
             : null, */
         ])) as any;
+
+        console.log("additionalInfo", additionalInfo);
 
         workspace.assessmentRequests = assessmentRequests;
         workspace.interimEvaluationRequests = interimEvaluationRequests;

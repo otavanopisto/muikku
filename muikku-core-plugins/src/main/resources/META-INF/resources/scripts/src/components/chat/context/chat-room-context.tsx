@@ -1,7 +1,7 @@
 import * as React from "react";
-import { createContext, useState } from "react";
+import { createContext } from "react";
 
-const ChatPrivateRoomContext = createContext<any | undefined>(undefined);
+const ChatPrivateRoomContext = createContext<undefined>(undefined);
 
 /**
  * ChatPrivateRoomContextProvider

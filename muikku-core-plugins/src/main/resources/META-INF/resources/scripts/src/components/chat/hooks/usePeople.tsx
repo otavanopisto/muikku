@@ -43,8 +43,6 @@ function usePeople() {
      * @param data user joined chat.
      */
     const onChatUserJoinedMsg = (data: unknown) => {
-      console.log("onChatUserJoinedMsg", data);
-
       if (componentMounted.current) {
         if (typeof data === "string") {
           const dataTyped: ChatUser = JSON.parse(data);
@@ -59,8 +57,6 @@ function usePeople() {
      * @param data.id user left chat.
      */
     const onChatUserLeftMsg = (data: { id: number }) => {
-      console.log("onChatUserLeftMsg", data);
-
       if (componentMounted.current) {
         if (typeof data === "string") {
           const dataTyped: {
@@ -72,9 +68,9 @@ function usePeople() {
             );
 
             if (index !== -1) {
-              const newPeople = [...people];
-              newPeople.splice(index, 1);
-              return newPeople;
+              const updatedPeople = [...people];
+              updatedPeople.splice(index, 1);
+              return updatedPeople;
             }
 
             return people;

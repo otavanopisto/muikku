@@ -1,7 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import * as React from "react";
 import "~/sass/elements/chat.scss";
-import ChatPanel from "./chat-panel";
+import { ChatPrivatePanel, ChatPublicPanel } from "./chat-panel";
 import ChatTabs, { ChatTab, ChatTabsHeader } from "./chat-tabs";
 import AnimatedTab from "./chat-tabs/animated-tab";
 import { ChatTabsProvider } from "./chat-tabs/context/chat-tabs-context";
@@ -16,8 +16,13 @@ import { RoomsList } from "./rooms";
  * @returns JSX.Element
  */
 const Chat = () => {
-  const { minimized, toggleControlBox, openPrivateRooms, openPublicRooms } =
-    useChatContext();
+  const {
+    userId,
+    minimized,
+    toggleControlBox,
+    openPrivateRooms,
+    openPublicRooms,
+  } = useChatContext();
 
   const previousStep = React.useRef<number>(0);
 
@@ -85,7 +90,18 @@ const Chat = () => {
       <div className="chat__chatrooms-container">
         {openPrivateRooms.map((room) => (
           <ChatRoomContextProvider key={room.id}>
-            <ChatPanel />
+            <ChatPrivatePanel
+              userId={userId}
+              targetIdentifier={room.identifier}
+            />
+          </ChatRoomContextProvider>
+        ))}
+        {openPublicRooms.map((room) => (
+          <ChatRoomContextProvider key={room.identifier}>
+            <ChatPublicPanel
+              userId={userId}
+              targetIdentifier={room.identifier}
+            />
           </ChatRoomContextProvider>
         ))}
       </div>
