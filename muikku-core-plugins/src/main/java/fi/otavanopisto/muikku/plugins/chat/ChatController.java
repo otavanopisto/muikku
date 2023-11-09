@@ -296,6 +296,10 @@ public class ChatController {
         if (workspaceEntity == null || !workspaceUserEntityController.isWorkspaceMember(userEntity.defaultSchoolDataIdentifier(), workspaceEntity)) {
           continue;
         }
+        else {
+          // Ensure that the workspace user is in workspace room  
+          addRoomUser(room.getId(), userEntity.getId());
+        }
       }
       userRooms.add(room);
     }
