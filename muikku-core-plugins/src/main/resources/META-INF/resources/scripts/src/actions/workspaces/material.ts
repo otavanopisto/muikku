@@ -718,7 +718,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             if (data.material.type === "folder") {
               const updatedFolder = await workspaceApi.updateWorkspaceFolder({
                 workspaceId: data.workspace.id,
-                folderId: data.material.materialId,
+                workspaceFolderId: data.material.workspaceMaterialId,
                 body: result,
               });
 
@@ -727,7 +727,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               const updatedMaterial =
                 await workspaceApi.updateWorkspaceMaterial({
                   workspaceEntityId: data.workspace.id,
-                  materialId: data.material.materialId,
+                  workspaceMaterialId: data.material.workspaceMaterialId,
                   body: result,
                 });
 
@@ -1130,12 +1130,12 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         if (data.material.type === "folder") {
           await workspaceApi.deleteWorkspaceFolder({
             workspaceId: data.workspace.id,
-            folderId: data.material.materialId,
+            workspaceFolderId: data.material.workspaceMaterialId,
           });
         } else {
           await workspaceApi.deleteWorkspaceMaterial({
             workspaceEntityId: data.workspace.id,
-            materialId: data.material.workspaceMaterialId || data.material.id,
+            workspaceMaterialId: data.material.workspaceMaterialId,
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,
           });

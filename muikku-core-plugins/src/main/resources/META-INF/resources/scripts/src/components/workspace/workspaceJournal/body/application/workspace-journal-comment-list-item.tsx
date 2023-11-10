@@ -100,7 +100,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
   const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
-  ).format("h:mm")}`;
+  ).format("LT")}`;
 
   return (
     <ApplicationListItem className="journal journal--comment">
