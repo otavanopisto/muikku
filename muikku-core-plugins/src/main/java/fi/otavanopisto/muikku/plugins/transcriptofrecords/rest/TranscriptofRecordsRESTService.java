@@ -248,10 +248,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                               ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
                           
                         }
-                        if (mandatority != null && mandatority == Mandatority.MANDATORY) {
-                         mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                         
-                         activity.setMandatority(mandatority);
+                        if (mandatority != null) {
+                          if (mandatority == Mandatority.MANDATORY) {
+                            mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                          }
+                          activity.setMandatority(mandatority);
                         }
                       }
                     } 
