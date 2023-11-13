@@ -30,7 +30,6 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
@@ -478,7 +477,10 @@ public class UserGroupRESTService extends AbstractRESTService {
       if (organizationEntity != null) {
         organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
       }
-      EnvironmentRoleArchetype role = userSchoolDataIdentifier.getRole().getArchetype();
+      List<String> roles = new ArrayList<>();
+      if (userSchoolDataIdentifier.getRoles() != null) {
+        userSchoolDataIdentifier.getRoles().stream().map(roleEntity -> roleEntity.getArchetype().toString()).collect(Collectors.toList());
+      }
       boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
       result.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
           userIdentifier.toId(),
@@ -488,7 +490,7 @@ public class UserGroupRESTService extends AbstractRESTService {
           email,
           propertyMap,
           organizationRESTModel,
-          role.toString(),
+          roles,
           hasImage));
     }
     

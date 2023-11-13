@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.rest.model;
 
+import java.util.List;
 import java.util.Map;
 
 public class StaffMember {
@@ -8,7 +9,7 @@ public class StaffMember {
   }
 
   public StaffMember(String id, Long userEntityId, String firstName, String lastName, String email,
-      Map<String, String> properties, OrganizationRESTModel organization, String role, boolean hasImage) {
+      Map<String, String> properties, OrganizationRESTModel organization, List<String> roles, boolean hasImage) {
     super();
     this.id = id;
     this.userEntityId = userEntityId;
@@ -17,8 +18,8 @@ public class StaffMember {
     this.email = email;
     this.properties = properties;
     this.organization = organization;
-    this.role = role;
-    this.setHasImage(hasImage);
+    this.roles = roles;
+    this.hasImage = hasImage;
   }
 
   public String getId() {
@@ -77,12 +78,12 @@ public class StaffMember {
     this.organization = organization;
   }
 
-  public String getRole() {
-    return role;
+  public List<String> getRoles() {
+    return roles;
   }
 
-  public void setRole(String role) {
-    this.role = role;
+  public void setRole(List<String> roles) {
+    this.roles = roles;
   }
 
   public Boolean getHasImage() {
@@ -100,6 +101,6 @@ public class StaffMember {
   private String email;
   private Map<String, String> properties;
   private OrganizationRESTModel organization;
-  private String role;
+  private List<String> roles;
   private Boolean hasImage;
 }

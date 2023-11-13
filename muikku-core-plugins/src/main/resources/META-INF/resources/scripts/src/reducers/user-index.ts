@@ -12,7 +12,7 @@ export interface CreateUserType {
   lastName: string;
   email: string;
   studyProgrammeIdentifier?: string;
-  role?: string;
+  roles?: string[];
   ssn?: string;
 }
 

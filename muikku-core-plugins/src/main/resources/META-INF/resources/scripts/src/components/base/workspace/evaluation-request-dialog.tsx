@@ -150,7 +150,6 @@ class EvaluationRequestDialog extends React.Component<
       this.setState({
         price: result.price,
       });
-      // eslint-disable-next-line no-empty
     } catch (e) {
       if (!isMApiError(e)) {
         throw e;
@@ -158,6 +157,7 @@ class EvaluationRequestDialog extends React.Component<
       this.props.displayNotification(
         this.props.t("notifications.loadError", {
           ns: "orders",
+          context: "price",
           error: e.message,
         }),
         "error"

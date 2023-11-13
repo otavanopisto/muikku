@@ -68,7 +68,7 @@ class Step extends React.Component<StepProps, StepState> {
           </p>
         </div>
         <div className="wizard__summary-row">
-          <label>{t("labels.date", { count: 0 })}</label>
+          <label>{t("labels.dates")}</label>
           <p>
             {t("labels.begingDate_copySummary", {
               ns: "workspace",

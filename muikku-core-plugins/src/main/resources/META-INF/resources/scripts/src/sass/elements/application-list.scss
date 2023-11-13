@@ -340,7 +340,20 @@
   margin-left: 5px;
 }
 
+.application-list__item-content-primary-data {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
 .application-list__item-content-actions {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+
   span {
     cursor: pointer;
   }

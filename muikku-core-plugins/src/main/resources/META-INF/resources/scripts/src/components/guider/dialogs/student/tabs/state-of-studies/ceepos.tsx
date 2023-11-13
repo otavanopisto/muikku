@@ -22,7 +22,7 @@ import ApplicationList, {
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { CeeposOrder, CeeposPurchaseProduct } from "~/generated/client";
+import { CeeposOrder, CeeposPurchaseProduct, Role } from "~/generated/client";
 
 /**
  * CeeposProps
@@ -345,7 +345,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                         ) : null}
 
                         {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
-                        {this.props.status.role === "ADMINISTRATOR" ? (
+                        {(this.props.status.roles ? this.props.status.roles.includes(Role.Administrator) : false) ? (
                           <Button
                             onClick={this.beginOrderManualCompleteProcess.bind(
                               this,

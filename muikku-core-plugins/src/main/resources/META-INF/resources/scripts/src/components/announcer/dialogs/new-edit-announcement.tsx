@@ -28,7 +28,7 @@ import {
 } from "~/actions/base/notifications";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Announcement } from "~/generated/client";
+import { Announcement, Role } from "~/generated/client";
 
 /**
  * TargetItemsListType
@@ -392,7 +392,9 @@ class NewEditAnnouncement extends SessionStateComponent<
   createOrModifyAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
 
-    if (this.props.status.role === "TEACHER") {
+    const isTeacher = this.props.status.roles ? this.props.status.roles.includes(Role.Teacher) : false;
+    
+    if (isTeacher) {
       if (this.state.currentTarget.length <= 0) {
         this.props.displayNotification(
           this.props.i18n.t("validation.targetGroup", { ns: "messaging" }),
@@ -591,7 +593,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           context: "target",
         })}
         label={this.props.i18n.t("labels.target", { ns: "messaging" })}
-        required={this.props.status.role === "TEACHER"}
+        required={this.props.status.roles ? this.props.status.roles.includes(Role.Teacher) : false}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">

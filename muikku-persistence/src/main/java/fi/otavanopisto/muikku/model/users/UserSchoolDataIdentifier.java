@@ -1,19 +1,25 @@
 package fi.otavanopisto.muikku.model.users;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import javax.validation.constraints.NotEmpty;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -63,14 +69,6 @@ public class UserSchoolDataIdentifier {
     this.archived = archived;
   }
 
-  public EnvironmentRoleEntity getRole() {
-    return role;
-  }
-
-  public void setRole(EnvironmentRoleEntity role) {
-    this.role = role;
-  }
-
   public OrganizationEntity getOrganization() {
     return organization;
   }
@@ -86,10 +84,12 @@ public class UserSchoolDataIdentifier {
   
   @Transient
   public boolean hasAnyRole(EnvironmentRoleArchetype ... roles) {
-    if (getRole() != null) {
-      EnvironmentRoleArchetype userRole = getRole().getArchetype();
-      
-      return userRole != null && ArrayUtils.contains(roles, userRole);
+    if (getRoles() != null) {
+      for (EnvironmentRoleEntity roleEntity : getRoles()) {
+        if (ArrayUtils.contains(roles, roleEntity.getArchetype())) {
+          return true;
+        }
+      }
     }
     
     return false;
@@ -106,6 +106,14 @@ public class UserSchoolDataIdentifier {
     );
   }
   
+  public List<EnvironmentRoleEntity> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<EnvironmentRoleEntity> roles) {
+    this.roles = roles;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -121,8 +129,9 @@ public class UserSchoolDataIdentifier {
   @ManyToOne
   private UserEntity userEntity;
 
-  @ManyToOne
-  private EnvironmentRoleEntity role;
+  @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinTable (name = "UserSchoolDataIdentifierRoles", joinColumns = @JoinColumn(name = "userSchoolDataIdentifier_id"), inverseJoinColumns = @JoinColumn(name = "role"))
+  private List<EnvironmentRoleEntity> roles;
 
   @ManyToOne
   private OrganizationEntity organization;

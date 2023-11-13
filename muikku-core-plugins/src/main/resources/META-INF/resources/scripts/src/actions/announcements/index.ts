@@ -298,7 +298,6 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
           i18n.t("notifications.loadError", {
             ns: "messaging",
             context: "announcements",
-            count: 0,
           }),
           "error"
         )
@@ -605,7 +604,6 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
             i18n.t("notifications.loadError", {
               ns: "messaging",
               context: "announcements",
-              count: 0,
             }),
             "error"
           )

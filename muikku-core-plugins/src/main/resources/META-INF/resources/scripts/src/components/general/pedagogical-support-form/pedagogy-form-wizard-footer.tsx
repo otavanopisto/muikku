@@ -1,6 +1,7 @@
 import * as React from "react";
 import Button from "../button";
 import { useWizardContext } from "../wizard/context/wizard-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * PedagogyFormWizardFooter
@@ -14,6 +15,7 @@ interface PedagogyFormWizardFooterProps {}
  * @returns JSX.Element
  */
 const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { previous, next, isFirstStep, isLastStep } = useWizardContext();
 
   /**
@@ -38,7 +40,7 @@ const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
           onClick={handlePreviousStep}
           disabled={isFirstStep}
         >
-          Edellinen
+          {t("actions.previous", { ns: "common" })}
         </Button>
       )}
 
@@ -48,7 +50,7 @@ const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
           buttonModifiers={["info"]}
           disabled={isLastStep}
         >
-          Seuraava
+          {t("actions.next", { ns: "common" })}
         </Button>
       )}
     </>

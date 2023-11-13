@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -278,7 +279,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     staffStudyProgrammes.add(1l);
     staffStudyProgrammes.add(2l);
     StaffMember staffMember = new StaffMember(staffMemberId, personId, organizationId, null, firstName, lastName, null, 
-        role, tags, variables, staffStudyProgrammes);
+        EnumSet.of(role), tags, variables, staffStudyProgrammes);
       
     String staffMemberJson = objectMapper.writeValueAsString(staffMember);
     

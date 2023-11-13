@@ -2,7 +2,7 @@ import * as React from "react";
 import { StatusType } from "~/reducers/base/status";
 import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import { Note, NoteStatusType, Role, UpdateNoteRequest } from "~/generated/client";
 import MApi from "~/api/api";
 
 const notesApi = MApi.getNotesApi();
@@ -18,12 +18,12 @@ export const useOnGoingNotes = (
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [notes, setNotes] = React.useState(<Note[]>[]);
-  const { userId, role } = status;
+  const { userId, roles } = status;
   const { t } = useTranslation("tasks");
 
   React.useEffect(() => {
     // This is for students only hook, if you call it as someone else, no loading should happen
-    if (role !== "STUDENT") {
+    if (roles ? roles.includes(Role.Student) : false) {
       return;
     }
 
@@ -45,7 +45,7 @@ export const useOnGoingNotes = (
       }
     };
     loadNotes();
-  }, [userId, role, displayNotification, t]);
+  }, [userId, roles, displayNotification, t]);
 
   /**
    * changenotesItemStatus

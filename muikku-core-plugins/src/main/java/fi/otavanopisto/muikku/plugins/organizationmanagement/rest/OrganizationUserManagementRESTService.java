@@ -172,6 +172,14 @@ public class OrganizationUserManagementRESTService {
         propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
       }
       boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);        
+      
+      UserSchoolDataIdentifier staffMemberUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(staffMemberIdentifier);
+      
+      List<String> roles = new ArrayList<>();
+      if (staffMemberUSDI != null && staffMemberUSDI.getRoles() != null) {
+        staffMemberUSDI.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
+      }
+      
       staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
           staffMemberIdentifier.toId(),
           new Long((Integer) o.get("userEntityId")),
@@ -180,7 +188,7 @@ public class OrganizationUserManagementRESTService {
           email,
           propertyMap,
           organizationRESTModel,
-          (String) o.get("archetype"),
+          roles,
           hasImage));
     }
       
@@ -307,7 +315,8 @@ public class OrganizationUserManagementRESTService {
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             null, // flags
-            organizationRESTModel));
+            organizationRESTModel,
+            false));
       }
     }
     
