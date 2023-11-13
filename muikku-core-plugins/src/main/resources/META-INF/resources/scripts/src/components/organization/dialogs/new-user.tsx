@@ -23,7 +23,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Role } from "~/generated/client";
 
-
 /**
  * OrganizationUserProps
  */

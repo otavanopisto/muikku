@@ -9,6 +9,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
@@ -134,6 +135,10 @@ public class UserController {
 
   public List<UserEmail> listUserEmails(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserEmails(userIdentifier);
+  }
+  
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
+    return userSchoolDataController.listGuardiansDependents(guardianUserIdentifier);
   }
   
 }

@@ -18,6 +18,7 @@ import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { User, Role } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { Role } from "~/generated/client"
 
 /**
  * OrganizationUserProps
@@ -36,6 +37,7 @@ interface OrganizationUserProps extends WithTranslation {
  */
 interface OrganizationUserState {
   user: {
+    // TODO määritetty kentät jotka tässä luokassa liikkuu, ok?
 //    [field: string]: string;
     firstName: string;
     lastName: string;
@@ -188,6 +190,8 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             label={t("labels.role", { ns: "users" })}
             updateField={this.updateField}
+            // TODO: Rooleja voi olla useita, käyttöliittymä pitäisi päivittää vastaamaan sitä
+            //       joskin voi olla edelleen paras, että käyttäjälle valitaan muikussa vain yksi rooli 
             //TODO value={this.props.data.role}
           >
             <option value="MANAGER">

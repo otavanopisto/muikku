@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { Note, NoteStatusType, Role, UpdateNoteRequest } from "~/generated/client";
 import MApi from "~/api/api";
+import { Role } from "~/generated/client"
 
 const notesApi = MApi.getNotesApi();
 

@@ -3,8 +3,9 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import MApi from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
-import { WorkspaceBasicInfo } from "~/generated/client";
-import { localize } from "~/locales/i18n";
+import { WorkspaceBasicInfo } from "~/reducers/workspaces";
+import promisify from "~/util/promisify";
+import i18n from "~/locales/i18n";
 import { Role } from "~/generated/client";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;

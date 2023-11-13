@@ -5418,6 +5418,27 @@ paths:
           description: Internal server error
 
   #ME
+  /rest/me/dependents:
+    get:
+      operationId: getGuardiansDependents
+      summary: Get guardians dependents
+      description: Get guardians dependents
+      tags:
+        - Me
+      responses:
+        "200":
+          description: Guardians dependents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserGuardiansDependant"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/me/guidanceCounselors:
     get:
       operationId: getGuidanceCounselors
@@ -13904,6 +13925,7 @@ components:
       enum:
         - TEACHER
         - STUDENT
+        - STUDENT_PARENT
         - ADMINISTRATOR
         - MANAGER
         - STUDY_PROGRAMME_LEADER
@@ -14490,6 +14512,34 @@ components:
           type: boolean
         studiesEnded:
           type: boolean
+
+    UserGuardiansDependant:
+      type: object
+      description: User Guardians Dependant object
+      required:
+        - identifier
+        - firstName
+        - lastName
+        - hasImage
+      properties:
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickName:
+          type: string
+        studyProgrammeName:
+          type: string
+        hasImage:
+          type: boolean
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        address:
+          type: string
 
     UserWithSchoolData:
       type: object
