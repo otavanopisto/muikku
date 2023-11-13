@@ -11,7 +11,7 @@ import i18n from "~/locales/i18n";
  * UpdateHopsTriggerType
  */
 export interface UpdateHopsTriggerType {
-  (callback?: () => void, userId?: {id: number, entityId: string}): AnyActionType;
+  (callback?: () => void, userId?: string): AnyActionType;
 }
 
 /**
@@ -36,14 +36,19 @@ export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
 /**
  * updateHops
  * @param callback callback
+ * @param userId userId
  */
-const updateHops: UpdateHopsTriggerType = function updateHops(callback, userId) {
+const updateHops: UpdateHopsTriggerType = function updateHops(
+  callback,
+  userId
+) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,    getState: () => StateType
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
   ) => {
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const userApi = MApi.getUserApi();
-    const userIdToUse = userId.id || getState().status.userId;
+    const userIdToUse = getState().status.userId;
 
     try {
       if (getState().hops.status !== "WAIT") {

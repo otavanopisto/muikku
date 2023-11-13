@@ -342,7 +342,7 @@ export default class MainFunction extends React.Component<
         setLocationToInfoInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
-    }; // this.props.store.dispatch(updateHops() as Action);
+    } // this.props.store.dispatch(updateHops() as Action);
   }
 
   /**
