@@ -223,7 +223,16 @@ export default class MainFunction extends React.Component<
     } else if (window.location.pathname.includes("/guider")) {
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")) {
-      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+      this.loadRecordsData(window.location.hash.replace("#", ""));
+    } else if (window.location.pathname.includes("/guardian")) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      const [arg1, arg2] = hashArray;
+
+      if (arg2) {
+        this.loadRecordsData(arg1, arg2);
+      } else {
+        this.loadRecordsData("", arg1);
+      }
     } else if (window.location.pathname.includes("/organization")) {
       this.loadCoursePickerData(
         queryString.parse(window.location.hash.split("?")[1] || "", {
@@ -282,21 +291,17 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadRecordsData
-   * @param dataSplitted dataSplitted
+   * @param tab records tab
+   * @param userId userId
    */
-  loadRecordsData(dataSplitted: string[]) {
-    const givenLocation = dataSplitted[0].split("/")[0];
+  loadRecordsData(tab: string, userId?: string) {
+    const givenLocation = tab;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const originalData: any = queryString.parse(dataSplitted[1] || "", {
-      arrayFormat: "bracket",
-    });
-
-    if (!givenLocation && !originalData.w) {
+    if (!givenLocation) {
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
-      this.props.store.dispatch(updateSummary() as Action);
+      this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords() as Action
@@ -326,7 +331,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
-      this.props.store.dispatch(updateSummary() as Action);
+      this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(
         setLocationToStatisticsInTranscriptOfRecords() as Action
@@ -336,9 +341,8 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToInfoInTranscriptOfRecords() as Action
       );
-      this.props.store.dispatch(updateSummary() as Action);
-    }
-    this.props.store.dispatch(updateHops() as Action);
+      this.props.store.dispatch(updateSummary(userId) as Action);
+    }; // this.props.store.dispatch(updateHops() as Action);
   }
 
   /**
@@ -969,7 +973,7 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
-      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+      this.loadRecordsData(window.location.hash.replace("#", ""));
     }
 
     return <RecordsBody />;
@@ -981,6 +985,8 @@ export default class MainFunction extends React.Component<
   renderGuardianBody() {
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      const [arg1, arg2] = hashArray;
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
@@ -996,14 +1002,18 @@ export default class MainFunction extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.studies"))
+        titleActions.updateTitle(i18n.t("labels.dependant", { count: 0 }))
       );
-      this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
-      );
-      this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
+      // this.props.store.dispatch(
+      //   loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
+      // );
+      // this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
-      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+      if (arg2) {
+        this.loadRecordsData(arg1, arg2);
+      } else {
+        this.loadRecordsData("", arg1);
+      }
     }
 
     return <GuardianBody />;

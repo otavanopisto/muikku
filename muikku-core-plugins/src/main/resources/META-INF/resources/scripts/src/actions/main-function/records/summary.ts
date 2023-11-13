@@ -23,13 +23,16 @@ export type UPDATE_STUDIES_SUMMARY_STATUS = SpecificActionType<
  * UpdateSummaryTriggerType
  */
 export interface UpdateSummaryTriggerType {
-  (): AnyActionType;
+  (studentId?: string): AnyActionType;
 }
 
 /**
  * UpdateSummaryTriggerType
+ * @param studentId student pyramus id
  */
-const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
+const updateSummary: UpdateSummaryTriggerType = function updateSummary(
+  studentId
+) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
@@ -48,12 +51,19 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       });
 
       // Get user id
-      const pyramusId = getState().status.userSchoolDataIdentifier;
+      const pyramusId = studentId
+        ? studentId
+        : getState().status.userSchoolDataIdentifier;
+
+      // If the pyramusId is a staffId, don't update summary
+      if (!pyramusId.toLowerCase().includes("student-")) {
+        return null;
+      }
 
       // We need completed courses from Eligibility
-      const eligibility = await recordsApi.getStudentMatriculationEligibility({
-        studentIdentifier: pyramusId,
-      });
+      // const eligibility = await recordsApi.getStudentMatriculationEligibility({
+      //   studentIdentifier: pyramusId,
+      // });
 
       const activityLogsHash = await activitylogsApi.getUserActivityLogs({
         userId: pyramusId,
@@ -136,7 +146,8 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
 
       /* Does have matriculation examination in goals? */
       const summaryData: SummaryDataType = {
-        eligibilityStatus: eligibility.coursesCompleted,
+        // eligibilityStatus: eligibility.coursesCompleted,
+        eligibilityStatus: 0,
         activity: activityLogsHash.general.length,
         returnedExercises: assignmentsDone.length,
         coursesDone: coursesDone.length,
