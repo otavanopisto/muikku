@@ -716,8 +716,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
 
           if (changed) {
             if (data.material.type === "folder") {
-              console.log("updateWorkspaceMaterialContentNode", data);
-
               const updatedFolder = await workspaceApi.updateWorkspaceFolder({
                 workspaceId: data.workspace.id,
                 folderId: data.material.workspaceMaterialId,

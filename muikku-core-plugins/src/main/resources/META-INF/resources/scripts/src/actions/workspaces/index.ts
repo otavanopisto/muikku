@@ -656,8 +656,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
             : null, */
         ])) as any;
 
-        console.log("additionalInfo", additionalInfo);
-
         workspace.assessmentRequests = assessmentRequests;
         workspace.interimEvaluationRequests = interimEvaluationRequests;
         workspace.activity = activity;
