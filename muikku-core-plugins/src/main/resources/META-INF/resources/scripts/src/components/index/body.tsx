@@ -13,8 +13,8 @@ import {
   WithTranslation,
 } from "react-i18next";
 import StudentComponent from "./layouts/student";
-import TeacherComponent from "./layouts/teacher";
-import GuardianComponent from "./layouts/guardian";
+import StaffComponent from "./layouts/staff";
+// import GuardianComponent from "./layouts/guardian";
 
 /**
  * IndexBodyProps
@@ -28,9 +28,6 @@ interface IndexBodyProps extends WithTranslation {
  */
 const IndexBody: React.FC<IndexBodyProps> = (props) => {
   const status = props.status;
-
-  // This needs to be changed to a real one
-  const fakeIsGuardian = true;
   const { t } = useTranslation("frontPage");
   return (
     <div>
@@ -39,10 +36,8 @@ const IndexBody: React.FC<IndexBodyProps> = (props) => {
         <h1 className="visually-hidden">{t("wcag.indexViewHeader")}</h1>
         {status.isStudent ? (
           <StudentComponent studiesEnded={status.isActiveUser} />
-        ) : fakeIsGuardian ? (
-          <GuardianComponent />
         ) : (
-          <TeacherComponent />
+          <StaffComponent />
         )}
       </ScreenContainer>
       <CheckContactInfoDialog />
