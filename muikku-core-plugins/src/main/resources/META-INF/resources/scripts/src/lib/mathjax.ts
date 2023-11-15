@@ -35,7 +35,7 @@ export const MATHJAXCONFIG = {
 };
 
 export const MATHJAXSRC =
-  "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_SVG";
+  "//cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-MML-AM_SVG";
 
 /**
  * loadMathJax
