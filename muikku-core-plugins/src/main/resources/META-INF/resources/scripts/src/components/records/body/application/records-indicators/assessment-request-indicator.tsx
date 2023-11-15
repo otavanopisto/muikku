@@ -1,14 +1,14 @@
 import * as React from "react";
-import { localizeTime } from "~/locales/i18n";
-import { Assessment } from "~/reducers/workspaces";
+import { localize } from "~/locales/i18n";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { WorkspaceAssessmentState } from "~/generated/client";
 
 /**
  * AssessmentRequestIndicatorProps
  */
 interface AssessmentRequestIndicatorProps {
-  assessment: Assessment;
+  assessment: WorkspaceAssessmentState;
 }
 
 /**
@@ -36,7 +36,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "evaluationRequest",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             })}
           </span>
         }
@@ -53,7 +53,7 @@ export const AssessmentRequestIndicator: React.FC<
             {t("content.sent", {
               ns: "studies",
               context: "interimEvaluationRequest",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             })}
           </span>
         }

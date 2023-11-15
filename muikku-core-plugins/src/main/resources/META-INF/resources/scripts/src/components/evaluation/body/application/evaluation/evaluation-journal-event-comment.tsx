@@ -14,7 +14,7 @@ import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
 import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * EvaluationEventContentCardProps
@@ -75,10 +75,10 @@ const EvaluationJournalEventComment: React.FC<
   const creatorName = creatorIsMe
     ? t("labels.self")
     : `${firstName} ${lastName}`;
-  const formatedDate = `${localizeTime.date(
+  const formatedDate = `${localize.date(created, "l")} - ${localize.date(
     created,
-    "l"
-  )} - ${localizeTime.date(created, "h:mm")}`;
+    "h:mm"
+  )}`;
 
   return (
     <div

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { getName } from "~/util/modifiers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/rich-text.scss";
@@ -36,7 +36,7 @@ import {
   UnsubscribeDiscustionArea,
   unsubscribeDiscussionArea,
 } from "~/actions/discussion/index";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { DiscussionArea as DiscussionAreaComponent } from "./threads/area";
 import {
   ApplicationListItemBody,
@@ -56,7 +56,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface DiscussionSubscriptionsProps extends WithTranslation {
   discussion: DiscussionState;
   status: StatusType;
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
   /**
    * Redux action method to subscribe discussion thread
    */
@@ -601,7 +601,7 @@ class DiscussionSubscriptions extends React.Component<
                   user,
                   this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                 )}
-              , {localizeTime.date(subscribredThread.created)}
+              , {localize.date(subscribredThread.created)}
             </span>
 
             {sThreads.workspaceName && (
@@ -627,7 +627,7 @@ class DiscussionSubscriptions extends React.Component<
               <span>
                 {this.props.t("labels.lastMessage", {
                   ns: "messaging",
-                  time: localizeTime.date(subscribredThread.updated),
+                  time: localize.date(subscribredThread.updated),
                 })}
               </span>
             </div>

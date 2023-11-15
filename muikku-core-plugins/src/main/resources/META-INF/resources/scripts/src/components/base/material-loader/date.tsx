@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 type MaterialLoaderDateProps = MaterialLoaderProps;
 
@@ -25,10 +25,10 @@ export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
   return (
     <div className="material-page__assignment-assessment-date">
       <span className="material-page__assignment-assessment-date-label">
-        {t("labels.date", { count: 1 })}:
+        {t("labels.date")}:
       </span>
       <span className="material-page__assignment-assessment-date-data">
-        {localizeTime.date(date)}
+        {localize.date(date)}
       </span>
     </div>
   );

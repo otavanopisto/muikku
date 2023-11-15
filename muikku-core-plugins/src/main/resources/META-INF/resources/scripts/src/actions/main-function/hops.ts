@@ -1,7 +1,5 @@
 import actions from "../base/notifications";
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi from "~/lib/mApi";
 import { HOPSStatusType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";

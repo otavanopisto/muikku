@@ -1,6 +1,6 @@
 import * as React from "react";
 import Avatar from "~/components/general/avatar";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import LazyLoader from "~/components/general/lazy-loader";
 import { IconButton } from "~/components/general/button";
@@ -11,13 +11,14 @@ import {
   ApplicationListItemContentActions,
 } from "~/components/general/application-list";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * workspaceUserProps
  */
 interface workspaceUserProps {
   student: WorkspaceStudent;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   status: StatusType;
   highlight: string;
   onSendMessage?: () => any;
@@ -30,8 +31,29 @@ interface workspaceUserProps {
  * @returns JSX.Element
  */
 export default function WorkspaceUser(props: workspaceUserProps) {
+  const pedagogyFormIcon = props.student.hasPedagogyForm ? (
+    <Dropdown
+      alignSelfVertically="top"
+      openByHover
+      content={
+        <span id={`pedagogyPlan-` + props.student.userEntityId}>
+          Opiskelijalle on tehty pedagogisen tuen suunnitelma
+        </span>
+      }
+    >
+      <div className="label label--pedagogy-plan">
+        <span
+          className="label__text label__text--pedagogy-plan"
+          aria-labelledby={`pedagogyPlan-` + props.student.userEntityId}
+        >
+          P
+        </span>
+      </div>
+    </Dropdown>
+  ) : null;
+
   const actionButtons = props.student.active ? (
-    <ApplicationListItemContentActions>
+    <>
       <IconButton
         buttonModifiers="workspace-users-contact"
         icon="envelope"
@@ -42,13 +64,15 @@ export default function WorkspaceUser(props: workspaceUserProps) {
         icon="trash"
         onClick={props.onSetToggleStatus}
       />
-    </ApplicationListItemContentActions>
+    </>
   ) : (
-    <IconButton
-      buttonModifiers="workspace-users-unarchive"
-      icon="back"
-      onClick={props.onSetToggleStatus}
-    />
+    <>
+      <IconButton
+        buttonModifiers="workspace-users-unarchive"
+        icon="back"
+        onClick={props.onSetToggleStatus}
+      />
+    </>
   );
 
   return (
@@ -72,6 +96,7 @@ export default function WorkspaceUser(props: workspaceUserProps) {
       >
         <div className="application-list__item-content-primary-data">
           {filterHighlight(getName(props.student, true), props.highlight)}
+          <div className="labels">{pedagogyFormIcon}</div>
         </div>
         <div className="application-list__item-content-secondary-data">
           {props.student.studyProgrammeName

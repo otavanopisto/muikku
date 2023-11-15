@@ -2,7 +2,7 @@ import Workspace from "./workspaces/workspace";
 import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
@@ -12,7 +12,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * CurrentStudentWorkspacesProps
  */
 interface CurrentStudentWorkspacesProps extends WithTranslation<["common"]> {
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
   locale: string;
 }
 

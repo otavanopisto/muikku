@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SubjectEligibilityType } from "~/reducers/main-function/records/yo";
+import { MatriculationSubjectWithEligibilityStatus } from "~/reducers/main-function/records/yo";
 import "~/sass/elements/application-sub-panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MatriculationSubjectCode } from "../matriculation-subjects/matriculation-subject-type";
@@ -8,7 +8,7 @@ import { MatriculationSubjectCode } from "../matriculation-subjects/matriculatio
  * MatriculationEligibilityRowProps
  */
 interface MatriculationEligibilityRowProps extends WithTranslation {
-  subject: SubjectEligibilityType;
+  subject: MatriculationSubjectWithEligibilityStatus;
 }
 
 /**

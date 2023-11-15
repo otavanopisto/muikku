@@ -7,12 +7,15 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { PDFViewer } from "@react-pdf/renderer";
 import {
-  MaterialCompositeRepliesListType,
-  MaterialContentNodeListType,
-  WorkspaceType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import TableOfContentPDF from "./table-of-content-pdf";
 import { StatusType } from "~/reducers/base/status";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 
 /**
  * NoteBookPDFProps
@@ -20,9 +23,9 @@ import { StatusType } from "~/reducers/base/status";
 interface TableOfContentPDFDialogProps {
   children?: React.ReactElement<any>;
   assignmentTypeFilters: string[];
-  materials: MaterialContentNodeListType;
-  compositeReplies: MaterialCompositeRepliesListType;
-  workspace?: WorkspaceType;
+  materials: MaterialContentNodeWithIdAndLogic[];
+  compositeReplies: MaterialCompositeReply[];
+  workspace?: WorkspaceDataType;
   isOpen?: boolean;
   onClose?: () => void;
   status: StatusType;

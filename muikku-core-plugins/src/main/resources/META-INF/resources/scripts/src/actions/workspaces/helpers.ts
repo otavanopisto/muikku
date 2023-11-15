@@ -1,14 +1,12 @@
 import notificationActions from "~/actions/base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
   WorkspacesActiveFiltersType,
-  WorkspacesType,
+  WorkspacesState,
   WorkspacesStateType,
-  WorkspacesPatchType,
-  WorkspaceType,
+  WorkspacesStatePatch,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { ReducerStateType } from "~/reducers/workspaces/journals";
 import { Dispatch } from "react";
@@ -39,12 +37,12 @@ export async function loadWorkspacesHelper(
 ) {
   const state: StateType = getState();
 
-  // This "WorkspacesType" annoys me. It's used in the organization workspaces,
+  // This "WorkspacesState" annoys me. It's used in the organization workspaces,
   // which have type "OrganizationWorkspacesType",
   // which at this point is not conflicting, but the "OrganizationWorkspacesType" is different - less attributes.
   // I cannot find any bugs or disadvantages in my testing.
 
-  let workspaces: WorkspacesType = state.workspaces;
+  let workspaces: WorkspacesState = state.workspaces;
 
   if (loadOrganizationWorkspaces === true) {
     workspaces = state.organizationWorkspaces;
@@ -75,7 +73,7 @@ export async function loadWorkspacesHelper(
     workspacesNextstate = "LOADING_MORE";
   }
 
-  const newWorkspacesPropsWhileLoading: WorkspacesPatchType = {
+  const newWorkspacesPropsWhileLoading: WorkspacesStatePatch = {
     state: workspacesNextstate,
     activeFilters: actualFilters,
   };
@@ -186,7 +184,7 @@ export async function loadWorkspacesHelper(
   try {
     // NOTE: Still using old WorkspaceType for now, because frontend is not ready for the path
     // specific types yet. This will be changed in the future.
-    let nWorkspaces: WorkspaceType[] = loadOrganizationWorkspaces
+    let nWorkspaces: WorkspaceDataType[] = loadOrganizationWorkspaces
       ? await organizationApi.getOrganizationWorkspaces(params)
       : await coursepickerApi.getCoursepickerWorkspaces({
           ...params,
@@ -205,7 +203,7 @@ export async function loadWorkspacesHelper(
       actualWorkspaces.pop();
     }
 
-    const payload: WorkspacesPatchType = {
+    const payload: WorkspacesStatePatch = {
       state: "READY",
       availableWorkspaces: concat
         ? workspaces.availableWorkspaces.concat(actualWorkspaces)
@@ -234,7 +232,10 @@ export async function loadWorkspacesHelper(
     //Error :(
     dispatch(
       notificationActions.displayNotification(
-        i18n.t("notifications.loadError", { count: 0, ns: "workspace" }),
+        i18n.t("notifications.loadError", {
+          ns: "workspace",
+          context: "workspaces",
+        }),
         "error"
       )
     );

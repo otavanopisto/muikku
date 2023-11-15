@@ -29,7 +29,7 @@ export interface WorkspaceJournalFilters {
 export interface WorkspaceJournalFeedback extends EvaluationJournalFeedback {}
 
 /**
- * WorkspaceJournalsType
+ * JournalsState
  */
 export interface JournalsState {
   journalFeedback?: WorkspaceJournalFeedback;

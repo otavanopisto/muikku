@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import Websocket from "~/util/websocket";
-import mApi from "~/lib/mApi";
 import { Action } from "redux";
 import { updateUnreadMessageThreadsCount } from "~/actions/main-function/messages";
 import { StateType } from "~/reducers";
@@ -42,15 +41,15 @@ export default async function (
     actionsAndCallbacks = {
       "Communicator:newmessagereceived": {
         actions: [updateUnreadMessageThreadsCount],
-        callbacks: [() => mApi().communicator.cacheClear()],
+        callbacks: [],
       },
       "Communicator:messageread": {
         actions: [updateUnreadMessageThreadsCount],
-        callbacks: [() => mApi().communicator.cacheClear()],
+        callbacks: [],
       },
       "Communicator:threaddeleted": {
         actions: [updateUnreadMessageThreadsCount],
-        callbacks: [() => mApi().communicator.cacheClear()],
+        callbacks: [],
       },
     };
   }

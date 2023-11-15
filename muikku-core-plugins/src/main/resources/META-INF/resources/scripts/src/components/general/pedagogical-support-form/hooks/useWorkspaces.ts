@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
@@ -13,7 +13,7 @@ export const useWorkspaces = (
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [textInput, setTextInput] = React.useState<string>("");
-  const [workspaces, setWorkspaces] = React.useState<WorkspaceType[]>([]);
+  const [workspaces, setWorkspaces] = React.useState<WorkspaceDataType[]>([]);
   const [loadingWorkspaces, setLoadingWorkspaces] =
     React.useState<boolean>(true);
 
@@ -33,7 +33,7 @@ export const useWorkspaces = (
           q: textInput,
           maxResults: 20,
           myWorkspaces: true,
-        })) as WorkspaceType[];
+        })) as WorkspaceDataType[];
 
         if (componentMounted.current) {
           unstable_batchedUpdates(() => {

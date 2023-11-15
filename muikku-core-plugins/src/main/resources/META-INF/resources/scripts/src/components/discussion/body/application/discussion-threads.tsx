@@ -32,7 +32,7 @@ import {
 } from "~/actions/discussion/index";
 import { DiscussionThread } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * DiscussionThreadsProps
@@ -280,7 +280,7 @@ class DDiscussionThreads extends React.Component<
                       user,
                       this.props.status.permissions.FORUM_SHOW_FULL_NAMES
                     )}
-                  , {localizeTime.date(thread.created)}
+                  , {localize.date(thread.created)}
                 </span>
               </div>
               <div className="application-list__item-footer-content-aside">
@@ -298,7 +298,7 @@ class DDiscussionThreads extends React.Component<
                   <span>
                     {this.props.i18n.t("labels.lastMessage", {
                       ns: "messaging",
-                      time: localizeTime.date(thread.updated),
+                      time: localize.date(thread.updated),
                     })}
                   </span>
                 </div>

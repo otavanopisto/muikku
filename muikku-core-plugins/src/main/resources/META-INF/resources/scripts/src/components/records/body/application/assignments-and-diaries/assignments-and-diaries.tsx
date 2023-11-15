@@ -8,7 +8,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import ApplicationList from "~/components/general/application-list";
 import { StatusType } from "../../../../../reducers/base/status";
 import Material from "../current-record/material";
@@ -457,10 +457,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                   {t("labels.feedbackDate", { ns: "journal" })}:
                 </div>
                 <div className="journal__meta-item-data">
-                  {localizeTime.date(
-                    journalsData.journalFeedback.created,
-                    "L LT"
-                  )}
+                  {localize.date(journalsData.journalFeedback.created, "l LT")}
                 </div>
               </div>
               <div className="journal__meta-item">
@@ -498,17 +495,16 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       </ApplicationSubPanel.Body>
     </ApplicationSubPanel>
   );
-  t("actions.openAll");
 
   const panelTabs: Tab[] = [
     {
       id: "EVALUATED",
-      name: t("labels.evaluables", { ns: "materials", count: 0 }),
+      name: t("labels.evaluables", { ns: "materials" }),
       type: "assignments",
       component: (
         <ApplicationSubPanel modifier="studies-assignments">
           <ApplicationSubPanel.Header modifier="studies-assignments">
-            <span>{t("labels.evaluables", { ns: "materials", count: 0 })}</span>
+            <span>{t("labels.evaluables", { ns: "materials" })}</span>
             <span>
               <Link
                 className="link link--studies-open-close"
@@ -546,12 +542,12 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
     },
     {
       id: "EXCERCISE",
-      name: t("labels.exercises", { ns: "materials", count: 0 }),
+      name: t("labels.exercises", { ns: "materials" }),
       type: "excercises",
       component: (
         <ApplicationSubPanel modifier="studies-exercises">
           <ApplicationSubPanel.Header modifier="studies-exercises">
-            <span>{t("labels.exercises", { ns: "materials", count: 0 })}</span>
+            <span>{t("labels.exercises", { ns: "materials" })}</span>
             <span>
               <Link
                 className="link link--studies-open-close"

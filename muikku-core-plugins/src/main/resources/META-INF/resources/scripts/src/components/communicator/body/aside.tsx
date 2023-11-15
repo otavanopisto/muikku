@@ -40,7 +40,7 @@ class NavigationAside extends React.Component<
   render() {
     return (
       <Navigation>
-        <NavigationTopic name={this.props.t("labels.folders", { count: 0 })}>
+        <NavigationTopic name={this.props.t("labels.folders")}>
           {this.props.messages.navigation.map((item) => (
             <NavigationElement
               iconColor={item.color}

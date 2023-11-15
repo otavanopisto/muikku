@@ -100,7 +100,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
   const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
-  ).format("h:mm")}`;
+  ).format("LT")}`;
 
   return (
     <ApplicationListItem className="journal journal--comment">
@@ -147,7 +147,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                {t("actions.edit")}
+                {t("actions.edit", { ns: "common", context: "comment" })}
               </Link>
 
               <DeleteJournalComment

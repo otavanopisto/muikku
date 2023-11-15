@@ -17,7 +17,7 @@ import {
 } from "~/actions/base/notifications";
 import JournalComment from "./journalComment";
 import { WorkspaceJournal } from "~/generated/client";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * JournalProps
@@ -78,7 +78,7 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
         <div className="application-list__item-header-aside">
-          <span>{localizeTime.date(journal.created, "L LT")}</span>
+          <span>{localize.date(journal.created, "l LT")}</span>
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">

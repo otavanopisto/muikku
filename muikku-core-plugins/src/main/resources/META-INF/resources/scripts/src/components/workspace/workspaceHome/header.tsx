@@ -1,15 +1,11 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
-import { localizeTime } from "~/locales/i18n";
+import { WorkspaceDataType } from "~/reducers/workspaces";
+import { localize } from "~/locales/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
-import {
-  updateWorkspace,
-  UpdateWorkspaceTriggerType,
-} from "~/actions/workspaces";
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
@@ -21,10 +17,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * WorkspaceHomeHeaderProps
  */
 interface WorkspaceHomeHeaderProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   availableCurriculums: Curriculum[];
   status: StatusType;
-  updateWorkspace: UpdateWorkspaceTriggerType;
 }
 
 /**
@@ -292,10 +287,10 @@ class WorkspaceHomeHeader extends React.Component<
               <span className="meta__item-description">
                 {t("labels.workspaceDates", {
                   ns: "workspace",
-                  beginDate: localizeTime.date(
+                  beginDate: localize.date(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  endDate: localizeTime.date(
+                  endDate: localize.date(
                     this.props.workspace.additionalInfo.endDate
                   ),
                 })}
@@ -337,7 +332,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ updateWorkspace }, dispatch);
+  return bindActionCreators({}, dispatch);
 }
 
 export default withTranslation(["workspace", "common"])(

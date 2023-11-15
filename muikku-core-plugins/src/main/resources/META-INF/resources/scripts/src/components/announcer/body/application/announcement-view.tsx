@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/rich-text.scss";
@@ -61,10 +61,10 @@ class AnnouncementView extends React.Component<
           <ApplicationListItemHeader modifiers="announcer-announcement">
             <ApplicationListHeaderPrimary modifiers="announcement-meta">
               <ApplicationListItemDate
-                startDate={localizeTime.date(
+                startDate={localize.date(
                   this.props.announcements.current.startDate
                 )}
-                endDate={localizeTime.date(
+                endDate={localize.date(
                   this.props.announcements.current.endDate
                 )}
               />
