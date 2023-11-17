@@ -1,22 +1,24 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import {
-  UserSearchResult,
-  User,
-  UserGroup,
-  StudyProgramme,
-} from "~/generated/client/models";
-
-export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
+import { UserGuardiansDependant } from "~/generated/client/models";
+import { UserStatusType } from "../users";
 
 /**
  * Redux state interface.
  * Object that combines the results of the student and staff search
  */
-export interface UsersState {
-  students?: UserSearchResultWithExtraProperties;
-  staff?: UserSearchResultWithExtraProperties;
+export interface DependantsState {
+  dependants: UserGuardiansDependant[];
+  state: UserStatusType;
 }
+
+/**
+ * initialUserGroupsState
+ */
+const initializeDependantState: DependantsState = {
+  dependants: [],
+  state: "WAIT",
+};
 /**
  * Reducer function for users
  *
@@ -24,15 +26,20 @@ export interface UsersState {
  * @param action action
  * @returns State of users
  */
-export const organizationUsers: Reducer<UsersState> = (
-  state = initializeUsersState,
+export const dependants: Reducer<DependantsState> = (
+  state = initializeDependantState,
   action: ActionType
 ) => {
   switch (action.type) {
-    case "UPDATE_STUDENT_USERS":
+    case "UPDATE_DEPENDANTS":
       return {
         ...state,
-        students: action.payload,
+        dependants: action.payload,
+      };
+    case "UPDATE_DEPENDANTS_STATUS":
+      return {
+        ...state,
+        state: action.payload,
       };
 
     default:

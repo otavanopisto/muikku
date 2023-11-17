@@ -31,6 +31,7 @@ import { CeeposState } from "./main-function/ceepos";
 import { JournalsState } from "./workspaces/journals";
 import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
+import { DependantsState } from "./main-function/guardian";
 
 /**
  * StateType
@@ -50,6 +51,7 @@ export interface StateType {
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesState;
+  dependants: DependantsState;
   userIndex?: UserIndexState;
   userSelect?: UsersSelectState;
   userGroups?: UserGroupsState;

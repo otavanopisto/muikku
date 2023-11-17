@@ -1,78 +1,51 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
-import {
-  UserStatusType,
-  UserGroupsStateType,
-  UserPayloadType,
-} from "reducers/main-function/users";
+import { UserStatusType } from "reducers/main-function/users";
 import notificationActions from "~/actions/base/notifications";
-import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
-import { UserSearchResult } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import { UserGuardiansDependant } from "~/generated/client/models";
 
-export type SET_CURRENT_PAYLOAD = SpecificActionType<
-  "SET_CURRENT_PAYLOAD",
-  UserPayloadType
+export type UPDATE_DEPENDANTS = SpecificActionType<
+  "UPDATE_DEPENDANTS",
+  UserGuardiansDependant[]
 >;
-export type UPDATE_USER_GROUPS_STATE = SpecificActionType<
-  "UPDATE_USER_GROUPS_STATE",
-  UserGroupsStateType
+
+export type UPDATE_DEPENDANTS_STATUS = SpecificActionType<
+  "UPDATE_DEPENDANTS_STATUS",
+  UserStatusType
 >;
 
 /**
  * LoadUsersTriggerType
  */
 export interface LoadDependantsTriggerType {
-  (data: {
-    payload: UserPayloadType;
-    success?: (result: UserSearchResult) => any;
-    fail?: () => any;
-  }): AnyActionType;
+  (): AnyActionType;
 }
 
 /**
- * delay
- * @param ms ms
+ * loadDependants
  */
-function delay(ms: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-/**
- * loadStudents
- * @param data data
- */
-const loadDependants: LoadDependantsTriggerType = function loadDependants(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
-  ) => {
+const loadDependants: LoadDependantsTriggerType = function loadDependants() {
+  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
     const meApi = MApi.getMeApi();
 
     try {
       dispatch({
-        type: "LOCK_TOOLBAR",
-        payload: null,
+        type: "UPDATE_DEPENDANTS_STATUS",
+        payload: <UserStatusType>"LOADING",
       });
 
-      const dependents = await meApi.getGuardiansDependents();
-
-      // dispatch({
-      //   type: "UPDATE_STUDENT_USERS",
-      //   payload: {
-      //     ...users,
-      //     searchString: data.payload.q,
-      //   },
-      // });
+      const dependants = await meApi.getGuardiansDependents();
 
       dispatch({
-        type: "UNLOCK_TOOLBAR",
-        payload: null,
+        type: "UPDATE_DEPENDANTS",
+        payload: dependants,
+      });
+
+      dispatch({
+        type: "UPDATE_DEPENDANTS_STATUS",
+        payload: <UserStatusType>"READY",
       });
     } catch (err) {
       if (!isMApiError(err)) {
@@ -87,14 +60,9 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants(
           "error"
         )
       );
-
       dispatch({
-        type: "UPDATE_USERS_STATE",
+        type: "UPDATE_DEPENDANTS_STATUS",
         payload: <UserStatusType>"ERROR",
-      });
-      dispatch({
-        type: "UNLOCK_TOOLBAR",
-        payload: null,
       });
     }
   };
