@@ -16,7 +16,7 @@ import fi.otavanopisto.security.Scope;
 public class GuardianPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.STUDENT_PARENT } )
   public static final String GUARDIAN_VIEW = "GUARDIAN_VIEW";
   
 

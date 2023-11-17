@@ -8,9 +8,7 @@ import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
-import {
-  UserSearchResult,
-} from "~/generated/client";
+import { UserSearchResult } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
 export type SET_CURRENT_PAYLOAD = SpecificActionType<
@@ -43,17 +41,18 @@ function delay(ms: number) {
   });
 }
 
-
 /**
  * loadStudents
  * @param data data
  */
-const loadDependants: LoadDependantsTriggerType = function loadDependants(data) {
+const loadDependants: LoadDependantsTriggerType = function loadDependants(
+  data
+) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const meApi = MApi.getMeApi;
+    const meApi = MApi.getMeApi();
 
     try {
       dispatch({
@@ -61,20 +60,15 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants(data) 
         payload: null,
       });
 
-      const users = await meApi.getDependents({
-        q: data.payload.q || "",
-        firstResult: data.payload.firstResult,
-        maxResults: data.payload.maxResults,
-        userGroupIds: data.payload.userGroupIds,
-      });
+      const dependents = await meApi.getGuardiansDependents();
 
-      dispatch({
-        type: "UPDATE_STUDENT_USERS",
-        payload: {
-          ...users,
-          searchString: data.payload.q,
-        },
-      });
+      // dispatch({
+      //   type: "UPDATE_STUDENT_USERS",
+      //   payload: {
+      //     ...users,
+      //     searchString: data.payload.q,
+      //   },
+      // });
 
       dispatch({
         type: "UNLOCK_TOOLBAR",
@@ -106,10 +100,4 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants(data) 
   };
 };
 
-
-
-export {
-
-  loadDependants,
-
-};
+export { loadDependants };

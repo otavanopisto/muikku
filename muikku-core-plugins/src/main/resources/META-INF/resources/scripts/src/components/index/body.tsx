@@ -25,6 +25,7 @@ interface IndexBodyProps extends WithTranslation {
 
 /**
  * IndexBody
+ * @param props component props
  */
 const IndexBody: React.FC<IndexBodyProps> = (props) => {
   const status = props.status;

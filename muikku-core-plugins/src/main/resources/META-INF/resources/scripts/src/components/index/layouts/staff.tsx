@@ -22,16 +22,14 @@ interface StaffComponentProps {
 const StaffComponent: React.FC<StaffComponentProps> = (props) => {
   const { status } = props;
   const isGuardian = status.roles.includes("STUDENT_PARENT");
-  const isTeacher = status.roles.includes("TEACHER");
 
   return (
     <>
-      {isGuardian && (
+      {isGuardian ? (
         <div className="panel-group panel-group--dependants">
           <DependantsPanel />
         </div>
-      )}
-      {isTeacher && (
+      ) : (
         <>
           <div className="panel-group panel-group--studies">
             <WorkspacesPanel />
