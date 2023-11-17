@@ -166,7 +166,7 @@ export const compulsoryOrUpperSecondary = (studyProgrammeName: string) => {
       return schoolCourseTableCompulsory;
 
     case "Nettilukio":
-    case "Ainepiskelu/lukio":
+    case "Aineopiskelu/lukio":
     case "Aineopiskelu/lukio (oppivelvolliset)":
     case "Kahden tutkinnon opinnot":
     case "Aikuislukio":
@@ -199,7 +199,7 @@ export const filterMatrix = (
     case "Nettilukio":
     case "Aikuislukio":
     case "Nettilukio/yksityisopiskelu (aineopintoina)":
-    case "Aineopiskelu / yo - tutkinto":
+    case "Aineopiskelu/yo-tutkinto":
       return filterUpperSecondarySubjects(matrix, options);
 
     default:
