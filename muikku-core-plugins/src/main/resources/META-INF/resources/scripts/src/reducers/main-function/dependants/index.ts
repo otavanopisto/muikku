@@ -8,7 +8,7 @@ import { UserStatusType } from "../users";
  * Object that combines the results of the student and staff search
  */
 export interface DependantsState {
-  dependants: UserGuardiansDependant[];
+  list: UserGuardiansDependant[];
   state: UserStatusType;
 }
 
@@ -16,7 +16,7 @@ export interface DependantsState {
  * initialUserGroupsState
  */
 const initializeDependantState: DependantsState = {
-  dependants: [],
+  list: [],
   state: "WAIT",
 };
 /**
@@ -34,7 +34,7 @@ export const dependants: Reducer<DependantsState> = (
     case "UPDATE_DEPENDANTS":
       return {
         ...state,
-        dependants: action.payload,
+        list: action.payload,
       };
     case "UPDATE_DEPENDANTS_STATUS":
       return {

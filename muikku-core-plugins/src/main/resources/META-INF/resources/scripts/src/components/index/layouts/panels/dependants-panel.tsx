@@ -4,12 +4,13 @@ import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 import { useTranslation } from "react-i18next";
-
+import { UserGuardiansDependant } from "~/generated/client";
+import { getName } from "~/util/modifiers";
 /**
  * StudentsPanelProps
  */
 interface StudentsPanelProps {
-  // students: [];
+  dependants: UserGuardiansDependant[];
 }
 
 /**
@@ -18,28 +19,27 @@ interface StudentsPanelProps {
  * @returns  JSX.element
  */
 const StudentsPanel: React.FC<StudentsPanelProps> = (props) => {
-  const students = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Doe" },
-  ];
+  const { dependants } = props;
   const { t } = useTranslation(["frontPage", "common"]);
 
   return (
     <Panel
-      icon="icon-books"
-      modifier="workspaces"
-      header={t("labels.students")}
+      icon="icon-users"
+      modifier="dependants"
+      header={t("labels.dependant", { count: dependants.length })}
     >
-      {students.length ? (
+      {dependants.length ? (
         <div className="item-list item-list--panel-workspaces">
-          {students.map((student) => (
+          {dependants.map((dependant) => (
             <Link
-              key={student.id}
+              key={dependant.identifier}
               className="item-list__item item-list__item--workspaces"
-              href={``}
+              href={`/guardian#${dependant.identifier}`}
             >
-              <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
-              <span className="item-list__text-body">{student.name}</span>
+              <span className="item-list__icon item-list__icon--workspaces icon-user"></span>
+              <span className="item-list__text-body">
+                {getName(dependant, true)}
+              </span>
             </Link>
           ))}
         </div>
@@ -58,7 +58,7 @@ const StudentsPanel: React.FC<StudentsPanelProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    // workspaces: state.workspaces.userWorkspaces,
+    dependants: state.dependants.list,
   };
 }
 

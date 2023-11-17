@@ -31,7 +31,7 @@ import { CeeposState } from "./main-function/ceepos";
 import { JournalsState } from "./workspaces/journals";
 import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
-import { DependantsState } from "./main-function/guardian";
+import { DependantsState } from "./main-function/dependants";
 
 /**
  * StateType
