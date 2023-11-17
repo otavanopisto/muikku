@@ -60,6 +60,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceMateria
 import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -149,6 +150,9 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @Inject
   private ActivityLogController activityLogController;
+  
+  @Inject
+  private PedagogyController pedagogyController;
   
   
   @GET
@@ -1680,7 +1684,8 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    
+    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     return restAssessmentRequest;
   }
 
@@ -1765,5 +1770,4 @@ public class EvaluationRESTService extends PluginRESTService {
         interimEvaluationRequest.getRequestText(),
         interimEvaluationRequest.getArchived());
   }
-
 }

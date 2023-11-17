@@ -25,7 +25,7 @@ export function MaterialLoaderDate(props: MaterialLoaderDateProps) {
   return (
     <div className="material-page__assignment-assessment-date">
       <span className="material-page__assignment-assessment-date-label">
-        {t("labels.date", { count: 1 })}:
+        {t("labels.date")}:
       </span>
       <span className="material-page__assignment-assessment-date-data">
         {localize.date(date)}

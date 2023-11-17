@@ -360,7 +360,6 @@ class StateOfStudies extends React.Component<
                     <ApplicationSubPanel.Header>
                       {this.props.i18n.t("labels.orders", {
                         ns: "orders",
-                        count: 0,
                       })}
                     </ApplicationSubPanel.Header>
                     <ApplicationSubPanel.Body>

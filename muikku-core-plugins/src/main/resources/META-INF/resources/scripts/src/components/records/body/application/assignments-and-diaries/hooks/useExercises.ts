@@ -97,9 +97,10 @@ export const useExerciseAssignments = (
       } catch (err) {
         if (!isCancelled) {
           displayNotification(
-            `${t("notifications.loadError", {
+            t("notifications.loadError", {
               context: "workspaceAssignments",
-            })}, ${err.message}`,
+              error: err.message,
+            }),
             "error"
           );
           setExerciseAssignmentsData((exerciseAssignmentsData) => ({

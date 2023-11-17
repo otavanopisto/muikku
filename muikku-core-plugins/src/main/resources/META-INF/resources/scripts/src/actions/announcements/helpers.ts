@@ -131,8 +131,8 @@ export async function loadAnnouncementsHelper(
     dispatch(
       notificationActions.displayNotification(
         i18n.t("notifications.loadError", {
+          ns: "messaging",
           context: "announcements",
-          count: 0,
         }),
         "error"
       )

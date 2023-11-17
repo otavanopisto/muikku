@@ -359,7 +359,6 @@ class StudentWorkspace extends React.Component<
               <h4 className="application-sub-panel__item-header">
                 {this.props.i18n.t("labels.evaluables", {
                   ns: "materials",
-                  count: 0,
                 })}
               </h4>
 
@@ -412,7 +411,6 @@ class StudentWorkspace extends React.Component<
               <h4 className="application-sub-panel__item-header">
                 {this.props.i18n.t("labels.exercises", {
                   ns: "materials",
-                  count: 0,
                 })}
               </h4>
 

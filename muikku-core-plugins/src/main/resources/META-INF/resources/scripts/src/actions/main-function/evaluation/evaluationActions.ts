@@ -988,7 +988,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
               ns: "evaluation",
-              context: "evaluationEvents",
+              context: "evaluation",
             }),
             "error"
           )

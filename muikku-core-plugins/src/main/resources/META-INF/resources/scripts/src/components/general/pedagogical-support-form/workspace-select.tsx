@@ -10,6 +10,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceSelectProps
@@ -36,6 +37,7 @@ interface WorkspaceSelectProps {
  * @param props props
  */
 const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { selectedValue, id, onChange, disabled, displayNotification } = props;
   const { workspaces, loadingWorkspaces, handleTextInput } =
     useWorkspaces(displayNotification);
@@ -63,12 +65,17 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       className="react-select-override react-select-override--hops"
       classNamePrefix="react-select-override"
       isClearable
-      placeholder="Etsi kursseja..."
+      placeholder={t("labels.search", {
+        ns: "pedagogySupportPlan",
+        context: "course",
+      })}
       options={options}
       value={selectedValue}
       onChange={handleSelectChange}
       onInputChange={handleTextInput}
-      noOptionsMessage={() => "Ei vaihtoehtoja"}
+      noOptionsMessage={() =>
+        t("content.empty", { ns: "common", context: "courses" })
+      }
       isLoading={loadingWorkspaces}
       isDisabled={disabled}
     />
