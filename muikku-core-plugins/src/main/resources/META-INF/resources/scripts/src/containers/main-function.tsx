@@ -107,6 +107,8 @@ import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
+
+import { loadDependants } from "~/actions/main-function/dependants";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
@@ -612,6 +614,7 @@ export default class MainFunction extends React.Component<
             "Communicator:newmessagereceived",
             loadLastMessageThreadsFromServer.bind(null, 10)
           );
+      this.props.store.dispatch(loadDependants() as Action);
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({}, { loadUserGroups: false }) as Action
       );
@@ -1004,6 +1007,9 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         titleActions.updateTitle(i18n.t("labels.dependant", { count: 0 }))
       );
+
+      this.props.store.dispatch(loadDependants() as Action);
+
       // this.props.store.dispatch(
       //   loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
       // );

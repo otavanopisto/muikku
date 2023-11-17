@@ -24,7 +24,7 @@ export interface LoadDependantsTriggerType {
 }
 
 /**
- * loadDependants
+ * loadDependants thunk function
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
   return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
