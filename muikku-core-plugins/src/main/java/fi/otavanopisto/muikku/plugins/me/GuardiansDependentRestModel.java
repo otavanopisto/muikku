@@ -1,9 +1,11 @@
 package fi.otavanopisto.muikku.plugins.me;
 
+import java.util.Date;
+
 public class GuardiansDependentRestModel {
 
   public GuardiansDependentRestModel(Long userEntityId, String identifier, String firstName, String lastName, String nickName,
-      String studyProgrammeName, boolean hasImage, String email, String phoneNumber, String address) {
+      String studyProgrammeName, boolean hasImage, String email, String phoneNumber, String address, Date latestLogin) {
     super();
     this.userEntityId = userEntityId;
     this.identifier = identifier;
@@ -15,6 +17,7 @@ public class GuardiansDependentRestModel {
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.address = address;
+    this.latestLogin = latestLogin;
   }
 
   public String getIdentifier() {
@@ -97,6 +100,14 @@ public class GuardiansDependentRestModel {
     this.userEntityId = userEntityId;
   }
 
+  public Date getLatestLogin() {
+    return latestLogin;
+  }
+
+  public void setLatestLogin(Date latestLogin) {
+    this.latestLogin = latestLogin;
+  }
+
   private Long userEntityId;
   private String identifier;
   private String firstName;
@@ -107,5 +118,6 @@ public class GuardiansDependentRestModel {
   private String email;
   private String phoneNumber;
   private String address;
+  private Date latestLogin;
 
 }
