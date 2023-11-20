@@ -36,7 +36,7 @@ const IndexBody: React.FC<IndexBodyProps> = (props) => {
       <ScreenContainer viewModifiers="index">
         <h1 className="visually-hidden">{t("wcag.indexViewHeader")}</h1>
         {status.isStudent ? (
-          <StudentComponent studiesEnded={status.isActiveUser} />
+          <StudentComponent studiesEnded={!status.isActiveUser} />
         ) : (
           <StaffComponent />
         )}
