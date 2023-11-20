@@ -618,6 +618,7 @@
     "actions": {
       "apply": "Hae opiskelemaan",
       "confirmSave": "Tiedot ovat oikein",
+      "dependantStudies": "Opiskelijan opinnot",
       "exploreMaterials": "Tutustu materiaaleihin",
       "readMore": "Lue koko artikkeli",
       "tourNettilukio": "Tutustu Nettilukioon",
@@ -659,6 +660,7 @@
       "followUs": "Seuraa Otaviaa",
       "instagram": "Seuraa meitä Instagramissa",
       "lastMessages": "Uusimmat viestit",
+      "latestLogin": "Viimeisin kirjautuminen: {{date}}",
       "municipality": "Kotikunta",
       "nettilukio": "Nettilukio",
       "nettiperuskoulu": "Nettiperuskoulu",

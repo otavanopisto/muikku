@@ -1,0 +1,40 @@
+.dependant {
+    padding: 5px;
+}
+
+.dependant__details-container {
+    display: flex;
+}   
+
+.dependant__details {
+    padding: 5px;
+}
+
+.dependant__header {    
+    padding: 5px 0 5px 20px;
+    display: flex;
+    align-items: center;
+} 
+
+.dependant__header-aside {
+    margin-left: 15px;
+}
+
+.dependant__contact-info-container {
+    padding: 5px;
+}
+
+.dependant__info-item {
+    background-color: #ededed;
+    height: 10px;
+    border-radius: 15px;
+    padding: 5px 15px;
+
+    &:not(:first-child) {
+        margin-left: 5px;
+    }
+}
+
+.dependant__workspaces {
+    padding: 5px;
+}

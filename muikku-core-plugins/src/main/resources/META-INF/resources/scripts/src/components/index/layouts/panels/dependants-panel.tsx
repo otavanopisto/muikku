@@ -28,11 +28,11 @@ const StudentsPanel: React.FC<StudentsPanelProps> = (props) => {
       header={t("labels.dependant", { count: dependants.length })}
     >
       {dependants.length ? (
-        <div className="item-list item-list--panel-workspaces">
+        <Panel.BodyContent>
           {dependants.map((dependant) => (
             <Dependant key={dependant.identifier} dependant={dependant} />
           ))}
-        </div>
+          </Panel.BodyContent>
       ) : (
         <Panel.BodyContent modifier="empty">
           {t("content.empty", { context: "users" })}

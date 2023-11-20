@@ -1,11 +1,10 @@
-// dependant component that has a prop "dependant" with UserGuardiansDependant type. The component has a header with an avatar compoonent and persion infomation and a link. There's also a content element with active courses. Dependant component will have a bem className space of "dependant"-
 import * as React from "react"; // React
 import { useTranslation } from "react-i18next"; // Translation
 import { UserGuardiansDependant } from "~/generated/client"; // UserGuardiansDependant type
 import { getName } from "~/util/modifiers"; // getName function
 import Link from "~/components/general/link"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
-
+import "~/sass/elements/dependant.scss"; // Styles
 /**
  * DependantProps
  */
@@ -15,36 +14,53 @@ interface DependantProps {
 
 /**
  * Dependant component
- * @param props StudentsPanelProps
+ * @param props DependantPropsProps
  * @returns  JSX.element
  */
 const Dependant: React.FC<DependantProps> = (props) => {
   const { dependant } = props;
-  const { t } = useTranslation(["frontPage", "common"]);
+  const { t } = useTranslation(["frontPage", "workspace"]);
 
   return (
     <div className="dependant">
-      <div className="dependant__info">
+      <div className="dependant__details-container">
         <Avatar
           hasImage={dependant.hasImage}
           firstName={dependant.firstName}
           id={16}
         />
-        <div>
-          {getName(dependant, true)}
-          <Link
-            key={dependant.identifier}
-            className="item-list__item item-list__item--workspaces"
-            href={`/guardian#${dependant.identifier}`}
-          >
-            <span className="item-list__icon item-list__icon--workspaces icon-user"></span>
-            <span className="item-list__text-body">
-              {getName(dependant, true)}
+        <div className="dependant__details">
+          <div className="dependant__header">
+            <h2>{getName(dependant, true)}</h2>
+            <span className="dependant__header-aside">
+              {"(" + dependant.studyProgrammeName + ")"}
             </span>
-          </Link>
+          </div>
+          <div className="dependant__contact-info-container">
+            <span className="dependant__info-item">{dependant.email}</span>
+            <span className="dependant__info-item">
+              {dependant.phoneNumber}
+            </span>
+            <span className="dependant__info-item">{dependant.address}</span>
+          </div>
+          <div>
+            <Link
+              key={dependant.identifier}
+              href={`/guardian#${dependant.identifier}`}
+            >
+              {t("actions.dependantStudies", { ns: "frontPage" })}
+            </Link>
+          </div>
         </div>
       </div>
-      <div className="dependant__workspaces"></div>
+      <div>
+        {t("labels.latestLogin", { ns: "frontPage", date: "xx.xx.xxxx" })}
+      </div>
+      <div className="dependant__workspaces">
+        <h3>
+          {t("labels.workspaces", { ns: "workspace", context: "active" })}
+        </h3>
+      </div>
     </div>
   );
 };

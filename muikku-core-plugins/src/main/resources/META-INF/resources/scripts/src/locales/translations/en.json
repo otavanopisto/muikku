@@ -614,6 +614,7 @@
     "actions": {
       "apply": "Submit application",
       "confirmSave": "Information is correct",
+      "dependantStudies": "Dependant's studies",
       "exploreMaterials": "Explore materials",
       "readMore": "Read rest of the article",
       "tourNettilukio": "Tour Nettilukio",
@@ -655,6 +656,7 @@
       "followUs": "Follow Otavia",
       "instagram": "Follow us at Instagram",
       "lastMessages": "Latest messages",
+      "latestLogin": "Latest login: {{date}}",
       "municipality": "Municipality",
       "nettilukio": "Nettilukio",
       "nettiperuskoulu": "Nettiperuskoulu",
