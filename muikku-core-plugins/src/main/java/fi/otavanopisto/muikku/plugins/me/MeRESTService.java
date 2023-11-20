@@ -216,6 +216,7 @@ public class MeRESTService {
       boolean hasProfilePicture = userEntityFileController.hasProfilePicture(userEntity);
       
       restModels.add(new GuardiansDependentRestModel(
+          userEntity.getId(),
           guardiansDependent.getUserIdentifier().toId(),
           guardiansDependent.getFirstName(),
           guardiansDependent.getLastName(),
