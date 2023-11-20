@@ -607,6 +607,7 @@ export default class MainFunction extends React.Component<
     );
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      const state: StateType = this.props.store.getState();
       this.props.websocket &&
         this.props.websocket
           .restoreEventListeners()
@@ -614,7 +615,9 @@ export default class MainFunction extends React.Component<
             "Communicator:newmessagereceived",
             loadLastMessageThreadsFromServer.bind(null, 10)
           );
-      this.props.store.dispatch(loadDependants() as Action);
+      if (state.status.roles.includes("STUDENT_PARENT")) {
+        this.props.store.dispatch(loadDependants() as Action);
+      }
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({}, { loadUserGroups: false }) as Action
       );
