@@ -297,6 +297,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
           <IconButton
             icon="plus"
+            aria-label={t("actions.add")}
             buttonModifiers={["notebook-action"]}
             onClick={handleAddNewNoteClick}
             disablePropagation={true}
@@ -305,6 +306,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         <Dropdown openByHover content={<p>{t("actions.organize")}</p>}>
           <IconButton
             icon="move"
+            aria-label={t("actions.organize")}
             buttonModifiers={["notebook-action"]}
             onClick={handleEditEntriesOrderClick}
             disablePropagation={true}
@@ -316,6 +318,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         >
           <IconButton
             icon="arrow-down"
+            aria-label={t("actions.openAll", { ns: "common" })}
             buttonModifiers={["notebook-action"]}
             onClick={handleOpenAllClick}
             disablePropagation={true}
@@ -327,15 +330,20 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         >
           <IconButton
             icon="arrow-up"
+            aria-label={t("actions.closeAll", { ns: "common" })}
             buttonModifiers={["notebook-action"]}
             onClick={handleCloseAllClick}
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>PDF</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.openPDF", { ns: "common" })}</p>}
+        >
           <NoteBookPDFDialog notes={notes} workspace={props.currentWorkspace}>
             <IconButton
               icon="pdf"
+              aria-label={t("actions.openPDF", { ns: "common" })}
               buttonModifiers={["notebook-action"]}
               disablePropagation={true}
             />

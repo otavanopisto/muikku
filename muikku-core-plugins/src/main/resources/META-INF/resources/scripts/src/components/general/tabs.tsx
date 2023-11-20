@@ -176,7 +176,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                 id={"tabControl-" + tab.id}
                 aria-controls={"tabPanel-" + tab.id}
                 role="tab"
-                tabIndex={0}
                 aria-selected={tab.id === activeTab}
                 onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
@@ -290,20 +289,28 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
         <>
           <div className="tabs__tab-labels tabs__tab-labels--desktop">
             {tabs.map((tab, index) => (
-              <div
+              <button
                 className={`tabs__tab tabs__tab--mobile-only-tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } `}
                 key={tab.id}
+                id={"tabControl-" + tab.id}
+                aria-controls={"tabPanel-" + tab.id}
+                role="tab"
+                aria-selected={tab.id === activeTab}
               >
                 {tab.name}
-              </div>
+              </button>
             ))}
           </div>
           <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
             {tabs.map((t) => (
               <div
                 key={t.id}
+                role="tabpanel"
+                id={"tabPanel-" + t.id}
+                hidden={t.id !== activeTab}
+                aria-labelledby={"tabControl-" + t.id}
                 className={`tabs__tab-data ${
                   t.type ? "tabs__tab-data--" + t.type : ""
                 }`}

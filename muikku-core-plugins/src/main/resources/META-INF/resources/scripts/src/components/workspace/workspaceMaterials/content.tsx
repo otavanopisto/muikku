@@ -556,6 +556,7 @@ class ContentComponent extends SessionStateComponent<
             <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}>
               <IconButton
                 icon="arrow-down"
+                aria-label={t("actions.openAll")}
                 buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsOpen("open")}
               />
@@ -563,6 +564,7 @@ class ContentComponent extends SessionStateComponent<
             <Dropdown openByHover content={<p>{t("actions.closeAll")}</p>}>
               <IconButton
                 icon="arrow-up"
+                aria-label={t("actions.closeAll")}
                 buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsOpen("close")}
               />
@@ -679,9 +681,16 @@ class ContentComponent extends SessionStateComponent<
                 </>
               }
             >
-              <IconButton icon="filter" buttonModifiers={["toc-action"]} />
+              <IconButton
+                aria-label={t("actions.filterContent")}
+                icon="filter"
+                buttonModifiers={["toc-action"]}
+              />
             </Dropdown>
-            <Dropdown openByHover content={<p>Sisällysluettelo PDF</p>}>
+            <Dropdown
+              openByHover
+              content={<p>{t("actions.openPDF", { ns: "common" })}</p>}
+            >
               <TableOfContentPDFDialog
                 assignmentTypeFilters={this.state.assignmentTypeFilters}
                 materials={this.props.materials}
@@ -690,6 +699,7 @@ class ContentComponent extends SessionStateComponent<
               >
                 <IconButton
                   icon="pdf"
+                  aria-label={t("actions.openPDF", { ns: "common" })}
                   buttonModifiers={["toc-action"]}
                   disablePropagation={true}
                 />
