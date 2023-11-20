@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.me;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +16,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -28,10 +30,12 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -44,6 +48,8 @@ import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -79,6 +85,12 @@ public class MeRESTService {
 
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private ChatController chatController;
@@ -227,6 +239,40 @@ public class MeRESTService {
           guardiansDependent.getPhoneNumber(),
           guardiansDependent.getAddress(),
           userEntity.getLastLogin()
+      ));
+    }
+    
+    return Response.ok(restModels).build();
+  }
+
+  @GET
+  @Path("/dependents/{ID}/workspaces/")
+  @RESTPermit (MuikkuPermissions.STUDENT_PARENT)
+  public Response listGuardiansDependentsWorkspaces(
+      @PathParam("ID") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    // TODO check that logged user is a parent of given id
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+
+    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
+
+    List<GuardiansDependentWorkspaceRestModel> restModels = new ArrayList<>();
+    
+    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+      WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
+      
+      restModels.add(new GuardiansDependentWorkspaceRestModel(
+          workspaceEntityName.getName(),
+          workspaceEntityName.getNameExtension(),
+          // TODO Do these
+          new Date(),
+          new Date()
       ));
     }
     
