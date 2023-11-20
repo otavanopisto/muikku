@@ -2,9 +2,10 @@ package fi.otavanopisto.muikku.plugins.me;
 
 public class GuardiansDependentRestModel {
 
-  public GuardiansDependentRestModel(String identifier, String firstName, String lastName, String nickName,
+  public GuardiansDependentRestModel(Long userEntityId, String identifier, String firstName, String lastName, String nickName,
       String studyProgrammeName, boolean hasImage, String email, String phoneNumber, String address) {
     super();
+    this.userEntityId = userEntityId;
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -88,6 +89,15 @@ public class GuardiansDependentRestModel {
     this.address = address;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
+  private Long userEntityId;
   private String identifier;
   private String firstName;
   private String lastName;

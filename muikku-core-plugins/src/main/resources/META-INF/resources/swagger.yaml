@@ -14517,11 +14517,14 @@ components:
       type: object
       description: User Guardians Dependant object
       required:
+        - userEntityId
         - identifier
         - firstName
         - lastName
         - hasImage
       properties:
+        userEntityId:
+          type: integer
         identifier:
           type: string
         firstName:
