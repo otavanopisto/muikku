@@ -1,10 +1,12 @@
 import * as React from "react"; // React
 import { useTranslation } from "react-i18next"; // Translation
+import { localize } from "~/locales/i18n";
 import { UserGuardiansDependant } from "~/generated/client"; // UserGuardiansDependant type
 import { getName } from "~/util/modifiers"; // getName function
 import Link from "~/components/general/link"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
 import "~/sass/elements/dependant.scss"; // Styles
+
 /**
  * DependantProps
  */
@@ -37,11 +39,17 @@ const Dependant: React.FC<DependantProps> = (props) => {
             </span>
           </div>
           <div className="dependant__contact-info-container">
-            <span className="dependant__info-item">{dependant.email}</span>
-            <span className="dependant__info-item">
-              {dependant.phoneNumber}
-            </span>
-            <span className="dependant__info-item">{dependant.address}</span>
+            {dependant.email && (
+              <span className="dependant__info-item">{dependant.email}</span>
+            )}
+            {dependant.phoneNumber && (
+              <span className="dependant__info-item">
+                {dependant.phoneNumber}
+              </span>
+            )}
+            {dependant.address && (
+              <span className="dependant__info-item">{dependant.address}</span>
+            )}
           </div>
           <div className="dependant__details-footer">
             <Link
@@ -53,9 +61,14 @@ const Dependant: React.FC<DependantProps> = (props) => {
           </div>
         </div>
       </div>
-      <div className="dependant__activity-container">
-        {t("labels.latestLogin", { ns: "frontPage", date: "xx.xx.xxxx" })}
-      </div>
+      {dependant.latestLogin && (
+        <div className="dependant__activity-container">
+          {t("labels.latestLogin", {
+            ns: "frontPage",
+            date: localize.date(dependant.latestLogin),
+          })}
+        </div>
+      )}
       <div className="dependant__workspaces-container">
         <h3>
           {t("labels.workspaces", { ns: "workspace", context: "active" })}
