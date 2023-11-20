@@ -27,7 +27,7 @@ const Dependant: React.FC<DependantProps> = (props) => {
         <Avatar
           hasImage={dependant.hasImage}
           firstName={dependant.firstName}
-          id={16}
+          id={dependant.userEntityId}
         />
         <div className="dependant__details">
           <div className="dependant__header">
@@ -43,7 +43,7 @@ const Dependant: React.FC<DependantProps> = (props) => {
             </span>
             <span className="dependant__info-item">{dependant.address}</span>
           </div>
-          <div>
+          <div className="dependant__details-footer">
             <Link
               key={dependant.identifier}
               href={`/guardian#${dependant.identifier}`}
@@ -53,10 +53,10 @@ const Dependant: React.FC<DependantProps> = (props) => {
           </div>
         </div>
       </div>
-      <div>
+      <div className="dependant__activity-container">
         {t("labels.latestLogin", { ns: "frontPage", date: "xx.xx.xxxx" })}
       </div>
-      <div className="dependant__workspaces">
+      <div className="dependant__workspaces-container">
         <h3>
           {t("labels.workspaces", { ns: "workspace", context: "active" })}
         </h3>

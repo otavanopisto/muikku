@@ -7,11 +7,15 @@
 }   
 
 .dependant__details {
-    padding: 5px;
+    padding: 0 20px;
+}
+
+.dependant__details-footer{
+    margin-top: 20px;
 }
 
 .dependant__header {    
-    padding: 5px 0 5px 20px;
+    padding: 5px 0;
     display: flex;
     align-items: center;
 } 
@@ -21,7 +25,7 @@
 }
 
 .dependant__contact-info-container {
-    padding: 5px;
+    margin-top: 20px;
 }
 
 .dependant__info-item {
@@ -35,6 +39,10 @@
     }
 }
 
-.dependant__workspaces {
-    padding: 5px;
+.dependant__activity-container {
+    margin-top: 20px;
+}
+
+.dependant__workspaces-container {
+    margin-top: 20px;
 }
