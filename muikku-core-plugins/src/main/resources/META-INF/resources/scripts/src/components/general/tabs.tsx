@@ -166,18 +166,22 @@ export const Tabs: React.FC<TabsProps> = (props) => {
             }`}
           >
             {tabs.map((tab: Tab) => (
-              <div
+              <button
                 className={`tabs__tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
                   tab.id === activeTab ? "active" : ""
                 }`}
                 key={tab.id}
-                id={tab.id}
+                id={"tabControl-" + tab.id}
+                aria-controls={"tabPanel-" + tab.id}
+                role="tab"
+                tabIndex={0}
+                aria-selected={tab.id === activeTab}
                 onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
                 {tab.name}
-              </div>
+              </button>
             ))}
             {children}
           </div>
@@ -187,6 +191,10 @@ export const Tabs: React.FC<TabsProps> = (props) => {
               .map((t: Tab) => (
                 <div
                   key={t.id}
+                  role="tabpanel"
+                  id={"tabPanel-" + t.id}
+                  hidden={t.id !== activeTab}
+                  aria-labelledby={"tabControl-" + t.id}
                   className={`tabs__tab-data ${
                     t.type ? "tabs__tab-data--" + t.type : ""
                   }  ${t.id === activeTab ? "active" : ""}`}
