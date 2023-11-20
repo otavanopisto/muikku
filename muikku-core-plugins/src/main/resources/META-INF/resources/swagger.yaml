@@ -14533,16 +14533,24 @@ components:
           type: string
         nickName:
           type: string
+          nullable: true
         studyProgrammeName:
           type: string
         hasImage:
           type: boolean
         email:
           type: string
+          nullable: true
         phoneNumber:
           type: string
+          nullable: true
         address:
           type: string
+          nullable: true
+        latestLogin:
+          type: string
+          format: date-time
+          nullable: true
 
     UserWithSchoolData:
       type: object

@@ -225,7 +225,8 @@ public class MeRESTService {
           hasProfilePicture,
           guardiansDependent.getEmail(),
           guardiansDependent.getPhoneNumber(),
-          guardiansDependent.getAddress()
+          guardiansDependent.getAddress(),
+          userEntity.getLastLogin()
       ));
     }
     
