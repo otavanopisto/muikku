@@ -682,9 +682,16 @@ class ContentComponent extends SessionStateComponent<
                 </>
               }
             >
-              <IconButton icon="filter" buttonModifiers={["toc-action"]} aria-label={t("actions.filterContent")}/>
+              <IconButton
+                icon="filter"
+                buttonModifiers={["toc-action"]}
+                aria-label={t("actions.filterContent")}
+              />
             </Dropdown>
-            <Dropdown openByHover content={<p>{t("actions.openPDF", { ns: "common" })}</p>}>
+            <Dropdown
+              openByHover
+              content={<p>{t("actions.openPDF", { ns: "common" })}</p>}
+            >
               <TableOfContentPDFDialog
                 assignmentTypeFilters={this.state.assignmentTypeFilters}
                 materials={this.props.materials}
