@@ -29,6 +29,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGuardiansDependent;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSpecEdTeacher;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
@@ -50,6 +51,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
@@ -97,6 +99,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentParent;
 import fi.otavanopisto.pyramus.rest.model.StudentParentChild;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
+import fi.otavanopisto.pyramus.rest.model.students.StudentParentStudentCourseRestModel;
 import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriod;
 import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriodType;
 
@@ -1740,6 +1743,40 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             student.getDefaultEmail(),
             student.getDefaultPhoneNumber(),
             student.getDefaultAddress()
+        ));
+      }
+    }
+    
+    return result;
+  }
+
+  @Override
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
+    Long studentParentId = identifierMapper.getStudentParentId(guardianUserIdentifier.getIdentifier());
+    if (studentParentId == null) {
+      return null;
+    }
+    
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (studentId == null) {
+      return null;
+    }
+    
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.students.StudentParentStudentCourseRestModel[]> studentParentStudents = pyramusClient.responseGet(
+        String.format("/studentparents/studentparents/%d/students/%d/courses", studentParentId, studentId),
+        fi.otavanopisto.pyramus.rest.model.students.StudentParentStudentCourseRestModel[].class);
+    
+    List<GuardiansDependentWorkspace> result = new ArrayList<>();
+    
+    if (studentParentStudents.ok()) {
+      for (StudentParentStudentCourseRestModel course : studentParentStudents.getEntity()) {
+        result.add(new PyramusGuardiansDependentWorkspace(
+            new SchoolDataIdentifier(identifierMapper.getWorkspaceIdentifier(course.getCourseId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE),
+            new SchoolDataIdentifier(identifierMapper.getWorkspaceStudentIdentifier(course.getCourseStudentId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE),
+            course.getName(),
+            course.getNameExtension(),
+            course.getEnrolmentDate(),
+            course.getLatestAssessmentRequestDate()
         ));
       }
     }

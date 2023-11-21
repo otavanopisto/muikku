@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.me;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -31,12 +30,14 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -49,7 +50,6 @@ import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
-import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -256,24 +256,27 @@ public class MeRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    // TODO check that logged user is a parent of given id
-    
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-
-    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
+    if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
 
     List<GuardiansDependentWorkspaceRestModel> restModels = new ArrayList<>();
+    List<GuardiansDependentWorkspace> guardiansDependentsWorkspaces = userController.listGuardiansDependentsWorkspaces(
+        sessionController.getLoggedUser(), studentIdentifier);
     
-    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-      WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
-      
-      restModels.add(new GuardiansDependentWorkspaceRestModel(
-          workspaceEntityName.getName(),
-          workspaceEntityName.getNameExtension(),
-          // TODO Do these
-          new Date(),
-          new Date()
-      ));
+    for (GuardiansDependentWorkspace workspace : guardiansDependentsWorkspaces) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(workspace.getWorkspaceIdentifier());
+      WorkspaceUserEntity workspaceUserEntity = workspaceEntity != null ? workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier) : null;
+
+      // List only active workspaces
+      if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getActive())) {
+        restModels.add(new GuardiansDependentWorkspaceRestModel(
+            workspace.getWorkspaceName(),
+            workspace.getWorkspaceNameExtension(),
+            workspace.getEnrolledDate(),
+            workspace.getLatestAssessmentRequestDate()
+        ));
+      }
     }
     
     return Response.ok(restModels).build();
