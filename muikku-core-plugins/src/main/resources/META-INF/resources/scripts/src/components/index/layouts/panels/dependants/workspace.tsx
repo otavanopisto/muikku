@@ -1,11 +1,12 @@
 import * as React from "react";
-import { WorkspaceDataType } from "~/reducers/workspaces";
+
+import {UserGuardiansDependantWorkspace} from "~/generated/client";
 
 /**
  * DependantWorkspaceProps
  */
 interface DependantWorkspaceProps {
-  workspace: WorkspaceDataType;
+  workspace: UserGuardiansDependantWorkspace;
 }
 
 /**
@@ -23,6 +24,8 @@ const DependantWorkspace: React.FC<DependantWorkspaceProps> = (props) => {
           workspace.nameExtension ? "(" + workspace.nameExtension + ")" : ""
         }`}
       </span>
+      <span>{workspace.enrollmentDate}</span>
+      <span>{workspace.latestAssessmentRequestDate}</span>
     </div>
   );
 };

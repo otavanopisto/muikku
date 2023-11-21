@@ -277,6 +277,7 @@ import {
 } from "./main-function/evaluation/evaluationActions";
 import {
   UPDATE_DEPENDANTS,
+  UPDATE_DEPENDANT_WORKSPACES,
   UPDATE_DEPENDANTS_STATUS,
 } from "./main-function/dependants";
 import {
@@ -587,6 +588,8 @@ export type ActionType =
   | NOTEBOOK_LOAD_DEFAULT_POSITION
   | NOTEBOOK_UPDATE_DEFAULT_POSITION
   | UPDATE_DEPENDANTS_STATUS
-  | UPDATE_DEPENDANTS;
+  | UPDATE_DEPENDANTS
+  | UPDATE_DEPENDANT_WORKSPACES;
+
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

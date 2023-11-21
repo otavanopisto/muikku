@@ -5,6 +5,7 @@ import { Panel } from "~/components/general/panel";
 import { useTranslation } from "react-i18next";
 import { UserGuardiansDependant } from "~/generated/client";
 import Dependant from "./dependants/dependant";
+
 /**
  * StudentsPanelProps
  */

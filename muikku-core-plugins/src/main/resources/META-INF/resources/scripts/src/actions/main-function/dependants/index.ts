@@ -4,11 +4,16 @@ import notificationActions from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
 import i18n from "~/locales/i18n";
-import { UserGuardiansDependant } from "~/generated/client/models";
+import { Dependant, DependantWokspacePayloadType } from "~/reducers/main-function/dependants";
 
 export type UPDATE_DEPENDANTS = SpecificActionType<
   "UPDATE_DEPENDANTS",
-  UserGuardiansDependant[]
+  Dependant[]
+>;
+
+export type UPDATE_DEPENDANT_WORKSPACES = SpecificActionType<
+  "UPDATE_DEPENDANT_WORKSPACES",
+  DependantWokspacePayloadType
 >;
 
 export type UPDATE_DEPENDANTS_STATUS = SpecificActionType<
@@ -17,10 +22,17 @@ export type UPDATE_DEPENDANTS_STATUS = SpecificActionType<
 >;
 
 /**
- * LoadUsersTriggerType
+ * LoadDependantsTriggerType
  */
 export interface LoadDependantsTriggerType {
   (): AnyActionType;
+}
+
+/**
+ * LoadDependantWorkspacesTriggerType
+ */
+export interface LoadDependantWorkspacesTriggerType {
+  (dependantId:string): AnyActionType;
 }
 
 /**
@@ -28,6 +40,7 @@ export interface LoadDependantsTriggerType {
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
   return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+
     const meApi = MApi.getMeApi();
 
     try {
@@ -37,10 +50,16 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
       });
 
       const dependants = await meApi.getGuardiansDependents();
+      const payload = dependants.map((dependant) => { 
+        return {
+          ...dependant,
+          workspaces: []
+        };  
+      });
 
       dispatch({
         type: "UPDATE_DEPENDANTS",
-        payload: dependants,
+        payload: payload,
       });
 
       dispatch({
@@ -68,4 +87,39 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
   };
 };
 
-export { loadDependants };
+/**
+ * loadDependants thunk function
+ */
+const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType = function loadDependantWorkspaces(dependantId:string) {
+  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+
+    const meApi = MApi.getMeApi();
+
+    try {
+      const workspaces = await meApi.getGuardiansDependentsActiveWorkspaces({studentIdentifier:dependantId});
+      const payload: DependantWokspacePayloadType = {workspaces, id:dependantId}
+
+      dispatch({
+        type: "UPDATE_DEPENDANT_WORKSPACES",
+        payload: payload,
+      });
+
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "students",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+
+export { loadDependants, loadDependantWorkspaces };

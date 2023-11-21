@@ -1,14 +1,24 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import { UserGuardiansDependant } from "~/generated/client/models";
+import { UserGuardiansDependant, UserGuardiansDependantWorkspace } from "~/generated/client/models";
 import { UserStatusType } from "../users";
+
+
+export interface Dependant extends UserGuardiansDependant { 
+  workspaces?: UserGuardiansDependantWorkspace[];
+}
+
+export interface DependantWokspacePayloadType {
+  workspaces: UserGuardiansDependantWorkspace[];
+  id: string;
+}
 
 /**
  * Redux state interface.
  * Object that combines the results of the student and staff search
  */
 export interface DependantsState {
-  list: UserGuardiansDependant[];
+  list: Dependant[];
   state: UserStatusType;
 }
 
@@ -19,6 +29,7 @@ const initializeDependantState: DependantsState = {
   list: [],
   state: "WAIT",
 };
+
 /**
  * Reducer function for users
  *
@@ -35,6 +46,21 @@ export const dependants: Reducer<DependantsState> = (
       return {
         ...state,
         list: action.payload,
+      };
+      case "UPDATE_DEPENDANT_WORKSPACES":
+      const updatedDependants = state.list.map(dependant => {
+        if (dependant.identifier === action.payload.id) {
+          return {
+            ...dependant,
+            workspaces: action.payload.workspaces
+          };
+        }
+        return dependant;
+      });
+    
+      return {
+        ...state,
+        list: updatedDependants
       };
     case "UPDATE_DEPENDANTS_STATUS":
       return {
