@@ -88,7 +88,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
    * @param tab tab
    */
   const handleTabClick =
-    (tab: Tab) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (tab: Tab) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       onTabChange(tab.id, tab.hash);
     };
 
@@ -97,7 +97,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
    * @param tab tab
    */
   const handleTabKeyUp =
-    (tab: Tab) => (e: React.KeyboardEvent<HTMLDivElement>) => {
+    (tab: Tab) => (e: React.KeyboardEvent<HTMLButtonElement>) => {
       if (e.key === "Enter") {
         onTabChange(tab.id, tab.hash);
       }
@@ -169,11 +169,12 @@ export const Tabs: React.FC<TabsProps> = (props) => {
             }
 
             return (
-              <div
+              <button
                 key={tab.id}
-                id={tab.id}
-                role="button"
-                tabIndex={0}
+                id={"tabControl-" + tab.id}
+                aria-controls={"tabPanel-" + tab.id}
+                role="tab"
+                aria-selected={tab.id === activeTab}
                 onClick={handleTabClick(tab)}
                 onKeyUp={handleTabKeyUp(tab)}
                 className={`tabs__tab ${
@@ -181,11 +182,9 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                 } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
                   tab.id === activeTab ? "active" : ""
                 }`}
-                aria-label={ariaLabel}
-                aria-current={isActive}
               >
                 {tab.name}
-              </div>
+              </button>
             );
           })}
           {children}
@@ -196,6 +195,10 @@ export const Tabs: React.FC<TabsProps> = (props) => {
             .map((t) => (
               <div
                 key={t.id}
+                role="tabpanel"
+                id={"tabPanel-" + t.id}
+                hidden={t.id !== activeTab}
+                aria-labelledby={"tabControl-" + t.id}
                 className={`tabs__tab-data ${
                   t.type ? "tabs__tab-data--" + t.type : ""
                 }  ${t.id === activeTab ? "active" : ""}`}
@@ -343,21 +346,28 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
         <>
           <div className="tabs__tab-labels tabs__tab-labels--desktop">
             {tabs.map((tab) => (
-              <div
-                tabIndex={0}
+              <button
+                id={"tabControl-" + tab.id}
+                aria-controls={"tabPanel-" + tab.id}
+                role="tab"
+                aria-selected={tab.id === activeTab}
                 className={`tabs__tab tabs__tab--mobile-only-tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } `}
                 key={tab.id}
               >
                 {tab.name}
-              </div>
+              </button>
             ))}
           </div>
           <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
             {tabs.map((t) => (
               <div
                 key={t.id}
+                role="tabpanel"
+                id={"tabPanel-" + t.id}
+                hidden={t.id !== activeTab}
+                aria-labelledby={"tabControl-" + t.id}
                 className={`tabs__tab-data ${
                   t.type ? "tabs__tab-data--" + t.type : ""
                 }`}
