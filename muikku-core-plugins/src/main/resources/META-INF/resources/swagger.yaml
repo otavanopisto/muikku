@@ -5439,6 +5439,34 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/me/dependents/{studentIdentifier}/workspaces:
+    get:
+      operationId: getGuardiansDependentsActiveWorkspaces
+      summary: Get guardians dependents active workspaces
+      description: Get guardians dependents active workspaces
+      tags:
+        - Me
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Guardians dependents active workspaces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserGuardiansDependantWorkspace"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/me/guidanceCounselors:
     get:
       operationId: getGuidanceCounselors
@@ -14548,6 +14576,26 @@ components:
           type: string
           nullable: true
         latestLogin:
+          type: string
+          format: date-time
+          nullable: true
+
+    UserGuardiansDependantWorkspace:
+      type: object
+      description: User Guardians Dependant Workspace object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        nameExtension:
+          type: string
+          nullable: true
+        enrollmentDate:
+          type: string
+          format: date-time
+          nullable: true
+        latestAssessmentRequestDate:
           type: string
           format: date-time
           nullable: true
