@@ -11,8 +11,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
-import { UserGuardiansDependant } from "~/generated/client";
-import { dependants } from "~/reducers/main-function/dependants";
+import { Dependant } from "~/reducers/main-function/dependants";
 
 /**
  * ItemDataElement
@@ -39,7 +38,7 @@ interface MainFunctionNavbarProps extends WithTranslation {
   status: StatusType;
   messageCount: number;
   title: string;
-  dependants: UserGuardiansDependant[];
+  dependants: Dependant[];
 }
 
 /**
@@ -122,7 +121,7 @@ class MainFunctionNavbar extends React.Component<
       {
         modifier: "guardian",
         trail: "guardian",
-        text: t("labels.dependant", { count: dependants.length }),
+        text: t("labels.dependant", { count: this.props.dependants.length }),
         href: "/guardian",
         icon: "users",
         to: true,
@@ -259,7 +258,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
     title: state.title,
-    dependants: state.dependants.list
+    dependants: state.dependants.list,
   };
 }
 

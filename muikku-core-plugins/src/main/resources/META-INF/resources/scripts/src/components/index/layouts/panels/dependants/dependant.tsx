@@ -1,21 +1,27 @@
 import * as React from "react"; // React
 import { useTranslation } from "react-i18next"; // Translation
 import { localize } from "~/locales/i18n";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
 import {
-  UserGuardiansDependant,
-  UserGuardiansDependantWorkspace,
-} from "~/generated/client"; // UserGuardiansDependant type
+  loadDependantWorkspaces,
+  LoadDependantWorkspacesTriggerType,
+} from "~/actions/main-function/dependants";
+import { Dependant } from "~/reducers/main-function/dependants"; // Dependant type
 import { getName } from "~/util/modifiers"; // getName function
 import Link from "~/components/general/link"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
 import "~/sass/elements/dependant.scss"; // Styles
-import AnimateHeight from "react-animate-height";
-import Button from "~/components/general/button";
+import AnimateHeight from "react-animate-height"; // AnimateHeight
+import Button from "~/components/general/button"; // Button component
+
 /**
  * DependantProps
  */
 interface DependantComponentProps {
-  dependant: UserGuardiansDependant;
+  dependant: Dependant;
+  loadDependantWorkspaces: LoadDependantWorkspacesTriggerType;
 }
 
 /**
@@ -24,7 +30,7 @@ interface DependantComponentProps {
  * @returns  JSX.element
  */
 const DependantComponent: React.FC<DependantComponentProps> = (props) => {
-  const { dependant } = props;
+  const { dependant, loadDependantWorkspaces } = props;
   const { t } = useTranslation(["frontPage", "workspace"]);
   const [showWorkspaces, setShowWorkspaces] = React.useState(false);
   /**
@@ -32,6 +38,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
    */
   const toggleShowWorkspaces = () => {
     setShowWorkspaces(!showWorkspaces);
+    loadDependantWorkspaces(dependant.identifier);
   };
 
   return (
@@ -93,6 +100,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
       <div className="dependant__footer">
         <Button
           onClick={toggleShowWorkspaces}
+          aria-label="TODO: Toggle workspace visibility"
           aria-controls="workspacesAccordion"
           aria-expanded={showWorkspaces}
           className={`icon-arrow-${showWorkspaces ? "up" : "down"}`}
@@ -102,4 +110,12 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   );
 };
 
-export default DependantComponent;
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ loadDependantWorkspaces }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(DependantComponent);

@@ -1,15 +1,33 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
-import { UserGuardiansDependant, UserGuardiansDependantWorkspace } from "~/generated/client/models";
+import {
+  UserGuardiansDependant,
+  UserGuardiansDependantWorkspace,
+} from "~/generated/client/models";
 import { UserStatusType } from "../users";
+import { LoadingState } from "~/@types/shared";
 
-
-export interface Dependant extends UserGuardiansDependant { 
+/**
+ * Dependant interface
+ */
+export interface Dependant extends UserGuardiansDependant {
   workspaces?: UserGuardiansDependantWorkspace[];
+  worspacesStatus: LoadingState;
 }
 
+/**
+ * Dependant workspace payload type
+ */
 export interface DependantWokspacePayloadType {
   workspaces: UserGuardiansDependantWorkspace[];
+  id: string;
+}
+
+/**
+ * Dependant workspace status payload type
+ */
+export interface DependantWokspaceStatePayloadType {
+  state: LoadingState;
   id: string;
 }
 
@@ -47,26 +65,41 @@ export const dependants: Reducer<DependantsState> = (
         ...state,
         list: action.payload,
       };
-      case "UPDATE_DEPENDANT_WORKSPACES":
-      const updatedDependants = state.list.map(dependant => {
+    case "UPDATE_DEPENDANT_WORKSPACES": {
+      const updatedDependants = state.list.map((dependant) => {
         if (dependant.identifier === action.payload.id) {
           return {
             ...dependant,
-            workspaces: action.payload.workspaces
+            workspaces: action.payload.workspaces,
           };
         }
         return dependant;
       });
-    
       return {
         ...state,
-        list: updatedDependants
+        list: updatedDependants,
       };
+    }
     case "UPDATE_DEPENDANTS_STATUS":
       return {
         ...state,
         state: action.payload,
       };
+    case "UPDATE_DEPENDANT_WORKSPACES_STATUS": {
+      const updatedDependants = state.list.map((dependant) => {
+        if (dependant.identifier === action.payload.id) {
+          return {
+            ...dependant,
+            worspacesStatus: action.payload.state,
+          };
+        }
+        return dependant;
+      });
+      return {
+        ...state,
+        list: updatedDependants,
+      };
+    }
 
     default:
       return state;
