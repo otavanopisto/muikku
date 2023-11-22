@@ -213,7 +213,7 @@ public class ToRTestsBase extends AbstractUITest {
         
         navigate("/records#records", false);
         waitForPresent(".application-list__header-secondary");
-        waitAndClick(".application-list__header-secondary .button--assignments-and-exercieses");
+        waitAndClick(".application-list__header-secondary .button--assignments-and-exercises");
         waitUntilHasText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED");
         assertText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED", "E");
         waitAndClick(".dialog--studies .tabs__tab-data--assignments.active .application-list__item-header--studies-assignment");
