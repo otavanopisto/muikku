@@ -372,7 +372,11 @@ class WorkspaceUsers extends React.Component<
         />
       ) : null;
 
-    t("labels.teacher", { ns: "users", count: 0 });
+    const teacherCount =
+      (this.props.workspace &&
+        this.props.workspace.staffMembers &&
+        this.props.workspace.staffMembers.results.length) ||
+      0;
 
     return (
       <ApplicationPanel
@@ -381,7 +385,7 @@ class WorkspaceUsers extends React.Component<
       >
         <ApplicationSubPanel modifier="workspace-users">
           <ApplicationSubPanel.Header modifier="workspace-users">
-            {t("labels.teacher", { ns: "users", count: 0 })}
+            {t("labels.teacher", { ns: "users", count: teacherCount })}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="workspace-users">
             <ApplicationList

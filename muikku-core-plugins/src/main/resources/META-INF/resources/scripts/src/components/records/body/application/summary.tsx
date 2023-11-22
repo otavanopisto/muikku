@@ -294,7 +294,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="application-sub-panel__card-body">
               {t("content.completedWorkspaces", {
                 ns: "studies",
-                context: "lasMonth",
+                context: "lastMonth",
               })}
             </div>
           </div>

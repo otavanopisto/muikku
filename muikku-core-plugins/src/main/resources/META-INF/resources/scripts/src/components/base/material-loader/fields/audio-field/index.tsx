@@ -491,7 +491,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
               />
               <Link
                 className="material-page__audiofield-download-file-button icon-download"
-                title={t("actions.download", { count: 1 })}
+                title={t("actions.download")}
                 href={value.url}
                 openInNewTab={value.name}
               />

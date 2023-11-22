@@ -5,6 +5,7 @@ import CKEditor from "../ckeditor";
 import Button from "../button";
 import CkeditorLoaderContent from "../../base/ckeditor-loader/content";
 import * as moment from "moment";
+import { useTranslation } from "react-i18next";
 
 /**
  * OpinionListProps
@@ -45,6 +46,7 @@ interface OpinionItemProps {
  * @returns JSX.Element
  */
 export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const {
     index,
     opinion,
@@ -62,7 +64,7 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
         <div className="hops__form-element-container">
           <TextField
             id="opinionCreatorName"
-            label="Merkitsijä"
+            label={t("labels.creator", { ns: "pedagogySupportPlan" })}
             value={opinion.creatorName}
             disabled
           />
@@ -70,17 +72,16 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
 
         <div className="hops__form-element-container">
           <label htmlFor="createdDate" className="hops__label">
-            Päivämäärä
+            {t("labels.date", { ns: "common" })}
           </label>
           <TextField
             id="CreatedDate"
             value={
               opinion.updatedDate
-                ? `${moment(opinion.creationDate).format(
-                    "DD.MM.YYYY"
-                  )} (Päivitetty ${moment(opinion.updatedDate).format(
-                    "DD.MM.YYYY"
-                  )})`
+                ? `${moment(opinion.creationDate).format("DD.MM.YYYY")} (${t(
+                    "labels.updated",
+                    { ns: "common" }
+                  )} ${moment(opinion.updatedDate).format("DD.MM.YYYY")})`
                 : moment(opinion.creationDate).format("DD.MM.YYYY")
             }
             className="hops__input"
@@ -100,7 +101,9 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
         ) : (
           <div className="hops__form-element-container rich-text">
             {opinionText === "" ? (
-              <p>Lukion näkemystä ei ole vielä asetettu</p>
+              <p>
+                {t("content.pointOfViewNotSet", { ns: "pedagogySupportPlan" })}
+              </p>
             ) : (
               <CkeditorLoaderContent html={opinionText} />
             )}
@@ -114,7 +117,7 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
               id={`removePedagogyRowLabel-${type}${index}`}
               className="visually-hidden"
             >
-              Poista
+              {t("actions.remove", { ns: "common" })}
             </label>
             <Button
               icon="trash"
@@ -142,15 +145,21 @@ interface AddNewActionsBoxProps {
  * @param props props
  * @returns JSX.Element
  */
-export const AddNewOpinionBox: React.FC<AddNewActionsBoxProps> = (props) => (
-  <div className="hops-container__row">
-    <Button
-      buttonModifiers={"add-pedagogy-row"}
-      onClick={props.onClick}
-      icon="plus"
-      disabled={props.disabled}
-    >
-      Lisää uusi rivi
-    </Button>
-  </div>
-);
+export const AddNewOpinionBox: React.FC<AddNewActionsBoxProps> = (props) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+
+  const { onClick, disabled } = props;
+
+  return (
+    <div className="hops-container__row">
+      <Button
+        buttonModifiers={"add-pedagogy-row"}
+        onClick={onClick}
+        icon="plus"
+        disabled={disabled}
+      >
+        {t("actions.add", { ns: "pedagogySupportPlan", context: "row" })}
+      </Button>
+    </div>
+  );
+};
