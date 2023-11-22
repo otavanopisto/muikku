@@ -1,4 +1,5 @@
 import * as React from "react"; // React
+import "~/sass/elements/dependant.scss"; // Styles
 import { useTranslation } from "react-i18next"; // Translation
 import { localize } from "~/locales/i18n";
 import { connect, Dispatch } from "react-redux";
@@ -12,10 +13,9 @@ import { Dependant } from "~/reducers/main-function/dependants"; // Dependant ty
 import { getName } from "~/util/modifiers"; // getName function
 import Link from "~/components/general/link"; // Link component
 import Avatar from "~/components/general/avatar"; // Avatar component
-import "~/sass/elements/dependant.scss"; // Styles
 import AnimateHeight from "react-animate-height"; // AnimateHeight
 import Button from "~/components/general/button"; // Button component
-
+import DependantWorkspace from "./workspace"; // DependantWorkspace component
 /**
  * DependantProps
  */
@@ -40,7 +40,6 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
     setShowWorkspaces(!showWorkspaces);
     loadDependantWorkspaces(dependant.identifier);
   };
-
   return (
     <div className="dependant">
       <div className="dependant__details-container">
@@ -95,6 +94,20 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           <h3>
             {t("labels.workspaces", { ns: "workspace", context: "active" })}
           </h3>
+          <div className="item-list item-list--panel-workspaces">
+            {dependant.workspaces.length > 0 ? (
+              dependant.workspaces.map((workspace, index) => (
+                <DependantWorkspace
+                  key={workspace.name + index}
+                  workspace={workspace}
+                />
+              ))
+            ) : (
+              <div className="empty">
+                {t("content.noWorkspaces", { ns: "frontPage" })}
+              </div>
+            )}
+          </div>
         </div>
       </AnimateHeight>
       <div className="dependant__footer">

@@ -236,6 +236,11 @@
 }
 
 // List item texts
+
+.item-list__text-title {
+  line-height: 1.25rem;
+}
+
 .item-list__text-body {
   flex-basis: auto;
   flex-grow: 1;
@@ -247,6 +252,9 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+.item-list__text-body--date {
+  font-weight: 600;
 }
 
 .item-list__text-body--multiline {
