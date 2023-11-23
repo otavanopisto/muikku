@@ -101,7 +101,6 @@ import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentRoleEntityController;
 import fi.otavanopisto.muikku.users.FlagController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -217,6 +216,9 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private WebSocketMessenger webSocketMessenger;
+  
+  @Inject
+  private GuiderController guiderController;
 
   @GET
   @Path("/students")
@@ -570,7 +572,9 @@ public class GuiderRESTService extends PluginRESTService {
         null,
         organizationRESTModel,
         user.getMatriculationEligibility(),
-        pedagogyController.getHasPedagogyForm(studentIdentifier.toId())
+        pedagogyController.getHasPedagogyForm(studentIdentifier.toId()),
+        user.getCurriculumIdentifier() != null ? guiderController.getCurriculumName(user.getCurriculumIdentifier()) : null
+        
     );
 
     return Response
