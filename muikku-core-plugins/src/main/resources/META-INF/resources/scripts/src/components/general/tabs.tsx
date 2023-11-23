@@ -159,14 +159,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
         >
           {tabs.map((tab, i) => {
             const isActive = tab.id === activeTab;
-            let ariaLabel = `${t("wcag.tab", {
-              current: i + 1,
-              tabCount: tabs.length,
-            })}`;
-
-            if (isActive) {
-              ariaLabel += ` ${t("wcag.active")}`;
-            }
 
             return (
               <button
