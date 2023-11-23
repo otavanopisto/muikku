@@ -18,7 +18,7 @@ const StudentComponent: React.FC<StudentComponentProps> = (props) => {
     return <StudiesEnded />;
   } else {
     return (
-      <div>
+      <>
         <div className="panel-group panel-group--studies">
           <StudiesPanel />
         </div>
@@ -27,7 +27,7 @@ const StudentComponent: React.FC<StudentComponentProps> = (props) => {
           <LastMessagesPanel />
         </div>
         <AnnouncementsPanel overflow={true} />
-      </div>
+      </>
     );
   }
 };
