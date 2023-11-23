@@ -565,7 +565,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
       try {
         const childrenAttachments = await workspaceApi.getWorkspaceMaterials({
           workspaceEntityId: workspace.id,
-          parentId: material.parentId,
+          parentId: material.workspaceMaterialId,
         });
 
         const attachments = childrenAttachments.map(
