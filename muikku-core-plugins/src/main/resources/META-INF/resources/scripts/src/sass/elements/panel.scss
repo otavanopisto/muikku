@@ -13,6 +13,19 @@
   flex-shrink: 1;
   min-width: 0;
 }
+.panel-group--dependants {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 66.66%;
+    flex-grow: 1;
+    flex-flow: row wrap;
+  }
+}
 
 .panel-group--studies {
   order: 1;
@@ -355,7 +368,8 @@
   margin: 0 5px;
 }
 
-.panel__body-text { // This is for direct text content inside of panel_body
+.panel__body-text {
+  // This is for direct text content inside of panel_body
   font-weight: 400;
   line-height: 1.5rem;
 }

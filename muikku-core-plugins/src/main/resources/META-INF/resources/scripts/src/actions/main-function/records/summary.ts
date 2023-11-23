@@ -60,10 +60,9 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
         return null;
       }
 
-      // We need completed courses from Eligibility
-      // const eligibility = await recordsApi.getStudentMatriculationEligibility({
-      //   studentIdentifier: pyramusId,
-      // });
+      const eligibility = await recordsApi.getStudentMatriculationEligibility({
+        studentIdentifier: pyramusId,
+      });
 
       const activityLogsHash = await activitylogsApi.getUserActivityLogs({
         userId: pyramusId,
@@ -146,8 +145,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
 
       /* Does have matriculation examination in goals? */
       const summaryData: SummaryDataType = {
-        // eligibilityStatus: eligibility.coursesCompleted,
-        eligibilityStatus: 0,
+        eligibilityStatus: eligibility.coursesCompleted,
         activity: activityLogsHash.general.length,
         returnedExercises: assignmentsDone.length,
         coursesDone: coursesDone.length,

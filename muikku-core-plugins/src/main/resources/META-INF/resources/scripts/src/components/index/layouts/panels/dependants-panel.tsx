@@ -3,13 +3,14 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 import { useTranslation } from "react-i18next";
-import { UserGuardiansDependant } from "~/generated/client";
-import Dependant from "./dependants/dependant";
+import DependantComponent from "./dependants/dependant";
+import { Dependant } from "~/reducers/main-function/dependants";
+
 /**
  * StudentsPanelProps
  */
 interface StudentsPanelProps {
-  dependants: UserGuardiansDependant[];
+  dependants: Dependant[];
 }
 
 /**
@@ -30,9 +31,12 @@ const StudentsPanel: React.FC<StudentsPanelProps> = (props) => {
       {dependants.length ? (
         <Panel.BodyContent>
           {dependants.map((dependant) => (
-            <Dependant key={dependant.identifier} dependant={dependant} />
+            <DependantComponent
+              key={dependant.identifier}
+              dependant={dependant}
+            />
           ))}
-          </Panel.BodyContent>
+        </Panel.BodyContent>
       ) : (
         <Panel.BodyContent modifier="empty">
           {t("content.empty", { context: "users" })}

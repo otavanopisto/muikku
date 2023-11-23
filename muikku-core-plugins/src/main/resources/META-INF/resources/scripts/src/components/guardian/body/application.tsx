@@ -30,16 +30,7 @@ import { PedagogyFormState } from "~/generated/client";
 import { getName } from "~/util/modifiers";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
-
-/**
- * StudiesApplicationProps
- */
-interface StudiesApplicationProps extends WithTranslation {
-  location: TranscriptOfRecordLocationType;
-  hops: HOPSState;
-  status: StatusType;
-  records: RecordsType;
-}
+import { Dependant } from "~/reducers/main-function/dependants";
 
 /**
  * StudiesTab
@@ -54,56 +45,38 @@ type StudiesTab =
   | "PEDAGOGY_FORM";
 
 /**
- * StudiesApplicationState
+ * DependantApplicationProps
  */
-interface StudiesApplicationState {
+interface DependantApplicationProps extends WithTranslation {
+  location: TranscriptOfRecordLocationType;
+  hops: HOPSState;
+  status: StatusType;
+  records: RecordsType;
+  dependants: Dependant[];
+}
+
+/**
+ * DependantApplicationState
+ */
+interface DependantApplicationState {
   activeTab: StudiesTab;
   selectedDependant: string;
   loading: boolean;
   pedagogyFormState?: PedagogyFormState;
 }
 
-const students = [
-  {
-    curriculumIdentifier: "PYRAMUS-2",
-    email: "ma...@fubar.com",
-    firstName: "Aku",
-    hasImage: true,
-    id: "PYRAMUS-STUDENT-16",
-    lastName: "Ankka",
-    nickName: "Akuliini",
-    studyProgrammeName: "Nettiperuskoulu",
-    studyStartDate: "2019-10-06T21:00:00.000Z",
-    studyTimeEnd: "2051-02-26T22:00:00.000Z",
-    lastLogin: "2023-11-09T12:46:42.000Z",
-    updatedByStudent: true,
-    userEntityId: 16,
-  },
-  {
-    email: "tu...@fubar.com",
-    firstName: "Tupu",
-    hasImage: false,
-    id: "PYRAMUS-STUDENT-22",
-    lastName: "Ankka",
-    studyProgrammeName: "Nettiperuskoulu",
-    studyStartDate: "2020-11-17T22:00:00.000Z",
-    studyTimeEnd: "2051-02-26T22:00:00.000Z",
-    updatedByStudent: false,
-    userEntityId: 22,
-  },
-];
 /**
- * StudiesApplication
+ * DependantApplication
  */
-class StudiesApplication extends React.Component<
-  StudiesApplicationProps,
-  StudiesApplicationState
+class DependantApplication extends React.Component<
+  DependantApplicationProps,
+  DependantApplicationState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: StudiesApplicationProps) {
+  constructor(props: DependantApplicationProps) {
     super(props);
 
     this.state = {
@@ -183,7 +156,7 @@ class StudiesApplication extends React.Component<
 
   /**
    * handleSelectChange
-   * @param selectedOptions selectedOptions
+   * @param option selectedOptions
    */
   handleSelectChange = (option: OptionDefault<string>) => {
     window.location.hash = option.value;
@@ -198,9 +171,9 @@ class StudiesApplication extends React.Component<
     let selectedDependant = "";
 
     if (!window.location.hash) {
-      const student = students[0].id;
-      window.location.hash = student;
-      selectedDependant = student;
+      const dependant = this.props.dependants[0].identifier;
+      window.location.hash = dependant;
+      selectedDependant = dependant;
     } else {
       selectedDependant = window.location.hash.replace("#", "").split("/")?.[0];
     }
@@ -264,20 +237,22 @@ class StudiesApplication extends React.Component<
     const { t } = this.props;
 
     const title = t("labels.dependant", {
-      count: students.length,
+      count: this.props.dependants ? this.props.dependants.length : 0,
     });
 
-    const dependants = students.map((student) => ({
-      label: getName(student, true),
-      value: student.id,
-    }));
+    const dependants = this.props.dependants
+      ? this.props.dependants.map((student) => ({
+          label: getName(student, true),
+          value: student.identifier,
+        }))
+      : [];
 
     const selectedDependant = dependants.find(
       (dependant) => dependant.value === this.state.selectedDependant
     );
 
-    const titleActions = (
-      <div>
+    const dependantSelect =
+      dependants.length > 1 ? (
         <Select
           className="react-select-override"
           classNamePrefix="react-select-override"
@@ -286,8 +261,9 @@ class StudiesApplication extends React.Component<
           value={selectedDependant}
           isSearchable={false}
         ></Select>
-      </div>
-    );
+      ) : (
+        <span>{selectedDependant?.label}</span>
+      );
 
     let panelTabs: Tab[] = [
       {
@@ -367,7 +343,7 @@ class StudiesApplication extends React.Component<
       <>
         <ApplicationPanel
           title={title}
-          titleActions={titleActions}
+          panelOptions={dependantSelect}
           onTabChange={this.onTabChange}
           activeTab={this.state.activeTab}
           panelTabs={ready && panelTabs}
@@ -388,6 +364,7 @@ function mapStateToProps(state: StateType) {
     hops: state.hops,
     records: state.records,
     status: state.status,
+    dependants: state.dependants.list,
   };
 }
 
@@ -400,5 +377,5 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
 }
 
 export default withTranslation(["studies", "common"])(
-  connect(mapStateToProps, mapDispatchToProps)(StudiesApplication)
+  connect(mapStateToProps, mapDispatchToProps)(DependantApplication)
 );
