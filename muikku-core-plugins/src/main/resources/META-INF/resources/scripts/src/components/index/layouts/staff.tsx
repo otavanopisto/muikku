@@ -21,8 +21,7 @@ interface StaffComponentProps {
  */
 const StaffComponent: React.FC<StaffComponentProps> = (props) => {
   const { status } = props;
-  // const isGuardian = status.roles.includes("STUDENT_PARENT");
-  const isGuardian = false;
+  const isGuardian = status.roles.includes("STUDENT_PARENT");
 
   return (
     <>
@@ -32,9 +31,6 @@ const StaffComponent: React.FC<StaffComponentProps> = (props) => {
         </div>
       ) : (
         <>
-          <div className="panel-group panel-group--dependants">
-            <DependantsPanel />
-          </div>
           <div className="panel-group panel-group--studies">
             <WorkspacesPanel />
           </div>
