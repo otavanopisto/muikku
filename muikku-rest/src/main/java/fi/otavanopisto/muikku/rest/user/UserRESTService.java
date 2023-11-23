@@ -651,7 +651,8 @@ public class UserRESTService extends AbstractRESTService {
     }
 
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.FIND_STUDENT)) {
-      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+                                                                          // Necessary?
+      if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -662,7 +663,8 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
     }
     
-    if (!canAccessOrganization(userSchoolDataIdentifier.getOrganization())) {
+                                                                              // Necessary?
+    if (!canAccessOrganization(userSchoolDataIdentifier.getOrganization()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 

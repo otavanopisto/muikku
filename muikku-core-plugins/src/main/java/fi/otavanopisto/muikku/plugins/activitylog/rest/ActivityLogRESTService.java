@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -48,6 +49,9 @@ public class ActivityLogRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private UserController userController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -78,14 +82,16 @@ public class ActivityLogRESTService extends PluginRESTService {
     }
     
     if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-      if(workspaceEntityId == null) {
-        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS))
+      if (workspaceEntityId == null) {
+        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS)) {
           return Response.status(Status.FORBIDDEN).build();
+        }
       }
       else {
         WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-        if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity))
+        if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
           return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
     
@@ -113,14 +119,18 @@ public class ActivityLogRESTService extends PluginRESTService {
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userId);
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
     
     List<Long> userWorkspacesWithActivities = activityLogController.listWorkspacesWithActivityLogsByUserId(userEntity.getId());
     Map<String, List<LogDataEntryRESTModel>> userActivities = new HashMap<String, List<LogDataEntryRESTModel>>();
     
-    for(Long workspaceEntityId: userWorkspacesWithActivities) {
+    for (Long workspaceEntityId: userWorkspacesWithActivities) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       if (userEntity.getId().equals(sessionController.getLoggedUserEntity().getId()) ||
-          sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity )) {
+          sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
         List<ActivityLog> userWorkspaceActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntity.getId(), workspaceEntityId, from, to);
         userActivities.put(workspaceEntityId.toString(), createRestModel(userWorkspaceActivityLogs));
       }
@@ -128,8 +138,11 @@ public class ActivityLogRESTService extends PluginRESTService {
     
     if (userActivities.size() == 0 &&
         !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId()) &&
-        !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS))
+        // TODO Necessary?
+        !userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier) &&
+        !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS)) {
       return Response.status(Status.FORBIDDEN).build();
+    }
     
     List<ActivityLog> userGeneralActivityLogs = activityLogController.listActivityLogsByUserEntityIdAndWorkspaceEntityId(userEntity.getId(), null, from, to);
     userActivities.put("general", createRestModel(userGeneralActivityLogs));
