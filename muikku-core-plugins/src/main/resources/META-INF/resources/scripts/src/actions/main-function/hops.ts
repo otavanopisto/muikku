@@ -40,7 +40,7 @@ export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
  */
 const updateHops: UpdateHopsTriggerType = function updateHops(
   callback,
-  userId
+  userIdentifier
 ) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -60,17 +60,25 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
         payload: <HOPSStatusType>"LOADING",
       });
 
-      const properties = await userApi.getUserProperties({
-        userEntityId: userIdToUse,
-        properties: "hopsPhase",
-      });
+      // If userIdentifier is provided, this is not your own HOPS.
+      // so no need for the hopsPhase (?)
+      if (!userIdentifier) {
+        const properties = await userApi.getUserProperties({
+          userEntityId: userIdToUse,
+          properties: "hopsPhase",
+        });
 
-      dispatch({
-        type: "SET_HOPS_PHASE",
-        payload: properties[0].value,
-      });
+        dispatch({
+          type: "SET_HOPS_PHASE",
+          payload: properties[0].value,
+        });
+      }
 
-      const hops = await hopsUppersecondaryApi.getHops();
+      const hops = userIdentifier
+        ? await hopsUppersecondaryApi.getHopsByUser({
+            userIdentifier: userIdentifier,
+          })
+        : await hopsUppersecondaryApi.getHops();
 
       const hopsEligibility = await hopsUppersecondaryApi.getHopsEligibility();
 

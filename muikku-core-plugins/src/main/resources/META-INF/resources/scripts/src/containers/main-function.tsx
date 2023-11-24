@@ -319,7 +319,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToHopsInTranscriptOfRecords() as Action
       );
-      this.props.store.dispatch(updateHops() as Action);
+      this.props.store.dispatch(updateHops(null, userId) as Action);
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
@@ -334,7 +334,7 @@ export default class MainFunction extends React.Component<
           this.props.store.dispatch(
             updateMatriculationSubjectEligibility() as Action
           );
-        }) as Action
+        }, userId) as Action
       );
     } else if (givenLocation === "summary") {
       this.props.store.dispatch(
@@ -352,7 +352,7 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
     }
-    this.props.store.dispatch(updateHops() as Action);
+    this.props.store.dispatch(updateHops(null, userId) as Action);
   }
 
   /**
