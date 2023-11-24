@@ -14,30 +14,13 @@ import {
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
 import { WorkspaceSuggestion } from "~/generated/client";
-import MApi from "~/api/api";
-
-/**
- * SignUpBehalfOfStudentParams
- */
-interface SignUpBehalfOfStudentParams {
-  /**
-   * entity id of the student.
-   */
-  userEntityId: number;
-  /**
-   * Id of workspace where student is signing up.
-   */
-  workspaceId: number;
-  /**
-   * Message to be sent to the student.
-   */
-  message: string;
-}
+import MApi, { isMApiError } from "~/api/api";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * SaveExtraDetailsDialogProps
  */
-interface SignUpBehalfOfStudentDialogProps {
+interface SignUpBehalfOfStudentDialogProps extends WithTranslation {
   /**
    * Entity id of the student.
    */
@@ -85,21 +68,6 @@ class SignUpBehalfOfStudentDialog extends React.Component<
   }
 
   /**
-   * Sign up for workspace behalf of student.
-   * @param params params
-   */
-  signUpForWorkspaceBehalfOfStudent = async (
-    params: SignUpBehalfOfStudentParams
-  ) =>
-    await guiderApi.signupStudentToWorkspace({
-      studentId: params.userEntityId,
-      workspaceId: params.workspaceId,
-      signupStudentToWorkspaceRequest: {
-        message: params.message,
-      },
-    });
-
-  /**
    * Handles message change
    *
    * @param e e
@@ -119,10 +87,12 @@ class SignUpBehalfOfStudentDialog extends React.Component<
     });
 
     try {
-      await this.signUpForWorkspaceBehalfOfStudent({
-        userEntityId: this.props.studentEntityId,
+      await guiderApi.signupStudentToWorkspace({
+        studentId: this.props.studentEntityId,
         workspaceId: this.props.workspaceSuggestion.id,
-        message: this.state.message,
+        signupStudentToWorkspaceRequest: {
+          message: this.state.message,
+        },
       });
 
       this.setState(
@@ -135,8 +105,15 @@ class SignUpBehalfOfStudentDialog extends React.Component<
         }
       );
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       // TODO: lokalisointi
-      displayNotification("Virhe ilmoittautumisessa työtilaan", "error");
+      displayNotification(
+        this.props.t("notifications.signUpError", { ns: "studymatrix" }),
+        "error"
+      );
 
       this.setState({
         disabled: false,
@@ -181,13 +158,15 @@ class SignUpBehalfOfStudentDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <div className="dialog__content-row">
-          {
-            // TODO: lokalisointi
-          }
-          Ilmoita opiskelija työtilaan {workspaceName}
+          {this.props.t("labels.signUpStudentToWorkspace", {
+            ns: "studymatrix",
+            workspaceName: workspaceName,
+          })}
         </div>
         <div className="form-element dialog__content-row">
-          <label htmlFor="signUpMessage">Ilmoitusviesti</label>
+          <label htmlFor="signUpMessage">
+            {this.props.t("labels.signUpMessage", { ns: "studymatrix" })}
+          </label>
           <textarea
             id="signUpMessage"
             className="form-element__textarea"
@@ -209,20 +188,14 @@ class SignUpBehalfOfStudentDialog extends React.Component<
           onClick={this.handleApplyClick.bind(this, closeDialog)}
           disabled={this.state.disabled}
         >
-          {
-            // TODO: lokalisointi
-          }
-          Ilmoita Opiskelija
+          {this.props.t("actions.signUpStudent", { ns: "studymatrix" })}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={this.handleCloseClick.bind(this, closeDialog)}
           disabled={this.state.disabled}
         >
-          {
-            // TODO: lokalisointi
-          }
-          Peruuta
+          {this.props.t("actions.cancel")}
         </Button>
       </div>
     );
@@ -230,7 +203,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
     return (
       <Dialog
         modifier="workspace-signup-dialog"
-        title="Ilmoita opiskelija työtilaan"
+        title={this.props.t("labels.signUpStudent", { ns: "studymatrix" })}
         isOpen={true}
         disableScroll={true}
         content={content}
@@ -259,7 +232,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUpBehalfOfStudentDialog);
+export default withTranslation(["studymatrix"])(
+  connect(mapStateToProps, mapDispatchToProps)(SignUpBehalfOfStudentDialog)
+);

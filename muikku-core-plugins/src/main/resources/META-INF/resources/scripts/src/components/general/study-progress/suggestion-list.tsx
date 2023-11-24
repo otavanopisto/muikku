@@ -43,7 +43,8 @@ const defaultSuggestionListProps = {
 };
 
 /**
- * SuggestionList
+ * Suggestion list component
+ *
  * @param props props
  * @returns JSX.Element
  */
@@ -95,9 +96,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
             (item) => item.courseId === suggestion.id
           );
 
-          /**
-           * If any of these condition happens, changes respectivily action type
-           */
+          // If any of these condition happens, changes respectivily action type
           if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
             suggestionNextActionType = "remove";
           }

@@ -43,8 +43,8 @@ interface HopsCourseTableProps {
 }
 
 /**
- * CourseTable
- * Renders courses as table
+ * CourseTable. Renders courses as table
+ *
  * @param props props
  * @returns JSX.Element
  */

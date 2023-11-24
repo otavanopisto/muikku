@@ -2076,32 +2076,39 @@
   },
   "studymatrix": {
     "actions": {
+      "cancelSelection": "Peru valinta",
+      "selectOptionalToHops": "Valitse osaksi hopsia",
+      "signUpStudent": "Ilmoita opiskelija",
       "signupStudentToWorkspace": "Ilmoita työtilaan",
       "suggested": "Ehdotettu",
-      "suggestToNext": "Ehdota seuraavaksi",
       "suggestOptional": "Ehdota valinnaiseksi",
-      "selectOptionalToHops": "Valitse osaksi hopsia",
-      "cancelSelection": "Peru valinta"
+      "suggestToNext": "Ehdota seuraavaksi"
     },
     "content": {
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
       "noSuggestionAvailable": "Ei kursseja. Tarkista kurssitarjonta!"
     },
     "labels": {
-      "transferedSkillAndArt": "Hyväksiluvut: Taito- ja taideaineet",
-      "transferedLanguages": "Hyväksiluvut: Vieraat kielet",
-      "transferedOther": "Hyväksiluvut: Muut",
       "colorDescriptions": "Värien kuvaukset",
-      "mandatory": "Pakollinen",
-      "optional": "(*)-Valinnainen",
-      "transfered": "Hyväksiluettu",
       "completed": "Suoritettu",
-      "inprogress": "Kesken",
-      "selected": "Valittu",
+      "courses": "Kurssit",
       "guidanceCouncelorSuggestion": "Ohjaajan ehdottama",
       "guidanceCouncelorSuggestionNext": "Ohjaajan seuraavaksi ehdottama",
+      "inprogress": "Kesken",
+      "mandatory": "Pakollinen",
+      "optional": "(*)-Valinnainen",
       "schoolSubject": "Oppiaine",
-      "courses": "Kurssit"
+      "selected": "Valittu",
+      "signUpMessage": "Ilmoitusviesti",
+      "signUpStudent": "Ilmoita opiskelija työtilaan",
+      "signUpStudentToWorkspace": "Ilmoita opiskelija työtilaan {{workspaceName}}",
+      "transfered": "Hyväksiluettu",
+      "transferedLanguages": "Hyväksiluvut: Vieraat kielet",
+      "transferedOther": "Hyväksiluvut: Muut",
+      "transferedSkillAndArt": "Hyväksiluvut: Taito- ja taideaineet"
+    },
+    "notifications": {
+      "signUpError": "Opiskelijan ilmoittaminen työtilaan epäonnistui"
     }
   }
 }

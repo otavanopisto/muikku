@@ -2069,32 +2069,39 @@
   },
   "studymatrix": {
     "actions": {
+      "cancelSelection": "Cancel selection",
+      "selectOptionalToHops": "Select to HOPS",
+      "signUpStudent": "Sign up student",
       "signupStudentToWorkspace": "Sign up",
       "suggested": "Suggested",
-      "suggestToNext": "Suggest to next",
       "suggestOptional": "Suggest to optional",
-      "selectOptionalToHops": "Select to HOPS",
-      "cancelSelection": "Cancel selection"
+      "suggestToNext": "Suggest to next"
     },
     "content": {
       "noSubjectTable": "Subject table not found with given student's curriculum",
       "noSuggestionAvailable": "No courses available. Check courses and their prerequisites"
     },
     "labels": {
-      "transferedSkillAndArt": "Transfered: Skill and art",
-      "transferedLanguages": "Transfered: Languages",
-      "transferedOther": "Transfered: Other",
       "colorDescriptions": "Color descriptions",
-      "mandatory": "Mandatory",
-      "optional": "(*)-Optional",
-      "transfered": "Transfered",
       "completed": "Completed",
-      "inprogress": "In progress",
-      "selected": "Selected",
+      "courses": "Courses",
       "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
       "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
+      "inprogress": "In progress",
+      "mandatory": "Mandatory",
+      "optional": "(*)-Optional",
       "schoolSubject": "School subject",
-      "courses": "Courses"
+      "selected": "Selected",
+      "signUpMessage": "Sign up message",
+      "signUpStudent": "Sign up student to workspace",
+      "signUpStudentToWorkspace": "Sign up student to workspace {{workspaceName}}",
+      "transfered": "Transfered",
+      "transferedLanguages": "Transfered: Languages",
+      "transferedOther": "Transfered: Other",
+      "transferedSkillAndArt": "Transfered: Skill and art"
+    },
+    "notifications": {
+      "signUpError": "Signing up to course failed"
     }
   }
 }
