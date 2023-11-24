@@ -303,6 +303,13 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
+
+      // Summary needs contacts
+
+      this.props.store.dispatch(
+        loadContactGroup("counselors", userId) as Action
+      );
+
       this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
@@ -966,10 +973,6 @@ export default class MainFunction extends React.Component<
 
       const state = this.props.store.getState();
 
-      if (state.status.isActiveUser) {
-        this.props.store.dispatch(loadContactGroup("counselors") as Action);
-      }
-
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
@@ -1002,10 +1005,6 @@ export default class MainFunction extends React.Component<
 
       const state = this.props.store.getState();
 
-      if (state.status.isActiveUser) {
-        this.props.store.dispatch(loadContactGroup("counselors") as Action);
-      }
-
       if (state.dependants.state === "WAIT") {
         this.props.store.dispatch(loadDependants() as Action);
       }
@@ -1016,20 +1015,19 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(i18n.t("labels.dependant", { count: 0 }))
       );
 
-      this.props.store.dispatch(loadDependants() as Action);
-
       // this.props.store.dispatch(
       //   loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
       // );
-      // this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
-      if (tab) {
-        this.loadRecordsData(tab, identifier);
-      } else {
-        this.loadRecordsData("", identifier);
+      // If there's an identifier, we can load records data, otherwise it's done in the hash change
+      if (identifier) {
+        if (tab) {
+          this.loadRecordsData(tab, identifier);
+        } else {
+          this.loadRecordsData("", identifier);
+        }
       }
     }
-
     return <GuardianBody />;
   }
 

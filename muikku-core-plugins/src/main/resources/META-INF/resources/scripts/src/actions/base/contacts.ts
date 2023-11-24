@@ -36,7 +36,7 @@ export interface LoadingStatePayload {
  * LoadContactGroupTriggerType
  */
 export interface LoadContactGroupTriggerType {
-  (groupName: ContactGroupNames): AnyActionType;
+  (groupName: ContactGroupNames, userIdentifier? : string): AnyActionType;
 }
 
 /**
@@ -44,17 +44,20 @@ export interface LoadContactGroupTriggerType {
  * @param groupName The name of the group to be loaded
  */
 const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
-  groupName
+  groupName,
+  userIdentifier
 ) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const meApi = MApi.getMeApi();
+    const userApi = MApi.getUserApi();
 
     const contactsLoaded = getState().contacts[groupName].list.length > 0;
+    const isActiveUser = getState().status.isActiveUser;
+    const pyramusUser = userIdentifier ? userIdentifier : getState().status.userSchoolDataIdentifier;
 
-    if (contactsLoaded) {
+    if (contactsLoaded || !isActiveUser) {
       return;
     }
 
@@ -64,7 +67,8 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         payload: { groupName: groupName, state: <LoadingState>"LOADING" },
       });
 
-      const data = await meApi.getGuidanceCounselors({
+      const data = await userApi.getGuidanceCounselors({
+        studentIdentifier: pyramusUser,
         properties:
           "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
       });
