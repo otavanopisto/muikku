@@ -293,7 +293,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
+    
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM)
+        && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier)
         && !Objects.equals(sessionController.getLoggedUser(), userIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
