@@ -158,8 +158,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           }`}
         >
           {tabs.map((tab, i) => {
-            const isActive = tab.id === activeTab;
-
             return (
               <button
                 key={tab.id}
