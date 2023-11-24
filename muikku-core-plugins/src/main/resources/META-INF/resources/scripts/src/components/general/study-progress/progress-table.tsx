@@ -7,7 +7,6 @@ import {
   Tr,
   Th,
 } from "~/components/general/table";
-import { ListContainer } from "~/components/general/list";
 import { connect } from "react-redux";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
@@ -32,11 +31,13 @@ import {
   filterMatrix,
   showSubject,
 } from "~/helper-functions/study-matrix";
+import { useTranslation } from "react-i18next";
 
 /**
  * CourseTableProps
  */
 interface HopsCourseTableProps {
+  curriculumName: string;
   studyProgrammeName: string;
   editMode: boolean;
 }
@@ -48,7 +49,9 @@ interface HopsCourseTableProps {
  * @returns JSX.Element
  */
 const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
-  const { editMode, studyProgrammeName } = props;
+  const { editMode, studyProgrammeName, curriculumName } = props;
+
+  const { t } = useTranslation("studymatrix");
 
   const studyProgress = useStudyProgressContextState();
   const studyProgressStatic = useStudyProgressStaticDataContext();
@@ -74,20 +77,12 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
       studyProgressUpdater.updateSupervisorOptionalSuggestion(params);
     };
 
-  const matrix = compulsoryOrUpperSecondary(studyProgrammeName);
+  const matrix = compulsoryOrUpperSecondary(studyProgrammeName, curriculumName);
 
   if (matrix === null) {
     return (
-      <div className="list">
-        <ListContainer modifiers={["section"]}>
-          <h4
-            style={{
-              margin: "10px 0",
-            }}
-          >
-            Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle
-          </h4>
-        </ListContainer>
+      <div className="empty">
+        <span>{t("content.noSubjectTable")}</span>
       </div>
     );
   }
@@ -315,12 +310,9 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                               studentId: studyProgressStatic.studentId,
                             })}
                           >
-                            {
-                              // TODO: lokalisointi
-                            }
                             {suggestedBySupervisor
-                              ? "Ehdotettu"
-                              : "Ehdota valinnaiseksi"}
+                              ? t("actions.suggested")
+                              : t("actions.suggestOptional")}
                           </Button>
                         )}
 
@@ -334,8 +326,8 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                             buttonModifiers={["guider-hops-studytool"]}
                           >
                             {selectedByStudent
-                              ? "Peru valinta"
-                              : "Valitse osaksi hopsia"}
+                              ? t("actions.cancelSelection")
+                              : t("actions.selectOptionalToHops")}
                           </Button>
                         )}
                       </div>
@@ -568,8 +560,8 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
     <Table modifiers={["course"]}>
       <TableHead modifiers={uTableHeadModifiers}>
         <Tr modifiers={["course"]}>
-          <Th modifiers={["subject"]}>Oppiaine</Th>
-          <Th colSpan={currentMaxCourses}>Kurssit</Th>
+          <Th modifiers={["subject"]}>{t("labels.schoolSubject")}</Th>
+          <Th colSpan={currentMaxCourses}>{t("labels.courses")}</Th>
         </Tr>
       </TableHead>
       <Tbody>{renderRows}</Tbody>
@@ -577,10 +569,7 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
         <Tbody>
           <Tr>
             <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
-              {
-                // TODO: lokalisointi
-              }
-              Hyväksiluvut: Taito- ja taideaineet
+              {t("labels.transferedSkillAndArt")}
             </Td>
           </Tr>
           {renderSkillsAndArtRows}
@@ -592,10 +581,7 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
           <Tbody>
             <Tr>
               <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
-                {
-                  // TODO: lokalisointi
-                }
-                Hyväksiluvut: Vieraat kielet
+                {t("labels.transferedLanguages")}
               </Td>
             </Tr>
             {renderOtherLanguageSubjectsRows}
@@ -606,10 +592,7 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
         <Tbody>
           <Tr>
             <Td modifiers={["subtitle"]} colSpan={currentMaxCourses + 1}>
-              {
-                // TODO: lokalisointi
-              }
-              Hyväksiluvut: Muut
+              {t("labels.transferedOther")}
             </Td>
           </Tr>
           {renderOtherSubjectsRows}

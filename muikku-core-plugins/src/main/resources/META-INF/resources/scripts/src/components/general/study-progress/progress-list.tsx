@@ -26,11 +26,13 @@ import {
   filterMatrix,
   showSubject,
 } from "~/helper-functions/study-matrix";
+import { useTranslation } from "react-i18next";
 
 /**
  * CourseListProps
  */
 interface HopsCourseListProps {
+  curriculumName: string;
   studyProgrammeName: string;
   editMode: boolean;
 }
@@ -42,7 +44,9 @@ interface HopsCourseListProps {
  * @returns JSX.Element
  */
 const ProgressList: React.FC<HopsCourseListProps> = (props) => {
-  const { editMode, studyProgrammeName } = props;
+  const { editMode, studyProgrammeName, curriculumName } = props;
+
+  const { t } = useTranslation("studymatrix");
 
   const studyProgress = useStudyProgressContextState();
   const studyProgressStatic = useStudyProgressStaticDataContext();
@@ -69,21 +73,13 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
       studyProgressUpdater.updateSupervisorOptionalSuggestion(params);
     };
 
-  const matrix = compulsoryOrUpperSecondary(studyProgrammeName);
+  const matrix = compulsoryOrUpperSecondary(studyProgrammeName, curriculumName);
 
   // If study programme name doesn't have a matrix, return empty matrix indicator
   if (matrix === null) {
     return (
-      <div className="list">
-        <ListContainer modifiers={["section"]}>
-          <h4
-            style={{
-              margin: "10px 0",
-            }}
-          >
-            Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle
-          </h4>
-        </ListContainer>
+      <div className="empty">
+        <span>{t("content.noSubjectTable")}</span>
       </div>
     );
   }
@@ -273,8 +269,8 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
                               })}
                             >
                               {suggestedBySupervisor
-                                ? "Ehdotettu"
-                                : "Ehdota valinnaiseksi"}
+                                ? t("actions.suggested")
+                                : t("actions.suggestOptional")}
                             </Button>
                           )}
 
@@ -288,8 +284,8 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
                             buttonModifiers={["guider-hops-studytool"]}
                           >
                             {selectedByStudent
-                              ? "Peru valinta"
-                              : "Valitse osaksi hopsia"}
+                              ? t("actions.cancelSelection")
+                              : t("actions.selectOptionalToHops")}
                           </Button>
                         )}
                       </div>
@@ -480,7 +476,7 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
         <ListContainer modifiers={["section"]}>
           <ListContainer modifiers={["row"]}>
             <ListHeader modifiers={["subtitle"]}>
-              Hyväksiluvut: Taito- ja taideaineet
+              {t("labels.transferedSkillAndArt")}
             </ListHeader>
           </ListContainer>
           {renderSkillsAndArtRows}
@@ -492,7 +488,7 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
           <ListContainer modifiers={["section"]}>
             <ListContainer modifiers={["row"]}>
               <ListHeader modifiers={["subtitle"]}>
-                Hyväksiluvut: Vieraat kielet
+                {t("labels.transferedLanguages")}
               </ListHeader>
             </ListContainer>
             {renderOtherLanguageSubjectsRows}
@@ -502,7 +498,9 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
       {renderOtherSubjectsRows && renderOtherSubjectsRows.length !== 0 && (
         <ListContainer modifiers={["section"]}>
           <ListContainer modifiers={["row"]}>
-            <ListHeader modifiers={["subtitle"]}>Hyväksiluvut: Muut</ListHeader>
+            <ListHeader modifiers={["subtitle"]}>
+              {t("labels.transferedOther")}
+            </ListHeader>
           </ListContainer>
           {renderOtherSubjectsRows}
         </ListContainer>

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import {
   useStudyProgressContextState,
   useStudyProgressContextUpdater,
@@ -16,6 +17,7 @@ export type StudyProgrammeName = "Nettilukio" | "Nettiperuskoulu";
 interface StudyProgressProps {
   editMode: boolean;
   studyProgrammeName: string;
+  curriculumName: string;
 }
 
 /**
@@ -24,7 +26,9 @@ interface StudyProgressProps {
  * @returns JSX.Element
  */
 const StudyProgress = (props: StudyProgressProps) => {
-  const { studyProgrammeName, editMode } = props;
+  const { curriculumName, studyProgrammeName, editMode } = props;
+
+  const { t } = useTranslation("studymatrix");
 
   const studyProgressStatic = useStudyProgressStaticDataContext();
 
@@ -39,31 +43,37 @@ const StudyProgress = (props: StudyProgressProps) => {
     <>
       <div className="hops-container__study-tool-indicators">
         <div className="hops-container__study-tool-indicator-container--legend-title">
-          Värien kuvaukset
+          {t("labels.colorDescriptions")}
         </div>
         <div className="hops-container__study-tool-indicator-container">
           <div className="hops-container__indicator-item hops-container__indicator-item--mandatory"></div>
-          <div className="hops-container__indicator-item-label">Pakollinen</div>
+          <div className="hops-container__indicator-item-label">
+            {t("labels.mandatory")}
+          </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--optional"></div>
           <div className="hops-container__indicator-item-label">
-            (*)-Valinnainen
+            {t("labels.optional")}
           </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--approval"></div>
           <div className="hops-container__indicator-item-label">
-            Hyväksiluettu
+            {t("labels.transfered")}
           </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--completed"></div>
-          <div className="hops-container__indicator-item-label">Suoritettu</div>
+          <div className="hops-container__indicator-item-label">
+            {t("labels.completed")}
+          </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--inprogress"></div>
-          <div className="hops-container__indicator-item-label">Kesken</div>
+          <div className="hops-container__indicator-item-label">
+            {t("labels.inprogress")}
+          </div>
         </div>
 
         {studyProgressStatic.useCase === "hops-planning" && (
@@ -71,13 +81,13 @@ const StudyProgress = (props: StudyProgressProps) => {
             <div className="hops-container__study-tool-indicator-container ">
               <div className="hops-container__indicator-item hops-container__indicator-item--selected"></div>
               <div className="hops-container__indicator-item-label">
-                Valittu
+                {t("labels.selected")}
               </div>
             </div>
             <div className="hops-container__study-tool-indicator-container ">
               <div className="hops-container__indicator-item hops-container__indicator-item--suggested"></div>
               <div className="hops-container__indicator-item-label">
-                Ohjaajan ehdottama
+                {t("labels.guidanceCouncelorSuggestion")}
               </div>
             </div>
           </>
@@ -86,7 +96,7 @@ const StudyProgress = (props: StudyProgressProps) => {
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
           <div className="hops-container__indicator-item-label">
-            Ohjaajan seuraavaksi ehdottama
+            {t("labels.guidanceCouncelorSuggestionNext")}
           </div>
         </div>
       </div>
@@ -94,6 +104,7 @@ const StudyProgress = (props: StudyProgressProps) => {
       <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">
         <div className="list">
           <ProgressTable
+            curriculumName={curriculumName}
             studyProgrammeName={studyProgrammeName}
             editMode={editMode}
           />
@@ -103,6 +114,7 @@ const StudyProgress = (props: StudyProgressProps) => {
       <div className="hops__form-element-container hops__form-element-container--mobile swiper-no-swiping">
         <div className="table">
           <ProgressList
+            curriculumName={curriculumName}
             studyProgrammeName={studyProgrammeName}
             editMode={editMode}
           />

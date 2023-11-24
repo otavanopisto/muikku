@@ -127,6 +127,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       basicInfo: {
         name: "",
         studentUserEntityId: null,
+        curriculumName: null,
       },
       hopsCompulsory: {
         ...initializeHops(),
@@ -273,6 +274,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
               educationalLevel: studentBasicInfo.studyProgrammeEducationType
                 ? studentBasicInfo.studyProgrammeEducationType
                 : "Ei asetettu",
+              curriculumName: studentBasicInfo.curriculumName,
             } as BasicInformation,
             hopsCompulsory: {
               ...initializeHops(),

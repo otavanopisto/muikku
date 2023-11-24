@@ -1,7 +1,7 @@
-import { SchoolSubject } from "~/@types/shared";
+import { SchoolCurriculumMatrix, SchoolSubject } from "~/@types/shared";
 import {
-  schoolCourseTableCompulsory,
-  schoolCourseTableUppersecondary,
+  schoolCourseTableUppersecondary2021,
+  schoolCourseTableCompulsory2018,
 } from "~/mock/mock-data";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -159,11 +159,35 @@ export const showSubject = (
  * Selects the correct school course table based on the study programme name
  *
  * @param studyProgrammeName studyProgrammeName
+ * @param curriculumName curriculumName
  */
-export const compulsoryOrUpperSecondary = (studyProgrammeName: string) => {
+export const compulsoryOrUpperSecondary = (
+  studyProgrammeName: string,
+  curriculumName: string
+) => {
+  const compulsoryMatrices = [schoolCourseTableCompulsory2018];
+  const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
+
+  /**
+   * Finds and returns OPS based matrix
+   *
+   * @param matrices list of matrices
+   * @returns OPS based matrix or null if OPS based matrix is not found
+   */
+  const matrixTableBasedOnOPS = (matrices: SchoolCurriculumMatrix[]) => {
+    const matrix = matrices.find(
+      (matrix) => matrix.curriculumName === curriculumName
+    );
+
+    if (matrix) {
+      return matrix.subjectsTable;
+    }
+    return null;
+  };
+
   switch (studyProgrammeName) {
     case "Nettiperuskoulu":
-      return schoolCourseTableCompulsory;
+      return matrixTableBasedOnOPS(compulsoryMatrices);
 
     case "Nettilukio":
     case "Aineopiskelu/lukio":
@@ -172,7 +196,7 @@ export const compulsoryOrUpperSecondary = (studyProgrammeName: string) => {
     case "Aikuislukio":
     case "Nettilukio/yksityisopiskelu (aineopintoina)":
     case "Aineopiskelu/yo-tutkinto":
-      return schoolCourseTableUppersecondary;
+      return matrixTableBasedOnOPS(uppersecondaryMatrices);
 
     default:
       return null;

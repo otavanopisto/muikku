@@ -2066,5 +2066,35 @@
       "unsavedWarning": "Tallemattomia muutoksia"
     },
     "notifications": {}
+  },
+  "studymatrix": {
+    "actions": {
+      "signupStudentToWorkspace": "Sign up",
+      "suggested": "Suggested",
+      "suggestToNext": "Suggest to next",
+      "suggestOptional": "Suggest to optional",
+      "selectOptionalToHops": "Select to HOPS",
+      "cancelSelection": "Cancel selection"
+    },
+    "content": {
+      "noSubjectTable": "Subject table not found with given student's curriculum",
+      "noSuggestionAvailable": "No courses available. Check courses and their prerequisites"
+    },
+    "labels": {
+      "transferedSkillAndArt": "Transfered: Skill and art",
+      "transferedLanguages": "Transfered: Languages",
+      "transferedOther": "Transfered: Other",
+      "colorDescriptions": "Color descriptions",
+      "mandatory": "Mandatory",
+      "optional": "(*)-Optional",
+      "transfered": "Transfered",
+      "completed": "Completed",
+      "inprogress": "In progress",
+      "selected": "Selected",
+      "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
+      "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
+      "schoolSubject": "School subject",
+      "courses": "Courses"
+    }
   }
 }

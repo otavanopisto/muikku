@@ -23,7 +23,7 @@ import { localize } from "~/locales/i18n";
 import { useFollowUp } from "./context/follow-up-context";
 import { useStudyProgressContextState } from "../study-progress/context";
 import StudyProgress from "../study-progress";
-import { schoolCourseTableCompulsory } from "~/mock/mock-data";
+import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
 import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -86,7 +86,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   );
 
   const filteredSchoolCourseTable = filterCompulsorySubjects(
-    schoolCourseTableCompulsory,
+    schoolCourseTableCompulsory2018.subjectsTable,
     studyProgress.options
   );
 
@@ -818,6 +818,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       <div className="hops-container__row">
         <StudyProgress
           studyProgrammeName="Nettiperuskoulu"
+          curriculumName="OPS 2018"
           editMode={props.superVisorModifies}
         />
       </div>

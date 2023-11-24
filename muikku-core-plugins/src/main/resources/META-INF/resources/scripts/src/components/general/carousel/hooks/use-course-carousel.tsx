@@ -4,7 +4,7 @@ import { SuggestedCourse } from "~/@types/shared";
 import MApi, { isMApiError } from "~/api/api";
 import { WorkspaceSuggestion } from "~/generated/client";
 import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
-import { schoolCourseTableCompulsory } from "~/mock/mock-data";
+import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
 
 /**
  * UseCourseCarousel
@@ -97,7 +97,7 @@ export const useCourseCarousel = (
             const suggestedNextIdList: number[] = [];
 
             const filteredSchoolCourseTable = filterCompulsorySubjects(
-              schoolCourseTableCompulsory,
+              schoolCourseTableCompulsory2018.subjectsTable,
               loadedStudentAlternativeOptions
             );
 

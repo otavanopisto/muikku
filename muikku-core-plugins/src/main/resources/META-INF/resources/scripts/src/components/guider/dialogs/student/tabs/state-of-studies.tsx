@@ -35,7 +35,6 @@ import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
-import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
@@ -395,6 +394,9 @@ class StateOfStudies extends React.Component<
                     dataToLoad={["studentActivity"]}
                   >
                     <StudyProgress
+                      curriculumName={
+                        this.props.guider.currentStudent.basic.curriculumName
+                      }
                       studyProgrammeName={
                         this.props.guider.currentStudent.basic
                           .studyProgrammeName

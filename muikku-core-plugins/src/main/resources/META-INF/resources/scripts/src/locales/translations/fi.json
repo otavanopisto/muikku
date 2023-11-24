@@ -2073,5 +2073,35 @@
       "unsavedWarning": "Tallemattomia muutoksia"
     },
     "notifications": {}
+  },
+  "studymatrix": {
+    "actions": {
+      "signupStudentToWorkspace": "Ilmoita työtilaan",
+      "suggested": "Ehdotettu",
+      "suggestToNext": "Ehdota seuraavaksi",
+      "suggestOptional": "Ehdota valinnaiseksi",
+      "selectOptionalToHops": "Valitse osaksi hopsia",
+      "cancelSelection": "Peru valinta"
+    },
+    "content": {
+      "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
+      "noSuggestionAvailable": "Ei kursseja. Tarkista kurssitarjonta!"
+    },
+    "labels": {
+      "transferedSkillAndArt": "Hyväksiluvut: Taito- ja taideaineet",
+      "transferedLanguages": "Hyväksiluvut: Vieraat kielet",
+      "transferedOther": "Hyväksiluvut: Muut",
+      "colorDescriptions": "Värien kuvaukset",
+      "mandatory": "Pakollinen",
+      "optional": "(*)-Valinnainen",
+      "transfered": "Hyväksiluettu",
+      "completed": "Suoritettu",
+      "inprogress": "Kesken",
+      "selected": "Valittu",
+      "guidanceCouncelorSuggestion": "Ohjaajan ehdottama",
+      "guidanceCouncelorSuggestionNext": "Ohjaajan seuraavaksi ehdottama",
+      "schoolSubject": "Oppiaine",
+      "courses": "Kurssit"
+    }
   }
 }

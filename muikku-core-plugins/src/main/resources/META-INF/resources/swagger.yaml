@@ -13991,9 +13991,20 @@ components:
         - ceeposLine
         - flags
         - hasPedagogyForm
+        - curriculumName
+        - curriculumIdentifier
+        - studyProgrammeName
+        - studyStartDate
+        - studyEndDate
+        - studyTimeEnd
+        - lastLogin
       properties:
         curriculumIdentifier:
           type: string
+          nullable: true
+        curriculumName:
+          type: string
+          nullable: true
         email:
           type: string
         firstName:
@@ -14063,6 +14074,7 @@ components:
         - lastName
         - studyTimeEnd
         - studyProgrammeEducationType
+        - curriculumName
       properties:
         id:
           type: integer
@@ -14076,9 +14088,13 @@ components:
         studyProgrammeEducationType:
           type: string
         counselorList:
+          nullable: true
           type: array
           items:
             type: string
+        curriculumName:
+          type: string
+          nullable: true
 
     StudentStudyActivity:
       type: object

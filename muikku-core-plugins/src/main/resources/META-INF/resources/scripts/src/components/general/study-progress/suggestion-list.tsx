@@ -10,6 +10,7 @@ import Button from "~/components/general/button";
 import { useSuggestionList } from "./hooks/useSuggestedList";
 import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
 import { Course } from "~/@types/shared";
+import { useTranslation } from "react-i18next";
 
 /**
  * SuggestionListProps
@@ -48,6 +49,8 @@ const defaultSuggestionListProps = {
  */
 const SuggestionList = (props: HopsSuggestionListProps) => {
   props = { ...defaultSuggestionListProps, ...props };
+
+  const { t } = useTranslation("studymatrix");
 
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,
@@ -127,12 +130,9 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
                 studentId: props.studentId,
               })}
             >
-              {
-                // TODO: lokalisointi
-              }
               {suggestionNextActionType === "remove"
-                ? "Ehdotettu"
-                : "Ehdota seuraavaksi"}
+                ? t("actions.suggested")
+                : t("actions.suggestToNext")}
             </Button>
 
             <Button
@@ -145,10 +145,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
                 suggestion
               )}
             >
-              {
-                // TODO: lokalisointi
-              }
-              Ilmoita työtilaan
+              {t("actions.signupStudentToWorkspace")}
             </Button>
           </div>
         );
@@ -156,7 +153,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
     ) : (
       <div className="hops-container__study-tool-dropdow-suggestion-subsection">
         <div className="hops-container__study-tool-dropdow-title">
-          Ei kursseja. Tarkista kurssitarjonta!
+          {t("content.noSuggestionAvailable")}
         </div>
       </div>
     );
