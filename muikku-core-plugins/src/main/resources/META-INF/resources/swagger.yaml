@@ -5467,33 +5467,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/me/guidanceCounselors:
-    get:
-      operationId: getGuidanceCounselors
-      summary: Get guidance counselors
-      description: Get guidance counselors
-      tags:
-        - Me
-      parameters:
-        - name: properties
-          in: query
-          description: Properties as string divided by comma
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Guidance counselors
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/GuidanceCouncelorContact"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/me/locale:
     get:
       operationId: getLocale
@@ -7057,6 +7030,39 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserStudentPhoneNumber"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/user/students/{studentIdentifier}/guidanceCounselors:
+    get:
+      operationId: getGuidanceCounselors
+      summary: Get guidance counselors
+      description: Get guidance counselors
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: properties
+          in: query
+          description: Properties as string divided by comma
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Guidance counselors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GuidanceCouncelorContact"
         "400":
           description: Invalid request was sent to the server
         "500":
