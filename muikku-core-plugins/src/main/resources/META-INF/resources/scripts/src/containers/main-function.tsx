@@ -228,12 +228,12 @@ export default class MainFunction extends React.Component<
       this.loadRecordsData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
-      const [arg1, arg2] = hashArray;
+      const [identifier, tab] = hashArray;
 
-      if (arg2) {
-        this.loadRecordsData(arg1, arg2);
+      if (tab) {
+        this.loadRecordsData(tab, identifier);
       } else {
-        this.loadRecordsData("", arg1);
+        this.loadRecordsData("", identifier);
       }
     } else if (window.location.pathname.includes("/organization")) {
       this.loadCoursePickerData(
@@ -993,7 +993,7 @@ export default class MainFunction extends React.Component<
     this.updateFirstTime();
     if (this.itsFirstTime) {
       const hashArray = window.location.hash.replace("#", "").split("/");
-      const [arg1, arg2] = hashArray;
+      const [identifier, tab] = hashArray;
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
       this.loadlib(
@@ -1004,6 +1004,10 @@ export default class MainFunction extends React.Component<
 
       if (state.status.isActiveUser) {
         this.props.store.dispatch(loadContactGroup("counselors") as Action);
+      }
+
+      if (state.dependants.state === "WAIT") {
+        this.props.store.dispatch(loadDependants() as Action);
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
@@ -1019,10 +1023,10 @@ export default class MainFunction extends React.Component<
       // );
       // this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
-      if (arg2) {
-        this.loadRecordsData(arg1, arg2);
+      if (tab) {
+        this.loadRecordsData(tab, identifier);
       } else {
-        this.loadRecordsData("", arg1);
+        this.loadRecordsData("", identifier);
       }
     }
 
