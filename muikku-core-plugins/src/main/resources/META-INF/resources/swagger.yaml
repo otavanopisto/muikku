@@ -7062,7 +7062,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuidanceCouncelorContact"
+                  $ref: "#/components/schemas/GuidanceCounselorContact"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12203,9 +12203,9 @@ components:
         userIdentifier:
           type: string
 
-    GuidanceCouncelorContact:
+    GuidanceCounselorContact:
       type: object
-      description: GuidanceCouncelorContact object
+      description: GuidanceCounselorContact object
       required:
         - id
         - email
