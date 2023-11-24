@@ -340,6 +340,10 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
+
+      this.props.store.dispatch(
+        loadContactGroup("counselors", userId) as Action
+      );
       this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(

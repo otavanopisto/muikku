@@ -36,7 +36,7 @@ export interface LoadingStatePayload {
  * LoadContactGroupTriggerType
  */
 export interface LoadContactGroupTriggerType {
-  (groupName: ContactGroupNames, userIdentifier? : string): AnyActionType;
+  (groupName: ContactGroupNames, userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -55,7 +55,9 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
 
     const contactsLoaded = getState().contacts[groupName].list.length > 0;
     const isActiveUser = getState().status.isActiveUser;
-    const pyramusUser = userIdentifier ? userIdentifier : getState().status.userSchoolDataIdentifier;
+    const pyramusUser = userIdentifier
+      ? userIdentifier
+      : getState().status.userSchoolDataIdentifier;
 
     if (contactsLoaded || !isActiveUser) {
       return;
