@@ -25,9 +25,7 @@ import {
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
-import Notes from "~/components/general/notes/notes";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
-import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -308,46 +306,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
-              {this.props.hops.eligibility &&
-                !this.props.hops.eligibility.upperSecondarySchoolCurriculum && (
-                  <div className="application-sub-panel">
-                    <div className="application-sub-panel__header">
-                      {t("labels.coursesForYou:", { ns: "studies" })}
-                    </div>
-                    <CourseCarousel
-                      studentId={this.props.status.userSchoolDataIdentifier}
-                      studentUserEntityId={this.props.status.userId}
-                      displayNotification={this.props.displayNotification}
-                    />
-                  </div>
-                )}
-
-              <div className="application-sub-panel">
-                <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
-                  {t("labels.tasks", { ns: "tasks" })}
-                  <Instructions
-                    modifier="instructions"
-                    alignSelfVertically="top"
-                    openByHover={false}
-                    closeOnClick={true}
-                    closeOnOutsideClick={true}
-                    persistent
-                    content={
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: t("content.instructions", { ns: "tasks" }),
-                        }}
-                      />
-                    }
-                  />
-                </div>
-                <Notes
-                  usePlace="records"
-                  showHistoryPanel
-                  userId={this.props.status.userId}
-                  studentId={this.props.status.userId}
-                />
-              </div>
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {t("labels.studyEvents", { ns: "studies" })}
