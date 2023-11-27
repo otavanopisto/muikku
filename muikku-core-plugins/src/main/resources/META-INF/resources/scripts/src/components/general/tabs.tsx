@@ -118,6 +118,51 @@ export const Tabs: React.FC<TabsProps> = (props) => {
 
   return (
     <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
+      <div className="tabs__tab-data-container tabs__tab-data-container--desktop-tabs">
+        <div
+          className={`tabs__tab-labels ${
+            modifier ? "tabs__tab-labels--" + modifier : ""
+          }`}
+        >
+          {tabs.map((tab, i) => (
+            <button
+              key={tab.id}
+              id={"tabControl-" + tab.id}
+              aria-controls={"tabPanel-" + tab.id}
+              role="tab"
+              aria-selected={tab.id === activeTab}
+              onClick={handleTabClick(tab)}
+              onKeyUp={handleTabKeyUp(tab)}
+              className={`tabs__tab ${
+                modifier ? "tabs__tab--" + modifier : ""
+              } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+                tab.id === activeTab ? "active" : ""
+              }`}
+            >
+              {tab.name}
+            </button>
+          ))}
+          {children}
+        </div>
+        <div className="tabs__tab-data-container">
+          {tabs
+            .filter((t) => renderAllComponents || t.id === activeTab)
+            .map((t) => (
+              <div
+                key={t.id}
+                role="tabpanel"
+                id={"tabPanel-" + t.id}
+                aria-labelledby={"tabControl-" + t.id}
+                className={`tabs__tab-data ${
+                  t.type ? "tabs__tab-data--" + t.type : ""
+                }  ${t.id === activeTab ? "active" : ""}`}
+              >
+                {t.component}
+              </div>
+            ))}
+        </div>
+      </div>
+
       <Swiper
         modules={[A11y, Pagination]}
         a11y={a11yConfig}
@@ -150,54 +195,6 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           </SwiperSlide>
         ))}
       </Swiper>
-
-      <div className="tabs__tab-data-container tabs__tab-data-container--desktop-tabs">
-        <div
-          className={`tabs__tab-labels ${
-            modifier ? "tabs__tab-labels--" + modifier : ""
-          }`}
-        >
-          {tabs.map((tab, i) => {
-            return (
-              <button
-                key={tab.id}
-                id={"tabControl-" + tab.id}
-                aria-controls={"tabPanel-" + tab.id}
-                role="tab"
-                aria-selected={tab.id === activeTab}
-                onClick={handleTabClick(tab)}
-                onKeyUp={handleTabKeyUp(tab)}
-                className={`tabs__tab ${
-                  modifier ? "tabs__tab--" + modifier : ""
-                } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-                  tab.id === activeTab ? "active" : ""
-                }`}
-              >
-                {tab.name}
-              </button>
-            );
-          })}
-          {children}
-        </div>
-        <div className="tabs__tab-data-container">
-          {tabs
-            .filter((t) => renderAllComponents || t.id === activeTab)
-            .map((t) => (
-              <div
-                key={t.id}
-                role="tabpanel"
-                id={"tabPanel-" + t.id}
-                hidden={t.id !== activeTab}
-                aria-labelledby={"tabControl-" + t.id}
-                className={`tabs__tab-data ${
-                  t.type ? "tabs__tab-data--" + t.type : ""
-                }  ${t.id === activeTab ? "active" : ""}`}
-              >
-                {t.component}
-              </div>
-            ))}
-        </div>
-      </div>
     </div>
   );
 };
