@@ -645,36 +645,61 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public UserProperty getUserProperty(String userIdentifier, String key) {
-    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
-    if (studentId != null) {
-      Student student = findPyramusStudent(studentId);
-      if (student != null) {
-        Map<String, String> variables = student.getVariables();
-        if (variables != null) {
-          String value = variables.get(key);
-          return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
-        }
-        else {
-          return null;
-        }
+    PyramusUserType identifierUserType = identifierMapper.getIdentifierUserType(userIdentifier);
+
+    if (identifierUserType != null) {
+      switch (identifierUserType) {
+        case STUDENT:
+          Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+          if (studentId != null) {
+            Student student = findPyramusStudent(studentId);
+            if (student != null) {
+              Map<String, String> variables = student.getVariables();
+              if (variables != null) {
+                String value = variables.get(key);
+                return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
+              }
+              else {
+                return null;
+              }
+            }
+          }
+        break;
+        case STAFFMEMBER:
+          Long staffMemberId = identifierMapper.getPyramusStaffId(userIdentifier);
+          if (staffMemberId != null) {
+            StaffMember staffMember = findPyramusStaffMember(staffMemberId);
+            if (staffMember != null) {
+              Map<String, String> variables = staffMember.getVariables();
+              if (variables != null) {
+                String value = variables.get(key);
+                return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
+              }
+              else {
+                return null;
+              }
+            }
+          }
+        break;
+        case STUDENTPARENT:
+          Long studentParentId = identifierMapper.getStudentParentId(userIdentifier);
+          if (studentParentId != null) {
+            StudentParent studentParent = findPyramusStudentParent(studentParentId);
+            if (studentParent != null) {
+              Map<String, String> variables = studentParent.getVariables();
+              if (variables != null) {
+                String value = variables.get(key);
+                return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
+              }
+              else {
+                return null;
+              }
+            }
+          }
+        break;
       }
     }
-    else {
-      Long staffMemberId = identifierMapper.getPyramusStaffId(userIdentifier);
-      if (staffMemberId != null) {
-        StaffMember staffMember = findPyramusStaffMember(staffMemberId);
-        if (staffMember != null) {
-          Map<String, String> variables = staffMember.getVariables();
-          if (variables != null) {
-            String value = variables.get(key);
-            return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
-          }
-          else {
-            return null;
-          }
-        }
-      }
-    }
+    
     logger.warning(String.format("PyramusUserSchoolDataBridge.getUserProperty malformed user identifier %s\n%s",
         userIdentifier,
         ExceptionUtils.getStackTrace(new Throwable())));

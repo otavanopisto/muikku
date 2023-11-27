@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPer
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUserProperties;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -149,7 +150,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       Long userEntityId = sessionController.getLoggedUserEntity().getId();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
       if (userEntity == null || !userEntity.getId().equals(userEntityId)) {
-        return Response.status(Status.FORBIDDEN).build();
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
@@ -245,14 +248,23 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @GET
   @Path("/hopseligibility")
-  @RESTPermit(handling=Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response retrieveHopsEligibility(){
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
-    MatriculationEligibilities eligibilities = matriculationSchoolDataController.listEligibilities();
-    return Response.ok(eligibilities).build();
+    try {
+      BridgeResponse<MatriculationEligibilities> eligibilities = matriculationSchoolDataController.listEligibilities(sessionController.getLoggedUser());
+      if (eligibilities.ok()) {
+        return Response.ok(eligibilities.getEntity()).build();
+      }
+      else {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+    } catch (IllegalArgumentException iae) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
   }
 
   @GET
