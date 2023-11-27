@@ -67,7 +67,7 @@ export interface SetLocationToYoInTranscriptOfRecordsTriggerType {
  * UpdateAllStudentUsersAndSetViewToRecordsTriggerType
  */
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
-  (): AnyActionType;
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -102,7 +102,7 @@ export interface UpdateTranscriptOfRecordsFilesTriggerType {
  * updateAllStudentUsersAndSetViewToRecords
  */
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
-  function updateAllStudentUsersAndSetViewToRecords() {
+  function updateAllStudentUsersAndSetViewToRecords(userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -131,8 +131,17 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
 
         //OK let me try to explain this :<
 
+        // we have an identifier given, we work out the user id from that
+
+        const idFromIdentifier = getState().dependants.list.find(
+          (dependant) => dependant.identifier === userIdentifier
+        )?.userEntityId;
+
         //We get the current used id this user is supposedly a student
-        const userId: number = getState().status.userId;
+
+        const userId: number = idFromIdentifier
+          ? idFromIdentifier
+          : getState().status.userId;
 
         //we get the users that represent that userId
         let users = await userApi.getStudents({

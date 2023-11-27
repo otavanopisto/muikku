@@ -313,7 +313,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
-        updateAllStudentUsersAndSetViewToRecords() as Action
+        updateAllStudentUsersAndSetViewToRecords(userId) as Action
       );
     } else if (givenLocation === "hops") {
       this.props.store.dispatch(
