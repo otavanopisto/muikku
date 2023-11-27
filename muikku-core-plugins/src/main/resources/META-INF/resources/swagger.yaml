@@ -6117,13 +6117,20 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/hopseligibility:
+  /rest/records/hopseligibility/{studentIdentifier}:
     get:
       operationId: getHopsEligibility
       summary: Get hops eligibility
       description: Get hops eligibility
       tags:
         - HopsUpperSecondary
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Hops eligibility

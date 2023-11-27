@@ -247,15 +247,24 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/hopseligibility")
+  @Path("/hopseligibility/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response retrieveHopsEligibility(){
+  public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifierString) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierString);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
     try {
-      BridgeResponse<MatriculationEligibilities> eligibilities = matriculationSchoolDataController.listEligibilities(sessionController.getLoggedUser());
+      BridgeResponse<MatriculationEligibilities> eligibilities = matriculationSchoolDataController.listEligibilities(studentIdentifier);
       if (eligibilities.ok()) {
         return Response.ok(eligibilities.getEntity()).build();
       }
@@ -290,7 +299,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/hops/{USERIDENTIFIER}")
   @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveHops(@PathParam("USERIDENTIFIER") String userIdentifierString){
+  public Response retrieveHops(@PathParam("USERIDENTIFIER") String userIdentifierString) {
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
