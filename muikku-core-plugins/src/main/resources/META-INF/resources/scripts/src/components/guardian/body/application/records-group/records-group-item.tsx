@@ -318,6 +318,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           </div>
         </div>
         <div className="application-list__header-secondary">
+          {/* This be removed from a guardian
           <span>
             <WorkspaceAssignmentsAndDiaryDialog
               workspaceId={credit.activity.id}
@@ -329,7 +330,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 })}
               </Button>
             </WorkspaceAssignmentsAndDiaryDialog>
-          </span>
+          </span> */}
 
           {!isCombinationWorkspace ? (
             // So "legasy" case where there is only one module, render indicator etc next to workspace name

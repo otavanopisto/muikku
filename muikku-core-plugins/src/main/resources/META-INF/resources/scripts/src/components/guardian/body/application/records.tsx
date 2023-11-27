@@ -126,6 +126,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           {t("labels.records", { ns: "studies" })}
         </h2>
         {studentRecords}
+        {/* 
+        
+        Disabled from a guardian
+        
         <ApplicationSubPanel>
           <ApplicationSubPanel.Header>
             {t("labels.files")}
@@ -159,7 +163,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               </ApplicationListItem>
             )}
           </ApplicationSubPanel.Body>
-        </ApplicationSubPanel>
+        </ApplicationSubPanel> */}
       </BodyScrollKeeper>
     );
   }
