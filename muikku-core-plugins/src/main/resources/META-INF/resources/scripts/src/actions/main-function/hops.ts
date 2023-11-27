@@ -48,7 +48,9 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
   ) => {
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const userApi = MApi.getUserApi();
-    const userIdToUse = getState().status.userId;
+    const studentIdentifier = userIdentifier
+      ? userIdentifier
+      : getState().status.userSchoolDataIdentifier;
 
     try {
       if (getState().hops.status !== "WAIT") {
@@ -64,7 +66,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
       // so no need for the hopsPhase (?)
       if (!userIdentifier) {
         const properties = await userApi.getUserProperties({
-          userEntityId: userIdToUse,
+          userEntityId: getState().status.userId,
           properties: "hopsPhase",
         });
 
@@ -76,11 +78,13 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
 
       const hops = userIdentifier
         ? await hopsUppersecondaryApi.getHopsByUser({
-            userIdentifier: userIdentifier,
+            userIdentifier,
           })
         : await hopsUppersecondaryApi.getHops();
 
-      const hopsEligibility = await hopsUppersecondaryApi.getHopsEligibility();
+      const hopsEligibility = await hopsUppersecondaryApi.getHopsEligibility({
+        studentIdentifier,
+      });
 
       dispatch({
         type: "UPDATE_HOPS_ELIGIBILITY",
