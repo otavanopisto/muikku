@@ -8,11 +8,11 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/file-uploader.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
-import Link from "~/components/general/link";
+// import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
-import ApplicationList, {
-  ApplicationListItem,
-} from "~/components/general/application-list";
+// import ApplicationList, {
+//   ApplicationListItem,
+// } from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
 import RecordsGroup from "./records-group/records-group";
 import { StatusType } from "~/reducers/base/status";

@@ -539,6 +539,99 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
     };
   };
 
+const loadPedagogyFormAccess: LoadStudentTriggerType =
+  function loadPedagogyFormAccess(id) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const pedagogyApi = MApi.getPedagogyApi();
+
+      try {
+        pedagogyApi
+          .getPedagogyFormAccess({
+            studentIdentifier: id,
+          })
+          .then((pedagogyFormAvaibility) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "pedagogyFormAvailable",
+                value: pedagogyFormAvaibility,
+              },
+            });
+          });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "users",
+              context: "student",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+const loadStudentHOPSAccess: LoadStudentTriggerType = function loadStudentHOPS(
+  id
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
+  ) => {
+    const hopsApi = MApi.getHopsApi();
+    // const userApi = MApi.getUserApi();
+
+    try {
+      hopsApi
+        .isHopsAvailable({
+          studentIdentifier: id,
+        })
+        .then(async (hopsAvailable) => {
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: {
+              property: "hopsAvailable",
+              value: hopsAvailable,
+            },
+          });
+
+          // const hopsPhase = await userApi.getUserProperties({
+          //   userEntityId: student.userEntityId,
+          //   properties: "hopsPhase",
+          // });
+
+          // dispatch({
+          //   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          //   payload: {
+          //     property: "hopsPhase",
+          //     value: hopsPhase[0].value,
+          //   },
+          // });
+        });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.loadError", {
+            ns: "users",
+            context: "student",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
 /**
  * loadStudent thunk action creator
  * @param id student id
@@ -2285,6 +2378,8 @@ export {
   loadMoreStudents,
   loadStudent,
   loadStudentHistory,
+  loadStudentHOPSAccess,
+  loadPedagogyFormAccess,
   // loadStudentGuiderRelations,
   loadStudentContactLogs,
   createContactLogEvent,
