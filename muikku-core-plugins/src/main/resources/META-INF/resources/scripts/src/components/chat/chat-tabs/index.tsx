@@ -58,11 +58,7 @@ const ChatTabs = (props: ChatTabsProps) => {
 
   return (
     <div className="chat-tabs">
-      {/* <ChatTabsHeader {...props} /> */}
-      <div
-        className="chat-tabs__container"
-        style={{ overflow: "hidden", margin: "10px" }}
-      >
+      <div className="chat-tabs__container" style={{ overflow: "hidden" }}>
         {enhancedActiveTabContent}
       </div>
     </div>

@@ -55,29 +55,6 @@ function useMessages(targetIdentifier: string) {
     setNewMessage("");
   };
 
-  /**
-   * editMessage
-   * @param msg msg
-   */
-  /* const editMessage = async (msg: ChatMessage) => {
-    await chatApi.updateChatMessage({
-      messageId: msg.id,
-      updateChatMessageRequest: {
-        message: msg.message,
-      },
-    });
-  }; */
-
-  /**
-   * deleteMessage
-   * @param msg msg
-   */
-  /* const deleteMessage = async (msg: ChatMessage) => {
-    await chatApi.deleteChatMessage({
-      messageId: msg.id,
-    });
-  }; */
-
   React.useEffect(() => {
     /**
      * onChatMsgSentMsg
@@ -88,7 +65,8 @@ function useMessages(targetIdentifier: string) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          setChatMsgs((msgs) => [...msgs, dataTyped]);
+          dataTyped.targetIdentifier === targetIdentifier &&
+            setChatMsgs((msgs) => [...msgs, dataTyped]);
         }
       }
     };
@@ -102,16 +80,17 @@ function useMessages(targetIdentifier: string) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          setChatMsgs((msgs) => {
-            const index = msgs.findIndex((msg) => msg.id === dataTyped.id);
+          dataTyped.targetIdentifier === targetIdentifier &&
+            setChatMsgs((msgs) => {
+              const index = msgs.findIndex((msg) => msg.id === dataTyped.id);
 
-            if (index !== -1) {
-              const updatedMsgs = [...msgs];
-              updatedMsgs[index] = dataTyped;
-              return updatedMsgs;
-            }
-            return msgs;
-          });
+              if (index !== -1) {
+                const updatedMsgs = [...msgs];
+                updatedMsgs[index] = dataTyped;
+                return updatedMsgs;
+              }
+              return msgs;
+            });
         }
       }
     };
@@ -125,16 +104,17 @@ function useMessages(targetIdentifier: string) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          setChatMsgs((msgs) => {
-            const index = msgs.findIndex((msg) => msg.id === dataTyped.id);
+          dataTyped.targetIdentifier === targetIdentifier &&
+            setChatMsgs((msgs) => {
+              const index = msgs.findIndex((msg) => msg.id === dataTyped.id);
 
-            if (index !== -1) {
-              const updatedMsgs = [...msgs];
-              updatedMsgs[index] = dataTyped;
-              return updatedMsgs;
-            }
-            return msgs;
-          });
+              if (index !== -1) {
+                const updatedMsgs = [...msgs];
+                updatedMsgs[index] = dataTyped;
+                return updatedMsgs;
+              }
+              return msgs;
+            });
         }
       }
     };
@@ -154,7 +134,7 @@ function useMessages(targetIdentifier: string) {
         onChatMsgDeletedMsg
       );
     };
-  }, [websocket]);
+  }, [targetIdentifier, websocket]);
 
   return { chatMsgs, loadingChatMsgs, newMessage, setNewMessage, postMessage };
 }

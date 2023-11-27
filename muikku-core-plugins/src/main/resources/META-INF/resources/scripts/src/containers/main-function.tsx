@@ -148,6 +148,9 @@ export default class MainFunction extends React.Component<
   private subscribedChatSettings = false;
   private loadedChatSettings = false;
 
+  rootElementRef = React.createRef<HTMLDivElement>();
+  chatControllerRef = React.createRef<HTMLDivElement>();
+
   /**
    * constructor
    * @param props props
@@ -1076,7 +1079,7 @@ export default class MainFunction extends React.Component<
   render() {
     return (
       <BrowserRouter>
-        <div id="root">
+        <div id="root" ref={this.rootElementRef}>
           <ChatWebsocketContextProvider websocket={this.props.websocket}>
             <ChatContextProvider>
               <Chat />

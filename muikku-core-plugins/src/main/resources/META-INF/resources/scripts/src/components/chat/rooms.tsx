@@ -1,14 +1,8 @@
 import * as React from "react";
-import MApi from "~/api/api";
-import {
-  ChatRoom,
-  CreateChatRoomRequest,
-  UpdateChatRoomRequest,
-} from "~/generated/client";
+import { ChatRoom } from "~/generated/client";
 import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
-
-const chatApi = MApi.getChatApi();
+import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * RoomsProps
@@ -21,74 +15,19 @@ interface RoomsProps {}
  * @returns JSX.Element
  */
 function Rooms(props: RoomsProps) {
-  const [createNewRoom, setCreateNewRoom] = React.useState<boolean>(false);
-  const [newRoom, setNewRoom] = React.useState<CreateChatRoomRequest>({
-    name: "",
-    description: "",
-  });
+  const { openNewChatRoom } = useChatContext();
 
-  const saveRoom = async () => {
-    await chatApi.createChatRoom({
-      createChatRoomRequest: newRoom,
-    });
+  const handleCreateRoom = openNewChatRoom;
 
-    setCreateNewRoom(false);
-    setNewRoom({
-      name: "",
-      description: "",
-    });
-  };
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    setNewRoom((newRoom) => ({
-      ...newRoom,
-      name: e.target.value,
-    }));
-  };
-
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.persist();
-    setNewRoom((newRoom) => ({
-      ...newRoom,
-      description: e.target.value,
-    }));
-  };
-
-  return (
+  const rooms = (
     <div
-      className="chat-rooms"
+      className="chat-rooms-wrapper"
       style={{
         display: "flex",
         flexDirection: "column",
+        margin: "10px",
       }}
     >
-      <div className="chat-room-editor">
-        <div
-          className="chat-room-editor__button"
-          onClick={() => setCreateNewRoom(!createNewRoom)}
-        >
-          {createNewRoom ? "Sulje" : "Luo uusi huone"}
-        </div>
-        {createNewRoom && (
-          <div className="chat-room-editor__form">
-            <input
-              type="text"
-              placeholder="Nimi"
-              onChange={handleTitleChange}
-              value={newRoom.name || ""}
-            />
-            <input
-              type="text"
-              placeholder="Kuvaus"
-              onChange={handleDescriptionChange}
-              value={newRoom.description || ""}
-            />
-            <button onClick={saveRoom}>Tallenna</button>
-          </div>
-        )}
-      </div>
-
       <div
         style={{
           display: "flex",
@@ -96,7 +35,9 @@ function Rooms(props: RoomsProps) {
           marginBottom: "10px",
         }}
       >
-        <h4>Publa huoneet</h4>
+        <h4>
+          Publa huoneet <IconButton icon="plus" onClick={handleCreateRoom} />
+        </h4>
         <PublicRoomsList />
       </div>
 
@@ -111,6 +52,8 @@ function Rooms(props: RoomsProps) {
       </div>
     </div>
   );
+
+  return <div className="chat-rooms">{rooms}</div>;
 }
 
 /**
@@ -129,7 +72,7 @@ function PrivateRoomList() {
   }
 
   return (
-    <div
+    <ul
       className="people-list"
       style={{
         display: "flex",
@@ -137,10 +80,12 @@ function PrivateRoomList() {
         marginTop: "10px",
       }}
     >
-      {privateRooms.map((room) => (
-        <RoomItem key={room.identifier} room={room} />
-      ))}
-    </div>
+      <AnimatePresence initial={false}>
+        {privateRooms.map((room) => (
+          <RoomItem key={room.identifier} room={room} />
+        ))}
+      </AnimatePresence>
+    </ul>
   );
 }
 
@@ -160,18 +105,22 @@ function PublicRoomsList() {
   }
 
   return (
-    <div
-      className="people-list"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        marginTop: "10px",
-      }}
-    >
-      {publicRooms.map((room) => (
-        <RoomItem key={room.identifier} room={room} />
-      ))}
-    </div>
+    <AnimatePresence initial={false}>
+      <motion.ul
+        className="people-list"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          marginTop: "10px",
+        }}
+      >
+        <AnimatePresence initial={false}>
+          {publicRooms.map((room) => (
+            <RoomItem key={room.identifier} room={room} canEdit canDelete />
+          ))}
+        </AnimatePresence>
+      </motion.ul>
+    </AnimatePresence>
   );
 }
 
@@ -180,7 +129,14 @@ function PublicRoomsList() {
  */
 interface PeopleItemProps {
   room: ChatRoom;
+  canEdit?: boolean;
+  canDelete?: boolean;
 }
+
+const defaultRoomItemProps: Partial<PeopleItemProps> = {
+  canEdit: false,
+  canDelete: false,
+};
 
 /**
  * PeopleItem
@@ -188,89 +144,56 @@ interface PeopleItemProps {
  * @returns JSX.Element
  */
 function RoomItem(props: PeopleItemProps) {
+  props = { ...defaultRoomItemProps, ...props };
   const { room } = props;
-  const { setRoomsSelected } = useChatContext();
-
-  const [edit, setEdit] = React.useState<boolean>(false);
-  const [editedRoom, setEditedRoom] = React.useState<UpdateChatRoomRequest>({
-    name: room.name || "",
-    description: room.description || "",
-  });
-
-  const saveEdited = async () => {
-    await chatApi.updateChatRoom({
-      identifier: room.identifier,
-      updateChatRoomRequest: editedRoom,
-    });
-
-    setEdit(false);
-  };
-
-  const deleteRoom = async () => {
-    await chatApi.deleteChatRoom({
-      identifier: room.identifier,
-    });
-  };
+  const { openDiscussion, activeDiscussion } = useChatContext();
 
   const handleRoomClick = React.useCallback(() => {
-    setRoomsSelected((roomsSelected) => {
-      if (roomsSelected.includes(room.identifier)) {
-        return roomsSelected.filter((r) => r !== room.identifier);
-      }
-      return [...roomsSelected, room.identifier];
-    });
-  }, [room.identifier, setRoomsSelected]);
+    openDiscussion(room.identifier);
+  }, [openDiscussion, room.identifier]);
+
+  const isActive = activeDiscussion?.identifier === room.identifier;
 
   return (
-    <div
+    <motion.li
+      key={room.identifier}
+      layout
       className="people-item"
+      initial={{
+        opacity: 0,
+        y: -100,
+        height: 0,
+        padding: 0,
+        marginBottom: 0,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        height: "auto",
+        padding: "10px",
+        marginBottom: "10px",
+      }}
+      exit={{
+        opacity: 0,
+        y: -100,
+        height: 0,
+        padding: 0,
+        marginBottom: 0,
+      }}
+      transition={{ type: "tween" }}
       style={{
         display: "flex",
         alignItems: "center",
         backgroundColor: "grey",
         borderRadius: "50px 0 0 50px",
         color: "white",
-        padding: "10px",
-        marginBottom: "10px",
+        position: "relative",
       }}
     >
-      {edit ? (
-        <div className="people-item__edit">
-          <input
-            type="text"
-            placeholder="Nimi"
-            onChange={(e) => {
-              e.persist();
-              setEditedRoom((editedRoom) => ({
-                ...editedRoom,
-                name: e.target.value,
-              }));
-            }}
-            value={editedRoom.name || ""}
-          />
-          <input
-            type="text"
-            placeholder="Kuvaus"
-            onChange={(e) => {
-              e.persist();
-              setEditedRoom((editedRoom) => ({
-                ...editedRoom,
-                description: e.target.value,
-              }));
-            }}
-            value={editedRoom.description || ""}
-          />
-          <button onClick={saveEdited}>Tallenna</button>
-        </div>
-      ) : (
-        <div className="people-item__name">
-          {room.name}
-          <IconButton icon="chat" onClick={handleRoomClick} />
-          <IconButton icon="pencil" onClick={() => setEdit(true)} />
-          <IconButton icon="trash" onClick={deleteRoom} />
-        </div>
-      )}
-    </div>
+      <div className="people-item__name" onClick={handleRoomClick}>
+        {room.name} {isActive && "(active)"}
+      </div>
+    </motion.li>
   );
 }
 

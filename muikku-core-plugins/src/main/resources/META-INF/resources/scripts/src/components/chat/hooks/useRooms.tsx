@@ -2,7 +2,11 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import MApi from "~/api/api";
-import { ChatRoom } from "~/generated/client";
+import {
+  ChatRoom,
+  CreateChatRoomRequest,
+  UpdateChatRoomRequest,
+} from "~/generated/client";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -37,6 +41,41 @@ function useRooms() {
     });
   };
 
+  /**
+   * createNewRoom
+   * @param newRoom newRoom
+   */
+  const createNewRoom = async (newRoom: CreateChatRoomRequest) => {
+    await chatApi.createChatRoom({
+      createChatRoomRequest: newRoom,
+    });
+  };
+
+  /**
+   * updateRoom
+   * @param identifier identifier
+   * @param updatedRoom updatedRoom
+   */
+  const updateRoom = async (
+    identifier: string,
+    updatedRoom: UpdateChatRoomRequest
+  ) => {
+    await chatApi.updateChatRoom({
+      identifier: identifier,
+      updateChatRoomRequest: updatedRoom,
+    });
+  };
+
+  /**
+   * deleteRoom
+   * @param identifier identifier
+   */
+  const deleteRoom = async (identifier: string) => {
+    await chatApi.deleteChatRoom({
+      identifier: identifier,
+    });
+  };
+
   React.useEffect(() => {
     /**
      * onChatRoomCreateMsg
@@ -67,7 +106,7 @@ function useRooms() {
 
             if (index !== -1) {
               const updateRooms = [...rooms];
-              rooms[index] = dataTyped;
+              updateRooms[index] = dataTyped;
               return updateRooms;
             }
 
@@ -120,7 +159,15 @@ function useRooms() {
     };
   }, [websocket]);
 
-  return { rooms, loadingRooms, searchRooms, setSearchRooms };
+  return {
+    rooms,
+    loadingRooms,
+    searchRooms,
+    setSearchRooms,
+    createNewRoom,
+    updateRoom,
+    deleteRoom,
+  };
 }
 
 export default useRooms;

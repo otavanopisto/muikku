@@ -2,8 +2,10 @@ import * as React from "react";
 import MApi from "~/api/api";
 import { ChatMessage } from "~/generated/client";
 import { localize } from "~/locales/i18n";
+import Avatar from "../general/avatar";
 import Dropdown from "../general/dropdown";
 import Link from "../general/link";
+import { useChatContext } from "./context/chat-context";
 
 /**
  * ChatMessageProps
@@ -23,6 +25,8 @@ const chatApi = MApi.getChatApi();
 const ChatMessage = (props: ChatMessageProps) => {
   const { senderIsMe, msg } = props;
   const { archived, editedDateTime } = msg;
+
+  const { people } = useChatContext();
 
   const contentEditableRef = React.useRef<HTMLDivElement>(null);
 
@@ -118,79 +122,40 @@ const ChatMessage = (props: ChatMessageProps) => {
 
     return messageModerationItemsOptions;
   };
+
   return (
     <div
       className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
     >
-      <div className="chat__message-meta">
-        <span className={`chat__message-meta-sender`}>{msg.nick}</span>
-        <span className="chat__message-meta-timestamp">
-          {localize.formatDaily(msg.sentDateTime)}
-        </span>
+      <div className="chat__message-content-container" key="nonEditable">
+        <Avatar firstName={msg.nick} hasImage id={msg.sourceUserEntityId} />
+        <div className="chat__message-content-wrapper">
+          <div className="chat__message-meta">
+            <span className={`chat__message-meta-sender`}>{msg.nick}</span>
+            <span className="chat__message-meta-timestamp">
+              {localize.formatDaily(msg.sentDateTime)}
+            </span>
 
-        <span
-          className={`chat__message-actions ${
-            senderIsMe
-              ? "chat__message-actions--sender-me"
-              : "chat__message-actions--sender-them"
-          }`}
-        >
-          <Dropdown
-            alignSelf={senderIsMe ? "right" : "left"}
-            modifier="chat"
-            items={getMessageModerationListDropdown().map(
-              // eslint-disable-next-line react/display-name
-              (item) => (closeDropdown: () => any) =>
-                (
-                  <Link
-                    className={`link link--full link--chat-dropdown`}
-                    onClick={item.onClick}
-                  >
-                    <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{item.text}</span>
-                  </Link>
-                )
-            )}
-          >
-            <span className="chat__message-action icon-more_vert"></span>
-          </Dropdown>
-        </span>
-      </div>
-      {isEditing && !archived ? (
-        <div className="chat__message-content-container" key="editable">
-          <div
-            ref={contentEditableRef}
-            className="chat__message-content chat__message-content--edit-mode"
-            contentEditable
-            onKeyUp={onContentEditableKeyDown}
-          >
-            {msg.message}
-          </div>
-          <div className="chat__message-footer">
             <span
-              className="chat__message-footer-action"
-              onClick={(e) => setIsEditing(false)}
+              className={`chat__message-actions ${
+                senderIsMe
+                  ? "chat__message-actions--sender-me"
+                  : "chat__message-actions--sender-them"
+              }`}
             >
-              Peruuta
-            </span>
-            <span>tai</span>
-            <span className="chat__message-footer-action" onClick={updateMsg}>
-              Tallenna
+              <span className="chat__message-action icon-more_vert"></span>
             </span>
           </div>
-        </div>
-      ) : (
-        <div className="chat__message-content-container" key="nonEditable">
           <div className="chat__message-content">
             {archived ? <i>Poistettu</i> : msg.message}
             {editedDateTime && (
               <div className="chat__message-edited-info">
-                Muokattu {localize.formatDaily(editedDateTime)}
+                (Muokattu {localize.formatDaily(editedDateTime)})
               </div>
             )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

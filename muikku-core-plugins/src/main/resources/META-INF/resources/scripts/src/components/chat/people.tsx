@@ -48,16 +48,11 @@ interface PeopleItemProps {
 function PeopleItem(props: PeopleItemProps) {
   const { user } = props;
 
-  const { setPeopleSelected } = useChatContext();
+  const { openDiscussion } = useChatContext();
 
   const handlePeopleClick = React.useCallback(() => {
-    setPeopleSelected((peopleSelected) => {
-      if (peopleSelected.includes(user.id)) {
-        return peopleSelected.filter((r) => r !== user.id);
-      }
-      return [...peopleSelected, user.id];
-    });
-  }, [user.id, setPeopleSelected]);
+    openDiscussion(user.identifier);
+  }, [openDiscussion, user.identifier]);
 
   return (
     <div
