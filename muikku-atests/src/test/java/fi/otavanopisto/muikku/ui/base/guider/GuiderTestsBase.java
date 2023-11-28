@@ -311,7 +311,7 @@ public class GuiderTestsBase extends AbstractUITest {
         // Then test the history - tab
         navigate("/guider", false);
         waitAndClick(".application-list__header-primary>span");
-        waitAndClick("#STUDY_HISTORY");      
+        waitAndClick("#tabControl-STUDY_HISTORY");      
         waitForPresent(".application-list__header-secondary .application-list__indicator-badge");
         assertText(".application-list__header-secondary .application-list__indicator-badge", "E");
         
