@@ -539,7 +539,7 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
     };
   };
 
-const loadPedagogyFormAccess: LoadStudentTriggerType =
+const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
   function loadPedagogyFormAccess(id) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -2379,7 +2379,7 @@ export {
   loadStudent,
   loadStudentHistory,
   loadStudentHOPSAccess,
-  loadPedagogyFormAccess,
+  loadStudentPedagogyFormAccess,
   // loadStudentGuiderRelations,
   loadStudentContactLogs,
   createContactLogEvent,

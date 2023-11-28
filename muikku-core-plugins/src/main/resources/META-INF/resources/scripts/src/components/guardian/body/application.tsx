@@ -103,16 +103,15 @@ class DependantApplication extends React.Component<
    * @returns whether section with given hash should be visible or not
    */
   isVisible(id: string) {
+    const selectUserStudyProgramme = this.props.dependants.find(
+      (dependant) => dependant.identifier === this.state.selectedDependant
+    )?.studyProgrammeName;
     switch (id) {
       case "HOPS":
         return (
-          this.props.status.isActiveUser &&
-          (COMPULSORY_HOPS_VISIBLITY.includes(
-            this.props.status.profile.studyProgrammeName
-          ) ||
-            (this.props.hops.eligibility &&
-              this.props.hops.eligibility.upperSecondarySchoolCurriculum ===
-                true))
+          COMPULSORY_HOPS_VISIBLITY.includes(selectUserStudyProgramme) ||
+          (this.props.hops.eligibility &&
+            this.props.hops.eligibility.upperSecondarySchoolCurriculum === true)
         );
       case "VOPS":
       case "YO":

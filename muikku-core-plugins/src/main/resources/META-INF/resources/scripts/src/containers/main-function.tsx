@@ -56,6 +56,8 @@ import {
   updateLabelFilters,
   updateWorkspaceFilters,
   updateUserGroupFilters,
+  loadStudentPedagogyFormAccess,
+  loadStudentHOPSAccess,
 } from "~/actions/main-function/guider";
 import { GuiderActiveFiltersType } from "~/reducers/main-function/guider";
 import { loadStudents, loadStudent } from "~/actions/main-function/guider";
@@ -299,7 +301,7 @@ export default class MainFunction extends React.Component<
   loadRecordsData(tab: string, userId?: string) {
     const givenLocation = tab;
 
-    if (!givenLocation) {
+    if (givenLocation === "summary" || !givenLocation) {
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
@@ -308,6 +310,11 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(
         loadContactGroup("counselors", userId) as Action
+      );
+
+      this.props.store.dispatch(loadStudentHOPSAccess(userId) as Action);
+      this.props.store.dispatch(
+        loadStudentPedagogyFormAccess(userId) as Action
       );
 
       this.props.store.dispatch(updateSummary(userId) as Action);
@@ -336,15 +343,15 @@ export default class MainFunction extends React.Component<
           );
         }, userId) as Action
       );
-    } else if (givenLocation === "summary") {
-      this.props.store.dispatch(
-        setLocationToSummaryInTranscriptOfRecords() as Action
-      );
+      // } else if (givenLocation === "summary") {
+      //   this.props.store.dispatch(
+      //     setLocationToSummaryInTranscriptOfRecords() as Action
+      //   );
 
-      this.props.store.dispatch(
-        loadContactGroup("counselors", userId) as Action
-      );
-      this.props.store.dispatch(updateSummary(userId) as Action);
+      //   this.props.store.dispatch(
+      //     loadContactGroup("counselors", userId) as Action
+      //   );
+      //   this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(
         setLocationToStatisticsInTranscriptOfRecords() as Action
@@ -1025,6 +1032,10 @@ export default class MainFunction extends React.Component<
 
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
+        this.props.store.dispatch(loadStudentHOPSAccess(identifier) as Action);
+        this.props.store.dispatch(
+          loadStudentPedagogyFormAccess(identifier) as Action
+        );
         if (tab) {
           this.loadRecordsData(tab, identifier);
         } else {
