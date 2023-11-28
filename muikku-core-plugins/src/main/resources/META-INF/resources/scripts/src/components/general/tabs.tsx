@@ -331,7 +331,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
         </Swiper>
       ) : (
         <>
-          <div className="tabs__tab-labels tabs__tab-labels--desktop">
+          <div className="tabs__tab-labels tabs__tab-labels--mobile-only-tabs">
             {tabs.map((tab) => (
               <button
                 id={"tabControl-" + tab.id}
@@ -347,7 +347,7 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
               </button>
             ))}
           </div>
-          <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
+          <div className="tabs__tab-data-container tabs__tab-data-container--mobile-only-tabs">
             {tabs.map((t) => (
               <div
                 key={t.id}

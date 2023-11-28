@@ -168,7 +168,7 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       waitAndClick(".application-list__header-primary>span");
-      waitAndClick("#STUDY_HISTORY");
+      waitAndClick("#tabControl-STUDY_HISTORY");
       waitAndClick("#studyLibrary");      
       waitForPresent(".file-uploader input");
       scrollIntoView(".file-uploader input");
@@ -839,9 +839,9 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".notes .notes__item .notes__item-status.notes__item-status--done", "Done");
       waitAndClick(".notes .notes__item .icon-trash");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      waitAndClick(".tabs--notes #archived");
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
-      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      waitAndClick(".tabs--notes #tabControl-archived");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-header span", "Task from guider.");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteWorkspace(workspace.getId());

@@ -79,6 +79,16 @@
   border: 0;
   display: none;
 
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+  }
+}
+
+.tabs__tab-labels--mobile-only-tabs {
+  background: $color-default;
+  border: 0;
+  display: none;
+
   .tabs__tab--mobile-only-tab {
     cursor: default;
   }
@@ -153,6 +163,10 @@
     border-top: none;
     margin-bottom: none;
   }
+}
+
+.tabs__tab-data-container--mobile-only-tabs {
+  display: flex;
 }
 
 .tabs__tab-data-container--mobile-tabs {
