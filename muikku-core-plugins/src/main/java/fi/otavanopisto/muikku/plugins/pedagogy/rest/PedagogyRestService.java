@@ -359,6 +359,7 @@ public class PedagogyRestService {
     boolean specEdTeacher = false;
     boolean guidanceCounselor = false;
     boolean courseTeacher = false;
+    boolean studentParent = false;
     
     // Students can always access their own form
     
@@ -367,7 +368,7 @@ public class PedagogyRestService {
     }
     else {
       
-      // For staff members, access is based on guidance relation
+      // For staff members or student parents, access is based on (guidance) relation
 
       PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
       SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
@@ -379,8 +380,10 @@ public class PedagogyRestService {
         specEdTeacher = relation.isSpecEdTeacher();
         guidanceCounselor = relation.isGuidanceCounselor();
         courseTeacher = relation.isCourseTeacher();
+        studentParent = relation.isStudentParent();
+        
         // If only the courseTeacher is true, check if the student is active in some of the teacher's courses
-        if (courseTeacher && !guidanceCounselor && !specEdTeacher) {
+        if (courseTeacher && !guidanceCounselor && !specEdTeacher && !studentParent) {
 
           SchoolDataIdentifier studentId = SchoolDataIdentifier.fromId(studentIdentifier);
           UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(studentId.getDataSource(), studentId.getIdentifier());
@@ -397,12 +400,12 @@ public class PedagogyRestService {
       // if the form exists and form state is approved by student
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
-      accessible = isAdmin || specEdTeacher;
+      accessible = isAdmin || specEdTeacher || studentParent;
       if (!accessible && form != null && form.getState() == PedagogyFormState.APPROVED) {
         accessible = relation.isGuidanceCounselor() || courseTeacher;
       }
     }
-    return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher);
+    return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);
   }
   
   private Long getFormCreator(PedagogyForm form) {

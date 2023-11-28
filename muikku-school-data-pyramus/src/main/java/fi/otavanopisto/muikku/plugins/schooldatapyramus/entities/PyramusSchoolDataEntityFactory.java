@@ -165,7 +165,8 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusStudentGuidanceRelation(
         guidanceRelation.isSpecEdTeacher(),
         guidanceRelation.isGuidanceCounselor(),
-        guidanceRelation.isCourseTeacher());
+        guidanceRelation.isCourseTeacher(),
+        guidanceRelation.isStudentParent());
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,

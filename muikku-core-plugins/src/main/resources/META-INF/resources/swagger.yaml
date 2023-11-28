@@ -13691,6 +13691,8 @@ components:
           type: boolean
         guidanceCounselor:
           type: boolean
+        studentParent:
+          type: boolean
 
     PedagogyFormState:
       type: string
