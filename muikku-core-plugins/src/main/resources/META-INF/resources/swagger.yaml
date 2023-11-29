@@ -5163,6 +5163,16 @@ paths:
           description: Html material content updated successfully
         "400":
           description: Invalid request was sent to the server
+        "409":
+          description: Material contains answers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Reason what caused conflict
         "500":
           description: Internal server error
 
@@ -8426,6 +8436,16 @@ paths:
           description: Workspace material deleted successfully
         "400":
           description: Invalid request was sent to the server
+        "409":
+          description: Material contains answers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Reason what caused conflict
         "500":
           description: Internal server error
 
@@ -12786,9 +12806,11 @@ components:
         text:
           description: Verbal assessment of the student's material assignment
           type: string
+          nullable: true
         grade:
           description: Grade that is used in the evaluation
           type: string
+          nullable: true
         date:
           description: Date when the evaluation was done
           type: string
@@ -12860,6 +12882,7 @@ components:
         evaluationInfo:
           description: Evaluation info of the material assignments
           $ref: "#/components/schemas/MaterialEvaluationInfo"
+          nullable: true
         created:
           description: Date when the material assignment was created
           type: string
@@ -12872,6 +12895,7 @@ components:
           description: Date when the material assignment was submitted
           type: string
           format: date-time
+          nullable: true
         withdrawn:
           description: Date when the material assignment was withdrawn
           type: string

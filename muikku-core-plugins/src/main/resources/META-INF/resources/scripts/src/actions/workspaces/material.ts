@@ -890,9 +890,9 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         let isConflictError = false;
 
         // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
-        if (err.message) {
-          const message = JSON.parse(err.message);
-          if (message.reason === "CONTAINS_ANSWERS") {
+        if (isResponseError(err)) {
+          const errorObject = await err.response.json();
+          if (errorObject.reason === "CONTAINS_ANSWERS") {
             isConflictError = true;
           }
         }
@@ -1153,10 +1153,10 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         }
 
         let showRemoveAnswersDialogForDelete = false;
-        if (!data.removeAnswers && err.message) {
+        if (!data.removeAnswers && isResponseError(err)) {
+          const errorObject = await err.response.json();
           try {
-            const message = JSON.parse(err.message);
-            if (message.reason === "CONTAINS_ANSWERS") {
+            if (errorObject.reason === "CONTAINS_ANSWERS") {
               showRemoveAnswersDialogForDelete = true;
               const currentEditorState = getState().workspaces.materialEditor;
               dispatch(
