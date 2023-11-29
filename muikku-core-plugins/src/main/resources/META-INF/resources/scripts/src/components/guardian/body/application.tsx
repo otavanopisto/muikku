@@ -47,11 +47,6 @@ type StudiesTab =
   | "STUDY_INFO"
   | "PEDAGOGY_FORM";
 
-type DependantOptionType = {
-  label: string;
-  value: string;
-};
-
 /**
  * DependantApplicationProps
  */
