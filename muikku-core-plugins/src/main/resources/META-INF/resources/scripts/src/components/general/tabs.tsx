@@ -218,7 +218,7 @@ interface SwiperHandlerProps {
  * Doesn't render anything
  *
  * @param props props
- * @returns JSX.Element
+ * @returns null
  */
 const SwiperHandler = (props: SwiperHandlerProps): null => {
   const { onTabChange, activeTab, tabs } = props;
