@@ -11,6 +11,11 @@ public class IndexAT extends AbstractWCAGTest {
   @Test
   public void indexTest() throws JsonProcessingException, Exception {
     navigate("/", true);
+    waitForVisible(".hero");
+    waitForVisible("#studying");
+    waitForVisible("#videos");
+    waitForVisible("#news");
+    waitForVisible("#organization");
     testAccessibility("Not logged in");
     login(getTestStudent(), getTestStudentPassword(), true);
     testAccessibility("Logged in");

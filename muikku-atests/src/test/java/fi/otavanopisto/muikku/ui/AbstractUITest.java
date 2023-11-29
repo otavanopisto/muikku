@@ -2024,20 +2024,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       if (!this.violationList.isEmpty()) {
         String violationsString = "";
         for (String violation : violationList) {
-//          violationsString += System.getProperty("line.separator");
           violationsString += violation;
           violationsString += System.getProperty("line.separator");
           violationsString += System.getProperty("line.separator");
         }
         try {
-          BufferedWriter writer = new BufferedWriter(new FileWriter("wcagReport"));
-          writer.write(violationsString);
-          
+          BufferedWriter writer = new BufferedWriter(new FileWriter("target/WCAG_report-" + testName.getMethodName(), true));
+          writer.append(violationsString);
           writer.close();          
         }catch (Exception e) {
-          // TODO: handle exception
+          // TODO: handle exception, or just swallow it into the void...
         }
-
         assertTrue(violationsString, false);
       }
     }
