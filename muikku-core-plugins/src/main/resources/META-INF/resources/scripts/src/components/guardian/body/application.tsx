@@ -11,6 +11,7 @@ import {
   TranscriptOfRecordLocationType,
   RecordsType,
 } from "../../../reducers/main-function/records/index";
+
 import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
@@ -31,6 +32,8 @@ import { getName } from "~/util/modifiers";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import { Dependant } from "~/reducers/main-function/dependants";
+import { GuiderState } from "~/reducers/main-function/guider";
+import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 
 /**
  * StudiesTab
@@ -44,6 +47,11 @@ type StudiesTab =
   | "STUDY_INFO"
   | "PEDAGOGY_FORM";
 
+type DependantOptionType = {
+  label: string;
+  value: string;
+};
+
 /**
  * DependantApplicationProps
  */
@@ -52,6 +60,7 @@ interface DependantApplicationProps extends WithTranslation {
   hops: HOPSState;
   status: StatusType;
   records: RecordsType;
+  guider: GuiderState;
   dependants: Dependant[];
 }
 
@@ -61,6 +70,7 @@ interface DependantApplicationProps extends WithTranslation {
 interface DependantApplicationState {
   activeTab: StudiesTab;
   selectedDependant: string;
+  selectedDependantStudyProgramme: string;
   loading: boolean;
   pedagogyFormState?: PedagogyFormState;
 }
@@ -83,6 +93,7 @@ class DependantApplication extends React.Component<
       loading: false,
       activeTab: "SUMMARY",
       selectedDependant: "",
+      selectedDependantStudyProgramme: "",
     };
   }
 
@@ -131,6 +142,13 @@ class DependantApplication extends React.Component<
     return true;
   }
 
+  getDependantStudyProgramme = (dependantId: string) => {
+    const dependant = this.props.dependants.find(
+      (dependant) => dependant.identifier === dependantId
+    );
+    return dependant?.studyProgrammeName;
+  };
+
   /**
    * onTabChange
    * @param id id
@@ -157,9 +175,14 @@ class DependantApplication extends React.Component<
    * handleSelectChange
    * @param option selectedOptions
    */
-  handleSelectChange = (option: OptionDefault<string>) => {
+  handleDependantSelectChange = (option: OptionDefault<string>) => {
     window.location.hash = option.value;
-    this.setState({ selectedDependant: option.value });
+    this.setState({
+      selectedDependant: option.value,
+      selectedDependantStudyProgramme: this.getDependantStudyProgramme(
+        option.value
+      ),
+    });
   };
 
   /**
@@ -167,23 +190,22 @@ class DependantApplication extends React.Component<
    */
   async componentDidMount() {
     this.setState({ loading: true });
-    let selectedDependant = "";
+    let selectedDependant: string = "";
 
     if (!window.location.hash) {
-      const dependant = this.props.dependants[0].identifier;
-      window.location.hash = dependant;
-      selectedDependant = dependant;
+      const dependant = this.props.dependants[0];
+      window.location.hash = dependant.identifier;
+      selectedDependant = dependant.identifier;
     } else {
       selectedDependant = window.location.hash.replace("#", "").split("/")?.[0];
     }
-
     const state = await this.loadPedagogyFormState();
     const tab = window.location.hash.replace("#", "").split("/")?.[1];
 
     this.setState({
       loading: false,
       pedagogyFormState: state,
-      selectedDependant: selectedDependant,
+      selectedDependant,
     });
 
     /**
@@ -255,7 +277,7 @@ class DependantApplication extends React.Component<
         <Select
           className="react-select-override"
           classNamePrefix="react-select-override"
-          onChange={this.handleSelectChange}
+          onChange={this.handleDependantSelectChange}
           options={dependants}
           value={selectedDependant}
           isSearchable={false}
@@ -263,6 +285,20 @@ class DependantApplication extends React.Component<
       ) : (
         <span>{selectedDependant?.label}</span>
       );
+
+    const hopsComponent = COMPULSORY_HOPS_VISIBLITY.includes(
+      this.getDependantStudyProgramme(this.state.selectedDependant)
+    ) ? (
+      <CompulsoryEducationHopsWizard
+        user="supervisor"
+        usePlace="guider"
+        disabled={true}
+        studentId={this.state.selectedDependant && this.state.selectedDependant}
+        superVisorModifies={false}
+      />
+    ) : (
+      <Hops />
+    );
 
     let panelTabs: Tab[] = [
       {
@@ -298,7 +334,7 @@ class DependantApplication extends React.Component<
         type: "hops",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <Hops />
+            {hopsComponent}
           </ApplicationPanelBody>
         ),
       },
@@ -362,6 +398,7 @@ function mapStateToProps(state: StateType) {
     location: state.records.location,
     hops: state.hops,
     records: state.records,
+    guider: state.guider,
     status: state.status,
     dependants: state.dependants.list,
   };
