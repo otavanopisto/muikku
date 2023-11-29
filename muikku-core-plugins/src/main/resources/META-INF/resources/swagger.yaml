@@ -6187,6 +6187,40 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/records/students/{studentIdentifier}/students:
+    get:
+      operationId: getStudents
+      summary: Get students
+      description: Get students
+      tags:
+        - Records
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: includeInactiveStudents
+          in: query
+          description: Include inactive students
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Students results object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserWithSchoolData"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+          
   /rest/records/users/{userIdentifier}/workspaceActivity:
     get:
       operationId: getWorkspaceActivity
@@ -6663,50 +6697,6 @@ paths:
           description: Internal server error
 
   /rest/user/students:
-    get:
-      operationId: getStudents
-      summary: Get students
-      description: Get students
-      tags:
-        - User
-      parameters:
-        - name: userEntityId
-          in: query
-          description: User entity id
-          required: true
-          schema:
-            type: integer
-        - name: includeInactiveStudents
-          in: query
-          description: Include inactive students
-          schema:
-            type: boolean
-            default: false
-        - name: firstResult
-          in: query
-          description: First result
-          schema:
-            type: integer
-            default: 0
-        - name: maxResults
-          in: query
-          description: Max results
-          schema:
-            type: integer
-            default: 10
-      responses:
-        "200":
-          description: Students results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserWithSchoolData"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
     post:
       operationId: createStudent
       summary: Create student
@@ -7062,51 +7052,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserInfo"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/user/users:
-    get:
-      operationId: getUsers
-      summary: Get users
-      description: Get users
-      tags:
-        - User
-      parameters:
-        - name: q
-          in: query
-          description: Search string
-          schema:
-            type: string
-        - name: onlyDefaultUsers
-          in: query
-          description: Only default users
-          schema:
-            type: boolean
-            default: false
-        - name: firstResult
-          in: query
-          description: First result
-          schema:
-            type: integer
-            default: 0
-        - name: maxResults
-          in: query
-          description: Max results
-          schema:
-            type: integer
-            default: 10
-      responses:
-        "200":
-          description: Users results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
         "400":
           description: Invalid request was sent to the server
         "500":

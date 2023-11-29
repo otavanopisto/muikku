@@ -106,7 +106,6 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
       getState: () => StateType
     ) => {
       const recordsApi = MApi.getRecordsApi();
-      const userApi = MApi.getUserApi();
 
       try {
         dispatch({
@@ -130,13 +129,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         //OK let me try to explain this :<
 
         //We get the current used id this user is supposedly a student
-        const userId: number = getState().status.userId;
+        const studentIdentifier: string = getState().status.userSchoolDataIdentifier;
 
-        //we get the users that represent that userId
-        let users = await userApi.getStudents({
-          userEntityId: userId,
+        //we get the users that represent that studentIdentifier
+        let users = await recordsApi.getStudents({
+          studentIdentifier: studentIdentifier,
           includeInactiveStudents: true,
-          maxResults: 20,
         });
 
         //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
