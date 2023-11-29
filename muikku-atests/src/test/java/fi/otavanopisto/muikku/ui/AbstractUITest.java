@@ -1312,7 +1312,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent("input#password");
     sendKeys("input#username", username);
     sendKeys("input#password", password);
-    waitAndClick(".login-button");
+    waitAndClick(".muikku-login-button");
     waitForVisible(".navbar .button-pill--profile");
   }
 
