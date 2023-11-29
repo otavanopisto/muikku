@@ -8,9 +8,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -2017,7 +2019,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     sleep(500);
   }
   
-  protected void reportWCAG() {
+  protected void reportWCAG() throws IOException {
     if (this.violationList != null) {
       if (!this.violationList.isEmpty()) {
         String violationsString = "";
@@ -2026,6 +2028,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
           violationsString += violation;
           violationsString += System.getProperty("line.separator");          
         }
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("wcagReport"));
+        writer.write(violationsString);
+        
+        writer.close();
+
         assertTrue(violationsString, false);
       }
     }
