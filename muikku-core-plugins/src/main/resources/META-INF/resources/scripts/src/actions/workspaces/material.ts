@@ -16,7 +16,7 @@ import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
 import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
-import MApi, { isMApiError } from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
