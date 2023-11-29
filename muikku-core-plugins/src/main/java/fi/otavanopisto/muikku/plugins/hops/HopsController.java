@@ -8,7 +8,6 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
@@ -34,7 +33,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class HopsController {
@@ -76,28 +75,30 @@ public class HopsController {
   private AssessmentRequestController assessmentRequestController;
   
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  private UserController userController;
   
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
   
-  public boolean isHopsAvailable(String studentIdentifier) {
+  public boolean isHopsAvailable(String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return false;
+    }
+
     if (sessionController.isLoggedIn()) {
       
       // Hops is always available for admins
-      
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        return true;
-      }
-      SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-      
-      if (sessionController.getLoggedUser().equals(schoolDataIdentifier)) {
+      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
         return true;
       }
       
-      return userSchoolDataController.amICounselor(schoolDataIdentifier);
+      if (sessionController.getLoggedUser().equals(studentIdentifier) || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+        return true;
+      }
+      
+      return userSchoolDataController.amICounselor(studentIdentifier);
     }
     return false;
   }
