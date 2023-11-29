@@ -190,7 +190,7 @@ class DependantApplication extends React.Component<
    */
   async componentDidMount() {
     this.setState({ loading: true });
-    let selectedDependant: string = "";
+    let selectedDependant = "";
 
     if (!window.location.hash) {
       const dependant = this.props.dependants[0];
