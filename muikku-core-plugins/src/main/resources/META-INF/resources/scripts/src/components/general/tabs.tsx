@@ -116,85 +116,90 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     clickable: true,
   };
 
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
+  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+
   return (
     <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
-      <div className="tabs__tab-data-container tabs__tab-data-container--desktop-tabs">
-        <div
-          className={`tabs__tab-labels ${
-            modifier ? "tabs__tab-labels--" + modifier : ""
-          }`}
+      {isMobileWidth ? (
+        <Swiper
+          modules={[A11y, Pagination]}
+          a11y={a11yConfig}
+          pagination={paginationConfig}
+          className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs"
+          touchMoveStopPropagation={true}
+          keyboard={{
+            enabled: true,
+            onlyInViewport: false,
+          }}
+          nested={props.nested}
         >
-          {tabs.map((tab, i) => (
-            <button
-              key={tab.id}
-              id={"tabControl-" + tab.id}
-              aria-controls={"tabPanel-" + tab.id}
-              role="tab"
-              aria-selected={tab.id === activeTab}
-              onClick={handleTabClick(tab)}
-              onKeyUp={handleTabKeyUp(tab)}
-              className={`tabs__tab ${
-                modifier ? "tabs__tab--" + modifier : ""
-              } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
-                tab.id === activeTab ? "active" : ""
-              }`}
-            >
-              {tab.name}
-            </button>
-          ))}
-          {children}
-        </div>
-        <div className="tabs__tab-data-container">
-          {tabs
-            .filter((t) => renderAllComponents || t.id === activeTab)
-            .map((t) => (
-              <div
-                key={t.id}
-                role="tabpanel"
-                id={"tabPanel-" + t.id}
-                aria-labelledby={"tabControl-" + t.id}
-                className={`tabs__tab-data ${
-                  t.type ? "tabs__tab-data--" + t.type : ""
-                }  ${t.id === activeTab ? "active" : ""}`}
-              >
-                {t.component}
+          <SwiperHandler
+            onTabChange={onTabChange}
+            tabs={tabs}
+            activeTab={activeTab}
+          />
+          <div className="tabs__pagination-container" />
+          {tabs.map((t) => (
+            <SwiperSlide key={t.id}>
+              <div className="tabs__mobile-tab">
+                <div>{t.name}</div>
+                {t.mobileAction ? (
+                  t.mobileAction
+                ) : (
+                  <div className="tabs__mobile-tab-spacer" />
+                )}
               </div>
+              {t.component}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      ) : (
+        <div className="tabs__tab-data-container tabs__tab-data-container--desktop-tabs">
+          <div
+            className={`tabs__tab-labels ${
+              modifier ? "tabs__tab-labels--" + modifier : ""
+            }`}
+          >
+            {tabs.map((tab, i) => (
+              <button
+                key={tab.id}
+                id={"tabControl-" + tab.id}
+                aria-controls={"tabPanel-" + tab.id}
+                role="tab"
+                aria-selected={tab.id === activeTab}
+                onClick={handleTabClick(tab)}
+                onKeyUp={handleTabKeyUp(tab)}
+                className={`tabs__tab ${
+                  modifier ? "tabs__tab--" + modifier : ""
+                } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+                  tab.id === activeTab ? "active" : ""
+                }`}
+              >
+                {tab.name}
+              </button>
             ))}
+            {children}
+          </div>
+          <div className="tabs__tab-data-container">
+            {tabs
+              .filter((t) => renderAllComponents || t.id === activeTab)
+              .map((t) => (
+                <div
+                  key={t.id}
+                  role="tabpanel"
+                  id={"tabPanel-" + t.id}
+                  aria-labelledby={"tabControl-" + t.id}
+                  className={`tabs__tab-data ${
+                    t.type ? "tabs__tab-data--" + t.type : ""
+                  }  ${t.id === activeTab ? "active" : ""}`}
+                >
+                  {t.component}
+                </div>
+              ))}
+          </div>
         </div>
-      </div>
-
-      <Swiper
-        modules={[A11y, Pagination]}
-        a11y={a11yConfig}
-        pagination={paginationConfig}
-        className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs"
-        touchMoveStopPropagation={true}
-        keyboard={{
-          enabled: true,
-          onlyInViewport: false,
-        }}
-        nested={props.nested}
-      >
-        <SwiperHandler
-          onTabChange={onTabChange}
-          tabs={tabs}
-          activeTab={activeTab}
-        />
-        <div className="tabs__pagination-container" />
-        {tabs.map((t) => (
-          <SwiperSlide key={t.id}>
-            <div className="tabs__mobile-tab">
-              <div>{t.name}</div>
-              {t.mobileAction ? (
-                t.mobileAction
-              ) : (
-                <div className="tabs__mobile-tab-spacer" />
-              )}
-            </div>
-            {t.component}
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      )}
     </div>
   );
 };
@@ -312,12 +317,12 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
           modules={[A11y, Pagination]}
           a11y={a11yConfig}
           pagination={paginationConfig}
-          className="tabs__tab-data-container tabs__tab-data-container--mobile"
+          className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs"
         >
+          <div className="tabs__pagination-container" />
           {tabs.map((t: Tab) => (
             <SwiperSlide key={t.id}>
               <div className="tabs__mobile-tab">
-                <div className="tabs__pagination-container"> </div>
                 <div>{t.name}</div>
                 {t.mobileAction ? (
                   t.mobileAction
@@ -331,23 +336,23 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
         </Swiper>
       ) : (
         <>
-          <div className="tabs__tab-labels tabs__tab-labels--mobile-only-tabs">
+          <div className="tabs__tab-labels tabs__tab-labels--no-tabs">
             {tabs.map((tab) => (
-              <button
+              <div
                 id={"tabControl-" + tab.id}
                 aria-controls={"tabPanel-" + tab.id}
                 role="tab"
                 aria-selected={tab.id === activeTab}
-                className={`tabs__tab tabs__tab--mobile-only-tab ${
+                className={`tabs__tab tabs__tab--no-tabs ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } `}
                 key={tab.id}
               >
                 {tab.name}
-              </button>
+              </div>
             ))}
           </div>
-          <div className="tabs__tab-data-container tabs__tab-data-container--mobile-only-tabs">
+          <div className="tabs__tab-data-container tabs__tab-data-container--no-tabs">
             {tabs.map((t) => (
               <div
                 key={t.id}

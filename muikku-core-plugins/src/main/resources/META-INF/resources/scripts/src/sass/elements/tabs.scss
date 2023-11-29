@@ -84,12 +84,12 @@
   }
 }
 
-.tabs__tab-labels--mobile-only-tabs {
+.tabs__tab-labels--no-tabs {
   background: $color-default;
   border: 0;
   display: none;
 
-  .tabs__tab--mobile-only-tab {
+  .tabs__tab--no-tabs {
     cursor: default;
   }
 
@@ -165,7 +165,7 @@
   }
 }
 
-.tabs__tab-data-container--mobile-only-tabs {
+.tabs__tab-data-container--no-tabs {
   display: flex;
 }
 
@@ -173,7 +173,7 @@
   display: flex;
   flex-direction: column-reverse;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     display: none;
   }
 }
@@ -181,7 +181,7 @@
 .tabs__tab-data-container--desktop-tabs {
   display: none;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-desktop) {
     display: block;
   }
 }
@@ -297,9 +297,9 @@
   }
 }
 
-// Mobile only tabs
+// When no tabs are used, instead all the tabs are rendered simultaneusly
 
-.tabs__tab--mobile-only-tab {
+.tabs__tab--no-tabs {
   @include breakpoint($breakpoint-pad) {
     background: $color-default;
     border: 0;
@@ -361,9 +361,10 @@
 
 .tabs__pagination-container--bullets {
   align-items: center;
+  background: $color-default;
   display: flex;
   justify-content: center;
-  margin-bottom: 5px;
+  padding: 10px;
 
   span {
     margin-right: 4px;
