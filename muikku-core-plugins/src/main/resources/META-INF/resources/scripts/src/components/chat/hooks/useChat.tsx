@@ -34,12 +34,18 @@ function useChat(userId: number) {
     views: chatControllerViews,
   });
 
-  const [activeRoomOrPerson, setActiveRoomOrPerson] =
-    React.useState<string>(null);
-
-  const [fullScreen, setFullScreen] = React.useState<boolean>(false);
+  // Whether to show the control box or bubble
+  const [minimized, setMinimized] = React.useState<boolean>(true);
 
   const [detached, setDetached] = React.useState<boolean>(false);
+  const [fullScreen, setFullScreen] = React.useState<boolean>(false);
+
+  // Panel states
+  const [rightPanelOpen, setRightPanelOpen] = React.useState<boolean>(false);
+  const [leftPanelOpen, setLeftPanelOpen] = React.useState<boolean>(false);
+
+  const [activeRoomOrPerson, setActiveRoomOrPerson] =
+    React.useState<string>(null);
 
   const [newChatRoom, setNewChatRoom] = React.useState<CreateChatRoomRequest>({
     name: "",
@@ -58,10 +64,15 @@ function useChat(userId: number) {
 
   const [roomsSelected, setRoomsSelected] = React.useState<string[]>([]);
 
-  // Whether to show the control box or bubble
-  const [minimized, setMinimized] = React.useState<boolean>(true);
+  // Ref to store and track window position
+  const windowPositonRef = React.useRef<{
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  }>(null);
 
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint);
+  const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
   const currentEditorValues = React.useMemo(() => {
@@ -86,6 +97,13 @@ function useChat(userId: number) {
         }),
     [rooms, people, roomsSelected]
   );
+
+  React.useEffect(() => {
+    if (isMobileWidth) {
+      windowPositonRef.current = null;
+      setDetached(false);
+    }
+  }, [isMobileWidth]);
 
   /**
    * saveNewRoom
@@ -179,18 +197,8 @@ function useChat(userId: number) {
 
   // Toggles the control box
   const toggleControlBox = React.useCallback(() => {
-    setMinimized(!minimized);
-  }, [minimized]);
-
-  // Toggles the fullscreen mode
-  const toggleFullscreen = React.useCallback(() => {
-    setFullScreen(!fullScreen);
-  }, [fullScreen]);
-
-  // Toggles the detached mode
-  const toggleDetached = React.useCallback(() => {
-    setDetached(!detached);
-  }, [detached]);
+    setMinimized((minimized) => !minimized);
+  }, []);
 
   // Sets the active room or person
   const openDiscussion = React.useCallback(
@@ -200,6 +208,30 @@ function useChat(userId: number) {
     },
     [chatViews]
   );
+
+  const toggleRightPanel = React.useCallback((nextState?: boolean) => {
+    if (nextState !== undefined) {
+      setRightPanelOpen(nextState);
+    } else {
+      setRightPanelOpen((rightPanelOpen) => !rightPanelOpen);
+    }
+  }, []);
+
+  const toggleLeftPanel = React.useCallback((nextState?: boolean) => {
+    if (nextState !== undefined) {
+      setLeftPanelOpen(nextState);
+    } else {
+      setLeftPanelOpen((leftPanelOpen) => !leftPanelOpen);
+    }
+  }, []);
+
+  const toggleFullscreen = React.useCallback(() => {
+    setFullScreen((prev) => !prev);
+  }, []);
+
+  const toggleDetached = React.useCallback(() => {
+    setDetached((prev) => !prev);
+  }, []);
 
   return {
     userId,
@@ -227,13 +259,17 @@ function useChat(userId: number) {
     currentEditorValues,
     saveEditorChanges,
     deleteCustomRoom,
-    fullScreen,
-    toggleFullscreen,
-    detached,
-    toggleDetached,
     openDiscussion,
     isMobileWidth,
-    setFullScreen,
+    toggleRightPanel,
+    toggleLeftPanel,
+    leftPanelOpen,
+    rightPanelOpen,
+    windowPositonRef,
+    toggleFullscreen,
+    toggleDetached,
+    detached,
+    fullScreen,
   };
 }
 

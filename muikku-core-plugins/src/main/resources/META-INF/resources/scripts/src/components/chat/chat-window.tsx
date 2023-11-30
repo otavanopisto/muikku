@@ -6,7 +6,8 @@ import {
 } from "framer-motion";
 import * as React from "react";
 import { useChatContext } from "./context/chat-context";
-import { ChatWindowContextProvider } from "./context/chat-window-context";
+import { ChatWindowBreakpointsContextProvider } from "./context/chat-window-breakpoints-context";
+import { useChatWindowContext } from "./context/chat-window-context";
 import { AddIcon, CloseIcon, ResizerHandle } from "./helpers";
 
 /**
@@ -21,14 +22,15 @@ interface ChatWindowProps {
  * @param props props
  */
 function ChatWindow(props: ChatWindowProps) {
+  const { toggleControlBox } = useChatContext();
+
   const {
-    fullScreen,
-    detached,
     toggleFullscreen,
-    toggleControlBox,
     toggleDetached,
-    isMobileWidth,
-  } = useChatContext();
+    windowPositonRef,
+    detached,
+    fullScreen,
+  } = useChatWindowContext();
 
   const [, setResizing] = React.useState<boolean>(false);
   const [, setInitialized] = React.useState<boolean>(false);
@@ -54,18 +56,31 @@ function ChatWindow(props: ChatWindowProps) {
   const refBottomL = React.useRef<HTMLDivElement>(null);
   const refBottomR = React.useRef<HTMLDivElement>(null);
 
-  // Ref to store and track window position
-  const windowPositonRef = React.useRef<{
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-  }>({ width: 0, height: 0, x: 0, y: 0 });
-
   const componentInitialized = React.useRef(false);
 
   // Effect to control fullscreen on/off animation
   React.useEffect(() => {
+    /**
+     * updatePositionRef
+     */
+    const updatePositionRef = () => {
+      if (!windowRef.current) {
+        return;
+      }
+
+      const windowEle = windowRef.current;
+
+      const coords = windowEle.style.transform.match(
+        /^translateX\((.+)px\) translateY\((.+)px\) translateZ/
+      );
+
+      windowPositonRef.current = {
+        ...windowPositonRef.current,
+        x: parseInt(coords[1]),
+        y: parseInt(coords[2]),
+      };
+    };
+
     /**
      * Animate window to full screen
      */
@@ -104,9 +119,9 @@ function ChatWindow(props: ChatWindowProps) {
         animateToNormal();
       }
     }
-  }, [fullScreen, animationControls]);
+  }, [fullScreen, animationControls, windowPositonRef]);
 
-  // Effect to set windowRef to be next to controllerRef initially
+  // Effect to set windowRef to be next to bottom left corner or position ref values initially
   React.useLayoutEffect(() => {
     if (!windowRef.current || componentInitialized.current) {
       return;
@@ -115,23 +130,30 @@ function ChatWindow(props: ChatWindowProps) {
     const windowEle = windowRef.current;
     const windowRect = windowEle.getBoundingClientRect();
 
-    // Set initial position of windowRef to be next to bottom left of screen
-    windowEle.style.transform = `translateX(${
-      window.innerWidth - windowRect.width - 20
-    }px) translateY(${
-      window.innerHeight - windowRect.height
-    }px) translateZ(0px)`;
-  }, []);
+    if (detached && windowPositonRef.current) {
+      // Set initial position of windowRef to values in windowPositionRef if detached and latest values exist
+      // Else set initial position of windowRef to be next to bottom left of screen
+      windowEle.style.transform = `translateX(${windowPositonRef.current.x}px) translateY(${windowPositonRef.current.y}px) translateZ(0px)`;
+      windowEle.style.width = `${windowPositonRef.current.width}px`;
+      windowEle.style.height = `${windowPositonRef.current.height}px`;
+    } else {
+      windowEle.style.transform = `translateX(${
+        window.innerWidth - windowRect.width - 20
+      }px) translateY(${
+        window.innerHeight - windowRect.height
+      }px) translateZ(0px)`;
+    }
+  }, [detached, windowPositonRef]);
 
   // Effect to initial animationControls to set transform coordinates respectively
-  // next to controllerRef. This is done separately from the useLayoutEffect above
+  // next to bottom left corner or coordinates to position ref values.
+  // This is done separately from the useLayoutEffect above
   // because animationcontroller set function cannot be called in useLayoutEffect
   React.useEffect(() => {
     if (
       animationControls === null ||
       !windowRef.current ||
-      componentInitialized.current ||
-      isMobileWidth
+      componentInitialized.current
     ) {
       return;
     }
@@ -139,20 +161,31 @@ function ChatWindow(props: ChatWindowProps) {
     const windowEle = windowRef.current;
     const windowRect = windowEle.getBoundingClientRect();
 
-    animationControls.set({
-      x: window.innerWidth - windowRect.width - 20,
-      y: window.innerHeight - windowRect.height,
-    });
+    // If detached and windowPositonRef exists, set animation controls to windowPositonRef values
+    // Else set animation controls to be next to bottom left of screen
+    if (detached && windowPositonRef.current) {
+      animationControls.set({
+        x: windowPositonRef.current.x,
+        y: windowPositonRef.current.y,
+        width: `${windowPositonRef.current.width}px`,
+        height: `${windowPositonRef.current.height}px`,
+      });
+    } else {
+      animationControls.set({
+        x: window.innerWidth - windowRect.width - 20,
+        y: window.innerHeight - windowRect.height,
+      });
 
-    windowPositonRef.current = {
-      height: windowRef.current.offsetHeight,
-      width: windowRef.current.offsetWidth,
-      x: windowRef.current.getBoundingClientRect().left,
-      y: windowRef.current.getBoundingClientRect().top,
-    };
+      windowPositonRef.current = {
+        height: windowRef.current.offsetHeight,
+        width: windowRef.current.offsetWidth,
+        x: windowRef.current.getBoundingClientRect().left,
+        y: windowRef.current.getBoundingClientRect().top,
+      };
+    }
 
     setInitialized(true);
-  }, [animationControls, isMobileWidth]);
+  }, [animationControls, detached, windowPositonRef]);
 
   // Effect to set windowRef to be next to bottom left of screen
   React.useEffect(() => {
@@ -160,7 +193,7 @@ function ChatWindow(props: ChatWindowProps) {
      * handleResize
      */
     const handleResize = () => {
-      if (!windowRef.current || detached || isMobileWidth) {
+      if (!windowRef.current || detached) {
         return;
       }
 
@@ -176,12 +209,12 @@ function ChatWindow(props: ChatWindowProps) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [animationControls, detached, isMobileWidth]);
+  }, [animationControls, detached]);
 
   // If not detached later on and windowRef and controllerRef exists
   // then set window position next to controller
   React.useEffect(() => {
-    if (!windowRef.current || !componentInitialized.current || isMobileWidth) {
+    if (!windowRef.current || !componentInitialized.current) {
       componentInitialized.current = true;
       return;
     }
@@ -206,7 +239,7 @@ function ChatWindow(props: ChatWindowProps) {
         transition: { duration: 0.3 },
       });
     }
-  }, [animationControls, dragControls, detached, isMobileWidth]);
+  }, [animationControls, dragControls, detached]);
 
   // Effect to handle resizing from handles
   React.useEffect(() => {
@@ -658,31 +691,24 @@ function ChatWindow(props: ChatWindowProps) {
           onMouseDownBottomRightResize
         );
     };
-  }, [animationControls, fullScreen, detached]);
+  }, [animationControls, fullScreen, detached, windowPositonRef]);
 
-  /**
-   * updatePositionRef
-   */
-  const updatePositionRef = () => {
-    if (!windowRef.current) {
-      return;
+  const handleCloseWindow = React.useCallback(() => {
+    // If detached, update window position ref values before closing
+    if (detached) {
+      windowPositonRef.current = {
+        height: windowRef.current.offsetHeight,
+        width: windowRef.current.offsetWidth,
+        x: windowRef.current.getBoundingClientRect().left,
+        y: windowRef.current.getBoundingClientRect().top,
+      };
     }
 
-    const windowEle = windowRef.current;
-
-    const coords = windowEle.style.transform.match(
-      /^translateX\((.+)px\) translateY\((.+)px\) translateZ/
-    );
-
-    windowPositonRef.current = {
-      ...windowPositonRef.current,
-      x: parseInt(coords[1]),
-      y: parseInt(coords[2]),
-    };
-  };
+    toggleControlBox();
+  }, [detached, toggleControlBox, windowPositonRef]);
 
   return (
-    <ChatWindowContextProvider windowRef={windowRef}>
+    <ChatWindowBreakpointsContextProvider windowRef={windowRef}>
       <div
         id="chat-window-constrains"
         ref={windowConstrainsRef}
@@ -690,8 +716,8 @@ function ChatWindow(props: ChatWindowProps) {
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100%",
-          height: "100%",
+          bottom: 0,
+          right: 0,
         }}
       />
       <motion.div
@@ -742,7 +768,7 @@ function ChatWindow(props: ChatWindowProps) {
 
           <motion.button
             className="chat-window__add-item"
-            onClick={toggleControlBox}
+            onClick={handleCloseWindow}
           >
             <CloseIcon />
           </motion.button>
@@ -779,7 +805,7 @@ function ChatWindow(props: ChatWindowProps) {
           direction="br"
         />
       </motion.div>
-    </ChatWindowContextProvider>
+    </ChatWindowBreakpointsContextProvider>
   );
 }
 

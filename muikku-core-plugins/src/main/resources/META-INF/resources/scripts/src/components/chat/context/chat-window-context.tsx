@@ -2,43 +2,37 @@
 // State manageses opened private chat list and opened room chat list
 import * as React from "react";
 import { createContext } from "react";
-import useWindowBreakpoints, {
-  UseWindowBreakpoints,
-} from "../hooks/use-window-breakpoints";
+import useChatWindow, { UseChatWindow } from "../hooks/useChatWindow";
 
 /**
  * ChatPrivateContextType
  */
-export interface ChatWindowContext extends UseWindowBreakpoints {}
+export interface ChatWindowContext extends UseChatWindow {}
 
-const ChatWindowContext = createContext<ChatWindowContext | undefined>(
-  undefined
-);
+const ChatWindowBreakpointsContext = createContext<
+  ChatWindowContext | undefined
+>(undefined);
 
 /**
  * ChatContextProviderProps
  */
-interface ChatContextProviderProps {
-  windowRef: React.RefObject<HTMLDivElement>;
-}
+interface ChatWindowContextProviderProps {}
 
 /**
  * ChatPrivateContextProvider
  * @param props props
  */
-const ChatWindowContextProvider: React.FC<ChatContextProviderProps> = (
+const ChatWindowContextProvider: React.FC<ChatWindowContextProviderProps> = (
   props
 ) => {
-  const { children, windowRef } = props;
+  const { children } = props;
 
-  const windowBreakPoints = useWindowBreakpoints({
-    windowRef,
-  });
+  const chatWindowValues = useChatWindow();
 
   return (
-    <ChatWindowContext.Provider value={windowBreakPoints}>
+    <ChatWindowBreakpointsContext.Provider value={chatWindowValues}>
       {children}
-    </ChatWindowContext.Provider>
+    </ChatWindowBreakpointsContext.Provider>
   );
 };
 
@@ -47,10 +41,10 @@ const ChatWindowContextProvider: React.FC<ChatContextProviderProps> = (
  * Check if context is defined and if not, throw an error
  */
 function useChatWindowContext() {
-  const context = React.useContext(ChatWindowContext);
+  const context = React.useContext(ChatWindowBreakpointsContext);
   if (context === undefined) {
     throw new Error(
-      "useChatContext must be used within a ChatWindowContextProvider"
+      "useChatWindowContext must be used within a ChatWindowContextProvider"
     );
   }
   return context;

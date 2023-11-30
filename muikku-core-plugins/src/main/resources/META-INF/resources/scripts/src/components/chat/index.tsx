@@ -2,10 +2,10 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import "~/sass/elements/chat.scss";
 import { useChatContext } from "./context/chat-context";
-
 import ChatWindow from "./chat-window";
 import ChatMain from "./chat-main";
 import ChatMainMobile from "./chat-main-mobile";
+import { ChatWindowContextProvider } from "./context/chat-window-context";
 
 /**
  * Chat
@@ -29,7 +29,7 @@ const Chat = () => {
   }, [isMobileWidth, minimized]);
 
   return (
-    <>
+    <ChatWindowContextProvider>
       <motion.div className="chat">
         {/* Chat bubble */}
         {minimized && (
@@ -40,7 +40,7 @@ const Chat = () => {
       </motion.div>
 
       {mobileOrDesktop}
-    </>
+    </ChatWindowContextProvider>
   );
 };
 

@@ -7,6 +7,7 @@ import {
 } from "framer-motion";
 import * as React from "react";
 import ChatViews from "./animated-views";
+import { useChatContext } from "./context/chat-context";
 import { AddIcon } from "./helpers";
 import { PeopleList } from "./people";
 import { Rooms } from "./rooms";
@@ -73,8 +74,9 @@ interface ChatMainMobileProps {}
  * @param props props
  */
 function ChatMainMobile(props: ChatMainMobileProps) {
-  const [peoplePanelOpen, setPeoplePanelOpen] = React.useState<boolean>(false);
-  const [roomsPanelOpen, setRoomsPanelOpen] = React.useState<boolean>(false);
+  const { toggleLeftPanel, toggleRightPanel, leftPanelOpen, rightPanelOpen } =
+    useChatContext();
+
   const animationControls = useAnimationControls();
 
   const peoplePanelRef = React.useRef<HTMLDivElement>(null);
@@ -90,7 +92,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         peoplePanelRef.current &&
         !peoplePanelRef.current.contains(e.target as Node)
       ) {
-        setPeoplePanelOpen(false);
+        toggleLeftPanel(false);
       }
     };
 
@@ -103,7 +105,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         roomsPanelRef.current &&
         !roomsPanelRef.current.contains(e.target as Node)
       ) {
-        setRoomsPanelOpen(false);
+        toggleRightPanel(false);
       }
     };
 
@@ -114,7 +116,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       document.removeEventListener("mousedown", handleOutsideClick);
       document.removeEventListener("mousedown", handleOutsideClickRooms);
     };
-  }, []);
+  }, [toggleLeftPanel, toggleRightPanel]);
 
   return (
     <div
@@ -128,10 +130,10 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       <motion.div
         ref={roomsPanelRef}
         initial={false}
-        animate={roomsPanelOpen ? "open" : "closed"}
+        animate={leftPanelOpen ? "open" : "closed"}
         variants={leftPanelVariants}
         drag="x"
-        dragElastic={0.5}
+        dragElastic={0.2}
         dragMomentum={false}
         dragConstraints={{
           left: 0,
@@ -140,11 +142,11 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         onDragEnd={(e, { offset, velocity, point }) => {
           const swipe = swipePower(offset.x, velocity.x);
 
-          if (!roomsPanelOpen && swipe >= swipeConfidenceThreshold) {
-            setRoomsPanelOpen(true);
+          if (!leftPanelOpen && swipe >= swipeConfidenceThreshold) {
+            toggleLeftPanel(true);
           }
-          if (roomsPanelOpen && swipe <= -swipeConfidenceThreshold) {
-            setRoomsPanelOpen(false);
+          if (leftPanelOpen && swipe <= -swipeConfidenceThreshold) {
+            toggleLeftPanel(false);
           }
         }}
         className="chat-rooms__panel"
@@ -170,7 +172,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         />
         <div className="chat-rooms__panel-wrapper">
           <div
-            onClick={() => setRoomsPanelOpen(!roomsPanelOpen)}
+            onClick={() => toggleLeftPanel()}
             style={{
               display: "flex",
               alignItems: "center",
@@ -201,10 +203,10 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       <motion.div
         ref={peoplePanelRef}
         initial={false}
-        animate={peoplePanelOpen ? "open" : "closed"}
+        animate={rightPanelOpen ? "open" : "closed"}
         variants={rightPanelVariants}
         drag="x"
-        dragElastic={0.5}
+        dragElastic={0.2}
         dragMomentum={false}
         dragConstraints={{
           left: 0,
@@ -213,11 +215,11 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         onDragEnd={(e, { offset, velocity, point }) => {
           const swipe = swipePower(offset.x, velocity.x);
 
-          if (!peoplePanelOpen && swipe <= -swipeConfidenceThreshold) {
-            setPeoplePanelOpen(true);
+          if (!rightPanelOpen && swipe <= -swipeConfidenceThreshold) {
+            toggleRightPanel(true);
           }
-          if (peoplePanelOpen && swipe >= swipeConfidenceThreshold) {
-            setPeoplePanelOpen(false);
+          if (rightPanelOpen && swipe >= swipeConfidenceThreshold) {
+            toggleRightPanel(false);
           }
         }}
         className="chat-people__panel"
@@ -243,7 +245,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         />
         <div className="chat-people__panel-wrapper">
           <div
-            onClick={() => setPeoplePanelOpen(!peoplePanelOpen)}
+            onClick={() => toggleRightPanel()}
             style={{
               display: "flex",
               alignItems: "center",

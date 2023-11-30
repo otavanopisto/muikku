@@ -3,7 +3,8 @@ import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import * as React from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import ChatViews from "./animated-views";
-import { useChatWindowContext } from "./context/chat-window-context";
+import { useChatContext } from "./context/chat-context";
+import { useChatWindowBreakpointsContext } from "./context/chat-window-breakpoints-context";
 import { AddIcon } from "./helpers";
 import { PeopleList } from "./people";
 import { Rooms } from "./rooms";
@@ -24,12 +25,10 @@ interface ChatMainProps {}
  * @param props props
  */
 function ChatMain(props: ChatMainProps) {
-  const [peoplePanelMinimized, setPeoplePanelMinimized] =
-    React.useState<boolean>(true);
-  const [roomsPanelMinimized, setRoomsPanelMinimized] =
-    React.useState<boolean>(true);
+  const { toggleLeftPanel, toggleRightPanel, leftPanelOpen, rightPanelOpen } =
+    useChatContext();
 
-  const { isMobile } = useChatWindowContext();
+  const { isMobile } = useChatWindowBreakpointsContext();
 
   const animationControls = useAnimationControls();
   const animationControlsLeftPanel = useAnimationControls();
@@ -40,15 +39,7 @@ function ChatMain(props: ChatMainProps) {
   const mainWrapperRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (roomsPanelMinimized) {
-      animationControlsLeftPanel.start({
-        width: PANEL_LEFT_MIN_WIDTH,
-        transition: {
-          duration: 0.3,
-          type: "tween",
-        },
-      });
-    } else {
+    if (leftPanelOpen) {
       animationControlsLeftPanel.start({
         width: PANEL_LEFT_MAX_WIDTH,
         transition: {
@@ -56,19 +47,19 @@ function ChatMain(props: ChatMainProps) {
           type: "tween",
         },
       });
-    }
-  }, [animationControlsLeftPanel, roomsPanelMinimized]);
-
-  React.useEffect(() => {
-    if (peoplePanelMinimized) {
-      animationControlsRightPanel.start({
-        width: PANEL_RIGHT_MIN_WIDTH,
+    } else {
+      animationControlsLeftPanel.start({
+        width: PANEL_LEFT_MIN_WIDTH,
         transition: {
           duration: 0.3,
           type: "tween",
         },
       });
-    } else {
+    }
+  }, [animationControlsLeftPanel, leftPanelOpen]);
+
+  React.useEffect(() => {
+    if (rightPanelOpen) {
       animationControlsRightPanel.start({
         width: PANEL_RIGHT_MAX_WIDTH,
         transition: {
@@ -76,8 +67,16 @@ function ChatMain(props: ChatMainProps) {
           type: "tween",
         },
       });
+    } else {
+      animationControlsRightPanel.start({
+        width: PANEL_RIGHT_MIN_WIDTH,
+        transition: {
+          duration: 0.3,
+          type: "tween",
+        },
+      });
     }
-  }, [animationControlsRightPanel, peoplePanelMinimized]);
+  }, [animationControlsRightPanel, rightPanelOpen]);
 
   // Set resize observer to panel refs and update mainWrapperRef margin left and right
   React.useEffect(() => {
@@ -115,8 +114,8 @@ function ChatMain(props: ChatMainProps) {
   React.useEffect(() => {
     if (isMobile) {
       unstable_batchedUpdates(() => {
-        setPeoplePanelMinimized(true);
-        setRoomsPanelMinimized(true);
+        toggleRightPanel(false);
+        toggleLeftPanel(false);
       });
 
       animationControls.start({
@@ -139,7 +138,14 @@ function ChatMain(props: ChatMainProps) {
         });
       }
     }
-  }, [animationControls, isMobile, roomWrapperRef, peopleWrapperRef]);
+  }, [
+    animationControls,
+    isMobile,
+    roomWrapperRef,
+    peopleWrapperRef,
+    toggleRightPanel,
+    toggleLeftPanel,
+  ]);
 
   return (
     <div
@@ -162,7 +168,7 @@ function ChatMain(props: ChatMainProps) {
         }}
       >
         <div
-          onClick={() => setRoomsPanelMinimized(!roomsPanelMinimized)}
+          onClick={() => toggleLeftPanel()}
           style={{
             display: "flex",
             alignItems: "center",
@@ -175,7 +181,7 @@ function ChatMain(props: ChatMainProps) {
           <AddIcon />
         </div>
 
-        <Rooms minimized={roomsPanelMinimized} />
+        <Rooms minimized={!leftPanelOpen} />
       </motion.div>
       <motion.div
         ref={mainWrapperRef}
@@ -204,7 +210,7 @@ function ChatMain(props: ChatMainProps) {
         }}
       >
         <div
-          onClick={() => setPeoplePanelMinimized(!peoplePanelMinimized)}
+          onClick={() => toggleRightPanel()}
           style={{
             display: "flex",
             alignItems: "center",
@@ -217,7 +223,7 @@ function ChatMain(props: ChatMainProps) {
           <AddIcon />
         </div>
 
-        <PeopleList minimized={peoplePanelMinimized} />
+        <PeopleList minimized={!rightPanelOpen} />
       </motion.div>
     </div>
   );
