@@ -3,12 +3,11 @@
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  lang="#{sessionBackingBean.locale}"
 >
   <!-- Base takes no parameters -->
   <!-- Base takes four defines, styles, scripts, body and title, where title is not required -->
 
-  <f:view locale="#{sessionBackingBean.locale}">
+  <f:view>
     <head>
       <title>#{empty title ? i18n.text['plugin.site.title'] : title}</title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -55,27 +54,6 @@
         type="text/javascript"
         src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"
       />
-
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js"
-      />
-
-      <script defer="defer" type="text/javascript">
-        $(document).ready(function () {
-          $.datepicker.setDefaults(
-            $.datepicker.regional["#{sessionBackingBean.locale}"]
-          );
-        });
-      </script>
-
-      <!-- Api resources -->
-      <script
-        defer="defer"
-        type="text/javascript"
-        src="#{request.contextPath}/rest/meta/resources?format=js"
-      ></script>
 
       <!-- Async
       <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/async/0.9.0/async.js" />-->
