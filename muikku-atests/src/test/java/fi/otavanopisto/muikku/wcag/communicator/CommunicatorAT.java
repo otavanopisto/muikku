@@ -18,6 +18,7 @@ public class CommunicatorAT extends AbstractWCAGTest{
     waitAndClick(".button--dialog-cancel");
 
     navigate("/communicator#sent", true);
+    refresh();
     waitForPresent(".application-list__item-body--communicator-message .application-list__header-item-body");
     testAccessibility("Communicator sent view");
     
@@ -26,6 +27,7 @@ public class CommunicatorAT extends AbstractWCAGTest{
     testAccessibility("Communicator message reading view");
     
     navigate("/communicator", true);
+    refresh();
     waitAndClick(".application-panel__toolbar .button-pill--label");
     waitForVisible(".dropdown--communicator-labels");        
     testAccessibility("Communicator inbox view with label dropdown open");
@@ -36,6 +38,7 @@ public class CommunicatorAT extends AbstractWCAGTest{
     testAccessibility("Signature dialog");
     
     navigate("/communicator#trash", true);
+    refresh();
     waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary");
     testAccessibility("Communicator trash view");
   }

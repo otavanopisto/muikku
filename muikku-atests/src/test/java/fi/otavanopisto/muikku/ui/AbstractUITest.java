@@ -98,8 +98,6 @@ import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.wcag.AbstractWCAGTest;
 import fi.otavanopisto.pyramus.rest.model.Course;
-import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
-import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.http.ContentType;
@@ -2029,7 +2027,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
           violationsString += System.getProperty("line.separator");
         }
         try {
-          BufferedWriter writer = new BufferedWriter(new FileWriter("target/WCAG_report-" + testName.getMethodName(), true));
+          BufferedWriter writer = new BufferedWriter(new FileWriter("target/WCAG/WCAG_report-" + testName.getMethodName(), true));
           writer.append(violationsString);
           writer.close();          
         }catch (Exception e) {
@@ -2054,7 +2052,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Results results = axeBuilder.analyze(getWebDriver());
 
     if(AxeReporter.getReadableAxeResults(testView, getWebDriver(), results.getViolations())) {
-      this.violationList.add(AxeReporter.getAxeResultString()); 
+      this.violationList.add(AxeReporter.getAxeResultString());
+      AxeReporter.writeResultsToJsonFile("target/WCAG/" + testView + "-detailed-aXeReport", results);
     }
   }
   
