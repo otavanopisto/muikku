@@ -165,7 +165,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     // Access
     
-    if (!userSchoolDataIdentifier.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId())) {
+    if (!userSchoolDataIdentifier.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId()) &&
+        !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
