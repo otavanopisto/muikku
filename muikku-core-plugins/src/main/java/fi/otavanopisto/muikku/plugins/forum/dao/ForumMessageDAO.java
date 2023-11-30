@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.forum.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -150,9 +151,10 @@ public class ForumMessageDAO extends CorePluginsDAO<ForumMessage> {
     return entityManager.createQuery(criteria).getSingleResult();
   }
 
-  public void archive(ForumMessage message) {
+  public void archive(ForumMessage message, UserEntity lastModifier) {
     message.setArchived(Boolean.TRUE);
-    
+    message.setLastModifier(lastModifier.getId());
+    message.setLastModified(new Date());
     getEntityManager().persist(message);
   }
   

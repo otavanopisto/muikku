@@ -93,6 +93,7 @@ import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
@@ -284,6 +285,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceRestModels workspaceRestModels;
+  
+  @Inject
+  private PedagogyController pedagogyController;
 
   @GET
   @Path("/workspaceTypes")
@@ -1247,7 +1251,8 @@ public class WorkspaceRESTService extends PluginRESTService {
               String.valueOf(elasticUser.get("lastName")),
               elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
               hasImage,
-              activeUserIds.contains(workspaceUserEntity.getId())));
+              activeUserIds.contains(workspaceUserEntity.getId()),
+              pedagogyController.getHasPedagogyForm(studentIdentifier.toId())));
         }
       }
 
@@ -1803,7 +1808,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaceMaterials.isEmpty()) {
-      return Response.noContent().build();
+      return Response.ok(Collections.emptyList()).build();
     }
 
     return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
@@ -1832,7 +1837,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     if (workspaceMaterials.isEmpty()) {
-      return Response.noContent().build();
+    	return Response.ok(Collections.emptyList()).build();
     }
 
     return Response.ok(workspaceMaterials).build();
@@ -1970,9 +1975,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         result.add(compositeReply);
       }
-
+      
       if (result.isEmpty()) {
-        return Response.noContent().build();
+        return Response.ok(Collections.emptyList()).build();
       }
     }
     catch (WorkspaceFieldIOException e) {
@@ -2523,33 +2528,43 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteNode(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
       @QueryParam("removeAnswers") @DefaultValue ("false") Boolean removeAnswers,
       @QueryParam("updateLinkedMaterials") @DefaultValue ("false") Boolean updateLinkedMaterials) {
-    // TODO Our workspace?
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
     }
 
-    if (removeAnswers) {
-      logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d with forced answer removal", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
-    }
-
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
+    }
     if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.status(Status.NOT_FOUND).entity("Workspace material not found").build();
     }
     else {
+      if (removeAnswers) {
+        logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d with forced answer removal", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
+      }
       try {
+
+        // #6638: When remove answers flag is on, refuse delete for non-admins if material's workspace is published or has student answers
+        
+        if (removeAnswers && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS)) {
+          if (workspaceEntity.getPublished() || workspaceMaterialController.hasStudentAnswers(workspaceMaterial)) {
+            logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing student answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
+            return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
+          }
+        }
 
         // #1261: HtmlMaterial attachments should be removed from all workspace materials sharing the same HtmlMaterial
         if (updateLinkedMaterials) {
@@ -2571,13 +2586,17 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
           }
         }
+        
+        // Actual delete
 
         workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
         return Response.noContent().build();
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
-        Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
-        if (material != null && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceMaterialController.isUsedInPublishedWorkspaces(material)) {
+        
+        // #6638: When remove answers flag is off, either refuse delete for non-admins if the material's workspace is published, or notify frontend of the conflict
+
+        if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceEntity.getPublished()) {
           logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
           return Response.status(Status.FORBIDDEN).entity(localeController.getText(sessionController.getLocale(), "plugin.workspace.management.cannotRemoveAnswers")).build();
         }
@@ -2896,7 +2915,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         elasticUser.get("lastName").toString(),
         elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
         hasImage,
-        workspaceUserEntity.getActive());
+        workspaceUserEntity.getActive(),
+        pedagogyController.getHasPedagogyForm(schoolDataIdentifier.toId()));
 
     return Response.ok(workspaceStudentRestModel).build();
   }
@@ -3632,5 +3652,4 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     return null;
   }
-
 }

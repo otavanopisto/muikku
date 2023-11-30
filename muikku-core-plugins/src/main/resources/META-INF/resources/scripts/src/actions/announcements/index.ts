@@ -1,5 +1,4 @@
 import notificationActions from "~/actions/base/notifications";
-import { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   AnnouncementsStateType,
@@ -7,7 +6,6 @@ import {
   AnnouncementsState,
 } from "~/reducers/announcements";
 import { loadAnnouncementsHelper } from "./helpers";
-import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
@@ -16,8 +14,9 @@ import {
   CreateAnnouncementRequest,
   GetAnnouncementsRequest,
 } from "~/generated/client";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
+import * as moment from "moment";
 
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",
@@ -291,7 +290,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         },
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
@@ -299,7 +298,6 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
           i18n.t("notifications.loadError", {
             ns: "messaging",
             context: "announcements",
-            count: 0,
           }),
           "error"
         )
@@ -395,7 +393,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
         }
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -435,7 +433,7 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
         });
         data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         data.fail();
@@ -468,7 +466,7 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
               payload: announcement,
             });
           } catch (err) {
-            if (!(err instanceof MApiError)) {
+            if (!isMApiError(err)) {
               throw err;
             }
             dispatch(
@@ -529,7 +527,7 @@ const createAnnouncement: CreateAnnouncementTriggerType =
         }
         data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -598,7 +596,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 
         callback && callback(announcements);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -606,7 +604,6 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
             i18n.t("notifications.loadError", {
               ns: "messaging",
               context: "announcements",
-              count: 0,
             }),
             "error"
           )

@@ -10,7 +10,7 @@ import Workspace from "./workspaces/workspace";
 import "~/sass/elements/ref-wrapper.scss";
 import { LoadMoreWorkspacesFromServerTriggerType } from "~/actions/workspaces";
 import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/organization";
-import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
 
@@ -21,7 +21,7 @@ interface OrganizationWorkspacesProps {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
 }
 
 /**
@@ -52,7 +52,10 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
     return (
       <div className="empty">
         <span>
-          {t("notifications.loadError", { ns: "workspace", count: 1 })}
+          {t("notifications.loadError", {
+            ns: "workspace",
+            context: "workspace",
+          })}
         </span>
       </div>
     );
@@ -65,7 +68,7 @@ const OrganizationWorkspaces: React.FC<OrganizationWorkspacesProps> = (
   }
   return (
     <ApplicationList>
-      {workspaces.map((workspace: WorkspaceType, index) => {
+      {workspaces.map((workspace: WorkspaceDataType, index) => {
         if (workspaces.length === index + 1) {
           // This div wrapper exists because callback ref must return
           // an element and a class component returns a mounted instance

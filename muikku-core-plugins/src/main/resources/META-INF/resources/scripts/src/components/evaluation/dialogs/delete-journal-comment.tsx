@@ -7,13 +7,12 @@ import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
-import { StateType } from "~/reducers";
-import { JournalComment } from "~/@types/journal";
 import { WithTranslation, withTranslation } from "react-i18next";
 import {
   DeleteEvaluationJournalCommentTriggerType,
   deleteEvaluationJournalComment,
 } from "../../../actions/main-function/evaluation/evaluationActions";
+import { WorkspaceJournalComment } from "~/generated/client";
 
 /**
  * DeleteJournalProps
@@ -21,7 +20,7 @@ import {
 interface DeleteJournalCommentProps extends WithTranslation {
   userEntityId: number;
   workspaceEntityId: number;
-  journalComment: JournalComment;
+  journalComment: WorkspaceJournalComment;
   deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
@@ -64,10 +63,7 @@ class DeleteJournalComment extends React.Component<
 
     this.setState({ locked: true });
     this.props.deleteEvaluationJournalComment({
-      deleteCommentPayload: {
-        id: this.props.journalComment.id,
-        journalEntryId: this.props.journalComment.journalEntryId,
-      },
+      commentId: this.props.journalComment.id,
       journalEntryId: this.props.journalComment.journalEntryId,
       workspaceEntityId: this.props.workspaceEntityId,
       // eslint-disable-next-line jsdoc/require-jsdoc

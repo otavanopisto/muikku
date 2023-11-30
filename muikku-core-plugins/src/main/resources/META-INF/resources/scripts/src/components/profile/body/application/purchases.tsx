@@ -1,28 +1,18 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
-import {
-  ProfileState,
-  PurchaseType,
-  PurchaseStateType,
-} from "~/reducers/main-function/profile";
-import promisify from "~/util/promisify";
+import { localize } from "~/locales/i18n";
+import { ProfileState } from "~/reducers/main-function/profile";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
-import { getName } from "~/util/modifiers";
-import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
-import {
-  getErrorMessageContent,
-  getErrorMessageTitle,
-} from "~/helper-functions/ceepos-error";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { CeeposOrder } from "~/generated/client";
+import MApi from "~/api/api";
 
 /**
  * IPurchasesProps
@@ -54,11 +44,13 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
    * performPayment
    */
   public async performPayment() {
+    const ceeposApi = MApi.getCeeposApi();
+
     const currentPurchase = this.props.profile.purchases[0];
-    const value: string = (await promisify(
-      mApi().ceepos.pay.create(currentPurchase.id),
-      "callback"
-    )()) as string;
+
+    const value = await ceeposApi.createCeeposPay({
+      orderId: currentPurchase.id,
+    });
 
     location.href = value;
   }
@@ -76,18 +68,18 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
     const purchases = this.props.profile.purchases;
 
-    const ongoingPuchases: PurchaseType[] = purchases.filter(
+    const ongoingPuchases: CeeposOrder[] = purchases.filter(
       (purchase) =>
-        purchase.state === PurchaseStateType.ONGOING ||
-        purchase.state === PurchaseStateType.CREATED ||
-        purchase.state === PurchaseStateType.ERRORED
+        purchase.state === "ONGOING" ||
+        purchase.state === "CREATED" ||
+        purchase.state === "ERRORED"
     );
 
-    const completedPurchases: PurchaseType[] = purchases.filter(
+    const completedPurchases: CeeposOrder[] = purchases.filter(
       (purchase) =>
-        purchase.state !== PurchaseStateType.ONGOING &&
-        purchase.state !== PurchaseStateType.CREATED &&
-        purchase.state !== PurchaseStateType.ERRORED
+        purchase.state !== "ONGOING" &&
+        purchase.state !== "CREATED" &&
+        purchase.state !== "ERRORED"
     );
 
     if (!purchases.length) {
@@ -143,18 +135,17 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {localizeTime.date(p.created)}
+                            {localize.date(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")} :{" "}
-                              {localizeTime.date(p.paid)}
+                              {localize.date(p.paid)}
                             </span>
                           ) : null}
                         </span>
 
-                        {p.state === PurchaseStateType.CREATED ||
-                        p.state === PurchaseStateType.ONGOING ? (
+                        {p.state === "CREATED" || p.state === "ONGOING" ? (
                           <span className="application-list__header-primary-actions">
                             <Button
                               icon="forward"
@@ -163,40 +154,6 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                             >
                               {this.props.t("actions.pay", { ns: "orders" })}
                             </Button>
-                          </span>
-                        ) : null}
-
-                        {p.state === PurchaseStateType.ERRORED ||
-                        p.state === PurchaseStateType.CANCELLED ||
-                        p.state === PurchaseStateType.PAID ? (
-                          <span className="application-list__header-primary-actions">
-                            <CommunicatorNewMessage
-                              extraNamespace="ceepos-error"
-                              initialSelectedItems={[
-                                {
-                                  type: "staff",
-                                  value: {
-                                    id: p.creator.userEntityId,
-                                    name: getName(p.creator, true),
-                                  },
-                                },
-                              ]}
-                              initialSubject={getErrorMessageTitle(p)}
-                              initialMessage={getErrorMessageContent(
-                                p,
-                                this.props.t(`states.${p.state}`, {
-                                  context: "student",
-                                  ns: "orders",
-                                })
-                              )}
-                            >
-                              <Button
-                                icon="envelope"
-                                buttonModifiers={["send-message", "info"]}
-                              >
-                                {this.props.t("actions.reportError")}
-                              </Button>
-                            </CommunicatorNewMessage>
                           </span>
                         ) : null}
                       </span>
@@ -215,9 +172,8 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
 
         <div className="application-sub-panel">
           <h3 className="application-sub-panel__header">
-            {this.props.t("content.empty", {
+            {this.props.t("labels.history", {
               ns: "orders",
-              context: "history",
             })}
           </h3>
           {completedPurchases.length > 0 ? (
@@ -246,12 +202,12 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
                           </span>
                           <span>
                             {this.props.t("labels.created")}:{" "}
-                            {localizeTime.date(p.created)}
+                            {localize.date(p.created)}
                           </span>
                           {p.paid ? (
                             <span>
                               {this.props.t("labels.paid")}:{" "}
-                              {localizeTime.date(p.paid)}
+                              {localize.date(p.paid)}
                             </span>
                           ) : null}
                         </span>
@@ -263,13 +219,15 @@ class Purchases extends React.Component<IPurchasesProps, IPurchasesState> {
               </ApplicationList>
             </div>
           ) : (
-            <div className="empty">
-              <span>
-                {this.props.t("content.empty", {
-                  ns: "orders",
-                  context: "history",
-                })}
-              </span>
+            <div className="application-sub-panel__body">
+              <div className="empty">
+                <span>
+                  {this.props.t("content.empty", {
+                    ns: "orders",
+                    context: "history",
+                  })}
+                </span>
+              </div>
             </div>
           )}
         </div>

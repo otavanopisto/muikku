@@ -6,13 +6,7 @@ import { AnyActionType } from "~/actions/index";
 import { StateType } from "~/reducers/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import "~/sass/elements/evaluation.scss";
-import {
-  AssessmentRequest,
-  EvaluationEnum,
-  EvaluationLatestSubjectEvaluationIndex,
-  EvaluationWorkspace,
-  EvaluationWorkspaceSubject,
-} from "~/@types/evaluation";
+import { EvaluationLatestSubjectEvaluationIndex } from "~/@types/evaluation";
 import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
 import { StatusType } from "~/reducers/base/status";
@@ -28,12 +22,14 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationJournalEventList from "./evaluation-journal-event-list";
 import EvaluationAssessmentList from "./evaluation-assessment-list";
+import {
+  EvaluationAssessmentRequest,
+  WorkspaceSubject,
+  MaterialCompositeReply,
+} from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -43,11 +39,11 @@ interface EvaluationDrawerProps extends WithTranslation {
   status: StatusType;
   onClose?: () => void;
   evaluation: EvaluationState;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   /**
    * Assessment that is opened
    */
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   /**
    * Loader action for loading evaluation assessment requests
    */
@@ -70,7 +66,7 @@ interface EvaluationDrawerState {
   /**
    * Object that contains subject properties that are needed for evaluation
    */
-  subjectToBeEvaluated: EvaluationWorkspaceSubject | undefined;
+  subjectToBeEvaluated?: WorkspaceSubject;
   /**
    * subject evaluation identifier for event that is edited
    */
@@ -226,7 +222,7 @@ export class Evaluation extends React.Component<
 
         if (
           event.workspaceSubjectIdentifier === identifier &&
-          event.type !== EvaluationEnum.EVALUATION_REQUEST
+          event.type !== "EVALUATION_REQUEST"
         ) {
           indexOfLatestEvaluatedEvent = i;
         }
@@ -257,7 +253,7 @@ export class Evaluation extends React.Component<
           evaluationAssessmentEvents.data.length - 1
         ];
 
-      return lastEvent.type === EvaluationEnum.SUPPLEMENTATION_REQUEST;
+      return lastEvent.type === "SUPPLEMENTATION_REQUEST";
     }
 
     return false;
@@ -271,7 +267,7 @@ export class Evaluation extends React.Component<
    * @returns boolean whether to show assignment or not
    */
   showAsHiddenEvaluationAssignment = (
-    compositeReply?: MaterialCompositeRepliesType
+    compositeReply?: MaterialCompositeReply
   ): boolean => compositeReply && compositeReply.submitted !== null;
 
   /**
@@ -486,22 +482,22 @@ export class Evaluation extends React.Component<
           }
 
           const isInterimEvaluation =
-            eItem.type === EvaluationEnum.INTERIM_EVALUATION ||
-            eItem.type === EvaluationEnum.INTERIM_EVALUATION_REQUEST ||
-            eItem.type === EvaluationEnum.INTERIM_EVALUATION_REQUEST_CANCELLED;
+            eItem.type === "INTERIM_EVALUATION" ||
+            eItem.type === "INTERIM_EVALUATION_REQUEST" ||
+            eItem.type === "INTERIM_EVALUATION_REQUEST_CANCELLED";
 
           /**
            * Is not evaluation request boolean
            */
           const isRequestOrCancelled =
-            eItem.type === EvaluationEnum.EVALUATION_REQUEST ||
-            eItem.type === EvaluationEnum.EVALUATION_REQUEST_CANCELLED;
+            eItem.type === "EVALUATION_REQUEST" ||
+            eItem.type === "EVALUATION_REQUEST_CANCELLED";
 
           /**
            * Is supplementation request boolean
            */
           const isSupplementationRequest =
-            eItem.type === EvaluationEnum.SUPPLEMENTATION_REQUEST;
+            eItem.type === "SUPPLEMENTATION_REQUEST";
 
           if (isCombinationWorkspace) {
             /**
@@ -538,9 +534,8 @@ export class Evaluation extends React.Component<
                * supplementation request event for normal workspace. If combination then only evaluation requests matters
                */
               nextIsNotRequest =
-                remainingEvents.find(
-                  (j) => j.type === EvaluationEnum.EVALUATION_REQUEST
-                ) === undefined;
+                remainingEvents.find((j) => j.type === "EVALUATION_REQUEST") ===
+                undefined;
 
               /**
                * If event is supplementation request...
@@ -553,7 +548,7 @@ export class Evaluation extends React.Component<
                 canDeleteSupplementationRequest =
                   remainingEvents.find(
                     (e) =>
-                      e.type === EvaluationEnum.SUPPLEMENTATION_REQUEST &&
+                      e.type === "SUPPLEMENTATION_REQUEST" &&
                       e.workspaceSubjectIdentifier ===
                         eItem.workspaceSubjectIdentifier
                   ) === undefined;
@@ -628,7 +623,7 @@ export class Evaluation extends React.Component<
     ) {
       workspaces.push({
         ...this.props.currentWorkspace,
-      } as EvaluationWorkspace);
+      } as WorkspaceDataType);
     }
 
     return (

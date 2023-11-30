@@ -10,7 +10,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/evaluation.scss";
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
-import { JournalComment } from "~/@types/journal";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -19,7 +19,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface WorkspaceJournalCommentEditorProps extends WithTranslation {
   status: StatusType;
   locale: LocaleState;
-  journalComment?: JournalComment;
+  journalComment?: WorkspaceJournalComment;
   locked: boolean;
   diaryEventId: number;
   userEntityId: number;
@@ -137,14 +137,16 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
   render() {
     const { t } = this.props;
     const editorTitle = this.props.journalComment
-      ? t("actions.edit", { context: "comment" }) + " - " + t("labels.content")
-      : t("labels.create", { context: "comment" }) +
+      ? t("actions.edit", { ns: "common", context: "comment" }) +
+        " - " +
+        t("labels.content")
+      : t("actions.create", { ns: "common", context: "comment" }) +
         " - " +
         t("labels.content");
 
     const commentHeaderTitle = this.props.journalComment
-      ? t("actions.edit", { context: "comment" })
-      : t("labels.create", { context: "comment" });
+      ? t("actions.edit", { ns: "common", context: "comment" })
+      : t("actions.create", { ns: "common", context: "comment" });
 
     return (
       <div className="form" role="form">
@@ -179,7 +181,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
                     onClick={this.handleSaveClick}
                     disabled={this.props.locked}
                   >
-                    {t("actions.save")}
+                    {t("actions.save", { ns: "common" })}
                   </Button>
                   <Button
                     onClick={this.props.onClose}

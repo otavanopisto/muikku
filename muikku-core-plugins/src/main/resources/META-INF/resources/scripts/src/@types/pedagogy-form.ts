@@ -1,9 +1,6 @@
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 
-const states = ["PENDING", "APPROVED", "ACTIVE", "INACTIVE"] as const;
-
-const users = ["TEACHERS", "GUARDIANS"] as const;
-
+// used for frontend logic
 const useRoles = [
   "STUDENT",
   "COURSE_TEACHER",
@@ -11,6 +8,7 @@ const useRoles = [
   "SPECIAL_ED_TEACHER",
 ] as const;
 
+// For the PedagogyForm JSON
 const reasonsForSupport = [
   "disease",
   "disability",
@@ -21,6 +19,7 @@ const reasonsForSupport = [
   "other",
 ] as const;
 
+// For the PedagogyForm JSON
 const supportActions = [
   "remedialInstruction",
   "specialEducation",
@@ -30,6 +29,7 @@ const supportActions = [
   "other",
 ] as const;
 
+// For the PedagogyForm JSON
 const matriculationExaminationSupport = [
   "extraTime",
   "invidualSpace",
@@ -43,57 +43,21 @@ const matriculationExaminationSupport = [
 
 export type UserRole = typeof useRoles[number];
 
-/**
- * The state of the form
- */
-export type FormState = typeof states[number];
-
-/**
- * The viewing rights of the form
- * who have reading access to the published form data inside Muikku
- */
-export type Visibility = typeof users[number];
-
+// Types for the PedagogyForm JSON
 export type SupportReason = typeof reasonsForSupport[number];
 
+// Types for the PedagogyForm JSON
 export type SupportAction = typeof supportActions[number];
 
+// Types for the PedagogyForm JSON
 export type SupportActionMatriculationExamination =
   typeof matriculationExaminationSupport[number];
 
+// Types for the PedagogyForm JSON
 export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
 
 /**
- * The history of the updates made to the form
- */
-export interface HistoryEntry {
-  /**
-   * Id of the user who made the update
-   */
-  modifierId: number;
-  /**
-   * The user who made the update
-   */
-  modifierName: string;
-  /**
-   * If the user who made the update has an avatar
-   */
-  modifierHasAvatar: boolean;
-  /**
-   * Fields that were edited in the update
-   */
-  editedFields?: string[];
-  /**
-   * The description or details of the update what was done
-   */
-  details?: string;
-  /**
-   * The date when the update was made
-   */
-  date: Date;
-}
-
-/**
+ * Part of JSON
  * Support actions that have been implemented
  */
 export interface SupportActionImplementation {
@@ -112,7 +76,7 @@ export interface SupportActionImplementation {
   /**
    * The details of the action
    */
-  course?: WorkspaceType;
+  course?: WorkspaceDataType;
   /**
    * The extra information of the action
    */
@@ -124,6 +88,7 @@ export interface SupportActionImplementation {
 }
 
 /**
+ * Part of JSON
  * Opinion
  */
 export interface Opinion {
@@ -150,7 +115,7 @@ export interface Opinion {
 }
 
 /**
- * FormData
+ * FormData JSON object with type definitions
  */
 export interface FormData {
   /**
@@ -201,104 +166,4 @@ export interface FormData {
    * School's opinion of the support
    */
   schoolOpinionOfSupport?: Opinion[];
-}
-
-/**
- * The student information of the form
- */
-export interface UserInfo {
-  /**
-   * The first name of the student
-   * must include the middle names if the student has one
-   * @example "Matti Johannes"
-   */
-  firstName: string;
-  /**
-   * The last name of the student
-   * @example "Meikäläinen"
-   */
-  lastName: string;
-  /**
-   * Date of birth of the student
-   */
-  dateOfBirth?: Date;
-  /**
-   * Phone number of the student
-   */
-  phoneNumber?: string | null;
-  /**
-   * The city where the student lives
-   */
-  city?: string | null;
-  /**
-   * The country where the student lives
-   */
-  country?: string | null;
-  /**
-   * Email of the student
-   */
-  email?: string | null;
-  /**
-   * The street address of the student
-   */
-  streetAddress?: string | null;
-  /**
-   * The address of the student
-   */
-  addressName?: string | null;
-  /**
-   * The postal code of the student
-   */
-  zipCode?: string | null;
-}
-
-/**
- * The pedagogy form
- */
-export interface PedagogyForm {
-  /**
-   * The id of the student
-   * @example "STUDENT-1"
-   */
-  studentIdentifier: string;
-  /**
-   * Date when the document was created
-   */
-  created?: Date;
-  /**
-   * Id of the user who created the document
-   */
-  ownerId: number;
-  /**
-   * Info of the user who created the document
-   */
-  ownerInfo: UserInfo;
-  /**
-   * The id of the form
-   */
-  id: number;
-  /**
-   * State of the form
-   * @example "PENDING" | "APPROVED" | "NOT_SENT" | "INACTIVE"
-   */
-  state: FormState;
-  /**
-   * Student information. Data is automatically filled in from the student's profile
-   * and can not be changed in the form
-   */
-  studentInfo: UserInfo;
-  /**
-   * The data of the form
-   * @example "JSON möhkäle"
-   */
-  formData?: string;
-  /**
-   * Update history of the form
-   */
-  history: HistoryEntry[];
-  /**
-   * permissions for reading and viewing the form inside Muikku
-   * @example ["TEACHER", "GUARDIANS"]
-   */
-  visibility: Visibility[];
 }

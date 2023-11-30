@@ -1,16 +1,16 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
-import {
-  NotesItemCreate,
-  NotesItemRead,
-  NotesItemUpdate,
-  UseNotesItem,
-} from "~/@types/notes";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
-import { NotesItemPriority, NotesItemStatus } from "~/@types/notes";
+import { UseNotesItem } from "~/@types/notes";
 import { useTranslation } from "react-i18next";
+import MApi from "~/api/api";
+import {
+  Note,
+  NotePriorityType,
+  NoteStatusType,
+  CreateNoteRequest,
+  UpdateNoteRequest,
+} from "~/generated/client";
 
 /**
  * initialState
@@ -21,6 +21,8 @@ const initialState: UseNotesItem = {
   notesItemList: [],
   notesArchivedItemList: [],
 };
+
+const notesApi = MApi.getNotesApi();
 
 /**
  * Custom hook notesItems list
@@ -52,20 +54,19 @@ export const useNotesItem = (
         const [loadedNotesItemList, loadedArchivedNotesItemList] =
           await Promise.all([
             (async () => {
-              const notesItems = (await promisify(
-                mApi().notes.owner.read(studentId, { listArchived: false }),
-                "callback"
-              )()) as NotesItemRead[];
+              const notesItems = await notesApi.getNotes({
+                ownerId: studentId,
+              });
 
               return notesItems;
             })(),
             (async () => {
-              const NotesItemsArchived = (await promisify(
-                mApi().notes.owner.read(studentId, { listArchived: true }),
-                "callback"
-              )()) as NotesItemRead[];
+              const notesItemsArchived = await notesApi.getNotes({
+                ownerId: studentId,
+                listArchived: true,
+              });
 
-              return NotesItemsArchived;
+              return notesItemsArchived;
             })(),
             sleepPromise,
           ]);
@@ -110,13 +111,9 @@ export const useNotesItem = (
    * @param notesItemList notesItemList
    * @returns Sorted notesItems list in default priority order
    */
-  const setToDefaultSortingOrder = (notesItemList: NotesItemRead[]) => {
+  const setToDefaultSortingOrder = (notesItemList: Note[]) => {
     // Default sort order
-    const order: string[] = [
-      NotesItemPriority.HIGH,
-      NotesItemPriority.NORMAL,
-      NotesItemPriority.LOW,
-    ];
+    const order: NotePriorityType[] = ["HIGH", "NORMAL", "LOW"];
 
     return notesItemList.sort(
       (a, b) => order.indexOf(a.priority) - order.indexOf(b.priority)
@@ -126,20 +123,20 @@ export const useNotesItem = (
   /**
    * Creates notesItem
    *
-   * @param newNotesItem newNotesItem
+   * @param createNoteRequest newNotesItem
    * @param onSuccess onSuccess
    */
   const createNotesItem = async (
-    newNotesItem: NotesItemCreate,
+    createNoteRequest: CreateNoteRequest,
     onSuccess?: () => void
   ) => {
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
     try {
       // Creating and getting created notesItem
-      const createdNotesItem = <NotesItemRead>(
-        await promisify(mApi().notes.note.create(newNotesItem), "callback")()
-      );
+      const createdNotesItem = await notesApi.createNote({
+        createNoteRequest,
+      });
 
       if (createdNotesItem.isArchived) {
         // Initializing list
@@ -192,24 +189,22 @@ export const useNotesItem = (
    * Updates one notesItems data
    *
    * @param notesItemId notesItemId
-   * @param notesItemToBeUpdated updatedNotesItem
+   * @param updateNoteRequest updatedNotesItem
    * @param onSuccess onSuccess
    */
   const updateNotesItem = async (
     notesItemId: number,
-    notesItemToBeUpdated: NotesItemUpdate,
+    updateNoteRequest: UpdateNoteRequest,
     onSuccess?: () => void
   ) => {
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
     try {
       // Updating and getting updated notesItem
-      const updatedNotesItem = <NotesItemRead>(
-        await promisify(
-          mApi().notes.note.update(notesItemId, notesItemToBeUpdated),
-          "callback"
-        )()
-      );
+      const updatedNotesItem = await notesApi.updateNote({
+        noteId: notesItemId,
+        updateNoteRequest: updateNoteRequest,
+      });
 
       // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
@@ -247,30 +242,28 @@ export const useNotesItem = (
    * Pins noteItem. Same as update but only pinned value changes
    *
    * @param notesItemId noteItemId
-   * @param notesItem updatedNoteItem
+   * @param updateNoteRequest updateNoteRequest
    * @param onSuccess onSuccess
    */
   const pinNotesItem = async (
     notesItemId: number,
-    notesItem: NotesItemUpdate,
+    updateNoteRequest: UpdateNoteRequest,
     onSuccess?: () => void
   ) => {
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
     // Creating notesItem object where pinned property has changed
     const notesItemToPin = {
-      ...notesItem,
-      pinned: !notesItem.pinned,
+      ...updateNoteRequest,
+      pinned: !updateNoteRequest.pinned,
     };
 
     try {
       // Updating and getting updated noteItem
-      const updatedNotesItem = <NotesItemRead>(
-        await promisify(
-          mApi().notes.note.update(notesItemId, notesItemToPin),
-          "callback"
-        )()
-      );
+      const updatedNotesItem = await notesApi.updateNote({
+        noteId: notesItemId,
+        updateNoteRequest: notesItemToPin,
+      });
 
       // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
@@ -313,12 +306,9 @@ export const useNotesItem = (
 
     try {
       // Updating and getting updated notesItem
-      const updatedNotesItem = <NotesItemRead>(
-        await promisify(
-          mApi().notes.note.toggleArchived.update(notesItemId),
-          "callback"
-        )()
-      );
+      const updatedNotesItem = await notesApi.toggleNoteArchived({
+        noteId: notesItemId,
+      });
 
       // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
@@ -373,12 +363,9 @@ export const useNotesItem = (
 
     try {
       // Updating and getting updated notesItem
-      const updatedNotesItem = <NotesItemRead>(
-        await promisify(
-          mApi().notes.note.toggleArchived.update(notesItemId),
-          "callback"
-        )()
-      );
+      const updatedNotesItem = await notesApi.toggleNoteArchived({
+        noteId: notesItemId,
+      });
 
       // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
@@ -426,7 +413,7 @@ export const useNotesItem = (
    */
   const updateNotesItemStatus = async (
     notesItemId: number,
-    newStatus: NotesItemStatus,
+    newStatus: NoteStatusType,
     onSuccess?: () => void
   ) => {
     try {
@@ -438,13 +425,11 @@ export const useNotesItem = (
 
       notesItemToUpdate.status = newStatus;
 
-      // Updating and getting updated journal
-      const updatedNotesItem = <NotesItemRead>(
-        await promisify(
-          mApi().notes.note.update(notesItemId, notesItemToUpdate),
-          "callback"
-        )()
-      );
+      // Updating and getting updated notesItem
+      const updatedNotesItem = await notesApi.updateNote({
+        noteId: notesItemId,
+        updateNoteRequest: notesItemToUpdate,
+      });
 
       // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
@@ -477,23 +462,25 @@ export const useNotesItem = (
     notesItems,
     /**
      * createNotesItem
-     * @param newNotesItem newNotesItem
+     * @param createNoteRequest createNoteRequest
      * @param onSuccess onSuccess
      */
-    createNotesItem: (newNotesItem: NotesItemCreate, onSuccess?: () => void) =>
-      createNotesItem(newNotesItem, onSuccess),
+    createNotesItem: (
+      createNoteRequest: CreateNoteRequest,
+      onSuccess?: () => void
+    ) => createNotesItem(createNoteRequest, onSuccess),
 
     /**
      * updateNotesItem
      * @param notesItemId notesItemId
-     * @param updatedNotesItem updatedNotesItem
+     * @param updateNoteRequest updateNoteRequest
      * @param onSuccess onSuccess
      */
     updateNotesItem: (
       notesItemId: number,
-      updatedNotesItem: NotesItemUpdate,
+      updateNoteRequest: UpdateNoteRequest,
       onSuccess?: () => void
-    ) => updateNotesItem(notesItemId, updatedNotesItem, onSuccess),
+    ) => updateNotesItem(notesItemId, updateNoteRequest, onSuccess),
 
     /**
      * archiveNotesItem
@@ -514,14 +501,14 @@ export const useNotesItem = (
     /**
      * pinNotesItem
      * @param notesItemId notesItemId
-     * @param notesItem notesItem
+     * @param updateNoteRequest updateNoteRequest
      * @param onSuccess onSuccess
      */
     pinNotesItem: (
       notesItemId: number,
-      notesItem: NotesItemUpdate,
+      updateNoteRequest: UpdateNoteRequest,
       onSuccess?: () => void
-    ) => pinNotesItem(notesItemId, notesItem, onSuccess),
+    ) => pinNotesItem(notesItemId, updateNoteRequest, onSuccess),
 
     /**
      * updateNotesItemStatus
@@ -531,7 +518,7 @@ export const useNotesItem = (
      */
     updateNotesItemStatus: (
       notesItemId: number,
-      notesItemStatus: NotesItemStatus,
+      notesItemStatus: NoteStatusType,
       onSuccess?: () => void
     ) => updateNotesItemStatus(notesItemId, notesItemStatus, onSuccess),
   };

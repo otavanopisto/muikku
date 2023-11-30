@@ -52,23 +52,31 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposController;
 import fi.otavanopisto.muikku.plugins.ceepos.CeeposPermissions;
+import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposAssessmentRequestOrder;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrder;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposOrderState;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProduct;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposStudyTimeOrder;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -109,6 +117,18 @@ public class CeeposRESTService {
 
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
+
+  @Inject
+  private CommunicatorAssessmentRequestController communicatorAssessmentRequestController;
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
@@ -505,12 +525,12 @@ public class CeeposRESTService {
         order.getProductCode(),
         1,
         order.getProductPrice(),
-        "")); // getLocalizedDescription(order.getProductCode(), order.getProductDescription()) if store supports English
+        StringUtils.isBlank(order.getProductDescription()) ? "" : order.getProductDescription()));
     ceeposPayload.setProducts(products);
     ceeposPayload.setEmail(email);
     ceeposPayload.setFirstName(userEntityName.getFirstName());
     ceeposPayload.setLastName(userEntityName.getLastName());
-    ceeposPayload.setLanguage(""); // sessionController.getLocale().getLanguage() if store supports English
+    ceeposPayload.setLanguage("");
     ceeposPayload.setReturnAddress(getSetting("returnAddress"));
     ceeposPayload.setNotificationAddress(getSetting("notificationAddress"));
     ceeposPayload.setHash(calculateHash(ceeposPayload));
@@ -595,6 +615,15 @@ public class CeeposRESTService {
     // as json, hence the quotes
     
     return Response.ok(String.format("\"%s\"", ceeposPayloadResponse.getPaymentAddress())).build();
+  }
+  
+  // Just a convenience endpoint to make it easier to complete orders via browser
+  
+  @Path("/manualCompletion/{ORDERID}")
+  @GET
+  @RESTPermit(CeeposPermissions.COMPLETE_ORDER)
+  public Response completeOrderGet(@PathParam("ORDERID") Long orderId) {
+    return completeOrder(orderId);
   }
   
   /**
@@ -702,7 +731,7 @@ public class CeeposRESTService {
    * 
    * DESCRIPTION:
    * 
-   * Removes the given order. The order may NOT be in state ONGOING, PAID, or COMPLETE.
+   * Removes the given order. The order may NOT be in state PAID, or COMPLETE.
    * Order removal is only available for admins or the staff member who originally
    * created the order.
    * 
@@ -713,7 +742,7 @@ public class CeeposRESTService {
   @Path("/order/{ORDERID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response removeeOrder(@PathParam("ORDERID") Long orderId) {
+  public Response removeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
     
@@ -735,13 +764,12 @@ public class CeeposRESTService {
       if (!order.getCreatorId().equals(sessionController.getLoggedUserEntity().getId())) {
         logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
         return Response.status(Status.FORBIDDEN).build();
-        
       }
     }
     
     // Ensure order sate
     
-    if (order.getState() == CeeposOrderState.ONGOING || order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
+    if (order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid order state").build();
     }
     
@@ -750,6 +778,66 @@ public class CeeposRESTService {
     ceeposController.archiveOrder(order, sessionController.getLoggedUserEntity().getId());
     
     return Response.noContent().build();
+  }
+  
+  @Path("/order/{ORDERID}/returnLink")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getReturnLink(@PathParam("ORDERID") Long orderId) {
+
+    // Validate payload
+    
+    if (orderId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing id").build();
+    }
+    
+    // Find the order
+    
+    CeeposOrder order = ceeposController.findOrderByIdAndArchived(orderId, false);
+    if (order == null) {
+      logger.warning(String.format("Ceepos order %d: Not found", orderId));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Verify order ownership
+    
+    if (!StringUtils.equals(order.getUserIdentifier(), sessionController.getLoggedUser().toId())) {
+      logger.severe(String.format("Ceepos order %d illegal user access %s", orderId, sessionController.getLoggedUser().toId()));
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Figure out the product
+    
+    CeeposProduct product = ceeposController.findProductById(order.getProductId());
+    if (product == null) {
+      logger.warning(String.format("Ceepos product %d: Not found", order.getProductId()));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Return data
+    
+    String path;
+    String text;
+    if (product.getType() == CeeposProductType.ASSESSMENTREQUEST || product.getType() == CeeposProductType.ASSESSMENTREQUEST_FUNDED) {
+      CeeposAssessmentRequestOrder assessmentRequestOrder = ceeposController.findAssessmentRequestOrderById(orderId);
+      if (assessmentRequestOrder == null) {
+        logger.warning(String.format("Ceepos assessment request order %d: Not found", orderId));
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      Long workspaceEntityId = assessmentRequestOrder.getWorkspaceEntityId();
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity == null) {
+        logger.warning(String.format("Workspace entity %d: Not found", workspaceEntityId));
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      path = String.format("/workspace/%s", workspaceEntity.getUrlName());
+      text = localeController.getText(sessionController.getLocale(), "ceepos.returnLink.workspace");
+    }
+    else {
+      path = "/";
+      text = localeController.getText(sessionController.getLocale(), "ceepos.returnLink.frontPage");
+    }
+    return Response.ok(new CeeposReturnLinkRestModel(path, text)).build();
   }
   
   @Path("/paymentConfirmation")
@@ -861,7 +949,19 @@ public class CeeposRESTService {
     // Fulfill the order
     
     CeeposProduct product = ceeposController.findProductById(order.getProductId());
-    if (product != null && product.getType() == CeeposProductType.STUDYTIME) {
+    if (product == null) {
+      logger.severe(String.format("Product %d not found", order.getProductId()));
+      order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+          order,
+          CeeposOrderState.ERRORED,
+          paymentConfirmation.getReference(),
+          order.getPaid(),
+          order.getLastModifierId());
+      return Response.ok().build(); // Our configuration problem
+    }
+    switch (product.getType()) {
+    
+    case STUDYTIME:
       int months = 0;
       String productCode = order.getProductCode();
       Set<String> codes = getProductCodesForMonths(6);
@@ -951,6 +1051,81 @@ public class CeeposRESTService {
           Collections.emptyList(),
           mailSubject,
           mailContent);
+      break;
+    
+    case ASSESSMENTREQUEST:
+    case ASSESSMENTREQUEST_FUNDED:
+      CeeposAssessmentRequestOrder assessmentRequestOrder = ceeposController.findAssessmentRequestOrderById(order.getId());
+      if (assessmentRequestOrder == null) {
+        logger.severe(String.format("Assessment request order %d not found", order.getId()));
+        order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+            order,
+            CeeposOrderState.ERRORED,
+            paymentConfirmation.getReference(),
+            order.getPaid(),
+            order.getLastModifierId());
+        return Response.ok().build(); // Our configuration problem
+      }
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(assessmentRequestOrder.getWorkspaceEntityId());
+      if (workspaceEntity == null) {
+        logger.severe(String.format("Workspace entity %d not found", assessmentRequestOrder.getWorkspaceEntityId()));
+        order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+            order,
+            CeeposOrderState.ERRORED,
+            paymentConfirmation.getReference(),
+            order.getPaid(),
+            order.getLastModifierId());
+        return Response.ok().build(); // Our configuration problem
+      }
+      SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(order.getUserIdentifier());
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(
+          workspaceEntity, identifier);
+      if (workspaceUserEntity == null) {
+        logger.severe(String.format("Workspace user entity not found for user %s and workspace %d", order.getUserIdentifier(), workspaceEntity.getId()));
+        order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+            order,
+            CeeposOrderState.ERRORED,
+            paymentConfirmation.getReference(),
+            order.getPaid(),
+            order.getLastModifierId());
+        return Response.ok().build(); // Our configuration problem
+      }
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        
+        // Create the assessment request
+        
+        WorkspaceAssessmentRequest workspaceAssessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(
+            workspaceUserEntity, assessmentRequestOrder.getRequestText());
+        if (workspaceAssessmentRequest == null) {
+          logger.severe("Workspace assessment request creation failed");
+          order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+              order,
+              CeeposOrderState.ERRORED,
+              paymentConfirmation.getReference(),
+              order.getPaid(),
+              order.getLastModifierId());
+          return Response.ok().build(); // Our configuration problem
+        }
+
+        // Message teachers about the assessment request
+        
+        communicatorAssessmentRequestController.sendAssessmentRequestMessage(new Locale("fi"), workspaceAssessmentRequest);
+      }
+      finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
+
+      // Mark the order as complete
+
+      order = ceeposController.updateOrderStateAndOrderNumberAndPaid(
+          order,
+          CeeposOrderState.COMPLETE,
+          paymentConfirmation.getReference(),
+          order.getPaid(),
+          order.getLastModifierId());
+      
+      break;
     }
     
     return Response.ok().build();

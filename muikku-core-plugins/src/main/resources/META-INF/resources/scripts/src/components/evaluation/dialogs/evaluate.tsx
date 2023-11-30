@@ -6,7 +6,6 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import Evaluation from "../body/application/evaluation/evaluation";
-import { AssessmentRequest } from "~/@types/evaluation";
 import { StatusType } from "~/reducers/base/status";
 import {
   LoadBasePrice,
@@ -22,6 +21,7 @@ import {
   LoadEvaluationJournalFeedbackFromServerTriggerType,
   loadEvaluationJournalFeedbackFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 
 /**
  * EvaluateDialogProps
@@ -35,7 +35,7 @@ interface EvaluateDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpen?: (jotan: any) => any;
   status: StatusType;
-  assessment: AssessmentRequest;
+  assessment: EvaluationAssessmentRequest;
   updateSelectedAssessment: UpdateEvaluationSelectedAssessment;
   loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments;
   loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
@@ -69,7 +69,7 @@ class EvaluateDialog extends React.Component<
    * @param assessment assessment
    */
   handleUpdateSelectAssessmentOnDialogOpen = (
-    assessment: AssessmentRequest
+    assessment: EvaluationAssessmentRequest
   ) => {
     this.props.updateSelectedAssessment({ assessment });
 

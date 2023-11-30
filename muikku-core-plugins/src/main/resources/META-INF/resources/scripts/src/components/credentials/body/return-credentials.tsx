@@ -10,7 +10,7 @@ import {
   updateCredentials,
   UpdateCredentialsTriggerType,
 } from "~/actions/base/credentials";
-import { CredentialsType } from "~/reducers/base/credentials";
+import { CredentialsState } from "~/reducers/base/credentials";
 import { bindActionCreators } from "redux";
 import LoginButton from "../../base/login-button";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -21,7 +21,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface ReturnCredentialsProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   updateCredentials: UpdateCredentialsTriggerType;
-  credentials: CredentialsType;
+  credentials: CredentialsState;
 }
 
 /**
@@ -60,7 +60,7 @@ class ReturnCredentials extends React.Component<
    */
   componentWillReceiveProps() {
     this.setState({
-      username: this.props.credentials.username,
+      username: this.props.credentials.credentials.username,
     });
   }
 
@@ -74,7 +74,7 @@ class ReturnCredentials extends React.Component<
     const newUserCredentials = {
       username: this.state.username,
       password: this.state.newPassword,
-      secret: this.props.credentials.secret,
+      secret: this.props.credentials.credentials.secret,
     };
     if (userName == "") {
       this.props.displayNotification(

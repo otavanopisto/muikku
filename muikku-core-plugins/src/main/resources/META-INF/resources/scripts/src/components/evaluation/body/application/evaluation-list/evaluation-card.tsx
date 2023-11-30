@@ -3,7 +3,6 @@ import ArchiveDialog from "../../../dialogs/archive";
 import EvaluateDialog from "../../../dialogs/evaluate";
 import DeleteRequestDialog from "../../../dialogs/delete-request";
 import {
-  AssessmentRequest,
   EvaluationImportantStatus,
   UpdateImportanceObject,
 } from "~/@types/evaluation";
@@ -20,16 +19,20 @@ import { StateType } from "~/reducers/index";
 import { ButtonPill, IconButton } from "~/components/general/button";
 import "~/sass/elements/evaluation-card.scss";
 import "~/sass/elements/buttons.scss";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 import {
   useTranslation,
   WithTranslation,
   withTranslation,
 } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * EvaluationCardProps
  */
-interface EvaluationCardProps extends AssessmentRequest, WithTranslation {
+interface EvaluationCardProps
+  extends EvaluationAssessmentRequest,
+    WithTranslation {
   selectedWorkspaceId?: number;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   updateEvaluationImportance: (object: UpdateImportanceObject) => void;
@@ -273,7 +276,10 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       selectedWorkspaceId === rest.workspaceEntityId ? (
       <ArchiveDialog place="card" {...rest}>
         <ButtonPill
-          aria-label={t("evaluation:actions.archiveStudent")}
+          aria-label={t("actions.archive", {
+            ns: "evaluation",
+            context: "student",
+          })}
           buttonModifiers="archive-student"
           icon="archive"
         />
@@ -283,9 +289,35 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
   return (
     <div className={`evaluation-card ${cardModifier} ${cardStateClass}`}>
       <div className="evaluation-card__header">
-        <div className="evaluation-card__header-title">{studentName}</div>
-        <div className="evaluation-card__heder-description">
-          {rest.studyProgramme}
+        <div className="evaluation-card__header-primary">
+          <div className="evaluation-card__header-title">{studentName}</div>
+          <div className="evaluation-card__heder-description">
+            {rest.studyProgramme}
+          </div>
+        </div>
+        <div className="evaluation-card__header-secondary">
+          <div className="labels">
+            {rest.hasPedagogyForm ? (
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <span id={`pedagogyPlan-` + rest.userEntityId}>
+                    Opiskelijalle on tehty pedagogisen tuen suunnitelma
+                  </span>
+                }
+              >
+                <div className="label label--pedagogy-plan">
+                  <span
+                    className="label__text label__text--pedagogy-plan"
+                    aria-labelledby={`pedagogyPlan-` + rest.userEntityId}
+                  >
+                    P
+                  </span>
+                </div>
+              </Dropdown>
+            ) : null}
+          </div>
         </div>
       </div>
       <div className="evaluation-card__content">

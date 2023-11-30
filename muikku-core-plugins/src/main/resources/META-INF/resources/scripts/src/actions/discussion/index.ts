@@ -1368,7 +1368,7 @@ const createDiscussionArea: CreateDiscussionAreaTriggerType =
         if (discussion.workspaceId) {
           newArea = await workspaceDiscussionApi.createWorkspaceDiscussionArea({
             workspaceentityId: discussion.workspaceId,
-            createDiscussionAreaRequest: params,
+            createWorkspaceDiscussionAreaRequest: params,
           });
         } else {
           newArea = await discussionApi.createDiscussionArea({

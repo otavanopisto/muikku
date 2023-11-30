@@ -48,6 +48,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -808,6 +811,54 @@ public class ElasticSearchProvider implements SearchProvider {
     return new ElasticWorkspaceSearchBuilder(this);
   }
 
+  @Override
+  public Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser) {
+    QueryBuilder query = prepareWorkspaceSearchQuery(null, null, null, null, organizationRestrictions, null, accesses, accessUser);
+    return aggregateDistinctFieldIdentifiers(query, MUIKKU_WORKSPACE_INDEX, "curriculumIdentifiers");
+  }
+
+  @Override
+  public Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes(Collection<OrganizationRestriction> organizationRestrictions, Collection<WorkspaceAccess> accesses, SchoolDataIdentifier accessUser) {
+    QueryBuilder query = prepareWorkspaceSearchQuery(null, null, null, null, organizationRestrictions, null, accesses, accessUser);
+    return aggregateDistinctFieldIdentifiers(query, MUIKKU_WORKSPACE_INDEX, "educationTypeIdentifier");
+  }
+  
+  /**
+   * Lists distinct SchoolDataIdentifiers from given aggregateField. Use query to limit 
+   * the scope of documents matched or use MatchAllQuery to match all documents.
+   * 
+   * @param query query to specify which documents are used from index
+   * @param index index where the documents are taken from
+   * @param aggregateField the field to be aggregated, these need to be stored in SchoolDataIdentifier.id format
+   * @return list of distinct identifiers
+   */
+  private Set<SchoolDataIdentifier> aggregateDistinctFieldIdentifiers(QueryBuilder query, final String index, final String aggregateField) {
+    AggregationBuilder curriculumAggregation = AggregationBuilders
+        .terms(aggregateField)
+        .field(aggregateField)
+        .size(100);
+    
+    SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
+        .query(query)
+        .size(0) // Size is 0 as we're not interesed in the documents itself, only the aggregations
+        .aggregation(curriculumAggregation);
+
+    SearchRequest searchRequest = Requests.searchRequest(index);
+    searchRequest.source(searchSourceBuilder);
+
+    try {
+      SearchResponse searchResponse = elasticClient.search(searchRequest, RequestOptions.DEFAULT);
+      Terms aggregation = searchResponse.getAggregations().get(aggregateField);
+
+      return aggregation.getBuckets().stream()
+        .map(bucket -> SchoolDataIdentifier.fromId(bucket.getKeyAsString()))
+        .collect(Collectors.toSet());
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return null;
+    }
+  }
+  
   private Set<SchoolDataIdentifier> getUserWorkspaces(SchoolDataIdentifier userIdentifier) {
     Set<SchoolDataIdentifier> result = new HashSet<>();
     
@@ -1222,4 +1273,5 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   private RestHighLevelClient elasticClient;
+
 }

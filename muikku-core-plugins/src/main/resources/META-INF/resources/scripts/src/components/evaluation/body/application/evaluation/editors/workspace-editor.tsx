@@ -12,14 +12,6 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
-import {
-  AssessmentRequest,
-  BilledPrice,
-  EvaluationEnum,
-  EvaluationGradeSystem,
-} from "~/@types/evaluation";
 import {
   UpdateNeedsReloadEvaluationRequests,
   updateNeedsReloadEvaluationRequests,
@@ -27,7 +19,14 @@ import {
 import "~/sass/elements/form.scss";
 import { LocaleState } from "~/reducers/base/locales";
 import { CKEditorConfig } from "../evaluation";
+import {
+  EvaluationAssessmentRequest,
+  EvaluationEventType,
+  EvaluationGradeScale,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import MApi from "~/api/api";
+import { BilledPrice } from "~/generated/client";
 
 /**
  * WorkspaceEditorProps
@@ -36,7 +35,7 @@ interface WorkspaceEditorProps extends WithTranslation {
   status: StatusType;
   evaluations: EvaluationState;
   locale: LocaleState;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -58,7 +57,7 @@ interface WorkspaceEditorState {
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
   locked: boolean;
-  activeGradeSystems: EvaluationGradeSystem[];
+  activeGradeSystems: EvaluationGradeScale[];
 }
 
 /**
@@ -76,7 +75,7 @@ class WorkspaceEditor extends SessionStateComponent<
   WorkspaceEditorProps,
   WorkspaceEditorState
 > {
-  private unknownGradeSystemIsUsed: EvaluationGradeSystem;
+  private unknownGradeSystemIsUsed: EvaluationGradeScale;
 
   /**
    * constructor
@@ -286,26 +285,27 @@ class WorkspaceEditor extends SessionStateComponent<
   loadExistingBilledPrice = async (
     assessmentIdentifier: string
   ): Promise<BilledPrice | undefined> => {
+    const worklistApi = MApi.getWorklistApi();
+
     const { workspaceEntityId } = this.props.selectedAssessment;
 
     let existingBilledPriceObject = undefined;
     /**
      * If existing price object is found
      */
-    await promisify(
-      mApi().worklist.billedPrice.read({
+    await worklistApi
+      .getBilledPrice({
         workspaceEntityId: workspaceEntityId,
         assessmentIdentifier,
-      }),
-      "callback"
-    )().then(
-      (data) => {
-        existingBilledPriceObject = data as BilledPrice;
-      },
-      (reject) => {
-        existingBilledPriceObject = undefined;
-      }
-    );
+      })
+      .then(
+        (data) => {
+          existingBilledPriceObject = data;
+        },
+        (reject) => {
+          existingBilledPriceObject = undefined;
+        }
+      );
 
     return existingBilledPriceObject;
   };
@@ -626,10 +626,10 @@ class WorkspaceEditor extends SessionStateComponent<
    * @param type type
    * @returns boolean if graded
    */
-  isGraded = (type: EvaluationEnum) =>
-    type === EvaluationEnum.EVALUATION_PASS ||
-    type === EvaluationEnum.EVALUATION_FAIL ||
-    type === EvaluationEnum.EVALUATION_IMPROVED;
+  isGraded = (type: EvaluationEventType) =>
+    type === "EVALUATION_PASS" ||
+    type === "EVALUATION_FAIL" ||
+    type === "EVALUATION_IMPROVED";
 
   /**
    * Check if evaluation is graded
@@ -696,7 +696,7 @@ class WorkspaceEditor extends SessionStateComponent<
       (type === "new" && this.hasGradedEvaluations()) ||
       (type === "edit" &&
         latestEvent &&
-        latestEvent.type === EvaluationEnum.EVALUATION_IMPROVED);
+        latestEvent.type === "EVALUATION_IMPROVED");
 
     /**
      * Default options

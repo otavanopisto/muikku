@@ -1,13 +1,16 @@
 import { UserFileType } from "~/reducers/user-index";
-import { Assessment, WorkspaceType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
 import {
-  WorkspaceJournalListType,
-  MaterialContentNodeListType,
-  MaterialCompositeRepliesType,
-} from "~/reducers/workspaces";
-import { Curriculum } from "~/generated/client";
+  MaterialCompositeReply,
+  Curriculum,
+  WorkspaceAssessmentState,
+} from "~/generated/client";
+import { WorkspaceJournal } from "~/generated/client";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
 
@@ -30,16 +33,6 @@ export interface RecordWorkspaceActivitySubject {
 export interface RecordWorkspaceActivityCurriculum {
   identifier: string;
   name: string;
-}
-
-/**
- * Record workspace activity info with line and category, default line and activities
- */
-export interface RecordWorkspaceActivityInfo {
-  lineName: string;
-  lineCategory: string;
-  defaultLine: boolean;
-  activities: RecordWorkspaceActivity[];
 }
 
 /**
@@ -66,7 +59,7 @@ export interface RecordWorkspaceActivity {
   id: number;
   identifier: string;
   subjects: RecordWorkspaceActivitySubject[] | null;
-  assessmentStates: Assessment[];
+  assessmentStates: WorkspaceAssessmentState[];
   name: string;
   curriculums: RecordWorkspaceActivityCurriculum[] | null;
   exercisesTotal?: number | null;
@@ -89,10 +82,10 @@ export interface RecordGroupType {
  * CurrentRecordType
  */
 export interface CurrentRecordType {
-  workspace: WorkspaceType;
-  journals: WorkspaceJournalListType;
-  materials: MaterialContentNodeListType;
-  compositeReplies: MaterialCompositeRepliesType[];
+  workspace: WorkspaceDataType;
+  materials: MaterialContentNodeWithIdAndLogic[];
+  compositeReplies: MaterialCompositeReply[];
+  journals: WorkspaceJournal[];
 }
 
 export type AllStudentUsersDataStatusType =

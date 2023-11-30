@@ -3,10 +3,7 @@ import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
-import {
-  WorkspacesType,
-  WorkspaceEducationFilterType,
-} from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
@@ -18,7 +15,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
 }
 
 /**
@@ -65,7 +62,7 @@ class WorkspacesAside extends React.Component<
       <Navigation>
         <NavigationTopic name={t("labels.educationLevel", { ns: "workspace" })}>
           {this.props.workspaces.availableFilters.educationTypes.map(
-            (educationType: WorkspaceEducationFilterType) => {
+            (educationType) => {
               const isActive =
                 this.props.workspaces.activeFilters.educationFilters.includes(
                   educationType.identifier

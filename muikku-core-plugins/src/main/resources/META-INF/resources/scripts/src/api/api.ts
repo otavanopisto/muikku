@@ -29,8 +29,11 @@ import {
   ResponseError,
   FetchError,
   RequiredError,
+  AssessmentRequestApi,
+  ChatApi,
   Middleware,
   ResponseContext,
+  ActivitylogsApi,
 } from "../generated/client";
 
 /**
@@ -103,12 +106,38 @@ const configuration = new Configuration({
  */
 export default class MApi {
   /**
+   * Gets initialized discussions API
+   *
+   * @returns initialized workspaces API
+   */
+  public static getActivitylogsApi() {
+    return new ActivitylogsApi(configuration);
+  }
+  /**
    * Get initialized AnnouncerApi API
    *
    * @returns initialized ForumApi API
    */
   public static getAnnouncerApi() {
     return new AnnouncerApi(configuration);
+  }
+
+  /**
+   * Get initialized ChatApi API
+   *
+   * @returns initialized ChatApi API
+   */
+  public static getChatApi() {
+    return new ChatApi(configuration);
+  }
+
+  /**
+   * Get initialized AssessmentRequestApi API
+   *
+   * @returns initialized AssessmentRequestApi API
+   */
+  public static getAssessmentApi() {
+    return new AssessmentRequestApi(configuration);
   }
 
   /**
@@ -305,7 +334,7 @@ export default class MApi {
    *
    * @returns initialized workspaces API
    */
-  public static getWorkspacesApi() {
+  public static getWorkspaceApi() {
     return new WorkspaceApi(configuration);
   }
 

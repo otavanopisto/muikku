@@ -1,11 +1,10 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { HOPSDataType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
-
 import "~/sass/elements/form.scss";
 import { AnyActionType } from "~/actions";
+import { HopsUppersecondary } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { StatusType } from "~/reducers/base/status";
 
@@ -13,8 +12,8 @@ import { StatusType } from "~/reducers/base/status";
  * HopsProps
  */
 interface HopsProps extends WithTranslation {
-  data?: HOPSDataType;
-  defaultData: HOPSDataType;
+  data?: HopsUppersecondary;
+  defaultData: HopsUppersecondary;
   status: StatusType;
 }
 
@@ -22,7 +21,7 @@ interface HopsProps extends WithTranslation {
  * HopsState
  */
 interface HopsState {
-  hops: HOPSDataType;
+  hops: HopsUppersecondary;
 }
 
 /**

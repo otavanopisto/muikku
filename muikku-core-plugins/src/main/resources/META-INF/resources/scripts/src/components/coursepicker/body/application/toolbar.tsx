@@ -10,7 +10,7 @@ import {
   ApplicationPanelToolbarActionsMain,
   ApplicationPanelToolsContainer,
 } from "~/components/general/application-panel/application-panel";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { SearchFormElement } from "~/components/general/form-element";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -19,7 +19,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  * CoursepickerToolbarProps
  */
 interface CoursepickerToolbarProps extends WithTranslation {
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
 }
 
 /**
@@ -118,7 +118,6 @@ class CoursepickerToolbar extends React.Component<
               id="searchCourses"
               onFocus={this.onInputFocus}
               onBlur={this.onInputBlur}
-              // TODO: Translate this with new i18next
               placeholder={this.props.t("labels.search", { ns: "workspace" })}
               value={this.state.searchquery}
             />

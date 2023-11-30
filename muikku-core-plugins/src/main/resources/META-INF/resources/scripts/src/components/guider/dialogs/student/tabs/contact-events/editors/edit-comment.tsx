@@ -7,13 +7,12 @@ import {
   editContactLogEventComment,
   EditContactLogEventCommentTriggerType,
 } from "~/actions/main-function/guider";
-import { ContactTypes } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
 import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
-import { ContactLogEventComment } from "~/reducers/main-function/guider";
+import { ContactLogEventComment, ContactType } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -33,7 +32,7 @@ interface EditContactLogEventCommentProps extends WithTranslation<["common"]> {
 interface EditContactLogEventCommentState {
   text: string;
   date: Date;
-  type: ContactTypes;
+  type: ContactType;
   locked: boolean;
 }
 
@@ -81,7 +80,7 @@ class EditContactLogEventComment extends SessionStateComponent<
    */
   onTypeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     this.setStateAndStore(
-      { type: e.target.value as ContactTypes },
+      { type: e.target.value as ContactType },
       this.props.comment.id + "-edit-comment"
     );
   };

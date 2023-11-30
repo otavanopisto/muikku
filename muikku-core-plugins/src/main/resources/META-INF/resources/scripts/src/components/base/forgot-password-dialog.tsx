@@ -3,8 +3,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
-import mApi, { MApiError } from "~/lib/mApi";
-
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
 import { bindActionCreators } from "redux";
@@ -12,9 +10,9 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import promisify from "~/util/promisify";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions/index";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * ForgotPasswordDialogProps
@@ -74,6 +72,8 @@ class ForgotPasswordDialog extends React.Component<
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async resetPassword(closeDialog: () => any, e: React.ChangeEvent<any>) {
+    const credentialsApi = MApi.getCredentialsApi();
+
     const { t } = this.props;
     if (!e.isDefaultPrevented()) {
       e.preventDefault();
@@ -88,10 +88,9 @@ class ForgotPasswordDialog extends React.Component<
     }
 
     try {
-      const result = await promisify(
-        mApi().forgotpassword.reset.read({ email: this.state.email }),
-        "callback"
-      )();
+      await credentialsApi.resetCredentials({
+        email: this.state.email,
+      });
 
       this.props.displayNotification(
         t("content.passwordChangeMailSent", {
@@ -107,7 +106,7 @@ class ForgotPasswordDialog extends React.Component<
 
       closeDialog();
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       this.props.displayNotification(

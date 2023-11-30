@@ -1,11 +1,10 @@
 import * as React from "react";
-import { Visibility } from "~/@types/pedagogy-form";
-import VisibilityAndApprovalDialog from "./dialogs/visibility-and-approval";
-import VisibilityDialog from "./dialogs/visibility";
+import ApprovalDialog from "./dialogs/approval";
 import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 import Button from "../button";
 import { usePedagogyContext } from "./context/pedagogy-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * PedagogyToolbarProps
@@ -23,24 +22,22 @@ interface PedagogyToolbarProps {
  */
 const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const { showPDF, setShowPDF } = props;
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
 
   const usePedagogyValues = usePedagogyContext();
 
   const {
     data,
     loading,
-    visibility,
     formIsApproved,
     changedFields,
     editIsActive,
     resetData,
-    setVisibility,
     setFormIsApproved,
     setExtraDetails,
     setEditIsActive,
     approveForm,
     updateFormData,
-    updateVisibility,
     userRole,
     activateForm,
   } = usePedagogyValues;
@@ -72,30 +69,6 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   };
 
   /**
-   * Handle visibility permissions change
-   *
-   * @param e e
-   */
-  const handleVisibilityPermissionChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newVisibility = [...visibility];
-
-    const value = e.target.value as Visibility;
-
-    if (newVisibility.includes(value)) {
-      const index = newVisibility.indexOf(value);
-      if (index > -1) {
-        newVisibility.splice(index, 1);
-      }
-    } else {
-      newVisibility.push(value);
-    }
-
-    setVisibility(newVisibility);
-  };
-
-  /**
    * Handle extra details change
    *
    * @param e e
@@ -120,7 +93,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         return userRole === "SPECIAL_ED_TEACHER" ? (
           <div className="pedagogy-form__toolbar">
             <Button buttonModifiers={["success"]} onClick={activateForm}>
-              Aktivoi
+              {t("actions.activate", { ns: "common" })}
             </Button>
           </div>
         ) : null;
@@ -135,22 +108,27 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                   {changedFields.length > 0 ? (
                     <WarningDialog
                       onApproveClick={resetData}
-                      title="Tallentamattomat muutokset"
+                      title={t("labels.unsavedWarning", {
+                        ns: "pedagogySupportPlan",
+                      })}
                       content={
                         <p>
-                          Sinulla on tallentamattomia muutoksia. Haluatko
-                          varmasti peruuttaa muokkauksen
+                          {t("content.unsavedWarning", {
+                            ns: "pedagogySupportPlan",
+                          })}
                         </p>
                       }
                     >
-                      <Button buttonModifiers={["cancel"]}>Peruuta</Button>
+                      <Button buttonModifiers={["cancel"]}>
+                        {t("actions.cancel", { ns: "common" })}
+                      </Button>
                     </WarningDialog>
                   ) : (
                     <Button
                       buttonModifiers={["cancel"]}
                       onClick={handleEditClick}
                     >
-                      Peruuta
+                      {t("actions.cancel", { ns: "common" })}
                     </Button>
                   )}
 
@@ -164,7 +142,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                       buttonModifiers={["success"]}
                       disabled={!editIsActive && changedFields.length === 0}
                     >
-                      Tallenna
+                      {t("actions.save", { ns: "common" })}
                     </Button>
                   </SaveWithExtraDetailsDialog>
                 </>
@@ -173,7 +151,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                   buttonModifiers={["fatal", "standard-ok"]}
                   onClick={handleEditClick}
                 >
-                  Muokkaa
+                  {t("actions.edit", { ns: "common" })}
                 </Button>
               )}
             </div>
@@ -185,7 +163,9 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                   disabled={loading}
                   onClick={handlePDFClick}
                 >
-                  {showPDF ? "Sulje PDF" : "PDF"}
+                  {showPDF
+                    ? t("actions.closePDF", { ns: "common" })
+                    : t("actions.openPDF", { ns: "common" })}
                 </Button>
               </div>
             ) : null}
@@ -193,7 +173,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         );
 
       default:
-        return null;
+        return <></>;
     }
   }
 
@@ -201,47 +181,23 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     case "PENDING":
       return (
         <div className="pedagogy-form__toolbar">
-          <VisibilityAndApprovalDialog
+          <ApprovalDialog
             formIsApproved={formIsApproved}
-            visibility={visibility}
             saveButtonDisabled={!formIsApproved}
             onSaveClick={approveForm}
             onApproveChange={handleApproveValueChange}
-            onVisibilityChange={handleVisibilityPermissionChange}
           >
-            <Button buttonModifiers={["info"]}>Hyväksy lomake</Button>
-          </VisibilityAndApprovalDialog>
-        </div>
-      );
-    case "APPROVED":
-      return (
-        <div className="pedagogy-form__toolbar">
-          <div className="pedagogy-form__toolbar-primary">
-            <VisibilityDialog
-              visibility={visibility}
-              onVisibilityChange={handleVisibilityPermissionChange}
-              onSaveClick={updateVisibility}
-            >
-              <Button buttonModifiers={["info"]} disabled={showPDF}>
-                Muuta jako-oikeuksia
-              </Button>
-            </VisibilityDialog>
-          </div>
-
-          <div className="pedagogy-form__toolbar-secondary">
-            <Button
-              buttonModifiers={["info"]}
-              disabled={loading}
-              onClick={handlePDFClick}
-            >
-              {showPDF ? "Sulje PDF" : "PDF"}
+            <Button buttonModifiers={["info"]}>
+              {t("actions.approve", {
+                ns: "pedagogySupportPlan",
+              })}
             </Button>
-          </div>
+          </ApprovalDialog>
         </div>
       );
 
     default:
-      return null;
+      return <></>;
   }
 };
 

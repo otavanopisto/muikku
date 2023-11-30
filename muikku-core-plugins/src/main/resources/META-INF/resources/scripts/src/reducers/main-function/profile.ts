@@ -1,119 +1,21 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { UserChatSettingsType } from "~/reducers/user-index";
-import { UserStudentAddress, UserWithSchoolData } from "~/generated/client";
-
-export enum EditableField {
-  ENTRYDATE = "ENTRYDATE",
-  DESCRIPTION = "DESCRIPTION",
-  PRICE = "PRICE",
-  FACTOR = "FACTOR",
-  BILLING_NUMBER = "BILLING_NUMBER",
-}
-
-export enum WorklistBillingState {
-  ENTERED = "ENTERED",
-  PROPOSED = "PROPOSED",
-  APPROVED = "APPROVED",
-  PAID = "PAID",
-}
-
-/**
- * WorklistTemplate
- */
-export interface WorklistTemplate {
-  id: number;
-  description: string;
-  price: number;
-  factor: number;
-  billingNumber: number;
-  editableFields: Array<EditableField>;
-}
-
-/**
- * WorklistItem
- */
-export interface WorklistItem {
-  templateId: number;
-  entryDate: string;
-  description: string;
-  price: number;
-  factor: number;
-  billingNumber: number;
-}
-
-/**
- * PurchaseStateType
- */
-export enum PurchaseStateType {
-  CREATED = "CREATED",
-  CANCELLED = "CANCELLED",
-  ERRORED = "ERRORED",
-  ONGOING = "ONGOING",
-  PAID = "PAID",
-  COMPLETE = "COMPLETE",
-}
-
-/**
- * PurchaseProductType
- */
-export interface PurchaseProductType {
-  Code: string;
-  Description: string;
-  Price: number;
-}
-
-/**
- * PurchaseCreatorType
- */
-export interface PurchaseCreatorType {
-  id: number;
-  userEntityId: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-/**
- * PurchaseType
- */
-export interface PurchaseType {
-  created: string;
-  paid: string;
-  id: number;
-  product: PurchaseProductType;
-  state: PurchaseStateType;
-  studentEmail: string;
-  studentIdentifier: string;
-  creator: PurchaseCreatorType;
-}
-
-/**
- * StoredWorklistItem
- */
-export interface StoredWorklistItem extends WorklistItem {
-  id: number;
-  editableFields: Array<EditableField>;
-  state: WorklistBillingState;
-  removable: boolean;
-}
-
-/**
- * WorklistItemsSummary
- */
-export interface WorklistItemsSummary {
-  displayName: string;
-  beginDate: string;
-  endDate: string;
-  count: number;
-}
+import {
+  CeeposOrder,
+  UserStudentAddress,
+  UserWithSchoolData,
+  WorklistItem,
+  WorklistSummary,
+  WorklistTemplate,
+} from "~/generated/client";
 
 /**
  * WorklistSection
  */
 export interface WorklistSection {
-  summary: WorklistItemsSummary;
-  items?: Array<StoredWorklistItem>;
+  summary: WorklistSummary;
+  items?: WorklistItem[];
 }
 
 /**
@@ -133,9 +35,9 @@ export interface ProfileState {
   addresses?: UserStudentAddress[];
   student?: UserWithSchoolData;
   chatSettings?: UserChatSettingsType;
-  worklistTemplates?: Array<WorklistTemplate>;
+  worklistTemplates?: WorklistTemplate[];
   worklist?: Array<WorklistSection>;
-  purchases?: PurchaseType[];
+  purchases?: CeeposOrder[];
 }
 
 /**

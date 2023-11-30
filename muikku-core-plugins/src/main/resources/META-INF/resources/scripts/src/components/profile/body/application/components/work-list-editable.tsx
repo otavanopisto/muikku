@@ -2,19 +2,19 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { LocaleState } from "~/reducers/base/locales";
-import {
-  EditableField,
-  StoredWorklistItem,
-  WorklistTemplate,
-} from "~/reducers/main-function/profile";
 import { ButtonPill } from "~/components/general/button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import * as moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
+import {
+  WorklistEditableFieldType,
+  WorklistItem,
+  WorklistTemplate,
+} from "~/generated/client";
 
 // these are used to limit the date pickers, first the start of the current month
 // the previous month and the day of the current month
@@ -41,7 +41,7 @@ interface WorkListEditableProps extends WithTranslation {
   onCancel?: () => void;
   enableDisableSubmitOnEquality?: boolean;
   resetOnSubmit: boolean;
-  base: WorklistTemplate | StoredWorklistItem;
+  base: WorklistTemplate | WorklistItem;
   isEditMode: boolean;
   currentMonthDayLimit: number;
 }
@@ -117,7 +117,7 @@ class WorkListEditable extends React.Component<
 
     return (
       this.props.base.description !== description ||
-      ((this.props.base as StoredWorklistItem).entryDate || null) !== date ||
+      ((this.props.base as WorklistItem).entryDate || null) !== date ||
       this.props.base.price !== price ||
       this.props.base.factor !== factor
     );
@@ -156,10 +156,8 @@ class WorkListEditable extends React.Component<
         newState.price = newState.price.replace(".", ",");
       }
     }
-    if (props.base && (props.base as StoredWorklistItem).entryDate) {
-      newState.date = moment(
-        (props.base as StoredWorklistItem).entryDate
-      ).toDate();
+    if (props.base && (props.base as WorklistItem).entryDate) {
+      newState.date = moment((props.base as WorklistItem).entryDate).toDate();
     }
 
     if (!setupPhase) {
@@ -246,7 +244,7 @@ class WorkListEditable extends React.Component<
               disabled={
                 this.props.base &&
                 !this.props.base.editableFields.includes(
-                  EditableField.DESCRIPTION
+                  WorklistEditableFieldType.Description
                 )
               }
             />
@@ -263,13 +261,13 @@ class WorkListEditable extends React.Component<
               disabled={
                 this.props.base &&
                 !this.props.base.editableFields.includes(
-                  EditableField.ENTRYDATE
+                  WorklistEditableFieldType.Entrydate
                 )
               }
               id={"date-" + (this.props.base && this.props.base.id)}
               className="form-element__input form-element__input--worklist-date"
               onChange={this.handleDateChange.bind(this)}
-              locale={outputCorrectDatePickerLocale(localizeTime.language)}
+              locale={outputCorrectDatePickerLocale(localize.language)}
               selected={this.state.date}
               // the entry date min date allows us to pick the previous month within the limit, or otherwise
               // we can only choose from this month forwards
@@ -296,7 +294,9 @@ class WorkListEditable extends React.Component<
               onChange={this.updateOne.bind(this, "price")}
               disabled={
                 this.props.base &&
-                !this.props.base.editableFields.includes(EditableField.PRICE)
+                !this.props.base.editableFields.includes(
+                  WorklistEditableFieldType.Price
+                )
               }
             />
           </div>
@@ -315,7 +315,9 @@ class WorkListEditable extends React.Component<
               onChange={this.updateOne.bind(this, "factor")}
               disabled={
                 this.props.base &&
-                !this.props.base.editableFields.includes(EditableField.FACTOR)
+                !this.props.base.editableFields.includes(
+                  WorklistEditableFieldType.Factor
+                )
               }
             />
           </div>

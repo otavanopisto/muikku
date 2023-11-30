@@ -10,7 +10,7 @@ import { StateType } from "~/reducers";
 import NavigationMenu, {
   NavigationElement,
 } from "~/components/general/navigation";
-import { HOPSType } from "~/reducers/main-function/hops";
+import { HOPSState } from "~/reducers/main-function/hops";
 import { StatusType } from "~/reducers/base/status";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -19,7 +19,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface NavigationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
-  hops: HOPSType;
+  hops: HOPSState;
   status: StatusType;
   records: RecordsType;
 }

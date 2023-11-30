@@ -76,27 +76,25 @@ public class CommunicatorAssessmentRequestController {
   @Inject
   private CourseMetaController courseMetaController;
   
-  private String getText(String key, Object... params) {
-    // TODO: Shouldn't we use recipient's locale - not the sender's locale?
-    Locale locale = sessionController.getLocale();
+  private String getText(Locale locale, String key, Object... params) {
     return localeController.getText(locale, key, params);
   }
 
-  private String assessmentRequestTitle(Workspace workspace, User user) {
+  private String assessmentRequestTitle(Locale locale, Workspace workspace, User user) {
     String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     
-    return getText("plugin.communicator.assessmentrequest.title", userName, workspaceName);
+    return getText(locale, "plugin.communicator.assessmentrequest.title", userName, workspaceName);
   }
   
-  private String assessmentCancelledTitle(Workspace workspace, User user) {
+  private String assessmentCancelledTitle(Locale locale, Workspace workspace, User user) {
     String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     
-    return getText("plugin.communicator.assessmentrequest.title.cancelled", userName, workspaceName);
+    return getText(locale, "plugin.communicator.assessmentrequest.title.cancelled", userName, workspaceName);
   }
   
-  private String assessmentRequestBody(Workspace workspace, User user, List<WorkspaceAssessmentState> assessmentStates, String message) {
+  private String assessmentRequestBody(Locale locale, Workspace workspace, User user, List<WorkspaceAssessmentState> assessmentStates, String message) {
     String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     String body = null;
@@ -124,7 +122,7 @@ public class CommunicatorAssessmentRequestController {
         }
         
         if (assessmentState.getGradeDate() != null && assessmentState.getGrade() != null) {
-          workspaceSubjectsBody = workspaceSubjectsBody + getText("plugin.communicator.assessmentrequest.existingGrade.body",
+          workspaceSubjectsBody = workspaceSubjectsBody + getText(locale, "plugin.communicator.assessmentrequest.existingGrade.body",
               new SimpleDateFormat("d.M.yyyy").format(assessmentState.getGradeDate()),
               assessmentState.getGrade(),
               subjectName);
@@ -133,10 +131,10 @@ public class CommunicatorAssessmentRequestController {
       
       
       if (StringUtils.isNotBlank(workspaceSubjectsBody)) {
-        String header = getText("plugin.communicator.assessmentrequest.existingGrade.header",
+        String header = getText(locale, "plugin.communicator.assessmentrequest.existingGrade.header",
             userName,
             workspaceName);
-        String footer = getText("plugin.communicator.assessmentrequest.existingGrade.footer",
+        String footer = getText(locale, "plugin.communicator.assessmentrequest.existingGrade.footer",
             message);
         
         body = header + workspaceSubjectsBody + footer;
@@ -146,17 +144,17 @@ public class CommunicatorAssessmentRequestController {
     // If the previous block didn't resolve to a message, fallback to a generic message
     
     if (StringUtils.isBlank(body)) {
-      body = getText("plugin.communicator.assessmentrequest.body", userName, workspaceName, message); 
+      body = getText(locale, "plugin.communicator.assessmentrequest.body", userName, workspaceName, message); 
     }
     
     return body; 
   }
   
-  private String assessmentCancelledBody(Workspace workspace, User user) {
+  private String assessmentCancelledBody(Locale locale, Workspace workspace, User user) {
     String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     
-    return getText("plugin.communicator.assessmentrequest.body.cancelled", userName, workspaceName);
+    return getText(locale, "plugin.communicator.assessmentrequest.body.cancelled", userName, workspaceName);
   }
 
   private String getWorkspaceDisplayName(Workspace workspace) {
@@ -169,7 +167,7 @@ public class CommunicatorAssessmentRequestController {
     return user.getNickName() == null ? user.getDisplayName() : String.format("%s \"%s\" %s (%s)", user.getFirstName(), user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
   }
 
-  public CommunicatorMessage sendAssessmentRequestMessage(WorkspaceAssessmentRequest assessmentRequest) {
+  public CommunicatorMessage sendAssessmentRequestMessage(Locale locale, WorkspaceAssessmentRequest assessmentRequest) {
     SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
         assessmentRequest.getWorkspaceUserIdentifier(),
         assessmentRequest.getWorkspaceUserSchoolDataSource());
@@ -224,9 +222,9 @@ public class CommunicatorAssessmentRequestController {
       
       List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
       
-      String messageCategory = getText("plugin.communicator.assessmentrequest.category");
-      String messageTitle = assessmentRequestTitle(workspace, student);
-      String messageBody = assessmentRequestBody(workspace, student, assessmentStates, StringUtils.replace(assessmentRequest.getRequestText(), "\n", "<br/>"));
+      String messageCategory = getText(locale, "plugin.communicator.assessmentrequest.category");
+      String messageTitle = assessmentRequestTitle(locale, workspace, student);
+      String messageBody = assessmentRequestBody(locale, workspace, student, assessmentStates, StringUtils.replace(assessmentRequest.getRequestText(), "\n", "<br/>"));
       
       List<String> teacherEmails = new ArrayList<>(teachers.size());
       for (UserEntity teacher : teachers){
@@ -261,7 +259,7 @@ public class CommunicatorAssessmentRequestController {
     }
   }
   
-  public void sendAssessmentRequestCancelledMessage(WorkspaceUserEntity workspaceUserEntity) {
+  public void sendAssessmentRequestCancelledMessage(Locale locale, WorkspaceUserEntity workspaceUserEntity) {
     CommunicatorMessageId communicatorMessageId = assessmentRequestController.findCommunicatorMessageId(workspaceUserEntity);
     
     if (communicatorMessageId == null) {
@@ -308,9 +306,9 @@ public class CommunicatorAssessmentRequestController {
         return;
       }
       
-      String messageCategory = getText("plugin.communicator.assessmentrequest.category");
-      String messageTitle = assessmentCancelledTitle(workspace, student);
-      String messageBody = assessmentCancelledBody(workspace, student);
+      String messageCategory = getText(locale, "plugin.communicator.assessmentrequest.category");
+      String messageTitle = assessmentCancelledTitle(locale, workspace, student);
+      String messageBody = assessmentCancelledBody(locale, workspace, student);
 
       List<String> teacherEmails = new ArrayList<>(teachers.size());
       for (UserEntity teacher : teachers){

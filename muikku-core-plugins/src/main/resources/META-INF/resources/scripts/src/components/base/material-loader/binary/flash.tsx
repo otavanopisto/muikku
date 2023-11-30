@@ -1,12 +1,15 @@
-import { MaterialContentNodeType } from "~/reducers/workspaces";
 import * as React from "react";
+import { MaterialContentNode } from "~/generated/client";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**
  * Flash
  * @param props props
  * @param props.material material
  */
-export default function Flash(props: { material: MaterialContentNodeType }) {
+export default function Flash(props: {
+  material: MaterialContentNodeWithIdAndLogic;
+}) {
   return (
     <object
       type="application/x-shockwave-flash"

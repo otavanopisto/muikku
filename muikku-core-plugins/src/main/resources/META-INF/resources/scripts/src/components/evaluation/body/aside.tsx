@@ -13,8 +13,7 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { bindActionCreators } from "redux";
-import { WorkspaceType } from "../../../reducers/workspaces/index";
-import { EvaluationWorkspace } from "~/@types/evaluation";
+import { WorkspaceDataType } from "../../../reducers/workspaces/index";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -24,7 +23,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 interface NavigationAsideProps extends WithTranslation {
   evaluations: EvaluationState;
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
 }
 
 /**
@@ -76,7 +75,7 @@ class NavigationAside extends React.Component<
         .map((eWorkspace) => eWorkspace.id)
         .indexOf(currentWorkspace.id) === -1
     ) {
-      workspaces.push({ ...currentWorkspace } as EvaluationWorkspace);
+      workspaces.push({ ...currentWorkspace } as WorkspaceDataType);
     }
 
     workspaces.sort((a, b) => a.name.trim().localeCompare(b.name.trim()));
@@ -110,7 +109,7 @@ class NavigationAside extends React.Component<
           onClick={this.handleNavigationWorkspaceClick(undefined)}
           isActive={this.props.evaluations.selectedWorkspaceId === undefined}
         >
-          {t("labels.evaluationRequest", { ns: "evaluation", count: 0 })}
+          {t("labels.evaluationRequests", { ns: "evaluation" })}
         </NavigationElement>
         {renderNavigationWorkspaceElements.length > 0
           ? renderNavigationWorkspaceElements

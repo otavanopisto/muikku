@@ -12,10 +12,10 @@ public class GuiderStudentRestModel extends Student {
       String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
       String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
-      OrganizationRESTModel organization, boolean matriculationEligibility) {
+      OrganizationRESTModel organization, boolean matriculationEligibility, Boolean hasPedagogyForm) {
     super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, hasImage, nationality, language, municipality,
         school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
-        curriculumIdentifier, updatedByStudent, userEntityId, flags, organization);
+        curriculumIdentifier, updatedByStudent, userEntityId, flags, organization, hasPedagogyForm);
     this.matriculationEligibility = matriculationEligibility;
   }
    

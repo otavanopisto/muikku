@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
@@ -26,7 +26,7 @@ type studyHistoryAside = "history" | "library";
  * StudyHistory props
  */
 interface StudyHistoryProps {
-  guider: GuiderType;
+  guider: GuiderState;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
 }
 

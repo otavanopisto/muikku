@@ -1,11 +1,10 @@
 package fi.otavanopisto.muikku.plugin;
 
 import java.util.List;
-
-import fi.otavanopisto.muikku.i18n.LocaleBundle;
+import java.util.ResourceBundle;
 
 public interface LocalizedPluginDescriptor {
   
-  public List<LocaleBundle> getLocaleBundles();
+  public List<ResourceBundle> getResourceBundles();
 
 }

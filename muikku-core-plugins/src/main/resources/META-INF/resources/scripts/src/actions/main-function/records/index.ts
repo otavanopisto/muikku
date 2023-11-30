@@ -1,6 +1,4 @@
 import actions from "../../base/notifications";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -8,13 +6,13 @@ import {
   TranscriptOfRecordLocationType,
   CurrentStudentUserAndWorkspaceStatusType,
   CurrentRecordType,
-  RecordWorkspaceActivityInfo,
   RecordWorkspaceActivityByLine,
   RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
-import { UserFileType } from "~/reducers/user-index";
 import i18n from "~/locales/i18n";
+import { UserFile } from "~/generated/client";
 import { Dispatch } from "react-redux";
+import { RecordWorkspaceActivityInfo } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
@@ -40,7 +38,7 @@ export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE = SpecificActionType<
 >;
 export type UPDATE_RECORDS_SET_FILES = SpecificActionType<
   "UPDATE_RECORDS_SET_FILES",
-  Array<UserFileType>
+  UserFile[]
 >;
 
 /**
@@ -107,6 +105,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const recordsApi = MApi.getRecordsApi();
       const userApi = MApi.getUserApi();
 
       try {
@@ -153,13 +152,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         const workspaceWithActivity: RecordWorkspaceActivityInfo[] =
           await Promise.all(
             users.map(async (user) => {
-              const workspacesWithActivity = (await promisify(
-                mApi().records.users.workspaceActivity.read(user.id, {
+              const workspacesWithActivity =
+                await recordsApi.getWorkspaceActivity({
+                  userIdentifier: user.id,
                   includeTransferCredits: "true",
                   includeAssignmentStatistics: "true",
-                }),
-                "callback"
-              )()) as RecordWorkspaceActivityInfo;
+                });
 
               return workspacesWithActivity;
             })
@@ -364,14 +362,11 @@ const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType 
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const files: Array<UserFileType> = <Array<UserFileType>>(
-        await promisify(
-          mApi().guider.users.files.read(
-            getState().status.userSchoolDataIdentifier
-          ),
-          "callback"
-        )()
-      );
+      const guiderApi = MApi.getGuiderApi();
+
+      const files = await guiderApi.getGuiderUserFiles({
+        identifier: getState().status.userSchoolDataIdentifier,
+      });
 
       dispatch({
         type: "UPDATE_RECORDS_SET_FILES",

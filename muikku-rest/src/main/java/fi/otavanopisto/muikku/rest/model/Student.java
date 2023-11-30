@@ -14,7 +14,7 @@ public class Student {
       String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
       String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
-      OrganizationRESTModel organization) {
+      OrganizationRESTModel organization, Boolean hasPedagogyForm) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -37,14 +37,18 @@ public class Student {
     this.userEntityId = userEntityId;
     this.setFlags(flags);
     this.organization = organization;
+    this.hasPedagogyForm = hasPedagogyForm;
     
-    // #6472: Hard-coded lines to determine whether student is eligible for Ceepos study time orders :|
+    // #6472, #6473: Hard-coded lines to determine whether student is eligible for Ceepos payments :|
     
     if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Nettilukio/yksityisopiskelu (aineopintoina)") || StringUtils.equalsIgnoreCase(studyProgrammeName, "Aineopiskelu/yo-tutkinto")) {
       this.ceeposLine = "nettilukio";
     }
     else if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Nettiperuskoulu/yksityisopiskelu")) {
       this.ceeposLine = "nettipk";
+    }
+    else if (StringUtils.equalsIgnoreCase(studyProgrammeName, "Aineopiskelu/lukio")) {
+      this.ceeposLine = "aineopiskelu";
     }
   }
 
@@ -224,6 +228,14 @@ public class Student {
     this.ceeposLine = ceeposLine;
   }
 
+  public Boolean getHasPedagogyForm() {
+    return hasPedagogyForm;
+  }
+
+  public void setHasPedagogyForm(Boolean hasPedagogyForm) {
+    this.hasPedagogyForm = hasPedagogyForm;
+  }
+
   private String id;
   private String firstName;
   private String lastName;
@@ -246,4 +258,5 @@ public class Student {
   private List<StudentFlag> flags;
   private OrganizationRESTModel organization;
   private String ceeposLine;
+  private Boolean hasPedagogyForm;
 }

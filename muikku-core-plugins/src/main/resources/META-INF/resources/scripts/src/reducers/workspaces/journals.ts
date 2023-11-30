@@ -1,40 +1,18 @@
 import { Reducer } from "redux";
-import { JournalComment } from "~/@types/journal";
 import { ActionType } from "~/actions";
-import { MaterialCompositeRepliesStateType } from "./index";
-import { EvaluationJournalFeedback } from "../../@types/evaluation";
+import {
+  WorkspaceJournal,
+  WorkspaceJournalComment,
+  EvaluationJournalFeedback,
+} from "~/generated/client";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 
 /**
- * WorkspaceJournalType
- */
-export interface WorkspaceJournalType {
-  id: number;
-  workspaceEntityId: number;
-  userEntityId: number;
-  firstName: string;
-  lastName: string;
-  content: string;
-  title: string;
-  created: string;
-  commentCount: number;
-  /**
-   * Whether journal is "mandatory" assignment and material field
-   */
-  isMaterialField: boolean;
-  /**
-   * Material field reply status. ANSWERED | "SUBMITTED" are only ones
-   * that matters
-   */
-  workspaceMaterialReplyState: MaterialCompositeRepliesStateType | null;
-}
-
-/**
  * WorkspaceJournalWithComments
  */
-export interface WorkspaceJournalWithComments extends WorkspaceJournalType {
-  comments?: JournalComment[];
+export interface WorkspaceJournalWithComments extends WorkspaceJournal {
+  comments?: WorkspaceJournalComment[];
 }
 
 /**
@@ -51,7 +29,7 @@ export interface WorkspaceJournalFilters {
 export interface WorkspaceJournalFeedback extends EvaluationJournalFeedback {}
 
 /**
- * WorkspaceJournalsType
+ * JournalsState
  */
 export interface JournalsState {
   journalFeedback?: WorkspaceJournalFeedback;

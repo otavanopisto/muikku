@@ -11,8 +11,22 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 public interface WorkspaceSearchBuilder {
 
   SearchResult search();
-  
+
   SearchResults<List<IndexedWorkspace>> searchTyped();
+  
+  /**
+   * List distinct curriculums from indexed workspaces.
+   * 
+   * @return a list of distinct curriculums from workspaces
+   */
+  Set<SchoolDataIdentifier> listDistinctWorkspaceCurriculums();
+
+  /**
+   * List distinct education types from indexed workspaces.
+   * 
+   * @return a list of distinct education types from workspaces
+   */
+  Set<SchoolDataIdentifier> listDistinctWorkspaceEducationTypes();
   
   List<SchoolDataIdentifier> getSubjects();
 
@@ -106,4 +120,5 @@ public interface WorkspaceSearchBuilder {
   WorkspaceSearchBuilder addOrganizationRestriction(OrganizationRestriction organizationRestriction);
   WorkspaceSearchBuilder setOrganizationRestrictions(List<OrganizationRestriction> organizationRestrictions);
   List<OrganizationRestriction> getOrganizationRestrictions();
+
 }

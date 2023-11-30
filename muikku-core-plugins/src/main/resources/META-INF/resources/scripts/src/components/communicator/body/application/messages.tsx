@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { colorIntToHex, getName } from "~/util/modifiers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -25,7 +25,6 @@ import {
 import {
   MessagesStateType,
   MessagesState,
-  MessageSearchResult,
 } from "~/reducers/main-function/messages";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
@@ -39,7 +38,12 @@ import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import InfoPopover from "~/components/general/info-popover";
 import Dropdown from "~/components/general/dropdown";
-import { MessageThread, MessageThreadExpanded } from "~/generated/client";
+import {
+  MessageSearchResult,
+  instanceOfMessageThread,
+  MessageThread,
+  MessageThreadExpanded,
+} from "~/generated/client";
 
 /**
  * CommunicatorMessagesProps
@@ -97,7 +101,7 @@ class CommunicatorMessages extends BodyScrollLoader<
    * @param thread thread
    * @param userId userId
    */
-  getThreadUserNames(thread: MessageThread, userId: number): any {
+  getThreadUserNames(thread: MessageThread, userId: number) {
     if (thread.senderId !== userId || !thread.recipients) {
       if (thread.senderId === userId) {
         return <span>{this.props.t("labels.self")}</span>;
@@ -135,28 +139,30 @@ class CommunicatorMessages extends BodyScrollLoader<
     const messageRecipientsList = thread.recipients.map((recipient) => {
       if (recipient.userEntityId === userId) {
         return (
-          <span key={recipient.recipientId}>{this.props.t("labels.self")}</span>
+          <span key={recipient.userEntityId}>
+            {this.props.t("labels.self")}
+          </span>
         );
       }
       if (recipient.archived === true) {
         return (
-          <span key={recipient.recipientId} className="message__user-archived">
+          <span key={recipient.userEntityId} className="message__user-archived">
             {this.props.t("labels.archived")}
           </span>
         );
       }
 
-      const name = getName(recipient as any, !this.props.status.isStudent);
+      const name = getName(recipient, !this.props.status.isStudent);
 
       if (recipient.studiesEnded === true) {
         return (
           <InfoPopover
-            key={recipient.recipientId}
-            userId={recipient.recipientId}
+            key={recipient.userEntityId}
+            userId={recipient.userEntityId}
           >
             <span
               className="message__user-studies-ended"
-              key={recipient.recipientId}
+              key={recipient.userEntityId}
             >
               {name}
             </span>
@@ -164,8 +170,11 @@ class CommunicatorMessages extends BodyScrollLoader<
         );
       }
       return (
-        <InfoPopover key={recipient.recipientId} userId={recipient.recipientId}>
-          <span key={recipient.recipientId}>{name}</span>
+        <InfoPopover
+          key={recipient.userEntityId}
+          userId={recipient.userEntityId}
+        >
+          <span key={recipient.userEntityId}>{name}</span>
         </InfoPopover>
       );
     });
@@ -199,14 +208,27 @@ class CommunicatorMessages extends BodyScrollLoader<
   }
 
   /**
+   * Type guard for MessageThread
+   * @param value value
+   * @returns value is MessageThread
+   */
+  isMessageThread = (value: object): value is MessageThread =>
+    instanceOfMessageThread(value);
+
+  /**
    * setCurrentThread
    * @param threadOrSearchResult threadOrSearchResult
    */
   setCurrentThread(threadOrSearchResult: MessageThread | MessageSearchResult) {
-    window.location.hash =
-      window.location.hash.split("/")[0] +
-      "/" +
-      threadOrSearchResult.communicatorMessageId;
+    if (this.isMessageThread(threadOrSearchResult)) {
+      window.location.hash = `${window.location.hash.split("/")[0]}/${
+        threadOrSearchResult.communicatorMessageId
+      }`;
+    } else {
+      window.location.hash = `#${threadOrSearchResult.folder.toLowerCase()}/${
+        threadOrSearchResult.communicatorMessageId
+      }`;
+    }
   }
 
   /**
@@ -333,14 +355,15 @@ class CommunicatorMessages extends BodyScrollLoader<
                     openByHover
                     content={
                       <p>
-                        {`${localizeTime.date(
-                          message.created
-                        )} klo ${localizeTime.date(message.created, "h:mm")}`}
+                        {`${localize.date(message.created)} - ${localize.date(
+                          message.created,
+                          "LT"
+                        )}`}
                       </p>
                     }
                   >
                     <div className="application-list__header-item-date">
-                      {localizeTime.date(message.created)}
+                      {localize.date(message.created)}
                     </div>
                   </Dropdown>
                 </ApplicationListItemHeader>
@@ -477,11 +500,11 @@ class CommunicatorMessages extends BodyScrollLoader<
                       openByHover
                       content={
                         <p>
-                          {`${localizeTime.date(
+                          {`${localize.date(
                             thread.threadLatestMessageDate
-                          )} klo ${localizeTime.date(
+                          )} - ${localize.date(
                             thread.threadLatestMessageDate,
-                            "h:mm"
+                            "LT"
                           )}`}
                         </p>
                       }
@@ -492,7 +515,7 @@ class CommunicatorMessages extends BodyScrollLoader<
                           ns: "messaging",
                         })}
                       >
-                        {`${localizeTime.date(thread.threadLatestMessageDate)}`}
+                        {`${localize.date(thread.threadLatestMessageDate)}`}
                       </div>
                     </Dropdown>
                   </ApplicationListItemHeader>

@@ -6,7 +6,6 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { AssessmentRequest } from "~/@types/evaluation";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import {
   UpdateNeedsReloadEvaluationRequests,
@@ -24,12 +23,15 @@ import {
   ArchiveStudent,
   archiveStudent,
 } from "~/actions/main-function/evaluation/evaluationActions";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ArchiveDialogProps
  */
-interface ArchiveDialogProps extends AssessmentRequest, WithTranslation {
+interface ArchiveDialogProps
+  extends EvaluationAssessmentRequest,
+    WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   place: "card" | "modal";
@@ -119,8 +121,10 @@ class ArchiveDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.archiveStudent.bind(this, closeDialog)}
         >
-          {/* {t("evaluation:actions.remove_student")} */}
-          {this.props.t("actions.archiveStudent", { ns: "evaluation" })}
+          {this.props.t("actions.archive", {
+            ns: "evaluation",
+            context: "student",
+          })}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
@@ -128,7 +132,10 @@ class ArchiveDialog extends React.Component<
         >
           {this.props.place === "card"
             ? this.props.t("actions.cancel")
-            : "Ei (TODO: Translate)"}{" "}
+            : this.props.t("actions.cancel", {
+                ns: "evaluation",
+                context: "studentArchive",
+              })}
         </Button>
       </div>
     );

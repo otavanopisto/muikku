@@ -1,9 +1,9 @@
 import * as React from "react";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { sleep } from "~/helper-functions/shared";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { AlternativeStudyOption } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * AlternativeStudyObject
@@ -18,7 +18,7 @@ export interface AlternativeStudyObject {
  */
 export interface UseStudentAlternativeOptions {
   isLoading: boolean;
-  options: AlternativeStudyObject;
+  options: AlternativeStudyOption;
 }
 
 /**
@@ -31,6 +31,8 @@ const initialState: UseStudentAlternativeOptions = {
     religionSelection: null,
   },
 };
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook to load and changes alternative options
@@ -79,10 +81,9 @@ export const useStudentAlternativeOptions = (
          */
         const [loadedStudentAlternativeOptions] = await Promise.all([
           (async () => {
-            const options = (await promisify(
-              mApi().hops.student.alternativeStudyOptions.read(studentId),
-              "callback"
-            )()) as AlternativeStudyObject;
+            const options = await hopsApi.getStudentAlternativeStudyOptions({
+              studentIdentifier: studentId,
+            });
 
             return options;
           })(),
@@ -163,14 +164,18 @@ export const useStudentAlternativeOptions = (
    */
   const updateStudyOptions = async (
     studentId: string,
-    options: AlternativeStudyObject
+    options: AlternativeStudyOption
   ) => {
     try {
-      await promisify(
-        mApi().hops.student.alternativeStudyOptions.create(studentId, options),
-        "callback"
-      )();
+      await hopsApi.saveStudentAlternativeStudyOptions({
+        studentIdentifier: studentId,
+        saveStudentAlternativeStudyOptionsRequest: options,
+      });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       displayNotification(err.message, "error");
     }
   };

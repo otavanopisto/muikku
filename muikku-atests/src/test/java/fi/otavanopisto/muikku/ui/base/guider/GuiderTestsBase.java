@@ -224,25 +224,7 @@ public class GuiderTestsBase extends AbstractUITest {
       OffsetDateTime signupEnd = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end, signupStart, signupEnd);
       
-      CourseActivity ca = new CourseActivity();
-      ca.setCourseId(course1.getId());
-      CourseActivitySubject cas = new CourseActivitySubject();
-      cas.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
-      ca.setSubjects(Arrays.asList(cas));
-      ca.setCourseName(course1.getName());
-      CourseActivityAssessment caa = new CourseActivityAssessment();
-      caa.setCourseModuleId(cas.getCourseModuleId());
-      caa.setGrade("Excellent");
-      caa.setPassingGrade(true);
-      caa.setDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
-      caa.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
-      caa.setText("Test evaluation.");
-      caa.setState(CourseActivityState.GRADED_PASS);
-      ca.setAssessments(Arrays.asList(caa));
-      List<CourseActivity> courseActivities = new ArrayList<>();
-      courseActivities.add(ca);
-      
-      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1, student.getId(), courseActivities);
+      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1, student.getId(), new ArrayList<>());
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(courseId, courseStaffMember)
@@ -270,7 +252,30 @@ public class GuiderTestsBase extends AbstractUITest {
         waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
-        waitForElementToBeClickable(".button--muikku-withdraw-assignment");
+        CourseActivity ca = new CourseActivity();
+        ca.setCourseId(course1.getId());
+        CourseActivitySubject cas = new CourseActivitySubject();
+        cas.setCourseModuleId(course1.getCourseModules().iterator().next().getId());
+        ca.setSubjects(Arrays.asList(cas));
+        ca.setCourseName(course1.getName());
+        CourseActivityAssessment caa = new CourseActivityAssessment();
+        caa.setCourseModuleId(cas.getCourseModuleId());
+        caa.setGrade("Excellent");
+        caa.setPassingGrade(true);
+        caa.setDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+        caa.setGradeDate(TestUtilities.toDate(TestUtilities.getLastWeek()));
+        caa.setText("Test evaluation.");
+        caa.setState(CourseActivityState.GRADED_PASS);
+        ca.setAssessments(Arrays.asList(caa));
+        List<CourseActivity> courseActivities = new ArrayList<>();
+        courseActivities.add(ca);
+        
+        courseStudent = new MockCourseStudent(7l, course1, student.getId(), courseActivities);
+        
+        mockBuilder
+        .addCourseStudent(courseId, courseStudent)
+        .build();
+        
         mockBuilder
           .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
           .mockCompositeGradingScales()
@@ -595,10 +600,9 @@ public class GuiderTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-title", "Nettilukion opiskelumaksu 6 kk");
         assertTextIgnoreCase(".application-list__header-primary--product .application-list__header-primary-description", "opiskelijalle on luotu tilaus.");
         assertPresent(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
-        WebElement deleteOrderButton = findElement(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order");
         waitAndClick(".dialog--dialog-delete-order.dialog--visible .button--fatal");
-        waitForStaleness(deleteOrderButton);
+        waitUntilElementGoesAway(".application-list__header-primary--product .application-list__header-primary-actions .button--delete-student-order", (long) 10);
         assertPresent(".icon-cart-plus");
       }finally {
         deleteUserGroupUsers();
@@ -690,7 +694,7 @@ public class GuiderTestsBase extends AbstractUITest {
           navigate("/profile#general", false);
           assertText(".application-sub-panel__item-data--study-end-date span:first-child", TestUtilities.getNextWeek().format(DateTimeFormatter.ofPattern("d.M.yyyy")));
           navigate("/profile#purchases", false);
-          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Peruutit tilauksen.");
+          assertTextIgnoreCase(".application-list__item--product .application-list__header-primary-description", "Tilaus on peruttu.");
           logout();
           mockBuilder.mockLogin(admin);
           login();

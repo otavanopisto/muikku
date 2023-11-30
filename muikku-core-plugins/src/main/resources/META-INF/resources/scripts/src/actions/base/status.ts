@@ -1,12 +1,10 @@
 import { Dispatch } from "react-redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import MApi from "~/api/api";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
-import { WorkspaceBasicInfo } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
-import i18n from "~/locales/i18n";
+import { WorkspaceBasicInfo } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -144,7 +142,7 @@ async function loadWhoAMI(
     },
   });
 
-  i18n.changeLanguage(whoAmI.locale);
+  localize.language = whoAmI.locale;
 
   dispatch({
     type: "LOCALE_UPDATE",
@@ -165,14 +163,12 @@ async function loadWorkspacePermissions(
   dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
   readyCb: () => void
 ) {
+  const workspaceApi = MApi.getWorkspaceApi();
   const coursepickerApi = MApi.getCoursepickerApi();
 
-  const permissions = <string[]>(
-    await promisify(
-      mApi().workspace.workspaces.permissions.read(workspaceId),
-      "callback"
-    )()
-  );
+  const permissions = await workspaceApi.getWorkspacePermissions({
+    workspaceEntityId: workspaceId,
+  });
 
   const canCurrentWorkspaceSignup = await coursepickerApi.workspaceCanSignUp({
     workspaceId,
@@ -269,17 +265,16 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const workspaceUrlName = window.location.pathname.split("/")[2];
 
       let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
 
       if (workspaceUrlName) {
-        workspaceBasicInfo = <WorkspaceBasicInfo>(
-          await promisify(
-            mApi().workspace.workspaces.basicInfo.read(workspaceUrlName),
-            "callback"
-          )()
-        );
+        workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
+          urlName: workspaceUrlName,
+        });
       }
 
       dispatch({

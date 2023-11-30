@@ -6,13 +6,13 @@ import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
-import { AssessmentRequest } from "~/@types/evaluation";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
+import {
+  EvaluationAssessmentRequest,
+  MaterialCompositeReply,
+} from "~/generated/client";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -20,8 +20,8 @@ import { useTranslation } from "react-i18next";
  */
 interface AssessmentListProps {
   evaluation: EvaluationState;
-  workspaces: WorkspaceType[];
-  selectedAssessment: AssessmentRequest;
+  workspaces: WorkspaceDataType[];
+  selectedAssessment: EvaluationAssessmentRequest;
 }
 
 /**
@@ -87,7 +87,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
    * @returns boolean whether to show assignment or not
    */
   const showAsHiddenEvaluationAssignment = (
-    compositeReply?: MaterialCompositeRepliesType
+    compositeReply?: MaterialCompositeReply
   ): boolean =>
     compositeReply &&
     (compositeReply.submitted !== null ||
@@ -215,7 +215,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
                 className="link link--evaluation link--evaluation-open-close"
                 onClick={handleCloseAllMaterialContentClick}
               >
-                {t("actions.hideAll")}
+                {t("actions.closeAll")}
               </Link>
               <Link
                 className="link link--evaluation link--evaluation-open-close"

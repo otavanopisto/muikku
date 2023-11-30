@@ -6,6 +6,7 @@ import java.util.Set;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
@@ -63,5 +64,9 @@ public interface WorkspaceSchoolDataBridge {
   public WorklistBasePriceRestModel getWorkspaceBasePrice(String workspaceIdentifier);
   public BridgeResponse<WorklistItemBilledPriceRestModel> getWorkspaceBilledPrice(String courseAssessmentIdentifier);
   public BridgeResponse<WorklistItemBilledPriceRestModel> updateWorkspaceBilledPrice(WorklistItemBilledPriceRestModel payload);
+  
+  // #6473: Paid assessments
+  
+  public WorkspaceAssessmentPrice getWorkspaceAssessmentPrice(String workspaceIdentifier);
 
 }

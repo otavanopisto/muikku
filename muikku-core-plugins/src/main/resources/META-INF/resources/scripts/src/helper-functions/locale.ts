@@ -35,17 +35,3 @@ export const outputCorrectDatePickerLocale = (locale: string) => {
       return locale;
   }
 };
-
-/**
- * Outputs correct locale for lang attribute
- * TODO: ADD i18next support
- */
-export const langAttributeLocale: { [key: string]: string } = {
-  en: "englanti (EN)",
-  fi: "suomi (FI)",
-  sv: "ruotsi (SV)",
-  de: "saksa (DE)",
-  ja: "japani (JA)",
-  ru: "venäjä (RU)",
-  es: "espanja (ES)",
-};

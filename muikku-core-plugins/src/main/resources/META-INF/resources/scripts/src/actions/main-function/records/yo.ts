@@ -1,48 +1,48 @@
 import actions from "../../base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
-  YOEnrollmentType,
-  YOStatusType,
-  YOMatriculationSubjectType,
-  YOEligibilityStatusType,
-  YOEligibilityType,
-  SubjectEligibilityType,
-  SubjectEligibilityListType,
-  SubjectEligibilityStatusType,
-  EligibleStatusType,
+  MatriculationStatusType,
+  MatriculationSubjectWithEligibilityStatus,
+  MatriculationSubjectEligibilityStatusType,
 } from "~/reducers/main-function/records/yo";
 import { StateType } from "~/reducers";
+import { Dispatch } from "react-redux";
+import {
+  MatriculationEligibility,
+  MatriculationEnrollment,
+  MatriculationEligibilityStatus,
+  MatriculationSubject,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
 
 export type UPDATE_STUDIES_YO = SpecificActionType<
   "UPDATE_STUDIES_YO",
-  YOEnrollmentType[]
+  MatriculationEnrollment[]
 >;
 export type UPDATE_STUDIES_YO_ELIGIBILITY_STATUS = SpecificActionType<
   "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS",
-  YOEligibilityStatusType
+  MatriculationEligibilityStatus
 >;
 export type UPDATE_STUDIES_YO_ELIGIBILITY = SpecificActionType<
   "UPDATE_STUDIES_YO_ELIGIBILITY",
-  YOEligibilityType
+  MatriculationEligibility
 >;
 export type UPDATE_STUDIES_YO_SUBJECTS = SpecificActionType<
   "UPDATE_STUDIES_YO_SUBJECTS",
-  YOMatriculationSubjectType[]
+  MatriculationSubject[]
 >;
 export type UPDATE_STUDIES_YO_STATUS = SpecificActionType<
   "UPDATE_STUDIES_YO_STATUS",
-  YOStatusType
+  MatriculationStatusType
 >;
 export type UPDATE_STUDIES_SUBJECT_ELIGIBILITY = SpecificActionType<
   "UPDATE_STUDIES_SUBJECT_ELIGIBILITY",
-  SubjectEligibilityListType
+  MatriculationSubjectWithEligibilityStatus[]
 >;
 export type UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS = SpecificActionType<
   "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
-  SubjectEligibilityStatusType
+  MatriculationSubjectEligibilityStatusType
 >;
 /**
  * updateYOTriggerType
@@ -63,24 +63,24 @@ export interface UpdateMatriculationSubjectEligibilityTriggerType {
 const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibilityTriggerType =
   function updateMatriculationSubjectEligibility() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const recordsApi = MApi.getRecordsApi();
+
       try {
         dispatch({
           type: "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
-          payload: <SubjectEligibilityStatusType>"LOADING",
+          payload: <MatriculationSubjectEligibilityStatusType>"LOADING",
         });
 
         const state = getState();
         const selectedHOPSSubjects =
           state.hops.value.studentMatriculationSubjects;
 
-        const subjects: Array<YOMatriculationSubjectType> = (await promisify(
-          mApi().records.matriculationSubjects.read(),
-          "callback"
-        )()) as Array<YOMatriculationSubjectType>;
-        const selectedSubjects: Array<YOMatriculationSubjectType> = [];
+        const subjects = await recordsApi.getMatriculationSubjects();
+
+        const selectedSubjects: MatriculationSubject[] = [];
 
         selectedHOPSSubjects.map((subject) => {
           const match = subjects.find((sub) => sub.code === subject);
@@ -88,32 +88,33 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
           selectedSubjects.push(match ? match : null);
         });
 
-        const subjectEligibilityDataArray: Array<SubjectEligibilityType> = [];
+        const subjectEligibilityDataArray: MatriculationSubjectWithEligibilityStatus[] =
+          [];
 
         await Promise.all(
           selectedSubjects.map(async (subject) => {
             try {
-              const subjectEligibility: any = await promisify(
-                mApi().records.matriculationEligibility.read({
+              const subjectEligibility =
+                await recordsApi.getMatriculationSubjectEligibility({
                   subjectCode: subject.subjectCode,
-                }),
-                "callback"
-              )();
-              const subjectEligibilityData = {
-                subjectCode: subject.subjectCode,
-                code: subject.code,
-                eligibility: subjectEligibility.eligible
-                  ? <EligibleStatusType>"ELIGIBLE"
-                  : <EligibleStatusType>"NOT_ELIGIBLE",
-                requiredCount: subjectEligibility.requirePassingGrades,
-                acceptedCount:
-                  subjectEligibility.acceptedCourseCount +
-                  subjectEligibility.acceptedTransferCreditCount,
-                loading: false,
-              };
+                });
+
+              const subjectEligibilityData: MatriculationSubjectWithEligibilityStatus =
+                {
+                  subjectCode: subject.subjectCode,
+                  code: subject.code,
+                  eligibility: subjectEligibility.eligible
+                    ? "ELIGIBLE"
+                    : "NOT_ELIGIBLE",
+                  requiredCount: subjectEligibility.requirePassingGrades,
+                  acceptedCount:
+                    subjectEligibility.acceptedCourseCount +
+                    subjectEligibility.acceptedTransferCreditCount,
+                  loading: false,
+                };
               subjectEligibilityDataArray.push(subjectEligibilityData);
             } catch (err) {
-              if (!(err instanceof MApiError)) {
+              if (!isMApiError(err)) {
                 throw err.message;
               }
               dispatch(
@@ -137,10 +138,10 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 
         dispatch({
           type: "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
-          payload: <SubjectEligibilityStatusType>"READY",
+          payload: <MatriculationSubjectEligibilityStatusType>"READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
@@ -160,18 +161,15 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
  */
 const updateYO: updateYOTriggerType = function updateYO() {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     const state = getState();
+    const recordsApi = MApi.getRecordsApi();
+    const matriculationApi = MApi.getMatriculationApi();
 
     try {
-      //      let exams:any =  await promisify (mApi().matriculation.exams.read({}), 'callback')();
-      //      let now: Number = new Date().getTime();
-      const matriculationExamData = (await promisify(
-        mApi().matriculation.exams.read({}),
-        "callback"
-      )()) as YOEnrollmentType[];
+      const matriculationExamData = await matriculationApi.getExams();
 
       dispatch({
         type: "UPDATE_STUDIES_YO",
@@ -180,57 +178,43 @@ const updateYO: updateYOTriggerType = function updateYO() {
 
       dispatch({
         type: "UPDATE_STUDIES_YO_STATUS",
-        payload: <YOStatusType>"LOADING",
+        payload: "LOADING",
       });
 
-      const subjects = (await promisify(
-        mApi().records.matriculationSubjects.read({
-          matriculationSubjectsLoaded: true,
-        }),
-        "callback"
-      )()) as YOMatriculationSubjectType[];
+      const subjects = await recordsApi.getMatriculationSubjects();
 
       dispatch({
         type: "UPDATE_STUDIES_YO_SUBJECTS",
         payload: subjects,
       });
 
-      const eligibility: any = await promisify(
-        mApi().records.studentMatriculationEligibility.read(
-          state.status.userSchoolDataIdentifier
-        ),
-        "callback"
-      )();
-      const eligibilityStatus = eligibility.status;
-      const eligibilityData: YOEligibilityType = {
-        coursesCompleted: eligibility.coursesCompleted,
-        coursesRequired: eligibility.coursesRequired,
-        creditPoints: eligibility.creditPoints,
-        creditPointsRequired: eligibility.creditPointsRequired,
-      };
+      const eligibility = await recordsApi.getStudentMatriculationEligibility({
+        studentIdentifier: state.status.userSchoolDataIdentifier,
+      });
 
       dispatch({
         type: "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS",
-        payload: eligibilityStatus,
+        payload: eligibility.status,
       });
 
       dispatch({
         type: "UPDATE_STUDIES_YO_ELIGIBILITY",
-        payload: eligibilityData,
+        payload: eligibility,
       });
 
       dispatch({
         type: "UPDATE_STUDIES_YO_STATUS",
-        payload: <YOStatusType>"READY",
+        payload: "READY",
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
         actions.displayNotification(
           i18n.t("notifications.loadError", {
             ns: "studies",
+            context: "matriculation",
           }),
           "error"
         )

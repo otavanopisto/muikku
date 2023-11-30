@@ -17,20 +17,20 @@ import {
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
 import { bindActionCreators } from "redux";
-import { JournalComment } from "~/@types/journal";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
   UpdateWorkspaceJournalCommentTriggerType,
   updatedWorkspaceJournalComment,
 } from "../../../../../actions/workspaces/journals";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalCommentListProps
  */
 interface WorkspaceJournalCommentListItemProps {
-  journalComment: JournalComment;
+  journalComment: WorkspaceJournalComment;
   workspaceEntityId: number;
   status: StatusType;
   updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType;
@@ -100,7 +100,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
   const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
   const formatedDate = `${moment(created).format("l")} - ${moment(
     created
-  ).format("h:mm")}`;
+  ).format("LT")}`;
 
   return (
     <ApplicationListItem className="journal journal--comment">
@@ -147,7 +147,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                {t("actions.edit")}
+                {t("actions.edit", { ns: "common", context: "comment" })}
               </Link>
 
               <DeleteJournalComment

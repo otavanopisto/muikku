@@ -1,4 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+import {
+  HopsHistoryEntry,
+  StudentStudyActivity,
+  WorkspaceSuggestion,
+} from "~/generated/client";
+
 /**
  * UsedAs
  */
@@ -230,7 +237,6 @@ export enum Education {
   NO_PREVIOUS_EDUCATION = "NO_PREVIOUS_EDUCATION",
   SOMETHING_ELSE = "SOMETHING_ELSE",
 }
-
 /**
  * FollowUpStudies
  */
@@ -263,14 +269,6 @@ export enum FollowUpGoal {
   WORKING_LIFE = "WORKING_LIFE",
   NO_FOLLOW_UP_GOALS = "NO_FOLLOW_UP_GOALS",
   DONT_KNOW = "DONT_KNOW",
-}
-
-export enum CourseStatus {
-  ONGOING = "ONGOING",
-  GRADED = "GRADED",
-  TRANSFERRED = "TRANSFERRED",
-  SUGGESTED_NEXT = "SUGGESTED_NEXT",
-  SUGGESTED_OPTIONAL = "SUGGESTED_OPTIONAL",
 }
 
 /**
@@ -306,34 +304,10 @@ export interface BasicInformation {
   studentUserEntityId: number;
   name: string;
   dateOfIssue?: Date;
-  updates?: HopsUpdate[];
+  updates?: HopsHistoryEntry[];
   studyTimeEnd?: string | null;
   educationalLevel?: string | null;
   counselorList?: string[];
-}
-
-/**
- * StudentInfo
- */
-export interface StudentInfo {
-  id: number;
-  firstName: string;
-  lastName: string;
-  studyTimeEnd: string | null;
-  studyProgrammeEducationType: string | null;
-  counselorList?: string[];
-}
-
-/**
- * HopsUpdates
- */
-export interface HopsUpdate {
-  date: Date;
-  details: string | null;
-  id: number;
-  modifier: string;
-  modifierHasImage: boolean;
-  modifierId: number;
 }
 
 /**
@@ -358,15 +332,6 @@ export interface HopsMotivationAndStudy {
 }
 
 /**
- * HopsStudies
- */
-export interface HopsStudies {
-  usedHoursPerWeek: number;
-  ethics: boolean;
-  finnishAsSecondLanguage: boolean;
-}
-
-/**
  * HopsStudyPeriodPlan
  */
 export interface HopsStudyPeriodPlan {
@@ -376,28 +341,6 @@ export interface HopsStudyPeriodPlan {
   month4: string;
   month5: string;
   month6: string;
-}
-
-/**
- * HopsPlanningStudies
- */
-export interface HopsPlanningStudies {
-  usedHoursPerWeek: number;
-  ethics: boolean;
-  finnishAsSecondLanguage: boolean;
-}
-
-/**
- * FollowUpGoal
- */
-export interface FollowUp {
-  graduationGoal: Date | null;
-  followUpGoal: string;
-  followUpStudies?: string;
-  followUpStudiesElse?: string;
-  studySector?: string;
-  studySectorElse?: string;
-  followUpPlanExtraInfo?: string;
 }
 
 /**
@@ -448,31 +391,6 @@ export interface StudentSelfImage {
 }
 
 /**
- * StudentLearningMethod
- */
-export interface StudentLearningMethod {
-  byMemorizing: number;
-  byTakingNotes: number;
-  byDrawing: number;
-  byListeningTeacher: number;
-  byWatchingVideos: number;
-  byFollowingOthers: number;
-  someOtherMethod?: string;
-}
-
-/**
- * StudentSupportive
- */
-export interface StudentSupportive {
-  noSupport: number;
-  family: number;
-  friend: number;
-  supportPerson: number;
-  teacher: number;
-  somethingElse?: string;
-}
-
-/**
  * SchoolSubject
  */
 export interface SchoolSubject {
@@ -492,34 +410,6 @@ export interface Course {
 }
 
 /**
- * StudentActivityCourse
- */
-export interface StudentActivityCourse {
-  subjectName: string | null;
-  subject: string;
-  courseId: number | null; // muikun työtilan id (jos kyseessä on arvioitu tai meneillään oleva kurssi)
-  courseNumber: number;
-  courseName: string;
-  grade: number; // jos on arvioitu tahi hyväksiluettu
-  status: CourseStatus;
-  date: string;
-  transferCreditMandatory: boolean | null;
-  id: number | null;
-}
-
-/**
- * StudiesCourseData
- */
-export interface StudiesCourseData {
-  completedSubjectListOfIds?: number[];
-  approvedSubjectListOfIds?: number[];
-  inprogressSubjectListOfIds?: number[];
-  selectedOptionalListOfIds?: number[];
-  ownHopsChoosed?: number;
-  ownHopsCompleted?: number;
-}
-
-/**
  * UploadingValue
  */
 export interface UploadingValue {
@@ -531,53 +421,16 @@ export interface UploadingValue {
 }
 
 /**
- * Suggestion
- */
-export interface Suggestion {
-  id: number;
-  name: string;
-  subject: string;
-  courseNumber: number;
-  urlName: string;
-  hasCustomImage: boolean;
-  nameExtension: string | null;
-  courseType: CourseType;
-  description?: string | null;
-}
-
-/**
  * Course
  */
-export interface SuggestedCourse extends Suggestion {
+export interface SuggestedCourse extends WorkspaceSuggestion {
   suggestedAsNext: boolean;
 }
 
 /**
- * FOR SOME REASON... backend's course type is defined
- * in finnish in the backend side
- */
-type CourseType = "Nonstop" | "Ryhmäkurssi";
-
-/**
  * SuggestionWithWorkspaceInfo
  */
-export interface SuggestionWithWorkspaceInfo extends Suggestion {}
-
-/**
- * StudentCourseChoice
- */
-export interface StudentCourseChoice {
-  subject: string;
-  courseNumber: number;
-}
-
-/**
- * SupervisorOptionalSuggestion
- */
-export interface SupervisorOptionalSuggestion {
-  subject: string;
-  courseNumber: number;
-}
+export interface SuggestionWithWorkspaceInfo extends WorkspaceSuggestion {}
 
 /**
  * StudentActivityByStatus
@@ -586,19 +439,19 @@ export interface StudentActivityByStatus {
   /**
    * List of ongoing courses
    */
-  onGoingList: StudentActivityCourse[];
+  onGoingList: StudentStudyActivity[];
   /**
    * List of suggested courses for next
    */
-  suggestedNextList: StudentActivityCourse[];
+  suggestedNextList: StudentStudyActivity[];
   /**
    * List of transfered courses
    */
-  transferedList: StudentActivityCourse[];
+  transferedList: StudentStudyActivity[];
   /**
    * List of graded courses
    */
-  gradedList: StudentActivityCourse[];
+  gradedList: StudentStudyActivity[];
   /**
    * skillsAndArt
    */
@@ -628,7 +481,7 @@ export interface UploadingValue {
  * SkillAndArtByKeys
  */
 export interface ActivityBySubject {
-  [key: string]: StudentActivityCourse[];
+  [key: string]: StudentStudyActivity[];
 }
 
 /**

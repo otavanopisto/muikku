@@ -9,23 +9,22 @@ import ApplicationList, {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { StateType } from "~/reducers";
 import { useJournalComments } from "../assignments-and-diaries/hooks/useJournalComments";
 import { useTranslation } from "react-i18next";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { WorkspaceJournalType } from "~/reducers/workspaces/journals";
 import JournalComment from "./journalComment";
-import { localizeTime } from "~/locales/i18n";
+import { WorkspaceJournal } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 
 /**
  * JournalProps
  */
 interface JournalProps {
   displayNotification: DisplayNotificationTriggerType;
-  journal: WorkspaceJournalType;
+  journal: WorkspaceJournal;
   open: boolean;
   onJournalClick: (
     id: number
@@ -79,7 +78,10 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
         <div className="application-list__item-header-aside">
-          <span>{localizeTime.date(journal.created, "L LT")}</span>
+          <span>
+            {localize.date(journal.created)} -{" "}
+            {localize.date(journal.created, "LT")}
+          </span>
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">

@@ -2,85 +2,145 @@ import {
   SupportAction,
   SupportActionMatriculationExamination,
   SupportReason,
-  UserInfo,
 } from "~/@types/pedagogy-form";
+import { PedagogyUserInfo } from "~/generated/client";
 import { OptionDefault } from "../react-select/types";
+import i18n from "~/locales/i18n";
 
 /**
  * Is used to give correct translation for the list of edited fields
  */
 export const formFieldsWithTranslation: { [key: string]: string } = {
-  authorOfDocument: "Asiakirjan laatija",
-  documentParticipants: "Asiakirjan laatimiseen osallistuneet",
-  cooperativePartners: "Yhteistyötahot",
-  studentStrengths: "Opiskelijan vahvuudet",
-  supportReasonsOptions: "Pedagogisen tuen perusteet",
-  supportReasonOther: "Pedagogisen tuen perusteet - Muu peruste",
-  supportActions: "Suunnitellut tukitoimet",
-  supportActionOther: "Suunnitellut tukitoimet - Muu toimenpide",
-  matriculationExaminationSupport: "Ennakkosuunnitelma ylioppilaskirjoituksiin",
-  matriculationExaminationSupportOther:
-    "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide",
-  studentOpinionOfSupport: "Opiskelijan näkemys tuen vaikuttavuudesta",
-  schoolOpinionOfSupport: "Oppilaitoksen näkemys tuen vaikuttavuudesta",
-  supportActionsImplemented: "Toteutetut tukitoimet",
+  authorOfDocument: i18n.t("labels.authorOfDocument", {
+    ns: "pedagogySupportPlan",
+  }),
+  documentParticipants: i18n.t("labels.documentParticipants", {
+    ns: "pedagogySupportPlan",
+  }),
+  cooperativePartners: i18n.t("labels.cooperativePartners", {
+    ns: "pedagogySupportPlan",
+  }),
+  studentStrengths: i18n.t("labels.studentStrengths", {
+    ns: "pedagogySupportPlan",
+  }),
+  supportReasonsOptions: i18n.t("labels.basisForSupport", {
+    ns: "pedagogySupportPlan",
+    context: "pedagogy",
+  }),
+  supportReasonOther: i18n.t("labels.basisForSupport", {
+    ns: "pedagogySupportPlan",
+    context: "else",
+  }),
+  supportActions: i18n.t("labels.plannedActions", {
+    ns: "pedagogySupportPlan",
+  }),
+  supportActionOther: i18n.t("labels.plannedActions", {
+    ns: "pedagogySupportPlan",
+    context: "else",
+  }),
+  matriculationExaminationSupport: i18n.t("labels.matriculationPrePlan", {
+    ns: "pedagogySupportPlan",
+  }),
+  matriculationExaminationSupportOther: i18n.t("labels.matriculationPrePlan", {
+    ns: "pedagogySupportPlan",
+    context: "else",
+  }),
+  studentOpinionOfSupport: i18n.t("labels.opinionOfSupport", {
+    ns: "pedagogySupportPlan",
+    context: "student",
+  }),
+  schoolOpinionOfSupport: i18n.t("labels.opinionOfSupport", {
+    ns: "pedagogySupportPlan",
+    context: "school",
+  }),
+  supportActionsImplemented: i18n.t("labels.implementedActions", {
+    ns: "pedagogySupportPlan",
+  }),
 };
 
 export const supportReasonsOptions: OptionDefault<SupportReason>[] = [
   {
     value: "disease",
-    label: "Sairaus",
+    label: i18n.t("labels.disease", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "disability",
-    label: "Vamma",
+    label: i18n.t("labels.disability", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "lifeSituation",
-    label: "Erityisen vaikea elämäntilanne",
+    label: i18n.t("labels.lifeSituation", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "readingAndWritingDifficulties",
-    label: "Lukemisen ja kirjoittamisen erityisvaikeus",
+    label: i18n.t("labels.readingAndWritingDifficulties", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "foreignLanguageDifficulties",
-    label: "Vieraskielisyys",
+    label: i18n.t("labels.foreignLanguageDifficulties", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "learningDifficulties",
-    label: "Oppimisvaikeus",
+    label: i18n.t("labels.learningDifficulties", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "other",
-    label: "Muu?",
+    label: i18n.t("labels.other", {
+      ns: "pedagogySupportPlan",
+      context: "support",
+    }),
   },
 ];
 
 export const supportActionsOptions: OptionDefault<SupportAction>[] = [
   {
     value: "remedialInstruction",
-    label: "Tukiopetus",
+    label: i18n.t("labels.remedialInstruction", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "specialEducation",
-    label: "Erityisopetus",
+    label: i18n.t("labels.specialEducation", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "extraTime",
-    label: "Lisäaika",
+    label: i18n.t("labels.extraTime", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "scheduledStudies",
-    label: "Aikataulutetut opintojaksot",
+    label: i18n.t("labels.scheduledStudies", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "routedStudies",
-    label: "Polutetut opinnot",
+    label: i18n.t("labels.routedStudies", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "other",
-    label: "Muu toimenpide",
+    label: i18n.t("labels.other", {
+      ns: "pedagogySupportPlan",
+      context: "action",
+    }),
   },
 ];
 
@@ -88,35 +148,52 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
   [
     {
       value: "extraTime",
-      label: "Lisäaika",
+      label: i18n.t("labels.extraTime", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "invidualSpace",
-      label: "Erillinen yksilötila",
+      label: i18n.t("labels.invidualSpace", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "smallGroupSpace",
-      label: "Erillinen pienryhmätila",
+      label: i18n.t("labels.smallGroupSpace", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "restingPlace",
-      label: "Lepäämiseen tarkoitettu tila",
+      label: i18n.t("labels.restingPlace", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "assistant",
-      label: "Avustajan käyttö",
+      label: i18n.t("labels.assistant", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "assistedPrintAndScan",
-      label: "Avustettu tulostus ja skannaus",
+      label: i18n.t("labels.assistedPrintAndScan", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "limitedAudioMaterial",
-      label: "Ääniaineistoltaan rajoitettu koe",
+      label: i18n.t("labels.limitedAudioMaterial", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "other",
-      label: "Muu toimenpide",
+      label: i18n.t("labels.other", {
+        ns: "pedagogySupportPlan",
+        context: "action",
+      }),
     },
   ];
 
@@ -127,9 +204,9 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
  * @param studentInfo studentInfo
  * @returns builded address string
  */
-export const buildAddress = (studentInfo: UserInfo) => {
+export const buildAddress = (studentInfo: PedagogyUserInfo) => {
   // Fields and order to build address string
-  const addressFields: (keyof UserInfo)[] = [
+  const addressFields: (keyof PedagogyUserInfo)[] = [
     "streetAddress",
     "zipCode",
     "city",

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
-import { GuiderType } from "~/reducers/main-function/guider";
+import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-list.scss";
@@ -12,20 +12,20 @@ import {
   doOrderForCurrentStudent,
   DoOrderForCurrentStudentTriggerType,
 } from "~/actions/main-function/guider";
-import { PurchaseProductType } from "~/reducers/main-function/profile";
 import Dialog from "~/components/general/dialog";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
+import { CeeposPurchaseProduct } from "~/generated/client";
 
 /**
  * CeeposButtonProps
  */
 interface CeeposButtonProps {
   status: StatusType;
-  guider: GuiderType;
+  guider: GuiderState;
   doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType;
 }
 
@@ -37,7 +37,7 @@ interface CeeposButtonProps {
 export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
   const { guider, status, doOrderForCurrentStudent } = props;
   const [isConfirmDialogOpenFor, setIsConfirmDialogOpenFor] =
-    React.useState<PurchaseProductType>(null);
+    React.useState<CeeposPurchaseProduct>(null);
 
   const { t } = useTranslation("orders");
   /**
@@ -112,7 +112,7 @@ export const CeeposButton: React.FC<CeeposButtonProps> = (props) => {
    * @param closeDropdown closeDropdown
    */
   const beginOrderCreationProcess = (
-    p: PurchaseProductType,
+    p: CeeposPurchaseProduct,
     closeDropdown?: () => void
   ) => {
     setIsConfirmDialogOpenFor(p);

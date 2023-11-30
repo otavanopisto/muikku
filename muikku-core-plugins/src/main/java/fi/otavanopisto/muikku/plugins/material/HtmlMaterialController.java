@@ -1,9 +1,12 @@
 package fi.otavanopisto.muikku.plugins.material;
 
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
@@ -11,12 +14,26 @@ import fi.otavanopisto.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Dependent
 public class HtmlMaterialController {
 
   @Inject
   private HtmlMaterialDAO htmlMaterialDAO;
+  
+  @Inject
+  private WorkspaceMaterialDAO workspaceMaterialDAO;
+
+  @Inject
+  private WorkspaceMaterialReplyDAO workspaceMaterialReplyDAO;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private Event<HtmlMaterialCreateEvent> materialCreateEvent;
@@ -53,6 +70,20 @@ public class HtmlMaterialController {
 
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) throws WorkspaceMaterialContainsAnswersExeption {
     return updateHtmlMaterialHtml(htmlMaterial, html, false);
+  }
+  
+  public boolean hasStudentAnswers(HtmlMaterial htmlMaterial) {
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByMaterialId(htmlMaterial.getId());
+    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+      List<WorkspaceMaterialReply> replies = workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
+      for (WorkspaceMaterialReply reply : replies) {
+        UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
+        if (userEntityController.isStudent(userEntity)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
   
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {

@@ -8,6 +8,10 @@ import { StatusType } from "~/reducers/base/status";
 import PagerV2 from "../../pagerV2";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { buildAddress } from "../helpers";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
+import { PedagogyHistoryEntryType } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * BasicInformationProps
@@ -25,9 +29,13 @@ const itemsPerPage = 5;
  * @returns JSX.Element
  */
 const BasicInformation: React.FC<BasicInformationProps> = (props) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { status } = props;
   const { data } = usePedagogyContext();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
+  const [historyFilters, setHistoryFilters] = React.useState<
+    PedagogyHistoryEntryType[]
+  >(["EDIT", "VIEW"]);
 
   /**
    * handleCurrentPageChange
@@ -39,21 +47,50 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
   };
 
   /**
+   * handleClickHistoryFilter
+   * @param filter filter
+   */
+  const handleClickHistoryFilter =
+    (filter: PedagogyHistoryEntryType) =>
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (historyFilters.includes(filter)) {
+        unstable_batchedUpdates(() => {
+          setHistoryFilters(historyFilters.filter((f) => f !== filter));
+          setCurrentPage(0);
+        });
+      } else {
+        unstable_batchedUpdates(() => {
+          setHistoryFilters([...historyFilters, filter]);
+          setCurrentPage(0);
+        });
+      }
+    };
+
+  /**
    * renderHistory
    * @returns JSX.Element
    */
   const renderHistory = () => {
     if (!data || data.history.length === 0) {
-      return <p>Ei tapahtumia</p>;
+      return (
+        <p>
+          {t("content.empty", { ns: "pedagogySupportPlan", context: "events" })}
+        </p>
+      );
     }
 
     const offset = currentPage * itemsPerPage;
 
-    const currentHistory = data.history.slice(offset, offset + itemsPerPage);
+    // If no filters are selected, show all history entries
+    const filteredHistory = historyFilters.length
+      ? data.history.filter((item) => historyFilters.includes(item.type))
+      : data.history;
 
-    const pageCount = Math.ceil(data.history.length / itemsPerPage);
+    const currentHistory = filteredHistory.slice(offset, offset + itemsPerPage);
 
-    if (data.history.length > itemsPerPage) {
+    const pageCount = Math.ceil(filteredHistory.length / itemsPerPage);
+
+    if (filteredHistory.length > itemsPerPage) {
       return (
         <>
           <History>
@@ -98,13 +135,15 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Perustiedot</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.basicInfo", { ns: "pedagogySupportPlan" })}
+        </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
               id="studentName"
-              label="Nimi"
+              label={t("labels.name", { ns: "common" })}
               type="text"
               value={
                 data
@@ -121,7 +160,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="dateOfBirth"
-              label="Syntymäaika"
+              label={t("labels.dateOfBirth", { ns: "common" })}
               type="text"
               value={
                 (data?.studentInfo?.dateOfBirth &&
@@ -137,7 +176,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="phoneNumber"
-              label="Puhelinnumero"
+              label={t("labels.phone", { ns: "common" })}
               type="text"
               value={data?.studentInfo?.phoneNumber || "-"}
               disabled
@@ -149,7 +188,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="email"
-              label="Sähköposti"
+              label={t("labels.email", { ns: "common" })}
               type="text"
               value={data?.studentInfo?.email || "-"}
               disabled
@@ -161,7 +200,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="address"
-              label="Osoite"
+              label={t("labels.address", { ns: "common" })}
               type="text"
               value={data ? `${buildAddress(data.studentInfo)}` : "-"}
               disabled
@@ -171,7 +210,47 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
         </div>
       </fieldset>
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Muokkaushistoria</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.history", { ns: "common" })}
+        </legend>
+        <div
+          style={{
+            display: "flex",
+          }}
+        >
+          <div
+            className={`hops-container__history-filter ${
+              historyFilters.includes("EDIT")
+                ? "hops-container__history-filter--active"
+                : ""
+            }`}
+            onClick={handleClickHistoryFilter("EDIT")}
+            style={{
+              padding: "1rem",
+              textDecoration: historyFilters.includes("EDIT")
+                ? "underline"
+                : "none",
+            }}
+          >
+            {t("labels.events", { ns: "pedagogySupportPlan", context: "edit" })}
+          </div>
+          <div
+            className={`hops-container__history-filter ${
+              historyFilters.includes("EDIT")
+                ? "hops-container__history-filter--active"
+                : ""
+            }`}
+            onClick={handleClickHistoryFilter("VIEW")}
+            style={{
+              padding: "1rem",
+              textDecoration: historyFilters.includes("VIEW")
+                ? "underline"
+                : "none",
+            }}
+          >
+            {t("labels.events", { ns: "pedagogySupportPlan", context: "view" })}
+          </div>
+        </div>
         <div className="hops-container__info">{renderHistory()}</div>
       </fieldset>
     </section>

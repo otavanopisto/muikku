@@ -7,13 +7,14 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { bindActionCreators } from "redux";
 import {
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
+import { MaterialContentNode } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -23,7 +24,7 @@ interface DeleteWorkspaceMaterialDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any;
   isSection?: boolean;
-  material: MaterialContentNodeType;
+  material: MaterialContentNodeWithIdAndLogic;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
   materialEditor: WorkspaceMaterialEditorType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

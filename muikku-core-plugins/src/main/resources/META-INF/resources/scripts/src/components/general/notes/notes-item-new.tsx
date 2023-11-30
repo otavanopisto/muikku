@@ -4,16 +4,12 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
-import {
-  NotesItemCreation,
-  NotesItemCreate,
-  NotesItemPriority,
-} from "~/@types/notes";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { CreateNoteRequest, NotePriorityType } from "~/generated/client";
 
 /**
  * NotesItemNewProps
@@ -25,7 +21,7 @@ interface NotesItemNewProps extends WithTranslation {
   newNoteOwnerId: number;
   children: React.ReactElement;
   onNotesItemSaveClick?: (
-    newNotesItem: NotesItemCreate,
+    newNotesItem: CreateNoteRequest,
     onSuccess?: () => void
   ) => Promise<void>;
 }
@@ -34,7 +30,7 @@ interface NotesItemNewProps extends WithTranslation {
  * JournalCenterItemNewState
  */
 interface NotesItemNewState {
-  notesItem: NotesItemCreate;
+  notesItem: CreateNoteRequest;
   locked: boolean;
 }
 
@@ -59,8 +55,8 @@ class NotesItemNew extends SessionStateComponent<
       notesItem: {
         title: "",
         description: "",
-        type: NotesItemCreation.MANUAL,
-        priority: NotesItemPriority.NORMAL,
+        type: "MANUAL",
+        priority: "NORMAL",
         pinned: false,
         owner: props.newNoteOwnerId,
         startDate: null,
@@ -77,8 +73,8 @@ class NotesItemNew extends SessionStateComponent<
       notesItem: {
         title: "",
         description: "",
-        type: NotesItemCreation.MANUAL,
-        priority: NotesItemPriority.NORMAL,
+        type: "MANUAL",
+        priority: "NORMAL",
         pinned: false,
         owner: this.props.newNoteOwnerId,
         startDate: null,
@@ -104,9 +100,9 @@ class NotesItemNew extends SessionStateComponent<
    * @param key name of updated property
    * @param value of updated property
    */
-  handleNotesItemChange = <T extends keyof NotesItemCreate>(
+  handleNotesItemChange = <T extends keyof CreateNoteRequest>(
     key: T,
-    value: NotesItemCreate[T]
+    value: CreateNoteRequest[T]
   ) => {
     const updateNotesItem = { ...this.state.notesItem };
 
@@ -150,24 +146,24 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(e) =>
               this.handleNotesItemChange(
                 "priority",
-                e.target.value as NotesItemPriority
+                e.target.value as NotePriorityType
               )
             }
             value={this.state.notesItem.priority}
           >
-            <option value={NotesItemPriority.HIGH}>
+            <option value={NotePriorityType.High}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
                 context: "high",
               })}
             </option>
-            <option value={NotesItemPriority.NORMAL}>
+            <option value={NotePriorityType.Normal}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
                 context: "normal",
               })}
             </option>
-            <option value={NotesItemPriority.LOW}>
+            <option value={NotePriorityType.Low}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
                 context: "low",
@@ -191,7 +187,7 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={new Date()}
             maxDate={this.state.notesItem.dueDate}
@@ -209,7 +205,7 @@ class NotesItemNew extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
               this.state.notesItem.startDate !== null

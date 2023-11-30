@@ -2,7 +2,7 @@ import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import * as React from "react";
 import {
-  WorkspaceType,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import "~/sass/elements/panel.scss";
@@ -23,7 +23,7 @@ import {
  * DescriptionPanelProps
  */
 interface DescriptionPanelProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   isInFrontPage?: boolean;
   workspaceEditMode: WorkspaceEditModeStateType;
   displayNotification: DisplayNotificationTriggerType;

@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
@@ -41,6 +42,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
 import fi.otavanopisto.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
 
@@ -519,6 +521,16 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       response.getEntity().setAssessmentIdentifier(originalIdentifier);
     }
     return response;
+  }
+  
+  @Override
+  public WorkspaceAssessmentPrice getWorkspaceAssessmentPrice(String workspaceIdentifier) {
+    Long pyramusCourseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    if (pyramusCourseId == null) {
+      logger.severe(String.format("Workspace identifier %s is not valid", workspaceIdentifier));
+      return null;
+    }
+    return entityFactory.createEntity(pyramusClient.get(String.format("/courses/courses/%d/assessmentPrice", pyramusCourseId), CourseAssessmentPrice.class));
   }
 
 }

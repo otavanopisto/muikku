@@ -17,9 +17,8 @@ import IFrame from "../static/iframe";
 import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
 import MathField from "../fields/math-field";
 import {
-  MaterialCompositeRepliesType,
-  WorkspaceType,
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import Link from "~/components/base/material-loader/static/link";
@@ -28,6 +27,10 @@ import Table from "~/components/base/material-loader/static/table";
 import MathJAX from "~/components/base/material-loader/static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
+import {
+  MaterialCompositeReply,
+  MaterialContentNode,
+} from "~/generated/client";
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -91,12 +94,12 @@ const answerCheckables: { [key: string]: (params: any) => boolean } = {
  * BaseProps
  */
 interface BaseProps {
-  material: MaterialContentNodeType;
+  material: MaterialContentNodeWithIdAndLogic;
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   websocketState: WebsocketStateType;
   answerable: boolean;
-  compositeReplies?: MaterialCompositeRepliesType;
+  compositeReplies?: MaterialCompositeReply;
   readOnly?: boolean;
   onConfirmedAndSyncedModification?: () => any;
   onModification?: () => any;

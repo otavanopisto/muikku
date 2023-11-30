@@ -3,6 +3,7 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import Button from "~/components/general/button";
+import { useTranslation } from "react-i18next";
 
 /**
  * PermissionsAndApprovalProps
@@ -18,40 +19,35 @@ interface PermissionsAndApprovalProps {}
 const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props
 ) => {
-  const {
-    formIsApproved,
-    visibility,
-    data,
-    userRole,
-    sendToStudent,
-    editIsActive,
-  } = usePedagogyContext();
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+  const { formIsApproved, data, userRole, sendToStudent, editIsActive } =
+    usePedagogyContext();
 
   return (
     <section className="hops-container">
       {data.state === "ACTIVE" && userRole === "SPECIAL_ED_TEACHER" ? (
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">
-            Lähetä suunnitelma hyväksyttäväksi
+            {t("labels.sendForApproval", {
+              ns: "pedagogySupportPlan",
+            })}
           </legend>
           <div className="hops-container__info">
             <div className="hops-container__state state-INFO">
               <div className="hops-container__state-icon icon-notification"></div>
               <div className="hops-container__state-text">
-                Pedagogisen tuen suunnitelma tehdään yhteistyössä opiskelijan
-                kanssa. Suunnitelma jaetaan opiskelijan kanssa Lähetä-painiketta
-                klikkaamalla. Opiskelija voi hyväksyä suunnitelman ja valita,
-                ketkä erityisopettajan ja rehtorin lisäksi saavat nähdä
-                pedagogisen tuen suunnitelman.
+                {t("content.planSendInformation", {
+                  ns: "pedagogySupportPlan",
+                })}
               </div>
             </div>
             {editIsActive && (
               <div className="hops-container__state state-WARNING">
                 <div className="hops-container__state-icon icon-notification"></div>
                 <div className="hops-container__state-text">
-                  Sinulla on muokkaus aktiivisena. Tallenna tai peruuta
-                  muokkaus, jonka jälkeen voit lähettää suunnitelman
-                  opiskelijalle
+                  {t("content.planEditingActive", {
+                    ns: "pedagogySupportPlan",
+                  })}
                 </div>
               </div>
             )}
@@ -62,7 +58,9 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
                 onClick={sendToStudent}
                 disabled={editIsActive}
               >
-                Lähetä
+                {t("actions.send", {
+                  ns: "common",
+                })}
               </Button>
             </div>
           </div>
@@ -70,54 +68,11 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
       ) : null}
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Luvat</legend>
-        <div
-          className="hops-container__row"
-          style={{ flexDirection: "column" }}
-        >
-          <div
-            className="hops__form-element-container hops__form-element-container--single-row"
-            style={{ flexFlow: "unset" }}
-          >
-            <input
-              id="allowAccessToFamilyMember"
-              type="checkbox"
-              name="forGuardians"
-              className="hops__input"
-              value="GUARDIANS"
-              disabled
-              defaultChecked={visibility.includes("GUARDIANS")}
-            />
-            <label htmlFor="allowAccessToFamilyMember" className="hops__label">
-              Olen alaikäinen. Pedagogisen tuen suunnitelman tietoja saa antaa
-              huoltajalleni.
-            </label>
-          </div>
-          <div
-            className="hops__form-element-container hops__form-element-container--single-row"
-            style={{ flexFlow: "unset" }}
-          >
-            <input
-              id="allowAccessToGuidanceCounselor"
-              type="checkbox"
-              name="forTeachers"
-              className="hops__input"
-              value="TEACHERS"
-              disabled
-              defaultChecked={visibility.includes("TEACHERS")}
-            />
-            <label
-              htmlFor="allowAccessToGuidanceCounselor"
-              className="hops__label"
-            >
-              Pedagogisen tuen suunnitelman tietoja saa antaa minua opettavalle
-              ja ohjaavalle henkilökunnalle.
-            </label>
-          </div>
-        </div>
-      </fieldset>
-      <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Hyväksyminen</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.approving", {
+            ns: "pedagogySupportPlan",
+          })}
+        </legend>
         <div className="hops-container__row">
           <div
             className="hops__form-element-container hops__form-element-container--single-row"
@@ -132,7 +87,9 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
               defaultChecked={formIsApproved}
             ></input>
             <label htmlFor="fromFamilyMember" className="hops__label">
-              Olen lukenut suunnitelman ja hyväksyn sen sisällön.
+              {t("content.planAcceptance", {
+                ns: "pedagogySupportPlan",
+              })}
             </label>
           </div>
         </div>

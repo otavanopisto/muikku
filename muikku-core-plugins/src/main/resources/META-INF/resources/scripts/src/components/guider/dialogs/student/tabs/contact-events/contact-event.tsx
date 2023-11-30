@@ -1,7 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/contact-event.scss";
 import "~/sass/elements/rich-text.scss";
-import { ContactLogEvent } from "~/reducers/main-function/guider";
 import CommentContactEvent from "./editors/new-comment";
 import EditContactEvent from "./editors/edit-event";
 import EditContactEventComment from "./editors/edit-comment";
@@ -12,6 +11,7 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
+import { ContactLogEvent } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -89,7 +89,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           className="link link--contact-event-footer"
           onClick={() => setCreateCommentOpen(true)}
         >
-          {t("actions.comment")}
+          {t("actions.create", { context: "comment" })}
         </Link>
         <Link
           className="link link--contact-event-footer"

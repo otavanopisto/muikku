@@ -19,7 +19,6 @@ import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
 import WorkspacePermissionsBody from "~/components/workspace/workspacePermissions";
-import Chat from "../components/chat/chat";
 import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
@@ -49,7 +48,6 @@ import {
 } from "~/actions/discussion";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { displayNotification } from "~/actions/base/notifications";
-import { loadProfileChatSettings } from "~/actions/main-function/profile";
 import WorkspaceEvaluationBody from "../components/workspace/workspaceEvaluation/index";
 import {
   loadEvaluationAssessmentRequestsFromServer,
@@ -265,21 +263,6 @@ export default class Workspace extends React.Component<
   }
 
   /**
-   * loadChatSettings
-   */
-  loadChatSettings = (): void => {
-    if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
-      if (!this.loadedChatSettings) {
-        this.loadedChatSettings = true;
-        this.props.store.dispatch(loadProfileChatSettings() as Action);
-      }
-    } else if (!this.subscribedChatSettings) {
-      this.subscribedChatSettings = true;
-      this.props.store.subscribe(this.loadChatSettings);
-    }
-  };
-
-  /**
    * onWorkspaceMaterialsBodyActiveNodeIdChange
    * @param newId newId
    */
@@ -450,8 +433,6 @@ export default class Workspace extends React.Component<
           }) as Action
         );
       }
-
-      this.loadChatSettings();
     }
 
     return (
@@ -507,8 +488,6 @@ export default class Workspace extends React.Component<
           }
         ) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -559,8 +538,6 @@ export default class Workspace extends React.Component<
           this.loadWorkspaceDiscussionData(currentLocation);
         }) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -583,7 +560,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          i18n.t("labels.announcement", { ns: "messaging", count: 0 })
+          i18n.t("labels.announcements", { ns: "messaging" })
         )
       );
 
@@ -598,8 +575,6 @@ export default class Workspace extends React.Component<
       this.loadWorkspaceAnnouncementsData(
         parseInt(window.location.hash.replace("#", ""))
       );
-
-      this.loadChatSettings();
     }
     return (
       <WorkspaceAnnouncementsBody
@@ -644,8 +619,6 @@ export default class Workspace extends React.Component<
           window.location.hash.replace("#", "").split("/")
         );
       }
-
-      this.loadChatSettings();
     }
     return (
       <WorkspaceAnnouncerBody
@@ -724,6 +697,7 @@ export default class Workspace extends React.Component<
           loadDiscussionThreadsFromServer({
             areaId: parseInt(location[0]) || null,
             page: parseInt(location[1]) || 1,
+            forceRefresh: true,
           }) as Action
         );
       } else {
@@ -1007,8 +981,6 @@ export default class Workspace extends React.Component<
           );
         }
       }
-
-      this.loadChatSettings();
     }
 
     return (
@@ -1046,7 +1018,6 @@ export default class Workspace extends React.Component<
         titleActions.updateTitle(i18n.t("labels.users", { ns: "users" }))
       );
       this.loadWorkspaceUsersData();
-      this.loadChatSettings();
     }
 
     return (
@@ -1093,7 +1064,10 @@ export default class Workspace extends React.Component<
                 }) as Action
               );
             }
-            if (!workspace.journals) {
+            if (
+              state.journals.state !== "READY" &&
+              state.journals.journals.length === 0
+            ) {
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 // This happens if teacher/admin uses diary
                 this.props.store.dispatch(
@@ -1110,7 +1084,6 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
-      this.loadChatSettings();
     }
 
     return (
@@ -1161,8 +1134,6 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -1197,8 +1168,6 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -1269,8 +1238,6 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -1338,7 +1305,6 @@ export default class Workspace extends React.Component<
               path="/workspace/:workspaceUrl/evaluation"
               render={this.renderWorkspaceEvaluation}
             />
-            <Chat />
           </div>
         </BrowserRouter>
       </ReadspeakerProvider>

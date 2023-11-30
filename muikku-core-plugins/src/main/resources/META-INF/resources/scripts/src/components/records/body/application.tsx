@@ -11,7 +11,7 @@ import {
   TranscriptOfRecordLocationType,
   RecordsType,
 } from "../../../reducers/main-function/records/index";
-import { HOPSType } from "../../../reducers/main-function/hops";
+import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
@@ -25,16 +25,15 @@ import "~/sass/elements/workspace-assessment.scss";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
-import { FormState } from "~/@types/pedagogy-form";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
+import MApi from "~/api/api";
+import { PedagogyFormState } from "~/generated/client";
 
 /**
  * StudiesApplicationProps
  */
 interface StudiesApplicationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
-  hops: HOPSType;
+  hops: HOPSState;
   status: StatusType;
   records: RecordsType;
 }
@@ -57,7 +56,7 @@ type StudiesTab =
 interface StudiesApplicationState {
   activeTab: StudiesTab;
   loading: boolean;
-  pedagogyFormState?: FormState;
+  pedagogyFormState?: PedagogyFormState;
 }
 
 /**
@@ -136,13 +135,13 @@ class StudiesApplication extends React.Component<
   /**
    * loadPedagogyFormState
    */
-  loadPedagogyFormState = async () =>
-    (await promisify(
-      mApi().pedagogy.form.state.read(
-        this.props.status.userSchoolDataIdentifier
-      ),
-      "callback"
-    )()) as FormState;
+  loadPedagogyFormState = async () => {
+    const pedagogyApi = MApi.getPedagogyApi();
+
+    return await pedagogyApi.getPedagogyFormState({
+      studentIdentifier: this.props.status.userSchoolDataIdentifier,
+    });
+  };
 
   /**
    * Returns whether section with given hash should be visible or not
@@ -262,7 +261,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "PEDAGOGY_FORM",
-        name: "Pedagogisen tuen suunnitelma",
+        name: t("labels.title", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (

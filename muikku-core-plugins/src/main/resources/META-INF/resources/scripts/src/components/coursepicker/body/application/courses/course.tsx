@@ -14,7 +14,7 @@ import {
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { suitabilityMap } from "~/@shared/suitability";
 import { Curriculum } from "~/generated/client";
@@ -26,7 +26,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface CourseProps extends WithTranslation<["common"]> {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   availableCurriculums: Curriculum[];
 }
 
@@ -215,7 +215,6 @@ class Course extends React.Component<CourseProps, CourseState> {
           {hasFees ? (
             <span
               className="application-list__fee-indicatoricon-coin-euro icon-coin-euro"
-              // TODO: Translate using i18next
               title={this.props.t("labels.hasEvaluationFee", {
                 ns: "workspace",
               })}

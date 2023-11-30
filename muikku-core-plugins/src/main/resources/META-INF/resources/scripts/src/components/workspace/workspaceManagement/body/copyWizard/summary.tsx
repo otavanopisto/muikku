@@ -1,26 +1,22 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
-import { localizeTime } from "~/locales/i18n";
+import { WorkspaceDataType } from "~/reducers/workspaces";
+import { localize } from "~/locales/i18n";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
 
 /**
  * StepProps
  */
 interface StepProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   getStore: () => CopyWizardStoreType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore: (u: CopyWizardStoreUpdateType) => any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
-  resultingWorkspace?: WorkspaceType;
+  resultingWorkspace?: WorkspaceDataType;
   step?: CopyCurrentWorkspaceStepType;
 }
 
@@ -72,12 +68,12 @@ class Step extends React.Component<StepProps, StepState> {
           </p>
         </div>
         <div className="wizard__summary-row">
-          <label>{t("labels.date", { count: 0 })}</label>
+          <label>{t("labels.dates")}</label>
           <p>
             {t("labels.begingDate_copySummary", {
               ns: "workspace",
               beginDate: beginDate
-                ? localizeTime.date(beginDate)
+                ? localize.date(beginDate)
                 : t("labels.noBeginDate", { ns: "workspace" }),
             })}
           </p>
@@ -85,7 +81,7 @@ class Step extends React.Component<StepProps, StepState> {
             {t("labels.endDate_copySummary", {
               ns: "workspace",
               endDate: endDate
-                ? localizeTime.date(endDate)
+                ? localize.date(endDate)
                 : t("labels.noEndDate", { ns: "workspace" }),
             })}
           </p>

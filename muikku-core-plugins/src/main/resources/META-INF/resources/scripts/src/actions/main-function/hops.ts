@@ -1,14 +1,10 @@
 import actions from "../base/notifications";
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
-import {
-  HOPSDataType,
-  HOPSStatusType,
-  HOPSEligibilityType,
-} from "~/reducers/main-function/hops";
+import { HOPSStatusType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
-import MApi from "~/api/api";
+import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
+import { HopsEligibility, HopsUppersecondary } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
 /**
@@ -22,13 +18,13 @@ export interface UpdateHopsTriggerType {
  * SetHopsToTriggerType
  */
 export interface SetHopsToTriggerType {
-  (newHops: HOPSDataType): AnyActionType;
+  (newHops: HopsUppersecondary): AnyActionType;
 }
 
-export type UPDATE_HOPS = SpecificActionType<"UPDATE_HOPS", HOPSDataType>;
+export type UPDATE_HOPS = SpecificActionType<"UPDATE_HOPS", HopsUppersecondary>;
 export type UPDATE_HOPS_ELIGIBILITY = SpecificActionType<
   "UPDATE_HOPS_ELIGIBILITY",
-  HOPSEligibilityType
+  HopsEligibility
 >;
 export type UPDATE_HOPS_STATUS = SpecificActionType<
   "UPDATE_HOPS_STATUS",
@@ -43,9 +39,10 @@ export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
  */
 const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const userApi = MApi.getUserApi();
 
     try {
@@ -68,16 +65,15 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
         payload: properties[0].value,
       });
 
-      const hops = <HOPSDataType>(
-        await promisify(mApi().records.hops.read(), "callback")()
-      );
+      const hops = await hopsUppersecondaryApi.getHops();
+
+      const hopsEligibility = await hopsUppersecondaryApi.getHopsEligibility();
 
       dispatch({
         type: "UPDATE_HOPS_ELIGIBILITY",
-        payload: <HOPSEligibilityType>(
-          await promisify(mApi().records.hopseligibility.read(), "callback")()
-        ),
+        payload: hopsEligibility,
       });
+
       dispatch({
         type: "UPDATE_HOPS",
         payload: hops,
@@ -89,7 +85,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
 
       callback && callback();
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(
@@ -114,18 +110,22 @@ const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
  */
 const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
   return async (
-    dispatch: (arg: AnyActionType) => any,
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
+
     try {
+      const updatedHops = await hopsUppersecondaryApi.updateHops({
+        updateHopsRequest: newHops,
+      });
+
       dispatch({
         type: "UPDATE_HOPS",
-        payload: <HOPSDataType>(
-          await promisify(mApi().records.hops.update(newHops), "callback")()
-        ),
+        payload: updatedHops,
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(

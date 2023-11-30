@@ -1,48 +1,13 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
+import { WorkspaceNote } from "~/generated/client";
 
 export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
-
-/**
- * WorkspaceNote
- */
-export interface WorkspaceNote {
-  id: number;
-  /**
-   * "id" of the owner
-   */
-  owner: number;
-  /**
-   * id of the workspace
-   */
-  workspaceEntityId: number;
-  title: string;
-  workspaceNote: string;
-  /**
-   * Backend uses this to determine the order of the notes
-   * This is not used in the frontend
-   */
-  nextSiblingId?: number | null;
-}
-
-/**
- * WorkspaceNoteCreatePayload
- */
-export interface WorkspaceNoteCreatePayload {
-  title: string;
-  workspaceNote: string;
-  workspaceEntityId: number;
-  /**
-   * Optional given to determine place in the list
-   * if not given, the note is added to the end of the list
-   */
-  nextSiblingId?: number | null;
-}
 
 export type NoteDefaultLocation = "TOP" | "BOTTOM";
 
 /**
- * WorkspaceJournalsType
+ * NoteBookState
  */
 export interface NoteBookState {
   notes?: WorkspaceNote[] | null;

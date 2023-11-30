@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Link from "~/components/general/link";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -10,7 +10,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * WorkspacesPanelProps
  */
 interface WorkspacesPanelProps extends WithTranslation {
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
 }
 
 /**
@@ -30,19 +30,24 @@ const WorkspacesPanel: React.FC<WorkspacesPanelProps> = (props) => {
       {workspaces.length ? (
         <div className="item-list item-list--panel-workspaces">
           {workspaces
-            .sort((workspaceA: WorkspaceType, workspaceB: WorkspaceType) => {
-              if (
-                workspaceA.name.toLocaleLowerCase() <
-                workspaceB.name.toLocaleLowerCase()
-              ) {
-                return -1;
+            .sort(
+              (
+                workspaceA: WorkspaceDataType,
+                workspaceB: WorkspaceDataType
+              ) => {
+                if (
+                  workspaceA.name.toLocaleLowerCase() <
+                  workspaceB.name.toLocaleLowerCase()
+                ) {
+                  return -1;
+                }
+                if (workspaceA.name > workspaceB.name) {
+                  return 1;
+                }
+                return 0;
               }
-              if (workspaceA.name > workspaceB.name) {
-                return 1;
-              }
-              return 0;
-            })
-            .map((workspace: WorkspaceType) => (
+            )
+            .map((workspace: WorkspaceDataType) => (
               <Link
                 key={workspace.id}
                 className="item-list__item item-list__item--workspaces"

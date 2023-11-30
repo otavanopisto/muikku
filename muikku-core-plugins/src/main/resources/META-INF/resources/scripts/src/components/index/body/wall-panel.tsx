@@ -11,7 +11,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { Note } from "./wall/note";
+import { NoteComponent } from "./wall/note";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -43,7 +43,7 @@ const WallPanel: React.FC<WallProps> = (props) => {
       <Panel.BodyContent>
         {notes.length > 0 ? (
           notes.map((note) => (
-            <Note
+            <NoteComponent
               isCreator={note.creator === status.userId}
               key={note.id}
               note={note}
@@ -52,7 +52,9 @@ const WallPanel: React.FC<WallProps> = (props) => {
             />
           ))
         ) : (
-          <div className="empty empty--front-page">{t("content.empty")}</div>
+          <div className="empty empty--front-page">
+            {t("content.empty", { ns: "tasks", context: "student" })}
+          </div>
         )}
       </Panel.BodyContent>
     </Panel>

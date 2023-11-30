@@ -12,13 +12,6 @@ export interface LocaleState {
 export type LocaleType = keyof typeof resources;
 
 /**
- * LocaleReadResponse
- */
-export interface LocaleReadResponse {
-  lang: string;
-}
-
-/**
  * initialLocalesState
  */
 const initialLocalesState: LocaleState = {

@@ -7,11 +7,6 @@ import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import {
-  MaterialAssignmentType,
-  MaterialEvaluationType,
-} from "~/reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -24,31 +19,32 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import {
-  AssessmentRequest,
-  AssignmentEvaluationType,
-  AssignmentInterminEvaluationRequest,
-  AudioAssessment,
-  EvaluationGradeSystem,
-} from "~/@types/evaluation";
 import AnimateHeight from "react-animate-height";
 import { CKEditorConfig } from "../evaluation";
-import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
-import { AssignmentEvaluationSaveReturn } from "~/@types/evaluation";
-import promisify from "~/util/promisify";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { LocaleState } from "~/reducers/base/locales";
+import {
+  AssessmentWithAudio,
+  AudioAssessment,
+  EvaluationAssessmentRequest,
+  EvaluationGradeScale,
+  MaterialEvaluation,
+  SaveWorkspaceAssigmentAssessmentRequest,
+  MaterialCompositeReply,
+  WorkspaceMaterial,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * AssignmentEditorProps
  */
 interface InterimEvaluationEditorProps extends WithTranslation {
-  selectedAssessment: AssessmentRequest;
-  materialEvaluation?: MaterialEvaluationType;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  selectedAssessment: EvaluationAssessmentRequest;
+  materialEvaluation?: MaterialEvaluation;
+  materialAssignment: WorkspaceMaterial;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;
@@ -58,7 +54,7 @@ interface InterimEvaluationEditorProps extends WithTranslation {
   showAudioAssessmentWarningOnClose: boolean;
   onAudioAssessmentChange: () => void;
   updateMaterialEvaluationData: (
-    assigmentSaveReturn: AssignmentEvaluationSaveReturn
+    assessmentWithAudio: AssessmentWithAudio
   ) => void;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
@@ -81,7 +77,7 @@ interface InterimEvaluationEditorState {
   grade: string;
   draftId: string;
   locked: boolean;
-  activeGradeSystems: EvaluationGradeSystem[];
+  activeGradeSystems: EvaluationGradeScale[];
 }
 
 /**
@@ -177,9 +173,11 @@ class InterimEvaluationEditor extends SessionStateComponent<
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: AssignmentInterminEvaluationRequest;
+    dataToSave: SaveWorkspaceAssigmentAssessmentRequest;
     materialId: number;
   }) => {
+    const evaluationApi = MApi.getEvaluationApi();
+
     this.setState({
       locked: true,
     });
@@ -190,60 +188,60 @@ class InterimEvaluationEditor extends SessionStateComponent<
       data;
 
     try {
-      await promisify(
-        mApi().evaluation.workspace.user.workspacematerial.assessment.create(
-          workspaceEntityId,
-          userEntityId,
-          workspaceMaterialId,
-          {
-            ...dataToSave,
-          }
-        ),
-        "callback"
-      )().then(async (data: AssignmentEvaluationSaveReturn) => {
-        await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
-        this.props.updateCurrentStudentCompositeRepliesData({
+      const assessmentWithAudio =
+        await evaluationApi.saveWorkspaceAssigmentAssessment({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
           workspaceMaterialId: workspaceMaterialId,
-        });
-
-        this.props.loadEvaluationAssessmentEventsFromServer({
-          assessment: this.props.selectedAssessment,
-        });
-
-        this.props.updateMaterialEvaluationData(data);
-
-        this.props.updateNeedsReloadEvaluationRequests({ value: true });
-
-        if (this.props.onAssigmentSave) {
-          this.props.onAssigmentSave(this.props.materialAssignment.materialId);
-        }
-
-        // Clears localstorage on success
-        this.justClear(
-          ["literalEvaluation", "assignmentEvaluationType", "grade"],
-          this.state.draftId
-        );
-
-        this.setState(
-          {
-            locked: false,
+          saveWorkspaceAssigmentAssessmentRequest: {
+            ...dataToSave,
           },
-          () => {
-            if (this.props.onClose) {
-              this.props.onClose();
-            }
-          }
-        );
+        });
+
+      this.props.updateCurrentStudentCompositeRepliesData({
+        workspaceId: workspaceEntityId,
+        userEntityId: userEntityId,
+        workspaceMaterialId: workspaceMaterialId,
       });
-    } catch (error) {
+
+      this.props.loadEvaluationAssessmentEventsFromServer({
+        assessment: this.props.selectedAssessment,
+      });
+
+      this.props.updateMaterialEvaluationData(assessmentWithAudio);
+
+      this.props.updateNeedsReloadEvaluationRequests({ value: true });
+
+      if (this.props.onAssigmentSave) {
+        this.props.onAssigmentSave(this.props.materialAssignment.materialId);
+      }
+
+      // Clears localstorage on success
+      this.justClear(
+        ["literalEvaluation", "assignmentEvaluationType", "grade"],
+        this.state.draftId
+      );
+
+      this.setState(
+        {
+          locked: false,
+        },
+        () => {
+          if (this.props.onClose) {
+            this.props.onClose();
+          }
+        }
+      );
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       notificationActions.displayNotification(
         t("notifications.saveError", {
           ns: "evaluation",
           context: "assignmentEvaluation",
-          error: error.message,
+          error: err.message,
         }),
         "error"
       );
@@ -276,7 +274,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
         verbalAssessment: this.state.literalEvaluation,
         assessmentDate: new Date().getTime(),
         audioAssessments: this.state.audioAssessments,
-        evaluationType: AssignmentEvaluationType.ASSESSMENT,
+        evaluationType: "ASSESSMENT",
       },
       materialId: this.props.materialAssignment.materialId,
     });

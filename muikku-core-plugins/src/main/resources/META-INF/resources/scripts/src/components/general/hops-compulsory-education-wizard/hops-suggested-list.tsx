@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useSuggestionList } from "./hooks/useSuggestedList";
 import { connect, Dispatch } from "react-redux";
-import { Course, CourseStatus, StudentActivityCourse } from "~/@types/shared";
-import { StateType } from "~/reducers";
+import { Course } from "~/@types/shared";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
@@ -10,13 +9,14 @@ import {
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
+import { StudentStudyActivity } from "~/generated/client";
 
 /**
  * SuggestionListProps
  */
 interface HopsSuggestionListProps {
   subjectCode: string;
-  suggestedActivityCourses?: StudentActivityCourse[];
+  suggestedActivityCourses?: StudentStudyActivity[];
   course: Course;
   studentId: string;
   studentsUserEntityId: number;
@@ -89,10 +89,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
           /**
            * If any of these condition happens, changes respectivily action type
            */
-          if (
-            suggestedCourse &&
-            suggestedCourse.status === CourseStatus.SUGGESTED_NEXT
-          ) {
+          if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
             suggestionNextActionType = "remove";
           }
         }

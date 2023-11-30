@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  WorkspaceType,
-  Assessment,
-  WorkspaceActivityType,
-  WorkspaceForumStatisticsType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
 import WorkspaceChart from "./workspace/workspace-chart";
 import "~/sass/elements/application-list.scss";
@@ -17,15 +12,20 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
+import {
+  WorkspaceActivity,
+  DiscussionWorkspaceStatistic,
+  WorkspaceAssessmentState,
+} from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
  * StudentWorkspaceProps
  */
 interface StudentWorkspaceProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 }
 
 /**
@@ -63,7 +63,7 @@ class StudentWorkspace extends React.Component<
    * is in "incomplete" state
    * @param assessments assessments
    */
-  showWorkspacePercents = (assessments?: Assessment[]) => {
+  showWorkspacePercents = (assessments?: WorkspaceAssessmentState[]) => {
     if (assessments) {
       for (const assessment of assessments) {
         if (!assessment.grade || assessment.state === "incomplete") {
@@ -80,7 +80,7 @@ class StudentWorkspace extends React.Component<
    * @param assessment assessment
    * @returns object containing state text and class modifier
    */
-  getAssessmentStateText = (assessment: Assessment) => {
+  getAssessmentStateText = (assessment: WorkspaceAssessmentState) => {
     let stateText;
 
     switch (assessment.state) {
@@ -243,7 +243,7 @@ class StudentWorkspace extends React.Component<
              * Add date to string if date is present
              */
             if (a.date) {
-              resultingStateText += " - " + localizeTime.date(a.date);
+              resultingStateText += " - " + localize.date(a.date);
             }
 
             return (
@@ -326,17 +326,17 @@ class StudentWorkspace extends React.Component<
             <div className="application-sub-panel__body">
               {renderCourseActivity()}
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfVisits"
                 givenDateAttributeLocale="content.lastVisit"
-                labelTranslationString="labels.visits"
+                labelTranslationString="labels.workspaceVisits"
                 conditionalAttribute="numVisits"
                 givenDateAttribute="lastVisit"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfJournalEntries"
                 givenDateAttributeLocale="content.lastJournalEntry"
                 labelTranslationString="labels.entries"
@@ -346,7 +346,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceForumStatisticsType>
+              <CourseActivityRow<DiscussionWorkspaceStatistic>
                 conditionalAttributeLocale="content.numberOfMessages"
                 givenDateAttributeLocale="content.lastMessage"
                 labelTranslationString="labels.discussionMessages"
@@ -359,18 +359,17 @@ class StudentWorkspace extends React.Component<
               <h4 className="application-sub-panel__item-header">
                 {this.props.i18n.t("labels.evaluables", {
                   ns: "materials",
-                  count: 0,
                 })}
               </h4>
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 labelTranslationString="labels.unanswered"
                 conditionalAttribute="evaluablesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastAnswered"
                 labelTranslationString="labels.answered"
@@ -380,7 +379,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastSubmittedAssignment"
                 labelTranslationString="labels.submittedAssignments"
@@ -390,7 +389,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastEvaluationFailed"
                 labelTranslationString="labels.evaluatedWithNonPassingGrade"
@@ -400,7 +399,7 @@ class StudentWorkspace extends React.Component<
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfAssignments"
                 givenDateAttributeLocale="content.lastEvaluationPassed"
                 labelTranslationString="labels.evaluatedWithPassingGrade"
@@ -412,18 +411,17 @@ class StudentWorkspace extends React.Component<
               <h4 className="application-sub-panel__item-header">
                 {this.props.i18n.t("labels.exercises", {
                   ns: "materials",
-                  count: 0,
                 })}
               </h4>
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 labelTranslationString="labels.unanswered"
                 conditionalAttribute="exercisesUnanswered"
                 mainAttribute="activity"
                 {...this.props}
               />
 
-              <CourseActivityRow<WorkspaceActivityType>
+              <CourseActivityRow<WorkspaceActivity>
                 conditionalAttributeLocale="content.numberOfExercises"
                 givenDateAttributeLocale="content.lastAnswered"
                 labelTranslationString="labels.answered"
@@ -448,16 +446,16 @@ export default withTranslation(["guider"])(StudentWorkspace);
  * CourseActivityRowProps
  */
 interface CourseActivityRowProps<C> {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   labelTranslationString: string;
   conditionalAttribute: keyof C;
   conditionalAttributeLocale?: string;
   givenDateAttribute?: string;
   givenDateAttributeLocale?: string;
   /**
-   * mainAttribute is type as WorkspaceType as component is not used any where else
+   * mainAttribute is type as WorkspaceDataType as component is not used any where else
    */
-  mainAttribute: keyof WorkspaceType;
+  mainAttribute: keyof WorkspaceDataType;
 }
 
 /**
@@ -501,14 +499,14 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
       if (props.givenDateAttributeLocale) {
         output += t(props.givenDateAttributeLocale, {
           defaultValue: "Locale does not exist",
-          value: localizeTime.date(
+          value: localize.date(
             (props.workspace as any)[props.mainAttribute][
               props.givenDateAttribute
             ]
           ),
         });
       } else {
-        output += localizeTime.date(
+        output += localize.date(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (props.workspace as any)[props.mainAttribute][
             props.givenDateAttribute
@@ -535,7 +533,7 @@ const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
  * GuiderAssessmentProps
  */
 interface GuiderAssessmentProps {
-  assessment?: Assessment;
+  assessment?: WorkspaceAssessmentState;
 }
 
 /**
@@ -562,7 +560,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
             t("labels.evaluated", {
               ns: "workspace",
               context: "in",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)
           }
           className={`application-list__indicator-badge application-list__indicator-badge--course ${modifier}`}
@@ -584,7 +582,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
             t("labels.evaluated", {
               ns: "workspace",
               context: "in",
-              date: localizeTime.date(assessment.date),
+              date: localize.date(assessment.date),
             }) +
             " - " +
             status
@@ -603,7 +601,7 @@ const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
  * GuiderWorkspacePercentsProps
  */
 interface GuiderWorkspacePercentsProps {
-  activity?: WorkspaceActivityType;
+  activity?: WorkspaceActivity;
 }
 
 /**

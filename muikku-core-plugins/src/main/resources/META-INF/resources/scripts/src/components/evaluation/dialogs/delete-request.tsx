@@ -5,19 +5,21 @@ import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
-import { AssessmentRequest } from "../../../@types/evaluation";
 import {
   deleteAssessmentRequest,
   DeleteAssessmentRequest,
   deleteInterimEvaluationRequest,
   DeleteInterimEvaluationRequest,
 } from "../../../actions/main-function/evaluation/evaluationActions";
+import { EvaluationAssessmentRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * ArchiveDialogProps
  */
-interface DeleteRequestDialogProps extends AssessmentRequest, WithTranslation {
+interface DeleteRequestDialogProps
+  extends EvaluationAssessmentRequest,
+    WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
   isOpen?: boolean;

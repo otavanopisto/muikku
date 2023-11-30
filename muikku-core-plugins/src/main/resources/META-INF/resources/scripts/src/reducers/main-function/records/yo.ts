@@ -1,82 +1,53 @@
 import { ActionType } from "actions";
 import { Reducer } from "redux";
-
-export type YOStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
-export type YOEligibilityStatusType = "NOT_ELIGIBLE" | "ELIGIBLE" | "ENROLLED";
-export type SubjectEligibilityStatusType =
+import {
+  MatriculationEligibility,
+  MatriculationEligibilityStatus,
+  MatriculationEnrollment,
+  MatriculationSubject,
+} from "~/generated/client";
+export type MatriculationStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
+export type MatriculationSubjectEligibilityStatusType =
   | "WAIT"
   | "LOADING"
   | "READY"
   | "ERROR";
-export type EligibleStatusType = "ELIGIBLE" | "NOT_ELIGIBLE";
-export type SubjectEligibilityListType = Array<SubjectEligibilityType>;
 
 /**
- * SubjectEligibilityType
+ * MatriculationSubjectWithEligibilityStatus
  */
-export interface SubjectEligibilityType {
+export interface MatriculationSubjectWithEligibilityStatus {
   subjectCode: string;
   code: string;
-  eligibility: EligibleStatusType;
+  eligibility: MatriculationEligibilityStatus;
   requiredCount: number;
   acceptedCount: number;
   loading: boolean;
 }
 
 /**
- * SubjectEligibilitySubjectsType
+ * MatriculationSubjectEligibilityState
  */
-export interface SubjectEligibilitySubjectsType {
-  subjects: SubjectEligibilityListType;
-  status: SubjectEligibilityStatusType;
+export interface MatriculationSubjectEligibilityState {
+  subjects: MatriculationSubjectWithEligibilityStatus[];
+  status: MatriculationSubjectEligibilityStatusType;
 }
 
 /**
- * YOEnrollmentType
+ * MatriculationState
  */
-export interface YOEnrollmentType {
-  id: number;
-  enrolled: boolean;
-  enrollmentDate: string;
-  eligible: boolean;
-  starts: string;
-  ends: string;
-  compulsoryEducationEligible: boolean;
-}
-
-/**
- * YOEligibilityType
- */
-export interface YOEligibilityType {
-  coursesCompleted: number;
-  coursesRequired: number;
-  creditPoints: number;
-  creditPointsRequired: number;
-}
-
-/**
- * YOType
- */
-export interface YOType {
-  status: YOStatusType;
-  enrollment: Array<YOEnrollmentType>;
-  subjects: Array<YOMatriculationSubjectType>;
-  eligibility: YOEligibilityType;
-  eligibilityStatus: YOEligibilityStatusType;
-}
-
-/**
- * YOMatriculationSubjectType
- */
-export interface YOMatriculationSubjectType {
-  code: string;
-  subjectCode: string;
+export interface MatriculationState {
+  status: MatriculationStatusType;
+  enrollment: MatriculationEnrollment[];
+  subjects: MatriculationSubject[];
+  eligibility: MatriculationEligibility;
+  eligibilityStatus: MatriculationEligibilityStatus;
 }
 
 /**
  * intialState
  */
-const initialState: YOType = {
+const initialState: MatriculationState = {
   status: "WAIT",
   enrollment: null,
   subjects: null,
@@ -91,7 +62,7 @@ const initialState: YOType = {
  * @param action action
  * @returns State of yo
  */
-export const yo: Reducer<YOType> = (
+export const yo: Reducer<MatriculationState> = (
   state = initialState,
   action: ActionType
 ) => {
@@ -134,7 +105,7 @@ export const yo: Reducer<YOType> = (
 /**
  * initialStateEligibilitySubjects
  */
-const initialStateEligibilitySubjects: SubjectEligibilitySubjectsType = {
+const initialStateEligibilitySubjects: MatriculationSubjectEligibilityState = {
   status: "WAIT",
   subjects: [],
 };
@@ -146,10 +117,9 @@ const initialStateEligibilitySubjects: SubjectEligibilitySubjectsType = {
  * @param action action
  * @returns State of eligibilitySubjects
  */
-export const eligibilitySubjects: Reducer<SubjectEligibilitySubjectsType> = (
-  state = initialStateEligibilitySubjects,
-  action: ActionType
-) => {
+export const eligibilitySubjects: Reducer<
+  MatriculationSubjectEligibilityState
+> = (state = initialStateEligibilitySubjects, action: ActionType) => {
   switch (action.type) {
     case "UPDATE_STUDIES_SUBJECT_ELIGIBILITY":
       return {

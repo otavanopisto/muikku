@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.plugins.pedagogy.rest;
 import java.util.Date;
 import java.util.List;
 
+import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistoryType;
+
 public class PedagogyFormHistoryRestModel {
 
   public Long getModifierId() {
@@ -53,11 +55,20 @@ public class PedagogyFormHistoryRestModel {
     this.date = date;
   }
 
+  public PedagogyFormHistoryType getType() {
+    return type;
+  }
+
+  public void setType(PedagogyFormHistoryType type) {
+    this.type = type;
+  }
+
   private Long modifierId;
   private String modifierName;
   private boolean modifierHasAvatar;
   private List<String> editedFields;
   private String details;
   private Date date;
+  private PedagogyFormHistoryType type;
 
 }

@@ -615,7 +615,8 @@ public class UserRESTService extends AbstractRESTService {
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             restFlags,
-            organizationRESTModel
+            organizationRESTModel,
+            false
           ));
         }
       }
@@ -717,7 +718,8 @@ public class UserRESTService extends AbstractRESTService {
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
         null,
-        organizationRESTModel
+        organizationRESTModel,
+        false
     );
     
     return Response
@@ -882,17 +884,14 @@ public class UserRESTService extends AbstractRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
       if (Boolean.TRUE.equals(student.getHidden())) {
-        return Response.status(Status.NO_CONTENT).build();
+        return Response.ok(Collections.emptyList()).build();
       }
     }
     
     List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(studentIdentifier);
-    Collections.sort(phoneNumbers, new Comparator<UserPhoneNumber>() {
-      @Override
-      public int compare(UserPhoneNumber o1, UserPhoneNumber o2) {
-        return o1.getDefaultNumber() ? -1 : o2.getDefaultNumber() ? 1 : 0;
-      }
-    });
+    if (!phoneNumbers.isEmpty()) {
+      phoneNumbers.sort(Comparator.comparing(UserPhoneNumber::getDefaultNumber).reversed());
+    }
     
     return Response.ok(createRestModel(phoneNumbers.toArray(new UserPhoneNumber[0]))).build();
   }
@@ -928,17 +927,14 @@ public class UserRESTService extends AbstractRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
       if (Boolean.TRUE.equals(student.getHidden())) {
-        return Response.status(Status.NO_CONTENT).build();
+        return Response.ok(Collections.emptyList()).build();
       }
     }
     
     List<UserEmail> emails = userController.listUserEmails(studentIdentifier);
-    Collections.sort(emails, new Comparator<UserEmail>() {
-      @Override
-      public int compare(UserEmail o1, UserEmail o2) {
-        return o1.getDefaultAddress() ? -1 : o2.getDefaultAddress() ? 1 : 0;
-      }
-    });
+    if (!emails.isEmpty()) {
+      emails.sort(Comparator.comparing(UserEmail::getDefaultAddress).reversed());
+    }
     
     return Response.ok(createRestModel(emails.toArray(new UserEmail[0]))).build();
   }

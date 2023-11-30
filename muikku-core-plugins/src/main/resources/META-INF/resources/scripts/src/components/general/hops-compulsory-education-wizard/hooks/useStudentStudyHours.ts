@@ -1,9 +1,8 @@
 import * as React from "react";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import mApi from "~/lib/mApi";
-import promisify from "~/util/promisify";
 import { sleep } from "~/helper-functions/shared";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * UseFollowUpGoalsState
@@ -20,6 +19,8 @@ const initialState: UseStudentStudyHourState = {
   isLoading: false,
   studyHourValue: 0,
 };
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * Custom hook for student study hours
@@ -68,10 +69,9 @@ export const useStudentStudyHour = (
          */
         const [loadedStudentHours] = await Promise.all([
           (async () => {
-            const studentHours = (await promisify(
-              mApi().hops.student.studyHours.read(studentId),
-              "callback"
-            )()) as number;
+            const studentHours = await hopsApi.getStudentStudyHours({
+              studentIdentifier: studentId,
+            });
 
             return studentHours;
           })(),
@@ -152,13 +152,17 @@ export const useStudentStudyHour = (
    */
   const updateStudyHours = async (studentId: string, hours: number) => {
     try {
-      await promisify(
-        mApi().hops.student.studyHours.create(studentId, {
+      await hopsApi.saveStudentStudyHours({
+        studentIdentifier: studentId,
+        saveStudentStudyHoursRequest: {
           studyHours: hours,
-        }),
-        "callback"
-      )();
+        },
+      });
     } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       displayNotification(err.message, "error");
     }
   };

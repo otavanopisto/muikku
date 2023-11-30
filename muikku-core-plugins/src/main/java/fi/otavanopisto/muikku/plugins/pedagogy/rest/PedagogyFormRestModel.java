@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormVisibility;
 
 public class PedagogyFormRestModel {
 
@@ -39,14 +38,6 @@ public class PedagogyFormRestModel {
 
   public void setState(PedagogyFormState state) {
     this.state = state;
-  }
-
-  public List<PedagogyFormVisibility> getVisibility() {
-    return visibility;
-  }
-
-  public void setVisibility(List<PedagogyFormVisibility> visibility) {
-    this.visibility = visibility;
   }
 
   public List<PedagogyFormHistoryRestModel> getHistory() {
@@ -97,7 +88,6 @@ public class PedagogyFormRestModel {
   private Map<String, String> ownerInfo;
   private String formData;
   private PedagogyFormState state;
-  private List<PedagogyFormVisibility> visibility;
   private List<PedagogyFormHistoryRestModel> history;
 
 }

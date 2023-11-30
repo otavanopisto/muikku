@@ -1,16 +1,8 @@
 import * as React from "react";
 import EvaluationMaterial from "./evaluation-material";
 import {
-  AssessmentRequest,
-  AssignmentEvaluationSaveReturn,
-} from "~/@types/evaluation";
-import {
-  WorkspaceType,
-  MaterialContentNodeType,
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
-  MaterialEvaluationType,
-  AssignmentType,
+  WorkspaceDataType,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
@@ -19,7 +11,6 @@ import { bindActionCreators } from "redux";
 import * as moment from "moment";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
-import mApi from "~/lib/mApi";
 import SlideDrawer from "./slide-drawer";
 import { StateType } from "~/reducers/index";
 import {
@@ -27,9 +18,16 @@ import {
   updateOpenedAssignmentEvaluation,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
-import promisify from "~/util/promisify";
 import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
-import { WorkspaceInterimEvaluationRequest } from "../../../../../reducers/workspaces/index";
+import {
+  MaterialAssigmentType,
+  WorkspaceMaterial,
+  MaterialCompositeReply,
+  AssessmentWithAudio,
+  EvaluationAssessmentRequest,
+  InterimEvaluationRequest,
+} from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -37,14 +35,14 @@ import { WithTranslation, withTranslation } from "react-i18next";
  */
 interface EvaluationAssessmentInterminEvaluationRequestProps
   extends WithTranslation {
-  workspace: WorkspaceType;
-  assigment: MaterialAssignmentType;
+  workspace: WorkspaceDataType;
+  assigment: WorkspaceMaterial;
   open: boolean;
   evaluations: EvaluationState;
-  selectedAssessment: AssessmentRequest;
+  selectedAssessment: EvaluationAssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
   showAsHidden: boolean;
-  compositeReply?: MaterialCompositeRepliesType;
+  compositeReply?: MaterialCompositeReply;
   onClickOpen?: (id: number) => void;
   onSave?: (materialId: number) => void;
 }
@@ -55,10 +53,10 @@ interface EvaluationAssessmentInterminEvaluationRequestProps
 interface EvaluationAssessmentInterminEvaluationRequestState {
   openContent: boolean;
   openDrawer: boolean;
-  materialNode?: MaterialContentNodeType;
-  interminEvaluationRequest?: WorkspaceInterimEvaluationRequest;
+  materialNode?: MaterialContentNodeWithIdAndLogic;
+  interminEvaluationRequest?: InterimEvaluationRequest;
   isLoading: boolean;
-  openAssignmentType?: AssignmentType;
+  openAssignmentType?: MaterialAssigmentType;
   showCloseEditorWarning: boolean;
   isRecording: boolean;
 }
@@ -147,36 +145,35 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * assignment data and path from props
    */
   loadMaterialContentNodeData = async () => {
+    const evaluationApi = MApi.getEvaluationApi();
+    const materialsApi = MApi.getMaterialsApi();
+
     const { workspace, assigment, selectedAssessment } = this.props;
 
     const userEntityId = selectedAssessment.userEntityId;
 
     const [loadedMaterial] = await Promise.all([
       (async () => {
-        const material = (await promisify(
-          mApi().materials.html.read(assigment.materialId),
-          "callback"
-        )()) as MaterialContentNodeType;
+        const material = await materialsApi.getHtmlMaterial({
+          id: assigment.materialId,
+        });
 
-        const evaluation = (await promisify(
-          mApi().evaluation.workspaces.materials.evaluations.read(
-            workspace.id,
-            assigment.id,
-            {
-              userEntityId,
-            }
-          ),
-          "callback"
-        )()) as MaterialEvaluationType[];
+        const evaluation = await evaluationApi.getWorkspaceMaterialEvaluations({
+          workspaceId: workspace.id,
+          workspaceMaterialId: assigment.id,
+          userEntityId,
+        });
 
-        const loadedMaterial: MaterialContentNodeType = Object.assign(
-          material,
+        const loadedMaterial = Object.assign(
+          {},
           {
+            ...material,
             evaluation: evaluation[0],
             assignment: this.props.assigment,
             path: this.props.assigment.path,
+            contentHiddenForUser: false,
           }
-        );
+        ) as MaterialContentNodeWithIdAndLogic;
 
         return loadedMaterial;
       })(),
@@ -193,34 +190,34 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
   loadInterminEvaluationRequestRequestData = async () => {
     const { assigment } = this.props;
 
+    const evaluationApi = MApi.getEvaluationApi();
+
     try {
-      const interminEvaluationRequest = (await promisify(
-        mApi().evaluation.workspaceMaterial.interimEvaluationRequest.read(
-          assigment.id,
-          {
-            userEntityId: this.props.selectedAssessment.userEntityId,
-          }
-        ),
-        "callback"
-      )()) as WorkspaceInterimEvaluationRequest;
+      const interminEvaluationRequest =
+        await evaluationApi.getWorkspaceMaterialInterimEvaluationRequest({
+          workspaceMaterialId: assigment.id,
+          userEntityId: this.props.selectedAssessment.userEntityId,
+        });
 
       return interminEvaluationRequest;
-    } catch (error) {
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
       return undefined;
     }
   };
 
   /**
    * Update material evaluation data to state after editing it
-   * @param  assigmentSaveReturn assigmentSaveReturn
+   * @param  assessmentWithAudio assessmentWithAudio
    */
-  updateMaterialEvaluationData = (
-    assigmentSaveReturn: AssignmentEvaluationSaveReturn
-  ) => {
+  updateMaterialEvaluationData = (assessmentWithAudio: AssessmentWithAudio) => {
     /**
      * Get initial values that needs to be updated
      */
-    const updatedMaterial: MaterialContentNodeType = {
+    const updatedMaterial: MaterialContentNodeWithIdAndLogic = {
       ...this.state.materialNode,
     };
 
@@ -229,13 +226,13 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
      */
     updatedMaterial.evaluation = {
       ...this.state.materialNode.evaluation,
-      evaluated: assigmentSaveReturn.assessmentDate,
-      verbalAssessment: assigmentSaveReturn.verbalAssessment,
+      evaluated: assessmentWithAudio.assessmentDate,
+      verbalAssessment: assessmentWithAudio.verbalAssessment,
       gradeIdentifier: null,
       gradeSchoolDataSource: null,
       gradingScaleIdentifier: null,
       gradingScaleSchoolDataSource: null,
-      passed: assigmentSaveReturn.passing,
+      passed: assessmentWithAudio.passing,
     };
 
     this.setState({
@@ -275,7 +272,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * @param assignmentType assignmentType
    */
   handleOpenSlideDrawer =
-    (assignmentId: number, assignmentType: AssignmentType) => () => {
+    (assignmentId: number, assignmentType: MaterialAssigmentType) => () => {
       if (
         this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
       ) {
@@ -322,7 +319,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * @param compositeReply compositeReply
    * @returns Assignment function button class
    */
-  assignmentFunctionClass = (compositeReply?: MaterialCompositeRepliesType) =>
+  assignmentFunctionClass = (compositeReply?: MaterialCompositeReply) =>
     compositeReply &&
     compositeReply.evaluationInfo &&
     compositeReply.evaluationInfo.date &&
@@ -333,7 +330,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * @param compositeReply compositeReply
    * @returns JSX.Element
    */
-  renderAssignmentMeta = (compositeReply?: MaterialCompositeRepliesType) => {
+  renderAssignmentMeta = (compositeReply?: MaterialCompositeReply) => {
     const { t } = this.props;
 
     if (compositeReply) {

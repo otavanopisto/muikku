@@ -36,6 +36,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -60,6 +61,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
 import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 
 @ApplicationScoped
 public class PyramusSchoolDataEntityFactory {
@@ -343,6 +345,10 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceType(identifierMapper.getWorkspaceTypeIdentifier(courseType.getId()),
         courseType.getName());
+  }
+  
+  public WorkspaceAssessmentPrice createEntity(CourseAssessmentPrice courseAssessmentPrice) {
+    return new PyramusWorkspaceAssessmentPrice(courseAssessmentPrice.getPrice());
   }
 
   public WorkspaceAssessment createEntity(CourseAssessment courseAssessment) {

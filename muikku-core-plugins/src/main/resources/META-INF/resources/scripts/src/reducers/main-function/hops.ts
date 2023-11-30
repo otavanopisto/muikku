@@ -1,55 +1,23 @@
 import { ActionType } from "actions";
 import { Reducer } from "redux";
+import { HopsEligibility, HopsUppersecondary } from "~/generated/client";
 
 export type HOPSStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
 /**
- * HOPSDataType
+ * HOPSState
  */
-export interface HOPSDataType {
-  goalSecondarySchoolDegree: "yes" | "no" | "maybe";
-  goalMatriculationExam: "yes" | "no" | "maybe";
-  vocationalYears: string; // defined as a string, but this is actually a number
-  goalJustMatriculationExam: "yes" | "no"; //yo
-  justTransferCredits: string; // disguised number
-  transferCreditYears: string; // disguised number
-  completionYears: string; // disguised number
-  mathSyllabus: "MAA" | "MAB";
-  finnish: "AI" | "S2";
-  swedish: boolean;
-  english: boolean;
-  german: boolean;
-  french: boolean;
-  italian: boolean;
-  spanish: boolean;
-  science: "BI" | "FY" | "KE" | "GE";
-  religion: "UE" | "ET" | "UX";
-  additionalInfo?: string;
-  studentMatriculationSubjects: string[];
-  optedIn: boolean;
-}
-
-/**
- * HOPSEligibilityType
- */
-export interface HOPSEligibilityType {
-  upperSecondarySchoolCurriculum: boolean;
-}
-
-/**
- * HOPSType
- */
-export interface HOPSType {
+export interface HOPSState {
   hopsPhase?: string;
-  eligibility: HOPSEligibilityType;
+  eligibility: HopsEligibility;
   status: HOPSStatusType;
-  value: HOPSDataType;
+  value: HopsUppersecondary;
 }
 
 /**
  * initialHopsState
  */
-const initialHopsState: HOPSType = {
+const initialHopsState: HOPSState = {
   status: "WAIT",
   eligibility: null,
   value: null,
@@ -62,7 +30,7 @@ const initialHopsState: HOPSType = {
  * @param action action
  * @returns State of hops
  */
-export const hops: Reducer<HOPSType> = (
+export const hops: Reducer<HOPSState> = (
   state = initialHopsState,
   action: ActionType
 ) => {

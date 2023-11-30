@@ -1,21 +1,21 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
-import { JournalComment } from "~/@types/journal";
 import { AnyActionType } from "~/actions";
 import {
   ApplicationListItem,
   ApplicationListItemBody,
 } from "~/components/general/application-list";
+import { WorkspaceJournalComment } from "~/generated/client";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 
 /**
  * JournalCommentProps
  */
-interface JournalCommentProps extends JournalComment {
+interface JournalCommentProps extends WorkspaceJournalComment {
   status: StatusType;
 }
 
@@ -24,7 +24,7 @@ interface JournalCommentProps extends JournalComment {
  * @param props props
  * @returns JSX.Element
  */
-const JournalComment: React.FC<JournalCommentProps> = (props) => {
+const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
   const { comment, status, created, id, firstName, lastName, authorId } = props;
   const creatorIsMe = status.userId === authorId;
   const { t } = useTranslation();
@@ -32,10 +32,10 @@ const JournalComment: React.FC<JournalCommentProps> = (props) => {
     ? t("labels.self")
     : `${firstName} ${lastName}`;
 
-  const formatedDate = `${localizeTime.date(
+  const formatedDate = `${localize.date(created)} - ${localize.date(
     created,
-    "l"
-  )} - ${localizeTime.date(created, "h:mm")}`;
+    "LT"
+  )}`;
 
   return (
     <ApplicationListItem key={id}>
@@ -43,8 +43,11 @@ const JournalComment: React.FC<JournalCommentProps> = (props) => {
         <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
           <CkeditorContentLoader html={comment} />
         </article>
-        <div>
-          {creatorName} - {formatedDate}
+        <div className="journal__meta">
+          <div className="journal__meta-item">
+            <div className="journal__meta-item-label">{creatorName}</div>
+            <div className="journal__meta-item-data">{formatedDate}</div>
+          </div>
         </div>
       </ApplicationListItemBody>
     </ApplicationListItem>
@@ -69,4 +72,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(JournalComment);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WorkspaceJournalComment);
