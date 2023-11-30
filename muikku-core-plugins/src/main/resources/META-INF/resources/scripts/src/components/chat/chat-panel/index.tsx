@@ -1,6 +1,6 @@
 import * as React from "react";
 import useMessages from "../hooks/useMessages";
-import ChatMessage from "../message";
+import ChatMessage from "../chat-message";
 import {
   useMotionValue,
   Reorder,
