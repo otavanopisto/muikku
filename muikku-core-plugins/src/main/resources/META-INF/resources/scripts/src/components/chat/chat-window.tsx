@@ -33,7 +33,7 @@ function ChatWindow(props: ChatWindowProps) {
   } = useChatWindowContext();
 
   const [, setResizing] = React.useState<boolean>(false);
-  const [, setInitialized] = React.useState<boolean>(false);
+  const [, setAnimating] = React.useState<boolean>(false);
 
   const dragControls = useDragControls();
   const animationControls = useAnimationControls();
@@ -183,8 +183,6 @@ function ChatWindow(props: ChatWindowProps) {
         y: windowRef.current.getBoundingClientRect().top,
       };
     }
-
-    setInitialized(true);
   }, [animationControls, detached, windowPositonRef]);
 
   // Effect to set windowRef to be next to bottom left of screen
@@ -222,24 +220,47 @@ function ChatWindow(props: ChatWindowProps) {
     const windowEle = windowRef.current;
     const windowRect = windowEle.getBoundingClientRect();
 
-    // If detached, set window 10px from left side of screen to indicate detached state
-    // Else eset animation controls next to controller
-    if (detached) {
-      animationControls.start({
+    /**
+     * Animate window to be 30px from left side of screen and 20px from bottom of screen
+     * to indicate detached state
+     */
+    const animateDetach = async () => {
+      setAnimating(true);
+
+      await animationControls.start({
         x: window.innerWidth - windowRect.width - 30,
         y: window.innerHeight - windowRect.height - 20,
         transition: { duration: 0.3 },
       });
-    } else {
-      // Set x value so that window is next to controller
-      // Set y value so that window bottom is aligned with controller bottom
+
+      setAnimating(false);
+    };
+
+    /**
+     * Animate window to be next to bottom left of screen
+     */
+    const animateAttach = async () => {
+      setAnimating(true);
+
       animationControls.start({
         x: window.innerWidth - windowRect.width - 20,
         y: window.innerHeight - windowRect.height,
         transition: { duration: 0.3 },
       });
+
+      setAnimating(false);
+    };
+
+    // If detached, set window 10px from left side of screen to indicate detached state
+    // Else eset animation controls next to controller
+    if (detached) {
+      animateDetach();
+    } else {
+      // Set x value so that window is next to controller
+      // Set y value so that window bottom is aligned with controller bottom
+      animateAttach();
     }
-  }, [animationControls, dragControls, detached]);
+  }, [animationControls, dragControls, detached, windowPositonRef]);
 
   // Effect to handle resizing from handles
   React.useEffect(() => {

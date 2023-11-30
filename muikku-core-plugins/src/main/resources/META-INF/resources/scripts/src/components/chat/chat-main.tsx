@@ -34,8 +34,8 @@ function ChatMain(props: ChatMainProps) {
   const animationControlsLeftPanel = useAnimationControls();
   const animationControlsRightPanel = useAnimationControls();
 
-  const roomWrapperRef = React.useRef<HTMLDivElement>(null);
-  const peopleWrapperRef = React.useRef<HTMLDivElement>(null);
+  const roomPanelRef = React.useRef<HTMLDivElement>(null);
+  const peoplePanelRef = React.useRef<HTMLDivElement>(null);
   const mainWrapperRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -80,12 +80,12 @@ function ChatMain(props: ChatMainProps) {
 
   // Set resize observer to panel refs and update mainWrapperRef margin left and right
   React.useEffect(() => {
-    if (roomWrapperRef.current) {
+    if (roomPanelRef.current) {
       const resizeRoomsObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
-          // Update mainWrapperRef margin left to roomWrapperRef width
-          // if peopleWrapperRef width is changed and window current width is not mobile
-          if (entry.target === roomWrapperRef.current && !isMobile) {
+          // Update mainWrapperRef margin left to roomPanelRef width
+          // if peoplePanelRef width is changed and window current width is not mobile
+          if (entry.target === roomPanelRef.current && !isMobile) {
             animationControls.set({ marginLeft: entry.target.clientWidth });
           }
         }
@@ -93,23 +93,23 @@ function ChatMain(props: ChatMainProps) {
 
       const resizePeopleObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
-          // Update mainWrapperRef margin right to peopleWrapperRef width
-          // if peopleWrapperRef width is changed and window current width is not mobile
-          if (entry.target === peopleWrapperRef.current && !isMobile) {
+          // Update mainWrapperRef margin right to peoplePanelRef width
+          // if peoplePanelRef width is changed and window current width is not mobile
+          if (entry.target === peoplePanelRef.current && !isMobile) {
             animationControls.set({ marginRight: entry.target.clientWidth });
           }
         }
       });
 
-      resizeRoomsObserver.observe(roomWrapperRef.current);
-      resizePeopleObserver.observe(peopleWrapperRef.current);
+      resizeRoomsObserver.observe(roomPanelRef.current);
+      resizePeopleObserver.observe(peoplePanelRef.current);
 
       return () => {
         resizeRoomsObserver.disconnect();
         resizePeopleObserver.disconnect();
       };
     }
-  }, [roomWrapperRef, mainWrapperRef, isMobile, animationControls]);
+  }, [roomPanelRef, mainWrapperRef, isMobile, animationControls]);
 
   React.useEffect(() => {
     if (isMobile) {
@@ -127,10 +127,10 @@ function ChatMain(props: ChatMainProps) {
         },
       });
     } else {
-      if (roomWrapperRef.current && peopleWrapperRef.current) {
+      if (roomPanelRef.current && peoplePanelRef.current) {
         animationControls.start({
-          marginLeft: roomWrapperRef.current?.clientWidth,
-          marginRight: peopleWrapperRef.current?.clientWidth,
+          marginLeft: roomPanelRef.current?.clientWidth,
+          marginRight: peoplePanelRef.current?.clientWidth,
           transition: {
             duration: 0.1,
             type: "tween",
@@ -141,8 +141,8 @@ function ChatMain(props: ChatMainProps) {
   }, [
     animationControls,
     isMobile,
-    roomWrapperRef,
-    peopleWrapperRef,
+    roomPanelRef,
+    peoplePanelRef,
     toggleRightPanel,
     toggleLeftPanel,
   ]);
@@ -155,9 +155,9 @@ function ChatMain(props: ChatMainProps) {
       }}
     >
       <motion.div
-        ref={roomWrapperRef}
+        ref={roomPanelRef}
         animate={animationControlsLeftPanel}
-        className="chat-rooms__wrapper"
+        className="chat-rooms__panel"
         style={{
           background: "azure",
           position: "absolute",
@@ -197,9 +197,9 @@ function ChatMain(props: ChatMainProps) {
         />
       </motion.div>
       <motion.div
-        ref={peopleWrapperRef}
+        ref={peoplePanelRef}
         animate={animationControlsRightPanel}
-        className="chat-people__wrapper"
+        className="chat-people__panel"
         style={{
           background: "cadetblue",
           position: "absolute",
