@@ -518,27 +518,6 @@
 }
 
 .application-list__item--notification {
-  border-top: 3px solid $color-message-border;
-  margin: 0 0 1px;
-  padding: 10px 10px 10px 0;
-
-  @include breakpoint($breakpoint-pad) {
-    border-width: 1px;
-  }
-
-  &:first-child {
-    border-color: transparent;
-  }
-
-  &.course--open {
-    background: $color-default;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px #000000;
-    z-index: 10;
-  }
-}
-
-.application-list__item--notification {
   background: lighten($color-notice, 20%);
   border-radius: 5px;
   font-size: 1rem;
