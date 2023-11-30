@@ -3,9 +3,6 @@ import MApi from "~/api/api";
 import { ChatMessage } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import Avatar from "../general/avatar";
-import Dropdown from "../general/dropdown";
-import Link from "../general/link";
-import { useChatContext } from "./context/chat-context";
 
 /**
  * ChatMessageProps
@@ -25,8 +22,6 @@ const chatApi = MApi.getChatApi();
 const ChatMessage = (props: ChatMessageProps) => {
   const { senderIsMe, msg } = props;
   const { archived, editedDateTime } = msg;
-
-  const { people } = useChatContext();
 
   const contentEditableRef = React.useRef<HTMLDivElement>(null);
 

@@ -8,7 +8,7 @@ import * as React from "react";
 import { useChatContext } from "./context/chat-context";
 import { ChatWindowBreakpointsContextProvider } from "./context/chat-window-breakpoints-context";
 import { useChatWindowContext } from "./context/chat-window-context";
-import { AddIcon, CloseIcon, ResizerHandle } from "./helpers";
+import { AddIcon, CloseIcon, ResizerHandle } from "./chat-helpers";
 
 /**
  * ChatWindowProps

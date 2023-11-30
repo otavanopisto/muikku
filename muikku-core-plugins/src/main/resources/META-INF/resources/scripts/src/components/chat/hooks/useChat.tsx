@@ -9,7 +9,7 @@ import {
 } from "~/generated/client";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useViews } from "../animated-views/context/hooks/useChatTabs";
-import { chatControllerViews } from "../helpers";
+import { chatControllerViews } from "../chat-helpers";
 import usePeople from "./usePeople";
 import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";

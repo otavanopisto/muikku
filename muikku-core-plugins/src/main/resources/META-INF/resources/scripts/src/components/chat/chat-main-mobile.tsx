@@ -8,7 +8,7 @@ import {
 import * as React from "react";
 import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
-import { AddIcon } from "./helpers";
+import { AddIcon } from "./chat-helpers";
 import { PeopleList } from "./people";
 import { Rooms } from "./rooms";
 

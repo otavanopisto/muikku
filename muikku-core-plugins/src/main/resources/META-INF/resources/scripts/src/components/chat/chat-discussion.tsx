@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ChatPrivatePanel, ChatRoomPanel } from "./chat-panel";
 import { useChatContext } from "./context/chat-context";
-import { isChatRoom } from "./helpers";
+import { isChatRoom } from "./chat-helpers";
 
 /**
  * ChatDiscussionProps

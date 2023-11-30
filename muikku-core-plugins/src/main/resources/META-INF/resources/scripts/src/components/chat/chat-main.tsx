@@ -5,7 +5,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
 import { useChatWindowBreakpointsContext } from "./context/chat-window-breakpoints-context";
-import { AddIcon } from "./helpers";
+import { AddIcon } from "./chat-helpers";
 import { PeopleList } from "./people";
 import { Rooms } from "./rooms";
 
