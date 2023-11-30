@@ -208,7 +208,7 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
           actions.displayNotification(
             i18n.t("notifications.loadError", {
               ns: "workspace",
-              count: 1,
+              context: "workspace",
             }),
             "error"
           )

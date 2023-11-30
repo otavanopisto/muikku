@@ -823,7 +823,7 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(
         titleActions.updateTitle(
-          i18n.t("labels.announcement", { ns: "messaging", count: 0 })
+          i18n.t("labels.announcements", { ns: "messaging" })
         )
       );
       this.props.store.dispatch(

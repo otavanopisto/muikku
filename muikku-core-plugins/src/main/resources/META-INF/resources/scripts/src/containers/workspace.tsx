@@ -560,7 +560,7 @@ export default class Workspace extends React.Component<
       const state = this.props.store.getState();
       this.props.store.dispatch(
         titleActions.updateTitle(
-          i18n.t("labels.announcement", { ns: "messaging", count: 0 })
+          i18n.t("labels.announcements", { ns: "messaging" })
         )
       );
 

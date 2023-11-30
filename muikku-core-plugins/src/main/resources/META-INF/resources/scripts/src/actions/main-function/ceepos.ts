@@ -71,7 +71,10 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
 
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "orders", count: 1 }),
+            i18n.t("notifications.loadError", {
+              ns: "orders",
+              context: "order",
+            }),
             "error"
           )
         );

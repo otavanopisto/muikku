@@ -190,7 +190,7 @@ class OrganizationUser extends React.Component<
               {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {t("labels.teacher", { ns: "users", count: 1 })}
+              {t("labels.teacher", { ns: "users" })}
             </option>
           </SelectFormElement>
         </DialogRow>

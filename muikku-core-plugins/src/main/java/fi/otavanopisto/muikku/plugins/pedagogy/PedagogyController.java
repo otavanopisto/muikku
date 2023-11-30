@@ -213,5 +213,9 @@ public class PedagogyController {
     history.sort(Comparator.comparing(PedagogyFormHistory::getCreated).reversed());
     return history;
   }
+  
+  public boolean getHasPedagogyForm(String studentIdentifier) {
+    return findFormByStudentIdentifier(studentIdentifier) != null;
+  }
 
 }
