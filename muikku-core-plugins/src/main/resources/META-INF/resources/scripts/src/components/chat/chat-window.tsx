@@ -6,6 +6,7 @@ import {
 } from "framer-motion";
 import * as React from "react";
 import { useChatContext } from "./context/chat-context";
+import { ChatWindowContextProvider } from "./context/chat-window-context";
 import { AddIcon, CloseIcon, ResizerHandle } from "./helpers";
 
 /**
@@ -26,6 +27,7 @@ function ChatWindow(props: ChatWindowProps) {
     toggleFullscreen,
     toggleControlBox,
     toggleDetached,
+    isMobileWidth,
   } = useChatContext();
 
   const [, setResizing] = React.useState<boolean>(false);
@@ -128,7 +130,8 @@ function ChatWindow(props: ChatWindowProps) {
     if (
       animationControls === null ||
       !windowRef.current ||
-      componentInitialized.current
+      componentInitialized.current ||
+      isMobileWidth
     ) {
       return;
     }
@@ -149,7 +152,7 @@ function ChatWindow(props: ChatWindowProps) {
     };
 
     setInitialized(true);
-  }, [animationControls]);
+  }, [animationControls, isMobileWidth]);
 
   // Effect to set windowRef to be next to bottom left of screen
   React.useEffect(() => {
@@ -157,7 +160,7 @@ function ChatWindow(props: ChatWindowProps) {
      * handleResize
      */
     const handleResize = () => {
-      if (!windowRef.current || detached) {
+      if (!windowRef.current || detached || isMobileWidth) {
         return;
       }
 
@@ -173,12 +176,12 @@ function ChatWindow(props: ChatWindowProps) {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [animationControls, detached]);
+  }, [animationControls, detached, isMobileWidth]);
 
   // If not detached later on and windowRef and controllerRef exists
   // then set window position next to controller
   React.useEffect(() => {
-    if (!windowRef.current || !componentInitialized.current) {
+    if (!windowRef.current || !componentInitialized.current || isMobileWidth) {
       componentInitialized.current = true;
       return;
     }
@@ -203,7 +206,7 @@ function ChatWindow(props: ChatWindowProps) {
         transition: { duration: 0.3 },
       });
     }
-  }, [animationControls, dragControls, detached]);
+  }, [animationControls, dragControls, detached, isMobileWidth]);
 
   // Effect to handle resizing from handles
   React.useEffect(() => {
@@ -679,7 +682,7 @@ function ChatWindow(props: ChatWindowProps) {
   };
 
   return (
-    <>
+    <ChatWindowContextProvider windowRef={windowRef}>
       <div
         id="chat-window-constrains"
         ref={windowConstrainsRef}
@@ -776,7 +779,7 @@ function ChatWindow(props: ChatWindowProps) {
           direction="br"
         />
       </motion.div>
-    </>
+    </ChatWindowContextProvider>
   );
 }
 

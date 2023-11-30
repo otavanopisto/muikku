@@ -7,10 +7,12 @@ import {
   CreateChatRoomRequest,
   UpdateChatRoomRequest,
 } from "~/generated/client";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useViews } from "../animated-views/context/hooks/useChatTabs";
 import { chatControllerViews } from "../helpers";
 import usePeople from "./usePeople";
 import useRooms from "./useRooms";
+import variables from "~/sass/_exports.scss";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -58,6 +60,9 @@ function useChat(userId: number) {
 
   // Whether to show the control box or bubble
   const [minimized, setMinimized] = React.useState<boolean>(true);
+
+  const mobileBreakpoint = parseInt(variables.mobilebreakpoint);
+  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
   const currentEditorValues = React.useMemo(() => {
     if (roomIdentifierToEdit) {
@@ -227,6 +232,8 @@ function useChat(userId: number) {
     detached,
     toggleDetached,
     openDiscussion,
+    isMobileWidth,
+    setFullScreen,
   };
 }
 

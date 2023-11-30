@@ -5,22 +5,32 @@ import { useChatContext } from "./context/chat-context";
 
 import ChatWindow from "./chat-window";
 import ChatMain from "./chat-main";
+import ChatMainMobile from "./chat-main-mobile";
 
 /**
  * Chat
  * @returns JSX.Element
  */
 const Chat = () => {
-  const { minimized, toggleControlBox, fullScreen } = useChatContext();
+  const { minimized, toggleControlBox, isMobileWidth } = useChatContext();
+
+  const mobileOrDesktop = React.useMemo(() => {
+    if (minimized) {
+      return null;
+    }
+    if (isMobileWidth) {
+      return <ChatMainMobile />;
+    }
+    return (
+      <ChatWindow>
+        <ChatMain />
+      </ChatWindow>
+    );
+  }, [isMobileWidth, minimized]);
 
   return (
     <>
-      <motion.div
-        className="chat"
-        style={{
-          height: fullScreen ? "100%" : "500px",
-        }}
-      >
+      <motion.div className="chat">
         {/* Chat bubble */}
         {minimized && (
           <div onClick={toggleControlBox} className="chat__bubble">
@@ -28,11 +38,8 @@ const Chat = () => {
           </div>
         )}
       </motion.div>
-      {!minimized && (
-        <ChatWindow>
-          <ChatMain />
-        </ChatWindow>
-      )}
+
+      {mobileOrDesktop}
     </>
   );
 };

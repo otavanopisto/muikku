@@ -9,9 +9,13 @@ const chatApi = MApi.getChatApi();
 
 /**
  * useMessages
- * @param targetIdentifier targetIdentifier
+ * @param targetIdentifier targetIdentifier use to load messages.
+ * @param targetIdentifiersToListen List of targetIdentifiers to listen to which will cause message list to update.
  */
-function useMessages(targetIdentifier: string) {
+function useMessages(
+  targetIdentifier: string,
+  targetIdentifiersToListen: string[]
+) {
   const websocket = useChatWebsocketContext();
 
   const [chatMsgs, setChatMsgs] = React.useState<ChatMessage[]>([]);
@@ -65,7 +69,7 @@ function useMessages(targetIdentifier: string) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          dataTyped.targetIdentifier === targetIdentifier &&
+          targetIdentifiersToListen.includes(dataTyped.targetIdentifier) &&
             setChatMsgs((msgs) => [...msgs, dataTyped]);
         }
       }
@@ -80,7 +84,7 @@ function useMessages(targetIdentifier: string) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          dataTyped.targetIdentifier === targetIdentifier &&
+          targetIdentifiersToListen.includes(dataTyped.targetIdentifier) &&
             setChatMsgs((msgs) => {
               const index = msgs.findIndex((msg) => msg.id === dataTyped.id);
 
@@ -104,7 +108,7 @@ function useMessages(targetIdentifier: string) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          dataTyped.targetIdentifier === targetIdentifier &&
+          targetIdentifiersToListen.includes(dataTyped.targetIdentifier) &&
             setChatMsgs((msgs) => {
               const index = msgs.findIndex((msg) => msg.id === dataTyped.id);
 
@@ -134,7 +138,7 @@ function useMessages(targetIdentifier: string) {
         onChatMsgDeletedMsg
       );
     };
-  }, [targetIdentifier, websocket]);
+  }, [targetIdentifier, targetIdentifiersToListen, websocket]);
 
   return { chatMsgs, loadingChatMsgs, newMessage, setNewMessage, postMessage };
 }

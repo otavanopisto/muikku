@@ -24,7 +24,13 @@ export interface ChatPanel {
  */
 interface ChatPanelProps {
   title: string;
+  /**
+   * Current user id.
+   */
   userId: number;
+  /**
+   * Target identifier is used to load messages.
+   */
   targetIdentifier: string;
   modifiers?: string[];
 }
@@ -36,7 +42,8 @@ interface ChatPanelProps {
  */
 const ChatPrivatePanel = (props: ChatPanelProps) => {
   const { chatMsgs, newMessage, setNewMessage, postMessage } = useMessages(
-    props.targetIdentifier
+    props.targetIdentifier,
+    [props.targetIdentifier, `user-${props.userId}`]
   );
 
   return (
@@ -94,7 +101,8 @@ const ChatRoomPanel = (props: ChatPanelProps) => {
     React.useState<boolean>(false);
 
   const { chatMsgs, newMessage, setNewMessage, postMessage } = useMessages(
-    props.targetIdentifier
+    props.targetIdentifier,
+    [props.targetIdentifier]
   );
 
   const toggleOccupantsList = React.useCallback(() => {

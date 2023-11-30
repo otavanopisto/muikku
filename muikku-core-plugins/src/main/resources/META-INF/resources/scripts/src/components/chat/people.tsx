@@ -2,12 +2,23 @@ import * as React from "react";
 import { ChatUser } from "~/generated/client";
 import Avatar from "../general/avatar";
 import { useChatContext } from "./context/chat-context";
+import { AnimatePresence, motion } from "framer-motion";
+
+/**
+ * PeopleListProps
+ */
+interface PeopleListProps {
+  minimized: boolean;
+}
 
 /**
  * PeopleList
+ * @param props props
  * @returns JSX.Element
  */
-function PeopleList() {
+function PeopleList(props: PeopleListProps) {
+  const { minimized } = props;
+
   const { people, loadingPeople } = useChatContext();
 
   if (loadingPeople) {
@@ -27,17 +38,23 @@ function PeopleList() {
       }}
     >
       {people.map((user) => (
-        <PeopleItem key={user.id} user={user} />
+        <PeopleItem key={user.id} user={user} minimized={minimized} />
       ))}
     </div>
   );
 }
+
+const variants = {
+  visible: { opacity: 1, x: 0, width: "auto", marginLeft: "10px" },
+  minimized: { opacity: 0, x: "-100%", width: "0px", marginLeft: "0px" },
+};
 
 /**
  * PeopleItem
  */
 interface PeopleItemProps {
   user: ChatUser;
+  minimized: boolean;
 }
 
 /**
@@ -46,7 +63,7 @@ interface PeopleItemProps {
  * @returns JSX.Element
  */
 function PeopleItem(props: PeopleItemProps) {
-  const { user } = props;
+  const { user, minimized } = props;
 
   const { openDiscussion } = useChatContext();
 
@@ -60,26 +77,32 @@ function PeopleItem(props: PeopleItemProps) {
       style={{
         display: "flex",
         alignItems: "center",
-        backgroundColor: "grey",
         borderRadius: "50px 0 0 50px",
         color: "white",
         marginBottom: "10px",
+        padding: "10px",
       }}
       onClick={handlePeopleClick}
     >
-      <div
-        className="people-item__avatar"
-        style={{
-          marginRight: "10px",
-        }}
-      >
+      <div className="people-item__avatar">
         <Avatar
           id={user.id}
           hasImage={user.hasImage}
           firstName={user.nick[0]}
         />
       </div>
-      <div className="people-item__name">{user.nick} ONLINE</div>
+      <AnimatePresence initial={false}>
+        <motion.div
+          className="people-item__name"
+          variants={variants}
+          animate={!minimized ? "visible" : "minimized"}
+          transition={{
+            duration: 0.3,
+          }}
+        >
+          {user.nick} ONLINE
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
