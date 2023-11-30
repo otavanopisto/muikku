@@ -107,8 +107,8 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
     ) => {
       const meApi = MApi.getMeApi();
       const recordsApi = MApi.getRecordsApi();
-      const userApi = MApi.getUserApi();
       const userDataStatus = getState().records.userDataStatus;
+
       try {
         dispatch({
           type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
@@ -134,7 +134,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
 
         let idFromIdentifier = getState().dependants.list.find(
           (dependant) => dependant.identifier === userIdentifier
-        )?.userEntityId;
+        )?.identifier;
 
         // if the dependants aren't loaded yet, we load them here, because we must have the id
 
@@ -143,20 +143,19 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
 
           idFromIdentifier = dependants.find(
             (dependant) => dependant.identifier === userIdentifier
-          )?.userEntityId;
+          )?.identifier;
         }
 
         //We get the current used id this user is supposedly a student
 
-        const userEntityId = idFromIdentifier
+        const studentIdentifier: string = idFromIdentifier
           ? idFromIdentifier
-          : getState().status.userId;
+          : getState().status.userSchoolDataIdentifier;
 
-        //we get the users that represent that userId
-        let users = await userApi.getStudents({
-          userEntityId,
+        //we get the users that represent that studentIdentifier
+        let users = await recordsApi.getStudents({
+          studentIdentifier: studentIdentifier,
           includeInactiveStudents: true,
-          maxResults: 20,
         });
 
         //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want

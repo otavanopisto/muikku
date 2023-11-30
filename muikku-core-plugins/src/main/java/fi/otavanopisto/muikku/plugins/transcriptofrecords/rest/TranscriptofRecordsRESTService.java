@@ -1,9 +1,12 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +18,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -47,6 +51,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPer
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUserProperties;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -62,6 +67,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
@@ -70,7 +76,9 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -125,12 +133,135 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private OrganizationEntityController organizationEntityController;
 
   @Inject
+  private UserEntityFileController userEntityFileController;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
+
+  @Inject
   private WorkspaceRestModels workspaceRestModels;
 
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
+  @GET
+  @Path("/students/{STUDENTIDENTIFIER}/students")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudents(
+      @PathParam("STUDENTIDENTIFIER") String studentIdentifierStr,
+      @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents
+      ) {
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    if (userSchoolDataIdentifier == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Access
+    
+    if (!userSchoolDataIdentifier.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userSchoolDataIdentifier.getUserEntity());
+    List<SchoolDataIdentifier> userEntityIdentifiers = schoolDataIdentifiers.stream().map(usdi -> usdi.schoolDataIdentifier()).collect(Collectors.toList());
+      
+    List<fi.otavanopisto.muikku.rest.model.Student> students = new ArrayList<>();
+    
+    SearchProvider elasticSearchProvider = getProvider("elastic-search");
+    if (elasticSearchProvider != null) {
+      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      
+      SearchResult result = elasticSearchProvider.searchUsers(
+          Arrays.asList(organization),
+          null, // study programme identifiers
+          null, // searchString,
+          null, // fields,
+          Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
+          null, // userGroupFilters,
+          null, // workspaceFilters,
+          userEntityIdentifiers, // userIdentifiers,
+          includeInactiveStudents,
+          true,
+          false,
+          0,
+          20,
+          false);
+      
+      List<Map<String, Object>> results = result.getResults();
+
+      if (results != null && !results.isEmpty()) {
+        for (Map<String, Object> o : results) {
+          String studentId = (String) o.get("id");
+          if (StringUtils.isBlank(studentId)) {
+            logger.severe("Could not process user found from search index because it had a null id");
+            continue;
+          }
+          
+          String[] studentIdParts = studentId.split("/", 2);
+          SchoolDataIdentifier searchStudentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
+          if (searchStudentIdentifier == null) {
+            logger.severe(String.format("Could not process user found from search index with id %s", studentId));
+            continue;
+          }
+          
+          if (!userEntityIdentifiers.contains(searchStudentIdentifier)) {
+            logger.severe(String.format("Search returned invalid result %s for user %s", searchStudentIdentifier.toId(), studentIdentifier.toId()));
+            continue;
+          }
+          
+          UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(searchStudentIdentifier);
+          String emailAddress = userEntity != null ? userEmailEntityController.getUserDefaultEmailAddress(userEntity, true) : null;
+
+          Date studyStartDate = getDateResult(o.get("studyStartDate"));
+          Date studyEndDate = getDateResult(o.get("studyEndDate"));
+          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
+          
+          boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+
+          UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(searchStudentIdentifier);
+          OrganizationEntity organizationEntity = usdi.getOrganization();
+          OrganizationRESTModel organizationRESTModel = null;
+          if (organizationEntity != null) {
+            organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+          }
+
+          students.add(new fi.otavanopisto.muikku.rest.model.Student(
+            searchStudentIdentifier.toId(), 
+            (String) o.get("firstName"),
+            (String) o.get("lastName"),
+            (String) o.get("nickName"),
+            (String) o.get("studyProgrammeName"), 
+            (String) o.get("studyProgrammeIdentifier"),
+            hasImage,
+            (String) o.get("nationality"), 
+            (String) o.get("language"), 
+            (String) o.get("municipality"), 
+            (String) o.get("school"), 
+            emailAddress,
+            studyStartDate,
+            studyEndDate,
+            studyTimeEnd,
+            userEntity.getLastLogin(),
+            (String) o.get("curriculumIdentifier"),
+            userEntity.getUpdatedByStudent(),
+            userEntity.getId(),
+            organizationRESTModel,
+            false
+          ));
+        }
+      }
+    }
+
+    return Response.ok(students).build();
+  }
+  
   @GET
   @Path("/users/{USERIDENTIFIER}/workspaceActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -509,6 +640,29 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
     return Response.ok(workspaceRestModels.createRestModelWithActivity(sessionController.getLoggedUser(), workspaceEntity, workspace, educationTypeMapping)).build();
+  }
+  
+  private SearchProvider getProvider(String name) {
+    Iterator<SearchProvider> i = searchProviders.iterator();
+    while (i.hasNext()) {
+      SearchProvider provider = i.next();
+      if (name.equals(provider.getName())) {
+        return provider;
+      }
+    }
+    return null;
+  }
+  
+  private Date getDateResult(Object value) {
+    Date date = null;
+    if (value instanceof Long) {
+      date = new Date((Long) value);
+    }
+    else if (value instanceof Double) {
+      // seconds to ms
+      date = new Date(((Double) value).longValue() * 1000);
+    }
+    return date;
   }
   
 }
