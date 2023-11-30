@@ -65,7 +65,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
       });
 
       const activityLogsHash = await activitylogsApi.getUserActivityLogs({
-        userId: pyramusId,
+        userIdentifier: pyramusId,
         from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         to: new Date(),
       });
@@ -126,7 +126,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
             workspaces.map(async (workspace, index) => {
               const courseActivity =
                 await activitylogsApi.getWorkspaceActivityLogs({
-                  userId: pyramusId,
+                  userIdentifier: pyramusId,
                   workspaceEntityId: workspace.id,
                   from: new Date(new Date().getFullYear() - 2, 0),
                   to: new Date(),

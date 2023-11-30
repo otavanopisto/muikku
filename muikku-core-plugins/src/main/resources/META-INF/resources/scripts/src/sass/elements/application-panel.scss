@@ -122,7 +122,7 @@
   position: fixed;
   right: 0;
   top: $navbar-mobile-height;
-  z-index: 2;
+  z-index: 99;
 
   @include breakpoint($breakpoint-pad) {
     align-items: center;
@@ -237,6 +237,10 @@
     flex-direction: row;
     padding: 0;
   }
+}
+
+.application-panel__content--tabs {
+  padding: 1rem 0 0;
 }
 
 // Component's content header (h2 level header)

@@ -454,15 +454,16 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
             <div className="journal__meta">
               <div className="journal__meta-item">
                 <div className="journal__meta-item-label">
-                  {t("labels.feedbackDate", { ns: "journal" })}:
+                  {t("labels.feedbackDate", { ns: "journal" })}
                 </div>
                 <div className="journal__meta-item-data">
-                  {localize.date(journalsData.journalFeedback.created, "l LT")}
+                  {localize.date(journalsData.journalFeedback.created)} -{" "}
+                  {localize.date(journalsData.journalFeedback.created, "LT")}
                 </div>
               </div>
               <div className="journal__meta-item">
                 <div className="journal__meta-item-label">
-                  {t("labels.feedbackAuthor", { ns: "journal" })}:
+                  {t("labels.feedbackAuthor", { ns: "journal" })}
                 </div>
                 <div className="journal__meta-item-data">
                   {journalsData.journalFeedback.creatorName}
