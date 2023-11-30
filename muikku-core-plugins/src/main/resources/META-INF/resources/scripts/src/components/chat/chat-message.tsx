@@ -123,7 +123,11 @@ const ChatMessage = (props: ChatMessageProps) => {
       className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
     >
       <div className="chat__message-content-container" key="nonEditable">
-        <Avatar firstName={msg.nick} hasImage id={msg.sourceUserEntityId} />
+        <Avatar
+          firstName={msg.nick}
+          hasImage={msg.hasImage}
+          id={msg.sourceUserEntityId}
+        />
         <div className="chat__message-content-wrapper">
           <div className="chat__message-meta">
             <span className={`chat__message-meta-sender`}>{msg.nick}</span>
