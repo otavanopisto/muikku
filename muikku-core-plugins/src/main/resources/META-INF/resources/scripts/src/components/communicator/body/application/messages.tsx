@@ -355,9 +355,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     openByHover
                     content={
                       <p>
-                        {`${localize.date(message.created)} klo ${localize.date(
+                        {`${localize.date(message.created)} - ${localize.date(
                           message.created,
-                          "h:mm"
+                          "LT"
                         )}`}
                       </p>
                     }
@@ -502,9 +502,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                         <p>
                           {`${localize.date(
                             thread.threadLatestMessageDate
-                          )} klo ${localize.date(
+                          )} - ${localize.date(
                             thread.threadLatestMessageDate,
-                            "h:mm"
+                            "LT"
                           )}`}
                         </p>
                       }

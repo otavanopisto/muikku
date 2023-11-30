@@ -6,7 +6,7 @@
 
 ( function() {
 
-  var cdn = 'http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML';
+  var cdn = 'http://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-MML-AM_CHTML';
 
   CKEDITOR.dialog.add( 'muikku-mathjax', function( editor ) {
 
@@ -25,7 +25,7 @@
               id: 'isAsciiMath',
               type: 'checkbox',
               label: lang.isAsciiMath,
-              
+
               onLoad: function( widget ) {
               },
 
@@ -289,14 +289,14 @@
         begin = value.indexOf( '\\(' ) + 2;
         end = value.lastIndexOf( '\\)' );
       }
-      
+
       if (begin === -1 || end === -1) {
         return value;
       }
 
       return value.substring( begin, end );
     };
-    
+
     CKEDITOR.plugins.muikkuMathjax.untrim = function(isAsciiMath, value) {
       if (isAsciiMath) {
         return "`" + value + "`";
@@ -304,7 +304,7 @@
         return "\\(" + value + "\\)";
       }
     }
-    
+
     CKEDITOR.plugins.muikkuMathjax.escapeHtmlEntities = function(value) {
       return value ? value
         .replaceAll("&", "&amp;")

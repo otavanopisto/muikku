@@ -78,7 +78,10 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
         <div className="application-list__item-header-aside">
-          <span>{localize.date(journal.created, "l LT")}</span>
+          <span>
+            {localize.date(journal.created)} -{" "}
+            {localize.date(journal.created, "LT")}
+          </span>
         </div>
       </ApplicationListItemHeader>
       <ApplicationListItemBody className="application-list__item-body">

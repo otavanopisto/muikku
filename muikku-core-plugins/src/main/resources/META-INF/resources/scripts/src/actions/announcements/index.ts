@@ -6,7 +6,6 @@ import {
   AnnouncementsState,
 } from "~/reducers/announcements";
 import { loadAnnouncementsHelper } from "./helpers";
-import moment from "~/lib/moment";
 import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
@@ -17,6 +16,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
+import * as moment from "moment";
 
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",
