@@ -68,10 +68,19 @@ public class ChatMessageRestModel {
     this.targetIdentifier = targetIdentifier;
   }
 
+  public Boolean getHasImage() {
+    return hasImage;
+  }
+
+  public void setHasImage(Boolean hasImage) {
+    this.hasImage = hasImage;
+  }
+
   private Long id;
   private Long sourceUserEntityId;
   private String targetIdentifier;
   private String nick;
+  private Boolean hasImage;
   private String message;
   private Date sentDateTime;
   private Date editedDateTime;
