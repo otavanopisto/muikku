@@ -15,6 +15,7 @@ import {
 } from "~/components/general/application-list";
 import { Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
 
@@ -105,6 +106,7 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                 </span>
               </div>
             ) : null}
+
             {this.props.student.flags.length
               ? this.props.student.flags.map((flag) => (
                   <div className="label" key={flag.id}>
@@ -116,6 +118,27 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                   </div>
                 ))
               : null}
+
+            {this.props.student.hasPedagogyForm ? (
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <span id={`pedagogyPlan-` + this.props.index}>
+                    Opiskelijalle on tehty pedagogisen tuen suunnitelma
+                  </span>
+                }
+              >
+                <div className="label label--pedagogy-plan">
+                  <span
+                    className="label__text label__text--pedagogy-plan"
+                    aria-labelledby={`pedagogyPlan-` + this.props.index}
+                  >
+                    P
+                  </span>
+                </div>
+              </Dropdown>
+            ) : null}
           </div>
         </ApplicationListItemFooter>
       </ApplicationListItemContentWrapper>
