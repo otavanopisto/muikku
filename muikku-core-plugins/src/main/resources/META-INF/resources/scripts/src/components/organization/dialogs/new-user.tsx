@@ -18,7 +18,6 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { CreateUserType } from "~/reducers/user-index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Role } from "~/generated/client";
@@ -31,7 +30,6 @@ interface OrganizationUserProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   status: StatusType;
-  data?: CreateUserType;
   studyprogrammes: StudyprogrammeTypes;
   createStudent: CreateStudentTriggerType;
   createStaffmember: CreateStaffmemberTriggerType;
