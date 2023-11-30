@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.rest.model;
 import java.util.Date;
 import java.util.List;
 
-public class GuiderStudentRestModel extends Student {
+public class GuiderStudentRestModel extends FlaggedStudentRestModel {
 
   public GuiderStudentRestModel() {
   }
@@ -26,5 +26,6 @@ public class GuiderStudentRestModel extends Student {
   public void setMatriculationEligibility(boolean matriculationEligibility) {
     this.matriculationEligibility = matriculationEligibility;
   }
+
   private boolean matriculationEligibility;
 }

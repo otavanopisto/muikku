@@ -214,14 +214,7 @@ export default class c extends React.Component<
     const getStudentsLoader = () =>
       loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
-        : () =>
-            MApi.getUserApi().getUsers({
-              q: textInput,
-              maxResults: 20,
-              onlyDefaultUsers: checkHasPermission(
-                this.props.userPermissionIsOnlyDefaultUsers
-              ),
-            });
+        : () => new Promise<User[]>(() => []);
 
     /**
      * getUserGroupsLoader

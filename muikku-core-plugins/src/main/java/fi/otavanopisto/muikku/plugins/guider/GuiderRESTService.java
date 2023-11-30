@@ -417,8 +417,7 @@ public class GuiderRESTService extends PluginRESTService {
           UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
           OrganizationEntity organizationEntity = usdi.getOrganization();
           
-          
-          students.add(new fi.otavanopisto.muikku.rest.model.Student(
+          students.add(new fi.otavanopisto.muikku.rest.model.FlaggedStudentRestModel(
             studentIdentifier.toId(),
             (String) o.get("firstName"),
             (String) o.get("lastName"),
