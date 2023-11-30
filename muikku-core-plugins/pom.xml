@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.215-SNAPSHOT</version>
+    <version>1.1.219-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -253,6 +253,29 @@
 
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/main/resources/META-INF/resources/scripts/dist</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>src/main/resources/META-INF/resources/scripts/src/generated</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
