@@ -11690,6 +11690,9 @@ components:
         nick:
           description: Nickname of the user who sent the message.
           type: string
+        hasImage:
+          description: Does the user who sent the message have a profile image
+          type: boolean
         message:
           description: Message content. Null if message is deleted.
           type: string

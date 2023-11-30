@@ -587,6 +587,7 @@ public class ChatController {
   }
   
   public ChatMessageRestModel toRestModel(ChatMessage message) {
+    UserEntity userEntity = userEntityController.findUserEntityById(message.getSourceUserEntityId());
     ChatMessageRestModel msg = new ChatMessageRestModel();
     msg.setId(message.getId());
     msg.setSourceUserEntityId(message.getSourceUserEntityId());
@@ -597,6 +598,7 @@ public class ChatController {
       msg.setTargetIdentifier("user-" + message.getTargetUserEntityId());
     }
     msg.setNick(message.getNick());
+    msg.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
     msg.setMessage(message.getArchived() ? null : message.getMessage());
     msg.setSentDateTime(message.getSent());
     msg.setEditedDateTime(message.getEdited());
