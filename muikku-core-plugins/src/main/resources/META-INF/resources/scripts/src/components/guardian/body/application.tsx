@@ -47,11 +47,6 @@ type StudiesTab =
   | "STUDY_INFO"
   | "PEDAGOGY_FORM";
 
-type DependantOptionType = {
-  label: string;
-  value: string;
-};
-
 /**
  * DependantApplicationProps
  */
@@ -190,7 +185,7 @@ class DependantApplication extends React.Component<
    */
   async componentDidMount() {
     this.setState({ loading: true });
-    let selectedDependant: string = "";
+    let selectedDependant = "";
 
     if (!window.location.hash) {
       const dependant = this.props.dependants[0];

@@ -107,9 +107,10 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const meApi = MApi.getMeApi();
       const recordsApi = MApi.getRecordsApi();
       const userApi = MApi.getUserApi();
-
+      const userDataStatus = getState().records.userDataStatus;
       try {
         dispatch({
           type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
@@ -120,7 +121,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           payload: <TranscriptOfRecordLocationType>"records",
         });
 
-        if (getState().records.userDataStatus !== "WAIT") {
+        if (userDataStatus === "READY") {
           return;
         }
 
@@ -133,19 +134,29 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
 
         // we have an identifier given, we work out the user id from that
 
-        const idFromIdentifier = getState().dependants.list.find(
+        let idFromIdentifier = getState().dependants.list.find(
           (dependant) => dependant.identifier === userIdentifier
         )?.userEntityId;
 
+        // if the dependants aren't loaded yet, we load them here, because we must have the id
+
+        if (userIdentifier && !idFromIdentifier) {
+          const dependants = await meApi.getGuardiansDependents();
+
+          idFromIdentifier = dependants.find(
+            (dependant) => dependant.identifier === userIdentifier
+          )?.userEntityId;
+        }
+
         //We get the current used id this user is supposedly a student
 
-        const userId: number = idFromIdentifier
+        const userEntityId = idFromIdentifier
           ? idFromIdentifier
           : getState().status.userId;
 
         //we get the users that represent that userId
         let users = await userApi.getStudents({
-          userEntityId: userId,
+          userEntityId,
           includeInactiveStudents: true,
           maxResults: 20,
         });
