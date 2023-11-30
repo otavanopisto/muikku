@@ -538,6 +538,15 @@
   }
 }
 
+.application-list__item--notification {
+  background: lighten($color-notice, 20%);
+  border-radius: 5px;
+  font-size: 1rem;
+  font-style: italic;
+  padding: 10px;
+  text-align: center;
+}
+
 .application-list__item--user {
   border-top: 1px solid $color-default-item-separator-border;
   padding: 10px;
