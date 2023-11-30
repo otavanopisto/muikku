@@ -122,10 +122,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           !!this.props.records.current
         }
       >
-        <h2 className="application-panel__content-header">
-          {t("labels.records", { ns: "studies" })}
-        </h2>
-
         {studentRecords}
         <ApplicationSubPanel>
           <ApplicationSubPanel.Header>

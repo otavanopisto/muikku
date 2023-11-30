@@ -448,7 +448,7 @@ export default class Draggable extends React.Component<
     }
 
     if (this.state.isDragging) {
-      if (new Date().getTime() - this.timer <= 100) {
+      if (new Date().getTime() - this.timer <= 10) {
         this.props.onClick && this.props.onClick(e as any);
         this.setState(
           {
