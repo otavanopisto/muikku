@@ -129,7 +129,8 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         //OK let me try to explain this :<
 
         //We get the current used id this user is supposedly a student
-        const studentIdentifier: string = getState().status.userSchoolDataIdentifier;
+        const studentIdentifier: string =
+          getState().status.userSchoolDataIdentifier;
 
         //we get the users that represent that studentIdentifier
         let users = await recordsApi.getStudents({
