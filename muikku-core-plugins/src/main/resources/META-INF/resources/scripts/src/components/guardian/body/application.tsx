@@ -377,7 +377,6 @@ class DependantApplication extends React.Component<
           onTabChange={this.onTabChange}
           activeTab={this.state.activeTab}
           panelTabs={ready && panelTabs}
-          useWithHash
         />
       </>
     );
