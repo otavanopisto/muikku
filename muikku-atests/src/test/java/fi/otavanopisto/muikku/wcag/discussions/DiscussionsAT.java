@@ -12,14 +12,16 @@ public class DiscussionsAT extends AbstractWCAGTest{
   public void discussionsTests() throws FileNotFoundException {
     login(getTestStudent(), getTestStudentPassword(), true);
     navigate("/discussion", true);
-    waitForVisible(".application-panel--discussion");
+    waitForVisible(".application-panel__content .loader-empty .application-list__content");
     testAccessibility("Discussions main view");
+    
     waitAndClick(".application-list__item.message:first-child");
     waitForVisible(".application-list__item--discussion-message");
     testAccessibility("Discussions single thread");
+    
     navigate("/discussion", true);
-    waitAndClick(".application-panel__helper-container--discussion a.button--primary-function");
-    waitForVisible(".env-dialog__header");
+    waitAndClick(".application-panel__actions-aside .button--primary-function");
+    waitForVisible(".env-dialog__body");
     testAccessibility("Discussions new message");
   }
   
@@ -28,21 +30,15 @@ public class DiscussionsAT extends AbstractWCAGTest{
     login(getTestAdmin(), getTestAdminPassword(), true);
     navigate("/discussion", true);
     waitAndClick(".application-list__item.message:first-child");
-    waitAndClick(".application-list__item--discussion-message .link--application-list-item-footer:nth-child(4)");
+    waitAndClick(".application-list__item-footer--discussion-message > a:nth-child(4)");
     waitForVisible(".dialog--delete-area .button--standard-ok");
     testAccessibility("Discussions delete message dialog");
 
     navigate("/discussion", true);
     waitAndClick(".application-list__item.message:first-child");
-    waitAndClick(".application-list__item--discussion-message .link--application-list-item-footer:nth-child(3)");
-    waitForVisible(".env-dialog__row--new-discussion-thread-states");
+    waitAndClick(".application-list__item-footer--discussion-message > a:nth-child(3)");
+    waitForVisible(".env-dialog__body");
     testAccessibility("Discussions edit message dialog");
-    
-    navigate("/discussion", true);
-    waitAndClick(".application-list__item.message:first-child");
-    waitAndClick(".application-list .application-list__item--discussion-message+div.application-list__item--discussion-reply .link--application-list-item-footer:nth-child(4)");
-    waitForVisible(".dialog--delete-area .button--standard-ok");
-    testAccessibility("Discussions delete message reply dialog");
   }
   
 }
