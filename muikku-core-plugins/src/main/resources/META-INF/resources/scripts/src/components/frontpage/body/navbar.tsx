@@ -93,7 +93,7 @@ class FrontpageNavbar extends React.Component<
                 className="link link--frontpage link--highlight link--full"
               >
                 <span>
-                  {this.props.t("labels.openMaterials", { ns: "frontPage" })}
+                  {this.props.t("labels.courses", { ns: "frontPage" })}
                 </span>
               </Link>
             ),
@@ -134,7 +134,7 @@ class FrontpageNavbar extends React.Component<
             className="link link--highlight link--full"
           >
             <span>
-              {this.props.t("labels.openMaterials", { ns: "frontPage" })}
+              {this.props.t("labels.courses", { ns: "frontPage" })}
             </span>
           </Link>,
         ]}
