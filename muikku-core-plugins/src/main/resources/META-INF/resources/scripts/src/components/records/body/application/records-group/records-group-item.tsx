@@ -322,7 +322,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               workspaceId={credit.activity.id}
               credit={credit.activity}
             >
-              <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
+              <Button buttonModifiers={["info", "assignments-and-exercises"]}>
                 {t("actions.assignments", {
                   ns: "studies",
                 })}
