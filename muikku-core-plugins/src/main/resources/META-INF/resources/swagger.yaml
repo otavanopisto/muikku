@@ -6337,7 +6337,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/matriculationEligibility:
+  /rest/records/students/{studentIdentifier}/matriculationEligibility:
     get:
       operationId: getMatriculationSubjectEligibility
       summary: Get matriculation eligibility
@@ -6345,6 +6345,12 @@ paths:
       tags:
         - Records
       parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
         - name: subjectCode
           in: query
           description: Subject code

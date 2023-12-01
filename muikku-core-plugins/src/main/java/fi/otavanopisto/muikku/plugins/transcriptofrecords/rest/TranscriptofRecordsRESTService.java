@@ -549,14 +549,21 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/matriculationEligibility")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response findMatriculationEligibility(@QueryParam ("subjectCode") String subjectCode) {
+  @Path("/students/{STUDENTIDENTIFIER}/matriculationEligibility")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findMatriculationEligibility(
+      @PathParam("STUDENTIDENTIFIER") String studentIdentifierParam,
+      @QueryParam ("subjectCode") String subjectCode) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
-    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode);
+    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
 
     return Response.ok(result).build();
   }
