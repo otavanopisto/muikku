@@ -48,20 +48,20 @@ export type UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS = SpecificActionType<
  * updateYOTriggerType
  */
 export interface updateYOTriggerType {
-  (): AnyActionType;
+  (studentId?: string): AnyActionType;
 }
 /**
  * UpdateMatriculationSubjectEligibilityTriggerType
  */
 export interface UpdateMatriculationSubjectEligibilityTriggerType {
-  (): AnyActionType;
+  (studentId?: string): AnyActionType;
 }
 
 /**
  * updateMatriculationSubjectEligibility
  */
 const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibilityTriggerType =
-  function updateMatriculationSubjectEligibility() {
+  function updateMatriculationSubjectEligibility(studentId) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -77,6 +77,10 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
         const state = getState();
         const selectedHOPSSubjects =
           state.hops.value.studentMatriculationSubjects;
+
+        const studentIdentifier = studentId
+          ? studentId
+          : state.status.userSchoolDataIdentifier;
 
         const subjects = await recordsApi.getMatriculationSubjects();
 
@@ -96,6 +100,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
             try {
               const subjectEligibility =
                 await recordsApi.getMatriculationSubjectEligibility({
+                  studentIdentifier,
                   subjectCode: subject.subjectCode,
                 });
 
@@ -159,7 +164,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 /**
  * updateYO
  */
-const updateYO: updateYOTriggerType = function updateYO() {
+const updateYO: updateYOTriggerType = function updateYO(studentId) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
@@ -168,12 +173,22 @@ const updateYO: updateYOTriggerType = function updateYO() {
     const recordsApi = MApi.getRecordsApi();
     const matriculationApi = MApi.getMatriculationApi();
 
+    const studentIdentifier = studentId
+      ? studentId
+      : state.status.userSchoolDataIdentifier;
+
     try {
-      const matriculationExamData = await matriculationApi.getExams();
+      // const matriculationExamData = await matriculationApi.getExams();
+      // // const matriculationExamData = [];
+
+      // dispatch({
+      //   type: "UPDATE_STUDIES_YO",
+      //   payload: matriculationExamData,
+      // });
 
       dispatch({
         type: "UPDATE_STUDIES_YO",
-        payload: matriculationExamData,
+        payload: [],
       });
 
       dispatch({
@@ -189,7 +204,7 @@ const updateYO: updateYOTriggerType = function updateYO() {
       });
 
       const eligibility = await recordsApi.getStudentMatriculationEligibility({
-        studentIdentifier: state.status.userSchoolDataIdentifier,
+        studentIdentifier: studentIdentifier,
       });
 
       dispatch({

@@ -332,9 +332,9 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(
         updateHops(() => {
-          this.props.store.dispatch(updateYO() as Action);
+          this.props.store.dispatch(updateYO(userId) as Action);
           this.props.store.dispatch(
-            updateMatriculationSubjectEligibility() as Action
+            updateMatriculationSubjectEligibility(userId) as Action
           );
         }, userId) as Action
       );
