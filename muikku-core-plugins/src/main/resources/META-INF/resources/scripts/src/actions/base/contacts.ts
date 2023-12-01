@@ -53,15 +53,15 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
   ) => {
     const userApi = MApi.getUserApi();
 
-    const contactsLoaded = getState().contacts[groupName].list.length > 0;
+    // const contactsLoaded = getState().contacts[groupName].list.length > 0;
     const isActiveUser = getState().status.isActiveUser;
     const pyramusUser = userIdentifier
       ? userIdentifier
       : getState().status.userSchoolDataIdentifier;
-
-    if (contactsLoaded || !isActiveUser) {
-      return;
-    }
+    // Must made so that load happens when the user changes
+    // if (contactsLoaded || !isActiveUser) {
+    //   return;
+    // }
 
     try {
       dispatch({

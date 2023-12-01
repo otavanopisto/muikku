@@ -4,12 +4,13 @@ import { useTranslation } from "react-i18next";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import Hops from "~/components/base/hops_readable";
+import { HOPSState } from "~/reducers/main-function/hops";
 
 /**
  * Study plan props
  */
 interface StudyPlanProps {
-  guider: GuiderState;
+  hops: HOPSState;
 }
 
 /**
@@ -18,12 +19,14 @@ interface StudyPlanProps {
  * @returns JSX.Element
  */
 const StudyPlan: React.FC<StudyPlanProps> = (props) => {
-  const { guider } = props;
+  const { hops } = props;
   const { t } = useTranslation("guider");
+
   const studentHops =
-    guider.currentStudent.hops && guider.currentStudent.hops.optedIn ? (
-      <Hops data={guider.currentStudent.hops} />
-    ) : null;
+  hops.eligibility &&
+  hops.eligibility.upperSecondarySchoolCurriculum ? (
+      <Hops data={hops.value} />
+    ) : null //TODO EMPTY HOPS;
 
   if (!studentHops) {
     return null;
@@ -43,7 +46,7 @@ const StudyPlan: React.FC<StudyPlanProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    guider: state.guider,
+    hops: state.hops,
   };
 }
 

@@ -107,7 +107,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
     ) => {
       const meApi = MApi.getMeApi();
       const recordsApi = MApi.getRecordsApi();
-      const userDataStatus = getState().records.userDataStatus;
+      // const userDataStatus = getState().records.userDataStatus;
 
       try {
         dispatch({
@@ -119,9 +119,10 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           payload: <TranscriptOfRecordLocationType>"records",
         });
 
-        if (userDataStatus === "READY") {
-          return;
-        }
+        // Must made so that load happens when the user changes
+        // if (userDataStatus === "READY") {
+        //   return;
+        // }
 
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",

@@ -34,7 +34,8 @@ import { OptionDefault } from "~/components/general/react-select/types";
 import { Dependant } from "~/reducers/main-function/dependants";
 import { GuiderState } from "~/reducers/main-function/guider";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
-
+import { loadStudentHOPSAccess, LoadStudentTriggerType } from "~/actions/main-function/guider";
+import { bindActionCreators } from "redux";
 /**
  * StudiesTab
  */
@@ -57,6 +58,7 @@ interface DependantApplicationProps extends WithTranslation {
   records: RecordsType;
   guider: GuiderState;
   dependants: Dependant[];
+  loadStudentHOPSAccess: LoadStudentTriggerType
 }
 
 /**
@@ -172,11 +174,10 @@ class DependantApplication extends React.Component<
    */
   handleDependantSelectChange = (option: OptionDefault<string>) => {
     window.location.hash = option.value;
+
     this.setState({
       selectedDependant: option.value,
-      selectedDependantStudyProgramme: this.getDependantStudyProgramme(
-        option.value
-      ),
+      activeTab: "SUMMARY",
     });
   };
 
@@ -196,7 +197,6 @@ class DependantApplication extends React.Component<
     }
     const state = await this.loadPedagogyFormState();
     const tab = window.location.hash.replace("#", "").split("/")?.[1];
-
     this.setState({
       loading: false,
       pedagogyFormState: state,
@@ -403,7 +403,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators(
+    { loadStudentHOPSAccess },
+    dispatch
+  );
 }
 
 export default withTranslation(["studies", "common"])(

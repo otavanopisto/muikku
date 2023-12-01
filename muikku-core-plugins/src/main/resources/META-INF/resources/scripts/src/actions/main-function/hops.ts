@@ -53,7 +53,8 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
       : getState().status.userSchoolDataIdentifier;
 
     try {
-      if (getState().hops.status !== "WAIT") {
+      // Must made so that load happens when the user changes
+      if (getState().hops.status !== "WAIT" && !userIdentifier) {
         callback && callback();
         return null;
       }
