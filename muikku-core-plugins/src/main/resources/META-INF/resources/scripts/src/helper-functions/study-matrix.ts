@@ -145,7 +145,7 @@ export const showSubject = (
       return !SUBJECTS_NOT_INCLUDED.includes(subject.subjectCode);
 
     // Same as above but also removes OP (Opinto-ohjaus)
-    case "Ainepiskelu/lukio":
+    case "Aineopiskelu/lukio":
     case "Aineopiskelu/lukio (oppivelvolliset)":
     case "Kahden tutkinnon opinnot":
       return ![...SUBJECTS_NOT_INCLUDED, "OP"].includes(subject.subjectCode);
