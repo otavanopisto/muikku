@@ -32,8 +32,10 @@ function ChatWindow(props: ChatWindowProps) {
     fullScreen,
   } = useChatWindowContext();
 
+  // Setters to control rerendering and updating drag constraints
   const [, setResizing] = React.useState<boolean>(false);
   const [, setAnimating] = React.useState<boolean>(false);
+  const [, setInitialized] = React.useState<boolean>(false);
 
   const dragControls = useDragControls();
   const animationControls = useAnimationControls();
@@ -183,6 +185,9 @@ function ChatWindow(props: ChatWindowProps) {
         y: windowRef.current.getBoundingClientRect().top,
       };
     }
+
+    // This is here to cause a rerender so drag constraits are set/updated correctly
+    setInitialized(true);
   }, [animationControls, detached, windowPositonRef]);
 
   // Effect to set windowRef to be next to bottom left of screen
