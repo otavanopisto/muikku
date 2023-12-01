@@ -34,7 +34,10 @@ import { OptionDefault } from "~/components/general/react-select/types";
 import { Dependant } from "~/reducers/main-function/dependants";
 import { GuiderState } from "~/reducers/main-function/guider";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
-import { loadStudentHOPSAccess, LoadStudentTriggerType } from "~/actions/main-function/guider";
+import {
+  loadStudentHOPSAccess,
+  LoadStudentTriggerType,
+} from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
 /**
  * StudiesTab
@@ -58,7 +61,7 @@ interface DependantApplicationProps extends WithTranslation {
   records: RecordsType;
   guider: GuiderState;
   dependants: Dependant[];
-  loadStudentHOPSAccess: LoadStudentTriggerType
+  // loadStudentHOPSAccess: LoadStudentTriggerType;
 }
 
 /**
@@ -131,8 +134,8 @@ class DependantApplication extends React.Component<
         );
       case "PEDAGOGY_FORM":
         return (
-          this.state?.pedagogyFormState === "PENDING" ||
-          this.state?.pedagogyFormState === "APPROVED"
+          this.props.guider.currentStudent.pedagogyFormAvailable &&
+          this.props.guider.currentStudent.pedagogyFormAvailable.accessible
         );
     }
 
@@ -353,7 +356,7 @@ class DependantApplication extends React.Component<
           <ApplicationPanelBody modifier="tabs">
             <UpperSecondaryPedagogicalSupportWizardForm
               userRole="STUDENT"
-              studentId={this.props.status.userSchoolDataIdentifier}
+              studentId={this.state.selectedDependant}
             />
           </ApplicationPanelBody>
         ),
@@ -402,13 +405,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators(
-    { loadStudentHOPSAccess },
-    dispatch
-  );
-}
+// function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+//   return bindActionCreators({ loadStudentHOPSAccess }, dispatch);
+// }
 
 export default withTranslation(["studies", "common"])(
-  connect(mapStateToProps, mapDispatchToProps)(DependantApplication)
+  connect(mapStateToProps)(DependantApplication)
 );

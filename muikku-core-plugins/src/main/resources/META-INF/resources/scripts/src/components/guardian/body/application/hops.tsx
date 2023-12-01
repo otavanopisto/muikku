@@ -1,5 +1,4 @@
 import * as React from "react";
-import { GuiderState } from "~/reducers/main-function/guider";
 import { useTranslation } from "react-i18next";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -23,10 +22,9 @@ const StudyPlan: React.FC<StudyPlanProps> = (props) => {
   const { t } = useTranslation("guider");
 
   const studentHops =
-  hops.eligibility &&
-  hops.eligibility.upperSecondarySchoolCurriculum ? (
+    hops.eligibility && hops.eligibility.upperSecondarySchoolCurriculum ? (
       <Hops data={hops.value} />
-    ) : null //TODO EMPTY HOPS;
+    ) : null; //TODO EMPTY HOPS;
 
   if (!studentHops) {
     return null;
