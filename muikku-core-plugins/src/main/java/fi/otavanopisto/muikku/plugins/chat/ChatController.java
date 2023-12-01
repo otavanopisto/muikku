@@ -31,17 +31,17 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatMessageRestModel;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomDeletedRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRestModel;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserLeftRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserType;
-import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomDeletedRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.NickChangeRestModel;
-import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserLeftRestModel;
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserProfilePictureController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @ApplicationScoped
@@ -58,13 +58,13 @@ public class ChatController {
   private UserEntityController userEntityController;
 
   @Inject
-  private UserEntityFileController userEntityFileController;
-
-  @Inject
   private WorkspaceEntityController workspaceEntityController;
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private UserProfilePictureController userProfilePictureController;
 
   @Inject
   private ChatMessageDAO chatMessageDAO;
@@ -488,12 +488,16 @@ public class ChatController {
       }
     }
     
-    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-    
     // Notify everyone of a new user
     
     String name = userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine();
-    ChatUserRestModel userRestModel = new ChatUserRestModel(userEntity.getId(), nick, null, getUserType(userEntity), hasImage, true);
+    ChatUserRestModel userRestModel = new ChatUserRestModel(
+        userEntity.getId(),
+        nick,
+        null,
+        getUserType(userEntity),
+        userProfilePictureController.hasProfilePicture(userEntity),
+        true);
     ObjectMapper mapper = new ObjectMapper();
     try {
       if (isStaffMember(userEntity)) {
@@ -587,7 +591,6 @@ public class ChatController {
   }
   
   public ChatMessageRestModel toRestModel(ChatMessage message) {
-    UserEntity userEntity = userEntityController.findUserEntityById(message.getSourceUserEntityId());
     ChatMessageRestModel msg = new ChatMessageRestModel();
     msg.setId(message.getId());
     msg.setSourceUserEntityId(message.getSourceUserEntityId());
@@ -598,7 +601,7 @@ public class ChatController {
       msg.setTargetIdentifier("user-" + message.getTargetUserEntityId());
     }
     msg.setNick(message.getNick());
-    msg.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+    msg.setHasImage(userProfilePictureController.hasProfilePicture(message.getSourceUserEntityId()));
     msg.setMessage(message.getArchived() ? null : message.getMessage());
     msg.setSentDateTime(message.getSent());
     msg.setEditedDateTime(message.getEdited());
