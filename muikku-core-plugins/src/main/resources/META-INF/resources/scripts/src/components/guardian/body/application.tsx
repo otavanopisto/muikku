@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Records from "./application/records";
 import Summary from "./application/summary";
@@ -15,7 +15,6 @@ import {
 import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/assignment.scss";
@@ -34,11 +33,7 @@ import { OptionDefault } from "~/components/general/react-select/types";
 import { Dependant } from "~/reducers/main-function/dependants";
 import { GuiderState } from "~/reducers/main-function/guider";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
-import {
-  loadStudentHOPSAccess,
-  LoadStudentTriggerType,
-} from "~/actions/main-function/guider";
-import { bindActionCreators } from "redux";
+
 /**
  * StudiesTab
  */
