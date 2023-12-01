@@ -256,13 +256,9 @@ function ChatWindow(props: ChatWindowProps) {
       setAnimating(false);
     };
 
-    // If detached, set window 10px from left side of screen to indicate detached state
-    // Else eset animation controls next to controller
     if (detached) {
       animateDetach();
     } else {
-      // Set x value so that window is next to controller
-      // Set y value so that window bottom is aligned with controller bottom
       animateAttach();
     }
   }, [animationControls, dragControls, detached, windowPositonRef]);
