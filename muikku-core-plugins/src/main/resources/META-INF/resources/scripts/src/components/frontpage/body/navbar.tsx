@@ -133,9 +133,7 @@ class FrontpageNavbar extends React.Component<
             href="/coursepicker"
             className="link link--highlight link--full"
           >
-            <span>
-              {this.props.t("labels.courses", { ns: "frontPage" })}
-            </span>
+            <span>{this.props.t("labels.courses", { ns: "frontPage" })}</span>
           </Link>,
         ]}
       />
