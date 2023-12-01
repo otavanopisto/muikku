@@ -312,11 +312,6 @@ export default class MainFunction extends React.Component<
         loadContactGroup("counselors", userId) as Action
       );
 
-      this.props.store.dispatch(loadStudentHOPSAccess(userId) as Action);
-      this.props.store.dispatch(
-        loadStudentPedagogyFormAccess(userId) as Action
-      );
-
       this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
@@ -362,6 +357,12 @@ export default class MainFunction extends React.Component<
         setLocationToInfoInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
+    }
+    // this.props.store.dispatch(loadStudentHOPSAccess(userId) as Action);
+    if (userId) {
+      this.props.store.dispatch(
+        loadStudentPedagogyFormAccess(userId) as Action
+      );
     }
     this.props.store.dispatch(updateHops(null, userId) as Action);
   }
