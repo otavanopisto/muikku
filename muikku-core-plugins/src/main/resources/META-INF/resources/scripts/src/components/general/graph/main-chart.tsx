@@ -405,7 +405,7 @@ class CurrentStudentStatistics extends React.Component<
         balloonText:
           this.props.t("labels.graph", {
             ns: "guider",
-            context: "discussions",
+            context: "discussionMessages",
           }) + " <b>[[FORUM_NEWMESSAGE]]</b>",
         fillAlphas: 1,
         lineAlpha: 0.2,

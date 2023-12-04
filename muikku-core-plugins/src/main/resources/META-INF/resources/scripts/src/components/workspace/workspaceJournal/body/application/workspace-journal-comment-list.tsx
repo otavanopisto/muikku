@@ -181,7 +181,7 @@ export const WorkspaceJournalCommentList: React.FC<
                 onClick={handleCreateNewCommentClick}
                 className="link link--application-list"
               >
-                {t("labels.create", { context: "comment" })}
+                {t("actions.create", { ns: "common", context: "comment" })}
               </Link>
             </div>
           )}

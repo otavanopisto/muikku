@@ -108,6 +108,5 @@ module.exports = {
   externals: {
     jquery: "jQuery",
     mApi: "mApi",
-    moment: "moment",
   },
 };
