@@ -728,6 +728,13 @@
   }
 }
 
+.button-icon--dialog-close {
+
+  @include breakpoint($breakpoint-pad) {
+    color: $color-default;
+  }
+}
+
 .button-icon--workspace-notebook {
   height: 25px; // This button is used as a trigger top open extra tools panel. Height is the same as workspace activity container.
 }

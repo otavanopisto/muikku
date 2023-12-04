@@ -184,6 +184,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                     </div>
                     <IconButton
                       aria-label="Sulje"
+                      buttonModifiers={["dialog-close"]}
                       role="button"
                       icon="cross"
                       onClick={closePortal}
