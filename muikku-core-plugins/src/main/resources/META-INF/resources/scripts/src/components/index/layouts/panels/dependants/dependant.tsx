@@ -116,7 +116,9 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           aria-label="TODO: Toggle workspace visibility"
           aria-controls="workspacesAccordion"
           aria-expanded={showWorkspaces}
-          className={`icon-arrow-${showWorkspaces ? "up" : "down"}`}
+          className={`dependant__accordion-button icon-arrow-${
+            showWorkspaces ? "up" : "down"
+          }`}
         />
       </div>
     </div>

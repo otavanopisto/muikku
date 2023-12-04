@@ -1,48 +1,63 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
 .dependant {
-    padding: 5px;
+  padding: 5px 5px 10px 5px;
+  &:not(:last-child) {
+    margin-bottom: 20px;
+    border-bottom: 2px solid $color-panel-border-color;
+  }
+}
+
+.dependant__accordion-button {
+  &::before {
+    color: $color-link-default-text;
+  }
 }
 
 .dependant__details-container {
-    display: flex;
-}   
+  display: flex;
+}
 
 .dependant__details {
-    padding: 0 20px;
+  padding: 0 20px;
 }
 
-.dependant__details-footer{
-    margin-top: 20px;
+.dependant__details-footer {
+  margin-top: 20px;
 }
 
-.dependant__header {    
-    padding: 5px 0;
-    display: flex;
-    align-items: center;
-} 
+.dependant__header {
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+}
 
 .dependant__header-aside {
-    margin-left: 15px;
+  margin-left: 15px;
 }
 
 .dependant__contact-info-container {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .dependant__info-item {
-    background-color: #ededed;
-    height: 10px;
-    border-radius: 15px;
-    padding: 5px 15px;
+  background-color: $color-label-background;
+  height: 10px;
+  border-radius: 15px;
+  padding: 5px 15px;
 
-    &:not(:first-child) {
-        margin-left: 5px;
-    }
+  &:not(:first-child) {
+    margin-left: 5px;
+  }
 }
 
 .dependant__activity-container {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .dependant__workspaces-container {
-    margin-top: 20px;
+  margin-top: 20px;
 }
