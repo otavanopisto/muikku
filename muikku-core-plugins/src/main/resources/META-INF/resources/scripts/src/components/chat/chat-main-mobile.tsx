@@ -9,8 +9,9 @@ import * as React from "react";
 import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
 import { AddIcon } from "./chat-helpers";
-import { PeopleList } from "./people";
-import { Rooms } from "./rooms";
+import { ChatUsersList } from "./chat-users";
+import { ChatRoomsLists } from "./chat-rooms";
+import ChatProfile from "./chat-profile";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
 const PANEL_RIGHT_MAX_WIDTH = 200;
@@ -185,7 +186,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             <AddIcon />
           </div>
 
-          <Rooms minimized={false} />
+          <ChatRoomsLists minimized={false} />
         </div>
       </motion.div>
       <motion.div
@@ -257,7 +258,18 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           >
             <AddIcon />
           </div>
-          <PeopleList minimized={false} />
+          <ChatUsersList minimized={false} />
+          <ChatProfile
+            style={{
+              width: "100%",
+              position: "absolute",
+              bottom: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              background: "gray",
+              padding: "10px",
+            }}
+          />
         </div>
       </motion.div>
     </div>

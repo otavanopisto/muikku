@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 /**
  * PeopleListProps
  */
-interface PeopleListProps {
+interface ChatUsersListProps {
   minimized: boolean;
 }
 
@@ -16,16 +16,16 @@ interface PeopleListProps {
  * @param props props
  * @returns JSX.Element
  */
-function PeopleList(props: PeopleListProps) {
+function ChatUsersList(props: ChatUsersListProps) {
   const { minimized } = props;
 
-  const { people, loadingPeople } = useChatContext();
+  const { usersWithoutMe, loadingPeople } = useChatContext();
 
   if (loadingPeople) {
     return <div>Loading...</div>;
   }
 
-  if (people.length === 0) {
+  if (usersWithoutMe.length === 0) {
     return <div>No people found</div>;
   }
 
@@ -37,8 +37,8 @@ function PeopleList(props: PeopleListProps) {
         flexDirection: "column",
       }}
     >
-      {people.map((user) => (
-        <PeopleItem key={user.id} user={user} minimized={minimized} />
+      {usersWithoutMe.map((user) => (
+        <ChatUser key={user.id} user={user} minimized={minimized} />
       ))}
     </div>
   );
@@ -50,19 +50,19 @@ const variants = {
 };
 
 /**
- * PeopleItem
+ * ChatUserItemProps
  */
-interface PeopleItemProps {
+interface ChatUserProps {
   user: ChatUser;
   minimized: boolean;
 }
 
 /**
- * PeopleItem
+ * ChatUserItem
  * @param props props
  * @returns JSX.Element
  */
-function PeopleItem(props: PeopleItemProps) {
+function ChatUser(props: ChatUserProps) {
   const { user, minimized } = props;
 
   const { openDiscussion } = useChatContext();
@@ -107,4 +107,4 @@ function PeopleItem(props: PeopleItemProps) {
   );
 }
 
-export { PeopleList, PeopleItem };
+export { ChatUsersList, ChatUser };

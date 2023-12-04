@@ -6,8 +6,9 @@ import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
 import { useChatWindowBreakpointsContext } from "./context/chat-window-breakpoints-context";
 import { AddIcon } from "./chat-helpers";
-import { PeopleList } from "./people";
-import { Rooms } from "./rooms";
+import { ChatUsersList } from "./chat-users";
+import { ChatRoomNew, ChatRoomsLists } from "./chat-rooms";
+import ChatProfile from "./chat-profile";
 
 const PANEL_RIGHT_MIN_WIDTH = 66;
 const PANEL_LEFT_MIN_WIDTH = 85;
@@ -181,7 +182,8 @@ function ChatMain(props: ChatMainProps) {
           <AddIcon />
         </div>
 
-        <Rooms minimized={!leftPanelOpen} />
+        <ChatRoomNew />
+        <ChatRoomsLists minimized={!leftPanelOpen} />
       </motion.div>
       <motion.div
         ref={mainWrapperRef}
@@ -223,7 +225,18 @@ function ChatMain(props: ChatMainProps) {
           <AddIcon />
         </div>
 
-        <PeopleList minimized={!rightPanelOpen} />
+        <ChatUsersList minimized={!rightPanelOpen} />
+        <ChatProfile
+          style={{
+            width: "100%",
+            position: "absolute",
+            bottom: 0,
+            display: "flex",
+            justifyContent: "space-between",
+            background: "gray",
+            padding: "10px",
+          }}
+        />
       </motion.div>
     </div>
   );

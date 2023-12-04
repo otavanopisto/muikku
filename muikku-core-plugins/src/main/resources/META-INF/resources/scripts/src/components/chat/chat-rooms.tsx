@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 /**
  * RoomsProps
  */
-interface RoomsProps {
+interface ChatRoomsListsProps {
   minimized: boolean;
 }
 
@@ -15,7 +15,7 @@ interface RoomsProps {
  * @param props props
  * @returns JSX.Element
  */
-function Rooms(props: RoomsProps) {
+function ChatRoomsLists(props: ChatRoomsListsProps) {
   const { minimized } = props;
 
   const rooms = (
@@ -89,7 +89,7 @@ function PrivateRoomList(props: PrivateRoomListProps) {
     >
       <AnimatePresence initial={false}>
         {privateRooms.map((room) => (
-          <RoomItem key={room.identifier} room={room} minimized={minimized} />
+          <ChatRoom key={room.identifier} room={room} minimized={minimized} />
         ))}
       </AnimatePresence>
     </ul>
@@ -111,9 +111,7 @@ interface PublicRoomsListProps {
 function PublicRoomsList(props: PublicRoomsListProps) {
   const { minimized } = props;
 
-  const { publicRooms, loadingRooms, openNewChatRoom } = useChatContext();
-
-  const handleCreateRoom = openNewChatRoom;
+  const { publicRooms, loadingRooms } = useChatContext();
 
   if (loadingRooms) {
     return <div>Loading...</div>;
@@ -138,19 +136,9 @@ function PublicRoomsList(props: PublicRoomsListProps) {
           marginTop: "10px",
         }}
       >
-        {/* <motion.li onClick={handleCreateRoom}>
-          <motion.div
-            animate={minimized ? "minimized" : "visible"}
-            variants={variants}
-          >
-            Luo huone
-          </motion.div>
-
-          <AddIcon />
-        </motion.li> */}
         <AnimatePresence initial={false}>
           {publicRooms.map((room) => (
-            <RoomItem
+            <ChatRoom
               key={room.identifier}
               room={room}
               canEdit
@@ -167,14 +155,14 @@ function PublicRoomsList(props: PublicRoomsListProps) {
 /**
  * PeopleItem
  */
-interface PeopleItemProps {
+interface ChatRoomProps {
   minimized: boolean;
   room: ChatRoom;
   canEdit?: boolean;
   canDelete?: boolean;
 }
 
-const defaultRoomItemProps: Partial<PeopleItemProps> = {
+const defaultRoomItemProps: Partial<ChatRoomProps> = {
   canEdit: false,
   canDelete: false,
 };
@@ -184,21 +172,21 @@ const defaultRoomItemProps: Partial<PeopleItemProps> = {
  * @param props props
  * @returns JSX.Element
  */
-function RoomItem(props: PeopleItemProps) {
+function ChatRoom(props: ChatRoomProps) {
   props = { ...defaultRoomItemProps, ...props };
   const { room, minimized } = props;
-  const { openDiscussion, activeDiscussion } = useChatContext();
+  const { openDiscussion } = useChatContext();
 
   const handleRoomClick = React.useCallback(() => {
     openDiscussion(room.identifier);
   }, [openDiscussion, room.identifier]);
 
-  const variants = {
+  /* const variants = {
     visible: { opacity: 1, width: "auto" },
     minimized: { opacity: 1, width: "auto" },
   };
 
-  const isActive = activeDiscussion?.identifier === room.identifier;
+  const isActive = activeDiscussion?.identifier === room.identifier; */
 
   // set minimized name to contain only four first letter and three dots
   const minimizedName = room.name.slice(0, 4) + "...";
@@ -228,4 +216,37 @@ function RoomItem(props: PeopleItemProps) {
   );
 }
 
-export { Rooms, RoomItem };
+/**
+ * NewChatRoomProps
+ */
+interface ChatRoomNewProps {}
+
+/**
+ * NewChatRoom
+ * @param props props
+ * @returns JSX.Element
+ */
+function ChatRoomNew(props: ChatRoomNewProps) {
+  const { openNewChatRoom } = useChatContext();
+
+  return (
+    <motion.div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        backgroundColor: "grey",
+        borderRadius: "50px 0 0 50px",
+        color: "white",
+        position: "relative",
+        padding: "10px",
+        margin: "10px",
+        width: "auto",
+      }}
+      onClick={openNewChatRoom}
+    >
+      New room
+    </motion.div>
+  );
+}
+
+export { ChatRoomsLists, ChatRoom, ChatRoomNew };

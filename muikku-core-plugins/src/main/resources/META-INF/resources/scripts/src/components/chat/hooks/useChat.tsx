@@ -37,9 +37,6 @@ function useChat(userId: number) {
   // Whether to show the control box or bubble
   const [minimized, setMinimized] = React.useState<boolean>(true);
 
-  const [detached, setDetached] = React.useState<boolean>(false);
-  const [fullScreen, setFullScreen] = React.useState<boolean>(false);
-
   // Panel states
   const [rightPanelOpen, setRightPanelOpen] = React.useState<boolean>(false);
   const [leftPanelOpen, setLeftPanelOpen] = React.useState<boolean>(false);
@@ -52,25 +49,13 @@ function useChat(userId: number) {
     description: "",
   });
 
-  const [editChatRoom, setEditChatRoom] = React.useState<UpdateChatRoomRequest>(
-    {
-      name: "",
-      description: "",
-    }
-  );
+  const [editChatRoom, setEditChatRoom] =
+    React.useState<UpdateChatRoomRequest>(null);
 
   const [roomIdentifierToEdit, setRoomIdentifierToEdit] =
     React.useState<string>(null);
 
   const [roomsSelected, setRoomsSelected] = React.useState<string[]>([]);
-
-  // Ref to store and track window position
-  const windowPositonRef = React.useRef<{
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-  }>(null);
 
   const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
@@ -98,29 +83,32 @@ function useChat(userId: number) {
     [rooms, people, roomsSelected]
   );
 
-  React.useEffect(() => {
-    if (isMobileWidth) {
-      windowPositonRef.current = null;
-      setDetached(false);
-    }
-  }, [isMobileWidth]);
+  const activeDiscussion = [...people, ...rooms].find(
+    (r) => r.identifier === activeRoomOrPerson
+  );
+
+  const usersWithoutMe = React.useMemo(
+    () => people.filter((p) => p.id !== userId),
+    [people, userId]
+  );
 
   /**
-   * saveNewRoom
+   * saveEditorChanges
    */
   const saveEditorChanges = React.useCallback(async () => {
+    // If we are editing a room
     if (roomIdentifierToEdit) {
       await updateRoom(roomIdentifierToEdit, editChatRoom);
+      setRoomIdentifierToEdit(null);
     } else {
       await createNewRoom(newChatRoom);
+
       setNewChatRoom({
         name: "",
         description: "",
       });
     }
-    chatViews.goTo("overview");
   }, [
-    chatViews,
     createNewRoom,
     editChatRoom,
     newChatRoom,
@@ -172,7 +160,6 @@ function useChat(userId: number) {
    */
   const openEditChatRoom = React.useCallback(
     (roomIdentifier: string) => {
-      chatViews.goTo("room-editor");
       const room = rooms.find((r) => r.identifier === roomIdentifier);
       if (room) {
         unstable_batchedUpdates(() => {
@@ -184,16 +171,19 @@ function useChat(userId: number) {
         });
       }
     },
-    [chatViews, rooms]
+    [rooms]
   );
 
   /**
    * cancelRoomEditor
    */
   const cancelRoomEditor = React.useCallback(() => {
-    chatViews.goTo("overview");
-    setRoomIdentifierToEdit(null);
-  }, [chatViews]);
+    if (activeRoomOrPerson) {
+      chatViews.goTo("discussion");
+    } else {
+      chatViews.goTo("overview");
+    }
+  }, [activeRoomOrPerson, chatViews]);
 
   // Toggles the control box
   const toggleControlBox = React.useCallback(() => {
@@ -203,11 +193,16 @@ function useChat(userId: number) {
   // Sets the active room or person
   const openDiscussion = React.useCallback(
     (identifier: string) => {
-      chatViews.goTo("discussion");
       setActiveRoomOrPerson(identifier);
+      chatViews.goTo("discussion");
     },
     [chatViews]
   );
+
+  // Closes the active room or person
+  const closeDiscussion = React.useCallback(() => {
+    chatViews.goTo("overview");
+  }, [chatViews]);
 
   const toggleRightPanel = React.useCallback((nextState?: boolean) => {
     if (nextState !== undefined) {
@@ -225,23 +220,14 @@ function useChat(userId: number) {
     }
   }, []);
 
-  const toggleFullscreen = React.useCallback(() => {
-    setFullScreen((prev) => !prev);
-  }, []);
-
-  const toggleDetached = React.useCallback(() => {
-    setDetached((prev) => !prev);
-  }, []);
-
   return {
     userId,
+    userMe: people.find((p) => p.id === userId),
+    usersWithoutMe,
     loadingPeople,
     loadingRooms,
-    people,
     rooms,
-    activeDiscussion: [...people, ...rooms].find(
-      (r) => r.identifier === activeRoomOrPerson
-    ),
+    activeDiscussion,
     publicRooms: rooms.filter((r) => r.type === "PUBLIC"),
     privateRooms: rooms.filter((r) => r.type === "WORKSPACE"),
     searchPeople,
@@ -260,16 +246,12 @@ function useChat(userId: number) {
     saveEditorChanges,
     deleteCustomRoom,
     openDiscussion,
+    closeDiscussion,
     isMobileWidth,
     toggleRightPanel,
     toggleLeftPanel,
     leftPanelOpen,
     rightPanelOpen,
-    windowPositonRef,
-    toggleFullscreen,
-    toggleDetached,
-    detached,
-    fullScreen,
   };
 }
 
