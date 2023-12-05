@@ -107,6 +107,8 @@ const Journal: React.FC<JournalProps> = (props) => {
         className="application-list__item-header--journal-entry"
         onClick={handleJournalClick}
         onKeyUp={handleJournalKeyUp}
+        aria-expanded={open}
+        aria-controls={"journal" + journal.id}
         aria-label={open ? t("wcag.closeContent") : t("wcag.showContent")}
       >
         <div
@@ -127,8 +129,8 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
       </ApplicationListItemHeader>
-      <ApplicationListItemBody className="application-list__item-body">
-        <AnimateHeight height={open ? "auto" : 0} aria-expanded={open}>
+      <ApplicationListItemBody className="application-list__item-body" id={"journal" + journal.id}>
+        <AnimateHeight height={open ? "auto" : 0}>
           <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
             <CkeditorContentLoader html={journal.content} />
           </article>
@@ -141,6 +143,8 @@ const Journal: React.FC<JournalProps> = (props) => {
             aria-label={
               showComments ? t("wcag.showContent") : t("wcag.showComments")
             }
+            aria-expanded={showComments}
+            aria-controls={"journalComments" + journal.id}
             style={{ display: "flex", alignItems: "center" }}
           >
             <div className={`icon-arrow-right ${arrowClass}`} />
@@ -150,8 +154,7 @@ const Journal: React.FC<JournalProps> = (props) => {
           </div>
 
           <AnimateHeight
-            height={showComments ? "auto" : 0}
-            aria-expanded={showComments}
+            height={showComments ? "auto" : 0} id={"journalComments" + journal.id}
           >
             {journalComments.isLoading ? (
               <div className="loader-empty" />

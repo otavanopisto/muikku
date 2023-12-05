@@ -70,7 +70,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
    * @param e e
    */
   handleMaterialKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key !== " ") return;
+    if (e.key !== "Enter") return;
 
     this.props.onMaterialOpen(
       this.props.material.id,
@@ -218,6 +218,8 @@ class Material extends React.Component<MaterialProps, MaterialState> {
           onClick={this.handleMaterialClick}
           onKeyUp={this.handleMaterialKeyUp}
           aria-label={open ? t("wcag.closeMaterial") : t("wcag.openMaterial")}
+          aria-expanded={this.props.open}
+          aria-controls={"material" + this.props.material.id}
         >
           {this.renderIndicator()}
           <span className="application-list__header-primary">
@@ -228,7 +230,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
         <ApplicationListItemBody>
           <AnimateHeight
             height={this.props.open ? "auto" : 0}
-            aria-expanded={this.props.open}
+            id={"material" + this.props.material.id}
           >
             <MaterialLoader
               material={this.props.material}
