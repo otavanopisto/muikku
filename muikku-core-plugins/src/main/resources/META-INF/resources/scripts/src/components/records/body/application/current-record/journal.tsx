@@ -129,7 +129,10 @@ const Journal: React.FC<JournalProps> = (props) => {
           </span>
         </div>
       </ApplicationListItemHeader>
-      <ApplicationListItemBody className="application-list__item-body" id={"journal" + journal.id}>
+      <ApplicationListItemBody
+        className="application-list__item-body"
+        id={"journal" + journal.id}
+      >
         <AnimateHeight height={open ? "auto" : 0}>
           <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
             <CkeditorContentLoader html={journal.content} />
@@ -154,7 +157,8 @@ const Journal: React.FC<JournalProps> = (props) => {
           </div>
 
           <AnimateHeight
-            height={showComments ? "auto" : 0} id={"journalComments" + journal.id}
+            height={showComments ? "auto" : 0}
+            id={"journalComments" + journal.id}
           >
             {journalComments.isLoading ? (
               <div className="loader-empty" />
