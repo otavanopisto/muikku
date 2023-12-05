@@ -729,7 +729,6 @@
 }
 
 .button-icon--dialog-close {
-
   @include breakpoint($breakpoint-pad) {
     color: $color-default;
   }
