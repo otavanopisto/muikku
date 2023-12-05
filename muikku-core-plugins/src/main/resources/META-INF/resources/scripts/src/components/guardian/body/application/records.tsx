@@ -8,11 +8,7 @@ import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/file-uploader.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
-// import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
-// import ApplicationList, {
-//   ApplicationListItem,
-// } from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
 import RecordsGroup from "./records-group/records-group";
 import { StatusType } from "~/reducers/base/status";
@@ -66,11 +62,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     ) {
       return null;
     } else if (this.props.records.userDataStatus === "ERROR") {
-      //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
-      //message but here we got to put something
       return (
         <div className="empty">
-          <span>{"ERROR"}</span>
+          <span>
+            {t("content.empty", {
+              ns: "studies",
+              context: "records",
+            })}
+          </span>
         </div>
       );
     }
@@ -126,44 +125,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           {t("labels.records", { ns: "studies" })}
         </h2>
         {studentRecords}
-        {/* 
-        
-        Disabled from a guardian
-        
-        <ApplicationSubPanel>
-          <ApplicationSubPanel.Header>
-            {t("labels.files")}
-          </ApplicationSubPanel.Header>
-          <ApplicationSubPanel.Body>
-            {this.props.records.files.length ? (
-              <ApplicationList>
-                {this.props.records.files.map((file) => (
-                  <ApplicationListItem
-                    className="application-list__item application-list__item--studies-file-attacment"
-                    key={file.id}
-                  >
-                    <span className="icon-attachment"></span>
-                    <Link
-                      className="link link--studies-file-attachment"
-                      href={`/rest/records/files/${file.id}/content`}
-                      openInNewTab={file.title}
-                    >
-                      {file.title}
-                    </Link>
-                  </ApplicationListItem>
-                ))}
-              </ApplicationList>
-            ) : (
-              <ApplicationListItem className="application-list__item application-list__item--studies-file-attacment">
-                <div className="empty">
-                  <span>
-                    {t("content.empty", { ns: "files", context: "files" })}
-                  </span>
-                </div>
-              </ApplicationListItem>
-            )}
-          </ApplicationSubPanel.Body>
-        </ApplicationSubPanel> */}
       </BodyScrollKeeper>
     );
   }

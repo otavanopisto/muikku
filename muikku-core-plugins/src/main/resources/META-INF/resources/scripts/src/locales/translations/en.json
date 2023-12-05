@@ -427,6 +427,7 @@
       "completedWorkspaces_lastMonth": "courses during the last month",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "No counselors",
+      "empty_records": "No records",
       "empty_studyTime": "Not set",
       "empty_workspaces": "No courses. In the future, you will see in this list the courses you are studying, the courses you have completed and the courses you have received transfer credits.",
       "hopsUnfinished": "Fill out your HOPS form to see the state of your progress for matriculation exam.",

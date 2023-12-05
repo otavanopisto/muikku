@@ -11,7 +11,6 @@ import {
   TranscriptOfRecordLocationType,
   RecordsType,
 } from "../../../reducers/main-function/records/index";
-
 import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";

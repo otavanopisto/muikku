@@ -432,6 +432,7 @@
       "empty": "$t(common:content.empty)",
       "empty_counselors": "Ei ohjaajia",
       "empty_studyTime": "Ei asetettu",
+      "empty_records": "Ei suorituksia",
       "empty_workspaces": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla opiskelet, jotka olet suorittanut ja joista sinulle on tehty hyväksiluvut.",
       "hopsUnfinished": "Täytä HOPS-lomake nähdäksesi YO-tilanteesi",
       "logins": "kertaa viimeisen kuukauden aikana.",

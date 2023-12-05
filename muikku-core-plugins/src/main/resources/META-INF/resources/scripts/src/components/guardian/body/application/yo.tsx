@@ -179,11 +179,12 @@ class YO extends React.Component<YOProps, YOState> {
                         }),
                       }}
                     />
-                    {this.props.yo.enrollment && this.props.yo.enrollment.length > 0 && (
-                      <div className="application-sub-panel__notification-footer">
-                        {enrollmentLink}
-                      </div>
-                    )}
+                    {this.props.yo.enrollment &&
+                      this.props.yo.enrollment.length > 0 && (
+                        <div className="application-sub-panel__notification-footer">
+                          {enrollmentLink}
+                        </div>
+                      )}
                   </div>
                 </div>
               ) : null
