@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.rest.model;
 
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,8 +12,8 @@ public class Student {
   public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName,
       String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
-      String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
-      OrganizationRESTModel organization) {
+      String curriculumIdentifier, boolean updatedByStudent, Long userEntityId,
+      OrganizationRESTModel organization, Boolean hasPedagogyForm) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -35,8 +34,8 @@ public class Student {
     this.curriculumIdentifier = curriculumIdentifier;
     this.updatedByStudent = updatedByStudent;
     this.userEntityId = userEntityId;
-    this.setFlags(flags);
     this.organization = organization;
+    this.hasPedagogyForm = hasPedagogyForm;
     
     // #6472, #6473: Hard-coded lines to determine whether student is eligible for Ceepos payments :|
     
@@ -179,14 +178,6 @@ public class Student {
     this.updatedByStudent = updatedByStudent;
   }
 
-  public List<StudentFlag> getFlags() {
-    return flags;
-  }
-
-  public void setFlags(List<StudentFlag> flags) {
-    this.flags = flags;
-  }
-
   public Long getUserEntityId() {
     return userEntityId;
   }
@@ -227,6 +218,14 @@ public class Student {
     this.ceeposLine = ceeposLine;
   }
 
+  public Boolean getHasPedagogyForm() {
+    return hasPedagogyForm;
+  }
+
+  public void setHasPedagogyForm(Boolean hasPedagogyForm) {
+    this.hasPedagogyForm = hasPedagogyForm;
+  }
+
   private String id;
   private String firstName;
   private String lastName;
@@ -246,7 +245,7 @@ public class Student {
   private String curriculumIdentifier;
   private boolean updatedByStudent;
   private Long userEntityId;
-  private List<StudentFlag> flags;
   private OrganizationRESTModel organization;
   private String ceeposLine;
+  private Boolean hasPedagogyForm;
 }

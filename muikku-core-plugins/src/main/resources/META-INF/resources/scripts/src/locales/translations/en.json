@@ -28,6 +28,7 @@
       "lock": "Lock",
       "next": "Next",
       "previous": "Previous",
+      "filterContent": "Filter content",
       "openAll": "Open all",
       "openPDF": "Open PDF",
       "quote": "Quote",
@@ -231,6 +232,7 @@
       "password_match": "Given passwords do not match"
     },
     "wcag": {
+      "active": "Active",
       "alternateNavigation": "Navigation for user profile and language selection of Muikku",
       "chooseRulersColor": "Choose the background color of reading ruler",
       "clickThroughRuler": "Allow clicking through the reading ruler",
@@ -240,6 +242,7 @@
       "currentPage": "Current page is",
       "decreaseRuler": "Decrease the height of the reading ruler",
       "externalLink": "Opens in a new tab",
+      "goToTab": "Go to tab",
       "increaseRuler": "Increase the height of the reading ruler",
       "invertRulersColors": "Reverses the colors of the reading ruler",
       "localeMenu": "Language selection menu of Muikku",
@@ -248,6 +251,7 @@
       "openRulersToolbar": "Open the toolbar of reading ruler",
       "pinRuler": "Pin the reading ruler to the screen",
       "profileMenu": "User profile menu of Muikku",
+      "tab": "Tab {{current}}/{{tabCount}}",
       "uploadPicture": "Add profile picture",
       "preset1": "Preset theme 1",
       "preset2": "Preset theme 2",

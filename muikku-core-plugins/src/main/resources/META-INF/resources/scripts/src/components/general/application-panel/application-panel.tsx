@@ -25,7 +25,6 @@ interface ApplicationPanelProps {
   asideBefore?: React.ReactElement<any>;
   asideAfter?: React.ReactElement<any>;
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>;
-  useWithHash?: boolean;
 }
 
 /**
@@ -104,7 +103,6 @@ export default class ApplicationPanel extends React.Component<
               tabs={this.props.panelTabs}
               onTabChange={this.props.onTabChange}
               activeTab={this.props.activeTab}
-              useWithHash={this.props.useWithHash}
             />
           ) : (
             <ApplicationPanelBody

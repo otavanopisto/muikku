@@ -164,7 +164,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           userEntityId,
         });
 
-        const loadedMaterial: MaterialContentNodeWithIdAndLogic = Object.assign(
+        const loadedMaterial = Object.assign(
           {},
           {
             ...material,
@@ -173,7 +173,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
             path: this.props.assigment.path,
             contentHiddenForUser: false,
           }
-        );
+        ) as MaterialContentNodeWithIdAndLogic;
 
         return loadedMaterial;
       })(),

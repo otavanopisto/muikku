@@ -389,7 +389,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               <span aria-label={this.props.t("wcag.date", { ns: "messaging" })}>
                 {`${localize.date(
                   this.props.message.created
-                )} klo ${localize.date(this.props.message.created, "HH:mm")}`}
+                )} - ${localize.date(this.props.message.created, "LT")}`}
               </span>
             </div>
           </div>
@@ -439,9 +439,19 @@ class Message extends React.Component<MessageProps, MessageState> {
               <Link
                 tabIndex={0}
                 className="link link--application-list"
-                onClick={this.handleOpenNewMessage("all")}
+                onClick={this.handleOpenNewMessage("person")}
               >
                 {this.props.t("actions.reply", { ns: "messaging" })}
+              </Link>
+            )}
+            {this.props.message.sender.studiesEnded ||
+            this.props.message.sender.archived ? null : (
+              <Link
+                tabIndex={0}
+                className="link link--application-list"
+                onClick={this.handleOpenNewMessage("all")}
+              >
+                {this.props.t("actions.replyAll", { ns: "messaging" })}
               </Link>
             )}
           </footer>
