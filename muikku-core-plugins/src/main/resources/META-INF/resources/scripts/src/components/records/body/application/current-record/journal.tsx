@@ -64,7 +64,7 @@ const Journal: React.FC<JournalProps> = (props) => {
    * @param e e
    */
   const handleJournalKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key !== " ") return;
+    if (e.key !== "Enter") return;
 
     onJournalOpen(journal.id);
   };
@@ -87,7 +87,7 @@ const Journal: React.FC<JournalProps> = (props) => {
   const handleShowCommentsKeyUp = async (
     e: React.KeyboardEvent<HTMLDivElement>
   ) => {
-    if (e.key !== " ") return;
+    if (e.key !== "Enter") return;
 
     e.stopPropagation();
     toggleShowComments();
