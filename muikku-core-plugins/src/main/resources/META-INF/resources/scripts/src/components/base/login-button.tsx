@@ -41,7 +41,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
 
     return (
       <Link
-        tabIndex={0}
+        role="button"
         className={`button button--login ${
           this.props.modifier ? "button--" + this.props.modifier : ""
         }`}
