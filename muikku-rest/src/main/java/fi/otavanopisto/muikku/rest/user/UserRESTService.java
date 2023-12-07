@@ -256,46 +256,37 @@ public class UserRESTService extends AbstractRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
-    Map<String, String> result = new HashMap<String, String>();
-    
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+
     Boolean isStudent = userEntityController.isStudent(userEntity);
-
-    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-      
-      // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
-      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        result.put("moreInfoForLoggedUser", "true");
-      } else if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
-        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
-        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
-
-        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
-        
-        if (!commonWorkspaces.isEmpty()) {
-          result.put("moreInfoForLoggedUser", "true");
-        } else {
-          result.put("moreInfoForLoggedUser", "false");
-        }
-      } else {
-        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
-        
-        // True if logged user is student's counselor / searchable user is not student
-        if (amICounselor || !isStudent) {
-          result.put("moreInfoForLoggedUser", "true");
-        } else {
-          result.put("moreInfoForLoggedUser", "false");
-        }
-      }
-    } else {
-      if (!isStudent) {
-        result.put("moreInfoForLoggedUser", "true");
-      }
-    }
-    
     if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && isStudent) {
       return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
+
+    Map<String, String> result = new HashMap<>();
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      // Admins, study programme leaders, and managers always see extra info
+      if (!isStudent || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER)) {
+        result.put("moreInfoForLoggedUser", Boolean.toString(true));
+      }
+      else {
+        // Extra info if staff and student share common courses
+        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
+        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
+        if (!commonWorkspaces.isEmpty()) {
+          result.put("moreInfoForLoggedUser", Boolean.toString(true));
+        }
+        else {
+          // Extra info if staff is student's counselor
+          result.put("moreInfoForLoggedUser", Boolean.toString(userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier())));
+        }
+      }
+    }
+    else {
+      // Extra info for students querying staff
+      result.put("moreInfoForLoggedUser", Boolean.toString(!isStudent));
     }
     
     result.put("isStudent", isStudent.toString());
