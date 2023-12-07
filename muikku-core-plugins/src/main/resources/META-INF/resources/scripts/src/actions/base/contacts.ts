@@ -42,6 +42,7 @@ export interface LoadContactGroupTriggerType {
 /**
  * loadContactGroup thunk function
  * @param groupName The name of the group to be loaded
+ * @param userIdentifier The muikku identifier of the user to be loaded
  */
 const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
   groupName,
@@ -53,15 +54,14 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
   ) => {
     const userApi = MApi.getUserApi();
 
-    // const contactsLoaded = getState().contacts[groupName].list.length > 0;
+    const contactsLoaded = getState().contacts[groupName].state === "READY";
     const isActiveUser = getState().status.isActiveUser;
     const pyramusUser = userIdentifier
       ? userIdentifier
       : getState().status.userSchoolDataIdentifier;
-    // Must made so that load happens when the user changes
-    // if (contactsLoaded || !isActiveUser) {
-    //   return;
-    // }
+    if (contactsLoaded || !isActiveUser) {
+      return;
+    }
 
     try {
       dispatch({

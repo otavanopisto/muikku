@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { RecordsType } from "~/reducers/main-function/records";
-import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { HOPSState } from "~/reducers/main-function/hops";
 import {

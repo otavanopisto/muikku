@@ -10,10 +10,17 @@ import {
   DependantWokspacePayloadType,
   DependantWokspaceStatePayloadType,
 } from "~/reducers/main-function/dependants";
+import { SummaryStatusType } from "~/reducers/main-function/records/summary";
+import { AllStudentUsersDataStatusType } from "~/reducers/main-function/records";
+import { LoadingState } from "~/@types/shared";
 
 export type UPDATE_DEPENDANTS = SpecificActionType<
   "UPDATE_DEPENDANTS",
   Dependant[]
+>;
+export type SET_CURRENT_DEPENDANT = SpecificActionType<
+  "SET_CURRENT_DEPENDANT",
+  string
 >;
 
 export type UPDATE_DEPENDANT_WORKSPACES = SpecificActionType<
@@ -37,13 +44,57 @@ export type UPDATE_DEPENDANT_WORKSPACES_STATUS = SpecificActionType<
 export interface LoadDependantsTriggerType {
   (): AnyActionType;
 }
-
+/**
+ * setCurrentDependantTriggerType
+ */
+export interface setCurrentDependantTriggerType {
+  (identifier: string): AnyActionType;
+}
+/**
+ * setCurrentDependantTriggerType
+ */
+export interface clearDependantTriggerType {
+  (): AnyActionType;
+}
 /**
  * LoadDependantWorkspacesTriggerType
  */
 export interface LoadDependantWorkspacesTriggerType {
   (dependantId: string): AnyActionType;
 }
+
+/**
+ * setCurrentDependant
+ * @param identifier muikku user identifier
+ */
+const setCurrentDependant: setCurrentDependantTriggerType =
+  function setCurrentDependant(identifier) {
+    return {
+      type: "SET_CURRENT_DEPENDANT",
+      payload: identifier,
+    };
+  };
+
+/**
+ * clearDependantState puts all dependants data states to "WAITING"
+ */
+const clearDependantState: clearDependantTriggerType =
+  function clearDependantState() {
+    return (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+      dispatch({
+        type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
+        payload: <AllStudentUsersDataStatusType>"WAITING",
+      });
+      dispatch({
+        type: "UPDATE_STUDIES_SUMMARY_STATUS",
+        payload: <SummaryStatusType>"WAITING",
+      });
+      dispatch({
+        type: "CONTACT_UPDATE_GROUP_STATE",
+        payload: { groupName: "counselors", state: <LoadingState>"WAITING" },
+      });
+    };
+  };
 
 /**
  * loadDependants thunk function
@@ -165,4 +216,9 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
     };
   };
 
-export { loadDependants, loadDependantWorkspaces };
+export {
+  loadDependants,
+  loadDependantWorkspaces,
+  setCurrentDependant,
+  clearDependantState,
+};

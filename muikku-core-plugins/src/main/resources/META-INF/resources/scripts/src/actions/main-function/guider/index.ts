@@ -539,6 +539,11 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
     };
   };
 
+/**
+ * loadStudentPedagogyFormAccess thunk action creator
+ * @param id student muikku identifier
+ * @returns a thunk functions to load student pedagogy form access
+ */
 const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
   function loadPedagogyFormAccess(id) {
     return async (
@@ -578,6 +583,11 @@ const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
     };
   };
 
+/**
+ * loadStudentHOPSAccess
+ * @param id student muikku identifier
+ * @returns a thunk functions to load student hops access
+ */
 const loadStudentHOPSAccess: LoadStudentTriggerType = function loadStudentHOPS(
   id
 ) {
@@ -586,7 +596,6 @@ const loadStudentHOPSAccess: LoadStudentTriggerType = function loadStudentHOPS(
     getState: () => StateType
   ) => {
     const hopsApi = MApi.getHopsApi();
-    // const userApi = MApi.getUserApi();
 
     try {
       hopsApi
@@ -601,19 +610,6 @@ const loadStudentHOPSAccess: LoadStudentTriggerType = function loadStudentHOPS(
               value: hopsAvailable,
             },
           });
-
-          // const hopsPhase = await userApi.getUserProperties({
-          //   userEntityId: student.userEntityId,
-          //   properties: "hopsPhase",
-          // });
-
-          // dispatch({
-          //   type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-          //   payload: {
-          //     property: "hopsPhase",
-          //     value: hopsPhase[0].value,
-          //   },
-          // });
         });
     } catch (err) {
       if (!isMApiError(err)) {

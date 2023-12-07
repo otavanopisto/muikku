@@ -100,7 +100,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
       case "ACTIVE":
       case "PENDING":
       case "APPROVED":
-        return (
+        return userRole !== "STUDENT_PARENT" ? (
           <div className="pedagogy-form__toolbar">
             <div className="pedagogy-form__toolbar-primary">
               {editIsActive ? (
@@ -170,7 +170,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
               </div>
             ) : null}
           </div>
-        );
+        ) : null;
 
       default:
         return <></>;

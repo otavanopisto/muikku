@@ -98,6 +98,7 @@ export interface UpdateTranscriptOfRecordsFilesTriggerType {
 
 /**
  * updateAllStudentUsersAndSetViewToRecords
+ * @param userIdentifier user muikku Identifier
  */
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
   function updateAllStudentUsersAndSetViewToRecords(userIdentifier) {
@@ -107,7 +108,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
     ) => {
       const meApi = MApi.getMeApi();
       const recordsApi = MApi.getRecordsApi();
-      // const userDataStatus = getState().records.userDataStatus;
+      const userDataStatus = getState().records.userDataStatus;
 
       try {
         dispatch({
@@ -119,10 +120,11 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           payload: <TranscriptOfRecordLocationType>"records",
         });
 
-        // Must made so that load happens when the user changes
-        // if (userDataStatus === "READY") {
-        //   return;
-        // }
+        if (
+          userDataStatus === "READY"
+        ) {
+          return;
+        }
 
         dispatch({
           type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
@@ -130,7 +132,6 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         });
 
         //OK let me try to explain this :<
-
         // we have an identifier given, we work out the user id from that
 
         let idFromIdentifier = getState().dependants.list.find(

@@ -43,22 +43,25 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
     const workspaceApi = MApi.getWorkspaceApi();
     const activitylogsApi = MApi.getActivitylogsApi();
-
+    const state = getState();
     try {
+      // Get user id
+      const pyramusId = studentId
+        ? studentId
+        : state.status.userSchoolDataIdentifier;
+
+      // If the pyramusId is a staffId, don't update summary
+      if (
+        !pyramusId.toLowerCase().includes("student-") ||
+        state.summary.status === "READY"
+      ) {
+        return null;
+      }
+
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
         payload: <SummaryStatusType>"LOADING",
       });
-
-      // Get user id
-      const pyramusId = studentId
-        ? studentId
-        : getState().status.userSchoolDataIdentifier;
-
-      // If the pyramusId is a staffId, don't update summary
-      if (!pyramusId.toLowerCase().includes("student-")) {
-        return null;
-      }
 
       const eligibility = await recordsApi.getStudentMatriculationEligibility({
         studentIdentifier: pyramusId,
