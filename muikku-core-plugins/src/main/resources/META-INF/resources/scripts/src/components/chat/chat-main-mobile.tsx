@@ -18,14 +18,14 @@ const PANEL_RIGHT_MAX_WIDTH = 200;
 
 const leftPanelVariants: Variants = {
   open: {
-    left: 0,
+    x: 0,
     transition: {
       duration: 0.3,
       type: "tween",
     },
   },
   closed: {
-    left: -PANEL_LEFT_MAX_WIDTH,
+    x: -PANEL_LEFT_MAX_WIDTH,
     transition: {
       duration: 0.3,
       type: "tween",
@@ -35,14 +35,14 @@ const leftPanelVariants: Variants = {
 
 const rightPanelVariants: Variants = {
   open: {
-    right: 0,
+    x: 0,
     transition: {
       duration: 0.3,
       type: "tween",
     },
   },
   closed: {
-    right: -PANEL_RIGHT_MAX_WIDTH,
+    x: PANEL_RIGHT_MAX_WIDTH,
     transition: {
       duration: 0.3,
       type: "tween",
@@ -78,46 +78,26 @@ function ChatMainMobile(props: ChatMainMobileProps) {
   const { toggleLeftPanel, toggleRightPanel, leftPanelOpen, rightPanelOpen } =
     useChatContext();
 
+  const leftPanelConstraints = React.useRef<HTMLDivElement>(null);
+  const rightPanelConstraints = React.useRef<HTMLDivElement>(null);
+
   const animationControls = useAnimationControls();
+
+  const leftPanelAnimateControls = useAnimationControls();
+  const rightPanelAnimateControls = useAnimationControls();
 
   const peoplePanelRef = React.useRef<HTMLDivElement>(null);
   const roomsPanelRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    /**
-     * Detech outside click to close people panel
-     * @param e e
-     */
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (
-        peoplePanelRef.current &&
-        !peoplePanelRef.current.contains(e.target as Node)
-      ) {
-        toggleLeftPanel(false);
-      }
-    };
-
-    /**
-     * Detech outside click to close rooms panel
-     * @param e e
-     */
-    const handleOutsideClickRooms = (e: MouseEvent) => {
-      if (
-        roomsPanelRef.current &&
-        !roomsPanelRef.current.contains(e.target as Node)
-      ) {
-        toggleRightPanel(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    document.addEventListener("mousedown", handleOutsideClickRooms);
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-      document.removeEventListener("mousedown", handleOutsideClickRooms);
-    };
-  }, [toggleLeftPanel, toggleRightPanel]);
+    leftPanelAnimateControls.start(leftPanelOpen ? "open" : "closed");
+    rightPanelAnimateControls.start(rightPanelOpen ? "open" : "closed");
+  }, [
+    leftPanelAnimateControls,
+    leftPanelOpen,
+    rightPanelAnimateControls,
+    rightPanelOpen,
+  ]);
 
   return (
     <div
@@ -128,26 +108,55 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         zIndex: 1000,
       }}
     >
+      <div
+        ref={leftPanelConstraints}
+        className="left-panel-drag-constraints"
+        style={{
+          width: 2 * PANEL_LEFT_MAX_WIDTH,
+          position: "fixed",
+          left: -PANEL_LEFT_MAX_WIDTH,
+        }}
+      />
       <motion.div
         ref={roomsPanelRef}
         initial={false}
-        animate={leftPanelOpen ? "open" : "closed"}
+        animate={leftPanelAnimateControls}
         variants={leftPanelVariants}
         drag="x"
-        dragElastic={0.2}
+        dragElastic={false}
         dragMomentum={false}
-        dragConstraints={{
-          left: 0,
-          right: 0,
+        dragConstraints={leftPanelConstraints}
+        dragTransition={{
+          bounceStiffness: 800,
+          bounceDamping: 100,
         }}
         onDragEnd={(e, { offset, velocity, point }) => {
           const swipe = swipePower(offset.x, velocity.x);
 
-          if (!leftPanelOpen && swipe >= swipeConfidenceThreshold) {
-            toggleLeftPanel(true);
-          }
-          if (leftPanelOpen && swipe <= -swipeConfidenceThreshold) {
-            toggleLeftPanel(false);
+          // Set panel open when drag offset is greater than 50% of max width
+          // Set panel closed when drag offset is less than 50% of max width
+          if (!leftPanelOpen) {
+            point.x > PANEL_LEFT_MAX_WIDTH / 2 ||
+            swipe >= swipeConfidenceThreshold
+              ? toggleLeftPanel(true)
+              : leftPanelAnimateControls.start({
+                  x: -PANEL_LEFT_MAX_WIDTH,
+                  transition: {
+                    duration: 0.3,
+                    type: "tween",
+                  },
+                });
+          } else if (leftPanelOpen) {
+            point.x < PANEL_LEFT_MAX_WIDTH / 2 ||
+            swipe <= -swipeConfidenceThreshold
+              ? toggleLeftPanel(false)
+              : leftPanelAnimateControls.start({
+                  x: 0,
+                  transition: {
+                    duration: 0.3,
+                    type: "tween",
+                  },
+                });
           }
         }}
         className="chat-rooms__panel"
@@ -157,8 +166,9 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           left: 0,
           bottom: 0,
           top: 0,
-          zIndex: 1,
+          zIndex: 2,
           width: `${PANEL_LEFT_MAX_WIDTH}px`,
+          x: 0,
         }}
       >
         <div
@@ -201,26 +211,54 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
         />
       </motion.div>
+
+      <div
+        ref={rightPanelConstraints}
+        className="right-panel-drag-constraints"
+        style={{
+          width: 2 * PANEL_RIGHT_MAX_WIDTH,
+          position: "fixed",
+          right: -PANEL_RIGHT_MAX_WIDTH,
+        }}
+      />
       <motion.div
         ref={peoplePanelRef}
         initial={false}
-        animate={rightPanelOpen ? "open" : "closed"}
+        animate={rightPanelAnimateControls}
         variants={rightPanelVariants}
         drag="x"
-        dragElastic={0.2}
+        dragElastic={false}
         dragMomentum={false}
-        dragConstraints={{
-          left: 0,
-          right: 0,
+        dragConstraints={rightPanelConstraints}
+        dragTransition={{
+          bounceStiffness: 800,
+          bounceDamping: 100,
         }}
         onDragEnd={(e, { offset, velocity, point }) => {
           const swipe = swipePower(offset.x, velocity.x);
 
-          if (!rightPanelOpen && swipe <= -swipeConfidenceThreshold) {
-            toggleRightPanel(true);
-          }
-          if (rightPanelOpen && swipe >= swipeConfidenceThreshold) {
-            toggleRightPanel(false);
+          if (!rightPanelOpen) {
+            window.innerWidth - point.x >= PANEL_RIGHT_MAX_WIDTH / 2 ||
+            swipe <= -swipeConfidenceThreshold
+              ? toggleRightPanel(true)
+              : rightPanelAnimateControls.start({
+                  x: 0,
+                  transition: {
+                    duration: 0.3,
+                    type: "tween",
+                  },
+                });
+          } else if (rightPanelOpen) {
+            point.x - (window.innerWidth - PANEL_RIGHT_MAX_WIDTH) >=
+              PANEL_RIGHT_MAX_WIDTH / 2 || swipe >= swipeConfidenceThreshold
+              ? toggleRightPanel(false)
+              : rightPanelAnimateControls.start({
+                  x: PANEL_RIGHT_MAX_WIDTH,
+                  transition: {
+                    duration: 0.3,
+                    type: "tween",
+                  },
+                });
           }
         }}
         className="chat-people__panel"
@@ -230,8 +268,9 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           right: 0,
           bottom: 0,
           top: 0,
-          zIndex: 1,
+          zIndex: 2,
           width: PANEL_RIGHT_MAX_WIDTH,
+          x: window.innerWidth + PANEL_RIGHT_MAX_WIDTH,
         }}
       >
         <div

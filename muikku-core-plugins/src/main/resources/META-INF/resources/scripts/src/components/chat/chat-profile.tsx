@@ -18,7 +18,7 @@ interface ChatProfileProps
  * @param props props
  */
 function ChatProfile(props: ChatProfileProps) {
-  const { userMe } = useChatContext();
+  const { userMe, openChatProfileSettings } = useChatContext();
 
   if (!userMe) {
     return null;
@@ -46,7 +46,7 @@ function ChatProfile(props: ChatProfileProps) {
         </div>
       </div>
 
-      <IconButton icon="cog" />
+      <IconButton icon="cog" onClick={openChatProfileSettings} />
     </div>
   );
 }

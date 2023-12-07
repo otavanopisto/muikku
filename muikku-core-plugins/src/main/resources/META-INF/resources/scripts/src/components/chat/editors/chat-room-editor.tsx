@@ -8,7 +8,7 @@ import { useChatContext } from "../context/chat-context";
 function ChatRoomEditor() {
   const {
     updateRoomEditor,
-    cancelRoomEditor,
+    closeView,
     currentEditorValues,
     saveEditorChanges,
   } = useChatContext();
@@ -41,7 +41,7 @@ function ChatRoomEditor() {
           onChange={(e) => updateRoomEditor("description", e.target.value)}
         />
         <button onClick={saveEditorChanges}>Tallenna</button>
-        <button onClick={cancelRoomEditor}>Peruuta</button>
+        <button onClick={closeView}>Peruuta</button>
       </div>
     </div>
   );

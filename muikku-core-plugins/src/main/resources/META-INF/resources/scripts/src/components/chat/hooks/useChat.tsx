@@ -41,25 +41,27 @@ function useChat(userId: number) {
   const [rightPanelOpen, setRightPanelOpen] = React.useState<boolean>(false);
   const [leftPanelOpen, setLeftPanelOpen] = React.useState<boolean>(false);
 
+  // Whether the current width is mobile
+  const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
+  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+
+  // Active room or person identifier
   const [activeRoomOrPerson, setActiveRoomOrPerson] =
     React.useState<string>(null);
 
+  // Editor values
   const [newChatRoom, setNewChatRoom] = React.useState<CreateChatRoomRequest>({
     name: "",
     description: "",
   });
-
   const [editChatRoom, setEditChatRoom] =
     React.useState<UpdateChatRoomRequest>(null);
 
+  // Room identifier to edit
   const [roomIdentifierToEdit, setRoomIdentifierToEdit] =
     React.useState<string>(null);
 
-  const [roomsSelected, setRoomsSelected] = React.useState<string[]>([]);
-
-  const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
-  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
-
+  // Current editor values
   const currentEditorValues = React.useMemo(() => {
     if (roomIdentifierToEdit) {
       return editChatRoom;
@@ -67,21 +69,6 @@ function useChat(userId: number) {
       return newChatRoom;
     }
   }, [roomIdentifierToEdit, editChatRoom, newChatRoom]);
-
-  // These are the all the rooms that are opened
-  // sorted by roomsSelected array
-  const openRooms = React.useMemo(
-    () =>
-      [...rooms, ...people]
-        .filter((r) => roomsSelected.includes(r.identifier))
-        .sort((a, b) => {
-          const aIndex = roomsSelected.indexOf(a.identifier);
-          const bIndex = roomsSelected.indexOf(b.identifier);
-
-          return aIndex - bIndex;
-        }),
-    [rooms, people, roomsSelected]
-  );
 
   const activeDiscussion = [...people, ...rooms].find(
     (r) => r.identifier === activeRoomOrPerson
@@ -174,10 +161,8 @@ function useChat(userId: number) {
     [rooms]
   );
 
-  /**
-   * cancelRoomEditor
-   */
-  const cancelRoomEditor = React.useCallback(() => {
+  // Closes current view and goes back to overview or discussion if exists
+  const closeView = React.useCallback(() => {
     if (activeRoomOrPerson) {
       chatViews.goTo("discussion");
     } else {
@@ -202,6 +187,11 @@ function useChat(userId: number) {
   // Closes the active room or person
   const closeDiscussion = React.useCallback(() => {
     chatViews.goTo("overview");
+  }, [chatViews]);
+
+  // Opens the active room or person
+  const openChatProfileSettings = React.useCallback(() => {
+    chatViews.goTo("chat-profile-settings");
   }, [chatViews]);
 
   const toggleRightPanel = React.useCallback((nextState?: boolean) => {
@@ -232,15 +222,12 @@ function useChat(userId: number) {
     privateRooms: rooms.filter((r) => r.type === "WORKSPACE"),
     searchPeople,
     searchRooms,
-    roomsSelected,
-    setRoomsSelected,
-    openRooms,
     minimized,
     toggleControlBox,
     chatViews,
     openNewChatRoom,
     openEditChatRoom,
-    cancelRoomEditor,
+    openChatProfileSettings,
     updateRoomEditor,
     currentEditorValues,
     saveEditorChanges,
@@ -252,6 +239,7 @@ function useChat(userId: number) {
     toggleLeftPanel,
     leftPanelOpen,
     rightPanelOpen,
+    closeView,
   };
 }
 

@@ -9,6 +9,7 @@ import {
 import { ChatView } from "./animated-views";
 import AnimatedView from "./animated-views/animated-view";
 import ChatDiscussion from "./chat-discussion";
+import ChatProfileSettings from "./chat-profile-settings";
 import ChatRoomEditor from "./editors/chat-room-editor";
 
 /**
@@ -32,7 +33,7 @@ export const isChatUser = (value: object): value is ChatUser =>
  */
 export const chatControllerViews: ChatView[] = [
   {
-    name: "overview",
+    name: "Overview",
     identifier: "overview",
     component: (
       <AnimatedView>
@@ -41,7 +42,7 @@ export const chatControllerViews: ChatView[] = [
     ),
   },
   {
-    name: "discussion",
+    name: "Discussion",
     identifier: "discussion",
     component: (
       <AnimatedView>
@@ -55,6 +56,15 @@ export const chatControllerViews: ChatView[] = [
     component: (
       <AnimatedView>
         <ChatRoomEditor />
+      </AnimatedView>
+    ),
+  },
+  {
+    name: "Chat profile settings",
+    identifier: "chat-profile-settings",
+    component: (
+      <AnimatedView>
+        <ChatProfileSettings />
       </AnimatedView>
     ),
   },
