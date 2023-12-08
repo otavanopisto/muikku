@@ -87,7 +87,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    */
   const handleCancelSaveWithExtraDetailsClick = () => setExtraDetails("");
 
-  if (userRole !== "STUDENT") {
+  if (userRole !== "STUDENT" && userRole !== "STUDENT_PARENT") {
     switch (data.state) {
       case "INACTIVE":
         return userRole === "SPECIAL_ED_TEACHER" ? (
@@ -100,7 +100,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
       case "ACTIVE":
       case "PENDING":
       case "APPROVED":
-        return userRole !== "STUDENT_PARENT" ? (
+        return (
           <div className="pedagogy-form__toolbar">
             <div className="pedagogy-form__toolbar-primary">
               {editIsActive ? (
@@ -170,7 +170,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
               </div>
             ) : null}
           </div>
-        ) : null;
+        );
 
       default:
         return <></>;

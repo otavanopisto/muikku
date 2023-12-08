@@ -120,9 +120,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           payload: <TranscriptOfRecordLocationType>"records",
         });
 
-        if (
-          userDataStatus === "READY"
-        ) {
+        if (userDataStatus === "READY") {
           return;
         }
 

@@ -13,16 +13,13 @@ import {
 import { SummaryStatusType } from "~/reducers/main-function/records/summary";
 import { AllStudentUsersDataStatusType } from "~/reducers/main-function/records";
 import { LoadingState } from "~/@types/shared";
+import { HOPSStatusType } from "~/reducers/main-function/hops";
+import { MatriculationSubjectEligibilityStatusType } from "~/reducers/main-function/records/yo";
 
 export type UPDATE_DEPENDANTS = SpecificActionType<
   "UPDATE_DEPENDANTS",
   Dependant[]
 >;
-export type SET_CURRENT_DEPENDANT = SpecificActionType<
-  "SET_CURRENT_DEPENDANT",
-  string
->;
-
 export type UPDATE_DEPENDANT_WORKSPACES = SpecificActionType<
   "UPDATE_DEPENDANT_WORKSPACES",
   DependantWokspacePayloadType
@@ -64,18 +61,6 @@ export interface LoadDependantWorkspacesTriggerType {
 }
 
 /**
- * setCurrentDependant
- * @param identifier muikku user identifier
- */
-const setCurrentDependant: setCurrentDependantTriggerType =
-  function setCurrentDependant(identifier) {
-    return {
-      type: "SET_CURRENT_DEPENDANT",
-      payload: identifier,
-    };
-  };
-
-/**
  * clearDependantState puts all dependants data states to "WAITING"
  */
 const clearDependantState: clearDependantTriggerType =
@@ -92,6 +77,25 @@ const clearDependantState: clearDependantTriggerType =
       dispatch({
         type: "CONTACT_UPDATE_GROUP_STATE",
         payload: { groupName: "counselors", state: <LoadingState>"WAITING" },
+      });
+      dispatch({
+        type: "UPDATE_HOPS_STATUS",
+        payload: <HOPSStatusType>"WAIT",
+      });
+      dispatch({
+        type: "UPDATE_STUDIES_YO_STATUS",
+        payload: "WAIT",
+      });
+      dispatch({
+        type: "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
+        payload: <MatriculationSubjectEligibilityStatusType>"WAIT",
+      });
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "pedagogyFormState",
+          value: <LoadingState>"WAITING",
+        },
       });
     };
   };
@@ -216,9 +220,4 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
     };
   };
 
-export {
-  loadDependants,
-  loadDependantWorkspaces,
-  setCurrentDependant,
-  clearDependantState,
-};
+export { loadDependants, loadDependantWorkspaces, clearDependantState };

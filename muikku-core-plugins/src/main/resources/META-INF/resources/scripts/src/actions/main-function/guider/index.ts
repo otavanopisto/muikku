@@ -550,8 +550,20 @@ const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const pedagogyApi = MApi.getPedagogyApi();
+      // if the access is loaded, do not load again
+      if (getState().guider.currentStudent.pedagogyFormState === "READY") {
+        return;
+      }
 
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "pedagogyFormState",
+          value: <LoadingState>"LOADING",
+        },
+      });
+
+      const pedagogyApi = MApi.getPedagogyApi();
       try {
         pedagogyApi
           .getPedagogyFormAccess({
@@ -563,6 +575,13 @@ const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
               payload: {
                 property: "pedagogyFormAvailable",
                 value: pedagogyFormAvaibility,
+              },
+            });
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "pedagogyFormState",
+                value: <LoadingState>"READY",
               },
             });
           });
@@ -582,51 +601,6 @@ const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
       }
     };
   };
-
-/**
- * loadStudentHOPSAccess
- * @param id student muikku identifier
- * @returns a thunk functions to load student hops access
- */
-const loadStudentHOPSAccess: LoadStudentTriggerType = function loadStudentHOPS(
-  id
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
-  ) => {
-    const hopsApi = MApi.getHopsApi();
-
-    try {
-      hopsApi
-        .isHopsAvailable({
-          studentIdentifier: id,
-        })
-        .then(async (hopsAvailable) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: {
-              property: "hopsAvailable",
-              value: hopsAvailable,
-            },
-          });
-        });
-    } catch (err) {
-      if (!isMApiError(err)) {
-        throw err;
-      }
-      dispatch(
-        notificationActions.displayNotification(
-          i18n.t("notifications.loadError", {
-            ns: "users",
-            context: "student",
-          }),
-          "error"
-        )
-      );
-    }
-  };
-};
 
 /**
  * loadStudent thunk action creator
@@ -2374,7 +2348,6 @@ export {
   loadMoreStudents,
   loadStudent,
   loadStudentHistory,
-  loadStudentHOPSAccess,
   loadStudentPedagogyFormAccess,
   // loadStudentGuiderRelations,
   loadStudentContactLogs,

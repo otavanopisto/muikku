@@ -134,7 +134,9 @@ class DependantApplication extends React.Component<
         );
       case "PEDAGOGY_FORM":
         return (
-          this.state?.pedagogyFormState === "PENDING" ||
+          (this.props.guider.currentStudent.pedagogyFormAvailable &&
+            this.props.guider.currentStudent.pedagogyFormAvailable.accessible &&
+            this.state?.pedagogyFormState === "PENDING") ||
           this.state?.pedagogyFormState === "APPROVED"
         );
     }
