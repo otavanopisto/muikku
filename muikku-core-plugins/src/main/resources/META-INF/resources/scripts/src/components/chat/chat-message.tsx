@@ -5,8 +5,11 @@ import Avatar from "../general/avatar";
 import {
   AnimatePresence,
   motion,
+  PanInfo,
+  useAnimationControls,
   useMotionValue,
   useTransform,
+  Variants,
 } from "framer-motion";
 import { useChatContext } from "./context/chat-context";
 import useLongPress from "./hooks/useLongPress";
@@ -204,6 +207,25 @@ interface MobileMessageActionsProps {
   onClose?: () => void;
 }
 
+const variants: Variants = {
+  open: {
+    bottom: 0,
+    opacity: 1,
+    transition: {
+      type: "tween",
+      duration: 0.3,
+    },
+  },
+  closed: {
+    bottom: "-100%",
+    opacity: 0,
+    transition: {
+      type: "tween",
+      duration: 0.3,
+    },
+  },
+};
+
 /**
  * Modal component for mobile message actions
  * Animated from bottom of screen.
@@ -212,14 +234,36 @@ interface MobileMessageActionsProps {
 function MobileMessageActions(props: MobileMessageActionsProps) {
   const { open, onClose } = props;
 
+  const actionsPanelRef = React.useRef<HTMLDivElement>(null);
+
+  const drawerAnimateControls = useAnimationControls();
+
+  const [, setIsDragging] = React.useState(false);
+  const [, setIsAnimating] = React.useState(false);
+
   // Using y motion value to animate the black drop opacity
   // change when dragging the drawer
   const y = useMotionValue(0);
-  const background = useTransform(
-    y,
-    [-100, 100],
-    ["rgb(0, 0, 0, 1)", "rgb(0, 0, 0, 0)"]
-  );
+
+  React.useEffect(() => {
+    /**
+     * Animate the drawer when it's opened or closed
+     */
+    const animate = async () => {
+      setIsAnimating(true);
+
+      if (open) {
+        await drawerAnimateControls.start("open");
+      } else {
+        await drawerAnimateControls.start("closed");
+        y.set(0, false);
+      }
+
+      setIsAnimating(false);
+    };
+
+    animate();
+  }, [open, drawerAnimateControls, y]);
 
   /**
    * Handle black drop click
@@ -232,15 +276,95 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
     onClose && onClose();
   };
 
+  /**
+   * Handles drag start
+   * @param event event
+   * @param info info
+   */
+  const handleDragStart = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    setIsDragging(true);
+  };
+
+  /**
+   * Handles drag end
+   * @param event event
+   * @param info info
+   */
+  const handleDragEnd = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
+    const { /* offset, velocity, */ point } = info;
+
+    /* const swipe = swipePower(offset.x, velocity.x); */
+
+    setIsDragging(false);
+
+    // If the drawer is dragged more than 50% of its height
+    // close the drawer or else animate it back to its original position
+    if (
+      point.y >=
+      actionsPanelRef.current.offsetHeight / 2 /* ||
+      Math.abs(swipe) > swipeConfidenceThreshold */
+    ) {
+      onClose && onClose();
+    } else {
+      animateOpen();
+    }
+  };
+
+  /**
+   * animateOpen
+   */
+  const animateOpen = async () => {
+    setIsAnimating(true);
+
+    await drawerAnimateControls.start({
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "tween",
+        duration: 0.2,
+      },
+    });
+
+    setIsAnimating(false);
+  };
+
+  // Default input range for y motion value transformers
+  let inpurtRange = [0, 100];
+
+  // If the actions panel ref exists, set the input range second value
+  // to the actions panel height
+  if (actionsPanelRef.current) {
+    inpurtRange = [0, actionsPanelRef.current.offsetHeight];
+  }
+
+  // Using y motion value to animate the black drop background
+  const background = useTransform(y, inpurtRange, [
+    "rgb(0, 0, 0, 0.5)",
+    "rgb(0, 0, 0, 0)",
+  ]);
+
+  // Using y motion value to animate the drawer opacity
+  const opacity = useTransform(y, inpurtRange, [1, 0]);
+
   return (
-    <AnimatePresence initial={false} exitBeforeEnter>
+    <AnimatePresence exitBeforeEnter>
       {open && (
         <>
           <motion.div
+            key="drawer-blackDrop"
             className="black-drop-wrapper"
             onClick={handleBlackDropClick}
+            initial={{
+              background: `rgba(0,0,0,0)`,
+            }}
             animate={{
-              background: `rgba(0,0,0,${0.5})`,
+              background: `rgba(0,0,0,0.5)`,
             }}
             exit={{
               background: `rgba(0,0,0,0)`,
@@ -261,37 +385,25 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
           />
 
           <motion.div
+            key="drawer-actionsPanel"
+            ref={actionsPanelRef}
             drag="y"
-            dragElastic={{
-              bottom: 0.1,
-              top: 0,
-            }}
+            dragElastic={false}
             dragMomentum={false}
             dragConstraints={{
               top: 0,
-              bottom: 0,
             }}
-            initial={{
-              bottom: "-100%",
-              opacity: 0,
-            }}
-            animate={{
-              bottom: 0,
-              opacity: 1,
-            }}
-            exit={{
-              bottom: "-100%",
-              opacity: 0,
-            }}
-            transition={{
-              type: "tween",
-              duration: 0.2,
-            }}
+            variants={variants}
+            initial="closed"
+            animate={drawerAnimateControls}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
             style={{
               position: "fixed",
               bottom: 0,
               left: 0,
               right: 0,
+              opacity,
               background: "antiquewhite",
               padding: "0 10px",
               width: "100%",

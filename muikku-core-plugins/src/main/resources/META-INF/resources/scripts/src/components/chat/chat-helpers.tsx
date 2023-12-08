@@ -13,6 +13,22 @@ import ChatProfileSettings from "./chat-profile-settings";
 import ChatRoomEditor from "./editors/chat-room-editor";
 
 /**
+ * Experimenting with distilling swipe offset and velocity into a single variable, so the
+ * less distance a user has swiped, the more velocity they need to register as a swipe.
+ * Should accomodate longer swipes and short flicks without having binary checks on
+ * just distance thresholds and velocity > 0.
+ */
+export const swipeConfidenceThreshold = 10000;
+
+/**
+ * swipePower
+ * @param offset offset
+ * @param velocity velocity
+ */
+export const swipePower = (offset: number, velocity: number) =>
+  Math.abs(offset) * velocity;
+
+/**
  * Type guard for MessageThread
  * @param value value
  * @returns value is MessageThread
