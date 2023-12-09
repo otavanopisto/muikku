@@ -405,6 +405,10 @@
       "unanswered": "Unanswered",
       "workspaceVisits": "Visited the course"
     },
+    "notifications": {
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_pedagogyFormAccess": "Loading pedagogy form access failed. Please try refreshing the page."
+    },
     "wcag": {
       "open": "Avaa opiskelijan ohjausnäkymä",
       "select": "Select a subject",

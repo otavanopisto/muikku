@@ -592,8 +592,8 @@ const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
-              ns: "users",
-              context: "student",
+              ns: "guider",
+              context: "pedagogyFormAccess",
             }),
             "error"
           )

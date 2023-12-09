@@ -409,6 +409,10 @@
       "unanswered": "Aloittamattomat",
       "workspaceVisits": "Käynyt kurssilla"
     },
+    "notifications": {
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_pedagogyFormAccess": "Pedagogisen suunnitelman pääsyoikeuden lataus epäonnistui. Yritä ladata sivu uudelleen."
+    },
     "wcag": {
       "openStudent": "Avaa opiskelijan ohjausnäkymä",
       "select": "Valitse aine",
