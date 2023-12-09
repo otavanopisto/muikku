@@ -139,7 +139,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
         notificationActions.displayNotification(
           i18n.t("notifications.loadError", {
             ns: "users",
-            context: "students",
+            context: "dependants",
           }),
           "error"
         )
@@ -203,8 +203,8 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
-              ns: "users",
-              context: "students",
+              ns: "workspace",
+              context: "workspaces",
             }),
             "error"
           )

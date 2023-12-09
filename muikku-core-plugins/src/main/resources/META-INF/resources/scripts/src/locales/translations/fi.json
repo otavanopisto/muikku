@@ -1094,6 +1094,7 @@
       "createSuccess_staff": "Henkilöstön jäsenen luonti onnistui",
       "createSuccess_userGroup": "Käyttäjäryhmän luonti onnistui",
       "loadError": "Käyttäjien lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_dependants": "Huollettavien lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_staff": "Henkilökunnan lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_student": "Opiskelijan lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_students": "Opiskelijoiden lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
