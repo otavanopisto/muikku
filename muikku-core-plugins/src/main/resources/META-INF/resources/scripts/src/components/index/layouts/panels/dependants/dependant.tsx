@@ -57,15 +57,22 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           </div>
           <div className="dependant__contact-info-container">
             {dependant.email && (
-              <span className="dependant__info-item">{dependant.email}</span>
+              <span className="dependant__info-item">
+                <span className="dependant__info-item-icon icon-envelope" />
+                {dependant.email}
+              </span>
             )}
             {dependant.phoneNumber && (
               <span className="dependant__info-item">
+                <span className="dependant__info-item-icon icon-phone" />
                 {dependant.phoneNumber}
               </span>
             )}
             {dependant.address && (
-              <span className="dependant__info-item">{dependant.address}</span>
+              <span className="dependant__info-item">
+                <span className="dependant__info-item-icon icon-pin" />
+                {dependant.address}
+              </span>
             )}
           </div>
           <div className="dependant__details-footer">

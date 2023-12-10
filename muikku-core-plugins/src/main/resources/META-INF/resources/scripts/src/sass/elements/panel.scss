@@ -249,6 +249,11 @@
   color: $color-index-text-for-panels-title-wall-icon-color;
 }
 
+.panel__header-icon--dependants {
+  background-color: $color-index-text-for-panels-title-dependants-icon-background;
+  color: $color-index-text-for-panels-title-dependants-icon-color;
+}
+
 .panel__header-icon--continue-studies {
   background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
   color: $color-index-text-for-panels-title-continue-studies-icon-color;
