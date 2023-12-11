@@ -1,7 +1,6 @@
 import * as React from "react";
-import { ChatUser } from "~/generated/client";
-import Avatar from "../general/avatar";
 import { IconButton } from "../general/button";
+import ChatProfileAvatar from "./chat-profile-avatar";
 import { useChatContext } from "./context/chat-context";
 
 /**
@@ -33,7 +32,12 @@ function ChatProfile(props: ChatProfileProps) {
           alignItems: "center",
         }}
       >
-        <ChatProfileAvatar userMe={userMe} status="online" />
+        <ChatProfileAvatar
+          id={userMe.id}
+          nick={userMe.nick}
+          hasImage={userMe.hasImage}
+          status="online"
+        />
         <div
           style={{
             display: "flex",
@@ -47,71 +51,6 @@ function ChatProfile(props: ChatProfileProps) {
       </div>
 
       <IconButton icon="cog" onClick={openChatProfileSettings} />
-    </div>
-  );
-}
-
-/**
- * ChatProfileAvatarProps
- */
-interface ChatProfileAvatarProps {
-  userMe: ChatUser;
-  status?: "online" | "away" | "busy" | "offline";
-}
-
-/**
- * ChatProfileAvatar
- * @param props props
- */
-function ChatProfileAvatar(props: ChatProfileAvatarProps) {
-  const { userMe } = props;
-
-  const statusColor = React.useMemo(() => {
-    switch (props.status) {
-      case "online":
-        return "green";
-      case "away":
-        return "yellow";
-      case "busy":
-        return "red";
-      case "offline":
-        return "gray";
-      default:
-        return null;
-    }
-  }, [props.status]);
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        position: "relative",
-      }}
-    >
-      <Avatar
-        firstName={userMe.nick}
-        hasImage={userMe.hasImage}
-        id={userMe.id}
-      />
-
-      {statusColor && (
-        <div
-          className="status-indicator"
-          style={{
-            width: "15px",
-            height: "15px",
-            borderRadius: "50%",
-            background: statusColor,
-            border: "1px solid white",
-            position: "absolute",
-            zIndex: 1,
-            bottom: "-3px",
-            right: "5px",
-          }}
-        />
-      )}
     </div>
   );
 }

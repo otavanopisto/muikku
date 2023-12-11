@@ -175,33 +175,12 @@ function useChat(userId: number) {
     setMinimized((minimized) => !minimized);
   }, []);
 
-  // Sets the active room or person
-  const openDiscussion = React.useCallback(
-    (identifier: string) => {
-      setActiveRoomOrPerson(identifier);
-      chatViews.goTo("discussion");
-    },
-    [chatViews]
-  );
-
-  // Closes the active room or person
-  const closeDiscussion = React.useCallback(() => {
-    chatViews.goTo("overview");
-  }, [chatViews]);
-
   // Opens the active room or person
   const openChatProfileSettings = React.useCallback(() => {
     chatViews.goTo("chat-profile-settings");
   }, [chatViews]);
 
-  const toggleRightPanel = React.useCallback((nextState?: boolean) => {
-    if (nextState !== undefined) {
-      setRightPanelOpen(nextState);
-    } else {
-      setRightPanelOpen((rightPanelOpen) => !rightPanelOpen);
-    }
-  }, []);
-
+  // Toggles the left panel or sets it to a specific state
   const toggleLeftPanel = React.useCallback((nextState?: boolean) => {
     if (nextState !== undefined) {
       setLeftPanelOpen(nextState);
@@ -210,9 +189,45 @@ function useChat(userId: number) {
     }
   }, []);
 
+  // Toggles the right panel or sets it to a specific state
+  const toggleRightPanel = React.useCallback((nextState?: boolean) => {
+    if (nextState !== undefined) {
+      setRightPanelOpen(nextState);
+    } else {
+      setRightPanelOpen((rightPanelOpen) => !rightPanelOpen);
+    }
+  }, []);
+
+  // Sets the active room or person
+  const openDiscussion = React.useCallback(
+    (identifier: string) => {
+      unstable_batchedUpdates(() => {
+        if (isMobileWidth) {
+          setLeftPanelOpen(false);
+          setRightPanelOpen(false);
+        }
+
+        setActiveRoomOrPerson(identifier);
+        chatViews.goTo("discussion");
+      });
+    },
+    [chatViews, isMobileWidth]
+  );
+
+  // Closes the active room or person
+  const closeDiscussion = React.useCallback(() => {
+    chatViews.goTo("overview");
+  }, [chatViews]);
+
+  const canModerate = React.useMemo(() => {
+    const user = people.find((p) => p.id === userId);
+    return (user && user.type === "STAFF") || false;
+  }, [people, userId]);
+
   return {
     userId,
     userMe: people.find((p) => p.id === userId),
+    canModerate,
     usersWithoutMe,
     loadingPeople,
     loadingRooms,

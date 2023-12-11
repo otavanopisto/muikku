@@ -51,11 +51,7 @@ const ChatPrivatePanel = (props: ChatPanelProps) => {
         <div className="chat__panel-body chat__panel-body--chatroom">
           <div className="chat__messages-container chat__messages-container--private">
             {chatMsgs.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                msg={msg}
-                senderIsMe={props.userId === msg.sourceUserEntityId}
-              />
+              <ChatMessage key={msg.id} msg={msg} />
             ))}
             <div className="chat__messages-last-message"></div>
           </div>
@@ -117,11 +113,7 @@ const ChatRoomPanel = (props: ChatPanelProps) => {
             className={`chat__messages-container chat__messages-container--${chatRoomTypeClassName}`}
           >
             {chatMsgs.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                msg={msg}
-                senderIsMe={msg.sourceUserEntityId === props.userId}
-              />
+              <ChatMessage key={msg.id} msg={msg} />
             ))}
             <div className="chat__messages-last-message"></div>
           </div>

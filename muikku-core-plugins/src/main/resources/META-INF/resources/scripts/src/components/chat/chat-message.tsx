@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ChatMessage } from "~/generated/client";
 import { localize } from "~/locales/i18n";
-import Avatar from "../general/avatar";
 import {
   AnimatePresence,
   motion,
@@ -13,12 +12,17 @@ import {
 } from "framer-motion";
 import { useChatContext } from "./context/chat-context";
 import useLongPress from "./hooks/useLongPress";
+import useMessage, { MessageAction } from "./hooks/useMessage";
+import Dropdown from "../general/dropdown";
+import Link from "../general/link";
+import ChatProfileAvatar from "./chat-profile-avatar";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * ChatMessageProps
  */
 interface ChatMessageProps {
-  senderIsMe: boolean;
   msg: ChatMessage;
 }
 
@@ -32,7 +36,18 @@ interface ChatMessageProps {
 const ChatMessage = (props: ChatMessageProps) => {
   const { isMobileWidth } = useChatContext();
 
-  const { senderIsMe, msg } = props;
+  const {
+    contentRef,
+    myMsg,
+    editMode,
+    mainModerationActions,
+    secondaryModerationActions,
+    mobileModerationActions,
+    toggleEditMode,
+    saveEditedMessage,
+  } = useMessage(props.msg);
+
+  const { msg } = props;
   const { archived, editedDateTime } = msg;
 
   const [mobileActionDrawerOpen, setMobileActionDrawerOpen] =
@@ -52,13 +67,13 @@ const ChatMessage = (props: ChatMessageProps) => {
     },
     obj: {
       shouldPreventDefault: true,
-      delay: 1000,
+      delay: 500,
     },
   });
 
   const on = true;
 
-  const senderClass = senderIsMe ? "sender-me" : "sender-them";
+  const senderClass = myMsg ? "sender-me" : "sender-them";
   const messageLoadingClassName = !on
     ? "chat__message--loading"
     : "chat__message--loaded";
@@ -68,6 +83,117 @@ const ChatMessage = (props: ChatMessageProps) => {
   const showActions = (hoveringContent || hoveringActivator) && !isMobileWidth;
 
   const showMobileActions = mobileActionDrawerOpen && isMobileWidth;
+
+  React.useEffect(() => {
+    if (!editMode) return;
+
+    unstable_batchedUpdates(() => {
+      setHoveringContent(false);
+      setHoveringActivator(false);
+    });
+  }, [editMode]);
+
+  let chatMessageContentClassName = "chat__message-content";
+
+  if (editMode) {
+    chatMessageContentClassName += " chat__message-content--edit-mode";
+  }
+
+  /**
+   * placeCaretToEnd
+   * @param event event
+   */
+  const handleContentFocus = (event: React.FocusEvent) => {
+    const e = event.currentTarget;
+    const range = document.createRange();
+    range.setStart(e, e.childNodes.length);
+    range.setEnd(e, e.childNodes.length);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  };
+
+  /**
+   * onContentEditableKeyDown
+   * @param event event
+   */
+  const handleContentEditableKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.stopPropagation();
+      saveEditedMessage();
+    } else if (event.key === "Escape") {
+      event.stopPropagation();
+      event.preventDefault();
+      toggleEditMode(false);
+    }
+  };
+
+  const chatMessageContent = editMode ? (
+    <div className="chat__message-content-container" key="editable">
+      <ChatProfileAvatar
+        id={msg.sourceUserEntityId}
+        nick={msg.nick}
+        hasImage={msg.hasImage}
+      />
+      <div className="chat__message-content-wrapper">
+        <div className="chat__message-meta">
+          <span className={`chat__message-meta-sender`}>{msg.nick}</span>
+          <span className="chat__message-meta-timestamp">
+            {localize.formatDaily(msg.sentDateTime)}
+          </span>
+        </div>
+        <div
+          className={chatMessageContentClassName}
+          contentEditable
+          ref={contentRef}
+          onFocus={handleContentFocus}
+          onKeyDown={handleContentEditableKeyDown}
+        >
+          {msg.message}
+        </div>
+
+        <div className="chat__message-footer">
+          <span
+            className="chat__message-footer-action"
+            onClick={() => toggleEditMode()}
+          >
+            Peruuta
+          </span>
+          <span>Tai</span>
+          <span
+            className="chat__message-footer-action"
+            onClick={() => saveEditedMessage()}
+          >
+            Tallenna
+          </span>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div className="chat__message-content-container" key="nonEditable">
+      <ChatProfileAvatar
+        id={msg.sourceUserEntityId}
+        nick={msg.nick}
+        hasImage={msg.hasImage}
+      />
+      <div className="chat__message-content-wrapper">
+        <div className="chat__message-meta">
+          <span className={`chat__message-meta-sender`}>{msg.nick}</span>
+          <span className="chat__message-meta-timestamp">
+            {localize.formatDaily(msg.sentDateTime)}
+          </span>
+        </div>
+        <div className="chat__message-content">
+          {archived ? <i>Poistettu</i> : msg.message}
+          {editedDateTime && (
+            <div className="chat__message-edited-info">
+              (Muokattu {localize.formatDaily(editedDateTime)})
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -87,7 +213,7 @@ const ChatMessage = (props: ChatMessageProps) => {
             transition: { duration: 0.2 },
           }}
           onHoverStart={() => {
-            setHoveringActivator(true);
+            !editMode && setHoveringActivator(true);
           }}
           onHoverEnd={() => {
             if (activatorDelayHandler.current) {
@@ -102,97 +228,36 @@ const ChatMessage = (props: ChatMessageProps) => {
           }}
           className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
         >
-          <div className="chat__message-content-container" key="nonEditable">
-            <Avatar
-              firstName={msg.nick}
-              hasImage={msg.hasImage}
-              id={msg.sourceUserEntityId}
-            />
-            <div className="chat__message-content-wrapper">
-              <div className="chat__message-meta">
-                <span className={`chat__message-meta-sender`}>{msg.nick}</span>
-                <span className="chat__message-meta-timestamp">
-                  {localize.formatDaily(msg.sentDateTime)}
-                </span>
-              </div>
-              <div className="chat__message-content">
-                {archived ? <i>Poistettu</i> : msg.message}
-                {editedDateTime && (
-                  <div className="chat__message-edited-info">
-                    (Muokattu {localize.formatDaily(editedDateTime)})
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          {chatMessageContent}
         </motion.div>
 
-        <AnimatePresence initial={false} exitBeforeEnter>
-          {showActions && (
-            <motion.div
-              initial={{
-                right: "-50px",
-                opacity: 0,
-              }}
-              animate={{
-                right: 10,
-                opacity: 1,
-              }}
-              exit={{
-                right: "-50px",
-                opacity: 0,
-              }}
-              transition={{
-                type: "tween",
-                duration: 0.2,
-              }}
-              onHoverStart={() => {
-                if (contentDelayHandler.current) {
-                  clearTimeout(contentDelayHandler.current);
-                }
-                if (!hoveringContent) setHoveringContent(true);
-              }}
-              onHoverEnd={() => {
-                if (contentDelayHandler.current) {
-                  clearTimeout(contentDelayHandler.current);
-                }
+        <DesktopMessageActions
+          mainActions={mainModerationActions}
+          secondaryActions={secondaryModerationActions}
+          open={showActions && mainModerationActions.length > 0}
+          onHoverActionsStart={() => {
+            if (contentDelayHandler.current) {
+              clearTimeout(contentDelayHandler.current);
+            }
+            if (!hoveringContent && !editMode) setHoveringContent(true);
+          }}
+          onHoverActionsEnd={() => {
+            if (contentDelayHandler.current) {
+              clearTimeout(contentDelayHandler.current);
+            }
 
-                if (hoveringContent) {
-                  contentDelayHandler.current = setTimeout(() => {
-                    setHoveringContent(false);
-                  }, 200);
-                }
-              }}
-              className="chat__message-actions-wrapper"
-              style={{
-                position: "absolute",
-                top: 0,
-                right: "10px",
-                display: "flex",
-                justifyContent: "center",
-                background: "gray",
-                padding: "5px",
-                borderRadius: "25px",
-              }}
-            >
-              <div
-                className={`chat__message-actions ${
-                  senderIsMe
-                    ? "chat__message-actions--sender-me"
-                    : "chat__message-actions--sender-them"
-                }`}
-              >
-                <div className="chat__message-action icon-pencil" />
-                <div className="chat__message-action icon-trash" />
-                <div className="chat__message-action icon-more_vert" />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            if (hoveringContent) {
+              contentDelayHandler.current = setTimeout(() => {
+                setHoveringContent(false);
+              }, 200);
+            }
+          }}
+        />
       </div>
 
       <MobileMessageActions
-        open={showMobileActions}
+        actions={mobileModerationActions}
+        open={showMobileActions && mobileModerationActions.length > 0}
         onClose={() => setMobileActionDrawerOpen(false)}
       />
     </>
@@ -200,9 +265,101 @@ const ChatMessage = (props: ChatMessageProps) => {
 };
 
 /**
+ * DesktopMessageActionsProps
+ */
+interface DesktopMessageActionsProps {
+  mainActions: MessageAction[];
+  secondaryActions: MessageAction[];
+  open: boolean;
+  onHoverActionsStart?: () => void;
+  onHoverActionsEnd?: () => void;
+}
+
+/**
+ * DesktopMessageActions
+ * @param props props
+ * @returns JSX.Element
+ */
+function DesktopMessageActions(props: DesktopMessageActionsProps) {
+  const {
+    mainActions,
+    secondaryActions,
+    open,
+    onHoverActionsStart,
+    onHoverActionsEnd,
+  } = props;
+
+  return (
+    <AnimatePresence initial={false} exitBeforeEnter>
+      {open && mainActions.length > 0 && (
+        <motion.div
+          initial={{
+            right: "-50px",
+            opacity: 0,
+          }}
+          animate={{
+            right: 10,
+            opacity: 1,
+          }}
+          exit={{
+            right: "-50px",
+            opacity: 0,
+          }}
+          transition={{
+            type: "tween",
+            duration: 0.2,
+          }}
+          onHoverStart={onHoverActionsStart}
+          onHoverEnd={onHoverActionsEnd}
+          className="chat__message-actions-wrapper"
+          style={{
+            position: "absolute",
+            top: 0,
+            right: "10px",
+            display: "flex",
+            justifyContent: "center",
+            background: "gray",
+            padding: "5px",
+            borderRadius: "25px",
+          }}
+        >
+          <div className="chat__message-actions">
+            {mainActions.map((action, index) => (
+              <div
+                key={index}
+                className={`chat__message-action icon-${action.icon}`}
+                onClick={action.onClick}
+              />
+            ))}
+
+            {secondaryActions.length > 0 && (
+              <Dropdown
+                modifier="chat"
+                items={secondaryActions.map((action, index) => (
+                  <Link
+                    key={index}
+                    className={`link link--full link--chat-dropdown`}
+                  >
+                    <span className={`link__icon icon-${action.icon}`}></span>
+                    <span>{action.text}</span>
+                  </Link>
+                ))}
+              >
+                <div className="chat__message-action icon-more_vert" />
+              </Dropdown>
+            )}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/**
  * MobileMessageActionsProps
  */
 interface MobileMessageActionsProps {
+  actions: MessageAction[];
   open: boolean;
   onClose?: () => void;
 }
@@ -232,7 +389,7 @@ const variants: Variants = {
  * @param props props
  */
 function MobileMessageActions(props: MobileMessageActionsProps) {
-  const { open, onClose } = props;
+  const { open, actions, onClose } = props;
 
   const actionsPanelRef = React.useRef<HTMLDivElement>(null);
 
@@ -422,24 +579,23 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
                 margin: 0,
               }}
             >
-              <motion.li
-                className="chat__message-action-mobile icon-pencil"
-                style={{
-                  padding: "10px 0",
-                  fontSize: "1.2rem",
-                }}
-              >
-                Muokkaa
-              </motion.li>
-              <motion.li
-                className="chat__message-action-mobile icon-trash"
-                style={{
-                  padding: "10px 0",
-                  fontSize: "1.2rem",
-                }}
-              >
-                Posta
-              </motion.li>
+              {actions.length > 0 &&
+                actions.map((action, index) => (
+                  <motion.li
+                    key={index}
+                    className={`chat__message-action-mobile icon-${action.icon}`}
+                    style={{
+                      padding: "10px 0",
+                      fontSize: "1.2rem",
+                    }}
+                    onClick={() => {
+                      action.onClick();
+                      onClose && onClose();
+                    }}
+                  >
+                    {action.text}
+                  </motion.li>
+                ))}
             </ul>
           </motion.div>
         </>
