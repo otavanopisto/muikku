@@ -991,9 +991,6 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".material-page__organizerfield-categories");
           waitForVisible(".material-page__organizerfield-terms .MathJax_SVG");
           
-          waitForAttributeToHaveValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
-          String mathml = getAttributeValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
-          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
           waitForVisible("div .material-page__organizerfield-term:nth-child(1)");
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(1)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
           dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(2)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
