@@ -883,7 +883,7 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         // First finding current "assessmentState state" and depending what state it is assign new state
         // Will be changed when module specific evaluation assessment request functionality is implemented
         let newAssessmentState =
-          data.workspace.activity.assessmentState[0].state;
+          data.workspace.activity.assessmentStates[0].state;
 
         if (newAssessmentState === "unassessed") {
           newAssessmentState = "pending";
@@ -982,7 +982,7 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         // First finding current "assessmentState state" and depending what state it is assign new state
         // Will be changed when module specific evaluation assessment request functionality is implemented
         let newAssessmentState =
-          data.workspace.activity.assessmentState[0].state;
+          data.workspace.activity.assessmentStates[0].state;
 
         if (newAssessmentState == "pending") {
           newAssessmentState = "unassessed";

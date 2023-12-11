@@ -8,32 +8,11 @@ import { Reducer } from "redux";
 import {
   MaterialCompositeReply,
   Curriculum,
-  WorkspaceAssessmentState,
+  WorkspaceActivity,
 } from "~/generated/client";
 import { WorkspaceJournal } from "~/generated/client";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
-
-/**
- * Subject data for record workspace activity
- */
-export interface RecordWorkspaceActivitySubject {
-  identifier?: string | null;
-  subjectCode: string;
-  subjectName: string;
-  courseNumber?: number;
-  courseLength: number;
-  courseLengthSymbol: string;
-}
-
-/**
- * Record workspace curriculum that includes
- * curriculum identifier and curriculum name
- */
-export interface RecordWorkspaceActivityCurriculum {
-  identifier: string;
-  name: string;
-}
 
 /**
  * RecordWorkspaceByLineCategory
@@ -52,23 +31,7 @@ export interface RecordWorkspaceActivitiesWithLineCategory {
  */
 export interface RecordWorkspaceActivityByLine {
   lineName: string;
-  activity: RecordWorkspaceActivity;
-}
-
-/**
- * Record workspace with activity data
- */
-export interface RecordWorkspaceActivity {
-  id: number;
-  identifier: string;
-  subjects: RecordWorkspaceActivitySubject[] | null;
-  assessmentStates: WorkspaceAssessmentState[];
-  name: string;
-  curriculums: RecordWorkspaceActivityCurriculum[] | null;
-  exercisesTotal?: number | null;
-  exercisesAnswered?: number | null;
-  evaluablesTotal?: number | null;
-  evaluablesAnswered?: number | null;
+  activity: WorkspaceActivity;
 }
 
 /**
@@ -77,8 +40,8 @@ export interface RecordWorkspaceActivity {
 export interface RecordGroupType {
   groupCurriculumName?: string;
   groupCurriculumIdentifier?: string;
-  credits: RecordWorkspaceActivity[];
-  transferCredits: RecordWorkspaceActivity[];
+  credits: WorkspaceActivity[];
+  transferCredits: WorkspaceActivity[];
 }
 
 /**

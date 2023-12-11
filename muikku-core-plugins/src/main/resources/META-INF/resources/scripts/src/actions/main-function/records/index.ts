@@ -12,7 +12,7 @@ import {
 import i18n from "~/locales/i18n";
 import { UserFile } from "~/generated/client";
 import { Dispatch } from "react-redux";
-import { RecordWorkspaceActivityInfo } from "~/generated/client";
+import { WorkspaceActivityInfo } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
@@ -148,12 +148,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         });
 
         // Get workspaces aka activities with line and category
-        const workspaceWithActivity: RecordWorkspaceActivityInfo[] =
+        const workspaceWithActivity: WorkspaceActivityInfo[] =
           await Promise.all(
             users.map(async (user) => {
               const workspacesWithActivity =
                 await recordsApi.getWorkspaceActivity({
-                  userIdentifier: user.id,
+                  identifier: user.id,
                   includeTransferCredits: "true",
                   includeAssignmentStatistics: "true",
                 });

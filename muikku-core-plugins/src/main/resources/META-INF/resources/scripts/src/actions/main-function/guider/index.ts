@@ -722,12 +722,11 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             studentId: id,
             active: true,
           })
-          .then(async (workspacesWithCredits) => {
+          .then(async (workspaces) => {
             // Note that this is a workaround for the fact that the API returns different type that current
             // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
             // what returned data is.
-            const workspacesWithAddons =
-              workspacesWithCredits.workspaces as WorkspaceDataType[];
+            const workspacesWithAddons = workspaces as WorkspaceDataType[];
 
             if (workspacesWithAddons && workspacesWithAddons.length) {
               await Promise.all([
@@ -767,7 +766,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           }),
 
         // This fetch is for course credits
-        guiderApi
+        /* guiderApi
           .getStudentWorkspaces({
             studentId: id,
             active: false,
@@ -790,7 +789,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 },
               });
             }
-          ),
+          ), */
 
         canListUserOrders &&
           ceeposApi
@@ -908,12 +907,11 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
               studentId: id,
               active: false,
             })
-            .then(async (workspacesWithCredit) => {
+            .then(async (workspaces) => {
               // Note that this is a workaround for the fact that the API returns different type that current
               // frontend uses. This should be fixed in the future. Api returns type that is as close as possible
               // what returned data is.
-              const workspacesWithAddons =
-                workspacesWithCredit.workspaces as WorkspaceDataType[];
+              const workspacesWithAddons = workspaces as WorkspaceDataType[];
 
               if (workspacesWithAddons && workspacesWithAddons.length) {
                 await Promise.all([

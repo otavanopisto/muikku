@@ -62,6 +62,26 @@ export interface GuiderNotificationStudentsDataType {
 }
 
 /**
+ * GuiderNotificationStudentsType
+ */
+export interface GuiderWorkspaceActivitiesWithLineCategory {
+  lineCategory: string;
+  credits: GuiderWorkspaceActivityByLine[];
+  transferCredits: GuiderWorkspaceActivityByLine[];
+  showCredits: boolean;
+  completedCourseCredits: number;
+  mandatoryCourseCredits: number;
+}
+
+/**
+ * GuiderWorkspaceActivityByLine
+ */
+export interface GuiderWorkspaceActivityByLine {
+  lineName: string;
+  activity: GuiderWorkspaceActivitiesWithLineCategory;
+}
+
+/**
  * ContactTypesArray for dropdowns etc.
  */
 export const contactTypesArray = Object.values(ContactType);
