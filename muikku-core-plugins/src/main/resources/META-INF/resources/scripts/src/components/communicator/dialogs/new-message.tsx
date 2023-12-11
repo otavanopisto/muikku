@@ -329,7 +329,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
         placeholder={this.props.t("labels.search", { context: "recipients" })}
         label={this.props.t("labels.recipients", {
           ns: "messaging",
-          count: 0,
+          count: this.state.selectedItems.length,
         })}
         selectedItems={this.state.selectedItems}
         onChange={this.setSelectedItems}

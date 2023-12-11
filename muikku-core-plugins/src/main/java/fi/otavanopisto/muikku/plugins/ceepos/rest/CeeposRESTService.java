@@ -731,7 +731,7 @@ public class CeeposRESTService {
    * 
    * DESCRIPTION:
    * 
-   * Removes the given order. The order may NOT be in state ONGOING, PAID, or COMPLETE.
+   * Removes the given order. The order may NOT be in state PAID, or COMPLETE.
    * Order removal is only available for admins or the staff member who originally
    * created the order.
    * 
@@ -742,7 +742,7 @@ public class CeeposRESTService {
   @Path("/order/{ORDERID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response removeeOrder(@PathParam("ORDERID") Long orderId) {
+  public Response removeOrder(@PathParam("ORDERID") Long orderId) {
 
     // Validate payload
     
@@ -764,13 +764,12 @@ public class CeeposRESTService {
       if (!order.getCreatorId().equals(sessionController.getLoggedUserEntity().getId())) {
         logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
         return Response.status(Status.FORBIDDEN).build();
-        
       }
     }
     
     // Ensure order sate
     
-    if (order.getState() == CeeposOrderState.ONGOING || order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
+    if (order.getState() == CeeposOrderState.PAID || order.getState() == CeeposOrderState.COMPLETE) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid order state").build();
     }
     

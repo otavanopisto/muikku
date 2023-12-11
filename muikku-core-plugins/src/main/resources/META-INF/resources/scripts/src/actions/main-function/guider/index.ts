@@ -747,7 +747,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                   workspacesWithAddons.map(async (workspace, index) => {
                     const activityLogs =
                       await activitylogsApi.getWorkspaceActivityLogs({
-                        userId: id,
+                        userIdentifier: id,
                         workspaceEntityId: workspace.id,
                         from: new Date(new Date().getFullYear() - 2, 0),
                         to: new Date(),
@@ -821,7 +821,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
           i18n.t("notifications.loadError", {
             ns: "users",
             context: "student",
-            count: 1,
           }),
           "error"
         )
@@ -877,7 +876,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
       const promises = [
         activitylogsApi
           .getWorkspaceActivityLogs({
-            userId: id,
+            userIdentifier: id,
             from: new Date(new Date().getFullYear() - 2, 0),
             to: new Date(),
           })
@@ -934,7 +933,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                     workspacesWithAddons.map(async (workspace, index) => {
                       const activityLogs =
                         await activitylogsApi.getWorkspaceActivityLogs({
-                          userId: id,
+                          userIdentifier: id,
                           workspaceEntityId: workspace.id,
                           from: new Date(new Date().getFullYear() - 2, 0),
                           to: new Date(),
@@ -977,8 +976,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
         notificationActions.displayNotification(
           i18n.t("notifications.loadError", {
             ns: "users",
-            context: "students",
-            count: 1,
+            context: "student",
           }),
           "error"
         )
@@ -1074,8 +1072,7 @@ const loadStudentContactLogs: LoadContactLogsTriggerType =
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
               ns: "users",
-              context: "students",
-              count: 1,
+              context: "student",
             }),
             "error"
           )
@@ -1934,7 +1931,10 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
         }
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "workspace", count: 0 }),
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "workspaces",
+            }),
             "error"
           )
         );

@@ -3,7 +3,7 @@ import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
-import moment from "~/lib/moment";
+import * as moment from "moment";
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
@@ -491,7 +491,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
               />
               <Link
                 className="material-page__audiofield-download-file-button icon-download"
-                title={t("actions.download", { count: 1 })}
+                title={t("actions.download")}
                 href={value.url}
                 openInNewTab={value.name}
               />

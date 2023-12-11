@@ -16,7 +16,7 @@ import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
 import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
-import MApi, { isMApiError } from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
@@ -565,7 +565,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
       try {
         const childrenAttachments = await workspaceApi.getWorkspaceMaterials({
           workspaceEntityId: workspace.id,
-          parentId: material.parentId,
+          parentId: material.workspaceMaterialId,
         });
 
         const attachments = childrenAttachments.map(
@@ -718,7 +718,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             if (data.material.type === "folder") {
               const updatedFolder = await workspaceApi.updateWorkspaceFolder({
                 workspaceId: data.workspace.id,
-                folderId: data.material.materialId,
+                workspaceFolderId: data.material.workspaceMaterialId,
                 body: result,
               });
 
@@ -727,7 +727,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               const updatedMaterial =
                 await workspaceApi.updateWorkspaceMaterial({
                   workspaceEntityId: data.workspace.id,
-                  materialId: data.material.materialId,
+                  workspaceMaterialId: data.material.workspaceMaterialId,
                   body: result,
                 });
 
@@ -890,9 +890,9 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
         let isConflictError = false;
 
         // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
-        if (err.message) {
-          const message = JSON.parse(err.message);
-          if (message.reason === "CONTAINS_ANSWERS") {
+        if (isResponseError(err)) {
+          const errorObject = await err.response.json();
+          if (errorObject.reason === "CONTAINS_ANSWERS") {
             isConflictError = true;
           }
         }
@@ -1130,12 +1130,12 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         if (data.material.type === "folder") {
           await workspaceApi.deleteWorkspaceFolder({
             workspaceId: data.workspace.id,
-            folderId: data.material.materialId,
+            workspaceFolderId: data.material.workspaceMaterialId,
           });
         } else {
           await workspaceApi.deleteWorkspaceMaterial({
             workspaceEntityId: data.workspace.id,
-            materialId: data.material.workspaceMaterialId || data.material.id,
+            workspaceMaterialId: data.material.workspaceMaterialId,
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,
           });
@@ -1153,10 +1153,10 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         }
 
         let showRemoveAnswersDialogForDelete = false;
-        if (!data.removeAnswers && err.message) {
+        if (!data.removeAnswers && isResponseError(err)) {
+          const errorObject = await err.response.json();
           try {
-            const message = JSON.parse(err.message);
-            if (message.reason === "CONTAINS_ANSWERS") {
+            if (errorObject.reason === "CONTAINS_ANSWERS") {
               showRemoveAnswersDialogForDelete = true;
               const currentEditorState = getState().workspaces.materialEditor;
               dispatch(

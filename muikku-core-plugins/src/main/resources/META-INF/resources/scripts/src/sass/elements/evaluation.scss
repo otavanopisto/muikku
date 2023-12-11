@@ -554,6 +554,10 @@
   padding: 5px 10px;
 }
 
+.evaluation-modal__item-footer--journal-comment {
+  font-size: 0.825rem;
+}
+
 // Evaluation item's footer
 .evaluation-modal__item-actions {
   align-items: center;
@@ -575,7 +579,8 @@
   justify-content: flex-start;
 }
 
-.evaluation-modal__item-subheader--journal-comment {
+.evaluation-modal__item-subheader--journal-comment,
+.evaluation-modal__item-subheader-title--journal-comment {
   cursor: pointer;
 }
 

@@ -1,3 +1,8 @@
+# Please use following rules when editing this file:
+# - id parameters and other similiar named properties always are type number and format int64
+# - identifiers and other similiar named properties are always type string
+# - use as precice format for properties as possible (e.g. use date-time instead of string) because it helps generate better client code
+# - create schemas for all request and use references to them in paths
 openapi: 3.0.3
 info:
   version: 1.0.0
@@ -79,16 +84,16 @@ paths:
   #      description: Internal server error
 
   #ACTIVITYLOGS
-  /rest/activitylogs/user/{userId}:
+  /rest/activitylogs/user/{userIdentifier}:
     get:
       operationId: getUserActivityLogs
       summary: Get activity logs
       tags:
         - Activitylogs
       parameters:
-        - name: userId
+        - name: userIdentifier
           in: path
-          description: User id
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -120,16 +125,16 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/activitylogs/user/{userId}/workspace:
+  /rest/activitylogs/user/{userIdentifier}/workspace:
     get:
       operationId: getWorkspaceActivityLogs
       summary: Get activity logs
       tags:
         - Activitylogs
       parameters:
-        - name: userId
+        - name: userIdentifier
           in: path
-          description: User id
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -138,6 +143,7 @@ paths:
           description: Workspace entity id
           schema:
             type: integer
+            format: int64
         - name: from
           in: query
           description: From
@@ -200,6 +206,7 @@ paths:
           description: Workspace entity id
           schema:
             type: integer
+            format: int64
         - name: onlyMine
           in: query
           description: Only mine
@@ -268,7 +275,7 @@ paths:
         $ref: "#/components/requestBodies/AnnouncementCreateRequestBody"
       responses:
         "200":
-          description: ""
+          description: Announcement created successfully
           content:
             application/json:
               schema:
@@ -305,6 +312,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: ""
@@ -343,6 +351,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/AnnouncementUpdateRequestBody"
       responses:
@@ -383,6 +392,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: "Announcement deleted successfully"
@@ -455,7 +465,7 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
@@ -489,10 +499,11 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
+            format: int64
         - name: studentIdentifier
           in: query
           description: Student identifier
@@ -535,10 +546,11 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/AssessmentRequestCreateRequestBody"
       responses:
@@ -577,16 +589,18 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
+            format: int64
         - name: assessmentRequestId
           in: path
           description: Assessment request id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: "Assessment request deleted successfully"
@@ -624,9 +638,10 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
-          description: ""
+          description: Manual completion created successfully
           content:
             application/json:
               schema:
@@ -675,6 +690,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Order deleted successfully"
@@ -699,6 +715,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Order created successfully. Returns the url to which the user should be redirected to complete payment.
@@ -727,6 +744,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Return link successfully retrieved
@@ -778,7 +796,7 @@ paths:
       parameters:
         - name: userIdentifier
           in: path
-          description: User identifier
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -788,6 +806,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Ceepos user order successfully retrieved
@@ -814,7 +833,7 @@ paths:
       parameters:
         - name: userIdentifier
           in: path
-          description: User identifier
+          description: Identifier of the user
           required: true
           schema:
             type: string
@@ -847,10 +866,11 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace chat settings successfully retrieved
@@ -873,10 +893,11 @@ paths:
       parameters:
         - name: workspaceEntityId
           in: path
-          description: Workspace id
+          description: Workspace entity id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceChatStatusUpdateRequestBody"
       responses:
@@ -910,6 +931,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: ""
@@ -935,7 +957,7 @@ paths:
         $ref: "#/components/requestBodies/CommunicatorMessageCreateRequestBody"
       responses:
         "200":
-          description: ""
+          description: Communicator message created successfully
           content:
             application/json:
               schema:
@@ -961,6 +983,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: ""
@@ -988,6 +1011,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/CommunicatorMessageUpdateRequestBody"
       responses:
@@ -1018,6 +1042,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/CommunicatorMessageLabelRequestBody"
       responses:
@@ -1050,12 +1075,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: labelId
           in: path
           description: Communicator message label id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator message label deleted successfully"
@@ -1075,11 +1102,12 @@ paths:
         - Communicator
       responses:
         "200":
-          description: "Number of received items"
+          description: Number of received items successfully retrieved
           content:
             application/json:
               schema:
                 type: integer
+                format: int64
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -1115,7 +1143,7 @@ paths:
             default: 10
       responses:
         "200":
-          description: "Message recipients search results"
+          description: Message recipients search results
           content:
             application/json:
               schema:
@@ -1157,7 +1185,7 @@ paths:
             default: 10
       responses:
         "200":
-          description: "Workspace recipients search results"
+          description: Workspace recipients search results
           content:
             application/json:
               schema:
@@ -1184,6 +1212,7 @@ paths:
           description: Label id
           schema:
             type: integer
+            format: int64
         - name: firstResult
           in: query
           description: First result
@@ -1233,6 +1262,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator message deleted successfully"
@@ -1257,6 +1287,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator thread marked as read"
@@ -1281,6 +1312,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator thread marked as unread"
@@ -1342,6 +1374,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: "Communicator sent item"
@@ -1367,6 +1400,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator sent item deleted successfully"
@@ -1428,6 +1462,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: "Communicator trash item"
@@ -1453,6 +1488,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator trash item deleted successfully"
@@ -1477,6 +1513,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator trash item marked as read"
@@ -1501,6 +1538,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator trash item marked as unread"
@@ -1525,6 +1563,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: "Communicator trash item restored successfully"
@@ -1549,6 +1588,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: "Communicator unread"
@@ -1680,6 +1720,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/CommunicatorSignatureUpdateRequestBody"
       responses:
@@ -1709,6 +1750,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Communicator signature deleted successfully
@@ -1778,6 +1820,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/CommunicatorUpdateLabelRequestBody"
       responses:
@@ -1807,6 +1850,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Communicator user label deleted successfully
@@ -1831,6 +1875,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: firstResult
           in: query
           description: First result
@@ -1874,12 +1919,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: messageId
           in: path
           description: Communicator message id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Communicator user label message
@@ -2001,6 +2048,7 @@ paths:
           description: Minimum visits
           schema:
             type: integer
+            format: int64
         - name: publicity
           in: query
           description: Publicity restriction
@@ -2069,6 +2117,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Course picker workspace
@@ -2095,6 +2144,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Course picker workspace can signup
@@ -2121,6 +2171,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceSignUpRequestBody"
       responses:
@@ -2145,6 +2196,7 @@ paths:
           description: Workspace entity id
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Composite assessment requests
@@ -2219,6 +2271,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Interim evaluation request deleted successfully
@@ -2248,6 +2301,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace interim evaluation requests
@@ -2278,18 +2332,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           in: path
           description: User entity id
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/EvaluationSaveAssignmentAssessmentRequestBody"
       responses:
@@ -2320,24 +2377,28 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           in: path
           description: User entity id
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
         - name: assessmentId
           in: path
           description: Assessment id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/EvaluationUpdateAssignmentAssessmentRequestBody"
       responses:
@@ -2368,12 +2429,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           in: query
           description: User entity id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace material interim evaluation request
@@ -2400,18 +2463,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           in: query
           description: User entity id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace material evaluations
@@ -2442,12 +2508,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: studentEntityId
           in: path
           description: Student entity id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace student journal feedback
@@ -2475,12 +2543,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: studentEntityId
           in: path
           description: Student entity id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/EvaluationCreateJournalFeedbackRequestBody"
       responses:
@@ -2511,18 +2581,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: studentEntityId
           in: path
           description: Student entity id
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalFeedbackId
           in: path
           description: Journal feedback id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace student journal feedback deleted successfully
@@ -2547,12 +2620,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: studentEntityId
           in: path
           description: Student entity id
           required: true
           schema:
             type: string
+            format: int64
       responses:
         "200":
           description: Workspace student activity
@@ -2581,6 +2656,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/EvaluationSaveWorkspaceUserAssessmentRequestBody"
       responses:
@@ -2611,6 +2687,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/EvaluationUpdateWorkspaceUserAssessmentRequestBody"
       responses:
@@ -2641,6 +2718,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace user evaluation request archived successfully
@@ -2665,6 +2743,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace user events
@@ -2693,6 +2772,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/EvaluationSaveSupplementationRequestRequestBody"
       responses:
@@ -2723,6 +2803,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/EvaluationUpdateSupplementationRequestRequestBody"
       responses:
@@ -2754,6 +2835,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: supplementationRequestId
           in: path
           description: Supplementation request id
@@ -2784,6 +2866,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceAssessmentId
           in: path
           description: Workspace assessment id
@@ -2966,6 +3049,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionAreaUpdateRequestBody"
       responses:
@@ -2993,6 +3077,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Discussion area deleted successfully
@@ -3015,6 +3100,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: maxResults
           in: query
           description: Max results
@@ -3054,6 +3140,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadCreateRequestBody"
       responses:
@@ -3082,12 +3169,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Discussion thread
@@ -3113,12 +3202,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadUpdateRequestBody"
       responses:
@@ -3146,12 +3237,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Discussion thread deleted successfully
@@ -3174,12 +3267,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
         - name: maxResults
           in: query
           description: Max results
@@ -3219,12 +3314,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadReplyCreateRequestBody"
       responses:
@@ -3253,18 +3350,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
         - name: replyId
           in: path
           description: Discussion thread reply id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadReplyUpdateRequestBody"
       responses:
@@ -3292,18 +3392,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
         - name: replyId
           in: path
           description: Discussion thread reply id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Discussion thread reply deleted successfully
@@ -3326,12 +3429,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Discussion thread subscription toggled successfully
@@ -3360,6 +3465,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Discussion area subscription toggled successfully
@@ -3458,6 +3564,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Discussion subscribed areas
@@ -3486,6 +3593,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Discussion subscribed threads
@@ -3515,6 +3623,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace discussion areas
@@ -3542,11 +3651,13 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: sourceWorkspaceEntityId
           in: query
           description: Source workspace id
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionWorkspaceAreaCreateRequestBody"
       responses:
@@ -3575,12 +3686,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionAreaUpdateRequestBody"
       responses:
@@ -3608,12 +3721,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace discussion area deleted successfully
@@ -3636,12 +3751,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: maxResults
           in: query
           description: Max results
@@ -3681,12 +3798,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadCreateRequestBody"
       responses:
@@ -3715,18 +3834,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace discussion thread
@@ -3752,18 +3874,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadUpdateRequestBody"
       responses:
@@ -3791,18 +3916,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace discussion thread deleted successfully
@@ -3825,18 +3953,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
         - name: maxResults
           in: query
           description: Max results
@@ -3876,18 +4007,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadReplyCreateRequestBody"
       responses:
@@ -3916,24 +4050,28 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
         - name: replyId
           in: path
           description: Discussion thread reply id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/DiscussionThreadReplyUpdateRequestBody"
       responses:
@@ -3961,24 +4099,28 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: areaId
           in: path
           description: Discussion area id
           required: true
           schema:
             type: integer
+            format: int64
         - name: threadId
           in: path
           description: Discussion thread id
           required: true
           schema:
             type: integer
+            format: int64
         - name: replyId
           in: path
           description: Discussion thread reply id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace discussion thread reply deleted successfully
@@ -4001,6 +4143,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userIdentifier
           in: query
           description: User identifier
@@ -4032,6 +4175,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: firstResult
           in: query
           description: First result
@@ -4073,6 +4217,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/ContactLogCreateEventRequestBody"
       responses:
@@ -4101,12 +4246,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: entryId
           in: path
           description: Contact log event id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/ContactLogUpdateEventRequestBody"
       responses:
@@ -4133,12 +4280,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: entryId
           in: path
           description: Contact log event id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Contact log event deleted successfully
@@ -4161,12 +4310,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: entryId
           in: path
           description: Contact log event id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/ContactLogEventCommentCreateRequestBody"
       responses:
@@ -4195,18 +4346,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: entryId
           in: path
           description: Contact log event id
           required: true
           schema:
             type: integer
+            format: int64
         - name: commentId
           in: path
           description: Contact log event comment id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/ContactLogEventCommentUpdateRequestBody"
       responses:
@@ -4234,18 +4388,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: entryId
           in: path
           description: Contact log event id
           required: true
           schema:
             type: integer
+            format: int64
         - name: commentId
           in: path
           description: Contact log event comment id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Contact log event comment deleted successfully
@@ -4286,6 +4443,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: workspaceIds
           in: query
           description: Workspace ids
@@ -4293,6 +4451,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: userGroupIds
           in: query
           description: User group ids
@@ -4300,6 +4459,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: flagOwnerIdentifier
           in: query
           description: Falg owner identifier
@@ -4456,6 +4616,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: resultsPerPage
           in: query
           description: Max results
@@ -4495,6 +4656,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Guider file deleted successfully
@@ -4550,12 +4712,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           required: true
           in: query
-          description: userEntityId
+          description: User entity id
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace suggestions
@@ -4738,6 +4902,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/HopsHistoryEntryUpdateRequestBody"
       responses:
@@ -5128,6 +5293,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Html material
@@ -5154,6 +5320,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/MaterialContentUpdateRequestBody"
       responses:
@@ -5161,6 +5328,16 @@ paths:
           description: Html material content updated successfully
         "400":
           description: Invalid request was sent to the server
+        "409":
+          description: Material contains answers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Reason what caused conflict
         "500":
           description: Internal server error
 
@@ -5178,6 +5355,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Material
@@ -5205,6 +5383,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/MaterialUpdateRequestBody"
       responses:
@@ -5235,6 +5414,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace materials
@@ -5263,6 +5443,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/MaterialProducerCreateRequestBody"
       responses:
@@ -5291,12 +5472,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: producerId
           in: path
           description: Material producer id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Material producer deleted successfully
@@ -5341,6 +5524,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/MatriculationEnrollmentsCreateRequestBody"
       responses:
@@ -5365,12 +5549,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userIdentifier
           in: path
           description: User id
           required: true
           schema:
             type: string
+            format: int64
       responses:
         "200":
           description: Initial data in JSON format
@@ -5397,6 +5583,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userIdentifier
           in: path
           description: identifier of user
@@ -5512,6 +5699,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/NoteUpdateRequestBody"
       responses:
@@ -5539,6 +5727,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Note archived toggled successfully
@@ -5564,6 +5753,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: listArchived
           in: query
           description: List archived
@@ -5631,6 +5821,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: firstResult
           in: query
           description: First result
@@ -5675,6 +5866,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
         - name: firstResult
           in: query
           description: First result
@@ -5832,6 +6024,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/OrganizationAddStaffToWorkspaceRequestBody"
       responses:
@@ -5856,6 +6049,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/OrganizationAddStudentsToWorkspaceRequestBody"
       responses:
@@ -6185,6 +6379,40 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/records/students/{studentIdentifier}/students:
+    get:
+      operationId: getStudents
+      summary: Get students
+      description: Get students
+      tags:
+        - Records
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: includeInactiveStudents
+          in: query
+          description: Include inactive students
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Students results object
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserWithSchoolData"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+          
   /rest/records/users/{userIdentifier}/workspaceActivity:
     get:
       operationId: getWorkspaceActivity
@@ -6236,6 +6464,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userIdentifier
           in: query
           required: true
@@ -6291,6 +6520,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: identifier
           in: path
           description: File identifier
@@ -6366,6 +6596,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/UserFlagUpdateRequestBody"
 
@@ -6394,6 +6625,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Flag deleted successfully
@@ -6416,6 +6648,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Flag shares
@@ -6443,6 +6676,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/UserSharedFlagCreateRequestBody"
       responses:
@@ -6471,12 +6705,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: shareId
           in: path
           description: Share id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Flag share deleted successfully
@@ -6499,6 +6735,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: properties
           in: query
           description: Properties
@@ -6600,6 +6837,7 @@ paths:
           description: Workspace entity id
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Staff members results object
@@ -6644,6 +6882,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       tags:
         - User
       requestBody:
@@ -6661,50 +6900,6 @@ paths:
           description: Internal server error
 
   /rest/user/students:
-    get:
-      operationId: getStudents
-      summary: Get students
-      description: Get students
-      tags:
-        - User
-      parameters:
-        - name: userEntityId
-          in: query
-          description: User entity id
-          required: true
-          schema:
-            type: integer
-        - name: includeInactiveStudents
-          in: query
-          description: Include inactive students
-          schema:
-            type: boolean
-            default: false
-        - name: firstResult
-          in: query
-          description: First result
-          schema:
-            type: integer
-            default: 0
-        - name: maxResults
-          in: query
-          description: Max results
-          schema:
-            type: integer
-            default: 10
-      responses:
-        "200":
-          description: Students results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/UserWithSchoolData"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
     post:
       operationId: createStudent
       summary: Create student
@@ -6853,6 +7048,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/UserStudentBasicInfoUpdateRequestBody"
       responses:
@@ -6975,6 +7171,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Student flag deleted successfully
@@ -7046,6 +7243,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: data
           in: query
           description: Data
@@ -7060,51 +7258,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserInfo"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/user/users:
-    get:
-      operationId: getUsers
-      summary: Get users
-      description: Get users
-      tags:
-        - User
-      parameters:
-        - name: q
-          in: query
-          description: Search string
-          schema:
-            type: string
-        - name: onlyDefaultUsers
-          in: query
-          description: Only default users
-          schema:
-            type: boolean
-            default: false
-        - name: firstResult
-          in: query
-          description: First result
-          schema:
-            type: integer
-            default: 0
-        - name: maxResults
-          in: query
-          description: Max results
-          schema:
-            type: integer
-            default: 10
-      responses:
-        "200":
-          description: Users results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/User"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7219,6 +7372,7 @@ paths:
             type: array
             items:
               type: integer
+              format: int64
       responses:
         "200":
           description: User groups results object
@@ -7282,6 +7436,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: User group
@@ -7345,6 +7500,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Base price
@@ -7370,6 +7526,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: assessmentIdentifier
           in: query
           description: Assessment identifier
@@ -7400,6 +7557,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/BilledPriceUpdateRequestBody"
       responses:
@@ -7540,6 +7698,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorklistItemUpdateRequestBody"
       responses:
@@ -7566,6 +7725,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Worklist item deleted successfully
@@ -7659,6 +7819,7 @@ paths:
           description: User entity id
           schema:
             type: integer
+            format: int64
         - name: userIdentifier
           in: query
           description: User identifier
@@ -7707,6 +7868,7 @@ paths:
           description: Min visits
           schema:
             type: integer
+            format: int64
         - name: publicity
           in: query
           description: Publicity restriction
@@ -7767,6 +7929,7 @@ paths:
           description: Source workspace entity id
           schema:
             type: integer
+            format: int64
         - name: sourceWorkspaceIdentifier
           in: query
           description: Source workspace identifier
@@ -7799,6 +7962,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace
@@ -7822,6 +7986,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
       responses:
@@ -7847,6 +8012,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       #FIX
       #requestBody:
       #  content:
@@ -7874,6 +8040,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace additional info
@@ -7899,6 +8066,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace description
@@ -7924,6 +8092,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace details
@@ -7948,6 +8117,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceDetailsUpdateRequestBody"
       responses:
@@ -7975,6 +8145,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: includeHidden # <-- ????
           in: query
           description: Include hidden
@@ -8033,6 +8204,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Am I member
@@ -8058,12 +8230,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: toWorkspaceId
           in: path
           description: To workspace id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace file copied successfully
@@ -8091,12 +8265,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialNodeId
           in: path
           description: Workspace node id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace as content node
@@ -8123,11 +8299,13 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           in: query
           description: User entity id
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace composite replies
@@ -8155,6 +8333,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: includeHidden
           in: query
           description: Include hidden
@@ -8188,6 +8367,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace material producers results object
@@ -8214,6 +8394,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceMaterialProducerCreateRequestBody"
       responses:
@@ -8241,12 +8422,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: producerId
           in: path
           description: Workspace material producer id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace material producer deleted successfully
@@ -8268,11 +8451,13 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: parentId
           in: query
           description: Parent id
           schema:
             type: integer
+            format: int64
         - name: assignmentType
           in: query
           description: Include hidden
@@ -8305,26 +8490,31 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: sourceNodeId
           in: query
           description: Source node id
           schema:
             type: integer
+            format: int64
         - name: targetNodeId
           in: query
           description: Target node id
           schema:
             type: integer
+            format: int64
         - name: sourceWorkspaceEntityId
           in: query
           description: Source workspace entity id
           schema:
             type: integer
+            format: int64
         - name: targetWorkspaceEntityId
           in: query
           description: Target workspace entity id
           schema:
             type: integer
+            format: int64
         - name: copyOnlyChildren
           in: query
           description: Copy only children
@@ -8357,7 +8547,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{materialId}:
+  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}:
     put:
       operationId: updateWorkspaceMaterial
       summary: Updates workspace material and returns updated workspace material
@@ -8370,12 +8560,14 @@ paths:
           required: true
           schema:
             type: integer
-        - name: materialId
+            format: int64
+        - name: workspaceMaterialId
           in: path
-          description: Material id
+          description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceMaterialUpdateRequestBody"
       responses:
@@ -8401,12 +8593,14 @@ paths:
           required: true
           schema:
             type: integer
-        - name: materialId
+            format: int64
+        - name: workspaceMaterialId
           in: path
-          description: Material id
+          description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
         - name: removeAnswers
           in: query
           description: Remove answers
@@ -8424,6 +8618,16 @@ paths:
           description: Workspace material deleted successfully
         "400":
           description: Invalid request was sent to the server
+        "409":
+          description: Material contains answers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Reason what caused conflict
         "500":
           description: Internal server error
 
@@ -8440,17 +8644,20 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           in: query
           description: User entity id
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace composite material replies results object
@@ -8476,12 +8683,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace material replies results object
@@ -8508,12 +8717,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/MaterialReplyCreateRequestBody"
       responses:
@@ -8541,18 +8752,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
         - name: replyId
           in: path
           description: Reply id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/MaterialReplyUpdateRequestBody"
       responses:
@@ -8582,6 +8796,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace permissions results list
@@ -8609,6 +8824,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace signup groups results object
@@ -8636,12 +8852,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userGroupId
           in: path
           description: User group id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceSignupGroupUpdateRequestBody"
       responses:
@@ -8669,6 +8887,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: q
           in: query
           description: Search string
@@ -8718,12 +8937,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: studentId
           in: path
           description: Student id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace student
@@ -8748,12 +8969,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: studentId
           in: path
           description: Student id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceStudentUpdateRequestBody"
       responses:
@@ -8777,18 +9000,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: userEntityId
           in: path
           description: User entity id
           required: true
           schema:
             type: integer
+            format: int64
         - name: workspaceMaterialId
           in: path
           description: Workspace material id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace user composite reply
@@ -8814,6 +9040,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceFolderCreateRequestBody"
       responses:
@@ -8828,7 +9055,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceId}/folders/{folderId}:
+  /rest/workspace/workspaces/{workspaceId}/folders/{workspaceFolderId}:
     put:
       operationId: updateWorkspaceFolder
       summary: Updates and returns workspace folder
@@ -8841,12 +9068,14 @@ paths:
           required: true
           schema:
             type: integer
-        - name: folderId
+            format: int64
+        - name: workspaceFolderId
           in: path
-          description: Folder id
+          description: aka "workspaceMaterialId"
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceFolderUpdateRequestBody"
       responses:
@@ -8872,12 +9101,14 @@ paths:
           required: true
           schema:
             type: integer
-        - name: folderId
+            format: int64
+        - name: workspaceFolderId
           in: path
-          description: Folder id
+          description: aka "workspaceMaterialId"
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace folder deleted successfully
@@ -8899,6 +9130,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: firstResult
           in: query
           description: First result
@@ -8916,6 +9148,7 @@ paths:
           description: User entity id
           schema:
             type: integer
+            format: int64
         - name: workspaceStudentId
           in: query
           description: Workspace student id
@@ -8948,6 +9181,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceJournalCreateRequestBody"
       responses:
@@ -8976,12 +9210,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceJournalUpdateRequestBody"
       responses:
@@ -9009,12 +9245,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace journal deleted successfully
@@ -9037,12 +9275,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace journal comments results object
@@ -9070,12 +9310,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceJournalCommentCreateRequestBody"
       responses:
@@ -9104,18 +9346,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalCommentId
           in: path
           description: Journal comment id
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceJournalCommentUpdateRequestBody"
       responses:
@@ -9142,18 +9387,21 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalEntryId
           in: path
           description: Journal entry id
           required: true
           schema:
             type: integer
+            format: int64
         - name: journalCommentId
           in: path
           description: Journal comment id
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace journal comment deleted successfully
@@ -9175,6 +9423,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceFileCreateRequestBody"
       responses:
@@ -9202,6 +9451,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: fileIdentifier
           in: path
           description: File identifier
@@ -9230,6 +9480,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace notes results object
@@ -9257,12 +9508,14 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
         - name: owner
           in: path
           description: Owner identifier
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Workspace notes results object
@@ -9310,6 +9563,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceNoteUpdateRequestBody"
       responses:
@@ -9339,6 +9593,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "204":
           description: Workspace note deleted successfully
@@ -9390,10 +9645,12 @@ components:
                 type: array
                 items:
                   type: integer
+                  format: int64
               workspaceEntityIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
 
     AnnouncementUpdateRequestBody:
       content:
@@ -9414,10 +9671,12 @@ components:
                 type: string
               id:
                 type: integer
+                format: int64
               publiclyVisible:
                 type: boolean
               publisherUserEntityId:
                 type: integer
+                format: int64
               startDate:
                 type: string
               temporalStatus:
@@ -9426,10 +9685,12 @@ components:
                 type: array
                 items:
                   type: integer
+                  format: int64
               workspaceEntityIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
               workspaces:
                 type: array
                 items:
@@ -9487,18 +9748,22 @@ components:
                 type: array
                 items:
                   type: integer
+                  format: int64
               recipientGroupIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
               recipientStudentsWorkspaceIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
               recipientTeachersWorkspaceIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
 
     CommunicatorMessageUpdateRequestBody:
       content:
@@ -9525,18 +9790,22 @@ components:
                 type: array
                 items:
                   type: integer
+                  format: int64
               recipientGroupIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
               recipientStudentsWorkspaceIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
               recipientTeachersWorkspaceIds:
                 type: array
                 items:
                   type: integer
+                  format: int64
 
     CommunicatorMessageLabelRequestBody:
       content:
@@ -9549,6 +9818,7 @@ components:
             properties:
               labelId:
                 type: integer
+                format: int64
 
     CommunicatorSignatureCreateRequestBody:
       content:
@@ -9578,6 +9848,7 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
               name:
                 type: string
               signature:
@@ -9597,6 +9868,7 @@ components:
                 type: string
               color:
                 type: integer
+                format: int64
 
     CommunicatorUpdateLabelRequestBody:
       content:
@@ -9611,10 +9883,12 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
               name:
                 type: string
               color:
                 type: integer
+                format: int64
 
     InterimEvaluationRequestCreateRequestBody:
       required: true
@@ -9629,6 +9903,7 @@ components:
             properties:
               workspaceMaterialId:
                 type: integer
+                format: int64
               requestText:
                 type: string
 
@@ -9887,6 +10162,7 @@ components:
                 $ref: "#/components/schemas/DiscussionThreadLock"
               forumAreaId:
                 type: integer
+                format: int64
 
     DiscussionThreadUpdateRequestBody:
       required: true
@@ -9910,6 +10186,7 @@ components:
                 type: string
               parentReplyId:
                 type: integer
+                format: int64
 
     DiscussionThreadReplyUpdateRequestBody:
       required: true
@@ -9959,6 +10236,7 @@ components:
                 type: string
               creatorId:
                 type: integer
+                format: int64
 
     ContactLogEventCommentCreateRequestBody:
       required: true
@@ -9994,6 +10272,7 @@ components:
                 type: string
               creatorId:
                 type: integer
+                format: int64
 
     CredentialsUpdateRequestBody:
       content:
@@ -10110,6 +10389,7 @@ components:
             properties:
               courseId:
                 type: integer
+                format: int64
               subject:
                 type: string
               courseNumber:
@@ -10129,6 +10409,7 @@ components:
             properties:
               courseId:
                 type: integer
+                format: int64
               subject:
                 type: string
               courseNumber:
@@ -10248,6 +10529,7 @@ components:
                 type: boolean
               owner:
                 type: integer
+                format: int64
               startDate:
                 type: string
                 format: date-time
@@ -10322,6 +10604,7 @@ components:
                 type: array
                 items:
                   type: integer
+                  format: int64
 
     PaidAssessmentRequestCreateRequestBody:
       content:
@@ -10459,6 +10742,7 @@ components:
             properties:
               flagId:
                 type: integer
+                format: int64
               userIdentifier:
                 type: string
 
@@ -10478,6 +10762,7 @@ components:
                 $ref: "#/components/schemas/AnyValue"
               userEntityId:
                 type: integer
+                format: int64
 
     UserStaffCreateRequestBody:
       content:
@@ -10521,6 +10806,7 @@ components:
                 type: string
               identifier:
                 type: integer
+                format: int64
               email:
                 type: string
               role:
@@ -10576,6 +10862,7 @@ components:
             properties:
               identifier:
                 type: integer
+                format: int64
               firstName:
                 type: string
               lastName:
@@ -10608,6 +10895,7 @@ components:
             properties:
               flagId:
                 type: integer
+                format: int64
               studentIdentifier:
                 type: string
 
@@ -10717,6 +11005,7 @@ components:
                 $ref: "#/components/schemas/WorkspaceChatStatus"
               workspaceEntityId:
                 type: integer
+                format: int64
 
     WorkspaceSignUpRequestBody:
       content:
@@ -10789,14 +11078,17 @@ components:
             properties:
               templateId:
                 type: integer
+                format: int64
               entryDate:
                 type: string
               description:
                 type: string
               price:
-                type: integer
+                type: number
+                format: double
               factor:
-                type: integer
+                type: number
+                format: double
               billingNumber:
                 type: integer
 
@@ -10816,17 +11108,21 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
               templateId:
                 type: integer
+                format: int64
               entryDate:
                 description: Local date in ISO format (YYYY-MM-DD)
                 type: string
               description:
                 type: string
               price:
-                type: integer
+                type: number
+                format: double
               factor:
-                type: integer
+                type: number
+                format: double
               billingNumber:
                 type: integer
 
@@ -10857,8 +11153,10 @@ components:
             properties:
               parentId:
                 type: integer
+                format: int64
               nextSiblingId:
                 type: integer
+                format: int64
 
     WorkspaceNoteCreateRequestBody:
       required: true
@@ -10878,9 +11176,11 @@ components:
                 type: string
               workspaceEntityId:
                 type: integer
+                format: int64
               nextSiblingId:
                 description: Optional given to determine place in the list. if not given, the note is added to the end of the list
                 type: integer
+                format: int64
                 nullable: true
 
     WorkspaceNoteUpdateRequestBody:
@@ -10918,6 +11218,7 @@ components:
             properties:
               journalEntryId:
                 type: integer
+                format: int64
               comment:
                 type: string
 
@@ -10934,8 +11235,10 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
               journalEntryId:
                 type: integer
+                format: int64
               comment:
                 type: string
 
@@ -10953,12 +11256,14 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
               title:
                 type: string
               content:
                 type: string
               workspaceEntityId:
                 type: integer
+                format: int64
 
     WorkspaceMaterialProducerCreateRequestBody:
       required: true
@@ -10981,10 +11286,13 @@ components:
             properties:
               materialId:
                 type: integer
+                format: int64
               parentId:
                 type: integer
+                format: int64
               nextSiblingId:
                 type: integer
+                format: int64
 
     WorkspaceMaterialCreateRequestBody:
       content:
@@ -10997,10 +11305,13 @@ components:
             properties:
               materialId:
                 type: integer
+                format: int64
               parentId:
                 type: integer
+                format: int64
               nextSiblingId:
                 type: integer
+                format: int64
 
     WorkspaceDetailsUpdateRequestBody:
       required: true
@@ -11149,6 +11460,7 @@ components:
           format: date-time
         contextId:
           type: integer
+          format: int64
           nullable: true
 
     AlternativeStudyOption:
@@ -11273,10 +11585,12 @@ components:
           type: string
         id:
           type: integer
+          format: int64
         publiclyVisible:
           type: boolean
         publisherUserEntityId:
           type: integer
+          format: int64
         startDate:
           type: string
         temporalStatus:
@@ -11285,10 +11599,12 @@ components:
           type: array
           items:
             type: integer
+            format: int64
         workspaceEntityIds:
           type: array
           items:
             type: integer
+            format: int64
         workspaces:
           type: array
           items:
@@ -11308,14 +11624,17 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         userEntityId:
           type: integer
+          format: int64
         userIdentifier:
           type: string
         workspaceUserIdentifier:
           type: string
         workspaceEntityId:
           type: integer
+          format: int64
         requestText:
           type: string
         date:
@@ -11334,7 +11653,8 @@ components:
         editable:
           type: boolean
         price:
-          type: integer
+          type: number
+          format: double
 
     CeeposOrderStateType:
       type: string
@@ -11358,8 +11678,10 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         userEntityId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -11412,6 +11734,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         paid:
           type: string
           format: date-time
@@ -11440,6 +11763,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         signature:
@@ -11491,12 +11815,14 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         entryDate:
           type: string
         type:
           $ref: "#/components/schemas/ContactType"
         creatorId:
           type: integer
+          format: int64
         creatorName:
           type: string
         hasImage:
@@ -11522,13 +11848,16 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         entry:
           type: integer
+          format: int64
         commentDate:
           type: string
           format: date-time
         creatorId:
           type: integer
+          format: int64
         creatorName:
           type: string
         text:
@@ -11578,12 +11907,14 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         description:
           type: string
         groupId:
           type: integer
+          format: int64
         numThreads:
           type: integer
 
@@ -11605,6 +11936,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         message:
           type: string
         numReplies:
@@ -11620,6 +11952,7 @@ components:
           format: date-time
         forumAreaId:
           type: integer
+          format: int64
         entryPoint:
           type: boolean
         creator:
@@ -11655,6 +11988,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         created:
           type: string
           format: date-time
@@ -11666,6 +12000,7 @@ components:
           type: boolean
         forumAreaId:
           type: integer
+          format: int64
         lastModified:
           type: string
           format: date-time
@@ -11673,6 +12008,7 @@ components:
           type: string
         parentReplyId:
           type: integer
+          format: int64
 
     DiscussionSubscribedThread:
       type: object
@@ -11685,14 +12021,17 @@ components:
         userEntityId:
           description: Id of the user
           type: integer
+          format: int64
         threadId:
           description: Id of the thread
           type: integer
+          format: int64
         thread:
           $ref: "#/components/schemas/DiscussionThread"
         workspaceId:
           description: Id of the workspace
           type: integer
+          format: int64
         workspaceName:
           description: Name of the workspace
           type: string
@@ -11711,6 +12050,7 @@ components:
           properties:
             workspaceId:
               type: integer
+              format: int64
             workspaceName:
               type: string
             workspaceUrlName:
@@ -11727,14 +12067,17 @@ components:
         userEntityId:
           description: Id of the user
           type: integer
+          format: int64
         areaId:
           description: Id of the area
           type: integer
+          format: int64
         area:
           $ref: "#/components/schemas/DiscussionArea"
         workspaceId:
           description: Id of the workspace
           type: integer
+          format: int64
         workspaceName:
           description: Name of the workspace. Includes the name extension if it has one.
           type: string
@@ -11753,6 +12096,7 @@ components:
           properties:
             workspaceId:
               type: integer
+              format: int64
             workspaceName:
               type: string
             workspaceUrlName:
@@ -11770,6 +12114,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -11825,16 +12170,20 @@ components:
         id:
           description: Id of feedback
           type: integer
+          format: int64
         student:
           description: userEntityId of student
           type: integer
+          format: int64
         workspaceEntityId:
           type: integer
+          format: int64
         created:
           type: string
         creator:
           description: id of creator
           type: integer
+          format: int64
         creatorName:
           type: string
         feedback:
@@ -11864,9 +12213,11 @@ components:
         - workspaceUrlName
         - workspaceUserEntityId
         - workspaceUserIdentifier
+        - hasPedagogyForm
       properties:
         id:
           type: integer
+          format: int64
         subjects:
           type: array
           items:
@@ -11889,6 +12240,7 @@ components:
           type: boolean
         userEntityId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -11897,6 +12249,7 @@ components:
           type: string
         workspaceEntityId:
           type: integer
+          format: int64
         workspaceName:
           type: string
         workspaceNameExtension:
@@ -11905,8 +12258,11 @@ components:
           type: string
         workspaceUserEntityId:
           type: integer
+          format: int64
         workspaceUserIdentifier:
           type: string
+        hasPedagogyForm:
+          type: boolean
 
     EvaluationSupplementationRequest:
       type: object
@@ -11922,12 +12278,16 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         userEntityId:
           type: integer
+          format: int64
         studentEntityId:
           type: integer
+          format: int64
         workspaceEntityId:
           type: integer
+          format: int64
         workspaceSubjectIdentifier:
           type: string
         requestDate:
@@ -12073,8 +12433,10 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         flagId:
           type: integer
+          format: int64
         flagName:
           type: string
         flagColor:
@@ -12094,6 +12456,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         color:
@@ -12114,8 +12477,10 @@ components:
       properties:
         flagId:
           type: integer
+          format: int64
         id:
           type: integer
+          format: int64
         user:
           type: object
           required:
@@ -12136,6 +12501,7 @@ components:
               type: string
             userEntityId:
               type: integer
+              format: int64
             userIdentifier:
               type: string
         userIdentifier:
@@ -12164,6 +12530,7 @@ components:
           type: boolean
         userEntityId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -12175,6 +12542,7 @@ components:
           properties:
             id:
               type: integer
+              format: int64
             name:
               type: string
         properties:
@@ -12206,6 +12574,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         details:
           type: string
           nullable: true
@@ -12216,6 +12585,7 @@ components:
           type: string
         modifierId:
           type: integer
+          format: int64
         modifierHasImage:
           type: boolean
 
@@ -12364,12 +12734,16 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         userEntityId:
           type: integer
+          format: int64
         workspaceEntityId:
           type: integer
+          format: int64
         workspaceMaterialId:
           type: integer
+          format: int64
         requestDate:
           type: string
           format: date-time
@@ -12753,6 +13127,7 @@ components:
         id:
           description: The id of the material reply
           type: integer
+          format: int64
         state:
           description: State of the material assignment
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
@@ -12772,6 +13147,7 @@ components:
         id:
           description: The id of the evaluation
           type: integer
+          format: int64
         type:
           description: Type of the evaluation
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
@@ -12781,9 +13157,11 @@ components:
         text:
           description: Verbal assessment of the student's material assignment
           type: string
+          nullable: true
         grade:
           description: Grade that is used in the evaluation
           type: string
+          nullable: true
         date:
           description: Date when the evaluation was done
           type: string
@@ -12813,12 +13191,14 @@ components:
         materialId:
           description: The id of the material
           type: integer
+          format: int64
         value:
           description: Value of the answer
           type: string
         workspaceMaterialId:
           description: The id of the workspace material
           type: integer
+          format: int64
 
     MaterialCompositeReplyStateType:
       description: Material composite reply state type enum
@@ -12855,6 +13235,7 @@ components:
         evaluationInfo:
           description: Evaluation info of the material assignments
           $ref: "#/components/schemas/MaterialEvaluationInfo"
+          nullable: true
         created:
           description: Date when the material assignment was created
           type: string
@@ -12867,6 +13248,7 @@ components:
           description: Date when the material assignment was submitted
           type: string
           format: date-time
+          nullable: true
         withdrawn:
           description: Date when the material assignment was withdrawn
           type: string
@@ -12874,9 +13256,11 @@ components:
         workspaceMaterialId:
           description: The id of the workspace material
           type: integer
+          format: int64
         workspaceMaterialReplyId:
           description: The id of the workspace material reply
           type: integer
+          format: int64
 
     MaterialAssigmentType:
       description: Material assignment type enum
@@ -12925,18 +13309,22 @@ components:
         id:
           description: The id of the evaluation
           type: integer
+          format: int64
         evaluated:
           description: Date when the evaluation was done
           type: string
         assessorEntityId:
           description: The id of the assessor
           type: integer
+          format: int64
         studentEntityId:
           description: The id of the student
           type: integer
+          format: int64
         workspaceMaterialId:
           description: The id of the workspace material
           type: integer
+          format: int64
         gradingScaleIdentifier:
           description: Grading scale identifier that is used in the evaluation
           type: string
@@ -12983,12 +13371,14 @@ components:
         id:
           description: The id of the producer
           type: integer
+          format: int64
         name:
           description: The name of the producer
           type: string
         materialId:
           description: The id of the material
           type: integer
+          format: int64
 
     Material:
       type: object
@@ -12997,6 +13387,7 @@ components:
         id:
           description: The id of the material
           type: integer
+          format: int64
         title:
           description: The title of the material
           type: string
@@ -13021,6 +13412,7 @@ components:
         id:
           description: The id of the material
           type: integer
+          format: int64
         title:
           description: The title of the material
           type: string
@@ -13051,6 +13443,7 @@ components:
         id:
           description: The id of the material
           type: integer
+          format: int64
         title:
           description: The title of the material
           type: string
@@ -13077,6 +13470,7 @@ components:
         - html
         - contentType
         - contentHiddenForUser
+        - assignmentType
       properties:
         title:
           description: The title of the material
@@ -13111,15 +13505,19 @@ components:
         workspaceMaterialId:
           description: The id of the workspace material
           type: integer
+          format: int64
         materialId:
           description: The id of the material
           type: integer
+          format: int64
         level:
           description: The level of the node in the tree construct
           type: integer
         assignmentType:
           description: The type of the assignment
-          $ref: "#/components/schemas/MaterialAssigmentType"
+          allOf:
+            - $ref: "#/components/schemas/MaterialAssigmentType"
+          nullable: true
         correctAnswers:
           description: The correct answers of the assignment
           $ref: "#/components/schemas/MaterialAnswersType"
@@ -13129,9 +13527,11 @@ components:
         parentId:
           description: The id of the parent node
           type: integer
+          format: int64
         nextSiblingId:
           description: The id of the next sibling node
           type: integer
+          format: int64
         path:
           description: The path of the node
           type: string
@@ -13161,10 +13561,13 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         senderId:
           type: integer
+          format: int64
         communicatorMessageId:
           type: integer
+          format: int64
         caption:
           type: string
         categoryName:
@@ -13212,10 +13615,13 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         senderId:
           type: integer
+          format: int64
         communicatorMessageId:
           type: integer
+          format: int64
         caption:
           type: string
         categoryName:
@@ -13260,8 +13666,10 @@ components:
       properties:
         olderThreadId:
           type: integer
+          format: int64
         newerThreadId:
           type: integer
+          format: int64
         messages:
           type: array
           items:
@@ -13284,16 +13692,20 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         labelName:
           type: string
         labelColor:
           type: integer
         labelId:
           type: integer
+          format: int64
         messageThreadId:
           type: integer
+          format: int64
         userEntityId:
           type: integer
+          format: int64
 
     MessageRecipient:
       type: object
@@ -13305,8 +13717,10 @@ components:
       properties:
         userEntityId:
           type: integer
+          format: int64
         communicatorMessageId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -13332,6 +13746,7 @@ components:
           type: string
         workspaceEntityId:
           type: integer
+          format: int64
         archetype:
           type: string
         workspaceExtension:
@@ -13357,10 +13772,13 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         senderId:
           type: integer
+          format: int64
         communicatorMessageId:
           type: integer
+          format: int64
         caption:
           type: string
         created:
@@ -13376,15 +13794,18 @@ components:
             properties:
               id:
                 type: integer
+                format: int64
               labelName:
                 type: string
               labelColor:
                 type: integer
+                format: int64
         sender:
           type: object
           properties:
             userEntityId:
               type: integer
+              format: int64
             firstName:
               type: string
             lastName:
@@ -13438,6 +13859,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         title:
           type: string
         description:
@@ -13454,8 +13876,10 @@ components:
           type: boolean
         owner:
           type: integer
+          format: int64
         creator:
           type: integer
+          format: int64
         creatorName:
           type: string
         created:
@@ -13506,10 +13930,12 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         color:
           type: integer
+          format: int64
 
     Course:
       type: object
@@ -13534,6 +13960,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
 
@@ -13573,6 +14000,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         type:
           type: string
         name:
@@ -13581,20 +14009,6 @@ components:
           type: string
         email:
           type: string
-
-    OrganizationStaffMember:
-      type: object
-      description: OrganizationStaffMember object
-      required:
-        - id
-        - firstName
-        - lastName
-        - email
-        - phone
-        - title
-        - organization
-        - properties
-        - role
 
     OptionalCourseSuggestion:
       allOf:
@@ -13644,6 +14058,7 @@ components:
         modifierId:
           description: Id of the user who made the update
           type: integer
+          format: int64
         modifierName:
           description: The user who made the update
           type: string
@@ -13735,6 +14150,7 @@ components:
         ownerId:
           description: Id of the user who created the document
           type: integer
+          format: int64
           nullable: true
         ownerInfo:
           description: Info of the user who created the document
@@ -13744,6 +14160,7 @@ components:
         id:
           description: The id of the form
           type: integer
+          format: int64
           nullable: true
         state:
           description: State of the form
@@ -13826,6 +14243,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         identifier:
           type: string
         subjects:
@@ -13966,6 +14384,7 @@ components:
         - matriculationEligibility
         - ceeposLine
         - flags
+        - hasPedagogyForm
       properties:
         curriculumIdentifier:
           type: string
@@ -14016,6 +14435,7 @@ components:
           type: boolean
         userEntityId:
           type: integer
+          format: int64
         matriculationEligibility:
           type: boolean
         ceeposLine:
@@ -14026,6 +14446,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UserStudentFlag"
+        hasPedagogyForm:
+          type: boolean
 
     StudentInfo:
       type: object
@@ -14039,6 +14461,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -14075,6 +14498,7 @@ components:
           type: string
         courseId:
           type: integer
+          format: int64
           nullable: true
         courseNumber:
           type: integer
@@ -14092,6 +14516,7 @@ components:
           nullable: true
         id:
           type: integer
+          format: int64
 
     StudentCourseChoice:
       allOf:
@@ -14302,10 +14727,12 @@ components:
       properties:
         workspaceUserEntityId:
           type: integer
+          format: int64
         userIdentifier:
           type: string
         userEntityId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -14346,6 +14773,7 @@ components:
           $ref: "#/components/schemas/AnyValue"
         userEntityId:
           type: integer
+          format: int64
         hasImage:
           type: boolean
         role:
@@ -14361,6 +14789,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         userCount:
@@ -14387,6 +14816,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         contentType:
@@ -14399,6 +14829,7 @@ components:
           type: string
         userEntityId:
           type: integer
+          format: int64
         visibility:
           $ref: "#/components/schemas/UserEntityFileVisibility"
 
@@ -14416,8 +14847,10 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         userEntityId:
           type: integer
+          format: int64
         fileName:
           type: string
         contentType:
@@ -14464,6 +14897,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -14512,6 +14946,7 @@ components:
           type: string
         userEntityId:
           type: integer
+          format: int64
         lastLogin:
           type: string
         archived:
@@ -14536,6 +14971,7 @@ components:
           type: string
         userEntityId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -14607,6 +15043,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
           nullable: true
         identifier:
           type: string
@@ -14758,24 +15195,43 @@ components:
         - endDate
         - viewLink
         - subjects
+        - signupStart
+        - signupEnd
+        - workspaceTypeId
+        - workspaceType
       properties:
         beginDate:
           description: The date when the workspace begins
           type: string
           format: date-time
+          nullable: true
         endDate:
           description: The date when the workspace ends
           type: string
           format: date-time
+          nullable: true
+        signupStart:
+          description: The date when the workspace signup opens
+          type: string
+          format: date-time
+          nullable: true
+        signupEnd:
+          description: The date when the workspace signup closes
+          type: string
+          format: date-time
+          nullable: true
         viewLink:
           description: Link to the workspace
           type: string
         workspaceTypeId:
           description: The id of the workspace type
           type: integer
+          format: int64
+          nullable: true
         workspaceType:
           description: Workspace type of the workspace
           type: string
+          nullable: true
         educationType:
           description: Education type of the workspace
           type: object
@@ -14819,6 +15275,7 @@ components:
         id:
           description: The id of the workspace
           type: integer
+          format: int64
         name:
           description: The name of the workspace
           type: string
@@ -14858,6 +15315,7 @@ components:
         organizationEntityId:
           description: The id of the organization
           type: integer
+          format: int64
         urlName:
           description: The url name of the workspace
           type: string
@@ -14897,6 +15355,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         nameExtension:
@@ -14950,6 +15409,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         nameExtension:
@@ -15011,6 +15471,7 @@ components:
         id:
           description: The id of the workspace
           type: integer
+          format: int64
         name:
           description: The name of the workspace
           type: string
@@ -15246,6 +15707,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         name:
           type: string
         subject:
@@ -15275,6 +15737,7 @@ components:
             - nickname
             - studyProgrammeName
             - active
+            - hasPedagogyForm
           properties:
             nickname:
               description: The nickname of the user
@@ -15284,6 +15747,8 @@ components:
               type: string
             active:
               description: If the user is active
+              type: boolean
+            hasPedagogyForm:
               type: boolean
 
     WorkspaceUserBase:
@@ -15300,12 +15765,14 @@ components:
         workspaceUserEntityId:
           description: The id of the workspace user entity
           type: integer
+          format: int64
         userIdentifier:
           description: The identifier of the user
           type: string
         userEntityId:
           description: The id of the user entity
           type: integer
+          format: int64
         firstName:
           description: The first name of the user
           type: string
@@ -15386,12 +15853,15 @@ components:
         rootFolderId:
           description: The id of the root folder
           type: integer
+          format: int64
         helpFolderId:
           description: The id of the help folder
           type: integer
+          format: int64
         indexFolderId:
           description: The id of the index folder
           type: integer
+          format: int64
 
     WorkspaceMaterialProducer:
       type: object
@@ -15405,6 +15875,7 @@ components:
         id:
           description: The id of the producer
           type: integer
+          format: int64
 
     WorkspaceSignupGroup:
       type: object
@@ -15418,9 +15889,11 @@ components:
         workspaceEntityId:
           description: The id of the workspace
           type: integer
+          format: int64
         userGroupEntityId:
           description: The id of the user group
           type: integer
+          format: int64
         userGroupName:
           description: The name of the user group
           type: string
@@ -15445,12 +15918,14 @@ components:
         userEntityId:
           description: The id of the user entity
           type: integer
+          format: int64
         userIdentifier:
           description: The identifier of the user
           type: string
         workspaceUserEntityId:
           description: The id of the workspace user entity
           type: integer
+          format: int64
         active:
           description: If the user is active
           type: boolean
@@ -15508,10 +15983,13 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         workspaceEntityId:
           type: integer
+          format: int64
         userEntityId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -15549,14 +16027,18 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         journalEntryId:
           type: integer
+          format: int64
         parentCommentId:
           type: integer
+          format: int64
         depth:
           type: integer
         authorId:
           type: integer
+          format: int64
         firstName:
           type: string
         lastName:
@@ -15583,12 +16065,14 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         owner:
           description: The id of the user
           type: string
         workspaceEntityId:
           description: The id of the workspace
           type: integer
+          format: int64
         title:
           type: string
         workspaceNote:
@@ -15596,6 +16080,7 @@ components:
         nextSiblingId:
           description: Backend uses this to determine the order of the notes. This is not used in the frontend
           type: integer
+          format: int64
           nullable: true
 
     WorkspaceEntityFile:
@@ -15605,6 +16090,7 @@ components:
         id:
           description: The id of the file
           type: integer
+          format: int64
         fileIdentifier:
           description: The identifier of the file
           type: string
@@ -15617,6 +16103,7 @@ components:
         workspaceEntityId:
           description: The id of the workspace
           type: integer
+          format: int64
         base64Data:
           description: The base64 encoded data of the file
           type: string
@@ -15638,15 +16125,19 @@ components:
         id:
           description: The id of the material
           type: integer
+          format: int64
         materialId:
           description: The id of the material
           type: integer
+          format: int64
         parentId:
           description: The id of the parent material
           type: integer
+          format: int64
         nextSiblingId:
           description: Next sibling id. Used to determine the order of the materials
           type: integer
+          format: int64
         hidden:
           description: If the material is hidden
           type: boolean
@@ -15672,6 +16163,7 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         hidden:
           type: boolean
         orderNumber:
@@ -15713,12 +16205,15 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         description:
           type: string
         price:
-          type: integer
+          type: number
+          format: double
         factor:
-          type: integer
+          type: number
+          format: double
         billingNumber:
           nullable: true
           type: integer
@@ -15745,8 +16240,10 @@ components:
       properties:
         id:
           type: integer
+          format: int64
         templateId:
           type: integer
+          format: int64
         state:
           $ref: "#/components/schemas/WorklistBillingStateType"
         entryDate:
@@ -15754,9 +16251,11 @@ components:
         description:
           type: string
         price:
-          type: integer
+          type: number
+          format: double
         factor:
-          type: integer
+          type: number
+          format: double
         billingNumber:
           type: integer
         courseAssessment:

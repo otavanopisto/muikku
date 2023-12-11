@@ -75,9 +75,9 @@ const EvaluationJournalEventComment: React.FC<
   const creatorName = creatorIsMe
     ? t("labels.self")
     : `${firstName} ${lastName}`;
-  const formatedDate = `${localize.date(created, "l")} - ${localize.date(
+  const formatedDate = `${localize.date(created)} - ${localize.date(
     created,
-    "h:mm"
+    "LT"
   )}`;
 
   return (
@@ -113,7 +113,16 @@ const EvaluationJournalEventComment: React.FC<
       )}
 
       <div className="evaluation-modal__item-footer evaluation-modal__item-footer--journal-comment">
-        {creatorName} - {formatedDate}
+        <div className="evaluation-modal__item-meta">
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-label">
+              {creatorName}
+            </span>
+            <span className="evaluation-modal__item-meta-item-data">
+              {formatedDate}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

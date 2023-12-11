@@ -38,7 +38,7 @@ class Producers extends React.Component<ProducersProps, ProducersState> {
     return (
       <div className="producers">
         <span className="producers__title">
-          {t("labels.producer", { ns: "workspace", count: 0 })}:
+          {t("labels.producers", { ns: "workspace" })}:
         </span>
         {this.props.workspace.producers.map((producer, index) => {
           let textForTheName = producer.name;

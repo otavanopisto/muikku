@@ -3,11 +3,12 @@ import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * WarningDialogProps
  */
-interface WarningDialogProps {
+interface WarningDialogProps extends WithTranslation {
   title: string;
   content: JSX.Element;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,13 +70,15 @@ class WarningDialog extends React.Component<
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.handleApproveClick.bind(this, closeDialog)}
         >
-          Olen varma!
+          {this.props.i18n.t("actions.confirmCancel", {
+            ns: "pedagogySupportPlan",
+          })}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={closeDialog}
         >
-          Peruuta
+          {this.props.i18n.t("actions.cancel", { ns: "common" })}
         </Button>
       </div>
     );
@@ -95,4 +98,6 @@ class WarningDialog extends React.Component<
   }
 }
 
-export default WarningDialog;
+export default withTranslation(["pedagogySupportPlan", "common"])(
+  WarningDialog
+);
