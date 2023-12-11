@@ -402,15 +402,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     return Response.ok(activityInfo).build();
   }
   
-  private SearchProvider getProvider(String name) {
-    for (SearchProvider searchProvider : searchProviders) {
-      if (name.equals(searchProvider.getName())) {
-        return searchProvider;
-      }
-    }
-    return null;
-  }
-  
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)
