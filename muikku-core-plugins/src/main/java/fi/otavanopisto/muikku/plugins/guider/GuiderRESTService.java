@@ -61,25 +61,18 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceWithCourseCreditsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
-import fi.otavanopisto.muikku.schooldata.CourseMetaController;
-import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
-import fi.otavanopisto.muikku.schooldata.entity.Optionality;
-import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
@@ -185,12 +178,6 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private GuiderController guiderController;
-  
-  @Inject
-  private GradingController gradingController;
-  
-  @Inject
-  private CourseMetaController courseMetaController;
   
   @Inject
   private WorkspaceController workspaceController;
@@ -573,18 +560,6 @@ public class GuiderRESTService extends PluginRESTService {
 
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
 
-    User user = userController.findUserByUserEntityDefaults(userEntity);
-    Map<SchoolDataIdentifier, String> curriculumNameCache = new HashMap<>();
-    
-    String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
-    
-    boolean showCredits = false;
-    
-    // An indicator that shows if the credits should be shown
-    if (curriculumName != null && curriculumName.equals("OPS 2021") && (user.getStudyProgrammeEducationType() != null && user.getStudyProgrammeEducationType().equals("lukio"))) {
-      showCredits = true;
-    }
-    
     TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
     PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
     
@@ -599,21 +574,12 @@ public class GuiderRESTService extends PluginRESTService {
           ? workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity)
           : workspaceUserEntityController.listInactiveWorkspaceEntitiesByUserEntity(userEntity);
     }
-
-    // Frontend needs rest model even if workspace list is null
     if (CollectionUtils.isEmpty(workspaceEntities)) {
-      ToRWorkspaceWithCourseCreditsRestModel restModel = new ToRWorkspaceWithCourseCreditsRestModel();
-      restModel.setCompletedCourseCredits(0);
-      restModel.setMandatoryCourseCredits(0);
-      restModel.setWorkspaces(Collections.emptyList());
-      restModel.setShowCredits(showCredits);
-      return Response.ok(restModel).build();
+      return Response.ok(Collections.emptyList()).build();
     }
 
     List<ToRWorkspaceRestModel> workspaces = new ArrayList<>();
-    Integer allCourseCredits = 0;
-    Integer mandatoryCourseCredits = 0;
-    
+
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
@@ -639,92 +605,13 @@ public class GuiderRESTService extends PluginRESTService {
 
       EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
       for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
-        ToRWorkspaceRestModel toRWorkspaceRestModel = workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping);
-        
-        
-        List<WorkspaceAssessmentState> assessmentStatesList = toRWorkspaceRestModel.getActivity().getAssessmentState();
-        Integer size = assessmentStatesList.size() - 1;
-          
-        if (!assessmentStatesList.isEmpty() && showCredits) {
-          WorkspaceAssessmentState assessmentState = toRWorkspaceRestModel.getActivity().getAssessmentState().get(size);
-          
-          // If the student has completed the course, we need to find the courses with the symbol 'op' and calculate the points of them
-          if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-            Set<String> curriculumIdentifiers = toRWorkspaceRestModel.getCurriculumIdentifiers();
-            
-            // Curriculum should be 'OPS 2021' 
-            Boolean correctCurriculum = false;
-            
-            for (String curriculumIdentifier : curriculumIdentifiers) {
-              curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
-
-              if (curriculumName != null && curriculumName.equals("OPS 2021")) {
-                correctCurriculum = true;
-                break;
-              }
-            }
-            for (WorkspaceSubjectRestModel workspaceSubject : toRWorkspaceRestModel.getSubjects()) {
-              if (workspaceSubject.getCourseLengthSymbol().getSymbol().equals("op") && correctCurriculum){
-                int units = workspaceSubject.getCourseLength().intValue();
-                
-                // All completed courses
-                allCourseCredits = Integer.sum(units, allCourseCredits);
-                
-                // Making another calculation for completed mandatory courses
-                if (toRWorkspaceRestModel.getMandatority() != null && toRWorkspaceRestModel.getMandatority() == Mandatority.MANDATORY) {
-                  mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                }
-              }
-            }
-          }
-        }
-        
-        workspaces.add(toRWorkspaceRestModel);
+        workspaces.add(workspaceRestModels.createRestModelWithActivity(userIdentifier, indexedWorkspace, educationTypeMapping));
       }
     } else {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
-    
-    // Count credits also from transfer credits
-    
-    List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(userIdentifier);
-    
-    for (TransferCredit transferCredit : transferCredits) {
-      curriculumName = getCurriculumName(curriculumNameCache, transferCredit.getCurriculumIdentifier());
-      
-      // Curriculum check
-      if (curriculumName != null && curriculumName.equals("OPS 2021")) {
-        CourseLengthUnit lengthUnit = courseMetaController.findCourseLengthUnit(transferCredit.getLengthUnitIdentifier());
-        // Length unit symbol
-        if (lengthUnit.getSymbol().equals("op")) {
-          
-          allCourseCredits = Integer.sum(transferCredit.getLength().intValue(), allCourseCredits);
-          
-          if (transferCredit.getOptionality() == Optionality.MANDATORY) {
-            mandatoryCourseCredits = Integer.sum(transferCredit.getLength().intValue(), mandatoryCourseCredits);
-          }
-        }
-      }
-    }
-    
-    // To rest model
-    ToRWorkspaceWithCourseCreditsRestModel torWorkspaceWithCourseCredits = new ToRWorkspaceWithCourseCreditsRestModel();
-      
-    torWorkspaceWithCourseCredits.setWorkspaces(workspaces);
-    torWorkspaceWithCourseCredits.setCompletedCourseCredits(allCourseCredits);
-    torWorkspaceWithCourseCredits.setMandatoryCourseCredits(mandatoryCourseCredits);
-    torWorkspaceWithCourseCredits.setShowCredits(showCredits);
-    
-    return Response.ok(torWorkspaceWithCourseCredits).build();
-  }
-  
-  private String getCurriculumName(Map<SchoolDataIdentifier, String> curriculumNameCache, SchoolDataIdentifier curriculumIdentifier){
-    
-    if (!curriculumNameCache.containsKey(curriculumIdentifier)) {
-      curriculumNameCache.put(curriculumIdentifier, guiderController.getCurriculumName(curriculumIdentifier));
-    }
-    
-    return curriculumNameCache.get(curriculumIdentifier);
+
+    return Response.ok(workspaces).build();
   }
 
   @GET
