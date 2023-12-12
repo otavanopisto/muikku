@@ -197,7 +197,7 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myUserGroups") Boolean myUserGroups,
       @QueryParam("workspaceIds") List<Long> workspaceIds,
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
-      @QueryParam("userEntityId") Long userEntityId,
+      @QueryParam("userIdentifier") String userIdentifier,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
@@ -308,24 +308,31 @@ public class GuiderRESTService extends PluginRESTService {
 
       userIdentifiers.addAll(flagController.getFlaggedStudents(flags));
     }
+    
+    SchoolDataIdentifier userSchoolDataIdentifier = null;
+
+    if (userIdentifier != null) {
+      userSchoolDataIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
+    }
+    
     if (Boolean.TRUE.equals(includeInactiveStudents)) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
-        if (userEntityId == null) {
+        if (userIdentifier == null) {
           return Response.status(Status.FORBIDDEN).build();
         } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
+          if (!sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier().equals(userSchoolDataIdentifier)) {
             return Response.status(Status.FORBIDDEN).build();
           }
         }
       }
     }
-
-    if (userEntityId != null) {
+    
+    if (userIdentifier != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
 
-      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userSchoolDataIdentifier);
       if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userEntityId %d", userEntityId)).build();
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %d", userSchoolDataIdentifier)).build();
       }
 
       List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
