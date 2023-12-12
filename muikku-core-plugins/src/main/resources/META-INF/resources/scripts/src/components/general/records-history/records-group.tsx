@@ -3,11 +3,11 @@ import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import { RecordWorkspaceActivitiesWithLineCategory } from "~/reducers/main-function/records";
 import RecordsGroupItem from "./records-group-item";
-import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
+import TransferedCreditIndicator from "./transfered-credit-indicator";
+import { RecordWorkspaceActivitiesWithLineCategory } from "./types";
 
 /**
  * RecordsListProps

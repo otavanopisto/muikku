@@ -27,6 +27,10 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
+import {
+  RecordWorkspaceActivitiesWithLineCategory,
+  RecordWorkspaceActivityByLine,
+} from "~/components/general/records-history/types";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -765,17 +769,17 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             });
           }),
 
-        // This fetch is for course credits
-        /* guiderApi
-          .getStudentWorkspaces({
-            studentId: id,
-            active: false,
+        guiderApi
+          .getGuiderUserWorkspaceActivity({
+            identifier: id,
+            includeTransferCredits: true,
+            includeAssignmentStatistics: true,
           })
           .then(
             ({
+              showCredits,
               completedCourseCredits,
               mandatoryCourseCredits,
-              showCredits,
             }) => {
               dispatch({
                 type: "SET_CURRENT_GUIDER_STUDENT_PROP",
@@ -789,7 +793,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 },
               });
             }
-          ), */
+          ),
 
         canListUserOrders &&
           ceeposApi
@@ -838,6 +842,10 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   };
 };
 
+const activitylogsApi = MApi.getActivitylogsApi();
+const guiderApi = MApi.getGuiderApi();
+const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+
 /**
  * loadStudentHistory thunk action creator
  * @param id student id
@@ -852,12 +860,10 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
-    const guiderApi = MApi.getGuiderApi();
-    const activitylogsApi = MApi.getActivitylogsApi();
-
     try {
-      const historyLoaded = !!getState().guider.currentStudent.pastWorkspaces;
+      const pastHistoryLoaded =
+        !!getState().guider.currentStudent.pastWorkspaces;
+      const pastStudiesLoaded = !!getState().guider.currentStudent.pastStudies;
 
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -893,7 +899,8 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             });
           }),
       ];
-      if (!historyLoaded || forceLoad) {
+
+      if (!pastHistoryLoaded || forceLoad) {
         dispatch({
           type: "SET_CURRENT_GUIDER_STUDENT_PROP",
           payload: {
@@ -901,6 +908,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
             value: <LoadingState>"LOADING",
           },
         });
+
         promises.push(
           guiderApi
             .getStudentWorkspaces({
@@ -942,6 +950,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                   ),
                 ]);
               }
+
               dispatch({
                 type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                 payload: {
@@ -949,10 +958,150 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
                   value: workspacesWithAddons,
                 },
               });
+            })
+        );
+      }
+
+      if (!pastStudiesLoaded || forceLoad) {
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "pastStudiesState",
+            value: <LoadingState>"LOADING",
+          },
+        });
+
+        promises.push(
+          guiderApi
+            .getGuiderStudents({
+              userIdentifier: id,
+              includeInactiveStudents: true,
+            })
+            .then(async (users) => {
+              //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
+              //The bigger number to be first
+              users = users.sort((a, b) => {
+                const aId = a.id.split("-")[2];
+                const bId = b.id.split("-")[2];
+
+                return parseInt(bId) - parseInt(aId);
+              });
+
+              // Get workspaces aka activities with line and category
+              const workspaceWithActivity = await Promise.all(
+                users.map(async (user) => {
+                  const workspacesWithActivity =
+                    guiderApi.getGuiderUserWorkspaceActivity({
+                      identifier: id,
+                      includeTransferCredits: true,
+                      includeAssignmentStatistics: true,
+                    });
+
+                  return workspacesWithActivity;
+                })
+              );
+
+              // Get active category index
+              const activeCategoryIndex = workspaceWithActivity.findIndex(
+                (a) => a.defaultLine
+              );
+
+              // Filter out default line and sort by line category (alphabetically)
+              let sortedWorkspaceActivityData = workspaceWithActivity
+                .filter((a) => !a.defaultLine)
+                .sort((a, b) => {
+                  if (a.lineCategory > b.lineCategory) {
+                    return 1;
+                  }
+                  if (a.lineCategory < a.lineCategory) {
+                    return -1;
+                  }
+                  return 0;
+                });
+
+              // Add default line to the beginning of the array
+              // and then sorted array of non default lines
+              sortedWorkspaceActivityData = [
+                workspaceWithActivity[activeCategoryIndex],
+                ...sortedWorkspaceActivityData,
+              ];
+
+              // Helper object to hold category specific data
+              const helperObject: {
+                [category: string]: {
+                  credits: RecordWorkspaceActivityByLine[];
+                  transferedCredits: RecordWorkspaceActivityByLine[];
+                  completedCourseCredits: number;
+                  mandatoryCourseCredits: number;
+                  showCredits: boolean;
+                };
+              } = {};
+
+              // Loop through workspaces and add them to helper object
+              // by category
+              sortedWorkspaceActivityData.forEach((workspaceActivity) => {
+                const allCredits: RecordWorkspaceActivityByLine[] =
+                  workspaceActivity.activities.map((a) => ({
+                    lineName: workspaceActivity.lineName,
+                    activity: a,
+                  }));
+
+                const credits = allCredits.filter(
+                  (a) => a.activity.assessmentStates[0].state !== "transferred"
+                );
+
+                const transferedCredits = allCredits.filter(
+                  (a) => a.activity.assessmentStates[0].state === "transferred"
+                );
+
+                // If category exists in helper object, add credits to it
+                if (helperObject[workspaceActivity.lineCategory]) {
+                  helperObject[workspaceActivity.lineCategory].credits =
+                    helperObject[workspaceActivity.lineCategory].credits.concat(
+                      credits
+                    );
+
+                  helperObject[
+                    workspaceActivity.lineCategory
+                  ].transferedCredits =
+                    helperObject[
+                      workspaceActivity.lineCategory
+                    ].transferedCredits.concat(transferedCredits);
+                } else {
+                  // If category does not exist in helper object, create it and initialize it
+                  helperObject[workspaceActivity.lineCategory] = {
+                    credits: credits || [],
+                    transferedCredits: transferedCredits || [],
+                    completedCourseCredits:
+                      workspaceActivity.completedCourseCredits,
+                    mandatoryCourseCredits:
+                      workspaceActivity.mandatoryCourseCredits,
+                    showCredits: workspaceActivity.showCredits,
+                  };
+                }
+              });
+
+              const pastStudies: RecordWorkspaceActivitiesWithLineCategory[] =
+                Object.entries(helperObject).map((a) => ({
+                  lineCategory: a[0],
+                  credits: a[1].credits,
+                  transferCredits: a[1].transferedCredits,
+                  showCredits: a[1].showCredits,
+                  completedCourseCredits: a[1].completedCourseCredits,
+                  mandatoryCourseCredits: a[1].mandatoryCourseCredits,
+                }));
+
               dispatch({
                 type: "SET_CURRENT_GUIDER_STUDENT_PROP",
                 payload: {
-                  property: "pastWorkspacesState",
+                  property: "pastStudies",
+                  value: pastStudies,
+                },
+              });
+              dispatch({
+                type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+                payload: {
+                  property: "pastStudiesState",
                   value: <LoadingState>"READY",
                 },
               });

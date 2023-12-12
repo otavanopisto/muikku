@@ -6,14 +6,16 @@ import {
   TranscriptOfRecordLocationType,
   CurrentStudentUserAndWorkspaceStatusType,
   CurrentRecordType,
-  RecordWorkspaceActivityByLine,
-  RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
 import i18n from "~/locales/i18n";
 import { UserFile } from "~/generated/client";
 import { Dispatch } from "react-redux";
 import { WorkspaceActivityInfo } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import {
+  RecordWorkspaceActivitiesWithLineCategory,
+  RecordWorkspaceActivityByLine,
+} from "~/components/general/records-history/types";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
@@ -207,14 +209,13 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
               activity: a,
             }));
 
-          const credits: RecordWorkspaceActivityByLine[] = allCredits.filter(
+          const credits = allCredits.filter(
             (a) => a.activity.assessmentStates[0].state !== "transferred"
           );
 
-          const transferedCredits: RecordWorkspaceActivityByLine[] =
-            allCredits.filter(
-              (a) => a.activity.assessmentStates[0].state === "transferred"
-            );
+          const transferedCredits = allCredits.filter(
+            (a) => a.activity.assessmentStates[0].state === "transferred"
+          );
 
           // If category exists in helper object, add credits to it
           if (helperObject[workspaceActivity.lineCategory]) {

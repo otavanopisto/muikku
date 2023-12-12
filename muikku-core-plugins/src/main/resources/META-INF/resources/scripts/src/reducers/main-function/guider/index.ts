@@ -20,6 +20,7 @@ import {
   HopsUppersecondary,
   ActivityLogEntry,
 } from "~/generated/client";
+import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 /**
  * GuiderFiltersType
@@ -62,26 +63,6 @@ export interface GuiderNotificationStudentsDataType {
 }
 
 /**
- * GuiderNotificationStudentsType
- */
-export interface GuiderWorkspaceActivitiesWithLineCategory {
-  lineCategory: string;
-  credits: GuiderWorkspaceActivityByLine[];
-  transferCredits: GuiderWorkspaceActivityByLine[];
-  showCredits: boolean;
-  completedCourseCredits: number;
-  mandatoryCourseCredits: number;
-}
-
-/**
- * GuiderWorkspaceActivityByLine
- */
-export interface GuiderWorkspaceActivityByLine {
-  lineName: string;
-  activity: GuiderWorkspaceActivitiesWithLineCategory;
-}
-
-/**
  * ContactTypesArray for dropdowns etc.
  */
 export const contactTypesArray = Object.values(ContactType);
@@ -102,6 +83,7 @@ export interface PedagogyFormAvailability {
 export interface GuiderStudentUserProfileType {
   contactLogState: LoadingState;
   currentWorkspacesState: LoadingState;
+  pastStudiesState: LoadingState;
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
   basic: Student;
@@ -117,6 +99,7 @@ export interface GuiderStudentUserProfileType {
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
   currentWorkspaces: WorkspaceDataType[];
+  pastStudies: RecordWorkspaceActivitiesWithLineCategory[];
   pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
   purchases: CeeposOrder[];
@@ -228,6 +211,7 @@ const initialGuiderState: GuiderState = {
   currentStudent: {
     contactLogState: "LOADING",
     currentWorkspacesState: "LOADING",
+    pastStudiesState: "LOADING",
     pastWorkspacesState: "LOADING",
     activityLogState: "LOADING",
     basic: null,
@@ -241,6 +225,7 @@ const initialGuiderState: GuiderState = {
     notifications: null,
     contactLogs: null,
     currentWorkspaces: [],
+    pastStudies: [],
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],

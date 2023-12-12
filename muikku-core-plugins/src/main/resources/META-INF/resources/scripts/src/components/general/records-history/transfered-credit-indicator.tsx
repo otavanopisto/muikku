@@ -17,7 +17,7 @@ interface TransfereCreditIndicatorProps {
  * @param props Component props
  * @returns JSX.Element
  */
-const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
+const TransferedCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   props
 ) => {
   const { transferCredit } = props;
@@ -55,4 +55,4 @@ const TransfereCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   );
 };
 
-export default TransfereCreditIndicator;
+export default TransferedCreditIndicator;

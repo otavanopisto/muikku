@@ -5,44 +5,11 @@ import {
 } from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
-import {
-  MaterialCompositeReply,
-  Curriculum,
-  WorkspaceActivity,
-} from "~/generated/client";
+import { MaterialCompositeReply, Curriculum } from "~/generated/client";
 import { WorkspaceJournal } from "~/generated/client";
+import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
-
-/**
- * RecordWorkspaceByLineCategory
- */
-export interface RecordWorkspaceActivitiesWithLineCategory {
-  lineCategory: string;
-  credits: RecordWorkspaceActivityByLine[];
-  transferCredits: RecordWorkspaceActivityByLine[];
-  showCredits: boolean;
-  completedCourseCredits: number;
-  mandatoryCourseCredits: number;
-}
-
-/**
- * Record workspace activity with line name
- */
-export interface RecordWorkspaceActivityByLine {
-  lineName: string;
-  activity: WorkspaceActivity;
-}
-
-/**
- * RecordGroupType
- */
-export interface RecordGroupType {
-  groupCurriculumName?: string;
-  groupCurriculumIdentifier?: string;
-  credits: WorkspaceActivity[];
-  transferCredits: WorkspaceActivity[];
-}
 
 /**
  * CurrentRecordType

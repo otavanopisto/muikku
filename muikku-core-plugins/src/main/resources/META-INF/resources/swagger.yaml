@@ -4465,6 +4465,17 @@ paths:
           description: Falg owner identifier
           schema:
             type: string
+        - name: userIdentifier
+          in: query
+          description: User identifier
+          schema:
+            type: string
+        - name: includeInactiveStudents
+          in: query
+          description: Include inactive students
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Students
@@ -4644,7 +4655,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/guider/users/identifier/workspaceActivity:
+  /rest/guider/users/{identifier}/workspaceActivity:
     get:
       operationId: getGuiderUserWorkspaceActivity
       summary: Get guider identifier workspace activity
