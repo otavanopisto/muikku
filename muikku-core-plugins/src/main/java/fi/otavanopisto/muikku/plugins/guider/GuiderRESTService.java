@@ -332,7 +332,7 @@ public class GuiderRESTService extends PluginRESTService {
 
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userSchoolDataIdentifier);
       if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %d", userSchoolDataIdentifier)).build();
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %s", userIdentifier)).build();
       }
 
       List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
@@ -678,6 +678,10 @@ public class GuiderRESTService extends PluginRESTService {
     if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
       showCredits = true;
     }
+
+    // Education type mapping
+    
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
     
     SearchProvider searchProvider = getProvider("elastic-search");
     
@@ -733,9 +737,7 @@ public class GuiderRESTService extends PluginRESTService {
     
                           if (StringUtils.isNotBlank(educationTypeId)) {
                             SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
-                            
-                            EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-                            
+                                                        
                             mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
                                 ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
                             

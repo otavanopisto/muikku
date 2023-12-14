@@ -322,6 +322,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       showCredits = true;
     }
     
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+
     SearchProvider searchProvider = getProvider("elastic-search");
     
     if (showCredits) {
@@ -359,7 +361,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                        }
                       }
                       
-                      // Search for finding out course mandaority
+                      // Search for finding out course mandatority
                       
                       if (searchProvider != null && activity.getId() != null) {
                         
@@ -376,9 +378,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
                           if (StringUtils.isNotBlank(educationTypeId)) {
                             SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
-                            
-                            EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-                            
+                                                        
                             mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
                                 ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
                             
