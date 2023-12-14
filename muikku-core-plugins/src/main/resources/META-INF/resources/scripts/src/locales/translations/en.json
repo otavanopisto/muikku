@@ -1890,7 +1890,7 @@
       "nonActiveUser": " It seems that your studies have ended and therefore the order of the study time increase has been cancelled.",
       "noProducts": "No products to buy",
       "noPurchases": "Student does not have any purchases",
-      "orderConfirmed": "The student will be notified of the order you have created via email. The email message will include a link to the online store of the city of Mikkeli, where the student will be able to pay the study fee. The payment link will expire in 24 hours after the student has clicked it for the first time.",
+      "orderConfirmed": "The student will be notified of the order you have created via email. The email message will include a link to the online store of the city of Mikkeli, where the student will be able to pay the study fee. The payment link will expire in 14 days after the student has clicked it for the first time.",
       "redirect": "You are being redirected to Mikkeli City's online store.",
       "removing": "Are you sure you wish to delete the student order?"
     },

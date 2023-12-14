@@ -1890,7 +1890,7 @@
       "nonActiveUser": " Näyttää siltä että sinun opintosi ovat päättyneet ja näin ollen tilauksesi opinto-oikeutesi jatkamiseksi on keskeytetty.",
       "noProducts": "Ei ostettavia tuotteita",
       "noPurchases": "Opiskelijalla ei ole tilauksia",
-      "orderConfirmed": "Opiskelija saa sähköpostitse tiedon luomastasi tilauksesta. Sähköpostiviestissä on linkki Mikkelin kaupungin verkkokauppaan, jossa opiskelija voi maksaa opiskelumaksun. Maksulinkki on voimassa 24 tuntia siitä, kun opiskelija on avannut sen ensimmäisen kerran.",
+      "orderConfirmed": "Opiskelija saa sähköpostitse tiedon luomastasi tilauksesta. Sähköpostiviestissä on linkki Mikkelin kaupungin verkkokauppaan, jossa opiskelija voi maksaa opiskelumaksun. Maksulinkki on voimassa 14 vuorokautta siitä, kun opiskelija on avannut sen ensimmäisen kerran.",
       "redirect": "Sinut uudelleenohjataan Mikkelin kaupungin verkkokauppaan.",
       "removing": "Oletko varma, että haluat poistaa opiskelijan tilauksen?"
     },
