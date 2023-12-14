@@ -1,6 +1,7 @@
 import Dialog from "./dialog";
 import Portal from "./portal";
 import * as React from "react";
+import * as FocusTrap from "focus-trap-react";
 import "~/sass/elements/environment-dialog.scss";
 
 /**
@@ -23,6 +24,7 @@ export default class EnvironmentDialog extends Dialog {
         closeOnEsc
       >
         {(closePortal: () => any) => (
+          <FocusTrap active={this.state.visible} focusTrapOptions={{allowOutsideClick: true}}>
           <div
             className={`env-dialog env-dialog--mainfunction env-dialog--${
               this.props.modifier
@@ -51,6 +53,7 @@ export default class EnvironmentDialog extends Dialog {
               </div>
             </section>
           </div>
+          </FocusTrap>
         )}
       </Portal>
     );
