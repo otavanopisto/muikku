@@ -268,11 +268,6 @@ public class ChatRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    
-    UserEntity targetUserEntity = userEntityController.findUserEntityById(id);
-    if (targetUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", id)).build();
-    }
     chatController.updateMessage(chatMessage, payload.getMessage(), sessionController.getLoggedUserEntity());
     return Response.status(Status.NO_CONTENT).build();
   }
