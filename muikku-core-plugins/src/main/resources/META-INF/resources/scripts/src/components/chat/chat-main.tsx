@@ -39,7 +39,13 @@ function ChatMain(props: ChatMainProps) {
   const peoplePanelRef = React.useRef<HTMLDivElement>(null);
   const mainWrapperRef = React.useRef<HTMLDivElement>(null);
 
+  const initialized = React.useRef(false);
+
   React.useEffect(() => {
+    if (!initialized.current) {
+      return;
+    }
+
     if (leftPanelOpen) {
       animationControlsLeftPanel.start({
         width: PANEL_LEFT_MAX_WIDTH,
@@ -60,6 +66,10 @@ function ChatMain(props: ChatMainProps) {
   }, [animationControlsLeftPanel, leftPanelOpen]);
 
   React.useEffect(() => {
+    if (!initialized.current) {
+      return;
+    }
+
     if (rightPanelOpen) {
       animationControlsRightPanel.start({
         width: PANEL_RIGHT_MAX_WIDTH,
@@ -81,7 +91,7 @@ function ChatMain(props: ChatMainProps) {
 
   // Set resize observer to panel refs and update mainWrapperRef margin left and right
   React.useEffect(() => {
-    if (roomPanelRef.current) {
+    if (roomPanelRef.current && initialized.current) {
       const resizeRoomsObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           // Update mainWrapperRef margin left to roomPanelRef width
@@ -148,6 +158,10 @@ function ChatMain(props: ChatMainProps) {
     toggleLeftPanel,
   ]);
 
+  React.useEffect(() => {
+    initialized.current = true;
+  }, []);
+
   return (
     <div
       style={{
@@ -157,6 +171,7 @@ function ChatMain(props: ChatMainProps) {
     >
       <motion.div
         ref={roomPanelRef}
+        initial={false}
         animate={animationControlsLeftPanel}
         className="chat-rooms__panel"
         style={{
@@ -166,6 +181,9 @@ function ChatMain(props: ChatMainProps) {
           bottom: 0,
           top: 0,
           zIndex: 2,
+          overflowY: "auto",
+          overflowX: "hidden",
+          width: PANEL_LEFT_MIN_WIDTH,
         }}
       >
         <div
@@ -187,11 +205,14 @@ function ChatMain(props: ChatMainProps) {
       </motion.div>
       <motion.div
         ref={mainWrapperRef}
+        initial={false}
         animate={animationControls}
         className="chat__panel-wrapper"
         style={{
           background: "antiquewhite",
           width: "auto",
+          marginLeft: PANEL_LEFT_MIN_WIDTH,
+          marginRight: PANEL_RIGHT_MIN_WIDTH,
         }}
       >
         <ChatViews
@@ -200,6 +221,7 @@ function ChatMain(props: ChatMainProps) {
       </motion.div>
       <motion.div
         ref={peoplePanelRef}
+        initial={false}
         animate={animationControlsRightPanel}
         className="chat-people__panel"
         style={{
@@ -209,6 +231,9 @@ function ChatMain(props: ChatMainProps) {
           bottom: 0,
           top: 0,
           zIndex: 2,
+          overflowY: "auto",
+          overflowX: "hidden",
+          width: PANEL_RIGHT_MIN_WIDTH,
         }}
       >
         <div

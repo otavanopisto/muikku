@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ChatUser } from "~/generated/client";
-import Avatar from "../general/avatar";
 import { useChatContext } from "./context/chat-context";
 import { AnimatePresence, motion } from "framer-motion";
+import ChatProfileAvatar from "./chat-profile-avatar";
 
 /**
  * PeopleListProps
@@ -44,11 +44,11 @@ function ChatUsersList(props: ChatUsersListProps) {
   );
 }
 
-const variants = {
+/* const variants = {
   visible: { opacity: 1, x: 0, width: "auto", marginLeft: "10px" },
   minimized: { opacity: 0, x: "-100%", width: "0px", marginLeft: "0px" },
 };
-
+ */
 /**
  * ChatUserItemProps
  */
@@ -63,7 +63,7 @@ interface ChatUserProps {
  * @returns JSX.Element
  */
 function ChatUser(props: ChatUserProps) {
-  const { user, minimized } = props;
+  const { user } = props;
 
   const { openDiscussion } = useChatContext();
 
@@ -73,29 +73,29 @@ function ChatUser(props: ChatUserProps) {
 
   return (
     <div
-      className="people-item"
+      className="user-item"
       style={{
         display: "flex",
         alignItems: "center",
         borderRadius: "50px 0 0 50px",
         color: "white",
-        marginBottom: "10px",
-        padding: "10px",
+        margin: "10px",
+        marginBottom: "0",
+        overflowX: "clip",
       }}
       onClick={handlePeopleClick}
     >
-      <div className="people-item__avatar">
-        <Avatar
+      <div className="user-item__avatar">
+        <ChatProfileAvatar
           id={user.id}
           hasImage={user.hasImage}
-          firstName={user.nick[0]}
+          nick={user.nick}
+          status="online"
         />
       </div>
       <AnimatePresence initial={false}>
         <motion.div
-          className="people-item__name"
-          variants={variants}
-          animate={!minimized ? "visible" : "minimized"}
+          className="user-item__name"
           transition={{
             duration: 0.3,
           }}

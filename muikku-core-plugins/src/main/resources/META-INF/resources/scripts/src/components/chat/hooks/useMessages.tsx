@@ -19,7 +19,12 @@ function useMessages(
   const websocket = useChatWebsocketContext();
 
   const [chatMsgs, setChatMsgs] = React.useState<ChatMessage[]>([]);
-  const [loadingChatMsgs, setLoadingChatMsgs] = React.useState<boolean>(false);
+  const [loadingInitialChatMsgs, setLoadingInitialChatMsgs] =
+    React.useState<boolean>(false);
+  const [loadingMoreChatMsgs, setLoadingMoreChatMsgs] =
+    React.useState<boolean>(false);
+
+  const [canLoadMore, setCanLoadMore] = React.useState<boolean>(true);
 
   const [newMessage, setNewMessage] = React.useState<string>("");
 
@@ -30,34 +35,21 @@ function useMessages(
      * Fetch Messages
      */
     const fetchMsgs = async () => {
-      setLoadingChatMsgs(true);
+      setLoadingInitialChatMsgs(true);
 
       const msgs = await chatApi.getChatMessagesByTarget({
         targetIdentifier: targetIdentifier,
+        count: 35,
       });
 
       unstable_batchedUpdates(() => {
         setChatMsgs(msgs);
-        setLoadingChatMsgs(false);
+        setLoadingInitialChatMsgs(false);
       });
     };
 
     fetchMsgs();
   }, [targetIdentifier]);
-
-  /**
-   * postMessage
-   */
-  const postMessage = async () => {
-    await chatApi.createChatMessage({
-      targetIdentifier: targetIdentifier,
-      createChatMessageRequest: {
-        message: newMessage,
-      },
-    });
-
-    setNewMessage("");
-  };
 
   React.useEffect(() => {
     /**
@@ -140,7 +132,59 @@ function useMessages(
     };
   }, [targetIdentifier, targetIdentifiersToListen, websocket]);
 
-  return { chatMsgs, loadingChatMsgs, newMessage, setNewMessage, postMessage };
+  /**
+   * postMessage
+   */
+  const postMessage = async () => {
+    await chatApi.createChatMessage({
+      targetIdentifier: targetIdentifier,
+      createChatMessageRequest: {
+        message: newMessage,
+      },
+    });
+
+    setNewMessage("");
+  };
+
+  /**
+   * fetchMoreMessages
+   */
+  const fetchMoreMessages = async () => {
+    if (loadingMoreChatMsgs) {
+      return;
+    }
+
+    setLoadingMoreChatMsgs(true);
+
+    const olderMsgs = await chatApi.getChatMessagesByTarget({
+      targetIdentifier: targetIdentifier,
+      count: 10,
+      earlierThan: chatMsgs[0].sentDateTime,
+    });
+
+    if (olderMsgs.length === 0) {
+      unstable_batchedUpdates(() => {
+        setCanLoadMore(false);
+        setLoadingMoreChatMsgs(false);
+      });
+    } else {
+      unstable_batchedUpdates(() => {
+        setChatMsgs((msgs) => [...olderMsgs, ...msgs]);
+        setLoadingMoreChatMsgs(false);
+      });
+    }
+  };
+
+  return {
+    chatMsgs,
+    loadingMoreChatMsgs,
+    loadingInitialChatMsgs,
+    canLoadMore,
+    newMessage,
+    setNewMessage,
+    postMessage,
+    fetchMoreMessages,
+  };
 }
 
 export default useMessages;

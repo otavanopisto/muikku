@@ -61,6 +61,15 @@ function useChat(userId: number) {
   const [roomIdentifierToEdit, setRoomIdentifierToEdit] =
     React.useState<string>(null);
 
+  React.useEffect(() => {
+    if (minimized) {
+      unstable_batchedUpdates(() => {
+        setRightPanelOpen(false);
+        setLeftPanelOpen(false);
+      });
+    }
+  }, [minimized]);
+
   // Current editor values
   const currentEditorValues = React.useMemo(() => {
     if (roomIdentifierToEdit) {
