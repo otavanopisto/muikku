@@ -138,7 +138,10 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
               ? [this.props.modifier]
               : this.props.modifier;
           return (
-            <FocusTrap active={this.state.visible} focusTrapOptions={{allowOutsideClick: true}}>
+            <FocusTrap
+              active={this.state.visible}
+              focusTrapOptions={{ allowOutsideClick: true }}
+            >
               <div
                 role="dialog"
                 className={`dialog ${(modifiers || [])
