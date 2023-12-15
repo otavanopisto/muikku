@@ -527,7 +527,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     StudyProgrammeCategory spc = new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false);
-    StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false);
+    StudyProgramme sp = new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false, null);
     
     StudyProgramme[] sps = { sp };
     StudyProgrammeCategory[] spcs = { spc };

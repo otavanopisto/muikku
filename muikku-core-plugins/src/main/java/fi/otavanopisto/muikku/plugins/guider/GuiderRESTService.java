@@ -54,6 +54,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -85,9 +86,13 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -183,9 +188,6 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
-  @Inject 
-  private WorkspaceController workspaceController;
 
   @Inject
   private UserIndexer userIndexer;
@@ -219,6 +221,10 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private GuiderController guiderController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
+
 
   @GET
   @Path("/students")
@@ -231,7 +237,7 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myUserGroups") Boolean myUserGroups,
       @QueryParam("workspaceIds") List<Long> workspaceIds,
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
-      @QueryParam("userEntityId") Long userEntityId,
+      @QueryParam("userIdentifier") String userIdentifier,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
@@ -342,24 +348,31 @@ public class GuiderRESTService extends PluginRESTService {
 
       userIdentifiers.addAll(flagController.getFlaggedStudents(flags));
     }
+    
+    SchoolDataIdentifier userSchoolDataIdentifier = null;
+
+    if (userIdentifier != null) {
+      userSchoolDataIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
+    }
+    
     if (Boolean.TRUE.equals(includeInactiveStudents)) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
-        if (userEntityId == null) {
+        if (userIdentifier == null) {
           return Response.status(Status.FORBIDDEN).build();
         } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
+          if (!sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier().equals(userSchoolDataIdentifier)) {
             return Response.status(Status.FORBIDDEN).build();
           }
         }
       }
     }
-
-    if (userEntityId != null) {
+    
+    if (userIdentifier != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
 
-      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userSchoolDataIdentifier);
       if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userEntityId %d", userEntityId)).build();
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %s", userIdentifier)).build();
       }
 
       List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
@@ -616,7 +629,6 @@ public class GuiderRESTService extends PluginRESTService {
           ? workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity)
           : workspaceUserEntityController.listInactiveWorkspaceEntitiesByUserEntity(userEntity);
     }
-
     if (CollectionUtils.isEmpty(workspaceEntities)) {
       return Response.ok(Collections.emptyList()).build();
     }
@@ -694,6 +706,106 @@ public class GuiderRESTService extends PluginRESTService {
         workspaceIdentifier,
         includeTransferCredits,
         includeAssignmentStatistics);
+    
+    Integer allCourseCredits = 0;
+    Integer mandatoryCourseCredits = 0;
+    boolean showCredits = false;
+    
+    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+    
+    // Find student's curriculum to tell whether the score will be shown to the user
+    
+    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
+    
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
+      showCredits = true;
+    }
+
+    // Education type mapping
+    
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    
+    SearchProvider searchProvider = getProvider("elastic-search");
+    
+    if (showCredits) {
+      for (WorkspaceActivity activity : activityInfo.getActivities()) {
+        
+        List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
+        
+        if (!assessmentStatesList.isEmpty()) {
+          for (WorkspaceAssessmentState assessmentState : assessmentStatesList) {
+            
+            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+              for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
+                
+                // Check for courses that contains multiple coursemodules. WorkspaceActivitySubjectIdentifier should match assessmentState's workspaceSubjectIdentifier
+                if (activity.getId() != null) {
+                  if (!assessmentState.getWorkspaceSubjectIdentifier().equals(workspaceActivitySubject.getIdentifier())) {
+                    continue;
+                  }
+                }
+                
+                if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
+                  for (WorkspaceActivityCurriculum curriculum : activity.getCurriculums()) {
+                    if (curriculum.getName().equals("OPS 2021")) {
+                      int units = workspaceActivitySubject.getCourseLength().intValue();
+                      
+                      // All completed courses
+                      allCourseCredits = Integer.sum(units, allCourseCredits);
+                      
+                      // Mandatority for transferred courses
+                      // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
+                      if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+                        Mandatority mandatority = activity.getMandatority();
+                        if (mandatority != null && mandatority == Mandatority.MANDATORY) {
+                          mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                       }
+                      }
+                      
+                      // Search for finding out course mandaority
+                      
+                      if (searchProvider != null && activity.getId() != null) {
+                        
+                        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
+                        workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+                        SearchResult sr = searchProvider.findWorkspace(workspaceIdentifier);
+                        
+                        List<Map<String, Object>> results = sr.getResults();
+                        for (Map<String, Object> result : results) {
+                          
+                          String educationTypeId = (String) result.get("educationTypeIdentifier");
+    
+                          Mandatority mandatority = null;
+    
+                          if (StringUtils.isNotBlank(educationTypeId)) {
+                            SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                                                        
+                            mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
+                                ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
+                            
+                          }
+                          if (mandatority != null) {
+                            if (mandatority == Mandatority.MANDATORY) {
+                              mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                            }
+                            activity.setMandatority(mandatority);
+                          }
+                        }
+                      } 
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    activityInfo.setCompletedCourseCredits(allCourseCredits);
+    activityInfo.setMandatoryCourseCredits(mandatoryCourseCredits);
+    activityInfo.setShowCredits(showCredits);
+    
     return Response.ok(activityInfo).build();
   }
 

@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.List;
 
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
+
 public class WorkspaceActivity {
 
   public Long getId() {
@@ -84,6 +86,14 @@ public class WorkspaceActivity {
     this.assessmentStates = assessmentStates;
   }
 
+  public Mandatority getMandatority() {
+    return mandatority;
+  }
+
+  public void setMandatority(Mandatority mandatority) {
+    this.mandatority = mandatority;
+  }
+
   private Long id;
   private String identifier;
   private List<WorkspaceActivitySubject> subjects;
@@ -94,5 +104,6 @@ public class WorkspaceActivity {
   private Integer exercisesAnswered;
   private Integer evaluablesTotal;
   private Integer evaluablesAnswered;
+  private Mandatority mandatority;
 
 }

@@ -138,10 +138,11 @@ class WorkspaceMaterial extends React.Component<
 
     if (this.props.workspace.activity) {
       // Get the number of modules
-      const valueToCheck = this.props.workspace.activity.assessmentState.length;
+      const valueToCheck =
+        this.props.workspace.activity.assessmentStates.length;
       let passValueCount = 0;
 
-      this.props.workspace.activity.assessmentState.forEach((activity) => {
+      this.props.workspace.activity.assessmentStates.forEach((activity) => {
         // Check if any of the modules are in pending state
         if (pendingValues.includes(activity.state)) {
           isDisabled = true;

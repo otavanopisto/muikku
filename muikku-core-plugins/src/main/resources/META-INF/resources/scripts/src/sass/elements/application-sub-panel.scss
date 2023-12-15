@@ -1066,6 +1066,10 @@
   display: flex;
 }
 
+.application-sub-panel__item-data-container--guider-course-credits {
+  flex-direction: column;
+}
+
 .application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
   margin-left: 10px;
 }

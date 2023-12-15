@@ -14,7 +14,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
       long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
       Date evaluablesSubmittedLastDate, long evaluablesWithdrawn, Date evaluablesWithdrawnLastDate, long evaluablesPassed, Date evaluablesPassedLastDate, 
       long evaluablesFailed, Date evaluablesFailedLastDate, long evaluablesIncomplete, Date evaluablesIncompleteLastDate, 
-      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, List<WorkspaceAssessmentState> assessmentState) {
+      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, List<WorkspaceAssessmentState> assessmentStates) {
     super();
     this.lastVisit = lastVisit;
     this.numVisits = numVisits;
@@ -36,7 +36,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.exercisesUnanswered = exercisesUnanswered;
     this.exercisesAnswered = exercisesAnswered;
     this.exercisesAnsweredLastDate = exercisesAnsweredLastDate;
-    this.assessmentState = assessmentState;
+    this.assessmentStates = assessmentStates;
   }
 
   public void setLastVisit(Date lastVisit) {
@@ -139,12 +139,12 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.lastJournalEntry = lastJournalEntry;
   }
   
-  public List<WorkspaceAssessmentState> getAssessmentState() {
-    return assessmentState;
+  public List<WorkspaceAssessmentState> getAssessmentStates() {
+    return assessmentStates;
   }
   
-  public void setAssessmentState(List<WorkspaceAssessmentState> assessmentState) {
-    this.assessmentState = assessmentState;
+  public void setAssessmentStates(List<WorkspaceAssessmentState> assessmentStates) {
+    this.assessmentStates = assessmentStates;
   }
 
   public long getEvaluablesIncomplete() {
@@ -201,5 +201,5 @@ public class GuiderStudentWorkspaceActivityRestModel {
   private long exercisesAnswered;
   private Date exercisesAnsweredLastDate;
   
-  private List<WorkspaceAssessmentState> assessmentState;
+  private List<WorkspaceAssessmentState> assessmentStates;
 }
