@@ -140,8 +140,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
 
   private static void mockStudyProgrammes(List<String> payloads) throws JsonProcessingException {
     StudyProgramme[] sps = {
-        new StudyProgramme(1l, DEFAULT_ORGANIZATION_ID, "test", "Test Study Programme", 1l, null, false, false), 
-        new StudyProgramme(2l, 2l, "test", "Secondary Organization Study Programme", 1l, null, false, false) 
+        new StudyProgramme(1l, DEFAULT_ORGANIZATION_ID, "test", "Test Study Programme", 1l, null, false, false, null), 
+        new StudyProgramme(2l, 2l, "test", "Secondary Organization Study Programme", 1l, null, false, false, null) 
     };
     StudyProgrammeCategory[] spcs = {
         new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false)

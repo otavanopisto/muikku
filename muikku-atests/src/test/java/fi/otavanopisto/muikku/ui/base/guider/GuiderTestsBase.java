@@ -468,7 +468,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
@@ -567,7 +567,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addStaffMember(admin)
       .addStudent(student)
       .mockLogin(admin)
-      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
+      .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
       .addStudentToStudentGroup(2l, student)
       .mockPersons()
       .mockStudents()
@@ -625,7 +625,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockLogin(admin)
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
         .addStudentToStudentGroup(2l, student)
         .mockPersons()
         .mockStudents()
@@ -733,8 +733,8 @@ public class GuiderTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try {
       mockBuilder
-        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false))
-        .addStudyProgramme(new StudyProgramme(3l, 1l, "test_sprogramme", "Nettikoulu/yo", 1l, null, false, false))
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, false, false, null))
+        .addStudyProgramme(new StudyProgramme(3l, 1l, "test_sprogramme", "Nettikoulu/yo", 1l, null, false, false, null))
         .addStaffMember(admin)
         .addStaffMember(manager)
         .addStaffMember(spl)
