@@ -45,8 +45,8 @@ function ChatProfile(props: ChatProfileProps) {
             marginLeft: "10px",
           }}
         >
-          <div>{userMe.nick}</div>
-          <div>Paikalla</div>
+          <span>{userMe.nick}</span>
+          <span>Paikalla</span>
         </div>
       </div>
 

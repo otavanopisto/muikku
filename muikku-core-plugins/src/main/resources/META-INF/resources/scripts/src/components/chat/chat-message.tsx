@@ -454,9 +454,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
     event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
-    const { /* offset, velocity, */ point } = info;
-
-    /* const swipe = swipePower(offset.x, velocity.x); */
+    const { point } = info;
 
     setIsDragging(false);
 
@@ -562,7 +560,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
               right: 0,
               opacity,
               background: "antiquewhite",
-              padding: "0 10px",
+              padding: "10px",
               width: "100%",
               zIndex: 1,
               y,

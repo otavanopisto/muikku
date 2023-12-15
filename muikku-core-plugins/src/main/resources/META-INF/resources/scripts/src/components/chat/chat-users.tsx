@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
-import { AnimatePresence, motion } from "framer-motion";
 import ChatProfileAvatar from "./chat-profile-avatar";
 
 /**
@@ -93,16 +92,14 @@ function ChatUser(props: ChatUserProps) {
           status="online"
         />
       </div>
-      <AnimatePresence initial={false}>
-        <motion.div
-          className="user-item__name"
-          transition={{
-            duration: 0.3,
-          }}
-        >
-          {user.nick} ONLINE
-        </motion.div>
-      </AnimatePresence>
+      <div
+        className="user-item__name"
+        style={{
+          marginLeft: "10px",
+        }}
+      >
+        <span>{user.nick}</span>
+      </div>
     </div>
   );
 }
