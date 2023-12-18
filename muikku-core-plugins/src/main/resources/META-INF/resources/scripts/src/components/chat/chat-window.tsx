@@ -63,6 +63,64 @@ function ChatWindow(props: ChatWindowProps) {
 
   const componentInitialized = React.useRef(false);
 
+  // Resize observer for checking if browser window is resized
+  // and window is overflowing
+  React.useEffect(() => {
+    if (windowRef.current && windowConstrainsRef.current) {
+      const resizeObserver = new ResizeObserver((entries) => {
+        const windowEle = windowRef.current;
+        const windowRect = windowEle.getBoundingClientRect();
+
+        for (const entry of entries) {
+          if (entry.target === windowConstrainsRef.current) {
+            const dW = entry.contentRect.width - windowRect.width;
+            const dH = entry.contentRect.height - windowRect.height;
+
+            // If negative then window is overflowing
+            if (dW <= 0) {
+              windowPositonRef.current.x = 0;
+              windowPositonRef.current.width = WINDOW_MIN_WIDTH;
+
+              // If window constraints width is bigger than minimum width of window, set width to be window width instead
+              if (entry.contentRect.width > WINDOW_MIN_WIDTH) {
+                windowPositonRef.current.width = entry.contentRect.width;
+              }
+
+              animationControls.set({
+                x: windowPositonRef.current.x,
+                width: windowPositonRef.current.width,
+              });
+            }
+
+            // If negative then window is overflowing
+            if (dH <= 0) {
+              // Set to be bottom right of screen
+              windowPositonRef.current.y =
+                window.innerHeight - windowRect.height;
+              windowPositonRef.current.height = WINDOW_MIN_HEIGHT;
+
+              // If window constraints height is bigger than minimum height of window, set height to be window height instead
+              if (entry.contentRect.height > WINDOW_MIN_HEIGHT) {
+                windowPositonRef.current.height = entry.contentRect.height;
+              }
+
+              animationControls.set({
+                y: windowPositonRef.current.y,
+                height: windowPositonRef.current.height,
+              });
+            }
+          }
+        }
+      });
+
+      resizeObserver.observe(windowConstrainsRef.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+  }, [animationControls, windowPositonRef]);
+
   // Effect to control fullscreen on/off animation
   React.useEffect(() => {
     /**
@@ -438,12 +496,14 @@ function ChatWindow(props: ChatWindowProps) {
       const windowBottomReached =
         e.clientY >= windowConstrainsRef.current.offsetHeight;
 
-      // Whether resizing bigger or smaller
-      const resizingBigger =
-        windowPositonRef.current.height > windowPositonRef.current.height;
-
       // difference in y coordinates
       const dy = e.clientY - windowPositonRef.current.y;
+
+      // new height
+      const newHeight = windowPositonRef.current.height + dy;
+
+      // Whether resizing bigger or smaller
+      const resizingBigger = newHeight > windowPositonRef.current.height;
 
       if (
         (resizingBigger && !windowBottomReached) ||
