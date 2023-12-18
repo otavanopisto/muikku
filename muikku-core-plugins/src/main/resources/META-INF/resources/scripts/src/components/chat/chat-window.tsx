@@ -10,6 +10,9 @@ import { ChatWindowBreakpointsContextProvider } from "./context/chat-window-brea
 import { useChatWindowContext } from "./context/chat-window-context";
 import { AddIcon, CloseIcon, ResizerHandle } from "./chat-helpers";
 
+const WINDOW_MIN_WIDTH = 500;
+const WINDOW_MIN_HEIGHT = 500;
+
 /**
  * ChatWindowProps
  */
@@ -293,9 +296,31 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveRightResize = (e: MouseEvent) => {
       e.preventDefault();
+
+      if (!windowConstrainsRef.current) {
+        return;
+      }
+
+      // If window is reached minimum width or height
+      const minWidthReached =
+        windowPositonRef.current.width <= WINDOW_MIN_WIDTH;
+      // If mouse is outside of window, do not resize
+      const windowRightSideReached =
+        e.clientX >= windowConstrainsRef.current.offsetWidth;
+
+      // difference in x coordinates
       const dx = e.clientX - windowPositonRef.current.x;
-      windowPositonRef.current.x = e.clientX;
-      windowPositonRef.current.width = windowPositonRef.current.width + dx;
+
+      const newWidth = windowPositonRef.current.width + dx;
+      const resizingBigger = newWidth > windowPositonRef.current.width;
+
+      if (
+        (resizingBigger && !windowRightSideReached) ||
+        (!resizingBigger && !minWidthReached)
+      ) {
+        windowPositonRef.current.x = e.clientX;
+        windowPositonRef.current.width = newWidth;
+      }
 
       // Use animate controls set method to set x value to correspond width change
       animationControls.set({
@@ -336,9 +361,29 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveTopResize = (e: MouseEvent) => {
       e.preventDefault();
+
+      // If window is reached minimum width or height
+      const minHeightReached =
+        windowPositonRef.current.height <= WINDOW_MIN_HEIGHT;
+      // If mouse is outside of window, do not resize
+      const windowTopReached = e.clientY <= 0;
+
+      // difference in y coordinates
       const dy = e.clientY - windowPositonRef.current.y;
-      windowPositonRef.current.height = windowPositonRef.current.height - dy;
-      windowPositonRef.current.y = e.clientY;
+
+      // new height
+      const newHeight = windowPositonRef.current.height - dy;
+
+      // Whether resizing bigger or smaller
+      const resizingBigger = newHeight > windowPositonRef.current.height;
+
+      if (
+        (resizingBigger && !windowTopReached) ||
+        (!resizingBigger && !minHeightReached)
+      ) {
+        windowPositonRef.current.y = e.clientY;
+        windowPositonRef.current.height = newHeight;
+      }
 
       // Use animate controls set method to set y value to correspond width change
       animationControls.set({
@@ -381,9 +426,32 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveBottomResize = (e: MouseEvent) => {
       e.preventDefault();
+      if (!windowConstrainsRef.current) {
+        return;
+      }
+
+      // If window is reached minimum width or height
+      const minHeightReached =
+        windowPositonRef.current.height <= WINDOW_MIN_HEIGHT;
+
+      // If mouse is outside of window, do not resize
+      const windowBottomReached =
+        e.clientY >= windowConstrainsRef.current.offsetHeight;
+
+      // Whether resizing bigger or smaller
+      const resizingBigger =
+        windowPositonRef.current.height > windowPositonRef.current.height;
+
+      // difference in y coordinates
       const dy = e.clientY - windowPositonRef.current.y;
-      windowPositonRef.current.height = windowPositonRef.current.height + dy;
-      windowPositonRef.current.y = e.clientY;
+
+      if (
+        (resizingBigger && !windowBottomReached) ||
+        (!resizingBigger && !minHeightReached)
+      ) {
+        windowPositonRef.current.y = e.clientY;
+        windowPositonRef.current.height = windowPositonRef.current.height + dy;
+      }
 
       // Use animate controls set method to set y value to correspond width change
       animationControls.set({
@@ -425,9 +493,25 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveLeftResize = (e: MouseEvent) => {
       e.preventDefault();
+
+      // If window is reached minimum width or height
+      const minWidthReached =
+        windowPositonRef.current.width <= WINDOW_MIN_WIDTH;
+
+      // If mouse is outside of window, do not resize
+      const windowLeftSideReached = e.clientX <= 0;
+
       const dx = e.clientX - windowPositonRef.current.x;
-      windowPositonRef.current.x = e.clientX;
-      windowPositonRef.current.width = windowPositonRef.current.width - dx;
+      const newWidth = windowPositonRef.current.width - dx;
+      const resizingBigger = newWidth > windowPositonRef.current.width;
+
+      if (
+        (resizingBigger && !windowLeftSideReached) ||
+        (!resizingBigger && !minWidthReached)
+      ) {
+        windowPositonRef.current.x = e.clientX;
+        windowPositonRef.current.width = newWidth;
+      }
 
       // Use animate controls set method to set x value to correspond width change
       animationControls.set({
@@ -472,12 +556,41 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveTopLeftResize = (e: MouseEvent) => {
       e.preventDefault();
+
+      // If window is reached minimum width or height
+      const minWidthReached =
+        windowPositonRef.current.width <= WINDOW_MIN_WIDTH;
+      const minHeightReached =
+        windowPositonRef.current.height <= WINDOW_MIN_HEIGHT;
+
+      // If mouse is outside of window, do not resize
+      const windowLeftSideReached = e.clientX <= 0;
+      const windowTopReached = e.clientY <= 0;
+
       const dx = e.clientX - windowPositonRef.current.x;
       const dy = e.clientY - windowPositonRef.current.y;
-      windowPositonRef.current.x = e.clientX;
-      windowPositonRef.current.y = e.clientY;
-      windowPositonRef.current.width = windowPositonRef.current.width - dx;
-      windowPositonRef.current.height = windowPositonRef.current.height - dy;
+
+      const newWidth = windowPositonRef.current.width - dx;
+      const newHeight = windowPositonRef.current.height - dy;
+
+      const resizingWidthBigger = newWidth > windowPositonRef.current.width;
+      const resizingHeightBigger = newHeight > windowPositonRef.current.height;
+
+      if (
+        (resizingWidthBigger && !windowLeftSideReached) ||
+        (!resizingWidthBigger && !minWidthReached)
+      ) {
+        windowPositonRef.current.x = e.clientX;
+        windowPositonRef.current.width = newWidth;
+      }
+
+      if (
+        (resizingHeightBigger && !windowTopReached) ||
+        (!resizingHeightBigger && !minHeightReached)
+      ) {
+        windowPositonRef.current.y = e.clientY;
+        windowPositonRef.current.height = newHeight;
+      }
 
       // Use animate controls set method to set x value to correspond width change
       animationControls.set({
@@ -522,12 +635,46 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveTopRightResize = (e: MouseEvent) => {
       e.preventDefault();
+
+      if (!windowConstrainsRef.current) {
+        return;
+      }
+
+      // If window is reached minimum width or height
+      const minWidthReached =
+        windowPositonRef.current.width <= WINDOW_MIN_WIDTH;
+      const minHeightReached =
+        windowPositonRef.current.height <= WINDOW_MIN_HEIGHT;
+
+      // If mouse is outside of window, do not resize
+      const windowRightSideReached =
+        e.clientX >= windowConstrainsRef.current.offsetWidth;
+      const windowTopReached = e.clientY <= 0;
+
       const dx = e.clientX - windowPositonRef.current.x;
       const dy = e.clientY - windowPositonRef.current.y;
-      windowPositonRef.current.x = e.clientX;
-      windowPositonRef.current.y = e.clientY;
-      windowPositonRef.current.width = windowPositonRef.current.width + dx;
-      windowPositonRef.current.height = windowPositonRef.current.height - dy;
+
+      const newWidth = windowPositonRef.current.width + dx;
+      const newHeight = windowPositonRef.current.height - dy;
+
+      const resizingWidthBigger = newWidth > windowPositonRef.current.width;
+      const resizingHeightBigger = newHeight > windowPositonRef.current.height;
+
+      if (
+        (resizingWidthBigger && !windowRightSideReached) ||
+        (!resizingWidthBigger && !minWidthReached)
+      ) {
+        windowPositonRef.current.x = e.clientX;
+        windowPositonRef.current.width = newWidth;
+      }
+
+      if (
+        (resizingHeightBigger && !windowTopReached) ||
+        (!resizingHeightBigger && !minHeightReached)
+      ) {
+        windowPositonRef.current.y = e.clientY;
+        windowPositonRef.current.height = newHeight;
+      }
 
       // Use animate controls set method to set x value to correspond width change
       animationControls.set({
@@ -556,6 +703,7 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseDownBottomLeftResize = (e: MouseEvent) => {
       e.preventDefault();
+
       windowPositonRef.current.x = e.clientX;
       windowPositonRef.current.y = e.clientY;
 
@@ -571,12 +719,46 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveBottomLeftResize = (e: MouseEvent) => {
       e.preventDefault();
+
+      if (!windowConstrainsRef.current) {
+        return;
+      }
+
+      // If window is reached minimum width or height
+      const minWidthReached =
+        windowPositonRef.current.width <= WINDOW_MIN_WIDTH;
+      const minHeightReached =
+        windowPositonRef.current.height <= WINDOW_MIN_HEIGHT;
+
+      // If mouse is outside of window, do not resize
+      const windowLeftSideReached = e.clientX <= 0;
+      const windowBottomReached =
+        e.clientY >= windowConstrainsRef.current.offsetHeight;
+
       const dx = e.clientX - windowPositonRef.current.x;
       const dy = e.clientY - windowPositonRef.current.y;
-      windowPositonRef.current.x = e.clientX;
-      windowPositonRef.current.y = e.clientY;
-      windowPositonRef.current.width = windowPositonRef.current.width - dx;
-      windowPositonRef.current.height = windowPositonRef.current.height + dy;
+
+      const newWidth = windowPositonRef.current.width - dx;
+      const newHeight = windowPositonRef.current.height + dy;
+
+      const resizingWidthBigger = newWidth > windowPositonRef.current.width;
+      const resizingHeightBigger = newHeight > windowPositonRef.current.height;
+
+      if (
+        (resizingWidthBigger && !windowLeftSideReached) ||
+        (!resizingWidthBigger && !minWidthReached)
+      ) {
+        windowPositonRef.current.x = e.clientX;
+        windowPositonRef.current.width = newWidth;
+      }
+
+      if (
+        (resizingHeightBigger && !windowBottomReached) ||
+        (!resizingHeightBigger && !minHeightReached)
+      ) {
+        windowPositonRef.current.height = newHeight;
+        windowPositonRef.current.y = e.clientY;
+      }
 
       // Use animate controls set method to set x value to correspond width change
       animationControls.set({
@@ -620,12 +802,46 @@ function ChatWindow(props: ChatWindowProps) {
      */
     const onMouseMoveBottomRightResize = (e: MouseEvent) => {
       e.preventDefault();
+
+      if (!windowConstrainsRef.current) {
+        return;
+      }
+
+      // If window is reached minimum width or height
+      const minWidthReached =
+        windowPositonRef.current.width <= WINDOW_MIN_WIDTH;
+      const minHeightReached =
+        windowPositonRef.current.height <= WINDOW_MIN_HEIGHT;
+
+      const windowRightSideReached =
+        e.clientX >= windowConstrainsRef.current.offsetWidth;
+      const windowBottomReached =
+        e.clientY >= windowConstrainsRef.current.offsetHeight;
+
       const dx = e.clientX - windowPositonRef.current.x;
       const dy = e.clientY - windowPositonRef.current.y;
-      windowPositonRef.current.x = e.clientX;
-      windowPositonRef.current.y = e.clientY;
-      windowPositonRef.current.width = windowPositonRef.current.width + dx;
-      windowPositonRef.current.height = windowPositonRef.current.height + dy;
+
+      const newWidth = windowPositonRef.current.width + dx;
+      const newHeight = windowPositonRef.current.height + dy;
+
+      const resizingWidthBigger = newWidth > windowPositonRef.current.width;
+      const resizingHeightBigger = newHeight > windowPositonRef.current.height;
+
+      if (
+        (resizingWidthBigger && !windowRightSideReached) ||
+        (!resizingWidthBigger && !minWidthReached)
+      ) {
+        windowPositonRef.current.x = e.clientX;
+        windowPositonRef.current.width = windowPositonRef.current.width + dx;
+      }
+
+      if (
+        (resizingHeightBigger && !windowBottomReached) ||
+        (!resizingHeightBigger && !minHeightReached)
+      ) {
+        windowPositonRef.current.height = windowPositonRef.current.height + dy;
+        windowPositonRef.current.y = e.clientY;
+      }
 
       // Use animate controls set method to set x value to correspond width change
       animationControls.set({
