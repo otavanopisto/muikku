@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import Link from "~/components/general/link";
-import moment from "~/lib/moment";
+import * as moment from "moment";
 import { WorklistSection } from "~/reducers/main-function/profile";
 import WorkListRow from "./work-list-row";
 import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";
@@ -43,9 +43,9 @@ interface WorkListSectionProps {
   section: WorklistSection;
   isExpanded: boolean;
   daysInCurrentMonth: number;
-  previousMonthsFirstDay: string;
+  previousMonthsFirstDay: moment.Moment;
   currentMonthDayLimit: number;
-  currentMonthsFirstDay: string;
+  currentMonthsFirstDay: moment.Moment;
   onToggleSection: () => void;
 }
 

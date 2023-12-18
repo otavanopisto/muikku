@@ -2,20 +2,6 @@ import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { Organization, User, UserGroup, UserWhoAmI } from "~/generated/client";
 
-export type ManipulateType = "UPDATE" | "CREATE";
-
-/**
- * CreateUserType
- */
-export interface CreateUserType {
-  firstName: string;
-  lastName: string;
-  email: string;
-  studyProgrammeIdentifier?: string;
-  role?: string;
-  ssn?: string;
-}
-
 /**
  * UserChatSettingsType
  */

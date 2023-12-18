@@ -239,10 +239,10 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               <div className="evaluation-modal__item-meta">
                 <div className="evaluation-modal__item-meta-item">
                   <span className="evaluation-modal__item-meta-item-label">
-                    {t("labels.feedbackDate", { ns: "journal" })}:
+                    {t("labels.feedbackDate", { ns: "journal" })}
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
-                    {localize.date(journalFeedback.created, "l")}
+                    {localize.date(journalFeedback.created)}
                   </span>
                 </div>
               </div>

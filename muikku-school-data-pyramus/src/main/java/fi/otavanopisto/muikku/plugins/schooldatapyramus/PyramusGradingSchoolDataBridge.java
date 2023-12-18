@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGrade;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
@@ -418,6 +419,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       activity.setIdentifier(courseActivity.getCourseId() == null ? null : courseActivity.getCourseId().toString());
       activity.setName(courseActivity.getCourseName());
       
+      if (courseActivity.getOptionality() != null && courseActivity.getOptionality().equals(Mandatority.MANDATORY.name())) {
+        activity.setMandatority(Mandatority.MANDATORY);
+      }
+       
       List<WorkspaceActivitySubject> subjects = new ArrayList<>();
       if (courseActivity.getSubjects() != null) {
         for (CourseActivitySubject cas : courseActivity.getSubjects()) {

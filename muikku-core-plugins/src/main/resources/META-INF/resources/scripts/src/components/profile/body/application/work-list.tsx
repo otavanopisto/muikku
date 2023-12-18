@@ -10,7 +10,7 @@ import {
 import { StateType } from "~/reducers";
 import { ProfileState } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
-import moment from "~/lib/moment";
+import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { WorkListSection } from "./components/work-list-section";
 import { withTranslation, WithTranslation } from "react-i18next";

@@ -389,7 +389,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               <span aria-label={this.props.t("wcag.date", { ns: "messaging" })}>
                 {`${localize.date(
                   this.props.message.created
-                )} klo ${localize.date(this.props.message.created, "HH:mm")}`}
+                )} - ${localize.date(this.props.message.created, "LT")}`}
               </span>
             </div>
           </div>
