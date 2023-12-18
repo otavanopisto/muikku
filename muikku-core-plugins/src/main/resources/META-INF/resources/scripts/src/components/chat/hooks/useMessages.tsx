@@ -35,7 +35,10 @@ function useMessages(
      * Fetch Messages
      */
     const fetchMsgs = async () => {
-      setLoadingInitialChatMsgs(true);
+      unstable_batchedUpdates(() => {
+        setCanLoadMore(true);
+        setLoadingInitialChatMsgs(true);
+      });
 
       const msgs = await chatApi.getChatMessagesByTarget({
         targetIdentifier: targetIdentifier,

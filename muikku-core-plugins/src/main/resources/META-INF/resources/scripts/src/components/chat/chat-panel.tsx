@@ -170,7 +170,7 @@ const ChatRoomPanel = (props: ChatPanelProps) => {
           {!loadingInitialChatMsgs && (
             <MessagesContainer
               targetIdentifier={props.targetIdentifier}
-              onScrollTop={canLoadMore && fetchMoreMessages}
+              onScrollTop={canLoadMore ? fetchMoreMessages : undefined}
               className="chat__messages-container chat__messages-container"
               modifiers={[modifier]}
             >
