@@ -3,7 +3,7 @@ import { ChatRoom } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import { motion } from "framer-motion";
 import Dropdown from "../general/dropdown";
-import ChatNewRoomDialog from "./dialogs/chat-new-room-dialog";
+import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 
 /**
  * ChatRoomsListsProps
@@ -225,7 +225,7 @@ function ChatRoomNew(props: ChatRoomNewProps) {
         width: "auto",
       }}
     >
-      <ChatNewRoomDialog>
+      <ChatRoomNewDialog>
         <motion.span
           className="new-room"
           style={{
@@ -237,7 +237,7 @@ function ChatRoomNew(props: ChatRoomNewProps) {
         >
           New room
         </motion.span>
-      </ChatNewRoomDialog>
+      </ChatRoomNewDialog>
     </motion.div>
   );
 }

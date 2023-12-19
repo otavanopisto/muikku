@@ -12,7 +12,7 @@ import { useChatContext } from "../context/chat-context";
 export interface MessageAction {
   icon: string;
   text: string;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }
 
 const chatApi = MApi.getChatApi();
@@ -25,13 +25,44 @@ function useMessage(msg: ChatMessage) {
   const { userId, canModerate } = useChatContext();
 
   const [editMode, setEditMode] = React.useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] =
+    React.useState<boolean>(false);
 
   const contentRef = React.useRef<HTMLDivElement>(null);
 
   const myMsg = msg.sourceUserEntityId === userId;
 
   /**
-   * getEditedMessage
+   * Delete message
+   */
+  const deleteMessage = React.useCallback(async () => {
+    await chatApi.deleteChatMessage({
+      messageId: msg.id,
+    });
+
+    setShowDeleteDialog(false);
+  }, [msg]);
+
+  /**
+   * Close delete dialog
+   */
+  const closeDeleteDialog = React.useCallback(() => {
+    setShowDeleteDialog(false);
+  }, []);
+
+  /**
+   * Toggles edit mode
+   */
+  const toggleEditMode = React.useCallback((nextState?: boolean) => {
+    if (nextState !== undefined) {
+      setEditMode(nextState);
+    } else {
+      setEditMode((rightPanelOpen) => !rightPanelOpen);
+    }
+  }, []);
+
+  /**
+   * Get edited message
    */
   const getEditedMessage = () => {
     let finalText = "";
@@ -48,7 +79,7 @@ function useMessage(msg: ChatMessage) {
   };
 
   /**
-   * saveEditedMessage
+   * Save edited message
    */
   const saveEditedMessage = async () => {
     const editedMessage = getEditedMessage();
@@ -64,31 +95,33 @@ function useMessage(msg: ChatMessage) {
   };
 
   /**
-   * handleDeleteClick
+   * Handles delete click
    */
-  const handleDeleteClick = React.useCallback(async () => {
-    await chatApi.deleteChatMessage({
-      messageId: msg.id,
-    });
-  }, [msg]);
+  const handleDeleteClick = React.useCallback(
+    async (e: React.MouseEvent) => {
+      // If shift key and mouse left button is pressed delete message
+      if (e.shiftKey && e.button === 0) {
+        await deleteMessage();
+      } else {
+        setShowDeleteDialog(true);
+      }
+    },
+    [deleteMessage]
+  );
 
   /**
-   * toggleEditMode
+   * Handles edit click
    */
-  const toggleEditMode = React.useCallback((nextState?: boolean) => {
-    if (nextState !== undefined) {
-      setEditMode(nextState);
-    } else {
-      setEditMode((rightPanelOpen) => !rightPanelOpen);
-    }
-  }, []);
+  const handleEditClick = React.useCallback(() => {
+    toggleEditMode(true);
+  }, [toggleEditMode]);
 
   const mainModerationActions = React.useMemo(() => {
     const defaultActions: MessageAction[] = [
       {
         icon: "pencil",
         text: "Muokkaa",
-        onClick: toggleEditMode,
+        onClick: handleEditClick,
       },
       {
         icon: "trash",
@@ -102,7 +135,7 @@ function useMessage(msg: ChatMessage) {
     }
 
     return canModerate ? defaultActions : [];
-  }, [canModerate, handleDeleteClick, myMsg, toggleEditMode]);
+  }, [canModerate, handleDeleteClick, handleEditClick, myMsg]);
 
   const secondaryModerationActions = React.useMemo(() => {
     const defaultActions: MessageAction[] = [];
@@ -120,7 +153,10 @@ function useMessage(msg: ChatMessage) {
   }, [canModerate, mainModerationActions, secondaryModerationActions]);
 
   return {
+    showDeleteDialog,
+    closeDeleteDialog,
     toggleEditMode,
+    deleteMessage,
     contentRef,
     editMode,
     mainModerationActions,

@@ -3,7 +3,7 @@ import useMessages from "./hooks/useMessages";
 import ChatMessage from "./chat-message";
 import { useChatContext } from "./context/chat-context";
 import { motion } from "framer-motion";
-import ChatEditAndInfoRoomDialog from "./dialogs/chat-edit-info-room-dialog";
+import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
 import { ChatRoom, ChatUser } from "~/generated/client";
 
 /**
@@ -180,9 +180,9 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     <div className="chat__panel-wrapper">
       <div className={`chat__panel chat__panel--${modifier}`}>
         <div className={`chat__panel-header chat__panel-header--${modifier}`}>
-          <ChatEditAndInfoRoomDialog room={props.targetRoom} defaults="info">
+          <ChatRoomEditAndInfoDialog room={props.targetRoom} defaults="info">
             <div className="chat__panel-header-title">{props.title}</div>
-          </ChatEditAndInfoRoomDialog>
+          </ChatRoomEditAndInfoDialog>
 
           <div className="chat__button chat__button--occupants icon-users"></div>
 

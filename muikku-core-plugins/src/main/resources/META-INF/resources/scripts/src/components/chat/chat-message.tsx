@@ -13,11 +13,10 @@ import {
 import { useChatContext } from "./context/chat-context";
 import useLongPress from "./hooks/useLongPress";
 import useMessage, { MessageAction } from "./hooks/useMessage";
-import Dropdown from "../general/dropdown";
-import Link from "../general/link";
 import ChatProfileAvatar from "./chat-profile-avatar";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
 
 /**
  * ChatMessageProps
@@ -25,8 +24,6 @@ import { unstable_batchedUpdates } from "react-dom";
 interface ChatMessageProps {
   msg: ChatMessage;
 }
-
-// const chatApi = MApi.getChatApi();
 
 /**
  * ChatMessage
@@ -37,6 +34,8 @@ const ChatMessage = (props: ChatMessageProps) => {
   const { isMobileWidth } = useChatContext();
 
   const {
+    showDeleteDialog,
+    closeDeleteDialog,
     contentRef,
     myMsg,
     editMode,
@@ -44,6 +43,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     secondaryModerationActions,
     mobileModerationActions,
     toggleEditMode,
+    deleteMessage,
     saveEditedMessage,
   } = useMessage(props.msg);
 
@@ -100,7 +100,7 @@ const ChatMessage = (props: ChatMessageProps) => {
   }
 
   /**
-   * placeCaretToEnd
+   * Handles content editable focus
    * @param event event
    */
   const handleContentFocus = (event: React.FocusEvent) => {
@@ -114,7 +114,7 @@ const ChatMessage = (props: ChatMessageProps) => {
   };
 
   /**
-   * onContentEditableKeyDown
+   * Handles content editable key down
    * @param event event
    */
   const handleContentEditableKeyDown = (event: React.KeyboardEvent) => {
@@ -126,6 +126,20 @@ const ChatMessage = (props: ChatMessageProps) => {
       event.preventDefault();
       toggleEditMode(false);
     }
+  };
+
+  /**
+   * Handles cancel edit click
+   */
+  const handleCancelEditClick = () => {
+    toggleEditMode(false);
+  };
+
+  /**
+   * Handles save click
+   */
+  const handleSaveClick = () => {
+    saveEditedMessage();
   };
 
   const chatMessageContent = editMode ? (
@@ -155,14 +169,14 @@ const ChatMessage = (props: ChatMessageProps) => {
         <div className="chat__message-footer">
           <span
             className="chat__message-footer-action"
-            onClick={() => toggleEditMode()}
+            onClick={handleCancelEditClick}
           >
             Peruuta
           </span>
           <span>Tai</span>
           <span
             className="chat__message-footer-action"
-            onClick={() => saveEditedMessage()}
+            onClick={handleSaveClick}
           >
             Tallenna
           </span>
@@ -255,6 +269,13 @@ const ChatMessage = (props: ChatMessageProps) => {
         />
       </div>
 
+      <ChatMessageDeleteDialog
+        open={showDeleteDialog}
+        message={msg}
+        onDelete={deleteMessage}
+        onClose={closeDeleteDialog}
+      />
+
       <MobileMessageActions
         actions={mobileModerationActions}
         open={showMobileActions && mobileModerationActions.length > 0}
@@ -281,13 +302,7 @@ interface DesktopMessageActionsProps {
  * @returns JSX.Element
  */
 function DesktopMessageActions(props: DesktopMessageActionsProps) {
-  const {
-    mainActions,
-    secondaryActions,
-    open,
-    onHoverActionsStart,
-    onHoverActionsEnd,
-  } = props;
+  const { mainActions, open, onHoverActionsStart, onHoverActionsEnd } = props;
 
   return (
     <AnimatePresence initial={false} exitBeforeEnter>
@@ -331,7 +346,7 @@ function DesktopMessageActions(props: DesktopMessageActionsProps) {
               />
             ))}
 
-            {secondaryActions.length > 0 && (
+            {/* {secondaryActions.length > 0 && (
               <Dropdown
                 modifier="chat"
                 items={secondaryActions.map((action, index) => (
@@ -346,7 +361,7 @@ function DesktopMessageActions(props: DesktopMessageActionsProps) {
               >
                 <div className="chat__message-action icon-more_vert" />
               </Dropdown>
-            )}
+            )} */}
           </div>
         </motion.div>
       )}
@@ -584,8 +599,8 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
                       padding: "10px 0",
                       fontSize: "1.2rem",
                     }}
-                    onClick={() => {
-                      action.onClick();
+                    onClick={(e) => {
+                      action.onClick(e);
                       onClose && onClose();
                     }}
                   >
