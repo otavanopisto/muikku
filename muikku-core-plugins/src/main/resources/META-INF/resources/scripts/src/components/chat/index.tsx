@@ -30,14 +30,12 @@ const Chat = () => {
 
   return (
     <ChatWindowContextProvider>
-      <motion.div className="chat">
-        {/* Chat bubble */}
-        {minimized && (
-          <div onClick={toggleControlBox} className="chat__bubble">
-            <span className="icon-chat"></span>
-          </div>
-        )}
-      </motion.div>
+      {/* Chat bubble */}
+      {minimized && (
+        <div onClick={toggleControlBox} className="chat-bubble">
+          <span className="icon-chat"></span>
+        </div>
+      )}
 
       {mobileOrDesktop}
     </ChatWindowContextProvider>
