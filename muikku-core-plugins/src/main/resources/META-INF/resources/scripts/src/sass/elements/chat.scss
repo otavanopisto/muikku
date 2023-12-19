@@ -3,16 +3,6 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
-.chat {
-  align-items: flex-end;
-  bottom: 0;
-  display: flex;
-  justify-content: flex-end;
-  position: fixed;
-  right: 0;
-  z-index: 9989;
-}
-
 .chat--fullscreen {
   height: 100%;
   width: 100%;
@@ -20,11 +10,12 @@
 }
 
 // Chat bubble
-.chat__bubble {
+.chat-bubble {
   align-items: center;
   background-color: $color-chat-bubble-background;
   border: 2px solid $color-default;
   border-radius: 100%;
+  bottom: 10px;
   box-shadow: 0 0 10px $color-chat-bubble-box-shadow;
   color: $color-default;
   cursor: pointer;
@@ -32,15 +23,16 @@
   font-size: 1.85rem;
   height: 55px;
   justify-content: center;
-  margin: 0 0 5px;
   order: 2;
+  position: fixed;
+  right: 10px;
   transform: rotate(-15deg);
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.3s ease-in-out;
   width: 55px;
   z-index: 9989;
 
   &:hover {
-    transform: rotate(0deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -808,28 +800,6 @@
 
 .chat__messages-last-message {
   height: 0;
-}
-
-// When Chat sender is ME
-.chat__message--sender-me {
-  /* .chat__message-meta {
-    justify-content: flex-end;
-  } */
-
-  /* .chat__message-content-container {
-    text-align: right;
-  } */
-}
-
-// When Chat sender is THEM
-.chat__message--sender-them {
-  /* .chat__message-meta {
-    justify-content: flex-start;
-  }
-
-  .chat__message-content-container {
-    text-align: left;
-  } */
 }
 
 .chat__message-meta {
