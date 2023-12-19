@@ -3,6 +3,8 @@ import useMessages from "./hooks/useMessages";
 import ChatMessage from "./chat-message";
 import { useChatContext } from "./context/chat-context";
 import { motion } from "framer-motion";
+import ChatEditAndInfoRoomDialog from "./dialogs/chat-edit-info-room-dialog";
+import { ChatRoom, ChatUser } from "~/generated/client";
 
 /**
  * ChatPanelProps
@@ -17,7 +19,20 @@ interface ChatPanelProps {
    * Target identifier is used to load messages.
    */
   targetIdentifier: string;
+  /**
+   * Modifiers
+   */
   modifiers?: string[];
+}
+
+/**
+ * ChatPrivatePanelProps
+ */
+interface ChatPrivatePanelProps extends ChatPanelProps {
+  /**
+   * Target user.
+   */
+  targetUser: ChatUser;
 }
 
 /**
@@ -25,7 +40,7 @@ interface ChatPanelProps {
  * @param props props
  * @returns JSX.Element
  */
-const ChatPrivatePanel = (props: ChatPanelProps) => {
+const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const { closeDiscussion } = useChatContext();
 
   const {
@@ -112,11 +127,21 @@ const ChatPrivatePanel = (props: ChatPanelProps) => {
 };
 
 /**
+ * ChatRoomPanelProps
+ */
+interface ChatRoomPanelProps extends ChatPanelProps {
+  /**
+   * Target room.
+   */
+  targetRoom: ChatRoom;
+}
+
+/**
  * ChatPublicPanel
  * @param props props
  * @returns JSX.Element
  */
-const ChatRoomPanel = (props: ChatPanelProps) => {
+const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   const { closeDiscussion } = useChatContext();
   const {
     loadingInitialChatMsgs,
@@ -155,7 +180,9 @@ const ChatRoomPanel = (props: ChatPanelProps) => {
     <div className="chat__panel-wrapper">
       <div className={`chat__panel chat__panel--${modifier}`}>
         <div className={`chat__panel-header chat__panel-header--${modifier}`}>
-          <div className="chat__panel-header-title">{props.title}</div>
+          <ChatEditAndInfoRoomDialog room={props.targetRoom} defaults="info">
+            <div className="chat__panel-header-title">{props.title}</div>
+          </ChatEditAndInfoRoomDialog>
 
           <div className="chat__button chat__button--occupants icon-users"></div>
 

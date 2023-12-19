@@ -3,6 +3,7 @@ import { ChatRoom } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import { motion } from "framer-motion";
 import Dropdown from "../general/dropdown";
+import ChatNewRoomDialog from "./dialogs/chat-new-room-dialog";
 
 /**
  * ChatRoomsListsProps
@@ -210,8 +211,6 @@ interface ChatRoomNewProps {}
  * @returns JSX.Element
  */
 function ChatRoomNew(props: ChatRoomNewProps) {
-  const { openNewChatRoom } = useChatContext();
-
   return (
     <motion.div
       style={{
@@ -225,19 +224,20 @@ function ChatRoomNew(props: ChatRoomNewProps) {
         margin: "10px",
         width: "auto",
       }}
-      onClick={openNewChatRoom}
     >
-      <motion.span
-        className="new-room"
-        style={{
-          display: "inline-block",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "clip",
-        }}
-      >
-        New room
-      </motion.span>
+      <ChatNewRoomDialog>
+        <motion.span
+          className="new-room"
+          style={{
+            display: "inline-block",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "clip",
+          }}
+        >
+          New room
+        </motion.span>
+      </ChatNewRoomDialog>
     </motion.div>
   );
 }

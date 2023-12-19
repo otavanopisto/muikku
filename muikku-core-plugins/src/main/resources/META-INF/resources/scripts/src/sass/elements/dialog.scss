@@ -19,6 +19,16 @@
   z-index: 9990;
 }
 
+.dialog--local {
+  inset: 0;
+  position: absolute;
+
+  .dialog__window {
+    inset: 0;
+    position: relative;
+  }
+}
+
 .dialog--matriculation {
   .dialog__window {
     @include breakpoint($breakpoint-pad) {

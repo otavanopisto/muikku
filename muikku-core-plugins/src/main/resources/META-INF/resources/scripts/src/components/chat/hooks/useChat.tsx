@@ -3,7 +3,6 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
-  ChatRoom,
   CreateChatRoomRequest,
   UpdateChatRoomRequest,
 } from "~/generated/client";
@@ -54,12 +53,6 @@ function useChat(userId: number) {
     name: "",
     description: "",
   });
-  const [editChatRoom, setEditChatRoom] =
-    React.useState<UpdateChatRoomRequest>(null);
-
-  // Room identifier to edit
-  const [roomIdentifierToEdit, setRoomIdentifierToEdit] =
-    React.useState<string>(null);
 
   React.useEffect(() => {
     if (minimized) {
@@ -71,13 +64,13 @@ function useChat(userId: number) {
   }, [minimized]);
 
   // Current editor values
-  const currentEditorValues = React.useMemo(() => {
+  /* const currentEditorValues = React.useMemo(() => {
     if (roomIdentifierToEdit) {
       return editChatRoom;
     } else {
       return newChatRoom;
     }
-  }, [roomIdentifierToEdit, editChatRoom, newChatRoom]);
+  }, [roomIdentifierToEdit, editChatRoom, newChatRoom]); */
 
   const activeDiscussion = [...people, ...rooms].find(
     (r) => r.identifier === activeRoomOrPerson
@@ -91,7 +84,7 @@ function useChat(userId: number) {
   /**
    * saveEditorChanges
    */
-  const saveEditorChanges = React.useCallback(async () => {
+  /* const saveEditorChanges = React.useCallback(async () => {
     // If we are editing a room
     if (roomIdentifierToEdit) {
       await updateRoom(roomIdentifierToEdit, editChatRoom);
@@ -110,14 +103,14 @@ function useChat(userId: number) {
     newChatRoom,
     roomIdentifierToEdit,
     updateRoom,
-  ]);
+  ]); */
 
   /**
    * updateRoomEditor
    * @param key key
    * @param value value
    */
-  const updateRoomEditor = <T extends keyof ChatRoom>(
+  /* const updateRoomEditor = <T extends keyof ChatRoom>(
     key: T,
     value: ChatRoom[T]
   ) => {
@@ -132,7 +125,44 @@ function useChat(userId: number) {
         [key]: value,
       }));
     }
+  }; */
+
+  /**
+   * updateNewRoomEditor
+   * @param key key
+   * @param value value
+   */
+  const updateNewRoomEditor = <T extends keyof CreateChatRoomRequest>(
+    key: T,
+    value: CreateChatRoomRequest[T]
+  ) => {
+    setNewChatRoom((newChatRoom) => ({
+      ...newChatRoom,
+      [key]: value,
+    }));
   };
+
+  /**
+   * saveNewRoom
+   */
+  const saveNewRoom = React.useCallback(async () => {
+    await createNewRoom(newChatRoom);
+
+    setNewChatRoom({
+      name: "",
+      description: "",
+    });
+  }, [createNewRoom, newChatRoom]);
+
+  /**
+   * saveEditedRoom
+   */
+  const saveEditedRoom = React.useCallback(
+    async (identifier: string, editChatRoom: UpdateChatRoomRequest) => {
+      await updateRoom(identifier, editChatRoom);
+    },
+    [updateRoom]
+  );
 
   /**
    * deleteRoom
@@ -145,16 +175,9 @@ function useChat(userId: number) {
   );
 
   /**
-   * openNewChatRoom
-   */
-  const openNewChatRoom = React.useCallback(() => {
-    chatViews.goTo("room-editor");
-  }, [chatViews]);
-
-  /**
    * openEditChatRoom
    */
-  const openEditChatRoom = React.useCallback(
+  /* const openEditChatRoom = React.useCallback(
     (roomIdentifier: string) => {
       const room = rooms.find((r) => r.identifier === roomIdentifier);
       if (room) {
@@ -168,7 +191,7 @@ function useChat(userId: number) {
       }
     },
     [rooms]
-  );
+  ); */
 
   // Closes current view and goes back to overview or discussion if exists
   const closeView = React.useCallback(() => {
@@ -249,12 +272,11 @@ function useChat(userId: number) {
     minimized,
     toggleControlBox,
     chatViews,
-    openNewChatRoom,
-    openEditChatRoom,
     openChatProfileSettings,
-    updateRoomEditor,
-    currentEditorValues,
-    saveEditorChanges,
+    newChatRoom,
+    updateNewRoomEditor,
+    saveNewRoom,
+    saveEditedRoom,
     deleteCustomRoom,
     openDiscussion,
     closeDiscussion,

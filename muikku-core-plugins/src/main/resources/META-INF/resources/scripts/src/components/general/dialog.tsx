@@ -24,6 +24,7 @@ interface DialogProps {
   executing?: boolean;
   executeContent?: React.ReactElement<any>;
   modifier?: string | Array<string>;
+  localElementId?: string;
   content: (closePortal: () => void) => JSX.Element | JSX.Element[];
   disableScroll?: boolean;
   footer?: (closePortal: () => void) => JSX.Element;
@@ -86,7 +87,14 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.props.executeOnOpen && this.props.executeOnOpen();
     this.props.onOpen && this.props.onOpen(element);
     if (this.props.disableScroll == true) {
-      document.body.style.overflow = "hidden";
+      if (this.props.localElementId) {
+        const localElement = document.getElementById(this.props.localElementId);
+        if (localElement) {
+          localElement.style.overflow = "hidden";
+        }
+      } else {
+        document.body.style.overflow = "hidden";
+      }
     }
     if (element.childNodes && element.childNodes[0]) {
       const el = element.childNodes[0].firstChild as HTMLElement;
@@ -105,7 +113,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       visible: false,
     });
     if (this.props.disableScroll == true) {
-      document.body.style.overflow = "auto";
+      if (!this.props.localElementId) {
+        document.body.style.overflow = "auto";
+      }
     }
     document.body.style.marginBottom = "0";
     setTimeout(removeFromDOM, 300);
@@ -122,6 +132,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     }
     return (
       <Portal
+        localElementId={this.props.localElementId}
         onKeyStroke={this.props.onKeyStroke}
         isOpen={this.props.isOpen}
         openByClickOn={this.props.children}
