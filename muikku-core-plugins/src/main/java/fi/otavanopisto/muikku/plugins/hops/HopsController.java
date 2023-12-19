@@ -88,7 +88,7 @@ public class HopsController {
       // Hops is always available for admins
       
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (userSchoolDataIdentifier != null && (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR) || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.MANAGER) || userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER))) {
         return true;
       }
       SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);

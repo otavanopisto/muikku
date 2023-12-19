@@ -1230,7 +1230,7 @@ public class GuiderRESTService extends PluginRESTService {
     UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
     SchoolDataIdentifier studentIdentifier = studentEntity.defaultSchoolDataIdentifier();
 
-    if (!userSchoolDataController.amICounselor(studentIdentifier) && !loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+    if (!userSchoolDataController.amICounselor(studentIdentifier) && (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR) && !loggedUserRole.equals(EnvironmentRoleArchetype.MANAGER) && !loggedUserRole.equals(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER))) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
