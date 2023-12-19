@@ -16,7 +16,7 @@
   border: 2px solid $color-default;
   border-radius: 100%;
   bottom: 10px;
-  box-shadow: 0 0 10px $color-chat-bubble-box-shadow;
+  box-shadow: 0 0 20px $color-chat-bubble-box-shadow;
   color: $color-default;
   cursor: pointer;
   display: flex;
@@ -35,6 +35,55 @@
     transform: rotate(360deg);
   }
 }
+
+.chat-window {
+  background: $color-default;
+  border-radius: 20px;
+  box-shadow: 0 0 10px $color-chat-bubble-box-shadow;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 500px;
+  overflow: hidden;
+  position: fixed;
+  width: 500px;
+  z-index: 9989;
+}
+
+.chat-window__header {
+  align-items: center;
+  display: flex;
+  height: 50px;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.chat-window__body {
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.chat-window__resizer {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// OLDIES STARTS HERE
 
 // Chat Rooms
 .chat__chatrooms-container {
@@ -57,92 +106,6 @@
   order: -1;
 }
 
-// Chat Minimized
-.chat__minimized {
-  align-items: center;
-  border-radius: 2px 2px 0 0;
-  color: $color-default;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  line-height: 1.125rem;
-  margin: 0 15px 0 0;
-  padding: 5px 10px;
-  width: 200px;
-
-  .chat__button--close {
-    color: $color-default;
-  }
-}
-
-.chat__minimized--workspace {
-  background: $color-chat-workspace-room-main-color;
-}
-
-.chat__minimized--other {
-  background: $color-chat-other-room-main-color;
-}
-
-.chat__minimized--private {
-  background: $color-chat-private-main-color;
-}
-
-.chat__nofication--workspace {
-  animation: 2.5s linear infinite;
-
-  @include chat-pulse {
-    0% {
-      background: $color-chat-workspace-room-main-color;
-    }
-
-    50% {
-      background: $color-chat-message-notification;
-    }
-  }
-}
-
-.chat__nofication--other {
-  animation: 2.5s linear infinite;
-
-  @include chat-pulse {
-    0% {
-      background: $color-chat-other-room-main-color;
-    }
-
-    50% {
-      background: $color-chat-message-notification;
-    }
-  }
-}
-
-.chat__nofication--private {
-  animation: 2.5s linear infinite;
-
-  @include chat-pulse {
-    0% {
-      background: $color-chat-private-main-color;
-    }
-
-    50% {
-      background: $color-chat-message-notification;
-    }
-  }
-}
-
-.chat__minimized-title {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: 0.875rem;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 // Chat Private Window Nickname
 .chat__target-nickname {
   margin: 0 0 0 4px;
@@ -161,11 +124,6 @@
   transition: box-shadow 0.3s ease-in-out;
 }
 
-.chat__panel--controlbox {
-  margin: 0;
-  width: 280px;
-}
-
 .chat__panel--workspace {
   border-top: 4px solid $color-chat-workspace-room-main-color;
 }
@@ -177,17 +135,6 @@
 .chat__panel--private {
   border-top: 4px solid $color-chat-private-main-color;
 }
-
-/* .chat__panel--other,
-.chat__panel--private,
-.chat__panel--workspace {
-  box-shadow: 0 5px 5px 2px $color-chat-controlbox-box-shadow;
-} */
-
-/* .chat__panel--active {
-  box-shadow: 0 0 15px $color-chat-controlbox-box-shadow;
-  transition: box-shadow 0.3s ease-in-out;
-} */
 
 .chat__panel-header,
 .chat__controlbox-header {
@@ -954,27 +901,6 @@
 
 .chat-notification--failed {
   color: $color-error;
-}
-
-.chat-window {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 1px 1px hsl(0deg 0% 0% / 0.075),
-    0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075),
-    0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075);
-  display: flex;
-  flex-direction: column;
-  height: 500px;
-  overflow: hidden;
-  position: fixed;
-  width: 500px;
-  z-index: 9999;
-}
-
-.chat-window__main {
-  height: 100%;
-  position: relative;
-  width: 100%;
 }
 
 .chat-window__add-item {

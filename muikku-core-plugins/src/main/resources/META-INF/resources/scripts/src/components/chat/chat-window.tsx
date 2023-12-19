@@ -201,9 +201,9 @@ function ChatWindow(props: ChatWindowProps) {
       windowEle.style.height = `${windowPositonRef.current.height}px`;
     } else {
       windowEle.style.transform = `translateX(${
-        window.innerWidth - windowRect.width - 20
+        window.innerWidth - windowRect.width - 10
       }px) translateY(${
-        window.innerHeight - windowRect.height
+        window.innerHeight - windowRect.height - 10
       }px) translateZ(0px)`;
     }
   }, [detached, windowPositonRef]);
@@ -235,8 +235,8 @@ function ChatWindow(props: ChatWindowProps) {
       });
     } else {
       animationControls.set({
-        x: window.innerWidth - windowRect.width - 20,
-        y: window.innerHeight - windowRect.height,
+        x: window.innerWidth - windowRect.width - 10,
+        y: window.innerHeight - windowRect.height - 10,
       });
 
       windowPositonRef.current = {
@@ -265,8 +265,8 @@ function ChatWindow(props: ChatWindowProps) {
       const windowRect = windowEle.getBoundingClientRect();
 
       animationControls.set({
-        x: window.innerWidth - windowRect.width - 20,
-        y: window.innerHeight - windowRect.height,
+        x: window.innerWidth - windowRect.width - 10,
+        y: window.innerHeight - windowRect.height - 10,
       });
     };
     window.addEventListener("resize", handleResize);
@@ -294,7 +294,7 @@ function ChatWindow(props: ChatWindowProps) {
       setAnimating(true);
 
       await animationControls.start({
-        x: window.innerWidth - windowRect.width - 30,
+        x: window.innerWidth - windowRect.width - 20,
         y: window.innerHeight - windowRect.height - 20,
         transition: { duration: 0.3 },
       });
@@ -1034,13 +1034,7 @@ function ChatWindow(props: ChatWindowProps) {
             event.preventDefault();
             dragControls.start(event);
           }}
-          style={{
-            height: "50px",
-            width: "100%",
-            backgroundColor: "beige",
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
+          className="chat-window__header"
         >
           <AnimatePresence initial={false}>
             {!fullScreen && (
@@ -1071,7 +1065,7 @@ function ChatWindow(props: ChatWindowProps) {
             <CloseIcon />
           </motion.button>
         </header>
-        <main id="chat-window__main" className="chat-window__main">
+        <main id="chat-window__body" className="chat-window__body">
           {props.children}
         </main>
 

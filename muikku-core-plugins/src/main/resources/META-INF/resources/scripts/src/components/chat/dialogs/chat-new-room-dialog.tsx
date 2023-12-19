@@ -88,7 +88,7 @@ const ChatNewRoomDialog = (props: ChatNewRoomDialogProps) => {
 
   return (
     <Dialog
-      localElementId="chat-window__main"
+      localElementId="chat-window__body"
       disableScroll={true}
       title="Uusi huone"
       content={content}
