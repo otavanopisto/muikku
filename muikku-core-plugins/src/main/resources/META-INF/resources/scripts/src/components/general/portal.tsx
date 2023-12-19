@@ -21,6 +21,7 @@ const KEYCODES = {
  */
 interface PortalProps {
   children?: any;
+  localElementId?: string;
   openByClickOn?: React.ReactElement<any>;
   openByHoverOn?: React.ReactElement<any>;
   openByHoverIsClickToo?: boolean;
@@ -200,7 +201,17 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
-        document.body.removeChild(this.node);
+
+        if (this.props.localElementId) {
+          const localElement = document.getElementById(
+            this.props.localElementId
+          );
+          if (localElement) {
+            localElement.removeChild(this.node);
+          }
+        } else {
+          document.body.removeChild(this.node);
+        }
       }
       this.portal = null;
       this.node = null;
@@ -266,7 +277,20 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   renderPortal(props: PortalProps, isOpening = false) {
     if (!this.node) {
       this.node = document.createElement("div");
-      document.body.appendChild(this.node);
+
+      if (this.props.localElementId) {
+        const localElement = document.getElementById(this.props.localElementId);
+        if (localElement) {
+          this.node.style.position = "absolute";
+          this.node.style.inset = "0";
+          this.node.style.zIndex = "10000";
+          localElement.appendChild(this.node);
+        } else {
+          document.body.appendChild(this.node);
+        }
+      } else {
+        document.body.appendChild(this.node);
+      }
     }
 
     this.portal = unstable_renderSubtreeIntoContainer(

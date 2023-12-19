@@ -318,7 +318,6 @@ function DesktopMessageActions(props: DesktopMessageActionsProps) {
             right: "10px",
             display: "flex",
             justifyContent: "center",
-            background: "gray",
             padding: "5px",
             borderRadius: "25px",
           }}
@@ -559,7 +558,6 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
               left: 0,
               right: 0,
               opacity,
-              background: "antiquewhite",
               padding: "10px",
               width: "100%",
               zIndex: 1,

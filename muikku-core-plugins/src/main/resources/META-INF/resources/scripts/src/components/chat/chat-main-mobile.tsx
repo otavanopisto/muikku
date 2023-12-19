@@ -55,7 +55,6 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-end",
-            background: "gray",
             height: "43px",
             padding: "10px",
           }}
@@ -69,7 +68,6 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       <motion.div
         className="chat__panel-wrapper"
         style={{
-          background: "antiquewhite",
           width: "auto",
         }}
       >
@@ -91,7 +89,6 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-start",
-            background: "gray",
             height: "43px",
             padding: "10px",
           }}
@@ -106,7 +103,6 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             bottom: 0,
             display: "flex",
             justifyContent: "space-between",
-            background: "gray",
             padding: "10px",
           }}
         />
@@ -376,7 +372,6 @@ function ChatPanel(props: ChatLeftPanelProps) {
   const panelStyles: MotionStyle =
     panelPosition === "left"
       ? {
-          background: "azure",
           position: "absolute",
           bottom: 0,
           top: 0,
@@ -386,7 +381,6 @@ function ChatPanel(props: ChatLeftPanelProps) {
           left: 0,
         }
       : {
-          background: "azure",
           position: "absolute",
           bottom: 0,
           top: 0,

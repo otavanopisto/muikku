@@ -1071,7 +1071,9 @@ function ChatWindow(props: ChatWindowProps) {
             <CloseIcon />
           </motion.button>
         </header>
-        <main className="chat-window__main">{props.children}</main>
+        <main id="chat-window__main" className="chat-window__main">
+          {props.children}
+        </main>
 
         <ResizerHandle visible={!fullScreen} ref={refLeft} direction="l" />
         <ResizerHandle visible={!fullScreen} ref={refTop} direction="t" />

@@ -68,7 +68,6 @@ function ChatDropdown(props: ChatDropdownProps) {
             }
             style={{
               position: "absolute",
-              backgroundColor: "white",
               padding: "10px",
             }}
           >

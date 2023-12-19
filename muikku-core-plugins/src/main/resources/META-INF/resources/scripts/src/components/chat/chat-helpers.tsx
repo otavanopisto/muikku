@@ -10,7 +10,6 @@ import { ChatView } from "./animated-views";
 import AnimatedView from "./animated-views/animated-view";
 import ChatDiscussion from "./chat-discussion";
 import ChatProfileSettings from "./chat-profile-settings";
-import ChatRoomEditor from "./editors/chat-room-editor";
 
 /**
  * Experimenting with distilling swipe offset and velocity into a single variable, so the
@@ -63,15 +62,6 @@ export const chatControllerViews: ChatView[] = [
     component: (
       <AnimatedView>
         <ChatDiscussion />
-      </AnimatedView>
-    ),
-  },
-  {
-    name: "Room-editor",
-    identifier: "room-editor",
-    component: (
-      <AnimatedView>
-        <ChatRoomEditor />
       </AnimatedView>
     ),
   },

@@ -26,12 +26,14 @@ function ChatDiscussion(props: ChatDiscussionProps) {
         title={activeDiscussion.name}
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
+        targetRoom={activeDiscussion}
       />
     ) : (
       <ChatPrivatePanel
         title={activeDiscussion.nick}
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
+        targetUser={activeDiscussion}
       />
     );
   }, [activeDiscussion, userId]);

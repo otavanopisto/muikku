@@ -164,6 +164,7 @@ function ChatMain(props: ChatMainProps) {
 
   return (
     <div
+      id="chat-main"
       style={{
         width: "100%",
         height: "100%",
@@ -175,7 +176,6 @@ function ChatMain(props: ChatMainProps) {
         animate={animationControlsLeftPanel}
         className="chat-rooms__panel"
         style={{
-          background: "azure",
           position: "absolute",
           left: 0,
           bottom: 0,
@@ -192,7 +192,6 @@ function ChatMain(props: ChatMainProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-end",
-            background: "gray",
             height: "43px",
             padding: "10px",
           }}
@@ -209,7 +208,6 @@ function ChatMain(props: ChatMainProps) {
         animate={animationControls}
         className="chat__panel-wrapper"
         style={{
-          background: "antiquewhite",
           width: "auto",
           marginLeft: PANEL_LEFT_MIN_WIDTH,
           marginRight: PANEL_RIGHT_MIN_WIDTH,
@@ -225,7 +223,6 @@ function ChatMain(props: ChatMainProps) {
         animate={animationControlsRightPanel}
         className="chat-people__panel"
         style={{
-          background: "cadetblue",
           position: "absolute",
           right: 0,
           bottom: 0,
@@ -242,7 +239,6 @@ function ChatMain(props: ChatMainProps) {
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-start",
-            background: "gray",
             height: "43px",
             padding: "10px",
           }}
@@ -258,7 +254,6 @@ function ChatMain(props: ChatMainProps) {
             bottom: 0,
             display: "flex",
             justifyContent: "space-between",
-            background: "gray",
             padding: "10px",
           }}
         />
