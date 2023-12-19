@@ -7,7 +7,7 @@ import { useChatContext } from "../context/chat-context";
 /**
  * NewChatRoomDialogProps
  */
-interface ChatNewRoomDialogProps {
+interface ChatRoomNewDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
 }
@@ -16,7 +16,7 @@ interface ChatNewRoomDialogProps {
  * NewChatRoomDialog
  * @param props props
  */
-const ChatNewRoomDialog = (props: ChatNewRoomDialogProps) => {
+const ChatRoomNewDialog = (props: ChatRoomNewDialogProps) => {
   const { newChatRoom, updateNewRoomEditor, saveNewRoom } = useChatContext();
   const [disabled, setDisabled] = React.useState<boolean>(false);
 
@@ -99,4 +99,4 @@ const ChatNewRoomDialog = (props: ChatNewRoomDialogProps) => {
   );
 };
 
-export default ChatNewRoomDialog;
+export default ChatRoomNewDialog;

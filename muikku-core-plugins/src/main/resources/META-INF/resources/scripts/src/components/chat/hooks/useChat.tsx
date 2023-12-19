@@ -63,15 +63,6 @@ function useChat(userId: number) {
     }
   }, [minimized]);
 
-  // Current editor values
-  /* const currentEditorValues = React.useMemo(() => {
-    if (roomIdentifierToEdit) {
-      return editChatRoom;
-    } else {
-      return newChatRoom;
-    }
-  }, [roomIdentifierToEdit, editChatRoom, newChatRoom]); */
-
   const activeDiscussion = [...people, ...rooms].find(
     (r) => r.identifier === activeRoomOrPerson
   );
@@ -80,52 +71,6 @@ function useChat(userId: number) {
     () => people.filter((p) => p.id !== userId),
     [people, userId]
   );
-
-  /**
-   * saveEditorChanges
-   */
-  /* const saveEditorChanges = React.useCallback(async () => {
-    // If we are editing a room
-    if (roomIdentifierToEdit) {
-      await updateRoom(roomIdentifierToEdit, editChatRoom);
-      setRoomIdentifierToEdit(null);
-    } else {
-      await createNewRoom(newChatRoom);
-
-      setNewChatRoom({
-        name: "",
-        description: "",
-      });
-    }
-  }, [
-    createNewRoom,
-    editChatRoom,
-    newChatRoom,
-    roomIdentifierToEdit,
-    updateRoom,
-  ]); */
-
-  /**
-   * updateRoomEditor
-   * @param key key
-   * @param value value
-   */
-  /* const updateRoomEditor = <T extends keyof ChatRoom>(
-    key: T,
-    value: ChatRoom[T]
-  ) => {
-    if (roomIdentifierToEdit) {
-      setEditChatRoom((editChatRoom) => ({
-        ...editChatRoom,
-        [key]: value,
-      }));
-    } else {
-      setNewChatRoom((newChatRoom) => ({
-        ...newChatRoom,
-        [key]: value,
-      }));
-    }
-  }; */
 
   /**
    * updateNewRoomEditor

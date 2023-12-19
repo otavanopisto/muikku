@@ -10,7 +10,7 @@ import { unstable_batchedUpdates } from "react-dom";
 /**
  * NewChatRoomDialogProps
  */
-interface ChatEditAndInfoRoomDialogProps {
+interface ChatRoomEditAndInfoDialogProps {
   /**
    * Chat room
    */
@@ -27,7 +27,7 @@ interface ChatEditAndInfoRoomDialogProps {
  * ChatRoomInfoDialog
  * @param props props
  */
-const ChatEditAndInfoRoomDialog = (props: ChatEditAndInfoRoomDialogProps) => {
+const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
   const { room, defaults } = props;
 
   const { saveEditedRoom } = useChatContext();
@@ -159,4 +159,4 @@ const ChatEditAndInfoRoomDialog = (props: ChatEditAndInfoRoomDialogProps) => {
   );
 };
 
-export default ChatEditAndInfoRoomDialog;
+export default ChatRoomEditAndInfoDialog;
