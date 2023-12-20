@@ -19,7 +19,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -57,7 +56,6 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -498,7 +496,7 @@ public class HopsRestService {
 
     String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
     
-    Boolean studentCurriculumOPS2021 = curriculumName != null && curriculumName.equals("OPS 2021");
+    Boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
     
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
 
@@ -533,6 +531,8 @@ public class HopsRestService {
             
             if (workspaceEntity != null) {
               Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+              
+              // TODO: We have to fetch workspace from Pyramus to fetch workspace type from Pyramus. Adding workspace type to Elastic would eliminate the need for both calls.
               
               if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
                 continue;
@@ -589,7 +589,7 @@ public class HopsRestService {
                 
                 workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
 
-                if (workspaceType != null && !workspaceType.getName().equals("NONSTOP")) {
+                if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "nonstop")) {
                   continue;
                 }
               }

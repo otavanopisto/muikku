@@ -583,7 +583,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
     if (workspaceUser == null) {
-      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, WorkspaceRoleArchetype.STUDENT);
+      workspaceUser = workspaceController.createWorkspaceUser(workspaceIdentifier, userIdentifier, WorkspaceRoleArchetype.STUDENT);
       waitForWorkspaceUserEntity(workspaceEntity, userIdentifier);
     }
     else {

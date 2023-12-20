@@ -25,7 +25,6 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataBridge;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -234,8 +233,8 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public void removeWorkspace(String identifier) {
-    if (!StringUtils.isNumeric(identifier)) {
+  public void removeWorkspace(SchoolDataIdentifier schoolDataIdentifier) {
+    if (!StringUtils.isNumeric(schoolDataIdentifier.getIdentifier())) {
       throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
     }
 
@@ -261,23 +260,23 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
+  public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier.getIdentifier());
 
     if (role == WorkspaceRoleArchetype.STUDENT) {
-      Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+      Long studentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
       CourseStudent courseStudent = new CourseStudent(null, courseId, studentId, OffsetDateTime.now(), Boolean.FALSE, null, null, Boolean.FALSE, CourseOptionality.OPTIONAL, null);
       
       return Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent))).get(0);
     } else {
-      Long staffMemberId = identifierMapper.getPyramusStaffId(user.getIdentifier());
+      Long staffMemberId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
       CourseStaffMemberRoleEnum staffMemberRole = identifierMapper.getCourseStaffMemberRole(role);
       
       if (staffMemberRole != null && (staffMemberId != null)) {
         CourseStaffMember courseStaffMember = new CourseStaffMember(null, courseId, staffMemberId, staffMemberRole);
         return entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/staffMembers", courseStaffMember));
       } else {
-        logger.severe(String.format("Given staff member role could not be parsed: %s, %s", staffMemberRole, user.getIdentifier()));
+        logger.severe(String.format("Given staff member role could not be parsed: %s, %s", staffMemberRole, userIdentifier.getIdentifier()));
         throw new RuntimeException("Could not parse workspace staff member role");
       }
     }

@@ -117,6 +117,7 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
+import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -1255,7 +1256,7 @@ public class GuiderRESTService extends PluginRESTService {
 
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, studentIdentifier);
     if (workspaceUser == null) {
-      workspaceUser = workspaceController.createWorkspaceUser(workspace, student, WorkspaceRoleArchetype.STUDENT);
+      workspaceUser = workspaceController.createWorkspaceUser(workspaceIdentifier, studentIdentifier, WorkspaceRoleArchetype.STUDENT);
       waitForWorkspaceUserEntity(workspaceEntity, studentIdentifier);
     }
     else {
@@ -1265,17 +1266,18 @@ public class GuiderRESTService extends PluginRESTService {
     List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
     List<UserEntity> recipients = new ArrayList<UserEntity>();
 
-    String workspaceName = workspace.getName();
-    if (!StringUtils.isBlank(workspace.getNameExtension())) {
-      workspaceName += String.format(" (%s)", workspace.getNameExtension()); 
+    WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
+    String workspaceName = workspaceEntityName.getName();
+
+    if (!StringUtils.isBlank(workspaceEntityName.getNameExtension())) {
+      workspaceName += String.format(" (%s)", workspaceEntityName.getNameExtension()); 
     }
 
     String userName = student.getNickName() == null
       ? student.getDisplayName()
       : String.format("%s \"%s\" %s (%s)", student.getFirstName(), student.getNickName(), student.getLastName(), student.getStudyProgrammeName());
 
-    UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUserEntity(), false);
-    String loggedUserName = loggedUserEntityName.getDisplayName();
+    UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUserEntity(), true);
     
     for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
       recipients.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
@@ -1283,10 +1285,10 @@ public class GuiderRESTService extends PluginRESTService {
     workspaceController.createWorkspaceUserSignup(workspaceEntity, studentEntity, new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
-    caption = MessageFormat.format(caption, loggedUserName, userName, workspaceName);
+    caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), userName, workspaceName);
 
     String captionStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.captionStudent");
-    captionStudent = MessageFormat.format(captionStudent, loggedUserName, workspaceName);
+    captionStudent = MessageFormat.format(captionStudent, loggedUserEntityName.getDisplayName(), workspaceName);
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
 
@@ -1295,17 +1297,17 @@ public class GuiderRESTService extends PluginRESTService {
     String contentStudent;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
-      content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink);
+      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink);
       
       contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentStudent");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserName, workspaceLink);
+      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink);
     } else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
       String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
-      content = MessageFormat.format(content, loggedUserName, studentLink, workspaceLink, blockquoteMessage);
+      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink, blockquoteMessage);
       
       contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessageStudent");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserName, workspaceLink, blockquoteMessage);
+      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink, blockquoteMessage);
 
     }
 

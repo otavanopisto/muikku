@@ -466,7 +466,9 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceEntity.schoolDataIdentifier(), userIdentifier);
     if (workspaceUser == null) {
-      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
+      SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+
+      workspaceUser = workspaceController.createWorkspaceUser(workspaceIdentifier, userIdentifier, role);
       return waitForWorkspaceUserEntity(workspaceEntity, userIdentifier) ? StudentStatus.OK : StudentStatus.FAILED;
     }
     else {
