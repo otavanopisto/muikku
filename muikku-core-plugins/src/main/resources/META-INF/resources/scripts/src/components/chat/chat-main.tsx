@@ -163,38 +163,19 @@ function ChatMain(props: ChatMainProps) {
   }, []);
 
   return (
-    <div
-      id="chat-main"
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    >
+    <>
       <motion.div
         ref={roomPanelRef}
         initial={false}
         animate={animationControlsLeftPanel}
-        className="chat-rooms__panel"
+        className="chat-window__rooms-panel"
         style={{
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          top: 0,
-          zIndex: 2,
-          overflowY: "auto",
-          overflowX: "hidden",
           width: PANEL_LEFT_MIN_WIDTH,
         }}
       >
         <div
           onClick={() => toggleLeftPanel()}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            height: "43px",
-            padding: "10px",
-          }}
+          className="chat-window__expand-toggle chat-window__expand-toggle--rooms"
         >
           <AddIcon />
         </div>
@@ -206,9 +187,8 @@ function ChatMain(props: ChatMainProps) {
         ref={mainWrapperRef}
         initial={false}
         animate={animationControls}
-        className="chat__panel-wrapper"
+        className="chat-window__conversations-panel"
         style={{
-          width: "auto",
           marginLeft: PANEL_LEFT_MIN_WIDTH,
           marginRight: PANEL_RIGHT_MIN_WIDTH,
         }}
@@ -221,27 +201,14 @@ function ChatMain(props: ChatMainProps) {
         ref={peoplePanelRef}
         initial={false}
         animate={animationControlsRightPanel}
-        className="chat-people__panel"
+        className="chat-window__users-panel"
         style={{
-          position: "absolute",
-          right: 0,
-          bottom: 0,
-          top: 0,
-          zIndex: 2,
-          overflowY: "auto",
-          overflowX: "hidden",
           width: PANEL_RIGHT_MIN_WIDTH,
         }}
       >
         <div
           onClick={() => toggleRightPanel()}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            height: "43px",
-            padding: "10px",
-          }}
+          className="chat-window__expand-toggle chat-window__expand-toggle--users"
         >
           <AddIcon />
         </div>
@@ -258,7 +225,7 @@ function ChatMain(props: ChatMainProps) {
           }}
         />
       </motion.div>
-    </div>
+    </>
   );
 }
 

@@ -309,8 +309,8 @@ function ChatWindow(props: ChatWindowProps) {
       setAnimating(true);
 
       animationControls.start({
-        x: window.innerWidth - windowRect.width - 20,
-        y: window.innerHeight - windowRect.height,
+        x: window.innerWidth - windowRect.width - 10,
+        y: window.innerHeight - windowRect.height - 10,
         transition: { duration: 0.3 },
       });
 
@@ -1012,7 +1012,7 @@ function ChatWindow(props: ChatWindowProps) {
   }
 
   if (fullScreen) {
-    windowModifiers.push("full-screen");
+    windowModifiers.push("fullscreen");
   }
 
   const windowClassName = `chat-window ${windowModifiers.map(
