@@ -14,10 +14,20 @@ interface ChatDiscussionProps {}
  * @returns JSX.Element
  */
 function ChatDiscussion(props: ChatDiscussionProps) {
-  const { activeDiscussion, userId } = useChatContext();
+  const { activeDiscussion, userId, messagesInstances } = useChatContext();
+
+  const activeMessageInstance = React.useMemo(() => {
+    if (!activeDiscussion) {
+      return null;
+    }
+
+    return messagesInstances.find(
+      (instance) => instance.targetIdentifier === activeDiscussion.identifier
+    );
+  }, [activeDiscussion, messagesInstances]);
 
   const activeDiscussionPanel = React.useMemo(() => {
-    if (!activeDiscussion) {
+    if (!activeDiscussion || !activeMessageInstance) {
       return null;
     }
 
@@ -27,6 +37,7 @@ function ChatDiscussion(props: ChatDiscussionProps) {
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
         targetRoom={activeDiscussion}
+        messagesInstance={activeMessageInstance}
       />
     ) : (
       <ChatPrivatePanel
@@ -34,9 +45,10 @@ function ChatDiscussion(props: ChatDiscussionProps) {
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
         targetUser={activeDiscussion}
+        messagesInstance={activeMessageInstance}
       />
     );
-  }, [activeDiscussion, userId]);
+  }, [activeDiscussion, activeMessageInstance, userId]);
 
   return activeDiscussionPanel;
 }

@@ -1,10 +1,11 @@
 import * as React from "react";
-import useMessages from "./hooks/useMessages";
 import ChatMessage from "./chat-message";
 import { useChatContext } from "./context/chat-context";
 import { motion } from "framer-motion";
 import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
 import { ChatRoom, ChatUser } from "~/generated/client";
+import { ChatMessages } from "./types/chat-instance";
+import useMessagesInstance from "./hooks/useMessageInstance";
 
 /**
  * ChatPanelProps
@@ -19,6 +20,10 @@ interface ChatPanelProps {
    * Target identifier is used to load messages.
    */
   targetIdentifier: string;
+  /**
+   * Messages instance.
+   */
+  messagesInstance: ChatMessages;
   /**
    * Modifiers
    */
@@ -43,18 +48,12 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const { closeDiscussion } = useChatContext();
 
-  const {
-    chatMsgs,
-    newMessage,
-    setNewMessage,
-    postMessage,
-    fetchMoreMessages,
-    canLoadMore,
-    loadingInitialChatMsgs,
-  } = useMessages(props.targetIdentifier, [
-    props.targetIdentifier,
-    `user-${props.userId}`,
-  ]);
+  const { infoState, instance } = useMessagesInstance({
+    instance: props.messagesInstance,
+  });
+
+  const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
+    infoState;
 
   /**
    * handleEnterKeyDown
@@ -72,7 +71,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
    * @param e e
    */
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewMessage(e.target.value);
+    instance.newMessage = e.target.value;
   };
 
   return (
@@ -93,18 +92,20 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
         </div>
 
         <div className="chat__panel-body chat__panel-body--chatroom">
-          {!loadingInitialChatMsgs && (
-            <MessagesContainer
-              targetIdentifier={props.targetIdentifier}
-              onScrollTop={canLoadMore && fetchMoreMessages}
-              className="chat__messages-container"
-              modifiers={["private"]}
-            >
-              {chatMsgs.map((msg) => (
-                <ChatMessage key={msg.id} msg={msg} />
-              ))}
-            </MessagesContainer>
-          )}
+          <MessagesContainer
+            targetIdentifier={props.targetIdentifier}
+            currentScrollTop={instance.scrollTop}
+            onScrollTopChange={(scrollTop) => {
+              instance.scrollTop = scrollTop;
+            }}
+            onScrollTop={canLoadMore ? loadMoreMessages : undefined}
+            className="chat__messages-container"
+            modifiers={["private"]}
+          >
+            {messages.map((msg) => (
+              <ChatMessage key={msg.id} msg={msg} />
+            ))}
+          </MessagesContainer>
         </div>
         <div className="chat__panel-footer chat__panel-footer--chatroom">
           <textarea
@@ -143,15 +144,13 @@ interface ChatRoomPanelProps extends ChatPanelProps {
  */
 const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   const { closeDiscussion } = useChatContext();
-  const {
-    loadingInitialChatMsgs,
-    canLoadMore,
-    chatMsgs,
-    newMessage,
-    setNewMessage,
-    postMessage,
-    fetchMoreMessages,
-  } = useMessages(props.targetIdentifier, [props.targetIdentifier]);
+
+  const { infoState, instance } = useMessagesInstance({
+    instance: props.messagesInstance,
+  });
+
+  const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
+    infoState;
 
   const isWorkspace = true;
 
@@ -173,7 +172,8 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
    * @param e e
    */
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNewMessage(e.target.value);
+    /* handleNewMessageChange(e.target.value); */
+    instance.newMessage = e.target.value;
   };
 
   return (
@@ -194,18 +194,20 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
         </div>
 
         <div className="chat__panel-body chat__panel-body--chatroom">
-          {!loadingInitialChatMsgs && (
-            <MessagesContainer
-              targetIdentifier={props.targetIdentifier}
-              onScrollTop={canLoadMore ? fetchMoreMessages : undefined}
-              className="chat__messages-container chat__messages-container"
-              modifiers={[modifier]}
-            >
-              {chatMsgs.map((msg) => (
-                <ChatMessage key={msg.id} msg={msg} />
-              ))}
-            </MessagesContainer>
-          )}
+          <MessagesContainer
+            targetIdentifier={props.targetIdentifier}
+            currentScrollTop={instance.scrollTop}
+            onScrollTop={canLoadMore ? loadMoreMessages : undefined}
+            onScrollTopChange={(scrollTop) => {
+              instance.scrollTop = scrollTop;
+            }}
+            className="chat__messages-container chat__messages-container"
+            modifiers={[modifier]}
+          >
+            {messages.map((msg) => (
+              <ChatMessage key={msg.id} msg={msg} />
+            ))}
+          </MessagesContainer>
         </div>
         <div className="chat__panel-footer chat__panel-footer--chatroom">
           <textarea
@@ -235,7 +237,9 @@ interface MessagesContainerProps {
   targetIdentifier: string;
   className?: string;
   modifiers?: string[];
+  currentScrollTop?: number;
   onScrollTop?: () => void;
+  onScrollTopChange?: (scrollTop: number) => void;
 }
 
 /**
@@ -243,12 +247,19 @@ interface MessagesContainerProps {
  * @param props props
  */
 const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
-  const { className, modifiers, targetIdentifier, children, onScrollTop } =
-    props;
+  const {
+    className,
+    modifiers,
+    targetIdentifier,
+    children,
+    currentScrollTop,
+    onScrollTop,
+    onScrollTopChange,
+  } = props;
 
   const lastMessageRef = React.useRef<HTMLDivElement>(null);
   const msgsContainerRef = React.useRef<HTMLDivElement>(null);
-  const scrollPositionRef = React.useRef<number>(null);
+  const currentScrollHeightRef = React.useRef<number>(null);
   const [scrollDetached, setScrollDetached] = React.useState<boolean>(false);
 
   const childrenLength = React.useMemo(
@@ -258,9 +269,18 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
 
   React.useLayoutEffect(() => {
     if (!onScrollTop) {
-      scrollPositionRef.current = null;
+      currentScrollHeightRef.current = null;
     }
   }, [onScrollTop]);
+
+  React.useLayoutEffect(() => {
+    // Reset scroll position when target changes
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "auto" });
+    }
+
+    currentScrollHeightRef.current = 0;
+  }, [targetIdentifier]);
 
   React.useEffect(() => {
     // Scroll to bottom when new message is added
@@ -273,56 +293,60 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
     // Keepl scroll position when adding older messages
     if (
       msgsContainerRef.current &&
-      scrollPositionRef.current &&
+      currentScrollHeightRef.current &&
       scrollDetached
     ) {
       msgsContainerRef.current.scrollTo({
         behavior: "auto",
-        top: msgsContainerRef.current.scrollHeight - scrollPositionRef.current,
+        top:
+          msgsContainerRef.current.scrollHeight -
+          currentScrollHeightRef.current,
       });
 
       // Reset scroll position
-      scrollPositionRef.current = null;
+      currentScrollHeightRef.current = null;
     }
   }, [childrenLength, scrollDetached]);
 
-  React.useLayoutEffect(() => {
-    // Reset scroll position when target changes
-    if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: "auto" });
-    }
+  React.useEffect(() => {
+    /**
+     * handleScroll
+     * @param e e
+     */
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLDivElement;
 
-    scrollPositionRef.current = 0;
-  }, [targetIdentifier]);
+      onScrollTopChange && onScrollTopChange(target.scrollTop);
 
-  /**
-   * Handles message container scroll.
-   * @param e e
-   */
-  const handleMessageContainerScroll = (
-    e: React.UIEvent<HTMLDivElement, UIEvent>
-  ) => {
-    const target = e.target as HTMLDivElement;
+      // Check if target is scrollable
+      const isScrollable = target.scrollHeight > target.clientHeight;
 
-    // Check if target is scrollable
-    const isScrollable = target.scrollHeight > target.clientHeight;
+      // Check if scroll has reached the top
+      const reachedTop = target.scrollTop === 0;
 
-    // Check if scroll has reached the top
-    const reachedTop = target.scrollTop === 0;
+      // Check if scroll has reached the bottom
+      const Reacthedbottom =
+        Math.abs(
+          target.scrollHeight - target.clientHeight - target.scrollTop
+        ) <= 1;
 
-    // Check if scroll has reached the bottom
-    const Reacthedbottom =
-      Math.abs(target.scrollHeight - target.clientHeight - target.scrollTop) <=
-      1;
+      setScrollDetached(!Reacthedbottom);
 
-    setScrollDetached(!Reacthedbottom);
+      if (isScrollable && reachedTop && msgsContainerRef.current) {
+        // Save scroll position when scroll is at the top
+        currentScrollHeightRef.current = msgsContainerRef.current.scrollHeight;
+        onScrollTop && onScrollTop();
+      }
+    };
 
-    if (isScrollable && reachedTop && msgsContainerRef.current) {
-      // Save scroll position when scroll is at the top
-      scrollPositionRef.current = msgsContainerRef.current.scrollHeight;
-      props.onScrollTop && props.onScrollTop();
-    }
-  };
+    const ref = msgsContainerRef.current;
+
+    ref && ref.addEventListener("scroll", handleScroll);
+
+    return () => {
+      ref && ref.removeEventListener("scroll", handleScroll);
+    };
+  }, [onScrollTop, onScrollTopChange, props]);
 
   const mappedModifiers = modifiers
     ? modifiers.map((modifier) => `${className}--${modifier}`)
@@ -338,7 +362,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
         duration: 0.3,
       }}
       ref={msgsContainerRef}
-      onScroll={handleMessageContainerScroll}
+      /* onScroll={handleMessageContainerScroll} */
       className={`${className} ${mappedModifiers}`}
     >
       {props.children}

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { motion } from "framer-motion";
 import "~/sass/elements/chat.scss";
 import { useChatContext } from "./context/chat-context";
 import ChatWindow from "./chat-window";
@@ -12,7 +11,15 @@ import { ChatWindowContextProvider } from "./context/chat-window-context";
  * @returns JSX.Element
  */
 const Chat = () => {
-  const { minimized, toggleControlBox, isMobileWidth } = useChatContext();
+  const { minimized, toggleControlBox, isMobileWidth, messagesInstances } =
+    useChatContext();
+
+  // Use effect to destroy all messages instances when component unmounts
+  React.useEffect(() => () => {
+    messagesInstances.map((instance) => {
+      instance.destroy();
+    });
+  });
 
   const mobileOrDesktop = React.useMemo(() => {
     if (minimized) {

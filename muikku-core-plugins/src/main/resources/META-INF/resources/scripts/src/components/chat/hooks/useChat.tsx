@@ -12,6 +12,8 @@ import { chatControllerViews } from "../chat-helpers";
 import usePeople from "./usePeople";
 import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";
+import { ChatMessages } from "../types/chat-instance";
+import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -29,9 +31,15 @@ function useChat(userId: number) {
     updateRoom,
     deleteRoom,
   } = useRooms();
+  const websocket = useChatWebsocketContext();
+
   const chatViews = useViews({
     views: chatControllerViews,
   });
+
+  const [messagesInstances, setMessagesInstances] = React.useState<
+    ChatMessages[]
+  >([]);
 
   // Whether to show the control box or bubble
   const [minimized, setMinimized] = React.useState<boolean>(true);
@@ -119,25 +127,6 @@ function useChat(userId: number) {
     [deleteRoom]
   );
 
-  /**
-   * openEditChatRoom
-   */
-  /* const openEditChatRoom = React.useCallback(
-    (roomIdentifier: string) => {
-      const room = rooms.find((r) => r.identifier === roomIdentifier);
-      if (room) {
-        unstable_batchedUpdates(() => {
-          setEditChatRoom({
-            name: room.name,
-            description: room.description,
-          });
-          setRoomIdentifierToEdit(roomIdentifier);
-        });
-      }
-    },
-    [rooms]
-  ); */
-
   // Closes current view and goes back to overview or discussion if exists
   const closeView = React.useCallback(() => {
     if (activeRoomOrPerson) {
@@ -184,11 +173,33 @@ function useChat(userId: number) {
           setRightPanelOpen(false);
         }
 
+        // Check if message instance already exists for this identifier
+
+        const existingIndex = messagesInstances.findIndex(
+          (instance) => instance.targetIdentifier === identifier
+        );
+
+        if (existingIndex === -1) {
+          // Create new message instance
+          const newMessagesInstance = new ChatMessages(
+            identifier,
+            [identifier, `user-${userId}`],
+            websocket
+          );
+
+          const updatedInstanceList = [
+            ...messagesInstances,
+            newMessagesInstance,
+          ];
+
+          setMessagesInstances(updatedInstanceList);
+        }
+
         setActiveRoomOrPerson(identifier);
         chatViews.goTo("discussion");
       });
     },
-    [chatViews, isMobileWidth]
+    [chatViews, isMobileWidth, messagesInstances, userId, websocket]
   );
 
   // Closes the active room or person
@@ -231,6 +242,7 @@ function useChat(userId: number) {
     leftPanelOpen,
     rightPanelOpen,
     closeView,
+    messagesInstances,
   };
 }
 
