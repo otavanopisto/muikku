@@ -226,7 +226,6 @@ public class GuiderRESTService extends PluginRESTService {
   @Inject
   private WorkspaceController workspaceController;
 
-
   @GET
   @Path("/students")
   @RESTPermit (handling = Handling.INLINE)
@@ -1235,15 +1234,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    User student = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
-    
-    if (student == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
 
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, studentIdentifier);
     if (workspaceUserEntity != null && workspaceUserEntity.getArchived() == Boolean.TRUE) {
@@ -1273,10 +1264,8 @@ public class GuiderRESTService extends PluginRESTService {
       workspaceName += String.format(" (%s)", workspaceEntityName.getNameExtension()); 
     }
 
-    String userName = student.getNickName() == null
-      ? student.getDisplayName()
-      : String.format("%s \"%s\" %s (%s)", student.getFirstName(), student.getNickName(), student.getLastName(), student.getStudyProgrammeName());
-
+    UserEntityName studentName = userEntityController.getName(studentIdentifier, true);
+    
     UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUserEntity(), true);
     
     for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
@@ -1285,14 +1274,14 @@ public class GuiderRESTService extends PluginRESTService {
     workspaceController.createWorkspaceUserSignup(workspaceEntity, studentEntity, new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
-    caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), userName, workspaceName);
+    caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), studentName.getDisplayName(), workspaceName);
 
     String captionStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.captionStudent");
     captionStudent = MessageFormat.format(captionStudent, loggedUserEntityName.getDisplayName(), workspaceName);
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
 
-    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
+    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), studentName.getDisplayName());
     String content;
     String contentStudent;
     if (StringUtils.isEmpty(entity.getMessage())) {
