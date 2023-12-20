@@ -163,7 +163,13 @@ function ChatMain(props: ChatMainProps) {
   }, []);
 
   return (
-    <>
+    <div
+      id="chat-main"
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
       <motion.div
         ref={roomPanelRef}
         initial={false}
@@ -214,18 +220,9 @@ function ChatMain(props: ChatMainProps) {
         </div>
 
         <ChatUsersList minimized={!rightPanelOpen} />
-        <ChatProfile
-          style={{
-            width: "100%",
-            position: "absolute",
-            bottom: 0,
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "10px",
-          }}
-        />
+        <ChatProfile className="chat-window__profile" />
       </motion.div>
-    </>
+    </div>
   );
 }
 

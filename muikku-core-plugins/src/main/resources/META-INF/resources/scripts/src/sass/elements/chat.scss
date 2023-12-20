@@ -99,6 +99,7 @@
 
 .chat-window__conversations-panel {
   background: $color-default;
+  height: 100%;
   width: auto;
 }
 
@@ -112,6 +113,15 @@
   right: 0;
   top: 0;
   z-index: 2;
+}
+
+.chat-window__profile {
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  position: absolute;
+  width: 100%;
 }
 
 .chat-window__resizer {
@@ -214,13 +224,6 @@
   justify-content: flex-end;
   margin-bottom: 10px;
   order: 1;
-}
-
-// Chat panel wrapper
-.chat__panel-wrapper {
-  height: 100%;
-  order: initial;
-  width: 100%;
 }
 
 .chat__panel-wrapper--reorder {
