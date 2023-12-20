@@ -12,6 +12,7 @@ interface AvatarProps {
   size?: string;
   userCategory?: number;
   avatarAriaLabel?: string;
+  modifier?: string;
 }
 
 /**
@@ -35,6 +36,8 @@ const Avatar = (props: AvatarProps) => {
     <div
       className={`avatar-container ${
         props.size ? "avatar-container--" + props.size : ""
+      } ${
+        props.modifier ? "avatar-container--" + props.modifier : ""
       } rs_skip_always`}
     >
       <img
@@ -43,12 +46,12 @@ const Avatar = (props: AvatarProps) => {
         aria-label={avatarAriaLabel}
         className={`avatar avatar-img ${
           props.size ? "avatar--" + props.size : ""
-        }`}
+        } ${props.modifier ? "avatar--" + props.modifier : ""}`}
       />
       <div
         className={`avatar avatar--category-${category} ${
           props.size ? "avatar--" + props.size : ""
-        }`}
+        } ${props.modifier ? "avatar--" + props.modifier : ""}`}
       >
         {firstName[0]}
       </div>

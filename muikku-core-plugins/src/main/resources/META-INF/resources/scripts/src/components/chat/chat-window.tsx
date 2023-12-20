@@ -309,8 +309,8 @@ function ChatWindow(props: ChatWindowProps) {
       setAnimating(true);
 
       animationControls.start({
-        x: window.innerWidth - windowRect.width - 20,
-        y: window.innerHeight - windowRect.height,
+        x: window.innerWidth - windowRect.width - 10,
+        y: window.innerHeight - windowRect.height - 10,
         transition: { duration: 0.3 },
       });
 
@@ -1005,6 +1005,20 @@ function ChatWindow(props: ChatWindowProps) {
     toggleControlBox();
   }, [detached, toggleControlBox, windowPositonRef]);
 
+  const windowModifiers: string[] = [];
+
+  if (detached) {
+    windowModifiers.push("detached");
+  }
+
+  if (fullScreen) {
+    windowModifiers.push("fullscreen");
+  }
+
+  const windowClassName = `chat-window ${windowModifiers.map(
+    (modifier) => `chat-window--${modifier}`
+  )}`;
+
   return (
     <ChatWindowBreakpointsContextProvider windowRef={windowRef}>
       <div
@@ -1025,7 +1039,7 @@ function ChatWindow(props: ChatWindowProps) {
         dragMomentum={false}
         dragListener={false}
         dragConstraints={windowConstrainsRef}
-        className="chat-window"
+        className={windowClassName}
         dragControls={dragControls}
         transition={{ type: "tween", duration: 0.3 }}
       >

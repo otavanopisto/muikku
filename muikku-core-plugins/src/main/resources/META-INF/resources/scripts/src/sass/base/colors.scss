@@ -612,13 +612,15 @@ $color-cagtegory-11: #000000;
 // CHAT
 $color-chat-bubble-background: #f95ae7;
 $color-chat-bubble-box-shadow: rgb(0 0 0 / 15%);
+$color-chat-window-box-shadow: rgb(0 0 0 / 10%);
+$color-chat-window-detached-box-shadow: rgb(0 0 0 / 15%);
 $color-chat-controlbox-box-shadow: rgb(0 0 0 / 30%);
 $color-chat-user-status-online: #6de164;
 $color-chat-user-status-offline: #cecdcd;
 $color-chat-user-status-away: #fbb470;
 $color-chat-user-status-dnd: #de3211;
 $color-chat-room-description-background: #f8f8f8;
-$color-chat-controlbox-main-color: #f95ae7;
+$color-chat-header-background: #f95ae7;
 $color-chat-workspace-room-main-color: #0ebd96;
 $color-chat-other-room-main-color: $color-info;
 $color-chat-private-main-color: #be09ff;

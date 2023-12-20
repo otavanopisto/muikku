@@ -151,10 +151,10 @@ export const ResizerHandle = React.forwardRef<
 >((props, ref) => {
   const { visible, direction } = props;
 
-  let className = "resizer";
+  let className = "chat-window__resizer";
 
   if (direction) {
-    className += ` resizer-${direction}`;
+    className += ` chat-window__resizer-${direction}`;
   }
 
   return (

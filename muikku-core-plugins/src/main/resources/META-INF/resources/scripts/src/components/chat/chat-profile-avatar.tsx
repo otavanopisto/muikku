@@ -42,7 +42,7 @@ function ChatProfileAvatar(props: ChatProfileAvatarProps) {
         position: "relative",
       }}
     >
-      <Avatar firstName={nick} hasImage={hasImage} id={id} />
+      <Avatar modifier="chat" firstName={nick} hasImage={hasImage} id={id} />
 
       {statusColor && (
         <div
