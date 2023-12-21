@@ -5,6 +5,7 @@ import {
   AnimatePresence,
 } from "framer-motion";
 import * as React from "react";
+import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
 import { ChatWindowBreakpointsContextProvider } from "./context/chat-window-breakpoints-context";
 import { useChatWindowContext } from "./context/chat-window-context";
@@ -1064,32 +1065,43 @@ function ChatWindow(props: ChatWindowProps) {
         >
           <AnimatePresence initial={false}>
             {!fullScreen && (
-              <motion.button
+              <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="chat-window__add-item"
+                className="chat-window__action-button"
                 onClick={toggleDetached}
               >
-                <AddIcon />
-              </motion.button>
+                {detached ? (
+                  <IconButton
+                    buttonModifiers={["chat"]}
+                    icon="arrow-down-right"
+                  />
+                ) : (
+                  <IconButton buttonModifiers={["chat"]} icon="arrow-up-left" />
+                )}
+              </motion.div>
             )}
           </AnimatePresence>
 
-          <motion.button
-            className="chat-window__add-item"
+          <motion.div
+            className="chat-window__action-button"
             onClick={toggleFullscreen}
           >
-            <AddIcon />
-          </motion.button>
+            {fullScreen ? (
+              <IconButton buttonModifiers={["chat"]} icon="fullscreen-exit" />
+            ) : (
+              <IconButton buttonModifiers={["chat"]} icon="fullscreen" />
+            )}
+          </motion.div>
 
-          <motion.button
-            className="chat-window__add-item"
+          <motion.div
+            className="chat-window__action-button"
             onClick={handleCloseWindow}
           >
-            <CloseIcon />
-          </motion.button>
+            <IconButton buttonModifiers={["chat"]} icon="cross" />
+          </motion.div>
         </header>
         <main id="chat-window__body" className="chat-window__body">
           {props.children}

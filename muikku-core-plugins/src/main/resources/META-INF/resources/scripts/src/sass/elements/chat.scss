@@ -74,18 +74,22 @@
 }
 
 // Toggle for expanding/collapsing panels
-.chat-window__expand-toggle {
+.chat-window__button-wrapper {
   align-items: center;
   display: flex;
-  height: 40px;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
 }
 
-.chat-window__expand-toggle--rooms {
+.chat-window__button-wrapper--rooms {
   justify-content: flex-end;
+  width: 100%;
 }
 
-.chat-window__expand-toggle--users {
+.chat-window__button-wrapper--users {
   justify-content: flex-start;
+  width: 100%;
 }
 
 .chat-window__rooms-panel,
@@ -130,9 +134,7 @@
   line-height: 1;
   padding: 8px;
   position: absolute;
-
-  // 16px in this case equals twice the parent containers [chat-window__users-panel] padding value as absolutely positioned elements wont obey parents padding values
-  width: calc(100% - 16px);
+  width: 100%;
 }
 
 .chat-window__avatar-container {
@@ -191,8 +193,8 @@
   overflow: hidden;
   padding: 2px 0;
   text-overflow: ellipsis;
-  width: 100%;
   white-space: nowrap;
+  width: 100%;
 }
 
 .chat-window__profile-literal-status {

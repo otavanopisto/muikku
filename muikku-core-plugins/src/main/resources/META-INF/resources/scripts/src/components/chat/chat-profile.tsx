@@ -37,7 +37,7 @@ function ChatProfile(props: ChatProfileProps) {
       </div>
 
       <IconButton
-        buttonModifiers={["edit-chat-settings"]}
+        buttonModifiers={["chat"]}
         icon="cog"
         onClick={openChatProfileSettings}
       />

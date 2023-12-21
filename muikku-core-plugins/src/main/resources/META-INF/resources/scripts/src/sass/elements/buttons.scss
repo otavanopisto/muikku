@@ -809,10 +809,21 @@
   color: $color-info;
 }
 
-.button-icon--edit-chat-settings {
+.button-icon--chat {
+  border-radius: 100%;
   color: $color-default-contrast;
+  font-size: 1rem;
   height: 1.625rem;
+  margin: 5px;
+  padding: 5px;
   width: 1.625rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: $color-default-generic-background;
+  }
 }
 
 .button-pill {

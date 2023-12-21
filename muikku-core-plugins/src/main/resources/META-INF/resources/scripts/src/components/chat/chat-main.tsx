@@ -9,6 +9,7 @@ import { AddIcon } from "./chat-helpers";
 import { ChatUsersList } from "./chat-users";
 import { ChatRoomNew, ChatRoomsLists } from "./chat-rooms";
 import ChatProfile from "./chat-profile";
+import { IconButton } from "../general/button";
 
 const PANEL_RIGHT_MIN_WIDTH = 56;
 const PANEL_LEFT_MIN_WIDTH = 85;
@@ -175,9 +176,13 @@ function ChatMain(props: ChatMainProps) {
       >
         <div
           onClick={() => toggleLeftPanel()}
-          className="chat-window__expand-toggle chat-window__expand-toggle--rooms"
+          className="chat-window__button-wrapper chat-window__button-wrapper--rooms"
         >
-          <AddIcon />
+          {leftPanelOpen ? (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-left" />
+          ) : (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-right" />
+          )}
         </div>
 
         <ChatRoomNew />
@@ -208,9 +213,13 @@ function ChatMain(props: ChatMainProps) {
       >
         <div
           onClick={() => toggleRightPanel()}
-          className="chat-window__expand-toggle chat-window__expand-toggle--users"
+          className="chat-window__button-wrapper chat-window__button-wrapper--users"
         >
-          <AddIcon />
+          {rightPanelOpen ? (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-right" />
+          ) : (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-left" />
+          )}
         </div>
 
         <ChatUsersList minimized={!rightPanelOpen} />
