@@ -76,51 +76,49 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   };
 
   return (
-    <div className="chat__panel-wrapper">
-      <div className={`chat__panel chat__panel--private`}>
-        <div className="chat__panel-header chat__panel-header--private">
-          <div className="chat__panel-header-title">
-            <span
-              className={"chat__online-indicator chat__online-indicator--"}
-            ></span>
-            <span className="chat__target-nickname">{props.title}</span>
-          </div>
-
-          <div
-            onClick={closeDiscussion}
-            className="chat__button chat__button--room-settings icon-cross"
-          ></div>
+    <div className={`chat__panel chat__panel--private`}>
+      <div className="chat__panel-header chat__panel-header--private">
+        <div className="chat__panel-header-title">
+          <span
+            className={"chat__online-indicator chat__online-indicator--"}
+          ></span>
+          <span className="chat__target-nickname">{props.title}</span>
         </div>
 
-        <div className="chat__panel-body chat__panel-body--chatroom">
-          {!loadingInitialChatMsgs && (
-            <MessagesContainer
-              targetIdentifier={props.targetIdentifier}
-              onScrollTop={canLoadMore && fetchMoreMessages}
-              className="chat__messages-container"
-              modifiers={["private"]}
-            >
-              {chatMsgs.map((msg) => (
-                <ChatMessage key={msg.id} msg={msg} />
-              ))}
-            </MessagesContainer>
-          )}
-        </div>
-        <div className="chat__panel-footer chat__panel-footer--chatroom">
-          <textarea
-            className="chat__memofield chat__memofield--muc-message"
-            value={newMessage}
-            onChange={handleTextareaChange}
-            onKeyDown={handleEnterKeyDown}
-          />
-          <button
-            className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private"
-            type="submit"
-            onClick={postMessage}
+        <div
+          onClick={closeDiscussion}
+          className="chat__button chat__button--room-settings icon-cross"
+        ></div>
+      </div>
+
+      <div className="chat__panel-body chat__panel-body--chatroom">
+        {!loadingInitialChatMsgs && (
+          <MessagesContainer
+            targetIdentifier={props.targetIdentifier}
+            onScrollTop={canLoadMore && fetchMoreMessages}
+            className="chat__messages-container"
+            modifiers={["private"]}
           >
-            <span className="icon-arrow-right"></span>
-          </button>
-        </div>
+            {chatMsgs.map((msg) => (
+              <ChatMessage key={msg.id} msg={msg} />
+            ))}
+          </MessagesContainer>
+        )}
+      </div>
+      <div className="chat__panel-footer chat__panel-footer--chatroom">
+        <textarea
+          className="chat__memofield chat__memofield--muc-message"
+          value={newMessage}
+          onChange={handleTextareaChange}
+          onKeyDown={handleEnterKeyDown}
+        />
+        <button
+          className="chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-private"
+          type="submit"
+          onClick={postMessage}
+        >
+          <span className="icon-arrow-right"></span>
+        </button>
       </div>
     </div>
   );
@@ -177,52 +175,50 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   };
 
   return (
-    <div className="chat__panel-wrapper">
-      <div className={`chat__panel chat__panel--${modifier}`}>
-        <div className={`chat__panel-header chat__panel-header--${modifier}`}>
-          <ChatRoomEditAndInfoDialog room={props.targetRoom} defaults="info">
-            <div className="chat__panel-header-title">{props.title}</div>
-          </ChatRoomEditAndInfoDialog>
+    <div className={`chat__panel chat__panel--${modifier}`}>
+      <div className={`chat__panel-header chat__panel-header--${modifier}`}>
+        <ChatRoomEditAndInfoDialog room={props.targetRoom} defaults="info">
+          <div className="chat__panel-header-title">{props.title}</div>
+        </ChatRoomEditAndInfoDialog>
 
-          <div className="chat__button chat__button--occupants icon-users"></div>
+        <div className="chat__button chat__button--occupants icon-users"></div>
 
-          <div className="chat__button chat__button--room-settings icon-cogs"></div>
-          <div
-            onClick={closeDiscussion}
-            className="chat__button chat__button--room-settings icon-cross"
-          ></div>
-        </div>
+        <div className="chat__button chat__button--room-settings icon-cogs"></div>
+        <div
+          onClick={closeDiscussion}
+          className="chat__button chat__button--room-settings icon-cross"
+        ></div>
+      </div>
 
-        <div className="chat__panel-body chat__panel-body--chatroom">
-          {!loadingInitialChatMsgs && (
-            <MessagesContainer
-              targetIdentifier={props.targetIdentifier}
-              onScrollTop={canLoadMore ? fetchMoreMessages : undefined}
-              className="chat__messages-container chat__messages-container"
-              modifiers={[modifier]}
-            >
-              {chatMsgs.map((msg) => (
-                <ChatMessage key={msg.id} msg={msg} />
-              ))}
-            </MessagesContainer>
-          )}
-        </div>
-        <div className="chat__panel-footer chat__panel-footer--chatroom">
-          <textarea
-            id="sendGroupChatMessage"
-            className="chat__memofield chat__memofield--muc-message"
-            onChange={handleTextareaChange}
-            onKeyDown={handleEnterKeyDown}
-            value={newMessage}
-          />
-          <button
-            className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${modifier}`}
-            type="submit"
-            onClick={postMessage}
+      <div className="chat__panel-body chat__panel-body--chatroom">
+        {!loadingInitialChatMsgs && (
+          <MessagesContainer
+            targetIdentifier={props.targetIdentifier}
+            onScrollTop={canLoadMore ? fetchMoreMessages : undefined}
+            className="chat__messages-container chat__messages-container"
+            modifiers={[modifier]}
           >
-            <span className="icon-arrow-right"></span>
-          </button>
-        </div>
+            {chatMsgs.map((msg) => (
+              <ChatMessage key={msg.id} msg={msg} />
+            ))}
+          </MessagesContainer>
+        )}
+      </div>
+      <div className="chat__panel-footer chat__panel-footer--chatroom">
+        <textarea
+          id="sendGroupChatMessage"
+          className="chat__memofield chat__memofield--muc-message"
+          onChange={handleTextareaChange}
+          onKeyDown={handleEnterKeyDown}
+          value={newMessage}
+        />
+        <button
+          className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${modifier}`}
+          type="submit"
+          onClick={postMessage}
+        >
+          <span className="icon-arrow-right"></span>
+        </button>
       </div>
     </div>
   );

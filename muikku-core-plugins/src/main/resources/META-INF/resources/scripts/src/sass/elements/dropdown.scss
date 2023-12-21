@@ -126,21 +126,6 @@
   }
 }
 
-.dropdown--private-chat,
-.dropdown--chat-control-box {
-  .dropdown__container {
-    background: $color-chat-private-main-color;
-    border-radius: 2px;
-    color: $color-default;
-    min-width: 0;
-    text-align: left;
-  }
-
-  .dropdown__arrow {
-    border-bottom-color: $color-chat-private-main-color;
-  }
-}
-
 .dropdown--material-management .dropdown__container {
   padding: 5px;
 }

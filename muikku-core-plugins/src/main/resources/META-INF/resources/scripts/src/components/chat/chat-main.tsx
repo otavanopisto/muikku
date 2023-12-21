@@ -10,7 +10,7 @@ import { ChatUsersList } from "./chat-users";
 import { ChatRoomNew, ChatRoomsLists } from "./chat-rooms";
 import ChatProfile from "./chat-profile";
 
-const PANEL_RIGHT_MIN_WIDTH = 66;
+const PANEL_RIGHT_MIN_WIDTH = 56;
 const PANEL_LEFT_MIN_WIDTH = 85;
 
 const PANEL_LEFT_MAX_WIDTH = 250;
@@ -163,13 +163,7 @@ function ChatMain(props: ChatMainProps) {
   }, []);
 
   return (
-    <div
-      id="chat-main"
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    >
+    <>
       <motion.div
         ref={roomPanelRef}
         initial={false}
@@ -220,9 +214,9 @@ function ChatMain(props: ChatMainProps) {
         </div>
 
         <ChatUsersList minimized={!rightPanelOpen} />
-        <ChatProfile className="chat-window__profile" />
+        <ChatProfile />
       </motion.div>
-    </div>
+    </>
   );
 }
 

@@ -18,46 +18,28 @@ interface ChatProfileAvatarProps {
 function ChatProfileAvatar(props: ChatProfileAvatarProps) {
   const { nick, hasImage, id } = props;
 
-  const statusColor = React.useMemo(() => {
+  const statusColorModifier = React.useMemo(() => {
     switch (props.status) {
       case "online":
-        return "green";
+        return "online";
       case "away":
-        return "yellow";
+        return "away";
       case "busy":
-        return "red";
+        return "dnd";
       case "offline":
-        return "gray";
+        return "offline";
       default:
         return null;
     }
   }, [props.status]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        position: "relative",
-      }}
-    >
+    <div className="chat-window__avatar-container">
       <Avatar modifier="chat" firstName={nick} hasImage={hasImage} id={id} />
 
-      {statusColor && (
+      {statusColorModifier && (
         <div
-          className="status-indicator"
-          style={{
-            width: "15px",
-            height: "15px",
-            borderRadius: "50%",
-            background: statusColor,
-            border: "1px solid white",
-            position: "absolute",
-            zIndex: 1,
-            bottom: "-3px",
-            right: "5px",
-          }}
+          className={`chat-window__avatar-status chat-window__avatar-status--${statusColorModifier}`}
         />
       )}
     </div>

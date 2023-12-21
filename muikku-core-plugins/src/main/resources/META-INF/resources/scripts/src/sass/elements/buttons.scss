@@ -809,6 +809,12 @@
   color: $color-info;
 }
 
+.button-icon--edit-chat-settings {
+  color: $color-default-contrast;
+  height: 1.625rem;
+  width: 1.625rem;
+}
+
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);

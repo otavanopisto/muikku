@@ -24,33 +24,23 @@ function ChatProfile(props: ChatProfileProps) {
   }
 
   return (
-    <div {...props}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <ChatProfileAvatar
-          id={userMe.id}
-          nick={userMe.nick}
-          hasImage={userMe.hasImage}
-          status="online"
-        />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginLeft: "10px",
-          }}
-        >
-          <span>{userMe.nick}</span>
-          <span>Paikalla</span>
-        </div>
+    <div className="chat-window__profile-container">
+      <ChatProfileAvatar
+        id={userMe.id}
+        nick={userMe.nick}
+        hasImage={userMe.hasImage}
+        status="online"
+      />
+      <div className="chat-window__profile-name-container">
+        <span className="chat-window__profile-name">{userMe.nick}</span>
+        <span className="chat-window__profile-literal-status">Paikalla</span>
       </div>
 
-      <IconButton icon="cog" onClick={openChatProfileSettings} />
+      <IconButton
+        buttonModifiers={["edit-chat-settings"]}
+        icon="cog"
+        onClick={openChatProfileSettings}
+      />
     </div>
   );
 }
