@@ -76,7 +76,7 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
     <Dialog
       isOpen={open}
       onClose={onClose}
-      localElementId="chat-window__main"
+      localElementId="chat-window__body"
       disableScroll={true}
       title="Viestin poisto"
       content={content}

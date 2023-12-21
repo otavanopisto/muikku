@@ -91,7 +91,7 @@ function ChatMain(props: ChatMainProps) {
 
   // Set resize observer to panel refs and update mainWrapperRef margin left and right
   React.useEffect(() => {
-    if (roomPanelRef.current && initialized.current) {
+    if (roomPanelRef.current) {
       const resizeRoomsObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           // Update mainWrapperRef margin left to roomPanelRef width
@@ -140,8 +140,8 @@ function ChatMain(props: ChatMainProps) {
     } else {
       if (roomPanelRef.current && peoplePanelRef.current) {
         animationControls.start({
-          marginLeft: roomPanelRef.current?.clientWidth,
-          marginRight: peoplePanelRef.current?.clientWidth,
+          marginLeft: roomPanelRef.current.clientWidth,
+          marginRight: peoplePanelRef.current.clientWidth,
           transition: {
             duration: 0.1,
             type: "tween",

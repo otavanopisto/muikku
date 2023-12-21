@@ -205,6 +205,11 @@ function ChatWindow(props: ChatWindowProps) {
       }px) translateY(${
         window.innerHeight - windowRect.height - 10
       }px) translateZ(0px)`;
+
+      if (windowPositonRef.current) {
+        windowEle.style.width = `${windowPositonRef.current.width}px`;
+        windowEle.style.height = `${windowPositonRef.current.height}px`;
+      }
     }
   }, [detached, windowPositonRef]);
 
@@ -238,6 +243,13 @@ function ChatWindow(props: ChatWindowProps) {
         x: window.innerWidth - windowRect.width - 10,
         y: window.innerHeight - windowRect.height - 10,
       });
+
+      if (windowPositonRef.current) {
+        animationControls.set({
+          width: `${windowPositonRef.current.width}px`,
+          height: `${windowPositonRef.current.height}px`,
+        });
+      }
 
       windowPositonRef.current = {
         height: windowRef.current.offsetHeight,

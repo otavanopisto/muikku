@@ -14,29 +14,43 @@ interface ChatDiscussionProps {}
  * @returns JSX.Element
  */
 function ChatDiscussion(props: ChatDiscussionProps) {
-  const { activeDiscussion, userId } = useChatContext();
+  const { activeDiscussion, userId, discussionInstances } = useChatContext();
+
+  const activeDiscussionInstance = React.useMemo(() => {
+    if (!activeDiscussion) {
+      return null;
+    }
+
+    return discussionInstances.find(
+      (instance) => instance.targetIdentifier === activeDiscussion.identifier
+    );
+  }, [activeDiscussion, discussionInstances]);
 
   const activeDiscussionPanel = React.useMemo(() => {
-    if (!activeDiscussion) {
+    if (!activeDiscussion || !activeDiscussionInstance) {
       return null;
     }
 
     return isChatRoom(activeDiscussion) ? (
       <ChatRoomPanel
+        key={activeDiscussion.identifier}
         title={activeDiscussion.name}
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
         targetRoom={activeDiscussion}
+        discussionInstance={activeDiscussionInstance}
       />
     ) : (
       <ChatPrivatePanel
+        key={activeDiscussion.identifier}
         title={activeDiscussion.nick}
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
         targetUser={activeDiscussion}
+        discussionInstance={activeDiscussionInstance}
       />
     );
-  }, [activeDiscussion, userId]);
+  }, [activeDiscussion, activeDiscussionInstance, userId]);
 
   return activeDiscussionPanel;
 }
