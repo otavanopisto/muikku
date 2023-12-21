@@ -46,7 +46,6 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
@@ -60,8 +59,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
@@ -85,14 +84,13 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
-import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -117,7 +115,6 @@ import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
-import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -1214,23 +1211,19 @@ public class GuiderRESTService extends PluginRESTService {
   public Response createWorkspaceSignupByStaff(@PathParam("ID") Long userEntityId, @PathParam("WORKSPACEID") Long workspaceEntityId,
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
     
-    UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    EnvironmentRoleEntity roleEntity = usdi.getRole();
-    EnvironmentRoleArchetype loggedUserRole = roleEntity != null ? roleEntity.getArchetype() : null;
-
-    if (loggedUserRole == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace %d not found", workspaceEntityId)).build();
     }
     
     UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
+    if (studentEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("User %d not found", userEntityId)).build();
+    }
     SchoolDataIdentifier studentIdentifier = studentEntity.defaultSchoolDataIdentifier();
 
-    if (!userSchoolDataController.amICounselor(studentIdentifier) && (!loggedUserRole.equals(EnvironmentRoleArchetype.ADMINISTRATOR) && !loggedUserRole.equals(EnvironmentRoleArchetype.MANAGER) && !loggedUserRole.equals(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER))) {
+    if (!userSchoolDataController.amICounselor(studentIdentifier) &&
+        !sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -1257,12 +1250,7 @@ public class GuiderRESTService extends PluginRESTService {
     List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
     List<UserEntity> recipients = new ArrayList<UserEntity>();
 
-    WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
-    String workspaceName = workspaceEntityName.getName();
-
-    if (!StringUtils.isBlank(workspaceEntityName.getNameExtension())) {
-      workspaceName += String.format(" (%s)", workspaceEntityName.getNameExtension()); 
-    }
+    String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
 
     UserEntityName studentName = userEntityController.getName(studentIdentifier, true);
     
@@ -1274,14 +1262,14 @@ public class GuiderRESTService extends PluginRESTService {
     workspaceController.createWorkspaceUserSignup(workspaceEntity, studentEntity, new Date(), entity.getMessage());
 
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
-    caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), studentName.getDisplayName(), workspaceName);
+    caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), studentName.getDisplayNameWithLine(), workspaceName);
 
     String captionStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.captionStudent");
     captionStudent = MessageFormat.format(captionStudent, loggedUserEntityName.getDisplayName(), workspaceName);
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
 
-    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), studentName.getDisplayName());
+    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), studentName.getDisplayNameWithLine());
     String content;
     String contentStudent;
     if (StringUtils.isEmpty(entity.getMessage())) {
