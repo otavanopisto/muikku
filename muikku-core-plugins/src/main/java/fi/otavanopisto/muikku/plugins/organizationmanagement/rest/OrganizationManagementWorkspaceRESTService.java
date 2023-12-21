@@ -391,7 +391,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     
     for (SchoolDataIdentifier userIdentifier : studentIdentifiers) {
       User user = userController.findUserByIdentifier(userIdentifier);
-      OrganizationStudentsCreateResponse.StudentStatus status = addUserToWorkspace(user, workspaceEntity, workspace, role);
+      OrganizationStudentsCreateResponse.StudentStatus status = addUserToWorkspace(user, workspaceEntity, role);
       
       response.createStudentIdentifier(userIdentifier.toId(), status);
     }
@@ -410,7 +410,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
 
       for (SchoolDataIdentifier userIdentifier : filteredStudentIdentifiers) {
         User user = userController.findUserByIdentifier(userIdentifier);
-        StudentStatus status = addUserToWorkspace(user, workspaceEntity, workspace, role);
+        StudentStatus status = addUserToWorkspace(user, workspaceEntity, role);
         
         userGroupResponse.addStudentIdentifier(userIdentifier.toId(), status);
       }
@@ -440,19 +440,16 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
       Set<SchoolDataIdentifier> collect = staffMemberIdentifiers.stream()
           .map(staffMemberIdentifierStr -> SchoolDataIdentifier.fromId(staffMemberIdentifierStr))
           .collect(Collectors.toSet());
-
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-
       for (SchoolDataIdentifier userIdentifier : collect) {
         User user = userController.findUserByIdentifier(userIdentifier);
-        addUserToWorkspace(user, workspaceEntity, workspace, WorkspaceRoleArchetype.TEACHER);
+        addUserToWorkspace(user, workspaceEntity, WorkspaceRoleArchetype.TEACHER);
       }
     }
     
     return Response.noContent().build();
   }
 
-  private StudentStatus addUserToWorkspace(User user, WorkspaceEntity workspaceEntity, Workspace workspace, WorkspaceRoleArchetype role) {
+  private StudentStatus addUserToWorkspace(User user, WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype role) {
     SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, userIdentifier);
@@ -466,9 +463,7 @@ public class OrganizationManagementWorkspaceRESTService extends PluginRESTServic
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceEntity.schoolDataIdentifier(), userIdentifier);
     if (workspaceUser == null) {
-      SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
-
-      workspaceUser = workspaceController.createWorkspaceUser(workspaceIdentifier, userIdentifier, role);
+      workspaceUser = workspaceController.createWorkspaceUser(workspaceEntity.schoolDataIdentifier(), userIdentifier, role);
       return waitForWorkspaceUserEntity(workspaceEntity, userIdentifier) ? StudentStatus.OK : StudentStatus.FAILED;
     }
     else {

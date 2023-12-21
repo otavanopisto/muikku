@@ -568,12 +568,11 @@ public class HopsRestService {
                 @SuppressWarnings("unchecked")
                 ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
 
-                Boolean correctCurriculum = false;
+                boolean correctCurriculum = false;
 
                 for (String curriculumIdentifier : curriculumIdentifiers) {
                   curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
-
-                  if (curriculumName != null && curriculumName.equals("OPS 2021")) {
+                  if (StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021")) {
                     correctCurriculum = true;
                     break;
                   }
@@ -589,7 +588,7 @@ public class HopsRestService {
                 
                 workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
 
-                if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "nonstop")) {
+                if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
                   continue;
                 }
               }
