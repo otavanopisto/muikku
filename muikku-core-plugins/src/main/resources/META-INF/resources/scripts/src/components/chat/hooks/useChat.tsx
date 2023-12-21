@@ -12,7 +12,7 @@ import { chatControllerViews } from "../chat-helpers";
 import usePeople from "./usePeople";
 import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";
-import { ChatMessages } from "../types/chat-instance";
+import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 export type UseChat = ReturnType<typeof useChat>;
@@ -37,8 +37,8 @@ function useChat(userId: number) {
     views: chatControllerViews,
   });
 
-  const [messagesInstances, setMessagesInstances] = React.useState<
-    ChatMessages[]
+  const [discussionInstances, setMessagesInstances] = React.useState<
+    ChatDiscussionInstance[]
   >([]);
 
   // Whether to show the control box or bubble
@@ -175,21 +175,21 @@ function useChat(userId: number) {
 
         // Check if message instance already exists for this identifier
 
-        const existingIndex = messagesInstances.findIndex(
+        const existingIndex = discussionInstances.findIndex(
           (instance) => instance.targetIdentifier === identifier
         );
 
         if (existingIndex === -1) {
           // Create new message instance
-          const newMessagesInstance = new ChatMessages(
+          const newDiscussionInstance = new ChatDiscussionInstance(
             identifier,
             [identifier, `user-${userId}`],
             websocket
           );
 
           const updatedInstanceList = [
-            ...messagesInstances,
-            newMessagesInstance,
+            ...discussionInstances,
+            newDiscussionInstance,
           ];
 
           setMessagesInstances(updatedInstanceList);
@@ -199,7 +199,7 @@ function useChat(userId: number) {
         chatViews.goTo("discussion");
       });
     },
-    [chatViews, isMobileWidth, messagesInstances, userId, websocket]
+    [chatViews, isMobileWidth, discussionInstances, userId, websocket]
   );
 
   // Closes the active room or person
@@ -242,7 +242,7 @@ function useChat(userId: number) {
     leftPanelOpen,
     rightPanelOpen,
     closeView,
-    messagesInstances,
+    discussionInstances,
   };
 }
 

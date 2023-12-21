@@ -15,7 +15,7 @@ interface Listener {
 /**
  * ChatInstanceInfo
  */
-export interface ChatInstanceInfo {
+export interface ChatDiscussionInstanceState {
   targetIdentifier: string;
   targetIdentifiersToListen: string[];
   messages: ChatMessage[];
@@ -27,9 +27,11 @@ export interface ChatInstanceInfo {
 }
 
 /**
- * Utility class to hold one chat messages instance between two users or room
+ * Utility class to hold one chat discussion instance between two users or room
+ * Includes messages and methods to post messages and receive messages and some other utility values
+ * like scroll position
  */
-export class ChatMessages {
+export class ChatDiscussionInstance {
   /**
    * targetIdentifier
    */
@@ -63,16 +65,16 @@ export class ChatMessages {
   /**
    * messages
    */
-  messages: ChatMessage[] = [];
+  private messages: ChatMessage[] = [];
 
   /**
    * canLoadMore
    */
-  canLoadMore = true;
+  private canLoadMore = true;
   /**
    * loadingMoreChatMsgs
    */
-  loadingMoreChatMsgs = false;
+  private loadingMoreChatMsgs = false;
 
   /**
    * Constructor for ChatInstance
@@ -154,7 +156,6 @@ export class ChatMessages {
    */
   set scrollTop(scrollTop: number) {
     this._scrollHeight = scrollTop;
-    this.triggerChangeListeners();
   }
 
   /**
@@ -325,7 +326,7 @@ export class ChatMessages {
    * Gets the current state of the instance
    * @returns current state
    */
-  getCurrentState(): ChatInstanceInfo {
+  getCurrentState(): ChatDiscussionInstanceState {
     return {
       targetIdentifier: this.targetIdentifier,
       targetIdentifiersToListen: this.targetIdentifiersToListen,

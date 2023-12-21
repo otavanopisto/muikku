@@ -14,41 +14,43 @@ interface ChatDiscussionProps {}
  * @returns JSX.Element
  */
 function ChatDiscussion(props: ChatDiscussionProps) {
-  const { activeDiscussion, userId, messagesInstances } = useChatContext();
+  const { activeDiscussion, userId, discussionInstances } = useChatContext();
 
-  const activeMessageInstance = React.useMemo(() => {
+  const activeDiscussionInstance = React.useMemo(() => {
     if (!activeDiscussion) {
       return null;
     }
 
-    return messagesInstances.find(
+    return discussionInstances.find(
       (instance) => instance.targetIdentifier === activeDiscussion.identifier
     );
-  }, [activeDiscussion, messagesInstances]);
+  }, [activeDiscussion, discussionInstances]);
 
   const activeDiscussionPanel = React.useMemo(() => {
-    if (!activeDiscussion || !activeMessageInstance) {
+    if (!activeDiscussion || !activeDiscussionInstance) {
       return null;
     }
 
     return isChatRoom(activeDiscussion) ? (
       <ChatRoomPanel
+        key={activeDiscussion.identifier}
         title={activeDiscussion.name}
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
         targetRoom={activeDiscussion}
-        messagesInstance={activeMessageInstance}
+        discussionInstance={activeDiscussionInstance}
       />
     ) : (
       <ChatPrivatePanel
+        key={activeDiscussion.identifier}
         title={activeDiscussion.nick}
         userId={userId}
         targetIdentifier={activeDiscussion.identifier}
         targetUser={activeDiscussion}
-        messagesInstance={activeMessageInstance}
+        discussionInstance={activeDiscussionInstance}
       />
     );
-  }, [activeDiscussion, activeMessageInstance, userId]);
+  }, [activeDiscussion, activeDiscussionInstance, userId]);
 
   return activeDiscussionPanel;
 }

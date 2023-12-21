@@ -1,11 +1,14 @@
 import * as React from "react";
-import { ChatInstanceInfo, ChatMessages } from "../types/chat-instance";
+import {
+  ChatDiscussionInstanceState,
+  ChatDiscussionInstance,
+} from "../utility/chat-discussion-instance";
 
 /**
  * UseMessagesInstanceProps
  */
 interface UseMessagesInstanceProps {
-  instance: ChatMessages;
+  instance: ChatDiscussionInstance;
 }
 
 /**
@@ -15,7 +18,7 @@ interface UseMessagesInstanceProps {
 function useMessagesInstance(props: UseMessagesInstanceProps) {
   const { instance } = props;
 
-  const [infoState, setInfoState] = React.useState<ChatInstanceInfo>(
+  const [infoState, setInfoState] = React.useState<ChatDiscussionInstanceState>(
     instance.getCurrentState()
   );
 
