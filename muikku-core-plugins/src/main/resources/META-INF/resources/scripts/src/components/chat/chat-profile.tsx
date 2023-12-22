@@ -24,16 +24,16 @@ function ChatProfile(props: ChatProfileProps) {
   }
 
   return (
-    <div className="chat-window__profile-container">
+    <div className="chat__profile-container">
       <ChatProfileAvatar
         id={userMe.id}
         nick={userMe.nick}
         hasImage={userMe.hasImage}
         status="online"
       />
-      <div className="chat-window__profile-name-container">
-        <span className="chat-window__profile-name">{userMe.nick}</span>
-        <span className="chat-window__profile-literal-status">Paikalla</span>
+      <div className="chat__profile-name-container">
+        <span className="chat__profile-name">{userMe.nick}</span>
+        <span className="chat__profile-literal-status">Paikalla</span>
       </div>
 
       <IconButton

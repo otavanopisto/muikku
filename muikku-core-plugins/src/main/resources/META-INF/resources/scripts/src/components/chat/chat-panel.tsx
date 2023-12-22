@@ -176,59 +176,41 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   };
 
   return (
-    <div
-      className="chat__panel-wrapper"
-      style={{
-        height: "100%",
-      }}
-    >
-      <div className={`chat__panel chat__panel--${modifier}`}>
-        <div className={`chat__panel-header chat__panel-header--${modifier}`}>
-          <ChatRoomEditAndInfoDialog room={props.targetRoom} defaults="info">
-            <div className="chat__panel-header-title">{props.title}</div>
-          </ChatRoomEditAndInfoDialog>
+    <div className="chat__discussion-panel">
+      <div className="chat__discussion-panel-header">
+        <ChatRoomEditAndInfoDialog room={props.targetRoom} defaults="info">
+          <div className="chat__discussion-panel-header-title">
+            {props.title}
+          </div>
+        </ChatRoomEditAndInfoDialog>
+      </div>
 
-          <div className="chat__button chat__button--occupants icon-users"></div>
-
-          <div className="chat__button chat__button--room-settings icon-cogs"></div>
-          <div
-            onClick={closeDiscussion}
-            className="chat__button chat__button--room-settings icon-cross"
-          ></div>
-        </div>
-
-        <div className="chat__panel-body chat__panel-body--chatroom">
-          <MessagesContainer
-            targetIdentifier={props.targetIdentifier}
-            existingScrollTopValue={instance.scrollTop}
-            onScrollTop={canLoadMore ? loadMoreMessages : undefined}
-            onScrollTopChange={(scrollTop) => {
-              instance.scrollTop = scrollTop;
-            }}
-            className="chat__messages-container chat__messages-container"
-            modifiers={[modifier]}
-          >
-            {messages.map((msg) => (
-              <ChatMessage key={msg.id} msg={msg} />
-            ))}
-          </MessagesContainer>
-        </div>
-        <div className="chat__panel-footer chat__panel-footer--chatroom">
-          <textarea
-            id="sendGroupChatMessage"
-            className="chat__memofield chat__memofield--muc-message"
-            onChange={handleTextareaChange}
-            onKeyDown={handleEnterKeyDown}
-            value={newMessage}
-          />
-          <button
-            className={`chat__submit chat__submit--send-muc-message chat__submit--send-muc-message-${modifier}`}
-            type="submit"
-            onClick={postMessage}
-          >
-            <span className="icon-arrow-right"></span>
-          </button>
-        </div>
+      <div className="chat__discussion-panel-body">
+        <MessagesContainer
+          targetIdentifier={props.targetIdentifier}
+          existingScrollTopValue={instance.scrollTop}
+          onScrollTop={canLoadMore ? loadMoreMessages : undefined}
+          onScrollTopChange={(scrollTop) => {
+            instance.scrollTop = scrollTop;
+          }}
+          className="chat__messages-container"
+        >
+          {messages.map((msg) => (
+            <ChatMessage key={msg.id} msg={msg} />
+          ))}
+        </MessagesContainer>
+      </div>
+      <div className="chat__discussion-panel-footer">
+        <textarea
+          id="sendGroupChatMessage"
+          className="chat__memofield"
+          onChange={handleTextareaChange}
+          onKeyDown={handleEnterKeyDown}
+          value={newMessage}
+        />
+        <button className="chat__submit" type="submit" onClick={postMessage}>
+          <span className="icon-arrow-right"></span>
+        </button>
       </div>
     </div>
   );

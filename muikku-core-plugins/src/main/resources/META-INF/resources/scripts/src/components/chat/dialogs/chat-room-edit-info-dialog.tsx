@@ -148,7 +148,7 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
 
   return (
     <Dialog
-      localElementId="chat-window__body"
+      localElementId="chat__body"
       disableScroll={true}
       title="Uusi huone"
       content={content}

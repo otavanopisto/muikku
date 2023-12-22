@@ -34,12 +34,12 @@ function ChatProfileAvatar(props: ChatProfileAvatarProps) {
   }, [props.status]);
 
   return (
-    <div className="chat-window__avatar-container">
+    <div className="chat__avatar-container">
       <Avatar modifier="chat" firstName={nick} hasImage={hasImage} id={id} />
 
       {statusColorModifier && (
         <div
-          className={`chat-window__avatar-status chat-window__avatar-status--${statusColorModifier}`}
+          className={`chat__avatar-status chat__avatar-status--${statusColorModifier}`}
         />
       )}
     </div>

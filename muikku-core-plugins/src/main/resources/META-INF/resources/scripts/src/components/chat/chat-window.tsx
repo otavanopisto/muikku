@@ -1028,14 +1028,14 @@ function ChatWindow(props: ChatWindowProps) {
     windowModifiers.push("fullscreen");
   }
 
-  const windowClassName = `chat-window ${windowModifiers.map(
-    (modifier) => `chat-window--${modifier}`
+  const windowClassName = `chat ${windowModifiers.map(
+    (modifier) => `chat--${modifier}`
   )}`;
 
   return (
     <ChatWindowBreakpointsContextProvider windowRef={windowRef}>
       <div
-        id="chat-window-constrains"
+        id="chat-constrains"
         ref={windowConstrainsRef}
         style={{
           position: "fixed",
@@ -1061,7 +1061,7 @@ function ChatWindow(props: ChatWindowProps) {
             event.preventDefault();
             dragControls.start(event);
           }}
-          className="chat-window__header"
+          className="chat__header"
         >
           <AnimatePresence initial={false}>
             {!fullScreen && (
@@ -1070,7 +1070,7 @@ function ChatWindow(props: ChatWindowProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="chat-window__action-button"
+                className="chat__button-wrapper"
                 onClick={toggleDetached}
               >
                 {detached ? (
@@ -1086,7 +1086,7 @@ function ChatWindow(props: ChatWindowProps) {
           </AnimatePresence>
 
           <motion.div
-            className="chat-window__action-button"
+            className="chat__button-wrapper"
             onClick={toggleFullscreen}
           >
             {fullScreen ? (
@@ -1097,13 +1097,13 @@ function ChatWindow(props: ChatWindowProps) {
           </motion.div>
 
           <motion.div
-            className="chat-window__action-button"
+            className="chat__button-wrapper"
             onClick={handleCloseWindow}
           >
             <IconButton buttonModifiers={["chat"]} icon="cross" />
           </motion.div>
         </header>
-        <main id="chat-window__body" className="chat-window__body">
+        <main id="chat__body" className="chat__body">
           {props.children}
         </main>
 

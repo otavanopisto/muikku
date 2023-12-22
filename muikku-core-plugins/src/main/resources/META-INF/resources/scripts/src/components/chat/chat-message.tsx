@@ -211,12 +211,7 @@ const ChatMessage = (props: ChatMessageProps) => {
 
   return (
     <>
-      <div
-        className="chat__message-wrapper"
-        style={{
-          position: "relative",
-        }}
-      >
+      <div className="chat__message-wrapper">
         <motion.div
           ref={activatorDelayHandler}
           {...longPressEvent}

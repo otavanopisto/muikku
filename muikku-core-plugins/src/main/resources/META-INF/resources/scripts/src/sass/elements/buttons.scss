@@ -783,12 +783,6 @@
   width: 2.5rem;
 }
 
-.button-icon--edit-hops-history-event-description {
-  font-size: 0.8125rem;
-  height: auto;
-  width: auto;
-}
-
 .button-icon--workspace-users-contact {
   color: $color-info;
 }
@@ -810,11 +804,11 @@
 }
 
 .button-icon--chat {
+  background: $color-default-generic-background;
   border-radius: 100%;
   color: $color-default-contrast;
-  font-size: 1rem;
+  font-size: 0.875rem;
   height: 1.625rem;
-  margin: 5px;
   padding: 5px;
   width: 1.625rem;
 
@@ -822,7 +816,7 @@
   &.hover,
   &:active,
   &.active {
-    background: $color-default-generic-background;
+    background: darken($color-default-generic-background, 20%);
   }
 }
 
