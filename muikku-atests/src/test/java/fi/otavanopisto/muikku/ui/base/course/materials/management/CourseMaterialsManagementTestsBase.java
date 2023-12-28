@@ -113,7 +113,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC0");
           waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
@@ -174,7 +174,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC4");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
@@ -235,7 +235,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC3");
           waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
@@ -295,7 +295,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
           selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
           waitForVisible(".license-selector .form-element__input--material-editor");
@@ -416,7 +416,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           waitForPresent(".button-pill--editing-master-switch");
           click(".button-pill--editing-master-switch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
-          waitAndClickXPath("//div[@class='tabs__tab tabs__tab--material-editor tabs__tab--material-editor ' and contains(text(),'Tiedot')]");
+          waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".form-element__input--add-material-producer");
           sendKeys(".form-element__input--add-material-producer", "Test Producer Testalomente");
           waitAndClick(".add-producer--add-material-producer .form-element__input-decoration--add-material-producer.icon-plus");

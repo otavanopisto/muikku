@@ -306,8 +306,8 @@ public class OrganizationUserManagementRESTService {
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
-            null, // flags
-            organizationRESTModel));
+            organizationRESTModel,
+            false));
       }
     }
     

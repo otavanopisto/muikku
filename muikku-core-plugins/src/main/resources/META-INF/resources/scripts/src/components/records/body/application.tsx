@@ -261,7 +261,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "PEDAGOGY_FORM",
-        name: "Pedagogisen tuen suunnitelma",
+        name: t("labels.title", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (
@@ -290,7 +290,6 @@ class StudiesApplication extends React.Component<
         onTabChange={this.onTabChange}
         activeTab={this.state.activeTab}
         panelTabs={ready && panelTabs}
-        useWithHash
       />
     );
   }

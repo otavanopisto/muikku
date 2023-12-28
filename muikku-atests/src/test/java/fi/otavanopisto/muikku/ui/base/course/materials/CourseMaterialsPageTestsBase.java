@@ -1284,7 +1284,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(".content-panel__chapter-title-text");
           
 //          Create note
-          waitAndClick("#notebook");
+          waitAndClick("#tabControl-notebook");
           waitAndClickAndConfirm(".notebook__actions .icon-plus", ".notebook__editor.state-OPEN #note-entry-title", 3, 2000);
           waitAndSendKeys(".notebook__editor.state-OPEN #note-entry-title", "First test note");
           String note = "Morbi tempor viverra orci, molestie faucibus eros dignissim vel. Etiam at lacinia dui. Fusce vitae tortor lectus. Praesent imperdiet pulvinar nulla, et dictum quam faucibus et. Quisque dictum ligula at diam venenatis cursus. "
@@ -1295,7 +1295,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //          Assert note
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
-          waitAndClick("#notebook");
+          waitAndClick("#tabControl-notebook");
           waitForVisible(".notebook__items .notebook__item");
           assertText(".notebook__items .notebook__item-title", "First test note");
           waitAndClick(".notebook__items .notebook__item-title");
@@ -1325,7 +1325,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
 //        Test expand function      
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
-          waitAndClick("#notebook");
+          waitAndClick("#tabControl-notebook");
           waitForVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title");
           assertText(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-title", "Second test note");
           waitAndClick(".notebook__actions .icon-arrow-down");
@@ -1339,7 +1339,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitAndClickAndConfirmVisible(".notebook__items .draggable-element:last-child .notebook__item .notebook__item-header .icon-trash", ".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal", 5, 500);
           waitAndClick(".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal");
           waitForNotVisible(".notebook__items .draggable-element:last-child .notebook__item-delete .button--fatal");
-          assertCount(".notebook__items .notebook__item", 1);
+          assertCount("#tabPanel-notebook .notebook__items .notebook__item", 1);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }

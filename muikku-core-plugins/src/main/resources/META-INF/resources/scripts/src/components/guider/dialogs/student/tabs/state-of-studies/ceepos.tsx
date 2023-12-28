@@ -242,7 +242,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     /**
      * Logic for whether already created order can be deleted
      *
-     * Order can only be deleted if its' state is not ONGOING, COMPLETE or PAID.
+     * Order can only be deleted if its' state is not COMPLETE or PAID.
      *
      * canOderBeDelete
      * @param state state
@@ -250,7 +250,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      */
     const IsOrderDeletionDisabled = (state: string) => {
       switch (state) {
-        case "ONGOING":
         case "COMPLETE":
         case "PAID":
           return true;

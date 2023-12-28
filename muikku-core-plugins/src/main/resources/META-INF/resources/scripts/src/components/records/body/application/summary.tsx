@@ -14,7 +14,7 @@ import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import moment from "~/lib/moment";
+import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
@@ -294,7 +294,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="application-sub-panel__card-body">
               {t("content.completedWorkspaces", {
                 ns: "studies",
-                context: "lasMonth",
+                context: "lastMonth",
               })}
             </div>
           </div>
@@ -302,9 +302,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       return (
         <section>
-          <h2 className="application-panel__content-header">
-            {t("labels.summary", { ns: "studies" })}
-          </h2>
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">

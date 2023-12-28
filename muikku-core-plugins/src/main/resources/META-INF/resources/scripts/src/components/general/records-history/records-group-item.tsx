@@ -9,11 +9,11 @@ import {
 import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { localize } from "~/locales/i18n";
-import { RecordWorkspaceActivityByLine } from "~/reducers/main-function/records";
-import ActivityIndicator from "../records-indicators/activity-indicator";
-import AssessmentRequestIndicator from "../records-indicators/assessment-request-indicator";
-import RecordsAssessmentIndicator from "../records-indicators/records-assessment-indicator";
 import { WorkspaceAssessmentState } from "~/generated/client";
+import AssessmentRequestIndicator from "./assessment-request-indicator";
+import RecordsAssessmentIndicator from "./records-assessment-indicator";
+import ActivityIndicator from "./activity-indicator";
+import { RecordWorkspaceActivityByLine } from "./types";
 
 /**
  * RecordsGroupItemProps
@@ -153,7 +153,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 ></div>
                 <div className="workspace-assessment__date">
                   <span className="workspace-assessment__date-label">
-                    {t("labels.date", { count: 0 })}:
+                    {t("labels.date")}:
                   </span>
                   <span className="workspace-assessment__date-data">
                     {localize.date(a.date)}
@@ -201,7 +201,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {t("labels.date", { count: 1 })}:
+                      {t("labels.date")}:
                     </span>
 
                     <span className="workspace-assessment__date-data">
@@ -251,7 +251,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                   ></div>
                   <div className="workspace-assessment__date">
                     <span className="workspace-assessment__date-label">
-                      {t("labels.date", { count: 1 })}:
+                      {t("labels.date")}:
                     </span>
                     <span className="workspace-assessment__date-data">
                       {localize.date(a.date)}
@@ -261,7 +261,6 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     <div className="workspace-assessment__literal-label">
                       {t("labels.evaluationRequest", {
                         ns: "evaluation",
-                        count: 1,
                       })}
                       :
                     </div>
@@ -323,7 +322,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               workspaceId={credit.activity.id}
               credit={credit.activity}
             >
-              <Button buttonModifiers={["info", "assignments-and-exercieses"]}>
+              <Button buttonModifiers={["info", "assignments-and-exercises"]}>
                 {t("actions.assignments", {
                   ns: "studies",
                 })}

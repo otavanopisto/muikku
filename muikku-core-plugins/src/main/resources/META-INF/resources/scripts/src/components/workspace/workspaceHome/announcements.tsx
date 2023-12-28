@@ -47,7 +47,7 @@ class WorkspaceAnnouncements extends React.Component<
           <div className="panel__header">
             <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
             <h2 className="panel__header-title">
-              {t("labels.announcement", { ns: "messaging", count: 0 })}
+              {t("labels.announcement", { ns: "messaging" })}
             </h2>
           </div>
           {this.props.announcements.length && this.props.workspace ? (

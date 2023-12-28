@@ -318,6 +318,33 @@ class StateOfStudies extends React.Component<
               </ApplicationSubPanelItem>;
             }
           )}
+
+        {this.props.guider.currentStudent.courseCredits &&
+          this.props.guider.currentStudent.courseCredits.showCredits && (
+            <ApplicationSubPanelItem
+              title={this.props.i18n.t("labels.courseCredits", {
+                ns: "guider",
+              })}
+              modifier="guider-course-credits"
+            >
+              <ApplicationSubPanelItem.Content>
+                {this.props.t("labels.courseCreditsMandatory", {
+                  ns: "guider",
+                  mandatoryCredits:
+                    this.props.guider.currentStudent.courseCredits
+                      .mandatoryCourseCredits,
+                })}
+              </ApplicationSubPanelItem.Content>
+              <ApplicationSubPanelItem.Content>
+                {this.props.t("labels.courseCreditsTotal", {
+                  ns: "guider",
+                  totalCredits:
+                    this.props.guider.currentStudent.courseCredits
+                      .completedCourseCredits,
+                })}
+              </ApplicationSubPanelItem.Content>
+            </ApplicationSubPanelItem>
+          )}
       </ApplicationSubPanel.Body>
     );
 
@@ -358,7 +385,6 @@ class StateOfStudies extends React.Component<
                     <ApplicationSubPanel.Header>
                       {this.props.i18n.t("labels.orders", {
                         ns: "orders",
-                        count: 0,
                       })}
                     </ApplicationSubPanel.Header>
                     <ApplicationSubPanel.Body>

@@ -168,7 +168,7 @@ class StudentWorkspace extends React.Component<
      */
     const renderCombinationSubjectAssessments = () => (
       <ApplicationListItemContentContainer modifiers="combination-course">
-        {this.props.workspace.activity.assessmentState.map((a) => {
+        {this.props.workspace.activity.assessmentStates.map((a) => {
           /**
            * Find subject data, that contains basic information about that subject
            */
@@ -217,7 +217,7 @@ class StudentWorkspace extends React.Component<
           })}
         </div>
         <div className="application-sub-panel__item-data">
-          {this.props.workspace.activity.assessmentState.map((a) => {
+          {this.props.workspace.activity.assessmentStates.map((a) => {
             /**
              * Find subject data, that contains basic information about that subject
              */
@@ -287,7 +287,7 @@ class StudentWorkspace extends React.Component<
                * Show percent if method return true
                */
               this.showWorkspacePercents(
-                this.props.workspace.activity.assessmentState
+                this.props.workspace.activity.assessmentStates
               ) ? (
                 <span className="activity-badge activity-badge--percent">
                   <GuiderWorkspacePercents
@@ -301,7 +301,7 @@ class StudentWorkspace extends React.Component<
                * Only show assessment in header line if its not combination workspace
                */
               <GuiderAssessment
-                assessment={this.props.workspace.activity.assessmentState[0]}
+                assessment={this.props.workspace.activity.assessmentStates[0]}
               />
             ) : null}
           </span>
@@ -359,7 +359,6 @@ class StudentWorkspace extends React.Component<
               <h4 className="application-sub-panel__item-header">
                 {this.props.i18n.t("labels.evaluables", {
                   ns: "materials",
-                  count: 0,
                 })}
               </h4>
 
@@ -412,7 +411,6 @@ class StudentWorkspace extends React.Component<
               <h4 className="application-sub-panel__item-header">
                 {this.props.i18n.t("labels.exercises", {
                   ns: "materials",
-                  count: 0,
                 })}
               </h4>
 

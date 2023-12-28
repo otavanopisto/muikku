@@ -32,9 +32,9 @@ const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
     ? t("labels.self")
     : `${firstName} ${lastName}`;
 
-  const formatedDate = `${localize.date(created, "l")} - ${localize.date(
+  const formatedDate = `${localize.date(created)} - ${localize.date(
     created,
-    "h:mm"
+    "LT"
   )}`;
 
   return (
@@ -43,8 +43,11 @@ const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
         <article className="application-list__item-content-body application-list__item-content-body--journal-entry rich-text">
           <CkeditorContentLoader html={comment} />
         </article>
-        <div>
-          {creatorName} - {formatedDate}
+        <div className="journal__meta">
+          <div className="journal__meta-item">
+            <div className="journal__meta-item-label">{creatorName}</div>
+            <div className="journal__meta-item-data">{formatedDate}</div>
+          </div>
         </div>
       </ApplicationListItemBody>
     </ApplicationListItem>
