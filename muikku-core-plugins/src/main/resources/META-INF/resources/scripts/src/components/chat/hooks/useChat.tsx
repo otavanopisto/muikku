@@ -22,7 +22,8 @@ export type UseChat = ReturnType<typeof useChat>;
  * @param userId userId
  */
 function useChat(userId: number) {
-  const { searchPeople, people, loadingPeople } = usePeople();
+  const { searchPeople, people, loadingPeople, updateSearchPeople } =
+    usePeople();
   const {
     searchRooms,
     rooms,
@@ -30,6 +31,7 @@ function useChat(userId: number) {
     createNewRoom,
     updateRoom,
     deleteRoom,
+    updateSearchRooms,
   } = useRooms();
   const websocket = useChatWebsocketContext();
 
@@ -127,24 +129,10 @@ function useChat(userId: number) {
     [deleteRoom]
   );
 
-  // Closes current view and goes back to overview or discussion if exists
-  const closeView = React.useCallback(() => {
-    if (activeRoomOrPerson) {
-      chatViews.goTo("discussion");
-    } else {
-      chatViews.goTo("overview");
-    }
-  }, [activeRoomOrPerson, chatViews]);
-
   // Toggles the control box
   const toggleControlBox = React.useCallback(() => {
     setMinimized((minimized) => !minimized);
   }, []);
-
-  // Opens the active room or person
-  const openChatProfileSettings = React.useCallback(() => {
-    chatViews.goTo("chat-profile-settings");
-  }, [chatViews]);
 
   // Toggles the left panel or sets it to a specific state
   const toggleLeftPanel = React.useCallback((nextState?: boolean) => {
@@ -163,6 +151,13 @@ function useChat(userId: number) {
       setRightPanelOpen((rightPanelOpen) => !rightPanelOpen);
     }
   }, []);
+
+  /**
+   * closeView
+   */
+  const openOverview = React.useCallback(() => {
+    chatViews.goTo("overview");
+  }, [chatViews]);
 
   // Sets the active room or person
   const openDiscussion = React.useCallback(
@@ -202,11 +197,6 @@ function useChat(userId: number) {
     [chatViews, isMobileWidth, discussionInstances, userId, websocket]
   );
 
-  // Closes the active room or person
-  const closeDiscussion = React.useCallback(() => {
-    chatViews.goTo("overview");
-  }, [chatViews]);
-
   const canModerate = React.useMemo(() => {
     const user = people.find((p) => p.id === userId);
     return (user && user.type === "STAFF") || false;
@@ -228,21 +218,21 @@ function useChat(userId: number) {
     minimized,
     toggleControlBox,
     chatViews,
-    openChatProfileSettings,
     newChatRoom,
     updateNewRoomEditor,
     saveNewRoom,
     saveEditedRoom,
     deleteCustomRoom,
-    openDiscussion,
-    closeDiscussion,
     isMobileWidth,
     toggleRightPanel,
     toggleLeftPanel,
     leftPanelOpen,
     rightPanelOpen,
-    closeView,
+    openOverview,
+    openDiscussion,
     discussionInstances,
+    updateSearchPeople,
+    updateSearchRooms,
   };
 }
 

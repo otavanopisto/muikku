@@ -1,6 +1,5 @@
 import * as React from "react";
 import ChatMessage from "./chat-message";
-import { useChatContext } from "./context/chat-context";
 import { motion } from "framer-motion";
 import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
 import { ChatRoom, ChatUser } from "~/generated/client";
@@ -46,8 +45,6 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
  * @returns JSX.Element
  */
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
-  const { closeDiscussion } = useChatContext();
-
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
@@ -75,7 +72,12 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   };
 
   return (
-    <div className="chat__panel-wrapper">
+    <div
+      className="chat__panel-wrapper"
+      style={{
+        height: "100%",
+      }}
+    >
       <div className={`chat__panel chat__panel--private`}>
         <div className="chat__panel-header chat__panel-header--private">
           <div className="chat__panel-header-title">
@@ -84,11 +86,6 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
             ></span>
             <span className="chat__target-nickname">{props.title}</span>
           </div>
-
-          <div
-            onClick={closeDiscussion}
-            className="chat__button chat__button--room-settings icon-cross"
-          ></div>
         </div>
 
         <div className="chat__panel-body chat__panel-body--chatroom">
@@ -143,8 +140,6 @@ interface ChatRoomPanelProps extends ChatPanelProps {
  * @returns JSX.Element
  */
 const ChatRoomPanel = (props: ChatRoomPanelProps) => {
-  const { closeDiscussion } = useChatContext();
-
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
@@ -191,10 +186,6 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
           <div className="chat__button chat__button--occupants icon-users"></div>
 
           <div className="chat__button chat__button--room-settings icon-cogs"></div>
-          <div
-            onClick={closeDiscussion}
-            className="chat__button chat__button--room-settings icon-cross"
-          ></div>
         </div>
 
         <div className="chat__panel-body chat__panel-body--chatroom">

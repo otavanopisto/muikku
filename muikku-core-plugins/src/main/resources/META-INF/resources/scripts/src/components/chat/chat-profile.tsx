@@ -2,6 +2,7 @@ import * as React from "react";
 import { IconButton } from "../general/button";
 import ChatProfileAvatar from "./chat-profile-avatar";
 import { useChatContext } from "./context/chat-context";
+import ChatUserSettingsDialog from "./dialogs/chat-user-settings-dialog";
 
 /**
  * ChatMeProps
@@ -17,7 +18,7 @@ interface ChatProfileProps
  * @param props props
  */
 function ChatProfile(props: ChatProfileProps) {
-  const { userMe, openChatProfileSettings } = useChatContext();
+  const { userMe } = useChatContext();
 
   if (!userMe) {
     return null;
@@ -50,7 +51,9 @@ function ChatProfile(props: ChatProfileProps) {
         </div>
       </div>
 
-      <IconButton icon="cog" onClick={openChatProfileSettings} />
+      <ChatUserSettingsDialog>
+        <IconButton icon="cog" />
+      </ChatUserSettingsDialog>
     </div>
   );
 }

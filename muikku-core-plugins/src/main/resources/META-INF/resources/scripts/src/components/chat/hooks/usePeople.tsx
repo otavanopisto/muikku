@@ -24,15 +24,15 @@ function usePeople() {
   }, []);
 
   /**
-   * Fetch rooms
+   * Fetch people
    */
   const fetchPeople = async () => {
     setLoadingPeople(true);
 
-    const rooms = await chatApi.getChatUsers();
+    const people = await chatApi.getChatUsers();
 
     unstable_batchedUpdates(() => {
-      setPeople(rooms);
+      setPeople(people);
       setLoadingPeople(false);
     });
   };
@@ -91,7 +91,11 @@ function usePeople() {
     };
   }, [websocket]);
 
-  return { people, loadingPeople, searchPeople, setSearchPeople };
+  const updateSearchPeople = React.useCallback((searchQuery: string) => {
+    setSearchPeople(searchQuery);
+  }, []);
+
+  return { people, loadingPeople, searchPeople, updateSearchPeople };
 }
 
 export default usePeople;

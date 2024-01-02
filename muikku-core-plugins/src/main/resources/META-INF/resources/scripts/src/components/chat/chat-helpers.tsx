@@ -9,7 +9,7 @@ import {
 import { ChatView } from "./animated-views";
 import AnimatedView from "./animated-views/animated-view";
 import ChatDiscussion from "./chat-discussion";
-import ChatProfileSettings from "./chat-profile-settings";
+import ChatOverview from "./chat-overview";
 
 /**
  * Experimenting with distilling swipe offset and velocity into a single variable, so the
@@ -52,7 +52,7 @@ export const chatControllerViews: ChatView[] = [
     identifier: "overview",
     component: (
       <AnimatedView>
-        <h3>Overview</h3>
+        <ChatOverview />
       </AnimatedView>
     ),
   },
@@ -62,15 +62,6 @@ export const chatControllerViews: ChatView[] = [
     component: (
       <AnimatedView>
         <ChatDiscussion />
-      </AnimatedView>
-    ),
-  },
-  {
-    name: "Chat profile settings",
-    identifier: "chat-profile-settings",
-    component: (
-      <AnimatedView>
-        <ChatProfileSettings />
       </AnimatedView>
     ),
   },

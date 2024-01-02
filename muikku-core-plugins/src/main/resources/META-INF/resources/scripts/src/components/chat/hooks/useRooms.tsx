@@ -159,6 +159,13 @@ function useRooms() {
     };
   }, [websocket]);
 
+  const updateSearchRooms = React.useCallback(
+    (searchQuery: string) => {
+      setSearchRooms(searchQuery);
+    },
+    [setSearchRooms]
+  );
+
   return {
     rooms,
     loadingRooms,
@@ -167,6 +174,7 @@ function useRooms() {
     createNewRoom,
     updateRoom,
     deleteRoom,
+    updateSearchRooms,
   };
 }
 

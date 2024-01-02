@@ -7,7 +7,7 @@ import { useChatContext } from "./context/chat-context";
 import { useChatWindowBreakpointsContext } from "./context/chat-window-breakpoints-context";
 import { AddIcon } from "./chat-helpers";
 import { ChatUsersList } from "./chat-users";
-import { ChatRoomNew, ChatRoomsLists } from "./chat-rooms";
+import { ChatRoomsLists } from "./chat-rooms";
 import ChatProfile from "./chat-profile";
 
 const PANEL_RIGHT_MIN_WIDTH = 66;
@@ -186,7 +186,7 @@ function ChatMain(props: ChatMainProps) {
           <AddIcon />
         </div>
 
-        <ChatRoomNew />
+        <OverviewButton />
         <ChatRoomsLists minimized={!leftPanelOpen} />
       </motion.div>
       <motion.div
@@ -223,6 +223,42 @@ function ChatMain(props: ChatMainProps) {
         <ChatProfile className="chat-window__profile" />
       </motion.div>
     </div>
+  );
+}
+
+/**
+ * OverviewButton
+ */
+function OverviewButton() {
+  const { openOverview } = useChatContext();
+
+  return (
+    <motion.div
+      onClick={openOverview}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        backgroundColor: "grey",
+        borderRadius: "50px 0 0 50px",
+        color: "white",
+        position: "relative",
+        padding: "10px",
+        margin: "10px",
+        width: "auto",
+      }}
+    >
+      <motion.span
+        className="new-room"
+        style={{
+          display: "inline-block",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "clip",
+        }}
+      >
+        Overview
+      </motion.span>
+    </motion.div>
   );
 }
 
