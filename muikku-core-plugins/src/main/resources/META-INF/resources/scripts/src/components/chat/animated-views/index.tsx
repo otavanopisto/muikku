@@ -56,22 +56,7 @@ const ChatViews = (props: ChatViewsProps) => {
     [clonedChildren, props.wrapper]
   );
 
-  return (
-    <div
-      className="chat-views"
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <div
-        className="chat-views__container"
-        style={{ overflow: "hidden", height: "100%" }}
-      >
-        {enhancedActiveViewContent}
-      </div>
-    </div>
-  );
+  return <>{enhancedActiveViewContent}</>;
 };
 
 export default ChatViews;

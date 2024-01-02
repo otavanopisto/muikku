@@ -55,7 +55,7 @@ const ChatRoomDeleteDialog = (props: ChatRoomDeleteDialogProps) => {
 
   return (
     <Dialog
-      localElementId="chat-window__main"
+      localElementId="chat__body"
       disableScroll={true}
       title="Huoneen poisto"
       content={content}

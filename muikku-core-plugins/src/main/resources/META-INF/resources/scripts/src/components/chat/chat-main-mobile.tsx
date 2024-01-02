@@ -65,12 +65,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         <ChatRoomsLists minimized={false} />
       </ChatPanel>
 
-      <motion.div
-        className="chat__panel-wrapper"
-        style={{
-          width: "auto",
-        }}
-      >
+      <motion.div>
         <ChatViews
           wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
         />

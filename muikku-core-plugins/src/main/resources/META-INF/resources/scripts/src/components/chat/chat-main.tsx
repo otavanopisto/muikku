@@ -9,8 +9,9 @@ import { AddIcon } from "./chat-helpers";
 import { ChatUsersList } from "./chat-users";
 import { ChatRoomsLists } from "./chat-rooms";
 import ChatProfile from "./chat-profile";
+import { IconButton } from "../general/button";
 
-const PANEL_RIGHT_MIN_WIDTH = 66;
+const PANEL_RIGHT_MIN_WIDTH = 56;
 const PANEL_LEFT_MIN_WIDTH = 85;
 
 const PANEL_LEFT_MAX_WIDTH = 250;
@@ -163,27 +164,25 @@ function ChatMain(props: ChatMainProps) {
   }, []);
 
   return (
-    <div
-      id="chat-main"
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-    >
+    <>
       <motion.div
         ref={roomPanelRef}
         initial={false}
         animate={animationControlsLeftPanel}
-        className="chat-window__rooms-panel"
+        className="chat__rooms-panel"
         style={{
           width: PANEL_LEFT_MIN_WIDTH,
         }}
       >
         <div
           onClick={() => toggleLeftPanel()}
-          className="chat-window__expand-toggle chat-window__expand-toggle--rooms"
+          className="chat__button-wrapper chat__button-wrapper--rooms"
         >
-          <AddIcon />
+          {leftPanelOpen ? (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-left" />
+          ) : (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-right" />
+          )}
         </div>
 
         <OverviewButton />
@@ -193,7 +192,7 @@ function ChatMain(props: ChatMainProps) {
         ref={mainWrapperRef}
         initial={false}
         animate={animationControls}
-        className="chat-window__conversations-panel"
+        className="chat__discussions-panel"
         style={{
           marginLeft: PANEL_LEFT_MIN_WIDTH,
           marginRight: PANEL_RIGHT_MIN_WIDTH,
@@ -207,22 +206,26 @@ function ChatMain(props: ChatMainProps) {
         ref={peoplePanelRef}
         initial={false}
         animate={animationControlsRightPanel}
-        className="chat-window__users-panel"
+        className="chat__users-panel"
         style={{
           width: PANEL_RIGHT_MIN_WIDTH,
         }}
       >
         <div
           onClick={() => toggleRightPanel()}
-          className="chat-window__expand-toggle chat-window__expand-toggle--users"
+          className="chat__button-wrapper chat__button-wrapper--users"
         >
-          <AddIcon />
+          {rightPanelOpen ? (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-right" />
+          ) : (
+            <IconButton buttonModifiers={["chat"]} icon="arrow-left" />
+          )}
         </div>
 
         <ChatUsersList minimized={!rightPanelOpen} />
-        <ChatProfile className="chat-window__profile" />
+        <ChatProfile />
       </motion.div>
-    </div>
+    </>
   );
 }
 
