@@ -67,13 +67,23 @@ function ChatOverview() {
       style={{
         height: "100%",
         padding: "10px",
+        display: "flex",
+        flexDirection: "column",
+        position: "absolute",
+        inset: 0,
       }}
     >
       <ChatOverviewHeader
         activeTab={activeTab}
         onTabChange={handleOnTabChange}
       />
-      <main>
+      <main
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
+        }}
+      >
         <div
           className="chat-overview-search"
           style={{

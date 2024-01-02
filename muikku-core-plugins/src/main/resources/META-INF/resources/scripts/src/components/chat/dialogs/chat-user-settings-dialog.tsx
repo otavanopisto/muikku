@@ -71,7 +71,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
 
   return (
     <Dialog
-      localElementId="chat-window__body"
+      localElementId="chat__body"
       disableScroll={true}
       title="Chatti asetukset"
       content={content}
