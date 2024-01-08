@@ -17,6 +17,7 @@ import ChatProfileAvatar from "./chat-profile-avatar";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
+import ChatEditor from "./editor/editor";
 
 /**
  * ChatMessageProps
@@ -36,7 +37,6 @@ const ChatMessage = (props: ChatMessageProps) => {
   const {
     showDeleteDialog,
     closeDeleteDialog,
-    contentRef,
     myMsg,
     editMode,
     mainModerationActions,
@@ -45,6 +45,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     toggleEditMode,
     deleteMessage,
     saveEditedMessage,
+    handleEditedMessageChange,
   } = useMessage(props.msg);
 
   const { msg } = props;
@@ -93,52 +94,17 @@ const ChatMessage = (props: ChatMessageProps) => {
     });
   }, [editMode]);
 
-  let chatMessageContentClassName = "chat__message-content";
-
-  if (editMode) {
-    chatMessageContentClassName += " chat__message-content--edit-mode";
-  }
-
   /**
-   * Handles content editable focus
-   * @param event event
+   * Handles cancel edit
    */
-  const handleContentFocus = (event: React.FocusEvent) => {
-    const e = event.currentTarget;
-    const range = document.createRange();
-    range.setStart(e, e.childNodes.length);
-    range.setEnd(e, e.childNodes.length);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  };
-
-  /**
-   * Handles content editable key down
-   * @param event event
-   */
-  const handleContentEditableKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.stopPropagation();
-      saveEditedMessage();
-    } else if (event.key === "Escape") {
-      event.stopPropagation();
-      event.preventDefault();
-      toggleEditMode(false);
-    }
-  };
-
-  /**
-   * Handles cancel edit click
-   */
-  const handleCancelEditClick = () => {
+  const handleCancelEdit = () => {
     toggleEditMode(false);
   };
 
   /**
-   * Handles save click
+   * Handles save
    */
-  const handleSaveClick = () => {
+  const handleSave = () => {
     saveEditedMessage();
   };
 
@@ -156,28 +122,32 @@ const ChatMessage = (props: ChatMessageProps) => {
             {localize.formatDaily(msg.sentDateTime)}
           </span>
         </div>
+
         <div
-          className={chatMessageContentClassName}
-          contentEditable
-          ref={contentRef}
-          onFocus={handleContentFocus}
-          onKeyDown={handleContentEditableKeyDown}
+          className="chat-editor-container"
+          style={{
+            width: "100%",
+            backgroundColor: "rgb(242, 242, 242)",
+            borderRadius: "5px",
+          }}
         >
-          {msg.message}
+          <ChatEditor
+            initialValueString={msg.message}
+            onChange={handleEditedMessageChange}
+            onEnterSubmit={handleSave}
+            onEscape={handleCancelEdit}
+          />
         </div>
 
         <div className="chat__message-footer">
           <span
             className="chat__message-footer-action"
-            onClick={handleCancelEditClick}
+            onClick={handleCancelEdit}
           >
             Peruuta
           </span>
           <span>Tai</span>
-          <span
-            className="chat__message-footer-action"
-            onClick={handleSaveClick}
-          >
+          <span className="chat__message-footer-action" onClick={handleSave}>
             Tallenna
           </span>
         </div>

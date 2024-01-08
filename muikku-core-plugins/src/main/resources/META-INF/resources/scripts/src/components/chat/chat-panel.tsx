@@ -5,6 +5,9 @@ import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
 import { ChatRoom, ChatUser } from "~/generated/client";
 import { ChatDiscussionInstance } from "./utility/chat-discussion-instance";
 import useDiscussionInstance from "./hooks/useDiscussionInstance";
+import ChatEditor from "./editor/editor";
+import { Editor } from "slate";
+import { CustomEditor } from "./editor/helper";
 
 /**
  * ChatPanelProps
@@ -53,22 +56,20 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
     infoState;
 
   /**
-   * Handles textarea enter key down.
-   * @param e e
+   * Handles enter key down.
+   * @param editor editor
    */
-  const handleEnterKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      postMessage();
-    }
+  const handleEnterKeyDown = async (editor: Editor) => {
+    await postMessage();
+    CustomEditor.reset(editor);
   };
 
   /**
-   * Handles textarea change.
-   * @param e e
+   * Handles editor change.
+   * @param content content
    */
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    instance.newMessage = e.target.value;
+  const handleEditorChange = (content: string) => {
+    instance.newMessage = content;
   };
 
   return (
@@ -93,16 +94,21 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
         </MessagesContainer>
       </div>
       <div className="chat__discussion-panel-footer">
-        <textarea
-          id="sendGroupChatMessage"
-          className="chat__memofield"
-          onChange={handleTextareaChange}
-          onKeyDown={handleEnterKeyDown}
-          value={newMessage}
-        />
-        <button className="chat__submit" type="submit" onClick={postMessage}>
-          <span className="icon-arrow-right"></span>
-        </button>
+        <div
+          className="chat-editor-container"
+          style={{
+            width: "100%",
+            backgroundColor: "rgb(242, 242, 242)",
+            margin: "10px 0 10px 5px",
+            borderRadius: "5px",
+          }}
+        >
+          <ChatEditor
+            initialValueString={newMessage}
+            onChange={handleEditorChange}
+            onEnterSubmit={handleEnterKeyDown}
+          />
+        </div>
       </div>
     </div>
   );
@@ -131,27 +137,39 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
 
-  const isWorkspace = true;
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const footerRef = React.useRef<HTMLDivElement>(null);
 
-  const modifier = isWorkspace ? "workspace" : "other";
+  React.useEffect(() => {
+    const contentCurrent = contentRef.current;
+    const footerCurrent = footerRef.current;
+
+    if (!footerCurrent && !contentCurrent) return;
+    const resizeObserver = new ResizeObserver(() => {
+      contentCurrent.style.bottom = `${footerCurrent.clientHeight}px`;
+    });
+    resizeObserver.observe(footerCurrent);
+    return () => resizeObserver.disconnect(); // clean up
+  }, []);
+
+  //const isWorkspace = true;
+  //const modifier = isWorkspace ? "workspace" : "other";
 
   /**
    * Handles enter key down.
-   * @param e e
+   * @param editor editor
    */
-  const handleEnterKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      postMessage();
-    }
+  const handleEnterKeyDown = async (editor: Editor) => {
+    await postMessage();
+    CustomEditor.reset(editor);
   };
 
   /**
-   * Handles textarea change.
-   * @param e e
+   * Handles editor change.
+   * @param content content
    */
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    instance.newMessage = e.target.value;
+  const handleEditorChange = (content: string) => {
+    instance.newMessage = content;
   };
 
   return (
@@ -164,7 +182,7 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
         </ChatRoomEditAndInfoDialog>
       </div>
 
-      <div className="chat__discussion-panel-body">
+      <div className="chat__discussion-panel-body" ref={contentRef}>
         <MessagesContainer
           targetIdentifier={props.targetIdentifier}
           existingScrollTopValue={instance.scrollTop}
@@ -179,14 +197,23 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
           ))}
         </MessagesContainer>
       </div>
-      <div className="chat__discussion-panel-footer">
-        <textarea
-          id="sendGroupChatMessage"
-          className="chat__memofield"
-          onChange={handleTextareaChange}
-          onKeyDown={handleEnterKeyDown}
-          value={newMessage}
-        />
+      <div ref={footerRef} className="chat__discussion-panel-footer">
+        <div
+          className="chat-editor-container"
+          style={{
+            width: "100%",
+            backgroundColor: "rgb(242, 242, 242)",
+            margin: "10px 0 10px 5px",
+            borderRadius: "5px",
+          }}
+        >
+          <ChatEditor
+            initialValueString={newMessage}
+            onChange={handleEditorChange}
+            onEnterSubmit={handleEnterKeyDown}
+          />
+        </div>
+
         <button className="chat__submit" type="submit" onClick={postMessage}>
           <span className="icon-arrow-right"></span>
         </button>
@@ -242,6 +269,23 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
     }
   }, [onScrollTop]);
 
+  //
+  React.useEffect(() => {
+    const contentCurrent = msgsContainerRef.current;
+
+    if (!contentCurrent) return;
+    const resizeObserver = new ResizeObserver(() => {
+      if (scrollAttached) {
+        contentCurrent.scrollTo({
+          top: contentCurrent.scrollHeight,
+          behavior: "auto",
+        });
+      }
+    });
+    resizeObserver.observe(contentCurrent);
+    return () => resizeObserver.disconnect(); // clean up
+  }, [scrollAttached]);
+
   // Scroll to existing position when target identifier changes and value exists
   // otherwise just scroll to bottom
   React.useEffect(() => {
@@ -264,13 +308,16 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
   }, [existingScrollTopValue, targetIdentifier]);
 
   // When new message is added...
-  React.useEffect(() => {
+  /* React.useEffect(() => {
     if (componentMounted.current) {
       // Scroll to bottom when new message is added
       if (msgsContainerRef.current && childrenLength > childrenCount.current) {
         // Attached to bottom, scroll to bottom and update children count
         if (scrollAttached && lastMessageRef.current) {
           childrenCount.current = childrenLength;
+
+          console.log("scroll to bottom");
+
           lastMessageRef.current.scrollIntoView({
             behavior: "smooth",
           });
@@ -287,10 +334,14 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
         }
       }
     }
-  }, [childrenLength, scrollAttached]);
+  }, [childrenLength, scrollAttached]); */
 
   React.useEffect(() => {
     componentMounted.current = true;
+
+    return () => {
+      componentMounted.current = false;
+    };
   }, []);
 
   React.useEffect(() => {
@@ -349,6 +400,12 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
       }}
       ref={msgsContainerRef}
       className={`${className} ${mappedModifiers}`}
+      style={{
+        overflowY: "auto",
+        overflowX: "hidden",
+        position: "absolute",
+        inset: 0,
+      }}
     >
       {props.children}
       <div ref={lastMessageRef} className="chat__messages-last-message"></div>

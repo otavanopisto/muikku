@@ -281,9 +281,6 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       if (this.props.localElementId) {
         const localElement = document.getElementById(this.props.localElementId);
         if (localElement) {
-          this.node.style.position = "absolute";
-          this.node.style.inset = "0";
-          this.node.style.zIndex = "10000";
           localElement.appendChild(this.node);
         } else {
           document.body.appendChild(this.node);

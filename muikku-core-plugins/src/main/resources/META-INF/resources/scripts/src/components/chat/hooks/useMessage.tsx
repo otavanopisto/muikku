@@ -28,8 +28,7 @@ function useMessage(msg: ChatMessage) {
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
 
-  const contentRef = React.useRef<HTMLDivElement>(null);
-
+  const [editedMessage, setEditedMessage] = React.useState<string>(msg.message);
   const myMsg = msg.sourceUserEntityId === userId;
 
   /**
@@ -62,28 +61,9 @@ function useMessage(msg: ChatMessage) {
   }, []);
 
   /**
-   * Get edited message
-   */
-  const getEditedMessage = () => {
-    let finalText = "";
-    const childNodes = contentRef.current.childNodes;
-    childNodes.forEach((n: Node, index) => {
-      finalText += n.textContent;
-      const isLast = childNodes.length - 1 === index;
-      if ((n as HTMLElement).tagName && !isLast) {
-        finalText += "\n";
-      }
-    });
-
-    return finalText;
-  };
-
-  /**
    * Save edited message
    */
   const saveEditedMessage = async () => {
-    const editedMessage = getEditedMessage();
-
     await chatApi.updateChatMessage({
       messageId: msg.id,
       updateChatMessageRequest: {
@@ -93,6 +73,16 @@ function useMessage(msg: ChatMessage) {
 
     toggleEditMode(false);
   };
+
+  /**
+   * Handles edited message change
+   */
+  const handleEditedMessageChange = React.useCallback(
+    (htmlAsString: string) => {
+      setEditedMessage(htmlAsString);
+    },
+    []
+  );
 
   /**
    * Handles delete click
@@ -157,13 +147,13 @@ function useMessage(msg: ChatMessage) {
     closeDeleteDialog,
     toggleEditMode,
     deleteMessage,
-    contentRef,
     editMode,
     mainModerationActions,
     secondaryModerationActions,
     mobileModerationActions,
     myMsg,
     saveEditedMessage,
+    handleEditedMessageChange,
   };
 }
 
