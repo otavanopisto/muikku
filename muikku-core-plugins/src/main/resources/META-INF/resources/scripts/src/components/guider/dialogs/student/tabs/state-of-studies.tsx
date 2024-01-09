@@ -35,11 +35,11 @@ import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
-import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
-import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
+import StudyProgress from "~/components/general/study-progress";
+import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -89,6 +89,7 @@ class StateOfStudies extends React.Component<
     if (this.props.guider.currentStudent === null) {
       return null;
     }
+
     // Note that some properties are not available until later, that's because it does
     // step by step loading, make sure to show this in the way this is represented, ensure to have
     // a case where the property is not available
@@ -402,28 +403,37 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
-            {this.props.guider.currentStudent.hopsAvailable &&
-            COMPULSORY_HOPS_VISIBLITY.includes(
-              this.props.guider.currentStudent.basic.studyProgrammeName
-            ) ? (
-              <ApplicationSubPanel modifier="student-data-container">
-                <ApplicationSubPanel>
-                  <ApplicationSubPanel.Header>
-                    {this.props.i18n.t("labels.studyProgress", {
-                      ns: "guider",
-                    })}
-                  </ApplicationSubPanel.Header>
-                  <ApplicationSubPanel.Body>
-                    <StudySuggestionMatrix
-                      studentId={this.props.guider.currentStudent.basic.id}
-                      studentUserEntityId={
-                        this.props.guider.currentStudent.basic.userEntityId
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  {this.props.i18n.t("labels.studyProgress", {
+                    ns: "guider",
+                  })}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <StudyProgressContextProvider
+                    user="supervisor"
+                    useCase="state-of-studies"
+                    studentId={this.props.guider.currentStudent.basic.id}
+                    studentUserEntityId={
+                      this.props.guider.currentStudent.basic.userEntityId
+                    }
+                    dataToLoad={["studentActivity"]}
+                  >
+                    <StudyProgress
+                      curriculumName={
+                        this.props.guider.currentStudent.basic.curriculumName
                       }
+                      studyProgrammeName={
+                        this.props.guider.currentStudent.basic
+                          .studyProgrammeName
+                      }
+                      editMode={true}
                     />
-                  </ApplicationSubPanel.Body>
-                </ApplicationSubPanel>
+                  </StudyProgressContextProvider>
+                </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
-            ) : null}
+            </ApplicationSubPanel>
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>

@@ -2082,5 +2082,42 @@
       "unsavedWarning": "Tallemattomia muutoksia"
     },
     "notifications": {}
+  },
+  "studyMatrix": {
+    "actions": {
+      "cancelSelection": "Cancel selection",
+      "selectOptionalToHops": "Select to HOPS",
+      "signUpStudent": "Sign up student",
+      "signupStudentToWorkspace": "Sign up",
+      "suggested": "Suggested",
+      "suggestOptional": "Suggest to optional",
+      "suggestToNext": "Suggest to next"
+    },
+    "content": {
+      "noSubjectTable": "Subject table not found with given student's curriculum",
+      "noSuggestionAvailable": "No courses available. Check courses and their prerequisites"
+    },
+    "labels": {
+      "colorDescriptions": "Color descriptions",
+      "completed": "Completed",
+      "courses": "Courses",
+      "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
+      "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
+      "inprogress": "In progress",
+      "mandatory": "Mandatory",
+      "optional": "(*)-Optional",
+      "schoolSubject": "School subject",
+      "selected": "Selected",
+      "signUpMessage": "Sign up message",
+      "signUpStudent": "Sign up student to course",
+      "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
+      "transfered": "Transfered",
+      "transferedLanguages": "Transfered: Languages",
+      "transferedOther": "Transfered: Other",
+      "transferedSkillAndArt": "Transfered: Skill and art"
+    },
+    "notifications": {
+      "signUpError": "Signing up to course failed"
+    }
   }
 }
