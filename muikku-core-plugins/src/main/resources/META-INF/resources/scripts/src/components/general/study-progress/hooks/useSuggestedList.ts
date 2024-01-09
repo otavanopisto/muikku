@@ -39,7 +39,7 @@ export const useSuggestionList = (
   displayNotification: DisplayNotificationTriggerType,
   loadData?: boolean
 ) => {
-  const [suggestions, setSuggestins] =
+  const [suggestions, setSuggestions] =
     React.useState<UseSuggestion>(initialState);
   const componentMounted = React.useRef(true);
 
@@ -53,7 +53,7 @@ export const useSuggestionList = (
       subjectCode: string,
       course: Course
     ) => {
-      setSuggestins((suggestions) => ({ ...suggestions, isLoading: true }));
+      setSuggestions((suggestions) => ({ ...suggestions, isLoading: true }));
 
       try {
         /**
@@ -76,7 +76,7 @@ export const useSuggestionList = (
         ]);
 
         if (componentMounted.current) {
-          setSuggestins((suggestions) => ({
+          setSuggestions((suggestions) => ({
             ...suggestions,
             isLoading: false,
             suggestionsList: loadedSuggestionListCourses,
@@ -89,7 +89,7 @@ export const useSuggestionList = (
           }
 
           displayNotification(err.message, "error");
-          setSuggestins((suggestions) => ({
+          setSuggestions((suggestions) => ({
             ...suggestions,
             isLoading: false,
           }));
