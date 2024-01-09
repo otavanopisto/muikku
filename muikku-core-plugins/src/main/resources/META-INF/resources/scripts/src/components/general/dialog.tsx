@@ -86,6 +86,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     }, 10);
     this.props.executeOnOpen && this.props.executeOnOpen();
     this.props.onOpen && this.props.onOpen(element);
+
     if (this.props.disableScroll == true) {
       if (this.props.localElementId) {
         const localElement = document.getElementById(this.props.localElementId);
@@ -94,6 +95,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         }
       } else {
         document.body.style.overflow = "hidden";
+        document.getElementsByTagName("html")[0].style.overflow = "hidden";
       }
     }
     if (element.childNodes && element.childNodes[0]) {

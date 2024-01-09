@@ -1653,6 +1653,24 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return pyramusClient.get(String.format("/students/students/%d/amICounselor", studentId), Boolean.class);
 
   }
+  
+  @Override
+  public List<String> listStudentAlternativeStudyOptions(String userIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId == null) {
+      return Collections.emptyList();
+    }
+    String results[] = pyramusClient.get(String.format("/students/students/%d/subjectChoices", studentId), String[].class);
+      
+    List<String> subjectChoices = new ArrayList<>();
+    
+    if (results != null) {
+      for (String result : results) {
+        subjectChoices.addAll(Arrays.asList(result.split(",")));
+      }    
+    }
+    return subjectChoices;
+  }
 
   @Override
   public StudentGuidanceRelation getGuidanceRelation(String studentIdentifier) {

@@ -1,10 +1,10 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { schoolCourseTable } from "~/mock/mock-data";
 import { SuggestedCourse } from "~/@types/shared";
-import { filterSpecialSubjects } from "~/helper-functions/shared";
 import MApi, { isMApiError } from "~/api/api";
 import { WorkspaceSuggestion } from "~/generated/client";
+import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
+import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
 
 /**
  * UseCourseCarousel
@@ -96,8 +96,8 @@ export const useCourseCarousel = (
             // Ids of supervisor suggestions
             const suggestedNextIdList: number[] = [];
 
-            const filteredSchoolCourseTable = filterSpecialSubjects(
-              schoolCourseTable,
+            const filteredSchoolCourseTable = filterCompulsorySubjects(
+              schoolCourseTableCompulsory2018.subjectsTable,
               loadedStudentAlternativeOptions
             );
 

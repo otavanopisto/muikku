@@ -11,7 +11,8 @@ public class StudentInformationRestModel {
       String lastName,
       String studyProgrammeEducationType,
       OffsetDateTime studyTimeEnd,
-      List<String> counselorList) {
+      List<String> counselorList,
+      String curriculumName) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -19,6 +20,7 @@ public class StudentInformationRestModel {
     this.studyProgrammeEducationType = studyProgrammeEducationType;
     this.studyTimeEnd = studyTimeEnd;
     this.counselorList = counselorList;
+    this.curriculumName = curriculumName;
     
   }
 
@@ -70,10 +72,19 @@ public class StudentInformationRestModel {
     this.counselorList = counselorList;
   }
   
+  public String getCurriculumName() {
+    return curriculumName;
+  }
+
+  public void setCurriculumName(String curriculumName) {
+    this.curriculumName = curriculumName;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
   private String studyProgrammeEducationType;
   private OffsetDateTime studyTimeEnd;
   private List<String> counselorList;
+  private String curriculumName;
 }
