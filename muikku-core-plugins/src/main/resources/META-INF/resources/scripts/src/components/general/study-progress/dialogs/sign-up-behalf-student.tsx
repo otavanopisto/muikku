@@ -111,7 +111,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
 
       // TODO: lokalisointi
       displayNotification(
-        this.props.t("notifications.signUpError", { ns: "studymatrix" }),
+        this.props.t("notifications.signUpError", { ns: "studyMatrix" }),
         "error"
       );
 
@@ -159,13 +159,13 @@ class SignUpBehalfOfStudentDialog extends React.Component<
       <div>
         <div className="dialog__content-row">
           {this.props.t("labels.signUpStudentToWorkspace", {
-            ns: "studymatrix",
+            ns: "studyMatrix",
             workspaceName: workspaceName,
           })}
         </div>
         <div className="form-element dialog__content-row">
           <label htmlFor="signUpMessage">
-            {this.props.t("labels.signUpMessage", { ns: "studymatrix" })}
+            {this.props.t("labels.signUpMessage", { ns: "studyMatrix" })}
           </label>
           <textarea
             id="signUpMessage"
@@ -188,7 +188,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
           onClick={this.handleApplyClick.bind(this, closeDialog)}
           disabled={this.state.disabled}
         >
-          {this.props.t("actions.signUpStudent", { ns: "studymatrix" })}
+          {this.props.t("actions.signUpStudent", { ns: "studyMatrix" })}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
@@ -203,7 +203,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
     return (
       <Dialog
         modifier="workspace-signup-dialog"
-        title={this.props.t("labels.signUpStudent", { ns: "studymatrix" })}
+        title={this.props.t("labels.signUpStudent", { ns: "studyMatrix" })}
         isOpen={true}
         disableScroll={true}
         content={content}
@@ -232,6 +232,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default withTranslation(["studymatrix"])(
+export default withTranslation(["studyMatrix"])(
   connect(mapStateToProps, mapDispatchToProps)(SignUpBehalfOfStudentDialog)
 );

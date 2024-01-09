@@ -46,7 +46,7 @@ interface HopsCourseListProps {
 const ProgressList: React.FC<HopsCourseListProps> = (props) => {
   const { editMode, studyProgrammeName, curriculumName } = props;
 
-  const { t } = useTranslation("studymatrix");
+  const { t } = useTranslation("studyMatrix");
 
   const studyProgress = useStudyProgressContextState();
   const studyProgressStatic = useStudyProgressStaticDataContext();

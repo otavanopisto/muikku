@@ -51,7 +51,7 @@ const defaultSuggestionListProps = {
 const SuggestionList = (props: HopsSuggestionListProps) => {
   props = { ...defaultSuggestionListProps, ...props };
 
-  const { t } = useTranslation("studymatrix");
+  const { t } = useTranslation("studyMatrix");
 
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,

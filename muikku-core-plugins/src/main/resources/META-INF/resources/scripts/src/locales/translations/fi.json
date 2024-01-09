@@ -2083,7 +2083,7 @@
     },
     "notifications": {}
   },
-  "studymatrix": {
+  "studyMatrix": {
     "actions": {
       "cancelSelection": "Peru valinta",
       "selectOptionalToHops": "Valitse osaksi hopsia",

@@ -2083,7 +2083,7 @@
     },
     "notifications": {}
   },
-  "studymatrix": {
+  "studyMatrix": {
     "actions": {
       "cancelSelection": "Cancel selection",
       "selectOptionalToHops": "Select to HOPS",

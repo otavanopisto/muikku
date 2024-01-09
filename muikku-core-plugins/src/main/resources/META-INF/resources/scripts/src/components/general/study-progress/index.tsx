@@ -28,7 +28,7 @@ interface StudyProgressProps {
 const StudyProgress = (props: StudyProgressProps) => {
   const { curriculumName, studyProgrammeName, editMode } = props;
 
-  const { t } = useTranslation("studymatrix");
+  const { t } = useTranslation("studyMatrix");
 
   const studyProgressStatic = useStudyProgressStaticDataContext();
 
