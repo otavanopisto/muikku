@@ -33,7 +33,7 @@ function useMessagesInstance(props: UseMessagesInstanceProps) {
     instance.addChangeListener(reRenderCallback);
 
     return () => {
-      instance.removeChangeListener(reRenderCallback);
+      instance.removeChangeListener();
     };
   }, [instance, reRenderCallback]);
 
