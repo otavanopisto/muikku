@@ -2109,7 +2109,7 @@
       "schoolSubject": "School subject",
       "selected": "Selected",
       "signUpMessage": "Sign up message",
-      "signUpStudent": "Sign up student to workspace",
+      "signUpStudent": "Sign up student to course",
       "signUpStudentToWorkspace": "Sign up student to workspace {{workspaceName}}",
       "transfered": "Transfered",
       "transferedLanguages": "Transfered: Languages",
