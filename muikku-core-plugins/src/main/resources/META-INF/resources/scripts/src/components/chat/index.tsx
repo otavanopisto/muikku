@@ -15,11 +15,15 @@ const Chat = () => {
     useChatContext();
 
   // Use effect to destroy all messages instances when component unmounts
-  React.useEffect(() => () => {
-    discussionInstances.map((instance) => {
-      instance.destroy();
-    });
-  });
+  React.useEffect(
+    () => () => {
+      discussionInstances.map((instance) => {
+        instance.destroy();
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const mobileOrDesktop = React.useMemo(() => {
     if (minimized) {
