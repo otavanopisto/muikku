@@ -2103,7 +2103,7 @@
       "courses": "Kurssit",
       "guidanceCouncelorSuggestion": "Ohjaajan ehdottama",
       "guidanceCouncelorSuggestionNext": "Ohjaajan seuraavaksi ehdottama",
-      "inprogress": "Kesken",
+      "inProgress": "Kesken",
       "mandatory": "Pakollinen",
       "optional": "(*)-Valinnainen",
       "schoolSubject": "Oppiaine",
