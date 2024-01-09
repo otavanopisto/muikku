@@ -60,7 +60,7 @@ const StudyProgress = (props: StudyProgressProps) => {
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--approval"></div>
           <div className="hops-container__indicator-item-label">
-            {t("labels.transfered")}
+            {t("labels.transferred")}
           </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
@@ -72,7 +72,7 @@ const StudyProgress = (props: StudyProgressProps) => {
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--inprogress"></div>
           <div className="hops-container__indicator-item-label">
-            {t("labels.inprogress")}
+            {t("labels.inProgress")}
           </div>
         </div>
 
