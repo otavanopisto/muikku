@@ -2117,7 +2117,7 @@
       "transferedSkillAndArt": "Hyväksiluvut: Taito- ja taideaineet"
     },
     "notifications": {
-      "signUpError": "Opiskelijan ilmoittaminen työtilaan epäonnistui"
+      "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
     }
   }
 }
