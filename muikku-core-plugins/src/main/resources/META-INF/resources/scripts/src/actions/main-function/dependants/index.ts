@@ -165,7 +165,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
       const dependant = getState().dependants.list.find(
         (dependant) => dependant.identifier === dependantId
       );
-      if (dependant.workspaces.length > 0) {
+      if (dependant.worspacesStatus !== "WAITING") {
         return;
       }
       const meApi = MApi.getMeApi();
