@@ -57,9 +57,9 @@ export class ChatDiscussionInstance {
    */
   private _scrollHeight: number = null;
   /**
-   * listeners
+   * listener
    */
-  private listeners: Listener = {
+  private listener: Listener = {
     instanceHasUpdated: [],
   };
   /**
@@ -93,9 +93,6 @@ export class ChatDiscussionInstance {
 
     this.getInitialMessages = this.getInitialMessages.bind(this);
     this.loadMoreMessages = this.loadMoreMessages.bind(this);
-    this.onChatMsgSentMsg = this.onChatMsgSentMsg.bind(this);
-    this.onChatMsgEditedMsg = this.onChatMsgEditedMsg.bind(this);
-    this.onChatMsgDeletedMsg = this.onChatMsgDeletedMsg.bind(this);
     this.postMessage = this.postMessage.bind(this);
 
     this.getInitialMessages();
@@ -247,11 +244,11 @@ export class ChatDiscussionInstance {
   };
 
   /**
-   * Method to call to notify listeners that the instance has updated
+   * Method to call to notify listener that the instance has updated
    */
   private triggerChangeListeners() {
-    if (this.listeners["instanceHasUpdated"]) {
-      this.listeners["instanceHasUpdated"].forEach((callback) => callback());
+    if (this.listener["instanceHasUpdated"]) {
+      this.listener["instanceHasUpdated"].forEach((callback) => callback());
     }
   }
 
@@ -304,22 +301,17 @@ export class ChatDiscussionInstance {
    * @param callback callback
    */
   addChangeListener(callback: (...args: any[]) => any) {
-    const callbacks = this.listeners["instanceHasUpdated"];
+    const callbacks = this.listener["instanceHasUpdated"];
     const index = callbacks.findIndex(callback);
     index === -1 && callbacks.push(callback);
-    this.listeners["instanceHasUpdated"] = callbacks;
+    this.listener["instanceHasUpdated"] = callbacks;
   }
 
   /**
    * Remove a change listener
-   * @param callback callback
    */
-  removeChangeListener(callback: (...args: any[]) => any) {
-    const index = this.listeners["instanceHasUpdated"].findIndex(callback);
-
-    if (index !== -1) {
-      this.listeners["instanceHasUpdated"].splice(index, 1);
-    }
+  removeChangeListener() {
+    this.listener["instanceHasUpdated"] = [];
   }
 
   /**
@@ -340,9 +332,10 @@ export class ChatDiscussionInstance {
   }
 
   /**
-   * Method to call to remove all event listeners
+   * Method to call to remove all event listener
    */
   destroy() {
+    this.removeChangeListener();
     this.websocket.removeEventCallback(
       "chat:message-sent",
       this.onChatMsgSentMsg
