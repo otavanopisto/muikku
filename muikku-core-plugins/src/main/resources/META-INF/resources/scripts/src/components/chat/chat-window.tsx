@@ -9,7 +9,7 @@ import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
 import { ChatWindowBreakpointsContextProvider } from "./context/chat-window-breakpoints-context";
 import { useChatWindowContext } from "./context/chat-window-context";
-import { AddIcon, CloseIcon, ResizerHandle } from "./chat-helpers";
+import { ResizerHandle } from "./chat-helpers";
 
 const WINDOW_MIN_WIDTH = 500;
 const WINDOW_MIN_HEIGHT = 500;
@@ -73,7 +73,7 @@ function ChatWindow(props: ChatWindowProps) {
         const windowRect = windowEle.getBoundingClientRect();
 
         for (const entry of entries) {
-          if (entry.target === windowConstrainsRef.current) {
+          if (entry.target === windowConstrainsRef.current && !fullScreen) {
             const dW = entry.contentRect.width - windowRect.width;
             const dH = entry.contentRect.height - windowRect.height;
 
@@ -120,7 +120,7 @@ function ChatWindow(props: ChatWindowProps) {
         resizeObserver.disconnect();
       };
     }
-  }, [animationControls, windowPositonRef]);
+  }, [animationControls, fullScreen, windowPositonRef]);
 
   // Effect to control fullscreen on/off animation
   React.useEffect(() => {
@@ -277,16 +277,32 @@ function ChatWindow(props: ChatWindowProps) {
       const windowEle = windowRef.current;
       const windowRect = windowEle.getBoundingClientRect();
 
-      animationControls.set({
-        x: window.innerWidth - windowRect.width - 10,
-        y: window.innerHeight - windowRect.height - 10,
-      });
+      if (fullScreen) {
+        // If full screen and browser is resized, update width and height and coordinates
+        // respectively to be keep window full screen
+        animationControls.set({
+          x: 0,
+          y: 0,
+          width: `100%`,
+          height: "100%",
+        });
+
+        // When window is full screen and browser is resized, position ref x value need to be updated
+        // so when returning from full screen window is in correct position
+        windowPositonRef.current.x =
+          window.innerWidth - windowPositonRef.current.width - 10;
+      } else {
+        animationControls.set({
+          x: window.innerWidth - windowRect.width - 10,
+          y: window.innerHeight - windowRect.height - 10,
+        });
+      }
     };
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [animationControls, detached]);
+  }, [animationControls, detached, fullScreen, windowPositonRef]);
 
   // If not detached later on and windowRef and controllerRef exists
   // then set window position next to controller
