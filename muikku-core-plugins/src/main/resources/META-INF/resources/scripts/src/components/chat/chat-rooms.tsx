@@ -121,9 +121,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
       }}
     >
       {publicRooms.map((room) => (
-        <Dropdown key={room.identifier} content={room.name} openByHover>
-          <ChatRoom key={room.identifier} room={room} canEdit canDelete />
-        </Dropdown>
+        <ChatRoom key={room.identifier} room={room} canEdit canDelete />
       ))}
     </ul>
   );
