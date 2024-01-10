@@ -11,8 +11,13 @@ import { ChatWindowContextProvider } from "./context/chat-window-context";
  * @returns JSX.Element
  */
 const Chat = () => {
-  const { minimized, toggleControlBox, isMobileWidth, discussionInstances } =
-    useChatContext();
+  const {
+    minimized,
+    toggleControlBox,
+    isMobileWidth,
+    discussionInstances,
+    chatSettings,
+  } = useChatContext();
 
   // Use effect to destroy all messages instances when component unmounts
   React.useEffect(
@@ -38,6 +43,10 @@ const Chat = () => {
       </ChatWindow>
     );
   }, [isMobileWidth, minimized]);
+
+  if (!chatSettings || !chatSettings.enabled) {
+    return null;
+  }
 
   return (
     <ChatWindowContextProvider>

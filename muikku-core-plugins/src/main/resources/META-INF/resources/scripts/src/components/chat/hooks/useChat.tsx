@@ -14,6 +14,7 @@ import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";
 import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
+import useChatSettings from "./useChatSettings";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -22,6 +23,8 @@ export type UseChat = ReturnType<typeof useChat>;
  * @param userId userId
  */
 function useChat(userId: number) {
+  const websocket = useChatWebsocketContext();
+
   const { searchPeople, people, loadingPeople, updateSearchPeople } =
     usePeople();
   const {
@@ -33,7 +36,7 @@ function useChat(userId: number) {
     deleteRoom,
     updateSearchRooms,
   } = useRooms();
-  const websocket = useChatWebsocketContext();
+  const { chatSettings } = useChatSettings();
 
   const chatViews = useViews({
     views: chatControllerViews,
@@ -233,6 +236,7 @@ function useChat(userId: number) {
     discussionInstances,
     updateSearchPeople,
     updateSearchRooms,
+    chatSettings,
   };
 }
 
