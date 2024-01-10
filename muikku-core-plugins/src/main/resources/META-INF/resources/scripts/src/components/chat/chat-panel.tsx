@@ -308,15 +308,13 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
   }, [existingScrollTopValue, targetIdentifier]);
 
   // When new message is added...
-  /* React.useEffect(() => {
+  React.useEffect(() => {
     if (componentMounted.current) {
       // Scroll to bottom when new message is added
       if (msgsContainerRef.current && childrenLength > childrenCount.current) {
         // Attached to bottom, scroll to bottom and update children count
         if (scrollAttached && lastMessageRef.current) {
           childrenCount.current = childrenLength;
-
-          console.log("scroll to bottom");
 
           lastMessageRef.current.scrollIntoView({
             behavior: "smooth",
@@ -334,7 +332,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
         }
       }
     }
-  }, [childrenLength, scrollAttached]); */
+  }, [childrenLength, scrollAttached]);
 
   React.useEffect(() => {
     componentMounted.current = true;
