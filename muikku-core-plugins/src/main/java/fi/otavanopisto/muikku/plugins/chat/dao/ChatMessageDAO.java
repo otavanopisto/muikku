@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.chat.dao;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -40,6 +42,34 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     chatMessage.setLastModifierId(modifierId);
     chatMessage.setEdited(new Date());
     return persist(chatMessage);
+  }
+  
+  public Set<Long> listPrivateDiscussionPartners(Long userEntityId) {
+    Set<Long> userIds = new HashSet<>();
+    EntityManager entityManager = getEntityManager();
+    
+    // Users who I have sent a private message to
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<ChatMessage> root = criteria.from(ChatMessage.class);
+    criteria.select(root.get(ChatMessage_.targetUserEntityId)).distinct(true);
+    criteria.where(
+      criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), userEntityId)
+    );
+    userIds.addAll(entityManager.createQuery(criteria).getResultList());
+
+    // Users who have sent a private message to me
+    
+    criteria = criteriaBuilder.createQuery(Long.class);
+    root = criteria.from(ChatMessage.class);
+    criteria.select(root.get(ChatMessage_.sourceUserEntityId)).distinct(true);
+    criteria.where(
+      criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), userEntityId)
+    );
+    userIds.addAll(entityManager.createQuery(criteria).getResultList());
+
+    return userIds;
   }
 
   public ChatMessage findByIdAndArchived(Long id, Boolean archived) {

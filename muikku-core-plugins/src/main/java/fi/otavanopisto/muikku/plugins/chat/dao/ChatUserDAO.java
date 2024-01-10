@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.chat.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -74,6 +76,20 @@ public class ChatUserDAO extends CorePluginsDAO<ChatUser> {
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public List<ChatUser> listUnarchived() {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ChatUser> criteria = criteriaBuilder.createQuery(ChatUser.class);
+    Root<ChatUser> root = criteria.from(ChatUser.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(ChatUser_.archived), Boolean.FALSE)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
   }
 
 }

@@ -78,24 +78,16 @@ public class ChatController {
   @PostConstruct
   public void init() {
     roomUsers = new ConcurrentHashMap<>();
-    userNicks = new ConcurrentHashMap<>();
-    staffUsers = new HashSet<>();
+    users = new ConcurrentHashMap<>();
     sessionUsers = new ConcurrentHashMap<>();
     userSessions = new ConcurrentHashMap<>();
-  }
-  
-  public String usageStatistics() {
-    StringBuffer sb = new StringBuffer();
-    sb.append(userSessions.size() + " active chat users\n");
-    for (Long l : userSessions.keySet()) {
-      sb.append("- " + l + " (" + userNicks.get(l) + ") with " + userSessions.get(l).size() + " sessions\n");
+    
+    // Cache all chat users
+    
+    List<ChatUser> chatUsers = chatUserDAO.listUnarchived();
+    for (ChatUser chatUser : chatUsers) {
+      users.put(chatUser.getUserEntityId(), toRestModel(chatUser));
     }
-    sb.append("\n");
-    sb.append(roomUsers.size() + " tracked public rooms\n");
-    for (Long l : roomUsers.keySet()) {
-      sb.append("- " + l + " with " + roomUsers.get(l).size() + " users\n");
-    }
-    return sb.toString();
   }
   
   public void processSessionCreated(UserEntity userEntity, String sessionId) {
@@ -123,7 +115,7 @@ public class ChatController {
 
     // Inform users about the new message (public room message to all users, workspace room message to room users)
     
-    Set<Long> users = room.getType() == ChatRoomType.WORKSPACE ? roomUsers.get(room.getId()) : listUsers();
+    Set<Long> users = room.getType() == ChatRoomType.WORKSPACE ? roomUsers.get(room.getId()) : listOnlineUserEntityIds();
     if (users != null && !users.isEmpty()) {
       ObjectMapper mapper = new ObjectMapper();
       try {
@@ -165,7 +157,7 @@ public class ChatController {
       if (message.getTargetRoomId() != null) {
         room = chatRoomDAO.findById(chatMessage.getTargetRoomId());
       }
-      usersToInform = room == null ? listUsers() : listRoomUsers(room);
+      usersToInform = room == null ? listOnlineUserEntityIds() : listRoomUserEntityIds(room);
     }
     ObjectMapper mapper = new ObjectMapper();
     try {
@@ -191,7 +183,7 @@ public class ChatController {
       if (message.getTargetRoomId() != null) {
         room = chatRoomDAO.findById(chatMessage.getTargetRoomId());
       }
-      usersToInform = room == null ? listUsers() : listRoomUsers(room);
+      usersToInform = room == null ? listOnlineUserEntityIds() : listRoomUserEntityIds(room);
     }
     ObjectMapper mapper = new ObjectMapper();
     try {
@@ -204,23 +196,40 @@ public class ChatController {
   }
 
   public String getNick(UserEntity userEntity) {
-    return userNicks.get(userEntity.getId());
+    ChatUserRestModel chatUser = users.get(userEntity.getId());
+    return chatUser == null ? null : chatUser.getNick();
   }
   
-  public Set<Long> listUsers() {
+  public List<ChatUserRestModel> listChatUsers(boolean onlyOnline) {
+    // Return a copy of our cache as the caller is likely to modify the result set
+    List<ChatUserRestModel> chatUsers = new ArrayList<>();
+    for (ChatUserRestModel chatUser : users.values()) {
+      if (onlyOnline && !isOnline(chatUser.getId())) {
+        continue;
+      }
+      chatUsers.add(new ChatUserRestModel(chatUser));
+    }
+    return chatUsers;
+  }
+  
+  public Set<Long> listOnlineUserEntityIds() {
     return Collections.unmodifiableSet(userSessions.keySet()); 
   }
   
-  public Set<Long> listRoomUsers(ChatRoom chatRoom) {
+  public Set<Long> listRoomUserEntityIds(ChatRoom chatRoom) {
     if (chatRoom.getType() == ChatRoomType.PUBLIC) {
-      return listUsers();
+      return listOnlineUserEntityIds();
     }
     Set<Long> users = roomUsers.get(chatRoom.getId());
     return users == null ? Collections.emptySet() : Collections.unmodifiableSet(users);
   }
   
-  public boolean isInChat(UserEntity userEntity) {
+  public boolean isOnline(UserEntity userEntity) {
     return userSessions.containsKey(userEntity.getId());
+  }
+
+  public boolean isOnline(long userEntityId) {
+    return userSessions.containsKey(userEntityId);
   }
   
   public boolean isInRoom(UserEntity userEntity, ChatRoom chatRoom) {
@@ -239,7 +248,7 @@ public class ChatController {
     
     ObjectMapper mapper = new ObjectMapper();
     try {
-      webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(room), listUsers());
+      webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(room), listOnlineUserEntityIds());
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
@@ -262,7 +271,7 @@ public class ChatController {
     
     ObjectMapper mapper = new ObjectMapper();
     try {
-      webSocketMessenger.sendMessage("chat:room-updated", mapper.writeValueAsString(room), listUsers());
+      webSocketMessenger.sendMessage("chat:room-updated", mapper.writeValueAsString(room), listOnlineUserEntityIds());
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
@@ -280,7 +289,7 @@ public class ChatController {
     
     ObjectMapper mapper = new ObjectMapper();
     try {
-      webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new ChatRoomDeletedRestModel("room-" + chatRoom.getId())), listUsers());
+      webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new ChatRoomDeletedRestModel("room-" + chatRoom.getId())), listOnlineUserEntityIds());
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
@@ -319,11 +328,13 @@ public class ChatController {
   }
   
   public boolean isStaffMember(UserEntity userEntity) {
-    return staffUsers.contains(userEntity.getId());
+    ChatUserRestModel chatUser = users.get(userEntity.getId());
+    return chatUser != null && chatUser.getType() == ChatUserType.STAFF;
   }
 
   public boolean isStudent(UserEntity userEntity) {
-    return !staffUsers.contains(userEntity.getId());
+    ChatUserRestModel chatUser = users.get(userEntity.getId());
+    return chatUser != null && chatUser.getType() == ChatUserType.STUDENT;
   }
   
   public boolean isChatEnabled(UserEntity userEntity) {
@@ -376,7 +387,7 @@ public class ChatController {
     
     // userIds now contains all workspace students and teachers, so narrow it down to only those currently in chat
     
-    userIds.retainAll(listUsers());
+    userIds.retainAll(listOnlineUserEntityIds());
     if (!userIds.isEmpty()) {
       
       // Add chat using workspace users to the newly created workspace room 
@@ -424,7 +435,7 @@ public class ChatController {
     boolean wasEnabled = chatUser != null && !chatUser.getArchived();
     String previousNick = chatUser != null ? chatUser.getNick() : null;
     if (chatUser == null) {
-      chatUser = chatUserDAO.create(enabled, nick, userEntity.getId()); 
+      chatUser = chatUserDAO.create(enabled, nick, userEntity.getId());
     }
     
     // Broadcast presence and nick changes to other chat users
@@ -457,13 +468,6 @@ public class ChatController {
   }
   
   private void handleUserEnter(UserEntity userEntity, String sessionId, String nick) {
-    
-    // Make note of the user's nick and type
-    
-    userNicks.put(userEntity.getId(), nick);
-    if (!userEntityController.isStudent(userEntity)) {
-      staffUsers.add(userEntity.getId());
-    }
 
     // Add session data for the user
     
@@ -478,6 +482,16 @@ public class ChatController {
       userSessions.put(userEntity.getId(), sessions);
     }
     sessions.add(sessionId);
+    
+    // Update user cache
+    
+    ChatUserRestModel chatUser = users.get(userEntity.getId());
+    if (chatUser == null) {
+      users.put(userEntity.getId(), toRestModel(chatUserDAO.findByUserEntityId(userEntity.getId())));
+    }
+    else {
+      chatUser.setIsOnline(Boolean.TRUE);
+    }
     
     // Add user to their workspace rooms
     
@@ -505,20 +519,20 @@ public class ChatController {
         // If the new user is staff, everyone may know their real name
 
         userRestModel.setName(name);
-        webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), listUsers());
+        webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), listOnlineUserEntityIds());
       }
       else {
 
         // If the new user is student, only staff may know their real name
 
-        Set<Long> studentUsers = new HashSet<Long>(userSessions.keySet());
-        studentUsers.removeAll(staffUsers);
-        if (!studentUsers.isEmpty()) {
-          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), studentUsers);
+        Set<Long> users = listOnlineUsers(ChatUserType.STUDENT);
+        if (!users.isEmpty()) {
+          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), users);
         }
-        if (!staffUsers.isEmpty()) {
+        users = listOnlineUsers(ChatUserType.STAFF);
+        if (!users.isEmpty()) {
           userRestModel.setName(name);
-          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), staffUsers);
+          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), users);
         }
       }
     }
@@ -538,8 +552,6 @@ public class ChatController {
       }
     }
     userSessions.remove(userEntityId);
-    userNicks.remove(userEntityId);
-    staffUsers.remove(userEntityId);
     Set<Long> roomIds = roomUsers.keySet();
     for (Long roomId : roomIds) {
       Set<Long> users = roomUsers.get(roomId);
@@ -548,13 +560,20 @@ public class ChatController {
       }
     }
     
+    // Update user cache
+    
+    ChatUserRestModel chatUser = users.get(userEntityId);
+    if (chatUser != null) {
+      chatUser.setIsOnline(Boolean.FALSE);
+    }
+    
     // Notify the remaining users that the user has left
     
     if (!userSessions.isEmpty()) {
       ObjectMapper mapper = new ObjectMapper();
       try {
         ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId);
-        webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), listUsers());
+        webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), listOnlineUserEntityIds());
       }
       catch (JsonProcessingException e) {
         logger.severe(String.format("Message parse failure: %s", e.getMessage()));
@@ -563,11 +582,14 @@ public class ChatController {
   }
   
   private void handleNickChange(Long userEntityId, String nick) {
-    userNicks.put(userEntityId, nick);
+    ChatUserRestModel chatUser = users.get(userEntityId);
+    if (chatUser != null) {
+      chatUser.setNick(nick);
+    }
     ObjectMapper mapper = new ObjectMapper();
     try {
       NickChangeRestModel nickChange = new NickChangeRestModel(userEntityId, nick); 
-      webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listUsers());
+      webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listOnlineUserEntityIds());
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
@@ -619,14 +641,37 @@ public class ChatController {
     return restRoom;
   }
   
+  public ChatUserRestModel toRestModel(ChatUser chatUser) {
+    UserEntity userEntity = userEntityController.findUserEntityById(chatUser.getUserEntityId());
+    if (userEntity != null) {
+      return new ChatUserRestModel(
+          userEntity.getId(),
+          chatUser.getNick(),
+          userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine(),
+          userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF,
+          userProfilePictureController.hasProfilePicture(userEntity),
+          isOnline(userEntity));
+    }
+    else {
+      return null;
+    }
+  }
+  
+  private Set<Long> listOnlineUsers(ChatUserType type) {
+    Set<Long> userEntityIds = new HashSet<>();
+    for (ChatUserRestModel chatUser : users.values()) {
+      if (chatUser.getType() == type) {
+        userEntityIds.add(chatUser.getId());
+      }
+    }
+    return userEntityIds;
+  }
+
+  // UserEntityId -> ChatUserRestModel
+  private ConcurrentHashMap<Long, ChatUserRestModel> users;
+
   // ChatRoomId -> Set<UserEntityId>
   private ConcurrentHashMap<Long, Set<Long>> roomUsers;
-  
-  // UserEntityId -> Nick
-  private ConcurrentHashMap<Long, String> userNicks;
-
-  // Staff member userEntityIds
-  private HashSet<Long> staffUsers;
   
   // HttpSessionId -> UserEntityId
   private ConcurrentHashMap<String, Long> sessionUsers;

@@ -848,6 +848,13 @@ paths:
       summary: Get chat users.
       tags:
         - Chat
+      parameters:
+        - name: onlyOnline
+          in: query
+          description: Should the list contain only users currently online. Default value is true.
+          schema:
+            type: boolean
+            default: true
       responses:
         "200":
           description: Chat users successfully retrieved
