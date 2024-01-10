@@ -264,7 +264,7 @@ class InterimEvaluationEditor extends React.Component<
 
     if (this.props.workspace && this.props.workspace.activity) {
       creatingInterimEvaluationRequestBlocked =
-        this.props.workspace.activity.assessmentState.find((a) =>
+        this.props.workspace.activity.assessmentStates.find((a) =>
           ["pending", "pending_pass", "pending_fail"].includes(a.state)
         ) !== undefined;
     }

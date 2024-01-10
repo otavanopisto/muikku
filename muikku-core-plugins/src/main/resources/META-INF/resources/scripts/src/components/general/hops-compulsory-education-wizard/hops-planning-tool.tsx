@@ -1,13 +1,11 @@
 import * as React from "react";
 import { TextField } from "./text-field";
 import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
-import { schoolCourseTable } from "../../../mock/mock-data";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
 import {
   LANGUAGE_SUBJECTS,
   OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
-  useStudentActivity,
 } from "../../../hooks/useStudentActivity";
 import { StateType } from "reducers";
 import { connect, Dispatch } from "react-redux";
@@ -19,16 +17,14 @@ import {
 import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info-box";
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { AnyActionType } from "~/actions";
-import { useStudentChoices } from "~/hooks/useStudentChoices";
-import HopsCourseList from "~/components/general/hops-compulsory-education-wizard/hops-course-list";
-import HopsCourseTable from "~/components/general/hops-compulsory-education-wizard/hops-course-table";
-import { useStudentAlternativeOptions } from "~/hooks/useStudentAlternativeOptions";
-import { filterSpecialSubjects } from "~/helper-functions/shared";
 import Dropdown from "../dropdown";
-import { useSupervisorOptionalSuggestions } from "~/hooks/useSupervisorOptionalSuggestion";
 import { HopsUsePlace } from "./index";
 import { localize } from "~/locales/i18n";
 import { useFollowUp } from "./context/follow-up-context";
+import { useStudyProgressContextState } from "../study-progress/context";
+import StudyProgress from "../study-progress";
+import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
+import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarCircle = require("react-progress-bar.js").Circle;
@@ -81,26 +77,7 @@ const defaultProps = {
 const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   props = { ...defaultProps, ...props };
 
-  const { studentActivity, ...studentActivityHandlers } = useStudentActivity(
-    props.studentId,
-    props.websocketState,
-    props.displayNotification
-  );
-
-  const { studentChoices, ...studentChoiceHandlers } = useStudentChoices(
-    props.studentId,
-    props.websocketState,
-    props.displayNotification
-  );
-
-  const {
-    supervisorOptionalSuggestions,
-    ...supervisorOptionalSuggestionsHandlers
-  } = useSupervisorOptionalSuggestions(
-    props.studentId,
-    props.websocketState,
-    props.displayNotification
-  );
+  const studyProgress = useStudyProgressContextState();
 
   const { studyHours, ...studyHourHandlers } = useStudentStudyHour(
     props.studentId,
@@ -108,15 +85,9 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     props.displayNotification
   );
 
-  const { studyOptions } = useStudentAlternativeOptions(
-    props.studentId,
-    props.websocketState,
-    props.displayNotification
-  );
-
-  const filteredSchoolCourseTable = filterSpecialSubjects(
-    schoolCourseTable,
-    studyOptions.options
+  const filteredSchoolCourseTable = filterCompulsorySubjects(
+    schoolCourseTableCompulsory2018.subjectsTable,
+    studyProgress.options
   );
 
   const followUpData = useFollowUp();
@@ -270,46 +241,44 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     let numberOfMandatoryTransferedOutsideHops = 0;
     let numberOfOptionalTransferedOutsideHops = 0;
 
-    if (studentActivity) {
-      for (const s of SKILL_AND_ART_SUBJECTS) {
-        for (const tc of studentActivity.transferedList) {
-          if (s === tc.subject) {
-            if (
-              tc.transferCreditMandatory !== null &&
-              tc.transferCreditMandatory
-            ) {
-              numberOfMandatoryTransferedOutsideHops++;
-            } else {
-              numberOfOptionalTransferedOutsideHops++;
-            }
+    for (const s of SKILL_AND_ART_SUBJECTS) {
+      for (const tc of studyProgress.transferedList) {
+        if (s === tc.subject) {
+          if (
+            tc.transferCreditMandatory !== null &&
+            tc.transferCreditMandatory
+          ) {
+            numberOfMandatoryTransferedOutsideHops++;
+          } else {
+            numberOfOptionalTransferedOutsideHops++;
           }
         }
       }
-      for (const s of LANGUAGE_SUBJECTS) {
-        for (const tc of studentActivity.transferedList) {
-          if (s === tc.subject) {
-            if (
-              tc.transferCreditMandatory !== null &&
-              tc.transferCreditMandatory
-            ) {
-              numberOfMandatoryTransferedOutsideHops++;
-            } else {
-              numberOfOptionalTransferedOutsideHops++;
-            }
+    }
+    for (const s of LANGUAGE_SUBJECTS) {
+      for (const tc of studyProgress.transferedList) {
+        if (s === tc.subject) {
+          if (
+            tc.transferCreditMandatory !== null &&
+            tc.transferCreditMandatory
+          ) {
+            numberOfMandatoryTransferedOutsideHops++;
+          } else {
+            numberOfOptionalTransferedOutsideHops++;
           }
         }
       }
-      for (const s of OTHER_SUBJECT_OUTSIDE_HOPS) {
-        for (const tc of studentActivity.transferedList) {
-          if (s === tc.subject) {
-            if (
-              tc.transferCreditMandatory !== null &&
-              tc.transferCreditMandatory
-            ) {
-              numberOfMandatoryTransferedOutsideHops++;
-            } else {
-              numberOfOptionalTransferedOutsideHops++;
-            }
+    }
+    for (const s of OTHER_SUBJECT_OUTSIDE_HOPS) {
+      for (const tc of studyProgress.transferedList) {
+        if (s === tc.subject) {
+          if (
+            tc.transferCreditMandatory !== null &&
+            tc.transferCreditMandatory
+          ) {
+            numberOfMandatoryTransferedOutsideHops++;
+          } else {
+            numberOfOptionalTransferedOutsideHops++;
           }
         }
       }
@@ -336,8 +305,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
     for (const sSubject of filteredSchoolCourseTable) {
       for (const aCourse of sSubject.availableCourses) {
         if (
-          studentActivity &&
-          studentActivity.transferedList.find(
+          studyProgress.transferedList.find(
             (tCourse) =>
               sSubject.subjectCode === tCourse.subject &&
               tCourse.courseNumber === aCourse.courseNumber
@@ -388,8 +356,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         totalNumberOfCourses++;
 
         if (
-          studentActivity.gradedList &&
-          studentActivity.gradedList.find(
+          studyProgress.gradedList.find(
             (gCourse) =>
               sSubject.subjectCode === gCourse.subject &&
               gCourse.courseNumber === aCourse.courseNumber
@@ -434,8 +401,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         totalNumberOfCourses++;
 
         if (
-          studentActivity.gradedList &&
-          studentActivity.gradedList.find(
+          studyProgress.gradedList.find(
             (gItem) =>
               gItem.subject === sSubject.subjectCode &&
               gItem.courseNumber === aCourse.courseNumber
@@ -452,12 +418,8 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       numberOfOptionalHoursCompleted: totalHoursCompleted,
       numberOfOptionalCoursesCompleted: totalCourseCompleted,
       numberOfOptionalCoursesInTotal: totalNumberOfCourses,
-      numberOfOptionalSelectedHours: studentChoices.studentChoices
-        ? studentChoices.studentChoices.length * 28
-        : 0,
-      numberOfOptionalSelectedCourses: studentChoices.studentChoices
-        ? studentChoices.studentChoices.length
-        : 0,
+      numberOfOptionalSelectedHours: studyProgress.studentChoices.length * 28,
+      numberOfOptionalSelectedCourses: studyProgress.studentChoices.length,
     };
   };
 
@@ -663,13 +625,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
   const optionalCourseProggress =
     updatedCompletedOptionalCourses / neededOptionalStudies;
 
-  const isLoading =
-    studyHours.isLoading ||
-    studentActivity.isLoading ||
-    studentChoices.isLoading ||
-    studyOptions.isLoading ||
-    supervisorOptionalSuggestions.isLoading ||
-    followUpData.isLoading;
+  const isLoading = studyHours.isLoading || followUpData.isLoading;
 
   return (
     <>
@@ -694,7 +650,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         <StudyToolOptionalStudiesInfoBox
           totalOptionalStudiesNeeded={neededOptionalStudies}
           totalOptionalStudiesCompleted={updatedCompletedOptionalCourses}
-          selectedNumberOfOptional={studentChoices.studentChoices.length}
+          selectedNumberOfOptional={studyProgress.studentChoices.length}
           graduationGoal={followUpData.followUp.graduationGoal}
         />
       )}
@@ -860,129 +816,11 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
       )}
 
       <div className="hops-container__row">
-        <div className="hops-container__study-tool-indicators">
-          <div className="hops-container__study-tool-indicator-container--legend-title">
-            Värien kuvaukset
-          </div>
-
-          <div className="hops-container__study-tool-indicator-container">
-            <div className="hops-container__indicator-item hops-container__indicator-item--mandatory"></div>
-            <div className="hops-container__indicator-item-label">
-              Pakollinen
-            </div>
-          </div>
-          <div className="hops-container__study-tool-indicator-container ">
-            <div className="hops-container__indicator-item hops-container__indicator-item--optional"></div>
-            <div className="hops-container__indicator-item-label">
-              (*)-Valinnainen
-            </div>
-          </div>
-          <div className="hops-container__study-tool-indicator-container ">
-            <div className="hops-container__indicator-item hops-container__indicator-item--approval"></div>
-            <div className="hops-container__indicator-item-label">
-              Hyväksiluettu
-            </div>
-          </div>
-          <div className="hops-container__study-tool-indicator-container ">
-            <div className="hops-container__indicator-item hops-container__indicator-item--completed"></div>
-            <div className="hops-container__indicator-item-label">
-              Suoritettu
-            </div>
-          </div>
-          <div className="hops-container__study-tool-indicator-container ">
-            <div className="hops-container__indicator-item hops-container__indicator-item--inprogress"></div>
-            <div className="hops-container__indicator-item-label">Kesken</div>
-          </div>
-          <div className="hops-container__study-tool-indicator-container ">
-            <div className="hops-container__indicator-item hops-container__indicator-item--selected"></div>
-            <div className="hops-container__indicator-item-label">Valittu</div>
-          </div>
-          <div className="hops-container__study-tool-indicator-container ">
-            <div className="hops-container__indicator-item hops-container__indicator-item--suggested"></div>
-            <div className="hops-container__indicator-item-label">
-              Ohjaajan ehdottama
-            </div>
-          </div>
-          {props.user === "supervisor" && (
-            <div className="hops-container__study-tool-indicator-container ">
-              <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
-              <div className="hops-container__indicator-item-label">
-                Ohjaajan seuraavaksi ehdottama
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">
-          {isLoading ? (
-            <div className="loader-empty" />
-          ) : (
-            <div className="hops-container__table-container">
-              <HopsCourseTable
-                matrix={filteredSchoolCourseTable}
-                useCase="hops-planning"
-                usePlace={props.usePlace}
-                disabled={props.disabled}
-                studentId={props.studentId}
-                studentsUserEntityId={props.studentsUserEntityId}
-                user={props.user}
-                superVisorModifies={props.superVisorModifies}
-                suggestedNextList={studentActivity.suggestedNextList}
-                onGoingList={studentActivity.onGoingList}
-                gradedList={studentActivity.gradedList}
-                transferedList={studentActivity.transferedList}
-                skillsAndArt={studentActivity.skillsAndArt}
-                otherSubjects={studentActivity.otherSubjects}
-                otherLanguageSubjects={studentActivity.otherLanguageSubjects}
-                studentChoiceList={studentChoices.studentChoices}
-                supervisorOptionalSuggestionsList={
-                  supervisorOptionalSuggestions.supervisorOptionalSuggestions
-                }
-                updateSuggestionOptional={
-                  supervisorOptionalSuggestionsHandlers.updateSupervisorOptionalSuggestion
-                }
-                updateSuggestionNext={
-                  studentActivityHandlers.updateSuggestionNext
-                }
-                updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="hops__form-element-container hops__form-element-container--mobile swiper-no-swiping">
-          {isLoading ? (
-            <div className="loader-empty" />
-          ) : (
-            <HopsCourseList
-              matrix={filteredSchoolCourseTable}
-              useCase="hops-planning"
-              disabled={props.disabled}
-              user={props.user}
-              studentId={props.studentId}
-              studentsUserEntityId={props.studentsUserEntityId}
-              superVisorModifies={props.superVisorModifies}
-              suggestedNextList={studentActivity.suggestedNextList}
-              onGoingList={studentActivity.onGoingList}
-              gradedList={studentActivity.gradedList}
-              transferedList={studentActivity.transferedList}
-              skillsAndArt={studentActivity.skillsAndArt}
-              otherSubjects={studentActivity.otherSubjects}
-              otherLanguageSubjects={studentActivity.otherLanguageSubjects}
-              studentChoiceList={studentChoices.studentChoices}
-              supervisorOptionalSuggestionsList={
-                supervisorOptionalSuggestions.supervisorOptionalSuggestions
-              }
-              updateStudentChoice={studentChoiceHandlers.updateStudentChoice}
-              updateSuggestionOptional={
-                supervisorOptionalSuggestionsHandlers.updateSupervisorOptionalSuggestion
-              }
-              updateSuggestionNext={
-                studentActivityHandlers.updateSuggestionNext
-              }
-            />
-          )}
-        </div>
+        <StudyProgress
+          studyProgrammeName="Nettiperuskoulu"
+          curriculumName="OPS 2018"
+          editMode={props.superVisorModifies}
+        />
       </div>
     </>
   );

@@ -1,6 +1,4 @@
 import * as React from "react";
-import { SchoolSubject, StudentActivityByStatus } from "~/@types/shared";
-import HopsSuggestionList from "./hops-suggested-list";
 import {
   ListContainer,
   ListHeader,
@@ -11,70 +9,49 @@ import {
   LANGUAGE_SUBJECTS,
   OTHER_SUBJECT_OUTSIDE_HOPS,
   SKILL_AND_ART_SUBJECTS,
-  UpdateSuggestionParams,
 } from "../../../hooks/useStudentActivity";
-import { HopsUser } from ".";
 import { UpdateStudentChoicesParams } from "~/hooks/useStudentChoices";
 import Dropdown from "~/components/general/dropdown";
 import Button from "~/components/general/button";
 import { UpdateSupervisorOptionalSuggestionParams } from "~/hooks/useSupervisorOptionalSuggestion";
 import {
-  OptionalCourseSuggestion,
-  StudentCourseChoice,
-  StudentStudyActivity,
-} from "~/generated/client";
+  useStudyProgressContextState,
+  useStudyProgressContextUpdater,
+  useStudyProgressStaticDataContext,
+} from "./context";
+import SuggestionList from "./suggestion-list";
+import { StudentStudyActivity } from "~/generated/client";
+import {
+  compulsoryOrUpperSecondary,
+  filterMatrix,
+  showSubject,
+} from "~/helper-functions/study-matrix";
+import { useTranslation } from "react-i18next";
 
 /**
  * CourseListProps
  */
-interface HopsCourseListProps extends Partial<StudentActivityByStatus> {
-  /**
-   * matrix
-   */
-  matrix: SchoolSubject[];
-  /**
-   * useCase
-   */
-  useCase: "study-matrix" | "hops-planning";
-  /**
-   * user
-   */
-  user: HopsUser;
-  /**
-   * studentId
-   */
-  studentId: string;
-  studentsUserEntityId: number;
-  /**
-   * disabled
-   */
-  disabled: boolean;
-  /**
-   * Boolean indicating that supervisor can modify values
-   */
-  superVisorModifies: boolean;
-  /**
-   * List of student choices
-   */
-  studentChoiceList?: StudentCourseChoice[];
-  /**
-   * List of student choices
-   */
-  supervisorOptionalSuggestionsList?: OptionalCourseSuggestion[];
-  updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
-  updateSuggestionOptional?: (
-    params: UpdateSupervisorOptionalSuggestionParams
-  ) => void;
-  updateStudentChoice?: (params: UpdateStudentChoicesParams) => void;
+interface HopsCourseListProps {
+  curriculumName: string;
+  studyProgrammeName: string;
+  editMode: boolean;
 }
 
 /**
- * CourseTable
+ * CourseTable. Renders a table of courses
  *
  * @param props props
  * @returns JSX.Element
  */
-const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
+const ProgressList: React.FC<HopsCourseListProps> = (props) => {
+  const { editMode, studyProgrammeName, curriculumName } = props;
+
+  const { t } = useTranslation("studyMatrix");
+
+  const studyProgress = useStudyProgressContextState();
+  const studyProgressStatic = useStudyProgressStaticDataContext();
+  const studyProgressUpdater = useStudyProgressContextUpdater();
+
   /**
    * handleToggleChoiceClick
    *
@@ -83,7 +60,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   const handleToggleChoiceClick =
     (choiceParams: UpdateStudentChoicesParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.updateStudentChoice && props.updateStudentChoice(choiceParams);
+      studyProgressUpdater.updateStudentChoice(choiceParams);
     };
 
   /**
@@ -93,13 +70,32 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   const handleToggleSuggestOptional =
     (params: UpdateSupervisorOptionalSuggestionParams) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.updateSuggestionOptional && props.updateSuggestionOptional(params);
+      studyProgressUpdater.updateSupervisorOptionalSuggestion(params);
     };
+
+  const matrix = compulsoryOrUpperSecondary(studyProgrammeName, curriculumName);
+
+  // If study programme name doesn't have a matrix, return empty matrix indicator
+  if (matrix === null) {
+    return (
+      <div className="empty">
+        <span>{t("content.noSubjectTable")}</span>
+      </div>
+    );
+  }
+
+  const filteredMatrix = filterMatrix(
+    studyProgrammeName,
+    matrix,
+    studyProgress.options
+  );
 
   /**
    * renderRows
    */
-  const renderRows = props.matrix.map((sSubject, i) => {
+  const renderRows = filteredMatrix.map((sSubject, i) => {
+    let showSubjectRow = showSubject(props.studyProgrammeName, sSubject);
+
     /**
      * Renders courses
      */
@@ -127,8 +123,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
        */
 
       if (
-        props.studentChoiceList &&
-        props.studentChoiceList.find(
+        studyProgress.studentChoices.find(
           (sCourse) =>
             sCourse.subject === sSubject.subjectCode &&
             sCourse.courseNumber === course.courseNumber
@@ -138,8 +133,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         listItemIndicatormodifiers.push("OPTIONAL-SELECTED");
       }
       if (
-        props.supervisorOptionalSuggestionsList &&
-        props.supervisorOptionalSuggestionsList.find(
+        studyProgress.supervisorOptionalSuggestions.find(
           (sOCourse) =>
             sOCourse.subject === sSubject.subjectCode &&
             sOCourse.courseNumber === course.courseNumber
@@ -153,14 +147,13 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
        * Only one of these can happen
        */
       if (
-        props.suggestedNextList &&
-        props.suggestedNextList.find(
+        studyProgress.suggestedNextList.find(
           (sCourse) =>
             sCourse.subject === sSubject.subjectCode &&
             sCourse.courseNumber === course.courseNumber
         )
       ) {
-        const suggestedCourseDataNext = props.suggestedNextList.filter(
+        const suggestedCourseDataNext = studyProgress.suggestedNextList.filter(
           (sCourse) => sCourse.subject === sSubject.subjectCode
         );
 
@@ -168,18 +161,17 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
 
         listItemIndicatormodifiers.push("NEXT");
       } else if (
-        props.transferedList &&
-        props.transferedList.find(
+        studyProgress.transferedList.find(
           (tCourse) =>
             tCourse.subject === sSubject.subjectCode &&
             tCourse.courseNumber === course.courseNumber
         )
       ) {
+        showSubjectRow = true;
         canBeSelected = false;
         listItemIndicatormodifiers.push("APPROVAL");
       } else if (
-        props.gradedList &&
-        props.gradedList.find(
+        studyProgress.gradedList.find(
           (gCourse) =>
             gCourse.subject === sSubject.subjectCode &&
             gCourse.courseNumber === course.courseNumber
@@ -188,8 +180,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         canBeSelected = false;
         listItemIndicatormodifiers.push("COMPLETED");
       } else if (
-        props.onGoingList &&
-        props.onGoingList.find(
+        studyProgress.onGoingList.find(
           (oCourse) =>
             oCourse.subject === sSubject.subjectCode &&
             oCourse.courseNumber === course.courseNumber
@@ -203,16 +194,16 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
        * Button is shown only if modifying user is supervisor
        */
       const showSuggestAndAddToHopsButtons =
-        props.user === "supervisor" &&
-        props.superVisorModifies &&
-        props.useCase === "hops-planning";
+        editMode &&
+        studyProgressStatic.user === "supervisor" &&
+        studyProgressStatic.useCase === "hops-planning";
 
       /**
        * WorkspaceSuggestion list is shown only if not disabled, for supervisor only
        * and there can be made selections
        */
       const showSuggestionList =
-        !props.disabled && props.user === "supervisor" && canBeSelected;
+        editMode && studyProgressStatic.user === "supervisor" && canBeSelected;
 
       return (
         <ListItem
@@ -222,9 +213,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
           <ListItemIndicator
             modifiers={listItemIndicatormodifiers}
             onClick={
-              !course.mandatory && props.user === "student"
+              !course.mandatory && studyProgressStatic.user === "student"
                 ? handleToggleChoiceClick({
-                    studentId: props.studentId,
+                    studentId: studyProgressStatic.studentId,
                     courseNumber: course.courseNumber,
                     subject: sSubject.subjectCode,
                   })
@@ -232,7 +223,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
             }
           >
             <Dropdown
-              openByHover={props.user !== "supervisor"}
+              openByHover={studyProgressStatic.user !== "supervisor"}
               content={
                 <div className="hops-container__study-tool-dropdown-container">
                   <div className="hops-container__study-tool-dropdow-title">
@@ -241,16 +232,22 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                   {course.mandatory ? (
                     <>
                       {showSuggestionList && (
-                        <HopsSuggestionList
-                          studentId={props.studentId}
-                          studentsUserEntityId={props.studentsUserEntityId}
+                        <SuggestionList
+                          studentId={studyProgressStatic.studentId}
+                          studentsUserEntityId={
+                            studyProgressStatic.studentUserEntityId
+                          }
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
-                          updateSuggestionNext={props.updateSuggestionNext}
-                          canSuggestForNext={
-                            props.useCase === "hops-planning" ||
-                            props.useCase === "study-matrix"
+                          updateSuggestionNext={
+                            studyProgressUpdater.updateSuggestionForNext
+                          }
+                          openSignUpBehalfDialog={
+                            studyProgressUpdater.openSignUpBehalfDialog
+                          }
+                          onCloseSignUpBehalfDialog={
+                            studyProgressUpdater.closeSignUpBehalfDialog
                           }
                         />
                       )}
@@ -259,7 +256,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                     <>
                       <div className="hops-container__study-tool-button-container">
                         {showSuggestAndAddToHopsButtons &&
-                          props.useCase === "hops-planning" && (
+                          studyProgressStatic.useCase === "hops-planning" && (
                             <Button
                               buttonModifiers={[
                                 "guider-hops-studytool",
@@ -268,42 +265,48 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                               onClick={handleToggleSuggestOptional({
                                 courseNumber: course.courseNumber,
                                 subject: sSubject.subjectCode,
-                                studentId: props.studentId,
+                                studentId: studyProgressStatic.studentId,
                               })}
                             >
                               {suggestedBySupervisor
-                                ? "Ehdotettu"
-                                : "Ehdota valinnaiseksi"}
+                                ? t("actions.suggested")
+                                : t("actions.suggestOptional")}
                             </Button>
                           )}
 
                         {showSuggestAndAddToHopsButtons && (
                           <Button
                             onClick={handleToggleChoiceClick({
-                              studentId: props.studentId,
+                              studentId: studyProgressStatic.studentId,
                               courseNumber: course.courseNumber,
                               subject: sSubject.subjectCode,
                             })}
                             buttonModifiers={["guider-hops-studytool"]}
                           >
                             {selectedByStudent
-                              ? "Peru valinta"
-                              : "Valitse osaksi hopsia"}
+                              ? t("actions.cancelSelection")
+                              : t("actions.selectOptionalToHops")}
                           </Button>
                         )}
                       </div>
 
                       {showSuggestionList && (
-                        <HopsSuggestionList
-                          studentId={props.studentId}
-                          studentsUserEntityId={props.studentsUserEntityId}
+                        <SuggestionList
+                          studentId={studyProgressStatic.studentId}
+                          studentsUserEntityId={
+                            studyProgressStatic.studentUserEntityId
+                          }
                           suggestedActivityCourses={courseSuggestions}
                           subjectCode={sSubject.subjectCode}
                           course={course}
-                          updateSuggestionNext={props.updateSuggestionNext}
-                          canSuggestForNext={
-                            props.useCase === "hops-planning" ||
-                            props.useCase === "study-matrix"
+                          updateSuggestionNext={
+                            studyProgressUpdater.updateSuggestionForNext
+                          }
+                          openSignUpBehalfDialog={
+                            studyProgressUpdater.openSignUpBehalfDialog
+                          }
+                          onCloseSignUpBehalfDialog={
+                            studyProgressUpdater.closeSignUpBehalfDialog
                           }
                         />
                       )}
@@ -324,32 +327,37 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
     });
 
     return (
-      <ListContainer key={sSubject.name} modifiers={["subject"]}>
-        <ListContainer modifiers={["row"]}>
-          <ListHeader
-            modifiers={["subject-name"]}
-          >{`${sSubject.name} (${sSubject.subjectCode})`}</ListHeader>
+      showSubjectRow && (
+        <ListContainer key={sSubject.name} modifiers={["subject"]}>
+          <ListContainer modifiers={["row"]}>
+            <ListHeader
+              modifiers={["subject-name"]}
+            >{`${sSubject.name} (${sSubject.subjectCode})`}</ListHeader>
+          </ListContainer>
+          <ListContainer modifiers={["row"]}>{courses}</ListContainer>
         </ListContainer>
-        <ListContainer modifiers={["row"]}>{courses}</ListContainer>
-      </ListContainer>
+      )
     );
   });
 
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderSkillsAndArtRows = props.skillsAndArt
+  const renderSkillsAndArtRows = studyProgress.skillsAndArt
     ? SKILL_AND_ART_SUBJECTS.map((s) => {
-        if (props.skillsAndArt[s].length !== 0) {
+        if (
+          studyProgress.skillsAndArt[s] &&
+          studyProgress.skillsAndArt[s].length !== 0
+        ) {
           return (
             <ListContainer key={s} modifiers={["subject"]}>
               <ListContainer modifiers={["row"]}>
                 <ListHeader modifiers={["subject-name"]}>
-                  {props.skillsAndArt[s][0].subjectName}
+                  {studyProgress.skillsAndArt[s][0].subjectName}
                 </ListHeader>
               </ListContainer>
               <ListContainer modifiers={["row"]}>
-                {props.skillsAndArt[s].map((c, index) => {
+                {studyProgress.skillsAndArt[s].map((c, index) => {
                   const listItemIndicatormodifiers = ["course", "APPROVAL"];
                   const listItemModifiers = ["course", "APPROVAL"];
 
@@ -357,7 +365,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                     <ListItem key={index} modifiers={listItemModifiers}>
                       <ListItemIndicator modifiers={listItemIndicatormodifiers}>
                         <Dropdown
-                          openByHover={props.user !== "supervisor"}
+                          openByHover={
+                            studyProgressStatic.user !== "supervisor"
+                          }
                           content={
                             <div className="hops-container__study-tool-dropdown-container">
                               <div className="hops-container__study-tool-dropdow-title">
@@ -388,18 +398,21 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderOtherLanguageSubjectsRows = props.otherLanguageSubjects
+  const renderOtherLanguageSubjectsRows = studyProgress.otherLanguageSubjects
     ? LANGUAGE_SUBJECTS.map((s) => {
-        if (props.otherLanguageSubjects[s].length !== 0) {
+        if (
+          studyProgress.otherLanguageSubjects[s] &&
+          studyProgress.otherLanguageSubjects[s].length !== 0
+        ) {
           return (
             <ListContainer key={s} modifiers={["subject"]}>
               <ListContainer modifiers={["row"]}>
                 <ListHeader modifiers={["subject-name"]}>
-                  {props.otherLanguageSubjects[s][0].subjectName}
+                  {studyProgress.otherLanguageSubjects[s][0].subjectName}
                 </ListHeader>
               </ListContainer>
               <ListContainer modifiers={["row"]}>
-                {props.otherLanguageSubjects[s].map((c, index) => {
+                {studyProgress.otherLanguageSubjects[s].map((c, index) => {
                   const listItemIndicatormodifiers = ["course", "APPROVAL"];
                   const listItemModifiers = ["course", "APPROVAL"];
 
@@ -407,7 +420,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
                     <ListItem key={index} modifiers={listItemModifiers}>
                       <ListItemIndicator modifiers={listItemIndicatormodifiers}>
                         <Dropdown
-                          openByHover={props.user !== "supervisor"}
+                          openByHover={
+                            studyProgressStatic.user !== "supervisor"
+                          }
                           content={
                             <div className="hops-container__study-tool-dropdown-container">
                               <div className="hops-container__study-tool-dropdow-title">
@@ -435,10 +450,13 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   /**
    * Subjects and courses related to skills and arts
    */
-  const renderOtherSubjectsRows = props.otherSubjects
+  const renderOtherSubjectsRows = studyProgress.otherSubjects
     ? OTHER_SUBJECT_OUTSIDE_HOPS.map((s) => {
-        if (props.otherSubjects[s].length !== 0) {
-          return props.otherSubjects[s].map((c) => (
+        if (
+          studyProgress.otherSubjects[s] &&
+          studyProgress.otherSubjects[s].length !== 0
+        ) {
+          return studyProgress.otherSubjects[s].map((c) => (
             <ListContainer key={c.courseName} modifiers={["row"]}>
               <ListHeader modifiers={["subject-name"]}>
                 {c.courseName}
@@ -458,7 +476,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
         <ListContainer modifiers={["section"]}>
           <ListContainer modifiers={["row"]}>
             <ListHeader modifiers={["subtitle"]}>
-              Hyväksiluvut: Taito- ja taideaineet
+              {t("labels.transferedSkillAndArt")}
             </ListHeader>
           </ListContainer>
           {renderSkillsAndArtRows}
@@ -470,7 +488,7 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
           <ListContainer modifiers={["section"]}>
             <ListContainer modifiers={["row"]}>
               <ListHeader modifiers={["subtitle"]}>
-                Hyväksiluvut: Vieraat kielet
+                {t("labels.transferedLanguages")}
               </ListHeader>
             </ListContainer>
             {renderOtherLanguageSubjectsRows}
@@ -480,7 +498,9 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
       {renderOtherSubjectsRows && renderOtherSubjectsRows.length !== 0 && (
         <ListContainer modifiers={["section"]}>
           <ListContainer modifiers={["row"]}>
-            <ListHeader modifiers={["subtitle"]}>Hyväksiluvut: Muut</ListHeader>
+            <ListHeader modifiers={["subtitle"]}>
+              {t("labels.transferedOther")}
+            </ListHeader>
           </ListContainer>
           {renderOtherSubjectsRows}
         </ListContainer>
@@ -489,4 +509,4 @@ const HopsCourseList: React.FC<HopsCourseListProps> = (props) => {
   );
 };
 
-export default HopsCourseList;
+export default ProgressList;

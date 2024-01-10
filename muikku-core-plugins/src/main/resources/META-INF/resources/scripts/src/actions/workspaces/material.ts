@@ -1135,7 +1135,9 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         } else {
           await workspaceApi.deleteWorkspaceMaterial({
             workspaceEntityId: data.workspace.id,
-            workspaceMaterialId: data.material.workspaceMaterialId,
+            // Please note that first option is for normal materials and second is for files
+            workspaceMaterialId:
+              data.material.workspaceMaterialId || data.material.id,
             removeAnswers: data.removeAnswers || false,
             updateLinkedMaterials: true,
           });

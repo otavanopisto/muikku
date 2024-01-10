@@ -790,7 +790,33 @@ export const workspaces: Reducer<WorkspacesState> = (
       }
     }
 
-    case "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES":
+    // When path is updated, we need to update material that is being edited
+    // in the editor as well its childrenAttachments (includes current node value and draft node value)
+    case "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES": {
+      /**
+       * repairAttachmentsPath
+       * @param material material
+       */
+      const repairAttachmentsPath = (
+        material: MaterialContentNodeWithIdAndLogic
+      ) => {
+        if (material.childrenAttachments) {
+          material.childrenAttachments = material.childrenAttachments.map(
+            (attachment) => {
+              const splittedPath = attachment.path.split("/");
+
+              return {
+                ...attachment,
+                path: `${material.path}/${
+                  splittedPath[splittedPath.length - 1]
+                }`,
+              };
+            }
+          );
+        }
+        return material;
+      };
+
       return {
         ...state,
         currentMaterials: repairContentNodes(
@@ -803,8 +829,19 @@ export const workspaces: Reducer<WorkspacesState> = (
           action.payload.newPath,
           action.payload.material.workspaceMaterialId
         ),
+        materialEditor: {
+          ...state.materialEditor,
+          currentNodeValue: repairAttachmentsPath({
+            ...state.materialEditor.currentNodeValue,
+            path: action.payload.newPath,
+          }),
+          currentDraftNodeValue: repairAttachmentsPath({
+            ...state.materialEditor.currentDraftNodeValue,
+            path: action.payload.newPath,
+          }),
+        },
       };
-
+    }
     case "UPDATE_WORKSPACES_EDIT_MODE_STATE":
       return { ...state, editMode: { ...state.editMode, ...action.payload } };
 

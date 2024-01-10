@@ -363,6 +363,9 @@
       "contactLog": "Yhteydenotot",
       "contactInfo_student": "Opiskelijan yhteystiedot",
       "contactInfo_guardian": "Huoltajan tai yhteyshenkilön yhteystiedot",
+      "courseCredits": "Opintopisteet",
+      "courseCreditsMandatory": "Pakolliset: {{mandatoryCredits}}",
+      "courseCreditsTotal": "Yhteensä: {{totalCredits}}",
       "created_interimEvaluation": "Välipalaute annettu",
       "discussionMessages": "Keskusteluviestit",
       "endDate": "Opintojen päättymispäivä",
@@ -448,6 +451,8 @@
     "labels": {
       "abiStatus": "Abistatus",
       "activity": "Aktiivisuus",
+      "courseCredits": "Opintopisteet: Pakolliset {{mandatoryCredits}}, Yhteensä {{totalCredits}}",
+      "evaluated": "Arvioitu {{date}}",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "completedWorkspaces": "Olet suorittanut yhteensä",
       "coursesForYou:": "Kursseja sinulle",
@@ -1886,7 +1891,7 @@
       "nonActiveUser": " Näyttää siltä että sinun opintosi ovat päättyneet ja näin ollen tilauksesi opinto-oikeutesi jatkamiseksi on keskeytetty.",
       "noProducts": "Ei ostettavia tuotteita",
       "noPurchases": "Opiskelijalla ei ole tilauksia",
-      "orderConfirmed": "Opiskelija saa sähköpostitse tiedon luomastasi tilauksesta. Sähköpostiviestissä on linkki Mikkelin kaupungin verkkokauppaan, jossa opiskelija voi maksaa opiskelumaksun. Maksulinkki on voimassa 24 tuntia siitä, kun opiskelija on avannut sen ensimmäisen kerran.",
+      "orderConfirmed": "Opiskelija saa sähköpostitse tiedon luomastasi tilauksesta. Sähköpostiviestissä on linkki Mikkelin kaupungin verkkokauppaan, jossa opiskelija voi maksaa opiskelumaksun. Maksulinkki on voimassa 14 vuorokautta siitä, kun opiskelija on avannut sen ensimmäisen kerran.",
       "redirect": "Sinut uudelleenohjataan Mikkelin kaupungin verkkokauppaan.",
       "removing": "Oletko varma, että haluat poistaa opiskelijan tilauksen?"
     },
@@ -2078,5 +2083,42 @@
       "unsavedWarning": "Tallemattomia muutoksia"
     },
     "notifications": {}
+  },
+  "studyMatrix": {
+    "actions": {
+      "cancelSelection": "Peru valinta",
+      "selectOptionalToHops": "Valitse osaksi hopsia",
+      "signUpStudent": "Ilmoita opiskelija",
+      "signupStudentToWorkspace": "Ilmoita kurssille",
+      "suggested": "Ehdotettu",
+      "suggestOptional": "Ehdota valinnaiseksi",
+      "suggestToNext": "Ehdota seuraavaksi"
+    },
+    "content": {
+      "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
+      "noSuggestionAvailable": "Ei kursseja. Tarkista kurssitarjonta!"
+    },
+    "labels": {
+      "colorDescriptions": "Värien kuvaukset",
+      "completed": "Suoritettu",
+      "courses": "Kurssit",
+      "guidanceCouncelorSuggestion": "Ohjaajan ehdottama",
+      "guidanceCouncelorSuggestionNext": "Ohjaajan seuraavaksi ehdottama",
+      "inProgress": "Kesken",
+      "mandatory": "Pakollinen",
+      "optional": "(*)-Valinnainen",
+      "schoolSubject": "Oppiaine",
+      "selected": "Valittu",
+      "signUpMessage": "Ilmoitusviesti",
+      "signUpStudent": "Ilmoita opiskelija kurssille",
+      "signUpStudentToWorkspace": "Ilmoita opiskelija kurssille {{workspaceName}}",
+      "transferred": "Hyväksiluettu",
+      "transferedLanguages": "Hyväksiluvut: Vieraat kielet",
+      "transferedOther": "Hyväksiluvut: Muut",
+      "transferedSkillAndArt": "Hyväksiluvut: Taito- ja taideaineet"
+    },
+    "notifications": {
+      "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
+    }
   }
 }
