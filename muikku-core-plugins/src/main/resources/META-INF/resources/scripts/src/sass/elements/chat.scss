@@ -43,7 +43,7 @@ $chat-discussion-panel-footer-height: 40px;
   display: flex;
   flex-flow: column nowrap;
   height: 500px;
-  overflow: hidden;
+  overflow: unset;
   position: fixed;
   width: 700px;
   z-index: 9989;
