@@ -18,7 +18,6 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -106,20 +105,22 @@ public class WorkspaceSchoolDataController {
     return null;
   }
 
-  public void removeWorkspace(Workspace workspace) {
-    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspace.getSchoolDataSource());
+  public void removeWorkspace(SchoolDataIdentifier workspaceIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceIdentifier.getDataSource());
+
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
     if (workspaceBridge != null) {
-      workspaceBridge.removeWorkspace(workspace.getIdentifier());
+      workspaceBridge.removeWorkspace(workspaceIdentifier);
     } else {
-      logger.log(Level.SEVERE, "School Data Bridge not found: " + workspace.getSchoolDataSource());
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
     }
   }
 
   /* Workspace Entities */
   
-  public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, workspace.getIdentifier());
+  public WorkspaceEntity findWorkspaceEntity(SchoolDataIdentifier workspaceIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceIdentifier.getDataSource());
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, workspaceIdentifier.getIdentifier());
     return workspaceEntity;
   }
 
@@ -157,12 +158,12 @@ public class WorkspaceSchoolDataController {
   
   /* Workspace Users */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
-    WorkspaceEntity workspaceEntity = findWorkspaceEntity(workspace);
+  public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role) {
+    WorkspaceEntity workspaceEntity = findWorkspaceEntity(workspaceIdentifier);
 
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     if (workspaceBridge != null) {
-      return workspaceBridge.createWorkspaceUser(workspace, user, role);
+      return workspaceBridge.createWorkspaceUser(workspaceIdentifier, userIdentifier, role);
     } else {
       logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceEntity.getDataSource());
     }

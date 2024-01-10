@@ -350,4 +350,6 @@ public interface UserSchoolDataBridge {
 
   public boolean amICounselor(String studentIdentifier);
 
+  public List<String> listStudentAlternativeStudyOptions(String userIdentifier);
+
 }

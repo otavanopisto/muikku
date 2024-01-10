@@ -36,7 +36,7 @@ public class GuiderController {
   @Inject
   private WorkspaceJournalController workspaceJournalController;
   
-  @Inject
+  @Inject 
   private CourseMetaController courseMetaController;
   
   public GuiderStudentWorkspaceActivity getStudentWorkspaceActivity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
@@ -118,14 +118,13 @@ public class GuiderController {
   public String getCurriculumName(SchoolDataIdentifier curriculumIdentifier) {
     if (curriculumIdentifier != null) {
       SchoolDataIdentifier curriculumId = curriculumIdentifier;
-    
+
       Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
       String curriculumName = curriculum == null ? null : curriculum.getName();
-      
+
       return curriculumName;
     }
-    
+
     return null;
   }
-  
 }
