@@ -4,6 +4,15 @@ public class ChatUserRestModel {
   
   public ChatUserRestModel() {
   }
+  
+  public ChatUserRestModel(ChatUserRestModel chatUser) {
+    this.id = chatUser.id;
+    this.nick = chatUser.nick;
+    this.name = chatUser.name;
+    this.type = chatUser.type;
+    this.hasImage = chatUser.hasImage;
+    this.isOnline = chatUser.isOnline;
+  }
 
   public ChatUserRestModel(Long id, String nick, String name, ChatUserType type, boolean hasImage, boolean isOnline) {
     this.id = id;

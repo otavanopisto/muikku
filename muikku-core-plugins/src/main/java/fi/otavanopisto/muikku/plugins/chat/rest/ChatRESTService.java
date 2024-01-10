@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.chat.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -61,14 +60,6 @@ public class ChatRESTService {
   @Inject
   private HttpServletRequest httpRequest;
   
-  @Path("/stats")
-  @GET
-  @RESTPermit(ChatPermissions.CHAT_STATISTICS)
-  @Produces(MediaType.TEXT_PLAIN)
-  public Response stats() {
-    return Response.ok(chatController.usageStatistics()).build();
-  }
-  
   @Path("/room")
   @POST
   @RESTPermit(ChatPermissions.CHAT_MANAGE_PUBLIC_ROOMS)
@@ -124,33 +115,25 @@ public class ChatRESTService {
   @Path("/users")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listUsers() {
+  public Response listUsers(@QueryParam("onlyOnline") @DefaultValue("true") boolean onlyOnline) {
     
     // Validation
     
-    if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
+    if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     // Action
     
-    List<ChatUserRestModel> restUsers = new ArrayList<>();
-    Set<Long> userEntityIds = chatController.listUsers();
-    for (Long userEntityId : userEntityIds) {
-      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-      if (userEntity != null) {
-        String name = chatController.isStaffMember(userEntity) || chatController.isStaffMember(sessionController.getLoggedUserEntity())
-            ? userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine()
-            : null;
-        boolean hasImage = userProfilePictureController.hasProfilePicture(userEntity);
-        boolean isOnline = chatController.isInChat(userEntity);
-        restUsers.add(new ChatUserRestModel(
-            userEntityId,
-            chatController.getNick(userEntity),
-            name,
-            chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT,
-            hasImage,
-            isOnline));
+    List<ChatUserRestModel> restUsers = chatController.listChatUsers(onlyOnline);
+
+    // Students may not know each others names
+    
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      for (ChatUserRestModel restUser : restUsers) {
+        if (restUser.getType() == ChatUserType.STUDENT) {
+          restUser.setName(null);
+        }
       }
     }
     
@@ -338,7 +321,7 @@ public class ChatRESTService {
   @GET
   @RESTPermit(ChatPermissions.CHAT_MESSAGE_AUTHOR_INFO)
   public Response getMessageAuthorInfo(@PathParam("ID") Long id) {
-    if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
+    if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     ChatMessage chatMessage = chatController.findChatMessageByIdAndArchived(id, Boolean.FALSE);
@@ -357,7 +340,7 @@ public class ChatRESTService {
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT);
     userInfo.setHasImage(userProfilePictureController.hasProfilePicture(userEntity));
-    userInfo.setIsOnline(chatController.isInChat(userEntity));
+    userInfo.setIsOnline(chatController.isOnline(userEntity));
     return Response.ok(userInfo).build();
   }
 
@@ -365,7 +348,7 @@ public class ChatRESTService {
   @GET
   @RESTPermit(ChatPermissions.CHAT_USER_INFO)
   public Response getUserInfo(@PathParam("ID") Long id) {
-    if (!chatController.isInChat(sessionController.getLoggedUserEntity())) {
+    if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     UserEntity userEntity = userEntityController.findUserEntityById(id);
@@ -380,7 +363,7 @@ public class ChatRESTService {
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
     userInfo.setHasImage(userProfilePictureController.hasProfilePicture(userEntity));
-    userInfo.setIsOnline(chatController.isInChat(userEntity));
+    userInfo.setIsOnline(chatController.isOnline(userEntity));
     return Response.ok(userInfo).build();
   }
 
@@ -431,5 +414,5 @@ public class ChatRESTService {
     int i = identifier.indexOf('-');
     return Long.valueOf(identifier.substring(i + 1));
   }
-
+  
 }
