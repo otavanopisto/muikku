@@ -34,6 +34,7 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatMessageRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomDeletedRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRestModel;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserLeftRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserType;
@@ -436,6 +437,7 @@ public class ChatController {
   }
   
   public void handleSettingsChange(UserEntity userEntity, ChatUserVisibility visibility, String nick, String sessionId) {
+    boolean modified = false;
     ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
     if (chatUser == null && visibility == ChatUserVisibility.NONE) {
       // Chat is off, nothing has changed
@@ -445,6 +447,7 @@ public class ChatController {
       // Chat has been turned on
       chatUser = chatUserDAO.create(userEntity.getId(), visibility, nick);
       handleUserEnter(userEntity, visibility, nick, sessionId);
+      modified = true;
     }
     else if (chatUser != null && (visibility != chatUser.getVisibility() || !StringUtils.equals(chatUser.getNick(), nick))) {
       // Chat is on but visibility or nick has changed
@@ -455,11 +458,28 @@ public class ChatController {
       if (!StringUtils.equals(chatUser.getNick(), nick)) {
         handleNickChange(userEntity.getId(), visibility, nick);
       }
+      modified = true;
     }
     else if (chatUser != null && visibility == ChatUserVisibility.NONE) {
       // Chat has been turned off
       chatUserDAO.delete(chatUser);
       handleUserLeave(userEntity.getId(), true);
+      modified = true;
+    }
+    
+    // Notify the user about settings change
+    
+    if (modified) {
+      ChatSettingsRestModel settingsRestModel = new ChatSettingsRestModel();
+      settingsRestModel.setNick(nick);
+      settingsRestModel.setVisibility(visibility);
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+        webSocketMessenger.sendMessage("chat:settings-change", mapper.writeValueAsString(settingsRestModel), Set.of(userEntity.getId()));
+      }
+      catch (JsonProcessingException e) {
+        logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+      }
     }
   }
   
