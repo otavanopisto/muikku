@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.chat.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.chat.ChatPermissions;
+import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
@@ -47,6 +49,9 @@ public class ChatRESTService {
   
   @Inject
   private ChatController chatController;
+  
+  @Inject
+  private ChatMessageDAO chatMessageDAO;
 
   @Inject
   private SessionController sessionController;
@@ -126,6 +131,43 @@ public class ChatRESTService {
     // Action
     
     List<ChatUserRestModel> restUsers = chatController.listChatUsers(onlyOnline);
+
+    // Students may not know each others names
+    
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      for (ChatUserRestModel restUser : restUsers) {
+        if (restUser.getType() == ChatUserType.STUDENT) {
+          restUser.setName(null);
+        }
+      }
+    }
+    
+    // Response
+    
+    return Response.ok(restUsers).build();
+  }
+
+  @Path("/privateDiscussions")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listPrivateDiscussions() {
+    
+    // Validation
+    
+    if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Action
+    
+    Set<Long> userEntityIds = chatMessageDAO.listPrivateDiscussionPartners(sessionController.getLoggedUserEntity().getId());
+    List<ChatUserRestModel> restUsers = new ArrayList<>();
+    for (Long userEntityId : userEntityIds) {
+      ChatUserRestModel chatUser = chatController.getChatUserRestModel(userEntityId); 
+      if (chatUser != null) {
+        restUsers.add(chatUser);
+      }
+    }
 
     // Students may not know each others names
     

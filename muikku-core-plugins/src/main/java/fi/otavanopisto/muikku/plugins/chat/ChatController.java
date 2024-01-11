@@ -104,7 +104,7 @@ public class ChatController {
       if (sessionIds != null) {
         sessionIds.remove(sessionId);
         if (sessionIds.isEmpty()) {
-          handleUserLeave(userEntityId);
+          handleUserLeave(userEntityId, false);
         }
       }
     }
@@ -431,6 +431,10 @@ public class ChatController {
     return chatUserDAO.findByNick(nick);
   }
   
+  public ChatUserRestModel getChatUserRestModel(Long userEntityId) {
+    return new ChatUserRestModel(users.get(userEntityId));
+  }
+  
   public void handleSettingsChange(ChatUser chatUser, boolean enabled, String nick, UserEntity userEntity, String sessionId) {
     boolean wasEnabled = chatUser != null && !chatUser.getArchived();
     String previousNick = chatUser != null ? chatUser.getNick() : null;
@@ -446,7 +450,7 @@ public class ChatController {
     }
     else if (!enabled && wasEnabled) {
       chatUser = chatUserDAO.update(chatUser, enabled, nick);
-      handleUserLeave(userEntity.getId());
+      handleUserLeave(userEntity.getId(), true);
     }
     else if (enabled && previousNick != null && !StringUtils.equals(previousNick, nick)) {
       handleNickChange(userEntity.getId(), nick);
@@ -541,7 +545,7 @@ public class ChatController {
     }
   }
 
-  private void handleUserLeave(Long userEntityId) {
+  private void handleUserLeave(Long userEntityId, boolean permanent) {
     
     // Remove all session data related to the user
     
@@ -564,7 +568,12 @@ public class ChatController {
     
     ChatUserRestModel chatUser = users.get(userEntityId);
     if (chatUser != null) {
-      chatUser.setIsOnline(Boolean.FALSE);
+      if (permanent) {
+        users.remove(userEntityId);
+      }
+      else {
+        chatUser.setIsOnline(Boolean.FALSE);
+      }
     }
     
     // Notify the remaining users that the user has left
