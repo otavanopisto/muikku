@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.chat.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,12 +33,12 @@ public class ChatUser {
     this.nick = nick;
   }
 
-  public Boolean getArchived() {
-    return archived;
+  public ChatUserVisibility getVisibility() {
+    return visibility;
   }
 
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
+  public void setVisibility(ChatUserVisibility visibility) {
+    this.visibility = visibility;
   }
 
   @Id
@@ -51,9 +53,10 @@ public class ChatUser {
   @NotEmpty
   @Column(nullable = false, unique = true)
   private String nick;
-
+  
   @NotNull
   @Column(nullable = false)
-  private Boolean archived;
+  @Enumerated(EnumType.STRING)
+  private ChatUserVisibility visibility;
 
 }

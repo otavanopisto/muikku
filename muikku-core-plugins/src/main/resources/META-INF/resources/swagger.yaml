@@ -914,7 +914,7 @@ paths:
   /rest/chat/settings:
     get:
       operationId: getChatSettings
-      summary: Get chat settings.
+      summary: Get chat settings as a chat user object.
       tags:
         - Chat
       responses:
@@ -923,7 +923,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ChatSettings"
+                $ref: "#/components/schemas/ChatUser"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -931,7 +931,7 @@ paths:
 
     put:
       operationId: updateChatSettings
-      summary: Update chat settings. Doesn't return anything, look websocket for response with message "chat:settings-changed" and "chat:nick-change".
+      summary: Update chat settings. Returns the updated chat user object.
       tags:
         - Chat
       requestBody:
@@ -10145,7 +10145,7 @@ components:
         application/json:
           schema:
             allOf:
-              - $ref: "#/components/schemas/ChatSettings"
+              - $ref: "#/components/schemas/ChatUser"
 
     CeeposOrderCreateRequestBody:
       content:

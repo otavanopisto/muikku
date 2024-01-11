@@ -30,10 +30,10 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatMessageRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomDeletedRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRestModel;
-import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserLeftRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserType;
@@ -84,7 +84,7 @@ public class ChatController {
     
     // Cache all chat users
     
-    List<ChatUser> chatUsers = chatUserDAO.listUnarchived();
+    List<ChatUser> chatUsers = chatUserDAO.listAll();
     for (ChatUser chatUser : chatUsers) {
       users.put(chatUser.getUserEntityId(), toRestModel(chatUser));
     }
@@ -92,8 +92,8 @@ public class ChatController {
   
   public void processSessionCreated(UserEntity userEntity, String sessionId) {
     ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
-    if (chatUser != null && !chatUser.getArchived()) {
-      handleUserEnter(userEntity, sessionId, chatUser.getNick());
+    if (chatUser != null) {
+      handleUserEnter(userEntity, chatUser.getVisibility(), chatUser.getNick(), sessionId);
     }
   }
 
@@ -338,7 +338,7 @@ public class ChatController {
   }
   
   public boolean isChatEnabled(UserEntity userEntity) {
-    return userEntity == null ? false : chatUserDAO.findByUserEntityIdAndArchived(userEntity.getId(), false) != null;
+    return userEntity == null ? false : chatUserDAO.findByUserEntityId(userEntity.getId()) != null;
   }
   
   public void toggleWorkspaceChatRoom(WorkspaceEntity workspaceEntity, String roomName, boolean enabled, UserEntity modifier) {
@@ -435,43 +435,35 @@ public class ChatController {
     return new ChatUserRestModel(users.get(userEntityId));
   }
   
-  public void handleSettingsChange(ChatUser chatUser, boolean enabled, String nick, UserEntity userEntity, String sessionId) {
-    boolean wasEnabled = chatUser != null && !chatUser.getArchived();
-    String previousNick = chatUser != null ? chatUser.getNick() : null;
-    if (chatUser == null) {
-      chatUser = chatUserDAO.create(enabled, nick, userEntity.getId());
+  public void handleSettingsChange(UserEntity userEntity, ChatUserVisibility visibility, String nick, String sessionId) {
+    ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
+    if (chatUser == null && visibility == ChatUserVisibility.NONE) {
+      // Chat is off, nothing has changed
+      return;
     }
-    
-    // Broadcast presence and nick changes to other chat users
-    
-    if (enabled && !wasEnabled) {
-      chatUser = chatUserDAO.update(chatUser, enabled, nick);
-      handleUserEnter(userEntity, sessionId, nick);
+    else if (chatUser == null && visibility != ChatUserVisibility.NONE) {
+      // Chat has been turned on
+      chatUser = chatUserDAO.create(userEntity.getId(), visibility, nick);
+      handleUserEnter(userEntity, visibility, nick, sessionId);
     }
-    else if (!enabled && wasEnabled) {
-      chatUser = chatUserDAO.update(chatUser, enabled, nick);
+    else if (chatUser != null && (visibility != chatUser.getVisibility() || !StringUtils.equals(chatUser.getNick(), nick))) {
+      // Chat is on but visibility or nick has changed
+      chatUser = chatUserDAO.update(chatUser, visibility, nick);
+      if (visibility != chatUser.getVisibility()) {
+        handleVisibilityChange(userEntity.getId(), visibility);
+      }
+      if (!StringUtils.equals(chatUser.getNick(), nick)) {
+        handleNickChange(userEntity.getId(), visibility, nick);
+      }
+    }
+    else if (chatUser != null && visibility == ChatUserVisibility.NONE) {
+      // Chat has been turned off
+      chatUserDAO.delete(chatUser);
       handleUserLeave(userEntity.getId(), true);
-    }
-    else if (enabled && previousNick != null && !StringUtils.equals(previousNick, nick)) {
-      handleNickChange(userEntity.getId(), nick);
-    }
-    else {
-      return; // nothing changed
-    }
-    
-    // Inform the user of the changed settings
-
-    ObjectMapper mapper = new ObjectMapper();
-    try {
-      ChatSettingsRestModel settings = new ChatSettingsRestModel(enabled, nick); 
-      webSocketMessenger.sendMessage("chat:settings-change", mapper.writeValueAsString(settings), Set.of(userEntity.getId()));
-    }
-    catch (JsonProcessingException e) {
-      logger.severe(String.format("Message parse failure: %s", e.getMessage()));
     }
   }
   
-  private void handleUserEnter(UserEntity userEntity, String sessionId, String nick) {
+  private void handleUserEnter(UserEntity userEntity, ChatUserVisibility visibility, String nick, String sessionId) {
 
     // Add session data for the user
     
@@ -514,6 +506,7 @@ public class ChatController {
         nick,
         null,
         getUserType(userEntity),
+        visibility,
         userProfilePictureController.hasProfilePicture(userEntity),
         true);
     ObjectMapper mapper = new ObjectMapper();
@@ -523,20 +516,23 @@ public class ChatController {
         // If the new user is staff, everyone may know their real name
 
         userRestModel.setName(name);
-        webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), listOnlineUserEntityIds());
+        Set<Long> userEntityIds = visibility == ChatUserVisibility.STAFF ? listOnlineUserEntityIds(ChatUserType.STAFF) : listOnlineUserEntityIds();
+        webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
       }
       else {
 
         // If the new user is student, only staff may know their real name
 
-        Set<Long> users = listOnlineUsers(ChatUserType.STUDENT);
-        if (!users.isEmpty()) {
-          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), users);
+        if (visibility == ChatUserVisibility.ALL) {
+          Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+          if (!userEntityIds.isEmpty()) {
+            webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
+          }
         }
-        users = listOnlineUsers(ChatUserType.STAFF);
-        if (!users.isEmpty()) {
+        Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STAFF);
+        if (!userEntityIds.isEmpty()) {
           userRestModel.setName(name);
-          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), users);
+          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
         }
       }
     }
@@ -590,7 +586,41 @@ public class ChatController {
     }
   }
   
-  private void handleNickChange(Long userEntityId, String nick) {
+  private void handleVisibilityChange(Long userEntityId, ChatUserVisibility visibility) {
+    ChatUserRestModel chatUser = users.get(userEntityId);
+    if (chatUser != null) {
+      chatUser.setVisibility(visibility);
+    }
+    if (visibility == ChatUserVisibility.ALL) {
+      // Visible to all, so let other students know the person is now around
+      Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+      if (!userEntityIds.isEmpty()) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+          webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(chatUser), userEntityIds);
+        }
+        catch (JsonProcessingException e) {
+          logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+        }
+      }
+    }
+    else if (visibility == ChatUserVisibility.STAFF) {
+      // Visible to staff, so let other students know the person not around
+      Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+      if (!userEntityIds.isEmpty()) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+          ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId);
+          webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), userEntityIds);
+        }
+        catch (JsonProcessingException e) {
+          logger.severe(String.format("Message parse failure: %s", e.getMessage()));
+        }
+      }
+    }
+  }
+  
+  private void handleNickChange(Long userEntityId, ChatUserVisibility visibility, String nick) {
     ChatUserRestModel chatUser = users.get(userEntityId);
     if (chatUser != null) {
       chatUser.setNick(nick);
@@ -598,7 +628,12 @@ public class ChatController {
     ObjectMapper mapper = new ObjectMapper();
     try {
       NickChangeRestModel nickChange = new NickChangeRestModel(userEntityId, nick); 
-      webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listOnlineUserEntityIds());
+      if (visibility == ChatUserVisibility.STAFF) {
+        webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listOnlineUserEntityIds(ChatUserType.STAFF));
+      }
+      else {
+        webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listOnlineUserEntityIds());
+      }
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
@@ -650,23 +685,24 @@ public class ChatController {
     return restRoom;
   }
   
+  public ChatUserRestModel toRestModel(UserEntity userEntity) {
+    ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
+    return new ChatUserRestModel(
+        userEntity.getId(),
+        chatUser == null ? null : chatUser.getNick(),
+        userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine(),
+        userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF,
+        chatUser == null ? ChatUserVisibility.NONE : chatUser.getVisibility(),
+        userProfilePictureController.hasProfilePicture(userEntity),
+        isOnline(userEntity));
+  }
+
   public ChatUserRestModel toRestModel(ChatUser chatUser) {
     UserEntity userEntity = userEntityController.findUserEntityById(chatUser.getUserEntityId());
-    if (userEntity != null) {
-      return new ChatUserRestModel(
-          userEntity.getId(),
-          chatUser.getNick(),
-          userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine(),
-          userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF,
-          userProfilePictureController.hasProfilePicture(userEntity),
-          isOnline(userEntity));
-    }
-    else {
-      return null;
-    }
+    return userEntity == null ? null : toRestModel(userEntity);
   }
   
-  private Set<Long> listOnlineUsers(ChatUserType type) {
+  private Set<Long> listOnlineUserEntityIds(ChatUserType type) {
     Set<Long> userEntityIds = new HashSet<>();
     for (ChatUserRestModel chatUser : users.values()) {
       if (chatUser.getType() == type) {

@@ -33,6 +33,7 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -131,14 +132,21 @@ public class ChatRESTService {
     // Action
     
     List<ChatUserRestModel> restUsers = chatController.listChatUsers(onlyOnline);
-
-    // Students may not know each others names
-    
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
-      for (ChatUserRestModel restUser : restUsers) {
-        if (restUser.getType() == ChatUserType.STUDENT) {
-          restUser.setName(null);
-        }
+    boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
+    for (ChatUserRestModel restUser : restUsers) {
+      // Don't list ourselves 
+      if (restUser.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+        restUsers.remove(restUser);
+        continue;
+      }
+      // For students, strip other students only visible to staff
+      if (isStudent && restUser.getVisibility() == ChatUserVisibility.STAFF) {
+        restUsers.remove(restUser);
+        continue;
+      }
+      // Students may not know each others' names
+      if (isStudent && restUser.getType() == ChatUserType.STUDENT) {
+        restUser.setName(null);
       }
     }
     
@@ -169,13 +177,21 @@ public class ChatRESTService {
       }
     }
 
-    // Students may not know each others names
-    
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
-      for (ChatUserRestModel restUser : restUsers) {
-        if (restUser.getType() == ChatUserType.STUDENT) {
-          restUser.setName(null);
-        }
+    boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
+    for (ChatUserRestModel restUser : restUsers) {
+      // Don't list ourselves 
+      if (restUser.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+        restUsers.remove(restUser);
+        continue;
+      }
+      // For students, strip other students only visible to staff
+      if (isStudent && restUser.getVisibility() == ChatUserVisibility.STAFF) {
+        restUsers.remove(restUser);
+        continue;
+      }
+      // Students may not know each others' names
+      if (isStudent && restUser.getType() == ChatUserType.STUDENT) {
+        restUser.setName(null);
       }
     }
     
@@ -413,39 +429,28 @@ public class ChatRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getChatSettings() {
-    ChatSettingsRestModel settings = new ChatSettingsRestModel();
-    ChatUser chatUser = chatController.getChatUser(sessionController.getLoggedUserEntity());
-    if (chatUser == null) {
-      settings.setEnabled(Boolean.FALSE);
-      settings.setNick(null);
-    }
-    else {
-      settings.setEnabled(Boolean.FALSE.equals(chatUser.getArchived()));
-      settings.setNick(chatUser.getNick());
-    }
-    return Response.ok(settings).build();
+    return Response.ok(chatController.toRestModel(sessionController.getLoggedUserEntity())).build();
   }
 
   @Path("/settings")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateChatSettings(ChatSettingsRestModel payload) {
-    if (StringUtils.isEmpty(payload.getNick())) {
-      return Response.status(Status.BAD_REQUEST).entity("Nick not specified").build();
+  public Response updateChatSettings(ChatUserRestModel payload) {
+    // Make sure nick is unique
+    if (!StringUtils.isEmpty(payload.getNick())) {
+      ChatUser nickUser = chatController.getChatUser(payload.getNick());
+      if (nickUser != null && !nickUser.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+        return Response.status(Status.CONFLICT).entity("Nick already in use").build();
+      }
     }
-    ChatUser nickUser = chatController.getChatUser(payload.getNick());
-    if (nickUser != null && !nickUser.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
-      return Response.status(Status.CONFLICT).entity("Nick already in use").build();
-    }
-    ChatUser chatUser = chatController.getChatUser(sessionController.getLoggedUserEntity());
+    // Let the controller figure out how settings have changed
     HttpSession session = httpRequest.getSession(false);
     chatController.handleSettingsChange(
-        chatUser,
-        payload.getEnabled(),
-        payload.getNick(),
         sessionController.getLoggedUserEntity(),
+        payload.getVisibility(),
+        payload.getNick(),
         session == null ? null : session.getId());
-    return Response.status(Status.NO_CONTENT).build();    
+    return Response.ok(chatController.toRestModel(sessionController.getLoggedUserEntity())).build();    
   }
   
   private boolean isUserIdentifier(String identifier) {

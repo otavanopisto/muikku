@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
+import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
+
 public class ChatUserRestModel {
   
   public ChatUserRestModel() {
@@ -10,16 +12,18 @@ public class ChatUserRestModel {
     this.nick = chatUser.nick;
     this.name = chatUser.name;
     this.type = chatUser.type;
+    this.visibility = chatUser.visibility;
     this.hasImage = chatUser.hasImage;
     this.isOnline = chatUser.isOnline;
   }
 
-  public ChatUserRestModel(Long id, String nick, String name, ChatUserType type, boolean hasImage, boolean isOnline) {
+  public ChatUserRestModel(Long id, String nick, String name, ChatUserType type, ChatUserVisibility visibility, boolean hasImage, boolean isOnline) {
     this.id = id;
     this.nick = nick;
     this.name = name;
     this.type = type;
     this.hasImage = hasImage;
+    this.visibility = visibility;
     this.isOnline = isOnline;
   }
 
@@ -75,10 +79,19 @@ public class ChatUserRestModel {
     this.isOnline = isOnline;
   }
 
+  public ChatUserVisibility getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(ChatUserVisibility visibility) {
+    this.visibility = visibility;
+  }
+
   private Long id;
   private String nick;
   private String name;
   private ChatUserType type;
+  private ChatUserVisibility visibility;
   private Boolean hasImage;
   private Boolean isOnline;
 
