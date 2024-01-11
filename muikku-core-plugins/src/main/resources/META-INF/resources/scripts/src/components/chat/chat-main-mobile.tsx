@@ -13,7 +13,7 @@ import * as React from "react";
 import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
 import { AddIcon, swipeConfidenceThreshold, swipePower } from "./chat-helpers";
-import { ChatUsersList } from "./chat-users";
+import { ChatMyDiscussions } from "./chat-my-discussions";
 import { ChatRoomsLists } from "./chat-rooms";
 import ChatProfile from "./chat-profile";
 
@@ -90,7 +90,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         >
           <AddIcon />
         </div>
-        <ChatUsersList minimized={false} />
+        <ChatMyDiscussions minimized={false} />
         <ChatProfile
           style={{
             width: "100%",

@@ -2,30 +2,32 @@ import * as React from "react";
 import { ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import ChatProfileAvatar from "./chat-profile-avatar";
+import { IconButton } from "../general/button";
 
 /**
- * PeopleListProps
+ * ChatUsersWithActiveDiscussionProps
  */
-interface ChatUsersListProps {
+interface ChatMyDiscussionsProps {
   minimized: boolean;
 }
 
 /**
- * PeopleList
+ * ChatUsersWithActiveDiscussion
  * @param props props
  * @returns JSX.Element
  */
-function ChatUsersList(props: ChatUsersListProps) {
+function ChatMyDiscussions(props: ChatMyDiscussionsProps) {
   const { minimized } = props;
 
-  const { usersWithoutMe, loadingPeople } = useChatContext();
+  const { usersWithActiveDiscussion, loadingUsersWithActiveDiscussion } =
+    useChatContext();
 
-  if (loadingPeople) {
+  if (loadingUsersWithActiveDiscussion) {
     return <div>Loading...</div>;
   }
 
-  if (usersWithoutMe.length === 0) {
-    return <div>No people found</div>;
+  if (usersWithActiveDiscussion.length === 0) {
+    return <div>No active discussions</div>;
   }
 
   return (
@@ -36,8 +38,8 @@ function ChatUsersList(props: ChatUsersListProps) {
         flexDirection: "column",
       }}
     >
-      {usersWithoutMe.map((user) => (
-        <ChatUser key={user.id} user={user} minimized={minimized} />
+      {usersWithActiveDiscussion.map((user) => (
+        <ChatMyDiscussion key={user.id} user={user} minimized={minimized} />
       ))}
     </div>
   );
@@ -49,19 +51,19 @@ function ChatUsersList(props: ChatUsersListProps) {
 };
  */
 /**
- * ChatUserItemProps
+ * ChatMyDiscussionProps
  */
-interface ChatUserProps {
+interface ChatMyDiscussionProps {
   user: ChatUser;
   minimized: boolean;
 }
 
 /**
- * ChatUserItem
+ * MyDiscussion
  * @param props props
  * @returns JSX.Element
  */
-function ChatUser(props: ChatUserProps) {
+function ChatMyDiscussion(props: ChatMyDiscussionProps) {
   const { user } = props;
 
   const { openDiscussion } = useChatContext();
@@ -89,19 +91,26 @@ function ChatUser(props: ChatUserProps) {
           id={user.id}
           hasImage={user.hasImage}
           nick={user.nick}
-          status="online"
+          status={user.isOnline ? "online" : "offline"}
         />
       </div>
       <div
         className="user-item__name"
         style={{
           marginLeft: "10px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
         }}
       >
         <span>{user.nick}</span>
+        <div className="chat__button-wrapper">
+          <IconButton icon="cross" buttonModifiers={["chat"]} />
+        </div>
       </div>
     </div>
   );
 }
 
-export { ChatUsersList, ChatUser };
+export { ChatMyDiscussions, ChatMyDiscussion };

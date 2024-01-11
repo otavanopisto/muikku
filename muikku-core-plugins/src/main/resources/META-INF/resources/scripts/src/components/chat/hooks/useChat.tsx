@@ -9,7 +9,7 @@ import {
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useViews } from "../animated-views/context/hooks/useChatTabs";
 import { chatControllerViews } from "../chat-helpers";
-import usePeople from "./usePeople";
+import useChatUsers from "./useUsers";
 import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";
 import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
@@ -25,8 +25,14 @@ export type UseChat = ReturnType<typeof useChat>;
 function useChat(userId: number) {
   const websocket = useChatWebsocketContext();
 
-  const { searchPeople, people, loadingPeople, updateSearchPeople } =
-    usePeople();
+  const {
+    users,
+    loadingUsers,
+    usersWithActiveDiscussion,
+    loadingUsersWithActiveDiscussion,
+    addUserToActiveDiscussionsList,
+    moveActiveDiscussionToTop,
+  } = useChatUsers();
   const {
     searchRooms,
     rooms,
@@ -76,13 +82,13 @@ function useChat(userId: number) {
     }
   }, [minimized]);
 
-  const activeDiscussion = [...people, ...rooms].find(
+  const activeDiscussion = [...users, ...rooms].find(
     (r) => r.identifier === activeRoomOrPerson
   );
 
   const usersWithoutMe = React.useMemo(
-    () => people.filter((p) => p.id !== userId),
-    [people, userId]
+    () => users.filter((p) => p.id !== userId),
+    [users, userId]
   );
 
   /**
@@ -201,22 +207,23 @@ function useChat(userId: number) {
   );
 
   const canModerate = React.useMemo(() => {
-    const user = people.find((p) => p.id === userId);
+    const user = users.find((p) => p.id === userId);
     return (user && user.type === "STAFF") || false;
-  }, [people, userId]);
+  }, [users, userId]);
 
   return {
     userId,
-    userMe: people.find((p) => p.id === userId),
+    userMe: users.find((p) => p.id === userId),
     canModerate,
     usersWithoutMe,
-    loadingPeople,
+    usersWithActiveDiscussion,
+    loadingUsers,
     loadingRooms,
+    loadingUsersWithActiveDiscussion,
     rooms,
     activeDiscussion,
     publicRooms: rooms.filter((r) => r.type === "PUBLIC"),
     privateRooms: rooms.filter((r) => r.type === "WORKSPACE"),
-    searchPeople,
     searchRooms,
     minimized,
     toggleControlBox,
@@ -234,9 +241,10 @@ function useChat(userId: number) {
     openOverview,
     openDiscussion,
     discussionInstances,
-    updateSearchPeople,
     updateSearchRooms,
     chatSettings,
+    addUserToActiveDiscussionsList,
+    moveActiveDiscussionToTop,
   };
 }
 

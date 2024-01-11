@@ -11,8 +11,7 @@ import { ChatRoom, ChatUser } from "~/generated/client";
  * @returns JSX.Element
  */
 function ChatOverview() {
-  const { searchPeople, searchRooms, updateSearchPeople, updateSearchRooms } =
-    useChatContext();
+  const { searchRooms, updateSearchRooms } = useChatContext();
   const [activeTab, setActiveTab] = React.useState<"users" | "rooms">("users");
 
   const handleOnTabChange = React.useCallback(
@@ -28,27 +27,22 @@ function ChatOverview() {
   const handleSearchChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       switch (activeTab) {
-        case "users":
-          updateSearchPeople(e.target.value);
-          break;
         case "rooms":
           updateSearchRooms(e.target.value);
           break;
       }
     },
-    [activeTab, updateSearchPeople, updateSearchRooms]
+    [activeTab, updateSearchRooms]
   );
 
   const searchValue = React.useMemo(() => {
     switch (activeTab) {
-      case "users":
-        return searchPeople;
       case "rooms":
         return searchRooms;
       default:
         return "";
     }
-  }, [activeTab, searchPeople, searchRooms]);
+  }, [activeTab, searchRooms]);
 
   const content = React.useMemo(() => {
     switch (activeTab) {
@@ -308,7 +302,7 @@ function ChatOverviewUsersListItem(props: ChatOverviewUsersListItemProps) {
             hasImage={chatUser.hasImage}
             id={chatUser.id}
             nick={chatUser.nick}
-            status="online"
+            status={chatUser.isOnline ? "online" : "offline"}
           />
         </div>
         <div
@@ -318,10 +312,10 @@ function ChatOverviewUsersListItem(props: ChatOverviewUsersListItemProps) {
           }}
         >
           <h4 className="chat-overview-users-list-item-user-info-name">
-            Testi
+            {chatUser.nick}
           </h4>
           <h5 className="chat-overview-users-list-item-user-info-status">
-            Paikalla
+            {chatUser.isOnline ? "Paikalla" : "Ei paikalla"}
           </h5>
         </div>
       </div>

@@ -5,8 +5,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
 import { useChatWindowBreakpointsContext } from "./context/chat-window-breakpoints-context";
-import { AddIcon } from "./chat-helpers";
-import { ChatUsersList } from "./chat-users";
+import { ChatMyDiscussions } from "./chat-my-discussions";
 import { ChatRoomsLists } from "./chat-rooms";
 import ChatProfile from "./chat-profile";
 import { IconButton } from "../general/button";
@@ -222,7 +221,7 @@ function ChatMain(props: ChatMainProps) {
           )}
         </div>
 
-        <ChatUsersList minimized={!rightPanelOpen} />
+        <ChatMyDiscussions minimized={!rightPanelOpen} />
         <ChatProfile />
       </motion.div>
     </>

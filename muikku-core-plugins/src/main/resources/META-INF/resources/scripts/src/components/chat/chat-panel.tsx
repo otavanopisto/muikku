@@ -8,6 +8,7 @@ import useDiscussionInstance from "./hooks/useDiscussionInstance";
 import ChatEditor from "./editor/editor";
 import { Editor } from "slate";
 import { CustomEditor } from "./editor/helper";
+import { useChatContext } from "./context/chat-context";
 
 /**
  * ChatPanelProps
@@ -48,6 +49,11 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
  * @returns JSX.Element
  */
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
+  const {
+    usersWithActiveDiscussion,
+    addUserToActiveDiscussionsList,
+    moveActiveDiscussionToTop,
+  } = useChatContext();
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
@@ -62,6 +68,19 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const handleEnterKeyDown = async (editor: Editor) => {
     await postMessage();
     CustomEditor.reset(editor);
+
+    // Check if discussion is already in my discussions
+    const index = usersWithActiveDiscussion.findIndex(
+      (d) => d.id === props.targetUser.id
+    );
+
+    // If not, add it
+    // else move it to top
+    if (index === -1) {
+      addUserToActiveDiscussionsList(props.targetUser);
+    } else {
+      moveActiveDiscussionToTop(index);
+    }
   };
 
   /**
