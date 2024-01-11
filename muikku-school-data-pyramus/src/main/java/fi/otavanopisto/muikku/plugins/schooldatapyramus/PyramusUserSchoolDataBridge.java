@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -1759,6 +1760,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     if (studentParentStudents.ok()) {
       for (StudentParentChild student : studentParentStudents.getEntity()) {
+        String address = null;
+        if (student.getDefaultAddress() != null) {
+          Address addobj = student.getDefaultAddress();
+          
+          String pcc = StringUtils.trim(
+              (StringUtils.isNotBlank(addobj.getPostalCode()) ? addobj.getPostalCode() + " " : "") +
+              (StringUtils.isNotBlank(addobj.getCity()) ? addobj.getCity() : "")
+          );
+          
+          List<String> sequence = Arrays.asList(
+              addobj.getName(),
+              addobj.getStreetAddress(),
+              pcc,
+              addobj.getCountry()
+          );
+          
+          address = sequence.stream().filter(s -> StringUtils.isNotBlank(s)).collect(Collectors.joining(", "));
+        }
+        
         result.add(new PyramusGuardiansDependent(
             identifierMapper.getStudentIdentifier(student.getStudentId()), 
             student.getFirstName(), 
@@ -1767,7 +1787,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             student.getStudyProgrammeName(),
             student.getDefaultEmail(),
             student.getDefaultPhoneNumber(),
-            student.getDefaultAddress()
+            address
         ));
       }
     }
