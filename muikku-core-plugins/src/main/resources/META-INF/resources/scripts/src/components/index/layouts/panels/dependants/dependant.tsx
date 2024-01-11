@@ -50,7 +50,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
         />
         <div className="dependant__details">
           <div className="dependant__header">
-            <h2>{getName(dependant, true)}</h2>
+            <h2 className="dependant__header-title">{getName(dependant, true)}</h2>
             <span className="dependant__header-aside">
               {"(" + dependant.studyProgrammeName + ")"}
             </span>
@@ -98,7 +98,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
         id="workspacesAccordion"
       >
         <div className="dependant__workspaces-container">
-          <h3>
+          <h3 className="dependant__workspaces-title">
             {t("labels.workspaces", { ns: "workspace", context: "active" })}
           </h3>
           <div className="item-list item-list--panel-workspaces">

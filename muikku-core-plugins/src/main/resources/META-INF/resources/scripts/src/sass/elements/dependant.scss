@@ -4,64 +4,98 @@
 @import "../base/breakpoints";
 
 .dependant {
-  padding: 5px 5px 10px 5px;
+  padding: 5px 5px 15px;
+
   &:not(:last-child) {
-    margin-bottom: 20px;
-    border-bottom: 2px solid $color-panel-border-color;
+    margin: 0 0 20px;
+    border-bottom: 1px solid $color-panel-border-color;
+  }
+
+  &:last-child {
+    padding: 5px;
   }
 }
 
+
 .dependant__accordion-button {
+  background: $color-default;
+  border-radius: 3px;
+  transition: background-color 0.2s ease-in-out;
+
   &::before {
     color: $color-link-default-text;
+  }
+
+  &:hover {
+    background: $color-default-generic-background;
   }
 }
 
 .dependant__details-container {
+  align-items: flex-start;
   display: flex;
+  flex-flow: row nowrap;
 }
 
 .dependant__details {
+  align-items: flex-start;
+  flex-basis: 100%;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  justify-content: flex-start;
   padding: 0 20px;
 }
 
-.dependant__details-footer {
-  margin-top: 20px;
+.dependant__header {
+  align-items: center;
+  display: flex;
+  padding: 5px 0;
+  width: 100%;
 }
 
-.dependant__header {
-  padding: 5px 0;
-  display: flex;
-  align-items: center;
+.dependant__header-title {
+  font-weight: 400;
 }
 
 .dependant__header-aside {
-  margin-left: 15px;
+  margin: 0 0 0 15px;
 }
 
 .dependant__contact-info-container {
-  margin-top: 20px;
-}
-
-.dependant__info-item-icon {
-  margin-right: 5px;
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin: 15px 0 0;
+  width: 100%;
 }
 
 .dependant__info-item {
+  align-items: center;
   background-color: $color-label-background;
-  height: 10px;
   border-radius: 15px;
-  padding: 5px 15px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  margin: 0 5px 5px 0;
+  padding: 5px 10px;
+}
 
-  &:not(:first-child) {
-    margin-left: 5px;
-  }
+.dependant__info-item-icon {
+  margin: 0 5px 0 0;
+}
+
+.dependant__details-footer {
+  margin: 15px 0 0;
+  width: 100%;
 }
 
 .dependant__activity-container {
-  margin-top: 20px;
+  margin: 20px 0;
 }
 
-.dependant__workspaces-container {
-  margin-top: 20px;
+.dependant__workspaces-title {
+  font-weight: 400;
 }
