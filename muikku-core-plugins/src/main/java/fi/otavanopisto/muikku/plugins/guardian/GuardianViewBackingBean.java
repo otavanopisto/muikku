@@ -10,11 +10,13 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/guardian", to = "/jsf/guardian/index.jsf")
+@LoggedIn
 public class GuardianViewBackingBean {
 
   @Inject
