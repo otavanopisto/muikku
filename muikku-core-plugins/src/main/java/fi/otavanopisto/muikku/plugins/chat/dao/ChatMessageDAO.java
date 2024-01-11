@@ -55,7 +55,10 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     Root<ChatMessage> root = criteria.from(ChatMessage.class);
     criteria.select(root.get(ChatMessage_.targetUserEntityId)).distinct(true);
     criteria.where(
-      criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), userEntityId)
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), userEntityId),
+        criteriaBuilder.isNotNull(root.get(ChatMessage_.targetUserEntityId))
+      )
     );
     userIds.addAll(entityManager.createQuery(criteria).getResultList());
 
@@ -65,7 +68,10 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     root = criteria.from(ChatMessage.class);
     criteria.select(root.get(ChatMessage_.sourceUserEntityId)).distinct(true);
     criteria.where(
-      criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), userEntityId)
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), userEntityId),
+        criteriaBuilder.isNotNull(root.get(ChatMessage_.sourceUserEntityId))
+      )
     );
     userIds.addAll(entityManager.createQuery(criteria).getResultList());
 
