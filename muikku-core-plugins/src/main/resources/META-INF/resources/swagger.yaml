@@ -12202,6 +12202,7 @@ components:
         - identifier
         - nick
         - type
+        - visibility
         - hasImage
         - isOnline
       properties:
@@ -12221,6 +12222,13 @@ components:
           enum:
             - STUDENT
             - STAFF
+        visibility:
+          description: Visibility of the user
+          type: string
+          enum:
+            - NONE
+            - STAFF
+            - ALL
         hasImage:
           description: Whether the user has an image.
           type: boolean
