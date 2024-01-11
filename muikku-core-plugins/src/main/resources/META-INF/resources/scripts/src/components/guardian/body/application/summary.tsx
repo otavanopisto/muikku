@@ -18,7 +18,6 @@ import * as moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
-import CourseCarousel from "~/components/general/carousel/course-carousel";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

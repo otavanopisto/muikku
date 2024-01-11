@@ -69,6 +69,9 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
       const recordsApi = MApi.getRecordsApi();
 
       try {
+        if (getState().eligibilitySubjects.status === "READY") {
+          return;
+        }
         dispatch({
           type: "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
           payload: <MatriculationSubjectEligibilityStatusType>"LOADING",
@@ -163,6 +166,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 
 /**
  * updateYO
+ * @param studentId muikku student identifier
  */
 const updateYO: updateYOTriggerType = function updateYO(studentId) {
   return async (
@@ -178,13 +182,17 @@ const updateYO: updateYOTriggerType = function updateYO(studentId) {
       : state.status.userSchoolDataIdentifier;
 
     try {
-      // const matriculationExamData = await matriculationApi.getExams();
-      // // const matriculationExamData = [];
+      if (getState().yo.status === "READY") {
+        return;
+      }
 
-      // dispatch({
-      //   type: "UPDATE_STUDIES_YO",
-      //   payload: matriculationExamData,
-      // });
+      if (!studentId) {
+        const matriculationExamData = await matriculationApi.getExams();
+        dispatch({
+          type: "UPDATE_STUDIES_YO",
+          payload: matriculationExamData,
+        });
+      }
 
       dispatch({
         type: "UPDATE_STUDIES_YO",

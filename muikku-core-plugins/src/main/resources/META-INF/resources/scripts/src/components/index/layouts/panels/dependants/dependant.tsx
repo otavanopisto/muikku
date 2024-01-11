@@ -50,22 +50,29 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
         />
         <div className="dependant__details">
           <div className="dependant__header">
-            <h2>{getName(dependant, true)}</h2>
+            <h2 className="dependant__header-title">{getName(dependant, true)}</h2>
             <span className="dependant__header-aside">
               {"(" + dependant.studyProgrammeName + ")"}
             </span>
           </div>
           <div className="dependant__contact-info-container">
             {dependant.email && (
-              <span className="dependant__info-item">{dependant.email}</span>
+              <span className="dependant__info-item">
+                <span className="dependant__info-item-icon icon-envelope" />
+                {dependant.email}
+              </span>
             )}
             {dependant.phoneNumber && (
               <span className="dependant__info-item">
+                <span className="dependant__info-item-icon icon-phone" />
                 {dependant.phoneNumber}
               </span>
             )}
             {dependant.address && (
-              <span className="dependant__info-item">{dependant.address}</span>
+              <span className="dependant__info-item">
+                <span className="dependant__info-item-icon icon-pin" />
+                {dependant.address}
+              </span>
             )}
           </div>
           <div className="dependant__details-footer">
@@ -91,7 +98,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
         id="workspacesAccordion"
       >
         <div className="dependant__workspaces-container">
-          <h3>
+          <h3 className="dependant__workspaces-title">
             {t("labels.workspaces", { ns: "workspace", context: "active" })}
           </h3>
           <div className="item-list item-list--panel-workspaces">
@@ -116,7 +123,9 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           aria-label="TODO: Toggle workspace visibility"
           aria-controls="workspacesAccordion"
           aria-expanded={showWorkspaces}
-          className={`icon-arrow-${showWorkspaces ? "up" : "down"}`}
+          className={`dependant__accordion-button icon-arrow-${
+            showWorkspaces ? "up" : "down"
+          }`}
         />
       </div>
     </div>

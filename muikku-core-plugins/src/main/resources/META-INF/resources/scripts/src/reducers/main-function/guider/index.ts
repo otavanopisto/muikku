@@ -84,6 +84,7 @@ export interface GuiderStudentUserProfileType {
   currentWorkspacesState: LoadingState;
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
+  pedagogyFormState: LoadingState;
   basic: Student;
   labels: UserStudentFlag[];
   files: UserFile[];
@@ -179,6 +180,8 @@ function sortOrders(a: CeeposOrder, b: CeeposOrder) {
 /**
  * InitialGuiderState
  */
+
+// TODO: the states are not loading at this point, should be "WAITING"
 const initialGuiderState: GuiderState = {
   studentsState: "LOADING",
   currentStudentState: "LOADING",
@@ -205,6 +208,7 @@ const initialGuiderState: GuiderState = {
     currentWorkspacesState: "LOADING",
     pastWorkspacesState: "LOADING",
     activityLogState: "LOADING",
+    pedagogyFormState: "WAITING",
     basic: null,
     labels: [],
     emails: [],

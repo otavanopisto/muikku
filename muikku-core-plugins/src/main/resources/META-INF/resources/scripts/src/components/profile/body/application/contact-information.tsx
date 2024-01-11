@@ -278,6 +278,9 @@ class ContactInformation extends React.Component<
       return null;
     }
     const hasACalendar = !this.state.appointmentCalendar;
+    const isOnlyStudentParent =
+      this.props.status.roles.includes("STUDENT_PARENT") &&
+      this.props.status.roles.length === 1;
 
     return (
       <section>
@@ -424,7 +427,7 @@ class ContactInformation extends React.Component<
                 </div>
               ) : null}
 
-              {!this.props.status.isStudent ? (
+              {!this.props.status.isStudent && !isOnlyStudentParent ? (
                 <div className="form__row">
                   <div className="form-element">
                     <label>
@@ -470,7 +473,7 @@ class ContactInformation extends React.Component<
                 </div>
               ) : null}
 
-              {!this.props.status.isStudent ? (
+              {!this.props.status.isStudent && !isOnlyStudentParent ? (
                 <div className="form__row">
                   <div className="form-element form-element--appointment-calendar">
                     <legend className="form__legend">
@@ -518,7 +521,7 @@ class ContactInformation extends React.Component<
                 </div>
               ) : null}
 
-              {!this.props.status.isStudent ? (
+              {!this.props.status.isStudent && !isOnlyStudentParent ? (
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="profileExtraInfo">

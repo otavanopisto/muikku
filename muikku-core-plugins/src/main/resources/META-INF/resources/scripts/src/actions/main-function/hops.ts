@@ -36,7 +36,7 @@ export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
 /**
  * updateHops
  * @param callback callback
- * @param userId userId
+ * @param userIdentifier muikku user identifier
  */
 const updateHops: UpdateHopsTriggerType = function updateHops(
   callback,
@@ -48,15 +48,15 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
   ) => {
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const userApi = MApi.getUserApi();
+
     const studentIdentifier = userIdentifier
       ? userIdentifier
       : getState().status.userSchoolDataIdentifier;
 
     try {
-      // Must made so that load happens when the user changes
-      if (getState().hops.status !== "WAIT" && !userIdentifier) {
+      if (getState().hops.status !== "WAIT") {
         callback && callback();
-        return null;
+        return;
       }
       dispatch({
         type: "UPDATE_HOPS_STATUS",

@@ -10,12 +10,16 @@ import {
   DependantWokspacePayloadType,
   DependantWokspaceStatePayloadType,
 } from "~/reducers/main-function/dependants";
+import { SummaryStatusType } from "~/reducers/main-function/records/summary";
+import { AllStudentUsersDataStatusType } from "~/reducers/main-function/records";
+import { LoadingState } from "~/@types/shared";
+import { HOPSStatusType } from "~/reducers/main-function/hops";
+import { MatriculationSubjectEligibilityStatusType } from "~/reducers/main-function/records/yo";
 
 export type UPDATE_DEPENDANTS = SpecificActionType<
   "UPDATE_DEPENDANTS",
   Dependant[]
 >;
-
 export type UPDATE_DEPENDANT_WORKSPACES = SpecificActionType<
   "UPDATE_DEPENDANT_WORKSPACES",
   DependantWokspacePayloadType
@@ -37,13 +41,64 @@ export type UPDATE_DEPENDANT_WORKSPACES_STATUS = SpecificActionType<
 export interface LoadDependantsTriggerType {
   (): AnyActionType;
 }
-
+/**
+ * setCurrentDependantTriggerType
+ */
+export interface setCurrentDependantTriggerType {
+  (identifier: string): AnyActionType;
+}
+/**
+ * setCurrentDependantTriggerType
+ */
+export interface clearDependantTriggerType {
+  (): AnyActionType;
+}
 /**
  * LoadDependantWorkspacesTriggerType
  */
 export interface LoadDependantWorkspacesTriggerType {
   (dependantId: string): AnyActionType;
 }
+
+/**
+ * clearDependantState puts all dependants data states to "WAITING"
+ */
+const clearDependantState: clearDependantTriggerType =
+  function clearDependantState() {
+    return (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+      dispatch({
+        type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
+        payload: <AllStudentUsersDataStatusType>"WAITING",
+      });
+      dispatch({
+        type: "UPDATE_STUDIES_SUMMARY_STATUS",
+        payload: <SummaryStatusType>"WAITING",
+      });
+      dispatch({
+        type: "CONTACT_UPDATE_GROUP_STATE",
+        payload: { groupName: "counselors", state: <LoadingState>"WAITING" },
+      });
+      dispatch({
+        type: "UPDATE_HOPS_STATUS",
+        payload: <HOPSStatusType>"WAIT",
+      });
+      dispatch({
+        type: "UPDATE_STUDIES_YO_STATUS",
+        payload: "WAIT",
+      });
+      dispatch({
+        type: "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
+        payload: <MatriculationSubjectEligibilityStatusType>"WAIT",
+      });
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "pedagogyFormState",
+          value: <LoadingState>"WAITING",
+        },
+      });
+    };
+  };
 
 /**
  * loadDependants thunk function
@@ -84,7 +139,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
         notificationActions.displayNotification(
           i18n.t("notifications.loadError", {
             ns: "users",
-            context: "students",
+            context: "dependants",
           }),
           "error"
         )
@@ -110,7 +165,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
       const dependant = getState().dependants.list.find(
         (dependant) => dependant.identifier === dependantId
       );
-      if (dependant.workspaces.length > 0) {
+      if (dependant.worspacesStatus !== "WAITING") {
         return;
       }
       const meApi = MApi.getMeApi();
@@ -148,8 +203,8 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
-              ns: "users",
-              context: "students",
+              ns: "workspace",
+              context: "workspaces",
             }),
             "error"
           )
@@ -165,4 +220,4 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
     };
   };
 
-export { loadDependants, loadDependantWorkspaces };
+export { loadDependants, loadDependantWorkspaces, clearDependantState };

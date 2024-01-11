@@ -2,7 +2,6 @@ import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { RecordsType } from "~/reducers/main-function/records";
-import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { HOPSState } from "~/reducers/main-function/hops";
 import {
@@ -179,11 +178,12 @@ class YO extends React.Component<YOProps, YOState> {
                         }),
                       }}
                     />
-                    {this.props.yo.enrollment && this.props.yo.enrollment.length > 0 && (
-                      <div className="application-sub-panel__notification-footer">
-                        {enrollmentLink}
-                      </div>
-                    )}
+                    {this.props.yo.enrollment &&
+                      this.props.yo.enrollment.length > 0 && (
+                        <div className="application-sub-panel__notification-footer">
+                          {enrollmentLink}
+                        </div>
+                      )}
                   </div>
                 </div>
               ) : null

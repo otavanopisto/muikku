@@ -24,7 +24,7 @@ const StudyPlan: React.FC<StudyPlanProps> = (props) => {
   const studentHops =
     hops.eligibility && hops.eligibility.upperSecondarySchoolCurriculum ? (
       <Hops data={hops.value} />
-    ) : null; //TODO EMPTY HOPS;
+    ) : null;
 
   if (!studentHops) {
     return null;

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { bindActionCreators, Dispatch } from "redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Records from "./application/records";
 import Summary from "./application/summary";
@@ -11,7 +12,6 @@ import {
   TranscriptOfRecordLocationType,
   RecordsType,
 } from "../../../reducers/main-function/records/index";
-
 import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
@@ -30,9 +30,14 @@ import { PedagogyFormState } from "~/generated/client";
 import { getName } from "~/util/modifiers";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { Dependant } from "~/reducers/main-function/dependants";
+import { DependantsState } from "~/reducers/main-function/dependants";
 import { GuiderState } from "~/reducers/main-function/guider";
 import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
+import {
+  clearDependantState,
+  clearDependantTriggerType,
+} from "~/actions/main-function/dependants";
+import { AnyActionType } from "~/actions";
 
 /**
  * StudiesTab
@@ -55,8 +60,8 @@ interface DependantApplicationProps extends WithTranslation {
   status: StatusType;
   records: RecordsType;
   guider: GuiderState;
-  dependants: Dependant[];
-  // loadStudentHOPSAccess: LoadStudentTriggerType;
+  dependants: DependantsState;
+  clearDependantState: clearDependantTriggerType;
 }
 
 /**
@@ -64,8 +69,8 @@ interface DependantApplicationProps extends WithTranslation {
  */
 interface DependantApplicationState {
   activeTab: StudiesTab;
-  selectedDependant: string;
   selectedDependantStudyProgramme: string;
+  selectedDependant: string;
   loading: boolean;
   pedagogyFormState?: PedagogyFormState;
 }
@@ -95,10 +100,10 @@ class DependantApplication extends React.Component<
   /**
    * loadPedagogyFormState
    */
-  loadPedagogyFormState = async () => {
+  loadPedagogyFormState = async (identifier: string) => {
     const pedagogyApi = MApi.getPedagogyApi();
     return await pedagogyApi.getPedagogyFormState({
-      studentIdentifier: this.props.status.userSchoolDataIdentifier,
+      studentIdentifier: identifier,
     });
   };
 
@@ -109,7 +114,7 @@ class DependantApplication extends React.Component<
    * @returns whether section with given hash should be visible or not
    */
   isVisible(id: string) {
-    const selectUserStudyProgramme = this.props.dependants.find(
+    const selectUserStudyProgramme = this.props.dependants.list.find(
       (dependant) => dependant.identifier === this.state.selectedDependant
     )?.studyProgrammeName;
     switch (id) {
@@ -129,8 +134,10 @@ class DependantApplication extends React.Component<
         );
       case "PEDAGOGY_FORM":
         return (
-          this.props.guider.currentStudent.pedagogyFormAvailable &&
-          this.props.guider.currentStudent.pedagogyFormAvailable.accessible
+          (this.props.guider.currentStudent.pedagogyFormAvailable &&
+            this.props.guider.currentStudent.pedagogyFormAvailable.accessible &&
+            this.state?.pedagogyFormState === "PENDING") ||
+          this.state?.pedagogyFormState === "APPROVED"
         );
     }
 
@@ -138,7 +145,7 @@ class DependantApplication extends React.Component<
   }
 
   getDependantStudyProgramme = (dependantId: string) => {
-    const dependant = this.props.dependants.find(
+    const dependant = this.props.dependants.list.find(
       (dependant) => dependant.identifier === dependantId
     );
     return dependant?.studyProgrammeName;
@@ -170,12 +177,14 @@ class DependantApplication extends React.Component<
    * handleSelectChange
    * @param option selectedOptions
    */
-  handleDependantSelectChange = (option: OptionDefault<string>) => {
+  handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
-
+    this.props.clearDependantState();
+    const state = await this.loadPedagogyFormState(option.value);
     this.setState({
-      selectedDependant: option.value,
       activeTab: "SUMMARY",
+      selectedDependant: option.value,
+      pedagogyFormState: state,
     });
   };
 
@@ -187,13 +196,13 @@ class DependantApplication extends React.Component<
     let selectedDependant = "";
 
     if (!window.location.hash) {
-      const dependant = this.props.dependants[0];
+      const dependant = this.props.dependants.list[0];
       window.location.hash = dependant.identifier;
       selectedDependant = dependant.identifier;
     } else {
       selectedDependant = window.location.hash.replace("#", "").split("/")?.[0];
     }
-    const state = await this.loadPedagogyFormState();
+    const state = await this.loadPedagogyFormState(selectedDependant);
     const tab = window.location.hash.replace("#", "").split("/")?.[1];
     this.setState({
       loading: false,
@@ -206,7 +215,6 @@ class DependantApplication extends React.Component<
      * tab was opened and set that at the start to state as
      * opened tab again
      */
-
     switch (tab) {
       case "summary":
         this.setState({
@@ -251,11 +259,11 @@ class DependantApplication extends React.Component<
     const { t } = this.props;
 
     const title = t("labels.dependant", {
-      count: this.props.dependants ? this.props.dependants.length : 0,
+      count: this.props.dependants ? this.props.dependants.list.length : 0,
     });
 
     const dependants = this.props.dependants
-      ? this.props.dependants.map((student) => ({
+      ? this.props.dependants.list.map((student) => ({
           label: getName(student, true),
           value: student.identifier,
         }))
@@ -286,7 +294,7 @@ class DependantApplication extends React.Component<
         user="supervisor"
         usePlace="guider"
         disabled={true}
-        studentId={this.state.selectedDependant && this.state.selectedDependant}
+        studentId={this.state.selectedDependant}
         superVisorModifies={false}
       />
     ) : (
@@ -350,7 +358,7 @@ class DependantApplication extends React.Component<
         component: (
           <ApplicationPanelBody modifier="tabs">
             <UpperSecondaryPedagogicalSupportWizardForm
-              userRole="STUDENT"
+              userRole="STUDENT_PARENT"
               studentId={this.state.selectedDependant}
             />
           </ApplicationPanelBody>
@@ -392,7 +400,7 @@ function mapStateToProps(state: StateType) {
     records: state.records,
     guider: state.guider,
     status: state.status,
-    dependants: state.dependants.list,
+    dependants: state.dependants,
   };
 }
 
@@ -400,10 +408,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-// function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-//   return bindActionCreators({ loadStudentHOPSAccess }, dispatch);
-// }
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ clearDependantState }, dispatch);
+}
 
 export default withTranslation(["studies", "common"])(
-  connect(mapStateToProps)(DependantApplication)
+  connect(mapStateToProps, mapDispatchToProps)(DependantApplication)
 );
