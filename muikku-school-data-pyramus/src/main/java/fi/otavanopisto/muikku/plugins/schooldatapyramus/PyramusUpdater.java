@@ -930,8 +930,8 @@ public class PyramusUpdater {
 
         roles.put(schoolDataIdentifier, Arrays.asList(studentParentRoleIdentifier));
 
-//        SchoolDataIdentifier organizationIdentifier = staffMember.getOrganizationId() != null ? identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId()) : null;
-//        organizations.put(schoolDataIdentifier, organizationIdentifier);
+        SchoolDataIdentifier organizationIdentifier = studentParent.getOrganizationId() != null ? identifierMapper.getOrganizationIdentifier(studentParent.getOrganizationId()) : null;
+        organizations.put(schoolDataIdentifier, organizationIdentifier);
         
         // If it's the specified defaultUserId, update defaultIdentifier and role accordingly
         if ((defaultIdentifier == null) && studentParent.getId().equals(defaultUserId)) {
