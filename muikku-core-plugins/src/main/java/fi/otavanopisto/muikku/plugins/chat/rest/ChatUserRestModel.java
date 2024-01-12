@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 
@@ -37,7 +37,7 @@ public class ChatUserRestModel {
     this.id = id;
   }
   
-  @JsonIgnore
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getIdentifier() {
     return "user-" + id;
   }
