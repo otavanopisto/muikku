@@ -42,7 +42,7 @@ const ChatEditor = (props: ChatEditorProps) => {
   const [index, setIndex] = React.useState(0);
   const [search, setSearch] = React.useState("");
 
-  const chatUsers = useChat.usersWithoutMe || [];
+  const chatUsers = useChat.users || [];
 
   const filteredUsers = chatUsers
     .filter((c) => c.nick.toLowerCase().startsWith(search.toLowerCase()))

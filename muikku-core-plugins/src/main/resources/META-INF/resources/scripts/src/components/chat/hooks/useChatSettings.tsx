@@ -2,7 +2,7 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import MApi from "~/api/api";
-import { ChatSettings } from "~/generated/client";
+import { ChatUser, ChatUserVisibilityEnum } from "~/generated/client";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -15,7 +15,7 @@ export type UseChatSettings = ReturnType<typeof useChatSettings>;
 function useChatSettings() {
   const websocket = useChatWebsocketContext();
 
-  const [chatSettings, setChatSettings] = React.useState<ChatSettings>(null);
+  const [currentUser, setCurrentUser] = React.useState<ChatUser>(null);
   const [chatEnabled, setChatEnabled] = React.useState<boolean>(false);
   const [loadingChatSettings, setLoadingChatSettings] = React.useState(false);
 
@@ -31,10 +31,11 @@ function useChatSettings() {
   const fetchChatSettings = async () => {
     setLoadingChatSettings(true);
 
-    const settings = await chatApi.getChatSettings();
+    const chatUserSettings = await chatApi.getChatSettings();
 
     unstable_batchedUpdates(() => {
-      setChatSettings(settings);
+      setCurrentUser(chatUserSettings);
+      setChatEnabled(chatUserSettings.visibility !== "NONE");
       setLoadingChatSettings(false);
     });
   };
@@ -47,13 +48,19 @@ function useChatSettings() {
     const onChatSettingsChange = (data: unknown) => {
       if (componentMounted.current) {
         if (typeof data === "string") {
-          const parsedData = JSON.parse(data) as ChatSettings;
-          setChatSettings(parsedData);
-          setChatEnabled(parsedData.enabled);
+          const parsedData = JSON.parse(data) as {
+            nick: string;
+            visibility: ChatUserVisibilityEnum;
+          };
+          setCurrentUser((prev) => ({
+            ...prev,
+            nick: parsedData.nick,
+            visibility: parsedData.visibility,
+          }));
+          setChatEnabled(parsedData.visibility !== "NONE");
         }
       }
     };
-
     websocket.addEventCallback("chat:settings-change", onChatSettingsChange);
 
     return () => {
@@ -65,7 +72,7 @@ function useChatSettings() {
   }, [websocket]);
 
   return {
-    chatSettings,
+    currentUser,
     chatEnabled,
     loadingChatSettings,
   };

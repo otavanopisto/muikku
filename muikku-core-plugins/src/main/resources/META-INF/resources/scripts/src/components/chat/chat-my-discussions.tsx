@@ -5,31 +5,10 @@ import ChatProfileAvatar from "./chat-profile-avatar";
 import { IconButton } from "../general/button";
 
 /**
- * ChatUsersWithActiveDiscussionProps
- */
-interface ChatMyDiscussionsProps {
-  minimized: boolean;
-}
-
-/**
  * ChatUsersWithActiveDiscussion
- * @param props props
  * @returns JSX.Element
  */
-function ChatMyDiscussions(props: ChatMyDiscussionsProps) {
-  const { minimized } = props;
-
-  const { usersWithActiveDiscussion, loadingUsersWithActiveDiscussion } =
-    useChatContext();
-
-  if (loadingUsersWithActiveDiscussion) {
-    return <div>Loading...</div>;
-  }
-
-  if (usersWithActiveDiscussion.length === 0) {
-    return <div>No active discussions</div>;
-  }
-
+function ChatMyDiscussions() {
   return (
     <div
       className="people-list"
@@ -38,24 +17,74 @@ function ChatMyDiscussions(props: ChatMyDiscussionsProps) {
         flexDirection: "column",
       }}
     >
-      {usersWithActiveDiscussion.map((user) => (
-        <ChatMyDiscussion key={user.id} user={user} minimized={minimized} />
-      ))}
+      <ChatMyCounselors />
+      <ChatMyActiveDiscussions />
     </div>
   );
 }
 
-/* const variants = {
-  visible: { opacity: 1, x: 0, width: "auto", marginLeft: "10px" },
-  minimized: { opacity: 0, x: "-100%", width: "0px", marginLeft: "0px" },
-};
+/**
+ * ChatMyCounselors
+ * @returns JSX.Element
  */
+function ChatMyCounselors() {
+  const { counselorUsers, currentUser } = useChatContext();
+
+  if (currentUser.type !== "STUDENT") {
+    return null;
+  }
+
+  if (counselorUsers.length === 0) {
+    return <div>You dont have student counserlors set yet</div>;
+  }
+
+  return (
+    <>
+      {counselorUsers.map((user) => (
+        <ChatMyActiveDiscussion key={user.id} user={user} />
+      ))}
+      <hr
+        style={{
+          margin: "10px",
+        }}
+      />
+    </>
+  );
+}
+
+/**
+ * ChatMyDiscussionsProps
+ */
+interface ChatMyDiscussionsProps {}
+
+/**
+ * ChatMyActiveDiscussions
+ * @param props props
+ * @returns JSX.Element
+ */
+function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
+  const { usersWithActiveDiscussion, removeUserFromActiveDiscussionsList } =
+    useChatContext();
+
+  return (
+    <>
+      {usersWithActiveDiscussion.map((user) => (
+        <ChatMyActiveDiscussion
+          key={user.id}
+          user={user}
+          onDeleteClick={removeUserFromActiveDiscussionsList}
+        />
+      ))}
+    </>
+  );
+}
+
 /**
  * ChatMyDiscussionProps
  */
 interface ChatMyDiscussionProps {
   user: ChatUser;
-  minimized: boolean;
+  onDeleteClick?: (user: ChatUser) => void;
 }
 
 /**
@@ -63,8 +92,8 @@ interface ChatMyDiscussionProps {
  * @param props props
  * @returns JSX.Element
  */
-function ChatMyDiscussion(props: ChatMyDiscussionProps) {
-  const { user } = props;
+function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
+  const { user, onDeleteClick } = props;
 
   const { openDiscussion } = useChatContext();
 
@@ -105,12 +134,14 @@ function ChatMyDiscussion(props: ChatMyDiscussionProps) {
         }}
       >
         <span>{user.nick}</span>
-        <div className="chat__button-wrapper">
-          <IconButton icon="cross" buttonModifiers={["chat"]} />
-        </div>
+        {onDeleteClick && (
+          <div className="chat__button-wrapper">
+            <IconButton icon="cross" buttonModifiers={["chat"]} />
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-export { ChatMyDiscussions, ChatMyDiscussion };
+export { ChatMyDiscussions };

@@ -128,6 +128,9 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
             onEnterSubmit={handleEnterKeyDown}
           />
         </div>
+        <button className="chat__submit" type="submit" onClick={postMessage}>
+          <span className="icon-arrow-right"></span>
+        </button>
       </div>
     </div>
   );

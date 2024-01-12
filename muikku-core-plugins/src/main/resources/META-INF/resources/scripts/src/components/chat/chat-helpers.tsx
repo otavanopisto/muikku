@@ -5,11 +5,15 @@ import {
   ChatUser,
   instanceOfChatRoom,
   instanceOfChatUser,
+  ChatUserVisibilityEnum,
 } from "~/generated/client";
+import { OptionDefault } from "../general/react-select/types";
 import { ChatView } from "./animated-views";
 import AnimatedView from "./animated-views/animated-view";
 import ChatDiscussion from "./chat-discussion";
 import ChatOverview from "./chat-overview";
+
+export type ChatSettingVisibilityOption = OptionDefault<ChatUserVisibilityEnum>;
 
 /**
  * Experimenting with distilling swipe offset and velocity into a single variable, so the

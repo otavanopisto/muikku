@@ -3,6 +3,7 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
+  ChatUser,
   CreateChatRoomRequest,
   UpdateChatRoomRequest,
 } from "~/generated/client";
@@ -14,25 +15,25 @@ import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";
 import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
-import useChatSettings from "./useChatSettings";
 
 export type UseChat = ReturnType<typeof useChat>;
 
 /**
  * useChat
  * @param userId userId
+ * @param currentUser currentUser
  */
-function useChat(userId: number) {
+function useChat(userId: number, currentUser: ChatUser) {
   const websocket = useChatWebsocketContext();
 
   const {
     users,
-    loadingUsers,
+    counselorUsers,
     usersWithActiveDiscussion,
-    loadingUsersWithActiveDiscussion,
     addUserToActiveDiscussionsList,
+    removeUserFromActiveDiscussionsList,
     moveActiveDiscussionToTop,
-  } = useChatUsers();
+  } = useChatUsers({ currentUser });
   const {
     searchRooms,
     rooms,
@@ -42,7 +43,6 @@ function useChat(userId: number) {
     deleteRoom,
     updateSearchRooms,
   } = useRooms();
-  const { chatSettings } = useChatSettings();
 
   const chatViews = useViews({
     views: chatControllerViews,
@@ -81,15 +81,6 @@ function useChat(userId: number) {
       });
     }
   }, [minimized]);
-
-  const activeDiscussion = [...users, ...rooms].find(
-    (r) => r.identifier === activeRoomOrPerson
-  );
-
-  const usersWithoutMe = React.useMemo(
-    () => users.filter((p) => p.id !== userId),
-    [users, userId]
-  );
 
   /**
    * updateNewRoomEditor
@@ -206,25 +197,33 @@ function useChat(userId: number) {
     [chatViews, isMobileWidth, discussionInstances, userId, websocket]
   );
 
-  const canModerate = React.useMemo(() => {
-    const user = users.find((p) => p.id === userId);
-    return (user && user.type === "STAFF") || false;
-  }, [users, userId]);
+  const canModerate = React.useMemo(
+    () => currentUser.type === "STAFF",
+    [currentUser.type]
+  );
+
+  const activeDiscussionMemoized = React.useMemo(() => {
+    if (!activeRoomOrPerson || !users || !rooms) {
+      return null;
+    }
+
+    return [...users, ...rooms].find(
+      (r) => r.identifier === activeRoomOrPerson
+    );
+  }, [users, rooms, activeRoomOrPerson]);
 
   return {
     userId,
-    userMe: users.find((p) => p.id === userId),
+    currentUser,
     canModerate,
-    usersWithoutMe,
+    users,
     usersWithActiveDiscussion,
-    loadingUsers,
     loadingRooms,
-    loadingUsersWithActiveDiscussion,
+    activeDiscussion: activeDiscussionMemoized,
     rooms,
-    activeDiscussion,
+    searchRooms,
     publicRooms: rooms.filter((r) => r.type === "PUBLIC"),
     privateRooms: rooms.filter((r) => r.type === "WORKSPACE"),
-    searchRooms,
     minimized,
     toggleControlBox,
     chatViews,
@@ -242,9 +241,10 @@ function useChat(userId: number) {
     openDiscussion,
     discussionInstances,
     updateSearchRooms,
-    chatSettings,
     addUserToActiveDiscussionsList,
+    removeUserFromActiveDiscussionsList,
     moveActiveDiscussionToTop,
+    counselorUsers,
   };
 }
 

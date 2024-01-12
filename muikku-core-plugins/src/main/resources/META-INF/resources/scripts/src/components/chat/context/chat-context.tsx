@@ -3,6 +3,7 @@
 import * as React from "react";
 import { createContext } from "react";
 import { connect } from "react-redux";
+import { ChatUser } from "~/generated/client";
 import { StateType } from "~/reducers";
 import useChat, { UseChat } from "../hooks/useChat";
 
@@ -20,6 +21,7 @@ const ChatContext = createContext<ChatPrivateContextType | undefined>(
  */
 interface ChatContextProviderProps {
   userId: number;
+  currentUser: ChatUser;
 }
 
 /**
@@ -27,9 +29,9 @@ interface ChatContextProviderProps {
  * @param props props
  */
 const ChatContextProvider: React.FC<ChatContextProviderProps> = (props) => {
-  const { children, userId } = props;
+  const { children, userId, currentUser } = props;
 
-  const useChatValue = useChat(userId);
+  const useChatValue = useChat(userId, currentUser);
 
   return (
     <ChatContext.Provider value={useChatValue}>{children}</ChatContext.Provider>

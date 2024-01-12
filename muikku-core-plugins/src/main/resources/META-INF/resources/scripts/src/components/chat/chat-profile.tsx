@@ -18,22 +18,22 @@ interface ChatProfileProps
  * @param props props
  */
 function ChatProfile(props: ChatProfileProps) {
-  const { userMe } = useChatContext();
+  const { currentUser } = useChatContext();
 
-  if (!userMe) {
+  if (!currentUser) {
     return null;
   }
 
   return (
     <div className="chat__profile-container">
       <ChatProfileAvatar
-        id={userMe.id}
-        nick={userMe.nick}
-        hasImage={userMe.hasImage}
+        id={currentUser.id}
+        nick={currentUser.nick}
+        hasImage={currentUser.hasImage}
         status="online"
       />
       <div className="chat__profile-name-container">
-        <span className="chat__profile-name">{userMe.nick}</span>
+        <span className="chat__profile-name">{currentUser.nick}</span>
         <span className="chat__profile-literal-status">Paikalla</span>
       </div>
 

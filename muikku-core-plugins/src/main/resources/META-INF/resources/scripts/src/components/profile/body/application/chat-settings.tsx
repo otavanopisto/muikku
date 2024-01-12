@@ -75,11 +75,11 @@ class ChatSettings extends React.Component<
 
     const settings = await chatApi.getChatSettings();
 
-    this.setState({
+    /* this.setState({
       locked: false,
       chatEnable: settings.enabled,
       chatNick: settings.nick || "",
-    });
+    }); */
   };
 
   /**
@@ -91,12 +91,12 @@ class ChatSettings extends React.Component<
 
     this.setState({ locked: true });
 
-    await chatApi.updateChatSettings({
+    /* await chatApi.updateChatSettings({
       updateChatSettingsRequest: {
         enabled: chatEnable,
         nick: chatNick,
       },
-    });
+    }); */
 
     this.setState({ locked: false });
   }

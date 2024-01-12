@@ -221,7 +221,7 @@ function ChatMain(props: ChatMainProps) {
           )}
         </div>
 
-        <ChatMyDiscussions minimized={!rightPanelOpen} />
+        <ChatMyDiscussions />
         <ChatProfile />
       </motion.div>
     </>

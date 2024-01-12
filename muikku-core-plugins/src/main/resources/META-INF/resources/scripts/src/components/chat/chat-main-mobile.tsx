@@ -90,7 +90,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         >
           <AddIcon />
         </div>
-        <ChatMyDiscussions minimized={false} />
+        <ChatMyDiscussions />
         <ChatProfile
           style={{
             width: "100%",

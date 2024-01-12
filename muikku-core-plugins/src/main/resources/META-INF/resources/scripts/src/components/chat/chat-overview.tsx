@@ -220,11 +220,11 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { usersWithoutMe, openDiscussion } = useChatContext();
+  const { users, openDiscussion } = useChatContext();
 
   const content =
-    usersWithoutMe.length > 0 ? (
-      usersWithoutMe.map((user) => (
+    users.length > 0 ? (
+      users.map((user) => (
         <ChatOverviewUsersListItem
           key={user.id}
           chatUser={user}

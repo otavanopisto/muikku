@@ -1,23 +1,37 @@
 import * as React from "react";
 import "~/sass/elements/chat.scss";
-import { useChatContext } from "./context/chat-context";
+import ChatContextProvider, { useChatContext } from "./context/chat-context";
 import ChatWindow from "./chat-window";
 import ChatMain from "./chat-main";
 import ChatMainMobile from "./chat-main-mobile";
 import { ChatWindowContextProvider } from "./context/chat-window-context";
+import useChatSettings from "./hooks/useChatSettings";
 
 /**
- * Chat
+ * Chat component. Renders or not depending on chat settings
  * @returns JSX.Element
  */
 const Chat = () => {
-  const {
-    minimized,
-    toggleControlBox,
-    isMobileWidth,
-    discussionInstances,
-    chatSettings,
-  } = useChatContext();
+  const { currentUser, chatEnabled } = useChatSettings();
+
+  if (!chatEnabled) {
+    return null;
+  }
+
+  return (
+    <ChatContextProvider currentUser={currentUser}>
+      <ChatContent />
+    </ChatContextProvider>
+  );
+};
+
+/**
+ * Actual chat content. Renders chat bubble and chat window
+ * @returns JSX.Element
+ */
+const ChatContent = () => {
+  const { minimized, toggleControlBox, isMobileWidth, discussionInstances } =
+    useChatContext();
 
   // Use effect to destroy all messages instances when component unmounts
   React.useEffect(
@@ -30,6 +44,7 @@ const Chat = () => {
     []
   );
 
+  // Render chat mobile or desktop version
   const mobileOrDesktop = React.useMemo(() => {
     if (minimized) {
       return null;
@@ -43,10 +58,6 @@ const Chat = () => {
       </ChatWindow>
     );
   }, [isMobileWidth, minimized]);
-
-  if (!chatSettings || !chatSettings.enabled) {
-    return null;
-  }
 
   return (
     <ChatWindowContextProvider>

@@ -2,47 +2,55 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import MApi from "~/api/api";
-import { ChatUser } from "~/generated/client";
+import { ChatUser, GuidanceCouncelorContact } from "~/generated/client";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
+const meApi = MApi.getMeApi();
+
+/**
+ * useChatSettings
+ */
+interface UseUsersProps {
+  currentUser: ChatUser;
+}
 
 /**
  * Custom hook to handle loading users from rest api.
+ * @param props props
  */
-function useUsers() {
+function useUsers(props: UseUsersProps) {
+  const { currentUser } = props;
+
   const websocket = useChatWebsocketContext();
 
   const [users, setUsers] = React.useState<ChatUser[]>([]);
   const [usersWithActiveDiscussion, setUsersWithActiveDiscussion] =
     React.useState<ChatUser[]>([]);
-
-  const [loadingUsers, setLoadingUsers] = React.useState(false);
-  const [
-    loadingUsersWithActiveDiscussion,
-    setLoadingUsersWithActiveDiscussion,
-  ] = React.useState(false);
+  const [myCounselors, setMyCounselors] =
+    React.useState<GuidanceCouncelorContact[]>(null);
 
   const componentMounted = React.useRef(true);
 
   React.useEffect(() => {
     fetchAllUsers();
     fetchUsersWithDiscussions();
-  }, []);
+
+    if (currentUser.type === "STUDENT") {
+      fetchMyCounselors();
+    }
+  }, [currentUser.type]);
 
   /**
    * Fetch users
    */
   const fetchAllUsers = async () => {
-    setLoadingUsers(true);
-
     const users = await chatApi.getChatUsers({
       onlyOnline: false,
     });
 
     unstable_batchedUpdates(() => {
       setUsers(users);
-      setLoadingUsers(false);
     });
   };
 
@@ -50,20 +58,28 @@ function useUsers() {
    * Fetch users that have active discussions with current user
    */
   const fetchUsersWithDiscussions = async () => {
-    setLoadingUsersWithActiveDiscussion(true);
-
     const chatUsers = await chatApi.getPrivateDiscussions();
 
     chatUsers.reverse();
 
     unstable_batchedUpdates(() => {
       setUsersWithActiveDiscussion(chatUsers);
-      setLoadingUsersWithActiveDiscussion(false);
     });
   };
 
   /**
-   * addUserToActiveDiscussionsList
+   * Fetch my counselors
+   */
+  const fetchMyCounselors = async () => {
+    const counselors = await meApi.getGuidanceCounselors();
+
+    unstable_batchedUpdates(() => {
+      setMyCounselors(counselors);
+    });
+  };
+
+  /**
+   * Adds user to active discussions list
    * @param user user
    */
   const addUserToActiveDiscussionsList = (user: ChatUser) => {
@@ -71,7 +87,25 @@ function useUsers() {
   };
 
   /**
-   * moveActiveDiscussionToTop
+   * Removes user from active discussions list
+   * @param user user
+   */
+  const removeUserFromActiveDiscussionsList = (user: ChatUser) => {
+    setUsersWithActiveDiscussion((prev) => {
+      const index = prev.findIndex((u) => u.id === user.id);
+
+      if (index !== -1) {
+        const updatedUsers = [...prev];
+        updatedUsers.splice(index, 1);
+        return updatedUsers;
+      }
+
+      return prev;
+    });
+  };
+
+  /**
+   * Moves active discussion to top of the list
    * @param index index
    */
   const moveActiveDiscussionToTop = (index: number) => {
@@ -185,12 +219,45 @@ function useUsers() {
     };
   }, [websocket]);
 
+  // Memoized users with active discussion
+  const usersWithActiveDiscussionMemoized = React.useMemo(() => {
+    // Remove users that are already in myCounselors list
+    if (myCounselors && myCounselors.length) {
+      let listWithoutCouncelors = [...usersWithActiveDiscussion];
+
+      listWithoutCouncelors = listWithoutCouncelors.filter((user) => {
+        const counselor = myCounselors.find(
+          (counselor) => counselor.userEntityId === user.id
+        );
+
+        return !counselor;
+      });
+
+      return listWithoutCouncelors;
+    }
+
+    return usersWithActiveDiscussion;
+  }, [myCounselors, usersWithActiveDiscussion]);
+
+  // Memoized counselor users
+  const counselorUsersMemoized = React.useMemo(() => {
+    if (myCounselors && myCounselors.length && users.length) {
+      const councerlorIds = myCounselors.map(
+        (counselor) => counselor.userEntityId
+      );
+
+      return users.filter((user) => councerlorIds.includes(user.id));
+    }
+
+    return [];
+  }, [myCounselors, users]);
+
   return {
     users,
-    loadingUsers,
-    usersWithActiveDiscussion,
-    loadingUsersWithActiveDiscussion,
+    counselorUsers: counselorUsersMemoized,
+    usersWithActiveDiscussion: usersWithActiveDiscussionMemoized,
     addUserToActiveDiscussionsList,
+    removeUserFromActiveDiscussionsList,
     moveActiveDiscussionToTop,
   };
 }
