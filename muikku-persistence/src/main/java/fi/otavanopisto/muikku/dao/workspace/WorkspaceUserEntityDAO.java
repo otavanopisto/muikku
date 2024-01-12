@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.dao.workspace;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -217,6 +218,25 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.active), active),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceUserEntity> listByUserSchoolDataIdentifiersAndActiveAndArchived(Collection<UserSchoolDataIdentifier> userSchoolDataIdentifiers, Boolean active, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.active), active),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
+        root.get(WorkspaceUserEntity_.userSchoolDataIdentifier).in(userSchoolDataIdentifiers)
       )
     );
     

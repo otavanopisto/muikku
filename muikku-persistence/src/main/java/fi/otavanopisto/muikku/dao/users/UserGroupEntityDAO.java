@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.dao.users;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -145,11 +146,31 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
     Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
     Join<UserGroupUserEntity, UserGroupEntity> groupJoin = root.join(UserGroupUserEntity_.userGroupEntity);
+    
     criteria.select(root.get(UserGroupUserEntity_.userGroupEntity));
-
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(UserGroupUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier),
+        criteriaBuilder.equal(groupJoin.get(UserGroupEntity_.archived), Boolean.FALSE),
+        criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<UserGroupEntity> listByUserIdentifiersExcludeArchived(Collection<UserSchoolDataIdentifier> userSchoolDataIdentifiers) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupEntity> criteria = criteriaBuilder.createQuery(UserGroupEntity.class);
+    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
+    Join<UserGroupUserEntity, UserGroupEntity> groupJoin = root.join(UserGroupUserEntity_.userGroupEntity);
+
+    criteria.select(root.get(UserGroupUserEntity_.userGroupEntity)).distinct(true);
+    criteria.where(
+      criteriaBuilder.and(
+        root.get(UserGroupUserEntity_.userSchoolDataIdentifier).in(userSchoolDataIdentifiers),
         criteriaBuilder.equal(groupJoin.get(UserGroupEntity_.archived), Boolean.FALSE),
         criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
       )
