@@ -225,28 +225,16 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
                 : ""
             }`}
             onClick={handleClickHistoryFilter("EDIT")}
-            style={{
-              padding: "1rem",
-              textDecoration: historyFilters.includes("EDIT")
-                ? "underline"
-                : "none",
-            }}
           >
             {t("labels.events", { ns: "pedagogySupportPlan", context: "edit" })}
           </div>
           <div
             className={`hops-container__history-filter ${
-              historyFilters.includes("EDIT")
+              historyFilters.includes("VIEW")
                 ? "hops-container__history-filter--active"
                 : ""
             }`}
             onClick={handleClickHistoryFilter("VIEW")}
-            style={{
-              padding: "1rem",
-              textDecoration: historyFilters.includes("VIEW")
-                ? "underline"
-                : "none",
-            }}
           >
             {t("labels.events", { ns: "pedagogySupportPlan", context: "view" })}
           </div>
