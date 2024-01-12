@@ -17,7 +17,7 @@ function ChatMyDiscussions() {
         flexDirection: "column",
       }}
     >
-      <ChatMyCounselors />
+      <ChatMyCounselorsDiscussions />
       <ChatMyActiveDiscussions />
     </div>
   );
@@ -27,7 +27,7 @@ function ChatMyDiscussions() {
  * ChatMyCounselors
  * @returns JSX.Element
  */
-function ChatMyCounselors() {
+function ChatMyCounselorsDiscussions() {
   const { counselorUsers, currentUser } = useChatContext();
 
   if (currentUser.type !== "STUDENT") {
