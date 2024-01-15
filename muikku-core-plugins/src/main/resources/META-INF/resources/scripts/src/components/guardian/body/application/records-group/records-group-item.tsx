@@ -9,11 +9,11 @@ import {
 import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { localize } from "~/locales/i18n";
-import { RecordWorkspaceActivityByLine } from "~/reducers/main-function/records";
 import ActivityIndicator from "../records-indicators/activity-indicator";
 import AssessmentRequestIndicator from "../records-indicators/assessment-request-indicator";
 import RecordsAssessmentIndicator from "../records-indicators/records-assessment-indicator";
 import { WorkspaceAssessmentState } from "~/generated/client";
+import { RecordWorkspaceActivityByLine } from "~/components/general/records-history/types";
 
 /**
  * RecordsGroupItemProps

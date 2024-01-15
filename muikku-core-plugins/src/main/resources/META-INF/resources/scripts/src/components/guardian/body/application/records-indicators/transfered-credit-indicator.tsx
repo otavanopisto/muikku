@@ -1,15 +1,15 @@
 import * as React from "react";
 import { localize } from "~/locales/i18n";
 import { getShortenGradeExtension, shortenGrade } from "~/util/modifiers";
-import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { WorkspaceActivity } from "~/generated/client";
 
 /**
  * TransfereCreditValueIndicatorProps
  */
 interface TransfereCreditIndicatorProps {
-  transferCredit: RecordWorkspaceActivity;
+  transferCredit: WorkspaceActivity;
 }
 
 /**
