@@ -84,13 +84,17 @@ public class ActivityLogRESTService extends PluginRESTService {
     if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (workspaceEntityId == null) {
         if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS)) {
-          return Response.status(Status.FORBIDDEN).build();
+          if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier)) {
+            return Response.status(Status.FORBIDDEN).build();
+          }
         }
       }
       else {
         WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
         if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
-          return Response.status(Status.FORBIDDEN).build();
+          if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier)) {
+            return Response.status(Status.FORBIDDEN).build();
+          }
         }
       }
     }
