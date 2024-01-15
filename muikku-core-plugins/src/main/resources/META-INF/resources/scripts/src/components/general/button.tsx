@@ -95,6 +95,7 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
         )
           .map((s) => `button--${s}`)
           .join(" ")}`}
+        role="button"
       >
         {this.props.icon && this.props.iconPosition === "left" && (
           <span
@@ -145,6 +146,7 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
         className={`button-social ${
           this.props.className ? this.props.className : ""
         } ${(modifiers || []).map((s) => `button-social--${s}`).join(" ")}`}
+        role="button"
       />
     );
   }
@@ -191,6 +193,7 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
         className={`button-pill ${(modifiers || [])
           .map((s) => `button-pill--${s}`)
           .join(" ")}`}
+        role="button"
       >
         {this.props.icon && (
           <span className={`button-pill__icon icon-${this.props.icon}`}></span>
@@ -242,6 +245,7 @@ export class IconButton extends React.Component<IconButtonProps, ButtonState> {
         className={`button-icon ${
           this.props.className ? this.props.className : ""
         } ${(modifiers || []).map((s) => `button-icon--${s}`).join(" ")}`}
+        role="button"
       >
         {this.props.icon && <span className={`icon-${this.props.icon}`}></span>}
         {this.props.children}

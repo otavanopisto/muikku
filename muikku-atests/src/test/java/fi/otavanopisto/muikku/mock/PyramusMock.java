@@ -142,7 +142,7 @@ public class PyramusMock {
         pmock.subjects.add(new Subject((long) 1, "tc_11", "Test course", (long) 1, false));
         
         pmock.studyProgrammeCategories.add(new StudyProgrammeCategory(1l, "All Study Programmes", 1l, false));
-        pmock.studyProgrammes.add(new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false));
+        pmock.studyProgrammes.add(new StudyProgramme(1l, 1l, "test", "Test Study Programme", 1l, null, false, false, null));
         
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 2, "Ryhmäkurssi", false));        
@@ -687,6 +687,12 @@ public class PyramusMock {
                 .withHeader("Content-Type", "application/json")
                 .withBody(pmock.objectMapper.writeValueAsString(mockStudent.getStudyPeriods()))
                 .withStatus(200)));
+          
+          stubFor(get(urlMatching(String.format("/1/students/students/%d/subjectChoices", student.getId())))
+              .willReturn(aResponse()
+                  .withHeader("Content-Type", "application/json")
+                  .withBody(pmock.objectMapper.writeValueAsString(new ArrayList<>()))
+                  .withStatus(200)));
           
           studentsList.add(student);
           pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookStudentCreatePayload(student.getId())));

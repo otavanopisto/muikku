@@ -161,9 +161,6 @@ class YO extends React.Component<YOProps, YOState> {
         // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components.
         // Github issue: #4840
         <div>
-          <h2 className="application-panel__content-header">
-            {t("labels.matriculationExams", { ns: "studies" })}
-          </h2>
           <div className="application-sub-panel application-sub-panel--yo-status-container">
             <div className="application-sub-panel__header">
               {t("labels.abiStatus", { ns: "studies" })}

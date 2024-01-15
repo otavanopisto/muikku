@@ -14,7 +14,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class GuiderController {
@@ -33,6 +35,9 @@ public class GuiderController {
   
   @Inject
   private WorkspaceJournalController workspaceJournalController;
+  
+  @Inject 
+  private CourseMetaController courseMetaController;
   
   public GuiderStudentWorkspaceActivity getStudentWorkspaceActivity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
@@ -110,4 +115,16 @@ public class GuiderController {
     return activity;
   }
   
+  public String getCurriculumName(SchoolDataIdentifier curriculumIdentifier) {
+    if (curriculumIdentifier != null) {
+      SchoolDataIdentifier curriculumId = curriculumIdentifier;
+
+      Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
+      String curriculumName = curriculum == null ? null : curriculum.getName();
+
+      return curriculumName;
+    }
+
+    return null;
+  }
 }
