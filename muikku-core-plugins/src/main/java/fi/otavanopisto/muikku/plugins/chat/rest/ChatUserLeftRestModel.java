@@ -5,8 +5,9 @@ public class ChatUserLeftRestModel {
   public ChatUserLeftRestModel() {
   }
   
-  public ChatUserLeftRestModel(Long id) {
+  public ChatUserLeftRestModel(Long id, Boolean permanent) {
     this.id = id;
+    this.permanent = permanent;
   }
   
   public Long getId() {
@@ -17,6 +18,15 @@ public class ChatUserLeftRestModel {
     this.id = id;
   }
 
+  public Boolean getPermanent() {
+    return permanent;
+  }
+
+  public void setPermanent(Boolean permanent) {
+    this.permanent = permanent;
+  }
+
   private Long id;
+  private Boolean permanent;
 
 }

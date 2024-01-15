@@ -26,6 +26,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatRoomDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatUserDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatBlockType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
@@ -82,6 +83,7 @@ public class ChatController {
     users = new ConcurrentHashMap<>();
     sessionUsers = new ConcurrentHashMap<>();
     userSessions = new ConcurrentHashMap<>();
+    blockHandler = new ChatBlockHandler();
     
     // Cache all chat users
     
@@ -130,6 +132,19 @@ public class ChatController {
   }
   
   public void postMessage(UserEntity targetUserEntity, UserEntity userEntity, String message) {
+    
+    // Handle soft and hard blocks
+    
+    ChatBlockType blockType = blockHandler.getBlockType(targetUserEntity.getId(), userEntity.getId());
+    if (blockType == ChatBlockType.HARD) {
+      return;
+    }
+    else if (blockType == ChatBlockType.SOFT) {
+      blockHandler.removeBlock(targetUserEntity.getId(), userEntity.getId());
+    }
+    
+    // Post message
+    
     ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), null, targetUserEntity.getId(), getNick(userEntity), message);
 
     // Inform both parties of the private conversation about a new private message
@@ -199,6 +214,15 @@ public class ChatController {
   public String getNick(UserEntity userEntity) {
     ChatUserRestModel chatUser = users.get(userEntity.getId());
     return chatUser == null ? null : chatUser.getNick();
+  }
+  
+  public List<ChatUserRestModel> getBlockList(Long sourceUserEntityId) {
+    Set<Long> userEntityIds = blockHandler.listHardBlockedUserEntityIds(sourceUserEntityId);
+    List<ChatUserRestModel> chatUsers = new ArrayList<>();
+    for (Long userEntityId : userEntityIds) {
+      chatUsers.add(getChatUserRestModel(userEntityId));
+    }
+    return chatUsers;
   }
   
   public List<ChatUserRestModel> listChatUsers(boolean onlyOnline) {
@@ -340,6 +364,18 @@ public class ChatController {
   
   public boolean isChatEnabled(UserEntity userEntity) {
     return userEntity == null ? false : chatUserDAO.findByUserEntityId(userEntity.getId()) != null;
+  }
+  
+  public void addBlock(Long sourceUserEntityId, Long targetUserEntityId, ChatBlockType blockType) {
+    blockHandler.addBlock(sourceUserEntityId, targetUserEntityId, blockType);
+  }
+  
+  public void removeBlock(Long sourceUserEntityId, Long targetUserEntityId) {
+    blockHandler.removeBlock(sourceUserEntityId, targetUserEntityId);
+  }
+  
+  public ChatBlockType getBlockType(Long sourceUserEntityId, Long targetUserEntityId) {
+    return blockHandler.getBlockType(sourceUserEntityId, targetUserEntityId);
   }
   
   public void toggleWorkspaceChatRoom(WorkspaceEntity workspaceEntity, String roomName, boolean enabled, UserEntity modifier) {
@@ -597,7 +633,7 @@ public class ChatController {
     if (!userSessions.isEmpty()) {
       ObjectMapper mapper = new ObjectMapper();
       try {
-        ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId);
+        ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, permanent);
         webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), listOnlineUserEntityIds());
       }
       catch (JsonProcessingException e) {
@@ -630,7 +666,7 @@ public class ChatController {
       if (!userEntityIds.isEmpty()) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-          ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId);
+          ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, true);
           webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), userEntityIds);
         }
         catch (JsonProcessingException e) {
@@ -743,5 +779,7 @@ public class ChatController {
   
   // UserEntityId -> List<HttpSessionId>
   private ConcurrentHashMap<Long, Set<String>> userSessions;
+  
+  private ChatBlockHandler blockHandler;
 
 }

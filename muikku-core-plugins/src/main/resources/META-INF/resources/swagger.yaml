@@ -726,7 +726,7 @@ paths:
         "400":
           description: Invalid request was sent to the server
         "403":
-          description: Attempted to make a call with unauthorized client
+          description: Posting to target has been blocked
 
   /rest/chat/message/{messageId}:
     put:
@@ -867,6 +867,24 @@ paths:
         "403":
           description: Calling user is not a chat user currently online
 
+  /rest/chat/blocklist:
+    get:
+      operationId: getBlocklist
+      summary: Returns the users blocked by the current user
+      tags:
+        - Chat
+      responses:
+        "200":
+          description: Blocklist successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatUser"
+        "403":
+          description: Calling user is not a chat user currently online
+
   /rest/chat/privateDiscussions:
     get:
       operationId: getPrivateDiscussions
@@ -910,6 +928,18 @@ paths:
           description: Invalid request was sent to the server
         "403":
           description: Attempted to make a call with unauthorized client
+          
+  /rest/chat/block:
+    put:
+      operationId: updateBlock
+      summary: Update block between users
+      tags:
+        - Chat
+      requestBody:
+        $ref: "#/components/requestBodies/ChatBlockUpdateRequestBody"
+      responses:
+        "204":
+          description: Block updated successfully
 
   /rest/chat/settings:
     get:
@@ -10146,6 +10176,13 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/ChatUser"
+              
+    ChatBlockUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ChatBlock"
 
     CeeposOrderCreateRequestBody:
       content:
@@ -12249,6 +12286,24 @@ components:
           description: Nickname of the user. Null if not set.
           type: string
           nullable: true
+          
+    ChatBlock:
+      type: object
+      required:
+        - targetUserEntityId
+        - blockType
+      properties:
+        targetUserEntityId:
+          description: Target user
+          type: integer
+          format: int64
+        blockType:
+          description: Block type
+          type: string
+          enum:
+            - NONE
+            - SOFT
+            - HARD
 
     CeeposOrderStateType:
       type: string

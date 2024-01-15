@@ -29,6 +29,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.chat.ChatPermissions;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatBlockType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
@@ -155,6 +156,56 @@ public class ChatRESTService {
     return Response.ok(restUsers).build();
   }
 
+  @Path("/blocklist")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listBlockedUsers() {
+    
+    // Validation
+    
+    if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Action
+    
+    List<ChatUserRestModel> restUsers = chatController.getBlockList(sessionController.getLoggedUserEntity().getId());
+    boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
+    for (int i = restUsers.size() - 1; i >= 0; i--) {
+      // Don't list ourselves 
+      if (restUsers.get(i).getId().equals(sessionController.getLoggedUserEntity().getId())) {
+        restUsers.remove(i);
+        continue;
+      }
+      // For students, strip other students only visible to staff
+      if (isStudent && restUsers.get(i).getVisibility() == ChatUserVisibility.STAFF) {
+        restUsers.remove(i);
+        continue;
+      }
+      // Students may not know each others' names
+      if (isStudent && restUsers.get(i).getType() == ChatUserType.STUDENT) {
+        restUsers.get(i).setName(null);
+      }
+    }
+    
+    // Response
+    
+    return Response.ok(restUsers).build();
+  }
+  
+  @Path("/block")
+  @PUT
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateBlock(ChatBlockRestModel payload) {
+    if (payload.getBlockType() == ChatBlockType.NONE) {
+      chatController.removeBlock(sessionController.getLoggedUserEntity().getId(), payload.getTargetUserEntityId());
+    }
+    else {
+      chatController.addBlock(sessionController.getLoggedUserEntity().getId(), payload.getTargetUserEntityId(), payload.getBlockType());
+    }
+    return Response.noContent().build();
+  }
+
   @Path("/privateDiscussions")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -171,6 +222,10 @@ public class ChatRESTService {
     Set<Long> userEntityIds = chatMessageDAO.listPrivateDiscussionPartners(sessionController.getLoggedUserEntity().getId());
     List<ChatUserRestModel> restUsers = new ArrayList<>();
     for (Long userEntityId : userEntityIds) {
+      ChatBlockType blockType = chatController.getBlockType(sessionController.getLoggedUserEntity().getId(), userEntityId);
+      if (blockType != ChatBlockType.NONE) {
+        continue;
+      }
       ChatUserRestModel chatUser = chatController.getChatUserRestModel(userEntityId); 
       if (chatUser != null) {
         restUsers.add(chatUser);
@@ -270,6 +325,12 @@ public class ChatRESTService {
       // For the time being, we do not support private messaging between students
       
       if (chatController.isStudent(sessionController.getLoggedUserEntity()) && chatController.isStudent(targetUserEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      
+      // Check that the target user has not blocked us
+      
+      if (chatController.getBlockType(sessionController.getLoggedUserEntity().getId(), targetUserEntity.getId()) == ChatBlockType.HARD) {
         return Response.status(Status.FORBIDDEN).build();
       }
       
