@@ -155,6 +155,32 @@ public class ChatRESTService {
     
     return Response.ok(restUsers).build();
   }
+  
+  @Path("/activity")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listActivity() {
+    
+    // Validation
+    
+    if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Action
+    
+    List<ChatActivityRestModel> activities = new ArrayList<>();
+    Set<Long> userEntityIds = chatMessageDAO.listPrivateDiscussionPartners(sessionController.getLoggedUserEntity().getId());
+    for (Long userEntityId : userEntityIds) {
+       Date d = chatMessageDAO.findLatestDateByTargetUser(sessionController.getLoggedUserEntity().getId(), userEntityId);
+       ChatActivityRestModel activity = new ChatActivityRestModel();
+       activity.setTargetIdentifier(String.format("user-%d", userEntityId));
+       activity.setLatestMessage(d);
+       activities.add(activity);
+    }
+    
+    return Response.ok(activities).build();
+  }
 
   @Path("/blocklist")
   @GET

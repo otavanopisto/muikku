@@ -95,6 +95,32 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
+  public Date findLatestDateByTargetUser(Long sourceUserId, Long targetUserId) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Date> criteria = criteriaBuilder.createQuery(Date.class);
+    Root<ChatMessage> root = criteria.from(ChatMessage.class);
+    criteria.select(root.get(ChatMessage_.sent));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.or(
+          criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), sourceUserId),
+            criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), targetUserId)
+          ),
+          criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), targetUserId),
+            criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), sourceUserId)
+          )
+        )
+      )
+    );
+    criteria.orderBy(criteriaBuilder.desc(root.get(ChatMessage_.sent)));
+
+    return entityManager.createQuery(criteria).setMaxResults(1).getSingleResult();
+  }
+  
   public List<ChatMessage> listBySourceUserAndTargetUserAndDate(Long sourceUserId, Long targetUserId, Date earlierThan, Integer count) {
     EntityManager entityManager = getEntityManager();
     

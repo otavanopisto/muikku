@@ -867,6 +867,22 @@ paths:
         "403":
           description: Calling user is not a chat user currently online
 
+  /rest/chat/activity:
+    get:
+      operationId: getChatActivity
+      summary: Returns a list of chat activity for the current user
+      tags:
+        - Chat
+      responses:
+        "200":
+          description: Chat activity successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatActivity"
+
   /rest/chat/blocklist:
     get:
       operationId: getBlocklist
@@ -12153,6 +12169,20 @@ components:
         price:
           type: number
           format: double
+          
+    ChatActivity:
+      type: object
+      required:
+        - targetIdentifier
+        - latestMessage
+      properties:
+        targetIdentifier:
+          description: Example "room-123" for rooms or "user-123" for private message etc.
+          type: string
+        latestMessage:
+          description: Time when the message was sent. ISO 8601.
+          type: string
+          format: date-time
 
     ChatMessage:
       type: object
