@@ -19,6 +19,7 @@ import org.apache.commons.codec.binary.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -84,6 +85,8 @@ public class ChatController {
 
   @PostConstruct
   public void init() {
+    mapper = new ObjectMapper();
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     roomUsers = new ConcurrentHashMap<>();
     users = new ConcurrentHashMap<>();
     sessionUsers = new ConcurrentHashMap<>();
@@ -139,7 +142,6 @@ public class ChatController {
     
     Set<Long> users = room.getType() == ChatRoomType.WORKSPACE ? roomUsers.get(room.getId()) : listOnlineUserEntityIds();
     if (users != null && !users.isEmpty()) {
-      ObjectMapper mapper = new ObjectMapper();
       try {
         ChatMessageRestModel msg = toRestModel(chatMessage);
         webSocketMessenger.sendMessage("chat:message-sent", mapper.writeValueAsString(msg), users);
@@ -168,7 +170,6 @@ public class ChatController {
 
     // Inform both parties of the private conversation about a new private message
     
-    ObjectMapper mapper = new ObjectMapper();
     try {
       ChatMessageRestModel msg = toRestModel(chatMessage);
       webSocketMessenger.sendMessage("chat:message-sent", mapper.writeValueAsString(msg), Set.of(targetUserEntity.getId(), userEntity.getId()));
@@ -194,7 +195,6 @@ public class ChatController {
       }
       usersToInform = room == null ? listOnlineUserEntityIds() : listRoomUserEntityIds(room);
     }
-    ObjectMapper mapper = new ObjectMapper();
     try {
       ChatMessageRestModel msg = toRestModel(chatMessage);
       webSocketMessenger.sendMessage("chat:message-edited", mapper.writeValueAsString(msg), usersToInform);
@@ -220,7 +220,6 @@ public class ChatController {
       }
       usersToInform = room == null ? listOnlineUserEntityIds() : listRoomUserEntityIds(room);
     }
-    ObjectMapper mapper = new ObjectMapper();
     try {
       ChatMessageRestModel msg = toRestModel(chatMessage);
       webSocketMessenger.sendMessage("chat:message-deleted", mapper.writeValueAsString(msg), usersToInform);
@@ -290,7 +289,6 @@ public class ChatController {
     
     // Inform all active chat users of a new public room
     
-    ObjectMapper mapper = new ObjectMapper();
     try {
       webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(room), listOnlineUserEntityIds());
     }
@@ -313,7 +311,6 @@ public class ChatController {
     
     // Inform all active chat users of an updated public room
     
-    ObjectMapper mapper = new ObjectMapper();
     try {
       webSocketMessenger.sendMessage("chat:room-updated", mapper.writeValueAsString(room), listOnlineUserEntityIds());
     }
@@ -331,7 +328,6 @@ public class ChatController {
 
     // Inform all active chat users of a removed room 
     
-    ObjectMapper mapper = new ObjectMapper();
     try {
       webSocketMessenger.sendMessage("chat:room-deleted", mapper.writeValueAsString(new ChatRoomDeletedRestModel("room-" + chatRoom.getId())), listOnlineUserEntityIds());
     }
@@ -486,7 +482,6 @@ public class ChatController {
       
       // Notify the people about the room having been created, updated, or deleted
       
-      ObjectMapper mapper = new ObjectMapper();
       try {
         if (created) {
           webSocketMessenger.sendMessage("chat:room-created", mapper.writeValueAsString(toRestModel(room)), userIds);
@@ -558,7 +553,6 @@ public class ChatController {
       ChatSettingsRestModel settingsRestModel = new ChatSettingsRestModel();
       settingsRestModel.setNick(nick);
       settingsRestModel.setVisibility(visibility);
-      ObjectMapper mapper = new ObjectMapper();
       try {
         webSocketMessenger.sendMessage("chat:settings-change", mapper.writeValueAsString(settingsRestModel), Set.of(userEntity.getId()));
       }
@@ -614,7 +608,6 @@ public class ChatController {
         visibility,
         userProfilePictureController.hasProfilePicture(userEntity),
         true);
-    ObjectMapper mapper = new ObjectMapper();
     try {
       if (isStaffMember(userEntity)) {
 
@@ -680,7 +673,6 @@ public class ChatController {
     // Notify the remaining users that the user has left
     
     if (!userSessions.isEmpty()) {
-      ObjectMapper mapper = new ObjectMapper();
       try {
         ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, permanent);
         webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), listOnlineUserEntityIds());
@@ -700,7 +692,6 @@ public class ChatController {
       // Visible to all, so let other students know the person is now around
       Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
       if (!userEntityIds.isEmpty()) {
-        ObjectMapper mapper = new ObjectMapper();
         try {
           webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(chatUser), userEntityIds);
         }
@@ -713,7 +704,6 @@ public class ChatController {
       // Visible to staff, so let other students know the person not around
       Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
       if (!userEntityIds.isEmpty()) {
-        ObjectMapper mapper = new ObjectMapper();
         try {
           ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, true);
           webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), userEntityIds);
@@ -730,7 +720,6 @@ public class ChatController {
     if (chatUser != null) {
       chatUser.setNick(nick);
     }
-    ObjectMapper mapper = new ObjectMapper();
     try {
       NickChangeRestModel nickChange = new NickChangeRestModel(userEntityId, nick); 
       if (visibility == ChatUserVisibility.STAFF) {
@@ -838,5 +827,7 @@ public class ChatController {
 
   // UserEntityId -> UserEntityId
   private ConcurrentHashMap<Long, Set<Long>> hardBlocks;
+  
+  private ObjectMapper mapper;
 
 }
