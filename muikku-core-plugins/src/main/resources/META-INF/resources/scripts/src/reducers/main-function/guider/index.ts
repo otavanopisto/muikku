@@ -20,6 +20,7 @@ import {
   HopsUppersecondary,
   ActivityLogEntry,
 } from "~/generated/client";
+import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 /**
  * GuiderFiltersType
@@ -82,6 +83,7 @@ export interface PedagogyFormAvailability {
 export interface GuiderStudentUserProfileType {
   contactLogState: LoadingState;
   currentWorkspacesState: LoadingState;
+  pastStudiesState: LoadingState;
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
   pedagogyFormState: LoadingState;
@@ -98,9 +100,15 @@ export interface GuiderStudentUserProfileType {
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
   currentWorkspaces: WorkspaceDataType[];
+  pastStudies: RecordWorkspaceActivitiesWithLineCategory[];
   pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
   purchases: CeeposOrder[];
+  courseCredits: {
+    completedCourseCredits: number;
+    mandatoryCourseCredits: number;
+    showCredits: boolean;
+  };
   hopsPhase?: string;
   hopsAvailable: boolean;
   pedagogyFormAvailable: PedagogyFormAccess;
@@ -206,6 +214,7 @@ const initialGuiderState: GuiderState = {
   currentStudent: {
     contactLogState: "LOADING",
     currentWorkspacesState: "LOADING",
+    pastStudiesState: "LOADING",
     pastWorkspacesState: "LOADING",
     activityLogState: "LOADING",
     pedagogyFormState: "WAITING",
@@ -220,6 +229,7 @@ const initialGuiderState: GuiderState = {
     notifications: null,
     contactLogs: null,
     currentWorkspaces: [],
+    pastStudies: [],
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],
@@ -229,6 +239,11 @@ const initialGuiderState: GuiderState = {
       courseTeacher: false,
       specEdTeacher: false,
       guidanceCounselor: false,
+    },
+    courseCredits: {
+      completedCourseCredits: 0,
+      mandatoryCourseCredits: 0,
+      showCredits: false,
     },
   },
 };

@@ -70,15 +70,15 @@ public class UserSchoolDataController {
   public boolean isActiveUser(User user) {
     return getUserBridge(user.getSchoolDataSource()).isActiveUser(user);
   }
-  
+
   /* HOPS */
-  
+
   public BridgeResponse<List<StudyActivityItemRestModel>> getStudyActivity(String dataSource, String identifier) {
     return getUserBridge(dataSource).getStudyActivity(identifier);
   }
-  
+
   /* Worklist */
-  
+
   public BridgeResponse<List<WorklistItemTemplateRestModel>> listWorklistTemplates(String dataSource) {
     return getUserBridge(dataSource).getWorklistTemplates();
   }
@@ -102,45 +102,45 @@ public class UserSchoolDataController {
   public BridgeResponse<List<WorklistSummaryItemRestModel>> getWorklistSummary(String dataSource, String identifier) {
     return getUserBridge(dataSource).getWorklistSummary(identifier);
   }
-  
+
   public void updateWorklistItemsState(String dataSource, WorklistItemStateChangeRestModel stateChange) {
     getUserBridge(dataSource).updateWorklistItemsState(stateChange);
   }
-  
+
   public BridgeResponse<List<WorklistApproverRestModel>> listWorklistApprovers(String dataSource) {
     return getUserBridge(dataSource).listWorklistApprovers();
   }
-  
+
   /* User */
-  
+
   public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntries(String dataSource, SchoolDataIdentifier userIdentifier, Integer resultsPerPage, Integer page) {
     return getUserBridge(dataSource).listStudentContactLogEntriesByStudent(userIdentifier, resultsPerPage, page);
   }
-  
+
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload) {
     return getUserBridge(dataSource).createStudentContactLogEntry(userIdentifier,payload);
   }
-  
+
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
     return getUserBridge(dataSource).updateStudentContactLogEntry(userIdentifier, contactLogEntryId, payload);
   }
-  
+
   public void removeStudentContactLogEntry(String dataSource, SchoolDataIdentifier studentIdentifier, Long contactLogEntryId) {
     getUserBridge(dataSource).removeStudentContactLogEntry(studentIdentifier, contactLogEntryId);
   }
-  
+
   public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload) {
     return getUserBridge(dataSource).createStudentContactLogEntryComment(userIdentifier, entryId, payload);
   }
-  
+
   public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier userIdentifier, Long entryId, Long commentId, StudentContactLogEntryCommentRestModel payload) {
     return getUserBridge(dataSource).updateStudentContactLogEntryComment(userIdentifier, entryId, commentId, payload);
   }
-  
+
   public void removeStudentContactLogEntryComment(String dataSource, SchoolDataIdentifier studentIdentifier, Long commentId) {
     getUserBridge(dataSource).removeStudentContactLogEntryComment(studentIdentifier, commentId);
   }
-  
+
   public BridgeResponse<List<OrganizationContactPerson>> listOrganizationContactPersons(String dataSource, String organizationIdentifier) {
     return getUserBridge(dataSource).listOrganizationContactPersonsByOrganization(organizationIdentifier);
   }
@@ -148,11 +148,11 @@ public class UserSchoolDataController {
   public BridgeResponse<StaffMemberPayload> createStaffMember(String dataSource, StaffMemberPayload staffMember) {
     return getUserBridge(dataSource).createStaffMember(staffMember);
   }
-  
+
   public BridgeResponse<StaffMemberPayload> updateStaffMember(String dataSource, StaffMemberPayload staffMember) {
     return getUserBridge(dataSource).updateStaffMember(staffMember);
   }
-  
+
   public BridgeResponse<StudentPayload> createStudent(String dataSource, StudentPayload student) {
     return getUserBridge(dataSource).createStudent(student);
   }
@@ -160,19 +160,19 @@ public class UserSchoolDataController {
   public BridgeResponse<StudentPayload> updateStudent(String dataSource, StudentPayload student) {
     return getUserBridge(dataSource).updateStudent(student);
   }
-  
+
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).findUser(userIdentifier);
   }
-  
+
   public UserContactInfo getStudentContactInfo(String schoolDataSource, String userIdentifier) {
     return getUserBridge(schoolDataSource).getStudentContactInfo(userIdentifier);
   }
-  
+
   public StudentGuidanceRelation getGuidanceRelation(String schoolDataSource, String studentIdentifier) {
     return getUserBridge(schoolDataSource).getGuidanceRelation(studentIdentifier);
   }
-  
+
   public User increaseStudyTime(SchoolDataIdentifier schoolDataIdentifier, Integer months) {
     return getUserBridge(schoolDataIdentifier.getDataSource()).increaseStudyTime(schoolDataIdentifier.getIdentifier(), months);
   }
@@ -337,7 +337,7 @@ public class UserSchoolDataController {
   }
 
   /* UserGroups */
-  
+
   public BridgeResponse<StudentGroupPayload> createStudentGroup(String dataSource, StudentGroupPayload studentGroup) {
     return getUserBridge(dataSource).createStudentGroup(studentGroup);
   }
@@ -345,7 +345,7 @@ public class UserSchoolDataController {
   public BridgeResponse<StudentGroupPayload> updateStudentGroup(String dataSource, StudentGroupPayload studentGroup) {
     return getUserBridge(dataSource).updateStudentGroup(studentGroup);
   }
-  
+
   public void archiveStudentGroup(String dataSource, String identifier) {
     getUserBridge(dataSource).archiveStudentGroup(identifier);
   }
@@ -357,7 +357,7 @@ public class UserSchoolDataController {
   public List<UserGroup> listUserGroups(SchoolDataSource schoolDataSource) {
     return getUserBridge(schoolDataSource).listUserGroups();
   }
-  
+
   public BridgeResponse<StudentGroupMembersPayload> addStudentGroupMembers(String dataSource, StudentGroupMembersPayload payload) {
     return getUserBridge(dataSource).addStudentGroupMembers(payload);
   }
@@ -443,7 +443,7 @@ public class UserSchoolDataController {
 
   /**
    * Returns student eligibility to participate matriculation exams
-   * 
+   *
    * @param studentIdentifier student identifier
    * @param subjectCode subject code
    * @return student eligibility to participate matriculation exams
@@ -526,7 +526,7 @@ public class UserSchoolDataController {
         "pakollinen"
     );
   }
-  
+
   public boolean amICounselor(SchoolDataIdentifier studentIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
@@ -534,7 +534,7 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).amICounselor(studentIdentifier.getIdentifier());
   }
-  
+
   public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
@@ -542,7 +542,15 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listStudentGuidanceCounselors(studentIdentifier, onlyMessageReceivers);
   }
-  
+
+  public List<String> listStudentAlternativeStudyOptions(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).listStudentAlternativeStudyOptions(studentIdentifier.getIdentifier());
+  }
+
   public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier,
       boolean includeGuidanceCouncelors, boolean onlyMessageReceivers) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
@@ -550,7 +558,6 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listStudentSpecEdTeachers(studentIdentifier, includeGuidanceCouncelors, onlyMessageReceivers);
-    
   }
   
   public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {

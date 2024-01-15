@@ -14,10 +14,10 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { AnyActionType } from "~/actions";
-import RecordsGroup from "./records-group/records-group";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
+import RecordsGroup from "~/components/general/records-history/records-group";
 
 /**
  * RecordsProps

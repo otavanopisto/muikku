@@ -177,7 +177,7 @@ public class PyramusSchoolDataEntityFactory {
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
 
     String studyProgrammeName = studyProgramme != null ? studyProgramme.getName() : null;
-    String studyProgrammeEducationType = studyProgramme != null ? studyProgramme.getOfficialEducationType() : null;
+    String studyProgrammeEducationType = studyProgramme != null ? studyProgramme.getEducationTypeCode() : null;
     SchoolDataIdentifier studyProgrammeIdentifier = studyProgramme != null
         ? identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId())
         : null;

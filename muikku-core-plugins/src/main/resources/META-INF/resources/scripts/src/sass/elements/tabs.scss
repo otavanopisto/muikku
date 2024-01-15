@@ -181,7 +181,7 @@
 .tabs__tab-data-container--desktop-tabs {
   display: none;
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-pad) {
     display: block;
   }
 }

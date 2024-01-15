@@ -90,7 +90,7 @@ public class HopsController {
     if (sessionController.isLoggedIn()) {
       
       // Hops is always available for admins
-      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
         return true;
       }
       

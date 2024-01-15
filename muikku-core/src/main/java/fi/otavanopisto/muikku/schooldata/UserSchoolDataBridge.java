@@ -352,6 +352,8 @@ public interface UserSchoolDataBridge {
 
   public boolean amICounselor(String studentIdentifier);
 
+  public List<String> listStudentAlternativeStudyOptions(String userIdentifier);
+
   /**
    * Lists students for who the given user is a guardian for.
    * 
@@ -369,4 +371,5 @@ public interface UserSchoolDataBridge {
    * @return list of workspace information
    */
   public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier);
+
 }

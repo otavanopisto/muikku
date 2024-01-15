@@ -1,13 +1,13 @@
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
-import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
+import { WorkspaceActivity } from "~/generated/client";
 
 /**
  * ActivityIndicatorProps
  */
 interface ActivityIndicatorProps {
-  credit: RecordWorkspaceActivity;
+  credit: WorkspaceActivity;
 }
 
 /**

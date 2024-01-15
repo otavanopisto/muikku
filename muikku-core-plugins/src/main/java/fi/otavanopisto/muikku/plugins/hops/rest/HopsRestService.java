@@ -39,7 +39,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
@@ -60,8 +62,8 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -103,9 +105,6 @@ public class HopsRestService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserSchoolDataController userSchoolDataController;
 
   @Inject
@@ -129,7 +128,12 @@ public class HopsRestService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private UserController userController;
 
+  @Inject 
+  private GuiderController guiderController;
   @GET
   @Path("/isHopsAvailable/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
@@ -506,6 +510,14 @@ public class HopsRestService {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
+    
+    User user = userController.findUserByUserEntityDefaults(userEntity);
+    Map<SchoolDataIdentifier, String> curriculumNameCache = new HashMap<>();
+
+    String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
+    
+    Boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
+    
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
 
     // Turn code into a Pyramus subject identifier because Elastic index only has that :(
@@ -532,9 +544,16 @@ public class HopsRestService {
             String dataSource = id[1];
             String identifier = id[0];
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            
+            WorkspaceType workspaceType = null;
+            
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
+            
             if (workspaceEntity != null) {
-              onlySignupWorkspaces = true;
+              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+              
+              // TODO: We have to fetch workspace from Pyramus to fetch workspace type from Pyramus. Adding workspace type to Elastic would eliminate the need for both calls.
+              
               if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
                 continue;
               }
@@ -553,6 +572,45 @@ public class HopsRestService {
               
               if (!published) {
                 continue;
+              }
+              
+              if (!onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
+                
+                // If student has no access to sign up on a course, add workspace to suggestion list only if all of these are correct
+                // - Student curriculum OPS2021
+                // - Course curriculum OPS2021
+                // - Published
+                // - Course type 'NONSTOP'
+                
+                if (!studentCurriculumOPS2021) {
+                  continue;
+                }
+                @SuppressWarnings("unchecked")
+                ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
+
+                boolean correctCurriculum = false;
+
+                for (String curriculumIdentifier : curriculumIdentifiers) {
+                  curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
+                  if (StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021")) {
+                    correctCurriculum = true;
+                    break;
+                  }
+                }
+                
+                if (!correctCurriculum) {
+                  continue;
+                }
+                
+                if (workspaceEntity.getAccess() != null && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE && workspaceEntity.getAccess() != WorkspaceAccess.LOGGED_IN)) {
+                  continue;
+                }
+                
+                workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
+
+                if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
+                  continue;
+                }
               }
               
               Integer courseNum = null;
@@ -585,6 +643,15 @@ public class HopsRestService {
     return Response.ok(suggestedWorkspaces).build();
   }
 
+  private String getCurriculumName(Map<SchoolDataIdentifier, String> curriculumNameCache, SchoolDataIdentifier curriculumIdentifier){
+
+    if (!curriculumNameCache.containsKey(curriculumIdentifier)) {
+      curriculumNameCache.put(curriculumIdentifier, guiderController.getCurriculumName(curriculumIdentifier));
+    }
+
+    return curriculumNameCache.get(curriculumIdentifier);
+  }
+  
   @POST
   @Path("/student/{STUDENTIDENTIFIER}/toggleSuggestion")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -878,7 +945,9 @@ public class HopsRestService {
         student.getLastName(),
         student.getStudyProgrammeEducationType(),
         student.getStudyTimeEnd(),
-        counselorList
+        counselorList,
+        student.getCurriculumIdentifier() != null ? guiderController.getCurriculumName(student.getCurriculumIdentifier()) : null
+
     )).build();
   }
 
@@ -888,14 +957,16 @@ public class HopsRestService {
       String lastName,
       String studyProgrammeEducationType,
       OffsetDateTime studyTimeEnd,
-      List<String> counselorList) {
+      List<String> counselorList,
+      String curriculumName) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel(
         studentIdentifier,
         firstName,
         lastName,
         studyProgrammeEducationType,
         studyTimeEnd,
-        counselorList);
+        counselorList,
+        curriculumName);
   }
 
   @POST
@@ -991,15 +1062,8 @@ public class HopsRestService {
         }
       }
     }
+    
+    return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
 
-    User user = userController.findUserByIdentifier(studentIdentifier);
-    UserProperty aidinkieli = userSchoolDataController.getUserProperty(user, "lukioAidinkieli");
-    UserProperty uskonto = userSchoolDataController.getUserProperty(user, "lukioUskonto");
-
-    AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
-    alternativeStudyOptionsRestModel.setNativeLanguageSelection(aidinkieli != null ? aidinkieli.getValue() : null);
-    alternativeStudyOptionsRestModel.setReligionSelection(uskonto != null ? uskonto.getValue() : null);
-
-    return Response.ok(alternativeStudyOptionsRestModel).build();
   }
 }
