@@ -24,6 +24,10 @@ function useUsers(props: UseUsersProps) {
 
   const websocket = useChatWebsocketContext();
 
+  // Filters
+  const [searchUsers, setSearchUsers] = React.useState<string>("");
+
+  // Users related data
   const [users, setUsers] = React.useState<ChatUser[]>([]);
   const [usersWithActiveDiscussion, setUsersWithActiveDiscussion] =
     React.useState<ChatUser[]>([]);
@@ -40,85 +44,6 @@ function useUsers(props: UseUsersProps) {
       fetchMyCounselors();
     }
   }, [currentUser.type]);
-
-  /**
-   * Fetch users
-   */
-  const fetchAllUsers = async () => {
-    const users = await chatApi.getChatUsers({
-      onlyOnline: false,
-    });
-
-    unstable_batchedUpdates(() => {
-      setUsers(users);
-    });
-  };
-
-  /**
-   * Fetch users that have active discussions with current user
-   */
-  const fetchUsersWithDiscussions = async () => {
-    const chatUsers = await chatApi.getPrivateDiscussions();
-
-    chatUsers.reverse();
-
-    unstable_batchedUpdates(() => {
-      setUsersWithActiveDiscussion(chatUsers);
-    });
-  };
-
-  /**
-   * Fetch my counselors
-   */
-  const fetchMyCounselors = async () => {
-    const counselors = await meApi.getGuidanceCounselors();
-
-    unstable_batchedUpdates(() => {
-      setMyCounselors(counselors);
-    });
-  };
-
-  /**
-   * Adds user to active discussions list
-   * @param user user
-   */
-  const addUserToActiveDiscussionsList = (user: ChatUser) => {
-    setUsersWithActiveDiscussion((prev) => [user, ...prev]);
-  };
-
-  /**
-   * Removes user from active discussions list
-   * @param user user
-   */
-  const removeUserFromActiveDiscussionsList = (user: ChatUser) => {
-    setUsersWithActiveDiscussion((prev) => {
-      const index = prev.findIndex((u) => u.id === user.id);
-
-      if (index !== -1) {
-        const updatedUsers = [...prev];
-        updatedUsers.splice(index, 1);
-        return updatedUsers;
-      }
-
-      return prev;
-    });
-  };
-
-  /**
-   * Moves active discussion to top of the list
-   * @param index index
-   */
-  const moveActiveDiscussionToTop = (index: number) => {
-    setUsersWithActiveDiscussion((prev) => {
-      const user = prev[index];
-
-      const newDiscussions = [...prev];
-      newDiscussions.splice(index, 1);
-      newDiscussions.unshift(user);
-
-      return newDiscussions;
-    });
-  };
 
   React.useEffect(() => {
     /**
@@ -207,10 +132,56 @@ function useUsers(props: UseUsersProps) {
       }
     };
 
+    /**
+     * ChatUsersNickChange
+     * @param data data from server.
+     */
+    const ChatUsersNickChange = (data: unknown) => {
+      if (componentMounted.current) {
+        if (typeof data === "string") {
+          const dataTyped = JSON.parse(data) as {
+            userEntityId: number;
+            nick: string;
+          };
+
+          // Full users list
+          setUsers((users) => {
+            const index = users.findIndex(
+              (person) => person.id === dataTyped.userEntityId
+            );
+
+            if (index !== -1) {
+              const updatedPeople = [...users];
+              updatedPeople[index].nick = dataTyped.nick;
+              return updatedPeople;
+            }
+
+            return users;
+          });
+
+          // Users with active discussion
+          setUsersWithActiveDiscussion((users) => {
+            const index = users.findIndex(
+              (person) => person.id === dataTyped.userEntityId
+            );
+
+            if (index !== -1) {
+              const updatedPeople = [...users];
+              updatedPeople[index].nick = dataTyped.nick;
+              return updatedPeople;
+            }
+
+            return users;
+          });
+        }
+      }
+    };
+
     // Adding event callback to handle changes when ever
     // there has happened some changes with that message
     websocket.addEventCallback("chat:user-joined", onChatUserJoinedMsg);
     websocket.addEventCallback("chat:user-left", onChatUserLeftMsg);
+    websocket.addEventCallback("chat:nick-change", ChatUsersNickChange);
 
     return () => {
       // Remove callback when unmounting
@@ -218,6 +189,92 @@ function useUsers(props: UseUsersProps) {
       websocket.removeEventCallback("chat:user-left", onChatUserLeftMsg);
     };
   }, [websocket]);
+
+  /**
+   * Fetch users
+   */
+  const fetchAllUsers = async () => {
+    const users = await chatApi.getChatUsers({
+      onlyOnline: false,
+    });
+
+    unstable_batchedUpdates(() => {
+      setUsers(users);
+    });
+  };
+
+  /**
+   * Fetch users that have active discussions with current user
+   */
+  const fetchUsersWithDiscussions = async () => {
+    const chatUsers = await chatApi.getPrivateDiscussions();
+
+    chatUsers.reverse();
+
+    unstable_batchedUpdates(() => {
+      setUsersWithActiveDiscussion(chatUsers);
+    });
+  };
+
+  /**
+   * Fetch my counselors
+   */
+  const fetchMyCounselors = async () => {
+    const counselors = await meApi.getGuidanceCounselors();
+
+    unstable_batchedUpdates(() => {
+      setMyCounselors(counselors);
+    });
+  };
+
+  /**
+   * Adds user to active discussions list
+   * @param user user
+   */
+  const addUserToActiveDiscussionsList = (user: ChatUser) => {
+    setUsersWithActiveDiscussion((prev) => [user, ...prev]);
+  };
+
+  /**
+   * Removes user from active discussions list
+   * @param user user
+   */
+  const removeUserFromActiveDiscussionsList = (user: ChatUser) => {
+    setUsersWithActiveDiscussion((prev) => {
+      const index = prev.findIndex((u) => u.id === user.id);
+
+      if (index !== -1) {
+        const updatedUsers = [...prev];
+        updatedUsers.splice(index, 1);
+        return updatedUsers;
+      }
+
+      return prev;
+    });
+  };
+
+  /**
+   * Moves active discussion to top of the list
+   * @param index index
+   */
+  const moveActiveDiscussionToTop = (index: number) => {
+    setUsersWithActiveDiscussion((prev) => {
+      const user = prev[index];
+
+      const newDiscussions = [...prev];
+      newDiscussions.splice(index, 1);
+      newDiscussions.unshift(user);
+
+      return newDiscussions;
+    });
+  };
+
+  const updateSearchUsers = React.useCallback(
+    (search: string) => {
+      setSearchUsers(search);
+    },
+    [setSearchUsers]
+  );
 
   // Memoized users with active discussion
   const usersWithActiveDiscussionMemoized = React.useMemo(() => {
@@ -253,6 +310,8 @@ function useUsers(props: UseUsersProps) {
   }, [myCounselors, users]);
 
   return {
+    searchUsers,
+    updateSearchUsers,
     users,
     counselorUsers: counselorUsersMemoized,
     usersWithActiveDiscussion: usersWithActiveDiscussionMemoized,

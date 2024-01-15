@@ -11,7 +11,8 @@ import { ChatRoom, ChatUser } from "~/generated/client";
  * @returns JSX.Element
  */
 function ChatOverview() {
-  const { searchRooms, updateSearchRooms } = useChatContext();
+  const { searchRooms, updateSearchRooms, searchUsers, updateSearchUsers } =
+    useChatContext();
   const [activeTab, setActiveTab] = React.useState<"users" | "rooms">("users");
 
   const handleOnTabChange = React.useCallback(
@@ -27,22 +28,27 @@ function ChatOverview() {
   const handleSearchChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       switch (activeTab) {
+        case "users":
+          updateSearchUsers(e.target.value);
+          break;
         case "rooms":
           updateSearchRooms(e.target.value);
           break;
       }
     },
-    [activeTab, updateSearchRooms]
+    [activeTab, updateSearchRooms, updateSearchUsers]
   );
 
   const searchValue = React.useMemo(() => {
     switch (activeTab) {
+      case "users":
+        return searchUsers;
       case "rooms":
         return searchRooms;
       default:
         return "";
     }
-  }, [activeTab, searchRooms]);
+  }, [activeTab, searchRooms, searchUsers]);
 
   const content = React.useMemo(() => {
     switch (activeTab) {
@@ -54,6 +60,75 @@ function ChatOverview() {
         return null;
     }
   }, [activeTab]);
+
+  /* const filterContent = React.useMemo(() => {
+    switch (activeTab) {
+      case "users":
+        return (
+          <div
+            className="chat-overview-filter"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "10px",
+            }}
+          >
+            <div
+              className="chat-overview-filter-title"
+              style={{
+                marginBottom: "5px",
+              }}
+            >
+              Suodatus
+            </div>
+            <div
+              className="chat-overview-filter-content"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                className="chat-overview-filter-content-item"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "5px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  style={{
+                    marginRight: "5px",
+                  }}
+                />
+                <label>Näytä vain paikalla olevat</label>
+              </div>
+              <div
+                className="chat-overview-filter-content-item"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "5px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  style={{
+                    marginRight: "5px",
+                  }}
+                />
+                <label>Näytä vain keskustelussa olevat</label>
+              </div>
+            </div>
+          </div>
+        );
+      case "rooms":
+        return null;
+      default:
+        return null;
+    }
+  }, [activeTab]); */
 
   return (
     <div
@@ -220,11 +295,19 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { users, openDiscussion } = useChatContext();
+  const { users, searchUsers, openDiscussion } = useChatContext();
+
+  const filteredUsers = React.useMemo(() => {
+    if (!searchUsers) {
+      return users;
+    }
+
+    return users.filter((user) => user.nick.includes(searchUsers));
+  }, [searchUsers, users]);
 
   const content =
-    users.length > 0 ? (
-      users.map((user) => (
+    filteredUsers.length > 0 ? (
+      filteredUsers.map((user) => (
         <ChatOverviewUsersListItem
           key={user.id}
           chatUser={user}
@@ -333,11 +416,19 @@ function ChatOverviewUsersListItem(props: ChatOverviewUsersListItemProps) {
  * @returns JSX.Element
  */
 function ChatOverviewRoomsList() {
-  const { rooms, openDiscussion } = useChatContext();
+  const { rooms, searchRooms, openDiscussion } = useChatContext();
+
+  const filteredRooms = React.useMemo(() => {
+    if (!searchRooms) {
+      return rooms;
+    }
+
+    return rooms.filter((room) => room.name.includes(searchRooms));
+  }, [searchRooms, rooms]);
 
   const content =
-    rooms.length > 0 ? (
-      rooms.map((room) => (
+    filteredRooms.length > 0 ? (
+      filteredRooms.map((room) => (
         <ChatOverviewRoomsListItem
           key={room.identifier}
           chatRoom={room}

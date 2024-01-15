@@ -27,6 +27,8 @@ function useChat(userId: number, currentUser: ChatUser) {
   const websocket = useChatWebsocketContext();
 
   const {
+    searchUsers,
+    updateSearchUsers,
     users,
     counselorUsers,
     usersWithActiveDiscussion,
@@ -245,6 +247,8 @@ function useChat(userId: number, currentUser: ChatUser) {
     removeUserFromActiveDiscussionsList,
     moveActiveDiscussionToTop,
     counselorUsers,
+    searchUsers,
+    updateSearchUsers,
   };
 }
 

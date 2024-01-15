@@ -35,7 +35,23 @@ function ChatMyCounselorsDiscussions() {
   }
 
   if (counselorUsers.length === 0) {
-    return <div>You dont have student counserlors set yet</div>;
+    return (
+      <>
+        <div
+          style={{
+            margin: "10px",
+          }}
+        >
+          You dont have student counserlors set yet or they havent activated
+          their chat
+        </div>
+        <hr
+          style={{
+            margin: "5px",
+          }}
+        />
+      </>
+    );
   }
 
   return (
@@ -45,7 +61,7 @@ function ChatMyCounselorsDiscussions() {
       ))}
       <hr
         style={{
-          margin: "10px",
+          margin: "5px",
         }}
       />
     </>
