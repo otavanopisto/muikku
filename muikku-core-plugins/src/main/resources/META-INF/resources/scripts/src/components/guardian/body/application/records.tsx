@@ -103,7 +103,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   <span>
                     {t("content.empty", {
                       ns: "studies",
-                      context: "workspaces",
+                      context: "workspaces-guardian",
                     })}
                   </span>
                 </div>

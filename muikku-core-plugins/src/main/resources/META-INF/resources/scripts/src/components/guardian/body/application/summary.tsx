@@ -258,45 +258,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>
       );
 
-      const studyStatus =
-        this.props.hops.value.goalMatriculationExam === "yes" ? (
-          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {t("labels.workspacesDone", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("labels.completedWorkspaces", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">
-              {this.props.summary.data.eligibilityStatus}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("content.completedWorkspaces", {
-                ns: "studies",
-                context: "matriculation",
-              })}
-            </div>
-          </div>
-        ) : (
-          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {t("labels.workspacesDone", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("labels.completedWorkspaces", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">
-              {this.props.summary.data.coursesDone}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("content.completedWorkspaces", {
-                ns: "studies",
-                context: "lasMonth",
-              })}
-            </div>
-          </div>
-        );
-
       return (
         <section>
           <h2 className="application-panel__content-header">
@@ -304,47 +265,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
           </h2>
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
-            <div className="react-container">
-              <div className="application-sub-panel">
-                <div className="application-sub-panel__header">
-                  {t("labels.studyEvents", { ns: "studies" })}
-                </div>
-                <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
-                  {studyStatus}
-                  <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
-                    <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">
-                      {t("labels.activity", { ns: "studies" })}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("labels.logins", { ns: "studies" })}
-                    </div>
-                    <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-activity">
-                      {this.props.summary.data.activity}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("content.logins", { ns: "studies" })}
-                    </div>
-                  </div>
-                  <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
-                    <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">
-                      {t("labels.assignments", {
-                        ns: "materials",
-                        context: "returned",
-                      })}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("labels.returnedAssignments", { ns: "studies" })}
-                    </div>
-                    <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-returned">
-                      {this.props.summary.data.returnedExercises}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("content.returnedEvaluables", { ns: "studies" })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+            <>
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">
                   {t("labels.stats")}
@@ -357,7 +278,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   />
                 ) : null}
               </div>
-            </div>
+            </>
           ) : null}
         </section>
       );
