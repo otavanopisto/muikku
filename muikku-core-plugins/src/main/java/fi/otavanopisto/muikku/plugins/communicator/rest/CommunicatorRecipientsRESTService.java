@@ -120,8 +120,8 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
     Set<Long> workspaceFilters = null;
     Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
     
-    if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-      // Stuff students can seach for
+    if (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.STUDENT_PARENT)) {
+      // Stuff students and their guardians can seach for
       roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.MANAGER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
