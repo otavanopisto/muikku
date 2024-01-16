@@ -348,12 +348,6 @@ public class ChatRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Cannot message self").build();
       }
       
-      // For the time being, we do not support private messaging between students
-      
-      if (chatController.isStudent(sessionController.getLoggedUserEntity()) && chatController.isStudent(targetUserEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-      
       // Check that the target user has not blocked us
       
       if (chatController.getBlockType(sessionController.getLoggedUserEntity().getId(), targetUserEntity.getId()) == ChatBlockType.HARD) {
