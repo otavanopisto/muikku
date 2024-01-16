@@ -4203,6 +4203,39 @@ paths:
           description: Internal server error
 
   #GUIDER
+  /rest/guider/student/{studentId}/workspace/{workspaceId}/signup:
+    post:
+      operationId: signupStudentToWorkspace
+      summary: Signup student to workspace with given id
+      tags:
+        - Guider
+      parameters:
+        - name: studentId
+          in: path
+          description: Student id
+          required: true
+          schema:
+            type: integer
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/SignupStudentToWorkspaceRequestBody"
+      responses:
+        "200":
+          description: Student signed up to workspace successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentStudyActivity"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/guider/student/{studentId}/contactLog:
     post:
       operationId: createContactLogEvents
@@ -4465,6 +4498,17 @@ paths:
           description: Falg owner identifier
           schema:
             type: string
+        - name: userIdentifier
+          in: query
+          description: User identifier
+          schema:
+            type: string
+        - name: includeInactiveStudents
+          in: query
+          description: Include inactive students
+          schema:
+            type: boolean
+            default: false
       responses:
         "200":
           description: Students
@@ -4644,6 +4688,47 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/guider/users/{identifier}/workspaceActivity:
+    get:
+      operationId: getGuiderUserWorkspaceActivity
+      summary: Get guider identifier workspace activity
+      description: Get guider identifier workspace activity
+      tags:
+        - Guider
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          description: Identifier
+          schema:
+            type: string
+        - name: workspaceIdentifier
+          in: query
+          description: Workspace identifier
+          schema:
+            type: string
+        - name: includeTransferCredits
+          in: query
+          description: Include transfer credits
+          schema:
+            type: boolean
+        - name: includeAssignmentStatistics
+          in: query
+          description: Include assignment statistics
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Guider user workspace activity info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceActivityInfo"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/guider/files/{fileId}:
     delete:
       operationId: deleteGuiderFile
@@ -4809,7 +4894,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AlternativeStudyOption"
+                type: array
+                items:
+                  type: string
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6414,8 +6501,8 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-          
-  /rest/records/users/{userIdentifier}/workspaceActivity:
+
+  /rest/records/users/{identifier}/workspaceActivity:
     get:
       operationId: getWorkspaceActivity
       summary: Get workspace activity
@@ -6423,10 +6510,15 @@ paths:
       tags:
         - Records
       parameters:
-        - name: userIdentifier
+        - name: identifier
           in: path
           description: User identifier
           required: true
+          schema:
+            type: string
+        - name: workspaceIdentifier
+          in: query
+          description: Workspace identifier
           schema:
             type: string
         - name: includeTransferCredits
@@ -6445,8 +6537,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecordWorkspaceActivityInfo"
-
+                $ref: "#/components/schemas/WorkspaceActivityInfo"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10677,6 +10768,28 @@ components:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondary"
 
+    SignupStudentToWorkspaceRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: SignupStudentToWorkspaceRequestBody object
+            required:
+              - message
+            properties:
+              id:
+                type: integer
+              message:
+                type: string
+              date:
+                type: string
+                format: date-time
+              workspaceId:
+                type: integer
+              userId:
+                type: integer
+
     UpdateCredentialsBody:
       required: true
       content:
@@ -14208,105 +14321,6 @@ components:
         - ONLY_PUBLISHED
         - ONLY_UNPUBLISHED
 
-    RecordWorkspaceActivity:
-      type: object
-      description: RecordWorkspaceActivity object
-      required:
-        - id
-        - identifier
-        - subjects
-        - assessmentStates
-        - name
-        - curriculums
-      properties:
-        id:
-          type: integer
-          format: int64
-        identifier:
-          type: string
-        subjects:
-          nullable: true
-          type: array
-          items:
-            $ref: "#/components/schemas/RecordWorkspaceActivitySubject"
-        assessmentStates:
-          type: array
-          items:
-            $ref: "#/components/schemas/AssessmentState"
-        name:
-          type: string
-        curriculums:
-          nullable: true
-          type: array
-          items:
-            $ref: "#/components/schemas/RecordWorkspaceActivityCurriculum"
-        exercisesTotal:
-          nullable: true
-          type: integer
-        exercisesAnswered:
-          nullable: true
-          type: integer
-        evaluablesTotal:
-          nullable: true
-          type: integer
-        evaluablesAnswered:
-          nullable: true
-          type: integer
-
-    RecordWorkspaceActivitySubject:
-      type: object
-      description: RecordWorkspaceActivitySubject object
-      required:
-        - subjectCode
-        - subjectName
-        - courseLength
-        - courseLengthSymbol
-      properties:
-        subjectCode:
-          type: string
-        subjectName:
-          type: string
-        courseNumber:
-          type: integer
-        courseLength:
-          type: integer
-        courseLengthSymbol:
-          type: string
-        identifier:
-          nullable: true
-          type: string
-
-    RecordWorkspaceActivityCurriculum:
-      type: object
-      description: RecordWorkspaceActivityCurriculum object
-      required:
-        - identifier
-        - name
-      properties:
-        identifier:
-          type: string
-        name:
-          type: string
-
-    RecordWorkspaceActivityInfo:
-      type: object
-      description: Record workspace activity info with line and category, default line and activities
-      required:
-        - lineName
-        - lineCategory
-        - defaultLine
-        - activities
-      properties:
-        lineName:
-          type: string
-        lineCategory:
-          type: string
-        defaultLine:
-          type: boolean
-        activities:
-          type: array
-          items:
-            $ref: "#/components/schemas/RecordWorkspaceActivity"
     Role:
       type: string
       enum:
@@ -14346,9 +14360,20 @@ components:
         - ceeposLine
         - flags
         - hasPedagogyForm
+        - curriculumName
+        - curriculumIdentifier
+        - studyProgrammeName
+        - studyStartDate
+        - studyEndDate
+        - studyTimeEnd
+        - lastLogin
       properties:
         curriculumIdentifier:
           type: string
+          nullable: true
+        curriculumName:
+          type: string
+          nullable: true
         email:
           type: string
         firstName:
@@ -14419,6 +14444,7 @@ components:
         - lastName
         - studyTimeEnd
         - studyProgrammeEducationType
+        - curriculumName
       properties:
         id:
           type: integer
@@ -14433,9 +14459,13 @@ components:
         studyProgrammeEducationType:
           type: string
         counselorList:
+          nullable: true
           type: array
           items:
             type: string
+        curriculumName:
+          type: string
+          nullable: true
 
     StudentStudyActivity:
       type: object
@@ -15488,7 +15518,9 @@ components:
       type: object
       description: Contains activity information of the workspace
       required:
-        - assessmentState
+        - id
+        - name
+        - assessmentStates
         - evaluablesAnswered
         - evaluablesAnsweredLastDate
         - evaluablesDonePercent
@@ -15507,7 +15539,15 @@ components:
         - journalEntryCount
         - numVisits
       properties:
-        assessmentState:
+        id:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        name:
+          description: The name of the workspace
+          type: string
+          nullable: true
+        assessmentStates:
           description: Assessment states of the workspace
           type: array
           items:
@@ -15515,33 +15555,42 @@ components:
         evaluablesAnswered:
           description: The number of answered evaluables
           type: integer
+          nullable: true
         evaluablesAnsweredLastDate:
           description: The date of the last answered evaluable
           type: string
           format: date-time
+          nullable: true
         evaluablesDonePercent:
           description: The percentage of answered evaluables
           type: integer
+          nullable: true
         evaluablesFailed:
           description: The number of failed evaluables
           type: integer
+          nullable: true
         evaluablesFailedLastDate:
           description: The date of the last failed evaluable
           type: string
           format: date-time
+          nullable: true
         evaluablesIncomplete:
           description: The number of incomplete evaluables
           type: integer
+          nullable: true
         evaluablesIncompleteLastDate:
           description: The date of the last incomplete evaluable
           type: string
+          nullable: true
         evaluablesPassed:
           description: The number of passed evaluables
           type: integer
+          nullable: true
         evaluablesPassedLastDate:
           description: The date of the last passed evaluable
           type: string
           format: date-time
+          nullable: true
         evaluablesSubmitted:
           description: The number of submitted evaluables
           type: integer
@@ -15549,49 +15598,117 @@ components:
           description: The date of the last submitted evaluable
           type: string
           format: date-time
+          nullable: true
         evaluablesWithdrawn:
           description: The number of withdrawn evaluables
           type: integer
+          nullable: true
         evaluablesWithdrawnLastDate:
           description: The date of the last withdrawn evaluable
           type: string
           format: date-time
+          nullable: true
         evaluablesTotal:
           description: The number of evaluables
           type: integer
+          nullable: true
         evaluablesUnanswered:
           description: The number of unanswered evaluables
           type: integer
+          nullable: true
         exercisesAnswered:
           description: The number of answered exercises
           type: integer
+          nullable: true
         exercisesAnsweredLastDate:
           description: The date of the last answered exercise
           type: string
           format: date-time
+          nullable: true
         exercisesDonePercent:
           description: The percentage of answered exercises
           type: integer
+          nullable: true
         exercisesTotal:
           description: The number of exercises
           type: integer
+          nullable: true
         exercisesUnanswered:
           description: The number of unanswered exercises
           type: integer
+          nullable: true
         journalEntryCount:
           description: The number of journal entries
           type: integer
+          nullable: true
         lastJournalEntry:
           description: The date of the last journal entry
           type: string
           format: date-time
+          nullable: true
         lastVisit:
           description: The date of the last visit to the workspace
           type: string
           format: date-time
+          nullable: true
         numVisits:
           description: The number of visits to the workspace
           type: integer
+          nullable: true
+        subjects:
+          description: The subjects of the workspace
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceActivitySubject"
+        curriculums:
+          description: The curriculums of the workspace
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceActivityCurriculum"
+
+    WorkspaceActivityCurriculum:
+      type: object
+      description: WorkspaceActivityCurriculum object
+      required:
+        - identifier
+        - name
+      properties:
+        identifier:
+          description: The identifier of the curriculum
+          type: string
+        name:
+          description: The name of the curriculum
+          type: string
+
+    WorkspaceActivitySubject:
+      type: object
+      description: WorkspaceActivitySubject object
+      required:
+        - identifier
+        - subjectName
+        - subjectCode
+        - courseNumber
+        - courseLength
+        - courseLengthSymbol
+      properties:
+        identifier:
+          description: The identifier of the subject
+          type: string
+        subjectName:
+          description: The name of the subject
+          type: string
+        subjectCode:
+          description: The code of the subject
+          type: string
+        courseNumber:
+          description: The number of the course
+          type: integer
+        courseLength:
+          description: The length value of the course
+          type: string
+        courseLengthSymbol:
+          description: The symbol data related to course length
+          type: string
 
     WorkspaceAssessmentState:
       type: object
@@ -16262,6 +16379,42 @@ components:
       enum:
         - ENABLED
         - DISABLED
+
+    WorkspaceActivityInfo:
+      type: object
+      description: Record workspace activity info with line and category, default line and activities
+      required:
+        - lineName
+        - lineCategory
+        - defaultLine
+        - activities
+        - completedCourseCredits
+        - mandatoryCourseCredits
+        - showCredits
+      properties:
+        lineName:
+          description: Name of the "Studyprogramme"
+          type: string
+        lineCategory:
+          description: Category of the "Studyprogramme"
+          type: string
+        defaultLine:
+          description: Is the default line
+          type: boolean
+        activities:
+          description: List of activities
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceActivity"
+        completedCourseCredits:
+          description: Completed course credits. Is always at least 0.
+          type: integer
+        mandatoryCourseCredits:
+          description: Mandatory course credits. Is always at least 0.
+          type: integer
+        showCredits:
+          description: Should the credits be shown. Currently only OPS 2021 student will have this as true
+          type: boolean
 
     ErrorModel:
       type: object

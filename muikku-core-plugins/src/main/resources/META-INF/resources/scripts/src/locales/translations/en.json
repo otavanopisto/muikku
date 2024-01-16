@@ -56,6 +56,7 @@
       "empty_people": "No people",
       "empty_students": "No students",
       "empty_rooms": "No rooms",
+      "empty_courses": "No courses",
       "helpdesk": "Trouble with Muikku? helpdesk(a)muikkuverkko.fi",
       "home": "Muikku web-site logo, link to the front page",
       "notFound": "Content not found",
@@ -85,6 +86,7 @@
       "content": "Content",
       "content_vacationMessage": "Vacation message content",
       "copy": "Copy",
+      "course": "Course",
       "coursepicker": "Coursepicker",
       "create": "Create new",
       "create_comment": "New comment",
@@ -113,6 +115,7 @@
       "forgotPasswordLink": "Forgot credentials?",
       "guider": "Guider",
       "helpdesk": "Helpdesk",
+      "history": "history",
       "home": "Muikku homepage",
       "instructions": "Instructions for Muikku",
       "language": "Language",
@@ -166,6 +169,7 @@
       "title_vacationMessage": "Vacation message title",
       "type": "Type",
       "unreachable": "Oh no!...",
+      "updated": "Updated",
       "userName": "Username",
       "whatsApp": "WhatsApp",
       "write": "Write your message...",
@@ -359,6 +363,9 @@
       "contactLog": "Contact log",
       "contactInfo_student": "Student contact info",
       "contactInfo_guardian": "Guardian contact info",
+      "courseCredits": "Course credits",
+      "courseCreditsMandatory": "Mandatory: {{mandatoryCredits}}",
+      "courseCreditsTotal": "In total: {{totalCredits}}",
       "created_interimEvaluation": "Interim evaluation given",
       "discussionMessages": "Discussion messages",
       "endDate": "Studies end date",
@@ -444,10 +451,12 @@
     "labels": {
       "abiStatus": "Abi status",
       "activity": "Activity",
+      "courseCredits": "Course credits: Mandatory {{mandatoryCredits}}, Summary {{totalCredits}}",
       "evaluablesDone": "{{percent}}% of assignments done",
       "completedWorkspaces": "You have completed",
       "coursesForYou:": "Courses for you",
       "endDate": " Studies end date",
+      "evaluated": "Evaluated {{date}}",
       "enrollmentDate": "Date of enrollment",
       "exercisesDone": "{{percent}}% exercises done",
       "hops": "HOPS",
@@ -616,7 +625,7 @@
     "actions": {
       "apply": "Submit application",
       "confirmSave": "Information is correct",
-      "exploreMaterials": "Explore materials",
+      "exploreCourses": "Explore courses",
       "readMore": "Read rest of the article",
       "tourNettilukio": "Tour Nettilukio",
       "tourNettilukio_aineopiskelu": "Tour Nettilukio subject studies",
@@ -638,7 +647,7 @@
       "noWorkspaces_body": "You are not a student in any of the courses. Search or browse courses in the",
       "noWorkspaces_link": "coursepicker",
       "noUserByEmail": "Muikku has no user account corresponding to email address {{email}.",
-      "openMaterials": "Materials licensed by Creative Commons license. Registration is not required.",
+      "coursesAvailable": "Explore the self-study online courses offered by Nettilukio and Nettiperuskoulu and other open materials.",
       "organization": "<p>Otavia is a municipal enterprise owned by the city of Mikkeli that specializes in digital education through Online Upper Secondary School for Adults and Online Comprehensive School for Adults. We also welcome students to enroll in on-campus courses as part of different study programmes for students with immigrant backgrounds. It is also possible to enroll in a number of liberal adult education courses. We provide and develop education locally, nationwide and globally. Exploring, trying out and testing new approaches is at the heart of what we do at Otavia.</p>",
       "passwordChangeMailSent": "A confirmation message has sent to the address {{email}}. You can change your password by clicking on the link in the message.",
       "plagScan": "We are using online plagiarism checking system",
@@ -662,7 +671,8 @@
       "nettiperuskoulu": "Nettiperuskoulu",
       "news": "News",
       "next": "Next studies",
-      "openMaterials": "Open materials",
+      "courses": "Courses",
+      "coursesAvailable": "Courses",
       "organization": "Otavia",
       "postalCode": "Postal code",
       "privacyPolicy": "Privacy policy",
@@ -1043,6 +1053,8 @@
       "search_teachers": "Search teachers",
       "search_workspaceStudents": "Search course students",
       "search_workspaceTeachers": "Search course teachers",
+      "specialEducationTeacher_one": "Special education teacher",
+      "specialEducationTeacher_other": "Special education teachers",
       "SSN": "Social security number",
       "studyProgramme": "Study programme",
       "staff": "Staff",
@@ -1641,6 +1653,7 @@
       "removing": "Are you sure you want to delete the journal entry?"
     },
     "labels": {
+      "comment": "Add comment to journal entry",
       "create": "Create a journal entry",
       "edit": "Edit the journal entry",
       "feedback": "Journal feedback",
@@ -1878,7 +1891,7 @@
       "nonActiveUser": " It seems that your studies have ended and therefore the order of the study time increase has been cancelled.",
       "noProducts": "No products to buy",
       "noPurchases": "Student does not have any purchases",
-      "orderConfirmed": "The student will be notified of the order you have created via email. The email message will include a link to the online store of the city of Mikkeli, where the student will be able to pay the study fee. The payment link will expire in 24 hours after the student has clicked it for the first time.",
+      "orderConfirmed": "The student will be notified of the order you have created via email. The email message will include a link to the online store of the city of Mikkeli, where the student will be able to pay the study fee. The payment link will expire in 14 days after the student has clicked it for the first time.",
       "redirect": "You are being redirected to Mikkeli City's online store.",
       "removing": "Are you sure you wish to delete the student order?"
     },
@@ -2070,5 +2083,42 @@
       "unsavedWarning": "Tallemattomia muutoksia"
     },
     "notifications": {}
+  },
+  "studyMatrix": {
+    "actions": {
+      "cancelSelection": "Cancel selection",
+      "selectOptionalToHops": "Select to HOPS",
+      "signUpStudent": "Sign up student",
+      "signupStudentToWorkspace": "Sign up",
+      "suggested": "Suggested",
+      "suggestOptional": "Suggest to optional",
+      "suggestToNext": "Suggest to next"
+    },
+    "content": {
+      "noSubjectTable": "Subject table not found with given student's curriculum",
+      "noSuggestionAvailable": "No courses available. Check courses and their prerequisites"
+    },
+    "labels": {
+      "colorDescriptions": "Color descriptions",
+      "completed": "Completed",
+      "courses": "Courses",
+      "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
+      "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
+      "inprogress": "In progress",
+      "mandatory": "Mandatory",
+      "optional": "(*)-Optional",
+      "schoolSubject": "School subject",
+      "selected": "Selected",
+      "signUpMessage": "Sign up message",
+      "signUpStudent": "Sign up student to course",
+      "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
+      "transfered": "Transfered",
+      "transferedLanguages": "Transfered: Languages",
+      "transferedOther": "Transfered: Other",
+      "transferedSkillAndArt": "Transfered: Skill and art"
+    },
+    "notifications": {
+      "signUpError": "Signing up to course failed"
+    }
   }
 }

@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.guider;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +41,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
+import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.mail.MailType;
+import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
@@ -48,10 +53,14 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
@@ -61,6 +70,7 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotific
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.rest.ToRWorkspaceRestModel;
+import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
@@ -71,9 +81,16 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -84,6 +101,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.security.RoleFeatures;
+import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -92,9 +110,11 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -166,6 +186,26 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private UserIndexer userIndexer;
+
+  @Inject 
+  private WorkspaceUserEntityIdFinder workspaceUserEntityIdFinder;
+
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  @Any
+  private Instance<MessagingWidget> messagingWidgets;
+
+  @Inject
+  @BaseUrl
+  private String baseUrl;
+
+  @Inject
+  private Mailer mailer;
   
   @Inject
   private PedagogyController pedagogyController;
@@ -173,6 +213,15 @@ public class GuiderRESTService extends PluginRESTService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
+  
+  @Inject
+  private GuiderController guiderController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
 
   @GET
   @Path("/students")
@@ -185,7 +234,7 @@ public class GuiderRESTService extends PluginRESTService {
       @QueryParam("myUserGroups") Boolean myUserGroups,
       @QueryParam("workspaceIds") List<Long> workspaceIds,
       @QueryParam("myWorkspaces") Boolean myWorkspaces,
-      @QueryParam("userEntityId") Long userEntityId,
+      @QueryParam("userIdentifier") String userIdentifier,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
@@ -296,24 +345,31 @@ public class GuiderRESTService extends PluginRESTService {
 
       userIdentifiers.addAll(flagController.getFlaggedStudents(flags));
     }
+    
+    SchoolDataIdentifier userSchoolDataIdentifier = null;
+
+    if (userIdentifier != null) {
+      userSchoolDataIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
+    }
+    
     if (Boolean.TRUE.equals(includeInactiveStudents)) {
       if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
-        if (userEntityId == null) {
+        if (userIdentifier == null) {
           return Response.status(Status.FORBIDDEN).build();
         } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
+          if (!sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier().equals(userSchoolDataIdentifier)) {
             return Response.status(Status.FORBIDDEN).build();
           }
         }
       }
     }
-
-    if (userEntityId != null) {
+    
+    if (userIdentifier != null) {
       List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
 
-      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userSchoolDataIdentifier);
       if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userEntityId %d", userEntityId)).build();
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %s", userIdentifier)).build();
       }
 
       List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
@@ -525,7 +581,9 @@ public class GuiderRESTService extends PluginRESTService {
         null,
         organizationRESTModel,
         user.getMatriculationEligibility(),
-        pedagogyController.getHasPedagogyForm(studentIdentifier.toId())
+        pedagogyController.getHasPedagogyForm(studentIdentifier.toId()),
+        user.getCurriculumIdentifier() != null ? guiderController.getCurriculumName(user.getCurriculumIdentifier()) : null
+        
     );
 
     return Response
@@ -568,7 +626,6 @@ public class GuiderRESTService extends PluginRESTService {
           ? workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity)
           : workspaceUserEntityController.listInactiveWorkspaceEntitiesByUserEntity(userEntity);
     }
-
     if (CollectionUtils.isEmpty(workspaceEntities)) {
       return Response.ok(Collections.emptyList()).build();
     }
@@ -646,6 +703,106 @@ public class GuiderRESTService extends PluginRESTService {
         workspaceIdentifier,
         includeTransferCredits,
         includeAssignmentStatistics);
+    
+    Integer allCourseCredits = 0;
+    Integer mandatoryCourseCredits = 0;
+    boolean showCredits = false;
+    
+    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+    
+    // Find student's curriculum to tell whether the score will be shown to the user
+    
+    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
+    
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
+      showCredits = true;
+    }
+
+    // Education type mapping
+    
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    
+    SearchProvider searchProvider = getProvider("elastic-search");
+    
+    if (showCredits) {
+      for (WorkspaceActivity activity : activityInfo.getActivities()) {
+        
+        List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
+        
+        if (!assessmentStatesList.isEmpty()) {
+          for (WorkspaceAssessmentState assessmentState : assessmentStatesList) {
+            
+            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+              for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
+                
+                // Check for courses that contains multiple coursemodules. WorkspaceActivitySubjectIdentifier should match assessmentState's workspaceSubjectIdentifier
+                if (activity.getId() != null) {
+                  if (!assessmentState.getWorkspaceSubjectIdentifier().equals(workspaceActivitySubject.getIdentifier())) {
+                    continue;
+                  }
+                }
+                
+                if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
+                  for (WorkspaceActivityCurriculum curriculum : activity.getCurriculums()) {
+                    if (curriculum.getName().equals("OPS 2021")) {
+                      int units = workspaceActivitySubject.getCourseLength().intValue();
+                      
+                      // All completed courses
+                      allCourseCredits = Integer.sum(units, allCourseCredits);
+                      
+                      // Mandatority for transferred courses
+                      // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
+                      if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+                        Mandatority mandatority = activity.getMandatority();
+                        if (mandatority != null && mandatority == Mandatority.MANDATORY) {
+                          mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                       }
+                      }
+                      
+                      // Search for finding out course mandaority
+                      
+                      if (searchProvider != null && activity.getId() != null) {
+                        
+                        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
+                        workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+                        SearchResult sr = searchProvider.findWorkspace(workspaceIdentifier);
+                        
+                        List<Map<String, Object>> results = sr.getResults();
+                        for (Map<String, Object> result : results) {
+                          
+                          String educationTypeId = (String) result.get("educationTypeIdentifier");
+    
+                          Mandatority mandatority = null;
+    
+                          if (StringUtils.isNotBlank(educationTypeId)) {
+                            SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                                                        
+                            mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
+                                ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
+                            
+                          }
+                          if (mandatority != null) {
+                            if (mandatority == Mandatority.MANDATORY) {
+                              mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                            }
+                            activity.setMandatority(mandatority);
+                          }
+                        }
+                      } 
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    activityInfo.setCompletedCourseCredits(allCourseCredits);
+    activityInfo.setMandatoryCourseCredits(mandatoryCourseCredits);
+    activityInfo.setShowCredits(showCredits);
+    
     return Response.ok(activityInfo).build();
   }
 
@@ -1046,5 +1203,161 @@ public class GuiderRESTService extends PluginRESTService {
       date = new Date(((Double) value).longValue() * 1000);
     }
     return date;
+  }
+  
+  @POST
+  @Path("/student/{ID}/workspace/{WORKSPACEID}/signup")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceSignupByStaff(@PathParam("ID") Long userEntityId, @PathParam("WORKSPACEID") Long workspaceEntityId,
+      fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Workspace %d not found", workspaceEntityId)).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
+    if (studentEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("User %d not found", userEntityId)).build();
+    }
+    SchoolDataIdentifier studentIdentifier = studentEntity.defaultSchoolDataIdentifier();
+
+    if (!userSchoolDataController.amICounselor(studentIdentifier) &&
+        !sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, studentIdentifier);
+    if (workspaceUserEntity != null && workspaceUserEntity.getArchived() == Boolean.TRUE) {
+      workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
+    }
+    if (workspaceUserEntity != null && workspaceUserEntity.getActive() == Boolean.FALSE) {
+      workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.TRUE);
+      userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
+    }
+
+    fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, studentIdentifier);
+    if (workspaceUser == null) {
+      workspaceUser = workspaceController.createWorkspaceUser(workspaceIdentifier, studentIdentifier, WorkspaceRoleArchetype.STUDENT);
+      waitForWorkspaceUserEntity(workspaceEntity, studentIdentifier);
+    }
+    else {
+      workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
+    }
+
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+    List<UserEntity> recipients = new ArrayList<UserEntity>();
+
+    String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+
+    UserEntityName studentName = userEntityController.getName(studentIdentifier, true);
+    
+    UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUserEntity(), true);
+    
+    for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+      recipients.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
+    }
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, studentEntity, new Date(), entity.getMessage());
+
+    String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
+    caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), studentName.getDisplayNameWithLine(), workspaceName);
+
+    String captionStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.captionStudent");
+    captionStudent = MessageFormat.format(captionStudent, loggedUserEntityName.getDisplayName(), workspaceName);
+
+    String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
+
+    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), studentName.getDisplayNameWithLine());
+    String content;
+    String contentStudent;
+    if (StringUtils.isEmpty(entity.getMessage())) {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
+      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink);
+      
+      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentStudent");
+      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink);
+    } else {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
+      String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
+      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink, blockquoteMessage);
+      
+      contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessageStudent");
+      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink, blockquoteMessage);
+
+    }
+
+    for (MessagingWidget messagingWidget : messagingWidgets) {
+      // TODO: Category?
+      messagingWidget.postMessage(studentEntity, "message", caption, content, recipients);
+      
+      // Send own message to the student without a guider link
+      messagingWidget.postMessage(studentEntity, "message", captionStudent, contentStudent, Arrays.asList(studentEntity));
+    }
+
+    List<String> recipientEmails = new ArrayList<>(recipients.size());
+    for (UserEntity recipient : recipients){
+     String teacherEmail = userEmailEntityController.getUserDefaultEmailAddress(recipient, false);
+     if (StringUtils.isNotBlank(teacherEmail)) {
+       recipientEmails.add(teacherEmail);
+     }
+    }
+    if (!recipientEmails.isEmpty()) {
+      mailer.sendMail(MailType.HTML, recipientEmails, caption, content);
+    }
+
+    List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
+    
+    SearchProvider searchProvider = getProvider("elastic-search");
+    if (searchProvider != null) {
+      SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
+      
+      if (searchResult.getTotalHitCount() > 0) {
+        List<Map<String, Object>> results = searchResult.getResults();
+        Map<String, Object> match = results.get(0);
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> subjectList = (List<Map<String, Object>>) match.get("subjects");
+        for (Map<String, Object> s : subjectList) {
+          StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+
+          item.setCourseName(workspaceName);
+          item.setCourseId(workspaceEntity.getId());
+          item.setCourseNumber((Integer) s.get("courseNumber"));
+          item.setSubject((String) s.get("subjectCode"));
+          item.setStatus(StudyActivityItemStatus.ONGOING);
+          item.setSubjectName((String) s.get("subjectName"));
+          item.setDate(new Date());
+          
+          restItems.add(item);
+        }
+        
+        webSocketMessenger.sendMessage("hops:workspace-signup", restItems, Arrays.asList(studentEntity, sessionController.getLoggedUserEntity()));
+
+        return Response.ok(restItems).build();
+      }
+      else {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Search provider couldn't find a unique workspace. %d results.", searchResult.getTotalHitCount())).build();
+      }
+    } else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Elastic search provider not found.", searchProvider)).build();
+    }
+  }
+
+  private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    Long workspaceUserEntityId = null;
+    long timeoutTime = System.currentTimeMillis() + 10000;    
+    while (workspaceUserEntityId == null) {
+      workspaceUserEntityId = workspaceUserEntityIdFinder.findWorkspaceUserEntityId(workspaceEntity, userIdentifier);
+      if (workspaceUserEntityId != null || System.currentTimeMillis() > timeoutTime) {
+        break;
+      }
+      try {
+        Thread.sleep(100);
+      }
+      catch (InterruptedException e) {
+      }
+    }
   }
 }

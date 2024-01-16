@@ -37,7 +37,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {t("labels.evaluablesDone", {
+            {t("labels.evaluated", {
               ns: "studies",
               date: localize.date(assessment.date),
             }) + getShortenGradeExtension(assessment.grade)}
@@ -67,7 +67,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
         openByHover
         content={
           <span>
-            {t("labels.evaluablesDone", {
+            {t("labels.evaluated", {
               ns: "studies",
               date: localize.date(assessment.date),
             }) +
@@ -95,7 +95,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           content={
             <span>
               {assessment.grade
-                ? t("labels.evaluablesDone", {
+                ? t("labels.evaluated", {
                     ns: "studies",
                     date: localize.date(assessment.date),
                   }) + getShortenGradeExtension(assessment.grade)
