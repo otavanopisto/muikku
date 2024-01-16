@@ -807,7 +807,7 @@ public class ChatController {
   }
 
   private Set<Long> listHardBlockedUserEntityIds(Long sourceUserEntityId) {
-    return hardBlocks.contains(sourceUserEntityId) ? Collections.unmodifiableSet(hardBlocks.get(sourceUserEntityId)) : Collections.emptySet();
+    return hardBlocks.containsKey(sourceUserEntityId) ? Collections.unmodifiableSet(hardBlocks.get(sourceUserEntityId)) : Collections.emptySet();
   }
 
   // UserEntityId -> ChatUserRestModel
