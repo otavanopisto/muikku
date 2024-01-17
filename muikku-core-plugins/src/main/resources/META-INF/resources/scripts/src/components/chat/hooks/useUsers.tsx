@@ -8,6 +8,7 @@ import {
   GuidanceCouncelorContact,
   UpdateBlockRequestBlockTypeEnum,
 } from "~/generated/client";
+import { ChatUserFilters } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -33,7 +34,10 @@ function useUsers(props: UseUsersProps) {
   const websocket = useChatWebsocketContext();
 
   // Filters
-  const [searchUsers, setSearchUsers] = React.useState<string>("");
+  const [userFilters, setUserFilters] = React.useState<ChatUserFilters>({
+    search: "",
+    searchFilters: [],
+  });
 
   // Users related data
   const [users, setUsers] = React.useState<ChatUser[]>([]);
@@ -350,11 +354,17 @@ function useUsers(props: UseUsersProps) {
     []
   );
 
-  const updateSearchUsers = React.useCallback(
-    (search: string) => {
-      setSearchUsers(search);
+  /**
+   * Update user filters
+   */
+  const updateUserFilters = React.useCallback(
+    <T extends keyof ChatUserFilters>(key: T, value: ChatUserFilters[T]) => {
+      setUserFilters((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
     },
-    [setSearchUsers]
+    []
   );
 
   // Memoized users with active discussion
@@ -407,8 +417,8 @@ function useUsers(props: UseUsersProps) {
   }, [blockedUsers, users]);
 
   return {
-    searchUsers,
-    updateSearchUsers,
+    userFilters,
+    updateUserFilters,
     users,
     counselorUsers: counselorUsersMemoized,
     usersWithActiveDiscussion: usersWithActiveDiscussionMemoized,

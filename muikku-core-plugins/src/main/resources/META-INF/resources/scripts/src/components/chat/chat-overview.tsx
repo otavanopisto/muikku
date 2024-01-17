@@ -5,6 +5,13 @@ import { motion } from "framer-motion";
 import { useChatContext } from "./context/chat-context";
 import { ChatUser } from "~/generated/client";
 import ChatProfile from "./chat-profile";
+import Dropdown from "../general/dropdown";
+import {
+  ChatRoomFilter,
+  ChatUserFilter,
+  filterRooms,
+  filterUsers,
+} from "./chat-helpers";
 
 type OverviewTab = "users" | "rooms" | "blocked";
 
@@ -13,7 +20,7 @@ type OverviewTab = "users" | "rooms" | "blocked";
  * @returns JSX.Element
  */
 function ChatOverview() {
-  const { searchRooms, updateSearchRooms, searchUsers, updateSearchUsers } =
+  const { roomFilters, updateRoomFilters, userFilters, updateUserFilters } =
     useChatContext();
   const [activeTab, setActiveTab] = React.useState<OverviewTab>("users");
 
@@ -32,27 +39,27 @@ function ChatOverview() {
       switch (activeTab) {
         case "users":
         case "blocked":
-          updateSearchUsers(e.target.value);
+          updateUserFilters("search", e.target.value);
           break;
         case "rooms":
-          updateSearchRooms(e.target.value);
+          updateRoomFilters("search", e.target.value);
           break;
       }
     },
-    [activeTab, updateSearchRooms, updateSearchUsers]
+    [activeTab, updateRoomFilters, updateUserFilters]
   );
 
   const searchValue = React.useMemo(() => {
     switch (activeTab) {
       case "users":
       case "blocked":
-        return searchUsers;
+        return userFilters.search;
       case "rooms":
-        return searchRooms;
+        return roomFilters.search;
       default:
         return "";
     }
-  }, [activeTab, searchRooms, searchUsers]);
+  }, [activeTab, roomFilters.search, userFilters.search]);
 
   const content = React.useMemo(() => {
     switch (activeTab) {
@@ -66,6 +73,38 @@ function ChatOverview() {
         return null;
     }
   }, [activeTab]);
+
+  const filterContent = React.useMemo(() => {
+    switch (activeTab) {
+      case "users":
+      case "blocked":
+        return (
+          <OverviewUserFilters
+            currentFilters={userFilters.searchFilters}
+            onFiltersChange={(filters) =>
+              updateUserFilters("searchFilters", filters)
+            }
+          />
+        );
+      case "rooms":
+        return (
+          <OverviewRoomFilters
+            currentFilters={roomFilters.searchFilters}
+            onFiltersChange={(filters) =>
+              updateRoomFilters("searchFilters", filters)
+            }
+          />
+        );
+      default:
+        return null;
+    }
+  }, [
+    activeTab,
+    roomFilters.searchFilters,
+    updateRoomFilters,
+    updateUserFilters,
+    userFilters.searchFilters,
+  ]);
 
   return (
     <div
@@ -107,7 +146,9 @@ function ChatOverview() {
               padding: "5px",
             }}
           />
-          <IconButton icon="filter" />
+          <Dropdown content={filterContent}>
+            <IconButton icon="filter" />
+          </Dropdown>
         </div>
         {content}
       </main>
@@ -249,15 +290,15 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { users, searchUsers, openDiscussion } = useChatContext();
+  const { users, userFilters, openDiscussion } = useChatContext();
 
   const filteredUsers = React.useMemo(() => {
-    if (!searchUsers) {
+    if (!userFilters) {
       return users;
     }
 
-    return users.filter((user) => user.nick.includes(searchUsers));
-  }, [searchUsers, users]);
+    return filterUsers(users, userFilters);
+  }, [userFilters, users]);
 
   /**
    * Handles open discussion
@@ -319,16 +360,16 @@ function ChatOverviewUsersList() {
  * @returns JSX.Element
  */
 function ChatOverviewBlockedList() {
-  const { searchUsers, blockedUsers, openDiscussion, openCancelUnblockDialog } =
+  const { userFilters, blockedUsers, openDiscussion, openCancelUnblockDialog } =
     useChatContext();
 
   const filteredUsers = React.useMemo(() => {
-    if (!searchUsers) {
+    if (!userFilters) {
       return blockedUsers;
     }
 
-    return blockedUsers.filter((user) => user.nick.includes(searchUsers));
-  }, [searchUsers, blockedUsers]);
+    return filterUsers(blockedUsers, userFilters);
+  }, [userFilters, blockedUsers]);
 
   /**
    * Handles open discussion
@@ -402,19 +443,19 @@ function ChatOverviewBlockedList() {
 }
 
 /**
- * ChatOverviewUsersList
+ * ChatOverviewRoomsList
  * @returns JSX.Element
  */
 function ChatOverviewRoomsList() {
-  const { rooms, searchRooms, openDiscussion } = useChatContext();
+  const { rooms, roomFilters, openDiscussion } = useChatContext();
 
   const filteredRooms = React.useMemo(() => {
-    if (!searchRooms) {
+    if (!roomFilters) {
       return rooms;
     }
 
-    return rooms.filter((room) => room.name.includes(searchRooms));
-  }, [searchRooms, rooms]);
+    return filterRooms(rooms, roomFilters);
+  }, [roomFilters, rooms]);
 
   /**
    * Handles open discussion
@@ -608,6 +649,195 @@ export const OverviewListItemAction: React.FC<OverviewListItemActionProps> = (
   const { children } = props;
 
   return <div className="chat-overview-rooms-list-item-action">{children}</div>;
+};
+
+/**
+ * UserFilterProps
+ */
+interface OverviewUserFiltersProps {
+  currentFilters: ChatUserFilter[];
+  onFiltersChange?: (filters: ChatUserFilter[]) => void;
+}
+
+/**
+ * OverviewUserFilters
+ * @param props props
+ * @returns JSX.Element
+ */
+export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
+  const { currentFilters, onFiltersChange } = props;
+
+  /**
+   * Handles user filter change
+   */
+  const handleFilterChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      const updatedFilters = [...currentFilters];
+
+      // Get possible existing index of clicked value
+      const indexOfActiveFilter = updatedFilters.findIndex((f) => f === value);
+
+      // If filter is already active, remove it
+      if (indexOfActiveFilter !== -1) {
+        updatedFilters.splice(indexOfActiveFilter, 1);
+      } else {
+        updatedFilters.push(value as ChatUserFilter);
+      }
+
+      onFiltersChange && onFiltersChange(updatedFilters);
+    },
+    [currentFilters, onFiltersChange]
+  );
+
+  return (
+    <>
+      <div className="dropdown__container-item">
+        <div className="filter-category">
+          <div className="filter-category__label">Suodatusasetukset</div>
+        </div>
+      </div>
+      <div className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            type="checkbox"
+            value="offline"
+            id="theory-page-filter"
+            checked={currentFilters.includes("offline")}
+            onChange={handleFilterChange}
+          />
+          <label htmlFor="theory-page-filter" className="filter-item__label">
+            Ei paikalla
+          </label>
+        </div>
+      </div>
+      <div className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            type="checkbox"
+            value="online"
+            id="exercise-page-filter"
+            checked={currentFilters.includes("online")}
+            onChange={handleFilterChange}
+          />
+          <label htmlFor="exercise-page-filter" className="filter-item__label">
+            Paikalla
+          </label>
+        </div>
+      </div>
+      <div className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            type="checkbox"
+            value="staff"
+            id="assignment-page-filter"
+            checked={currentFilters.includes("staff")}
+            onChange={handleFilterChange}
+          />
+          <label
+            htmlFor="assignment-page-filter"
+            className="filter-item__label"
+          >
+            Henkilökunta
+          </label>
+        </div>
+      </div>
+      <div className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            type="checkbox"
+            value="students"
+            id="journal-page-filter"
+            checked={currentFilters.includes("students")}
+            onChange={handleFilterChange}
+          />
+          <label htmlFor="journal-page-filter" className="filter-item__label">
+            Opiskelijat
+          </label>
+        </div>
+      </div>
+    </>
+  );
+};
+
+/**
+ * OverviewRoomFiltersProps
+ */
+interface OverviewRoomFiltersProps {
+  currentFilters: ChatRoomFilter[];
+  onFiltersChange?: (filters: ChatRoomFilter[]) => void;
+}
+
+/**
+ * OverviewRoomFilters
+ * @param props props
+ * @returns JSX.Element
+ */
+export const OverviewRoomFilters = (props: OverviewRoomFiltersProps) => {
+  const { currentFilters, onFiltersChange } = props;
+
+  /**
+   * Handles user filter change
+   */
+  const handleFilterChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+
+      const updatedFilters = [...currentFilters];
+
+      // Get possible existing index of clicked value
+      const indexOfActiveFilter = updatedFilters.findIndex((f) => f === value);
+
+      // If filter is already active, remove it
+      if (indexOfActiveFilter !== -1) {
+        updatedFilters.splice(indexOfActiveFilter, 1);
+      } else {
+        updatedFilters.push(value as ChatRoomFilter);
+      }
+
+      onFiltersChange && onFiltersChange(updatedFilters);
+    },
+    [currentFilters, onFiltersChange]
+  );
+
+  return (
+    <>
+      <div className="dropdown__container-item">
+        <div className="filter-category">
+          <div className="filter-category__label">Suodatusasetukset</div>
+        </div>
+      </div>
+      <div className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            type="checkbox"
+            value="offline"
+            id="theory-page-filter"
+            checked={currentFilters.includes("private")}
+            onChange={handleFilterChange}
+          />
+          <label htmlFor="theory-page-filter" className="filter-item__label">
+            Työtila -huone
+          </label>
+        </div>
+      </div>
+      <div className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            type="checkbox"
+            value="online"
+            id="exercise-page-filter"
+            checked={currentFilters.includes("public")}
+            onChange={handleFilterChange}
+          />
+          <label htmlFor="exercise-page-filter" className="filter-item__label">
+            Julkinen huone
+          </label>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default ChatOverview;

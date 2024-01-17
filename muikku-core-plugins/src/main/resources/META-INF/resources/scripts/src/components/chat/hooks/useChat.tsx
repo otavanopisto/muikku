@@ -30,8 +30,8 @@ function useChat(userId: number, currentUser: ChatUser) {
   const websocket = useChatWebsocketContext();
 
   const {
-    searchUsers,
-    updateSearchUsers,
+    userFilters,
+    updateUserFilters,
     users,
     counselorUsers,
     usersWithActiveDiscussion,
@@ -41,13 +41,13 @@ function useChat(userId: number, currentUser: ChatUser) {
     onNewMgsSentUpdateActiveDiscussions,
   } = useChatUsers({ currentUser });
   const {
-    searchRooms,
+    roomFilters,
     rooms,
     loadingRooms,
     createNewRoom,
     updateRoom,
     deleteRoom,
-    updateSearchRooms,
+    updateRoomFilters,
   } = useRooms();
 
   const { chatActivity, onNewMsgSentUpdateActivity } = useChatActivity();
@@ -349,15 +349,15 @@ function useChat(userId: number, currentUser: ChatUser) {
     roomsPublic: rooms.filter((r) => r.type === "PUBLIC"),
     saveEditedRoom,
     saveNewRoom,
-    searchRooms,
-    searchUsers,
+    roomFilters,
     toggleControlBox,
     toggleLeftPanel,
     toggleRightPanel,
+    userFilters,
     unblockDiscussionWithUser,
     updateNewRoomEditor,
-    updateSearchRooms,
-    updateSearchUsers,
+    updateRoomFilters,
+    updateUserFilters,
     userId,
     users,
     usersWithActiveDiscussion,

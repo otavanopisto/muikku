@@ -13,7 +13,105 @@ import AnimatedView from "./animated-views/animated-view";
 import ChatDiscussion from "./chat-discussion";
 import ChatOverview from "./chat-overview";
 
+/**
+ * ChatUserFilter
+ */
+export type ChatUserFilter = "online" | "offline" | "students" | "staff";
+
+/**
+ * ChatUserFilters
+ */
+export interface ChatUserFilters {
+  search: string;
+  searchFilters: ChatUserFilter[];
+}
+
+export type ChatRoomFilter = "private" | "public";
+
+/**
+ * ChatRoomFilters
+ */
+export interface ChatRoomFilters {
+  search: string;
+  searchFilters: ChatRoomFilter[];
+}
+
 export type ChatSettingVisibilityOption = OptionDefault<ChatUserVisibilityEnum>;
+
+/**
+ * filterUsers
+ * @param users users
+ * @param filters filters
+ * @returns filtered users
+ */
+export const filterUsers = (users: ChatUser[], filters: ChatUserFilters) => {
+  const { search, searchFilters } = filters;
+
+  const filteredUsers = users.filter((user) => {
+    const { nick } = user;
+
+    const searchTerms = [nick];
+
+    const searchTermsMatch = searchTerms.some((term) =>
+      term.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const searchFiltersMatch = searchFilters.some((filter) => {
+      switch (filter) {
+        case "online":
+          return user.isOnline;
+        case "offline":
+          return !user.isOnline;
+        case "students":
+          return user.type === "STUDENT";
+        case "staff":
+          return user.type === "STAFF";
+        default:
+          return false;
+      }
+    });
+
+    return searchTermsMatch && searchFiltersMatch;
+  });
+
+  return filteredUsers;
+};
+
+/**
+ * filterUsers
+ * @param rooms users
+ * @param filters filters
+ * @returns filtered users
+ */
+export const filterRooms = (rooms: ChatRoom[], filters: ChatRoomFilters) => {
+  const { search, searchFilters } = filters;
+
+  const filteredRooms = rooms.filter((room) => {
+    const { name } = room;
+
+    const searchTerms = [name];
+
+    const searchTermsMatch = searchTerms.some((term) =>
+      term.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const searchFiltersMatch = searchFilters.some((filter) => {
+      switch (filter) {
+        case "private":
+          return room.type === "WORKSPACE";
+        case "public":
+          return room.type === "PUBLIC";
+
+        default:
+          return false;
+      }
+    });
+
+    return searchTermsMatch && searchFiltersMatch;
+  });
+
+  return filteredRooms;
+};
 
 /**
  * Experimenting with distilling swipe offset and velocity into a single variable, so the

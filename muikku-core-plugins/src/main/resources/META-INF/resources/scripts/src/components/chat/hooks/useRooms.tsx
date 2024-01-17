@@ -7,6 +7,7 @@ import {
   CreateChatRoomRequest,
   UpdateChatRoomRequest,
 } from "~/generated/client";
+import { ChatRoomFilters } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -19,7 +20,11 @@ function useRooms() {
 
   const [rooms, setRooms] = React.useState<ChatRoom[]>([]);
   const [loadingRooms, setLoadingRooms] = React.useState<boolean>(false);
-  const [searchRooms, setSearchRooms] = React.useState<string>("");
+
+  const [roomFilters, setRoomFilters] = React.useState<ChatRoomFilters>({
+    search: "",
+    searchFilters: [],
+  });
 
   const componentMounted = React.useRef(true);
 
@@ -159,22 +164,27 @@ function useRooms() {
     };
   }, [websocket]);
 
-  const updateSearchRooms = React.useCallback(
-    (searchQuery: string) => {
-      setSearchRooms(searchQuery);
+  /**
+   * Update user filters
+   */
+  const updateRoomFilters = React.useCallback(
+    <T extends keyof ChatRoomFilters>(key: T, value: ChatRoomFilters[T]) => {
+      setRoomFilters((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
     },
-    [setSearchRooms]
+    []
   );
 
   return {
-    rooms,
-    loadingRooms,
-    searchRooms,
-    setSearchRooms,
     createNewRoom,
-    updateRoom,
     deleteRoom,
-    updateSearchRooms,
+    loadingRooms,
+    roomFilters,
+    rooms,
+    updateRoom,
+    updateRoomFilters,
   };
 }
 
