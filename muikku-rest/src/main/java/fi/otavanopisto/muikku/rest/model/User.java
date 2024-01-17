@@ -13,10 +13,6 @@ public class User {
               String nickName,
               String studyProgrammeName,
               boolean hasImage,
-              String nationality,
-              String language,
-              String municipality,
-              String school,
               String email,
               Date studyStartDate,
               Date studyTimeEnd
@@ -28,10 +24,6 @@ public class User {
     this.nickName = nickName;
     this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
-    this.nationality = nationality;
-    this.language = language;
-    this.municipality = municipality;
-    this.school = school;
     this.email = email;
     this.studyStartDate = studyStartDate;
     this.studyTimeEnd = studyTimeEnd;
@@ -67,38 +59,6 @@ public class User {
 
   public void setHasImage(boolean hasImage) {
     this.hasImage = hasImage;
-  }
-
-  public String getNationality() {
-    return nationality;
-  }
-
-  public void setNationality(String nationality) {
-    this.nationality = nationality;
-  }
-
-  public String getLanguage() {
-    return language;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
-  }
-
-  public String getMunicipality() {
-    return municipality;
-  }
-
-  public void setMunicipality(String municipality) {
-    this.municipality = municipality;
-  }
-
-  public String getSchool() {
-    return school;
-  }
-
-  public void setSchool(String school) {
-    this.school = school;
   }
 
   public String getEmail() {
@@ -147,10 +107,6 @@ public class User {
   private String nickName;
   private String studyProgrammeName;
   private boolean hasImage;
-  private String nationality;
-  private String language;
-  private String municipality;
-  private String school;
   private String email;
   private Date studyStartDate;
   private Date studyTimeEnd;
