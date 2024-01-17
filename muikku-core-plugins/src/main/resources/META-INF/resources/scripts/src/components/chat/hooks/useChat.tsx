@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-jsdoc */
 // Hook to handle loading roooms and people list from rest api.
 import * as React from "react";
 // eslint-disable-next-line camelcase
@@ -15,11 +16,13 @@ import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";
 import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
+import useChatActivity from "./useChatActivity";
+import { useWebsocketsWithCallbacks } from "./useWebsocketsWithCallbacks";
 
 export type UseChat = ReturnType<typeof useChat>;
 
 /**
- * useChat
+ * Custom hook for chat that groups all chat related functionality
  * @param userId userId
  * @param currentUser currentUser
  */
@@ -32,9 +35,10 @@ function useChat(userId: number, currentUser: ChatUser) {
     users,
     counselorUsers,
     usersWithActiveDiscussion,
-    addUserToActiveDiscussionsList,
-    removeUserFromActiveDiscussionsList,
-    moveActiveDiscussionToTop,
+    blockedUsers,
+    blockUser,
+    unblockUser,
+    onNewMgsSentUpdateActiveDiscussions,
   } = useChatUsers({ currentUser });
   const {
     searchRooms,
@@ -46,8 +50,18 @@ function useChat(userId: number, currentUser: ChatUser) {
     updateSearchRooms,
   } = useRooms();
 
+  const { chatActivity, onNewMsgSentUpdateActivity } = useChatActivity();
+
   const chatViews = useViews({
     views: chatControllerViews,
+  });
+
+  // Shared websocket callbacks
+  useWebsocketsWithCallbacks({
+    "chat:message-sent": (data: unknown) => {
+      onNewMgsSentUpdateActiveDiscussions(data);
+      onNewMsgSentUpdateActivity(data);
+    },
   });
 
   const [discussionInstances, setMessagesInstances] = React.useState<
@@ -58,8 +72,8 @@ function useChat(userId: number, currentUser: ChatUser) {
   const [minimized, setMinimized] = React.useState<boolean>(true);
 
   // Panel states
-  const [rightPanelOpen, setRightPanelOpen] = React.useState<boolean>(false);
-  const [leftPanelOpen, setLeftPanelOpen] = React.useState<boolean>(false);
+  const [panelRightOpen, setPanelRightOpen] = React.useState<boolean>(false);
+  const [panelLeftOpen, setPanelLeftOpen] = React.useState<boolean>(false);
 
   // Whether the current width is mobile
   const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
@@ -78,8 +92,8 @@ function useChat(userId: number, currentUser: ChatUser) {
   React.useEffect(() => {
     if (minimized) {
       unstable_batchedUpdates(() => {
-        setRightPanelOpen(false);
-        setLeftPanelOpen(false);
+        setPanelRightOpen(false);
+        setPanelLeftOpen(false);
       });
     }
   }, [minimized]);
@@ -139,18 +153,18 @@ function useChat(userId: number, currentUser: ChatUser) {
   // Toggles the left panel or sets it to a specific state
   const toggleLeftPanel = React.useCallback((nextState?: boolean) => {
     if (nextState !== undefined) {
-      setLeftPanelOpen(nextState);
+      setPanelLeftOpen(nextState);
     } else {
-      setLeftPanelOpen((leftPanelOpen) => !leftPanelOpen);
+      setPanelLeftOpen((panelLeftOpen) => !panelLeftOpen);
     }
   }, []);
 
   // Toggles the right panel or sets it to a specific state
   const toggleRightPanel = React.useCallback((nextState?: boolean) => {
     if (nextState !== undefined) {
-      setRightPanelOpen(nextState);
+      setPanelRightOpen(nextState);
     } else {
-      setRightPanelOpen((rightPanelOpen) => !rightPanelOpen);
+      setPanelRightOpen((panelRightOpen) => !panelRightOpen);
     }
   }, []);
 
@@ -166,8 +180,8 @@ function useChat(userId: number, currentUser: ChatUser) {
     (identifier: string) => {
       unstable_batchedUpdates(() => {
         if (isMobileWidth) {
-          setLeftPanelOpen(false);
-          setRightPanelOpen(false);
+          setPanelLeftOpen(false);
+          setPanelRightOpen(false);
         }
 
         // Check if message instance already exists for this identifier
@@ -199,6 +213,42 @@ function useChat(userId: number, currentUser: ChatUser) {
     [chatViews, isMobileWidth, discussionInstances, userId, websocket]
   );
 
+  /**
+   * Handles closing discussion with user
+   */
+  const closeDiscussionWithUser = React.useCallback(
+    async (currentUser: ChatUser) => {
+      await blockUser(currentUser, "SOFT");
+
+      // Close discussion if it is open
+      if (activeRoomOrPerson === currentUser.identifier) {
+        setActiveRoomOrPerson(null);
+        chatViews.goTo("overview");
+      }
+    },
+    [activeRoomOrPerson, blockUser, chatViews]
+  );
+
+  /**
+   * Handles closing and blocking discussion with user
+   */
+  const closeAndBlockDiscussionWithUser = React.useCallback(
+    async (currentUser: ChatUser) => {
+      await blockUser(currentUser, "HARD");
+    },
+    [blockUser]
+  );
+
+  /**
+   * unblockDiscussion
+   */
+  const unblockDiscussionWithUser = React.useCallback(
+    async (currentUser: ChatUser) => {
+      await unblockUser(currentUser);
+    },
+    [unblockUser]
+  );
+
   const canModerate = React.useMemo(
     () => currentUser.type === "STAFF",
     [currentUser.type]
@@ -215,40 +265,42 @@ function useChat(userId: number, currentUser: ChatUser) {
   }, [users, rooms, activeRoomOrPerson]);
 
   return {
-    userId,
-    currentUser,
+    activeDiscussion: activeDiscussionMemoized,
+    blockedUsers,
     canModerate,
+    chatActivity,
+    chatViews,
+    closeAndBlockDiscussionWithUser,
+    closeDiscussionWithUser,
+    counselorUsers,
+    currentUser,
+    deleteCustomRoom,
+    discussionInstances,
+    isMobileWidth,
+    loadingRooms,
+    minimized,
+    newChatRoom,
+    openDiscussion,
+    openOverview,
+    panelLeftOpen,
+    panelRightOpen,
+    rooms,
+    roomsPrivate: rooms.filter((r) => r.type === "WORKSPACE"),
+    roomsPublic: rooms.filter((r) => r.type === "PUBLIC"),
+    saveEditedRoom,
+    saveNewRoom,
+    searchRooms,
+    searchUsers,
+    toggleControlBox,
+    toggleLeftPanel,
+    toggleRightPanel,
+    unblockDiscussionWithUser,
+    updateNewRoomEditor,
+    updateSearchRooms,
+    updateSearchUsers,
+    userId,
     users,
     usersWithActiveDiscussion,
-    loadingRooms,
-    activeDiscussion: activeDiscussionMemoized,
-    rooms,
-    searchRooms,
-    publicRooms: rooms.filter((r) => r.type === "PUBLIC"),
-    privateRooms: rooms.filter((r) => r.type === "WORKSPACE"),
-    minimized,
-    toggleControlBox,
-    chatViews,
-    newChatRoom,
-    updateNewRoomEditor,
-    saveNewRoom,
-    saveEditedRoom,
-    deleteCustomRoom,
-    isMobileWidth,
-    toggleRightPanel,
-    toggleLeftPanel,
-    leftPanelOpen,
-    rightPanelOpen,
-    openOverview,
-    openDiscussion,
-    discussionInstances,
-    updateSearchRooms,
-    addUserToActiveDiscussionsList,
-    removeUserFromActiveDiscussionsList,
-    moveActiveDiscussionToTop,
-    counselorUsers,
-    searchUsers,
-    updateSearchUsers,
   };
 }
 

@@ -138,6 +138,7 @@ $chat-discussion-panel-footer-height: 40px;
 .chat__discussion-panel-header {
   background: $color-default;
   border-bottom: 1px solid $color-default-item-separator-border;
+  display: flex;
   height: $chat-discussion-panel-header-height;
   padding: 10px;
   position: relative;
@@ -149,11 +150,19 @@ $chat-discussion-panel-footer-height: 40px;
   font-weight: 600;
 }
 
+.chat__discussion-panel-header-actions {
+  align-items: center;
+  display: flex;
+  flex-grow: 2;
+  justify-content: flex-end;
+}
+
 .chat__discussion-panel-body {
   bottom: $chat-discussion-panel-footer-height;
   left: 0;
-  //overflow-x: hidden;
-  //overflow-y: auto;
+
+  // overflow-x: hidden;
+  // overflow-y: auto;
   padding: 10px;
   position: absolute;
   right: 0;

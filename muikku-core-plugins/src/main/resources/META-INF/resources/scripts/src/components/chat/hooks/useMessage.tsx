@@ -56,7 +56,7 @@ function useMessage(msg: ChatMessage) {
     if (nextState !== undefined) {
       setEditMode(nextState);
     } else {
-      setEditMode((rightPanelOpen) => !rightPanelOpen);
+      setEditMode((panelRightOpen) => !panelRightOpen);
     }
   }, []);
 

@@ -8,6 +8,8 @@ import useDiscussionInstance from "./hooks/useDiscussionInstance";
 import ChatEditor from "./editor/editor";
 import { Editor } from "slate";
 import { CustomEditor } from "./editor/helper";
+import { IconButton } from "../general/button";
+import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-discussion-dialog";
 import { useChatContext } from "./context/chat-context";
 
 /**
@@ -44,22 +46,33 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
 }
 
 /**
- * ChatPanel
+ * Chat Private Panel
  * @param props props
  * @returns JSX.Element
  */
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
-  const {
-    usersWithActiveDiscussion,
-    addUserToActiveDiscussionsList,
-    moveActiveDiscussionToTop,
-  } = useChatContext();
+  const { targetIdentifier } = props;
+
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
 
+  const { blockedUsers } = useChatContext();
+
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
+
+  const isBlocked = React.useMemo(() => {
+    if (!blockedUsers) {
+      return false;
+    }
+
+    return (
+      blockedUsers.find(
+        (blockedUser) => blockedUser.identifier === targetIdentifier
+      ) !== undefined
+    );
+  }, [blockedUsers, targetIdentifier]);
 
   /**
    * Handles enter key down.
@@ -68,19 +81,6 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const handleEnterKeyDown = async (editor: Editor) => {
     await postMessage();
     CustomEditor.reset(editor);
-
-    // Check if discussion is already in my discussions
-    const index = usersWithActiveDiscussion.findIndex(
-      (d) => d.id === props.targetUser.id
-    );
-
-    // If not, add it
-    // else move it to top
-    if (index === -1) {
-      addUserToActiveDiscussionsList(props.targetUser);
-    } else {
-      moveActiveDiscussionToTop(index);
-    }
   };
 
   /**
@@ -95,6 +95,13 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
     <div className={`chat__panel chat__panel--private`}>
       <div className="chat__discussion-panel-header">
         <div className="chat__discussion-panel-header-title">{props.title}</div>
+        <div className="chat__discussion-panel-header-actions">
+          {!isBlocked && (
+            <ChatCloseAndBlockDiscussionDialog user={props.targetUser}>
+              <IconButton icon="blocked" />
+            </ChatCloseAndBlockDiscussionDialog>
+          )}
+        </div>
       </div>
 
       <div className="chat__discussion-panel-body">
@@ -112,26 +119,29 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
           ))}
         </MessagesContainer>
       </div>
-      <div className="chat__discussion-panel-footer">
-        <div
-          className="chat-editor-container"
-          style={{
-            width: "100%",
-            backgroundColor: "rgb(242, 242, 242)",
-            margin: "10px 0 10px 5px",
-            borderRadius: "5px",
-          }}
-        >
-          <ChatEditor
-            initialValueString={newMessage}
-            onChange={handleEditorChange}
-            onEnterSubmit={handleEnterKeyDown}
-          />
+
+      {!isBlocked && (
+        <div className="chat__discussion-panel-footer">
+          <div
+            className="chat-editor-container"
+            style={{
+              width: "100%",
+              backgroundColor: "rgb(242, 242, 242)",
+              margin: "10px 0 10px 5px",
+              borderRadius: "5px",
+            }}
+          >
+            <ChatEditor
+              initialValueString={newMessage}
+              onChange={handleEditorChange}
+              onEnterSubmit={handleEnterKeyDown}
+            />
+          </div>
+          <button className="chat__submit" type="submit" onClick={postMessage}>
+            <span className="icon-arrow-right"></span>
+          </button>
         </div>
-        <button className="chat__submit" type="submit" onClick={postMessage}>
-          <span className="icon-arrow-right"></span>
-        </button>
-      </div>
+      )}
     </div>
   );
 };
@@ -147,7 +157,7 @@ interface ChatRoomPanelProps extends ChatPanelProps {
 }
 
 /**
- * ChatPublicPanel
+ * Chat Room Panel
  * @param props props
  * @returns JSX.Element
  */

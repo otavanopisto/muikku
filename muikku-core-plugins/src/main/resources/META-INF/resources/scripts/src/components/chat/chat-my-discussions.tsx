@@ -79,16 +79,49 @@ interface ChatMyDiscussionsProps {}
  * @returns JSX.Element
  */
 function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
-  const { usersWithActiveDiscussion, removeUserFromActiveDiscussionsList } =
-    useChatContext();
+  const {
+    usersWithActiveDiscussion,
+    chatActivity,
+    closeDiscussionWithUser,
+    openDiscussion,
+  } = useChatContext();
+
+  // Sort discussion by last message activity
+  const sortedDiscussions = React.useMemo(
+    () =>
+      usersWithActiveDiscussion.sort((a, b) => {
+        const aActivity = chatActivity.find(
+          (activity) => activity.targetIdentifier === a.identifier
+        );
+
+        const bActivity = chatActivity.find(
+          (activity) => activity.targetIdentifier === b.identifier
+        );
+
+        const aLastMessage = aActivity.latestMessage;
+        const bLastMessage = bActivity.latestMessage;
+
+        if (!aLastMessage) {
+          return 1;
+        }
+
+        if (!bLastMessage) {
+          return -1;
+        }
+
+        return bLastMessage.getTime() - aLastMessage.getTime();
+      }),
+    [usersWithActiveDiscussion, chatActivity]
+  );
 
   return (
     <>
-      {usersWithActiveDiscussion.map((user) => (
+      {sortedDiscussions.map((user) => (
         <ChatMyActiveDiscussion
           key={user.id}
           user={user}
-          onDeleteClick={removeUserFromActiveDiscussionsList}
+          onOpenClick={openDiscussion}
+          onRemoveClick={closeDiscussionWithUser}
         />
       ))}
     </>
@@ -100,22 +133,43 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
  */
 interface ChatMyDiscussionProps {
   user: ChatUser;
-  onDeleteClick?: (user: ChatUser) => void;
+  onOpenClick?: (targetIdentifier: string) => void;
+  onRemoveClick?: (user: ChatUser) => void;
 }
 
 /**
- * MyDiscussion
+ * Active discussion item
  * @param props props
  * @returns JSX.Element
  */
 function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
-  const { user, onDeleteClick } = props;
+  const { user, onRemoveClick, onOpenClick } = props;
 
-  const { openDiscussion } = useChatContext();
+  /**
+   * Handles open click
+   */
+  const handleOpenClick = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+      if (onOpenClick) {
+        onOpenClick(user.identifier);
+      }
+    },
+    [onOpenClick, user]
+  );
 
-  const handlePeopleClick = React.useCallback(() => {
-    openDiscussion(user.identifier);
-  }, [openDiscussion, user.identifier]);
+  /**
+   * Handles remove click
+   */
+  const handleRemoveClick = React.useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
+      if (onRemoveClick) {
+        onRemoveClick(user);
+      }
+    },
+    [onRemoveClick, user]
+  );
 
   return (
     <div
@@ -129,7 +183,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
         marginBottom: "0",
         overflowX: "clip",
       }}
-      onClick={handlePeopleClick}
+      onClick={handleOpenClick}
     >
       <div className="user-item__avatar">
         <ChatProfileAvatar
@@ -147,12 +201,17 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
           alignItems: "center",
           justifyContent: "space-between",
           width: "100%",
+          color: "black",
         }}
       >
         <span>{user.nick}</span>
-        {onDeleteClick && (
+        {onRemoveClick && (
           <div className="chat__button-wrapper">
-            <IconButton icon="cross" buttonModifiers={["chat"]} />
+            <IconButton
+              icon="cross"
+              buttonModifiers={["chat"]}
+              onClick={handleRemoveClick}
+            />
           </div>
         )}
       </div>

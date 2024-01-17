@@ -5,6 +5,9 @@ import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 import { motion } from "framer-motion";
 import { useChatContext } from "./context/chat-context";
 import { ChatRoom, ChatUser } from "~/generated/client";
+import ChatUnblockDiscussionDialog from "./dialogs/chat-unblock-discussion-dialog";
+
+type OverviewTab = "users" | "rooms" | "blocked";
 
 /**
  * ChatOverview
@@ -13,10 +16,10 @@ import { ChatRoom, ChatUser } from "~/generated/client";
 function ChatOverview() {
   const { searchRooms, updateSearchRooms, searchUsers, updateSearchUsers } =
     useChatContext();
-  const [activeTab, setActiveTab] = React.useState<"users" | "rooms">("users");
+  const [activeTab, setActiveTab] = React.useState<OverviewTab>("users");
 
   const handleOnTabChange = React.useCallback(
-    (tab: "users" | "rooms") => {
+    (tab: OverviewTab) => {
       setActiveTab(tab);
     },
     [setActiveTab]
@@ -29,6 +32,7 @@ function ChatOverview() {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       switch (activeTab) {
         case "users":
+        case "blocked":
           updateSearchUsers(e.target.value);
           break;
         case "rooms":
@@ -42,6 +46,7 @@ function ChatOverview() {
   const searchValue = React.useMemo(() => {
     switch (activeTab) {
       case "users":
+      case "blocked":
         return searchUsers;
       case "rooms":
         return searchRooms;
@@ -54,6 +59,8 @@ function ChatOverview() {
     switch (activeTab) {
       case "users":
         return <ChatOverviewUsersList />;
+      case "blocked":
+        return <ChatOverviewBlockedList />;
       case "rooms":
         return <ChatOverviewRoomsList />;
       default:
@@ -182,8 +189,8 @@ function ChatOverview() {
  * ChatOverviewHeaderProps
  */
 interface ChatOverviewHeaderProps {
-  activeTab?: "users" | "rooms";
-  onTabChange?: (tab: "users" | "rooms") => void;
+  activeTab?: OverviewTab;
+  onTabChange?: (tab: OverviewTab) => void;
 }
 
 /**
@@ -195,7 +202,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   const { onTabChange } = props;
 
   const handleTabClick = React.useCallback(
-    (tab: "users" | "rooms") => {
+    (tab: OverviewTab) => {
       onTabChange && onTabChange(tab);
     },
     [onTabChange]
@@ -251,6 +258,23 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
           onClick={() => handleTabClick("users")}
         >
           Ihmiset
+        </motion.div>
+        <motion.div
+          className="chat-overview-header-tab"
+          animate={{
+            backgroundColor: props.activeTab === "blocked" ? "#ccc" : "white",
+          }}
+          whileHover={{
+            backgroundColor: "#ccc",
+            cursor: "pointer",
+          }}
+          style={{
+            padding: "5px",
+            marginRight: "5px",
+          }}
+          onClick={() => handleTabClick("blocked")}
+        >
+          Estetyt
         </motion.div>
         <motion.div
           className="chat-overview-header-tab"
@@ -404,6 +428,143 @@ function ChatOverviewUsersListItem(props: ChatOverviewUsersListItemProps) {
       </div>
       <div className="chat-overview-users-list-item-actions">
         <div className="chat-overview-users-list-item-action">
+          <IconButton icon="chat" onClick={handleOpenDiscussion} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/**
+ * ChatOverviewBlockedList
+ * @returns JSX.Element
+ */
+function ChatOverviewBlockedList() {
+  const { searchUsers, blockedUsers, openDiscussion } = useChatContext();
+
+  const filteredUsers = React.useMemo(() => {
+    if (!searchUsers) {
+      return blockedUsers;
+    }
+
+    return blockedUsers.filter((user) => user.nick.includes(searchUsers));
+  }, [searchUsers, blockedUsers]);
+
+  const content =
+    filteredUsers.length > 0 ? (
+      filteredUsers.map((user) => (
+        <ChatOverviewBlockedlistItem
+          key={user.id}
+          chatUser={user}
+          onOpenClick={openDiscussion}
+        />
+      ))
+    ) : (
+      <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>
+    );
+
+  return (
+    <ListContainer
+      className="chat-overview-users-list"
+      emptyMsg="Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty"
+    >
+      {content}
+    </ListContainer>
+  );
+}
+
+/**
+ * ChatOverviewUsersListItemProps
+ */
+interface ChatOverviewBlockedlistItemProps {
+  chatUser: ChatUser;
+  onOpenClick?: (targetIdentifier: string) => void;
+  onUnblockClick?: (user: ChatUser) => void;
+}
+
+/**
+ * ChatOverviewUsersListItem
+ *
+ * @param props props
+ * @returns JSX.Element
+ */
+function ChatOverviewBlockedlistItem(props: ChatOverviewBlockedlistItemProps) {
+  const { chatUser, onOpenClick } = props;
+
+  /**
+   * Handles open discussion
+   * @param e e
+   */
+  const handleOpenDiscussion = React.useCallback(
+    (
+      e:
+        | React.MouseEvent<HTMLDivElement, MouseEvent>
+        | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+    ) => {
+      e.stopPropagation();
+      if (onOpenClick) {
+        onOpenClick(chatUser.identifier);
+      }
+    },
+    [chatUser, onOpenClick]
+  );
+
+  return (
+    <motion.div
+      className="chat-overview-users-list-item"
+      whileHover={{
+        backgroundColor: "#ccc",
+        cursor: "pointer",
+      }}
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "5px",
+        borderBottom: "1px solid #ccc",
+      }}
+      onClick={handleOpenDiscussion}
+    >
+      <div
+        className="chat-overview-users-list-item-user-info"
+        style={{
+          display: "flex",
+        }}
+      >
+        <div className="chat-overview-users-list-item-user-info-avatar">
+          <ChatProfileAvatar
+            hasImage={chatUser.hasImage}
+            id={chatUser.id}
+            nick={chatUser.nick}
+            status={chatUser.isOnline ? "online" : "offline"}
+          />
+        </div>
+        <div
+          className="chat-overview-users-list-item-user-info-details"
+          style={{
+            marginLeft: "10px",
+          }}
+        >
+          <h4 className="chat-overview-users-list-item-user-info-name">
+            {chatUser.nick}
+          </h4>
+          <h5 className="chat-overview-users-list-item-user-info-status">
+            {chatUser.isOnline ? "Paikalla" : "Ei paikalla"}
+          </h5>
+        </div>
+      </div>
+      <div
+        className="chat-overview-users-list-item-actions"
+        style={{
+          display: "flex",
+        }}
+      >
+        <div className="chat-overview-users-list-item-action">
+          <ChatUnblockDiscussionDialog user={chatUser}>
+            <IconButton icon="blocked" />
+          </ChatUnblockDiscussionDialog>
+        </div>
+        <div className="chat-overview-rooms-list-item-action">
           <IconButton icon="chat" onClick={handleOpenDiscussion} />
         </div>
       </div>

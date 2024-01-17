@@ -64,13 +64,13 @@ interface PrivateRoomListProps {}
  * @returns JSX.Element
  */
 function PrivateRoomList(props: PrivateRoomListProps) {
-  const { privateRooms, loadingRooms } = useChatContext();
+  const { roomsPrivate, loadingRooms } = useChatContext();
 
   if (loadingRooms) {
     return <div>Loading...</div>;
   }
 
-  if (privateRooms.length === 0) {
+  if (roomsPrivate.length === 0) {
     return <div>No rooms found</div>;
   }
 
@@ -83,7 +83,7 @@ function PrivateRoomList(props: PrivateRoomListProps) {
         marginTop: "10px",
       }}
     >
-      {privateRooms.map((room) => (
+      {roomsPrivate.map((room) => (
         <ChatRoom key={room.identifier} room={room} />
       ))}
     </ul>
@@ -101,13 +101,13 @@ interface PublicRoomsListProps {}
  * @returns JSX.Element
  */
 function PublicRoomsList(props: PublicRoomsListProps) {
-  const { publicRooms, loadingRooms } = useChatContext();
+  const { roomsPublic, loadingRooms } = useChatContext();
 
   if (loadingRooms) {
     return <div>Loading...</div>;
   }
 
-  if (publicRooms.length === 0) {
+  if (roomsPublic.length === 0) {
     return <div>No rooms found</div>;
   }
 
@@ -120,7 +120,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
         marginTop: "10px",
       }}
     >
-      {publicRooms.map((room) => (
+      {roomsPublic.map((room) => (
         <ChatRoom key={room.identifier} room={room} canEdit canDelete />
       ))}
     </ul>

@@ -30,7 +30,7 @@ interface ChatMainMobileProps {}
  * @param props props
  */
 function ChatMainMobile(props: ChatMainMobileProps) {
-  const { toggleLeftPanel, toggleRightPanel, leftPanelOpen, rightPanelOpen } =
+  const { toggleLeftPanel, toggleRightPanel, panelLeftOpen, panelRightOpen } =
     useChatContext();
 
   return (
@@ -43,7 +43,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       }}
     >
       <ChatPanel
-        open={leftPanelOpen}
+        open={panelLeftOpen}
         panelMaxWidth={PANEL_LEFT_MAX_WIDTH}
         panelPosition="left"
         onOpen={() => toggleLeftPanel(true)}
@@ -72,7 +72,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       </motion.div>
 
       <ChatPanel
-        open={rightPanelOpen}
+        open={panelRightOpen}
         onOpen={() => toggleRightPanel(true)}
         onClose={() => toggleRightPanel(false)}
         panelMaxWidth={PANEL_RIGHT_MAX_WIDTH}

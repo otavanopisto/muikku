@@ -26,7 +26,7 @@ interface ChatMainProps {}
  * @param props props
  */
 function ChatMain(props: ChatMainProps) {
-  const { toggleLeftPanel, toggleRightPanel, leftPanelOpen, rightPanelOpen } =
+  const { toggleLeftPanel, toggleRightPanel, panelLeftOpen, panelRightOpen } =
     useChatContext();
 
   const { isMobile } = useChatWindowBreakpointsContext();
@@ -46,7 +46,7 @@ function ChatMain(props: ChatMainProps) {
       return;
     }
 
-    if (leftPanelOpen) {
+    if (panelLeftOpen) {
       animationControlsLeftPanel.start({
         width: PANEL_LEFT_MAX_WIDTH,
         transition: {
@@ -63,14 +63,14 @@ function ChatMain(props: ChatMainProps) {
         },
       });
     }
-  }, [animationControlsLeftPanel, leftPanelOpen]);
+  }, [animationControlsLeftPanel, panelLeftOpen]);
 
   React.useEffect(() => {
     if (!initialized.current) {
       return;
     }
 
-    if (rightPanelOpen) {
+    if (panelRightOpen) {
       animationControlsRightPanel.start({
         width: PANEL_RIGHT_MAX_WIDTH,
         transition: {
@@ -87,7 +87,7 @@ function ChatMain(props: ChatMainProps) {
         },
       });
     }
-  }, [animationControlsRightPanel, rightPanelOpen]);
+  }, [animationControlsRightPanel, panelRightOpen]);
 
   // Set resize observer to panel refs and update mainWrapperRef margin left and right
   React.useEffect(() => {
@@ -177,7 +177,7 @@ function ChatMain(props: ChatMainProps) {
           onClick={() => toggleLeftPanel()}
           className="chat__button-wrapper chat__button-wrapper--rooms"
         >
-          {leftPanelOpen ? (
+          {panelLeftOpen ? (
             <IconButton buttonModifiers={["chat"]} icon="arrow-left" />
           ) : (
             <IconButton buttonModifiers={["chat"]} icon="arrow-right" />
@@ -185,7 +185,7 @@ function ChatMain(props: ChatMainProps) {
         </div>
 
         <OverviewButton />
-        <ChatRoomsLists minimized={!leftPanelOpen} />
+        <ChatRoomsLists minimized={!panelLeftOpen} />
       </motion.div>
       <motion.div
         ref={mainWrapperRef}
@@ -214,7 +214,7 @@ function ChatMain(props: ChatMainProps) {
           onClick={() => toggleRightPanel()}
           className="chat__button-wrapper chat__button-wrapper--users"
         >
-          {rightPanelOpen ? (
+          {panelRightOpen ? (
             <IconButton buttonModifiers={["chat"]} icon="arrow-right" />
           ) : (
             <IconButton buttonModifiers={["chat"]} icon="arrow-left" />
