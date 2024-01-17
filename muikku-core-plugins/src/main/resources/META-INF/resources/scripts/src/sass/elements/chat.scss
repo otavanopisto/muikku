@@ -254,10 +254,14 @@ $chat-discussion-panel-footer-height: 40px;
   line-height: 1;
   margin: 5px;
   padding: 5px;
-  position: absolute;
 
   // 10px is the sum of left and right margin and needs to be subtracted from 100% width to prevent overflowing
   width: calc(100% - 10px);
+}
+
+.chat__profile-container--my-profile {
+  bottom: 0;
+  position: absolute;
 }
 
 // Chat avatar status
@@ -298,13 +302,14 @@ $chat-discussion-panel-footer-height: 40px;
   display: flex;
 
   // 32px is the width of the [avatar-container], 26px is the width of the [edit-profile-settings] button and 15px is the sum of this elements left and right margin
-  flex-basis: calc(100% - 36px - 26px - 15px);
+  // flex-basis: calc(100% - 36px - 26px - 15px);
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: center;
   margin: 0 5px 0 10px;
-  max-width: calc(100% - 36px - 26px - 15px);
+
+  // max-width: calc(100% - 36px - 26px - 15px);
 }
 
 // Chat window resizer
@@ -321,6 +326,7 @@ $chat-discussion-panel-footer-height: 40px;
 .chat__profile-literal-status {
   font-size: 0.75rem;
   padding: 2px 0;
+  white-space: nowrap;
 }
 
 .chat__resizer {

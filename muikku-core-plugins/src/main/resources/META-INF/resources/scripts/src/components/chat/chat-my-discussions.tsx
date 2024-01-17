@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
-import ChatProfileAvatar from "./chat-profile-avatar";
 import { IconButton } from "../general/button";
+import ChatProfile from "./chat-profile";
 
 /**
  * ChatUsersWithActiveDiscussion
@@ -177,44 +177,22 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
       style={{
         display: "flex",
         alignItems: "center",
-        borderRadius: "50px 0 0 50px",
         color: "white",
-        margin: "10px",
-        marginBottom: "0",
         overflowX: "clip",
       }}
       onClick={handleOpenClick}
     >
-      <div className="user-item__avatar">
-        <ChatProfileAvatar
-          id={user.id}
-          hasImage={user.hasImage}
-          nick={user.nick}
-          status={user.isOnline ? "online" : "offline"}
-        />
-      </div>
-      <div
-        className="user-item__name"
-        style={{
-          marginLeft: "10px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          color: "black",
-        }}
-      >
-        <span>{user.nick}</span>
-        {onRemoveClick && (
-          <div className="chat__button-wrapper">
-            <IconButton
-              icon="cross"
-              buttonModifiers={["chat"]}
-              onClick={handleRemoveClick}
-            />
-          </div>
-        )}
-      </div>
+      <ChatProfile user={user} />
+
+      {onRemoveClick && (
+        <div className="chat__button-wrapper">
+          <IconButton
+            icon="cross"
+            buttonModifiers={["chat"]}
+            onClick={handleRemoveClick}
+          />
+        </div>
+      )}
     </div>
   );
 }

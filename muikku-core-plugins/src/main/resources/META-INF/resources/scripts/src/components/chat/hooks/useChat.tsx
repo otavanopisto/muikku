@@ -89,6 +89,10 @@ function useChat(userId: number, currentUser: ChatUser) {
     description: "",
   });
 
+  const [userToBeBlocked, setUserToBeBlocked] = React.useState<ChatUser>(null);
+  const [userToBeUnblocked, setUserToBeUnblocked] =
+    React.useState<ChatUser>(null);
+
   React.useEffect(() => {
     if (minimized) {
       unstable_batchedUpdates(() => {
@@ -235,25 +239,75 @@ function useChat(userId: number, currentUser: ChatUser) {
   const closeAndBlockDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
       await blockUser(currentUser, "HARD");
+
+      // Close discussion if it is open
+      if (activeRoomOrPerson === currentUser.identifier) {
+        unstable_batchedUpdates(() => {
+          setActiveRoomOrPerson(null);
+          setUserToBeBlocked(null);
+        });
+      } else {
+        setUserToBeBlocked(null);
+      }
+
+      chatViews.goTo("overview");
     },
-    [blockUser]
+    [activeRoomOrPerson, blockUser, chatViews]
   );
 
   /**
-   * unblockDiscussion
+   * Handles unblocking discussion with user
    */
   const unblockDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
       await unblockUser(currentUser);
+      setUserToBeUnblocked(null);
     },
     [unblockUser]
   );
 
+  /**
+   * Handles canceling unblocking discussion with user
+   * @param user user which unblocking was canceled
+   */
+  const openCancelUnblockDialog = React.useCallback(
+    (user: ChatUser) => {
+      setUserToBeUnblocked(user);
+    },
+    [setUserToBeUnblocked]
+  );
+
+  /**
+   * Handles closing cancel unblocking discussion with user
+   */
+  const closeCancelUnblockDialog = React.useCallback(() => {
+    setUserToBeUnblocked(null);
+  }, [setUserToBeUnblocked]);
+
+  /**
+   * Handles opening block user dialog
+   */
+  const openBlockUserDialog = React.useCallback(
+    (user: ChatUser) => {
+      setUserToBeBlocked(user);
+    },
+    [setUserToBeBlocked]
+  );
+
+  /**
+   * Handles closing block user dialog
+   */
+  const closeBlockUserDialog = React.useCallback(() => {
+    setUserToBeBlocked(null);
+  }, [setUserToBeBlocked]);
+
+  // Whether the current user can moderate
   const canModerate = React.useMemo(
     () => currentUser.type === "STAFF",
     [currentUser.type]
   );
 
+  // Current active discussion
   const activeDiscussionMemoized = React.useMemo(() => {
     if (!activeRoomOrPerson || !users || !rooms) {
       return null;
@@ -266,12 +320,16 @@ function useChat(userId: number, currentUser: ChatUser) {
 
   return {
     activeDiscussion: activeDiscussionMemoized,
+    userToBeBlocked,
     blockedUsers,
+    userToBeUnblocked,
     canModerate,
     chatActivity,
     chatViews,
     closeAndBlockDiscussionWithUser,
     closeDiscussionWithUser,
+    closeBlockUserDialog,
+    closeCancelUnblockDialog,
     counselorUsers,
     currentUser,
     deleteCustomRoom,
@@ -282,6 +340,8 @@ function useChat(userId: number, currentUser: ChatUser) {
     newChatRoom,
     openDiscussion,
     openOverview,
+    openBlockUserDialog,
+    openCancelUnblockDialog,
     panelLeftOpen,
     panelRightOpen,
     rooms,

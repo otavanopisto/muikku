@@ -15,7 +15,7 @@ import { useChatContext } from "./context/chat-context";
 import { AddIcon, swipeConfidenceThreshold, swipePower } from "./chat-helpers";
 import { ChatMyDiscussions } from "./chat-my-discussions";
 import { ChatRoomsLists } from "./chat-rooms";
-import ChatProfile from "./chat-profile";
+import { ChatMyProfileWithSettings } from "./chat-profile";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
 const PANEL_RIGHT_MAX_WIDTH = 200;
@@ -91,16 +91,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           <AddIcon />
         </div>
         <ChatMyDiscussions />
-        <ChatProfile
-          style={{
-            width: "100%",
-            position: "absolute",
-            bottom: 0,
-            display: "flex",
-            justifyContent: "space-between",
-            padding: "10px",
-          }}
-        />
+        <ChatMyProfileWithSettings />
       </ChatPanel>
     </div>
   );

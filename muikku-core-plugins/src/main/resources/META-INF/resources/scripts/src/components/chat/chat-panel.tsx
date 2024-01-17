@@ -9,7 +9,6 @@ import ChatEditor from "./editor/editor";
 import { Editor } from "slate";
 import { CustomEditor } from "./editor/helper";
 import { IconButton } from "../general/button";
-import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-discussion-dialog";
 import { useChatContext } from "./context/chat-context";
 
 /**
@@ -56,8 +55,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
-
-  const { blockedUsers } = useChatContext();
+  const { blockedUsers, openBlockUserDialog } = useChatContext();
 
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
@@ -91,15 +89,20 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
     instance.newMessage = content;
   };
 
+  /**
+   * Handles open block user dialog.
+   */
+  const handleOpenBlockUserDialog = () => {
+    openBlockUserDialog(props.targetUser);
+  };
+
   return (
     <div className={`chat__panel chat__panel--private`}>
       <div className="chat__discussion-panel-header">
         <div className="chat__discussion-panel-header-title">{props.title}</div>
         <div className="chat__discussion-panel-header-actions">
-          {!isBlocked && (
-            <ChatCloseAndBlockDiscussionDialog user={props.targetUser}>
-              <IconButton icon="blocked" />
-            </ChatCloseAndBlockDiscussionDialog>
+          {!isBlocked && props.targetUser.type === "STUDENT" && (
+            <IconButton icon="blocked" onClick={handleOpenBlockUserDialog} />
           )}
         </div>
       </div>

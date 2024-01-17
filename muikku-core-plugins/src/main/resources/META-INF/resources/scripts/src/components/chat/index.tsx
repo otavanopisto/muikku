@@ -6,6 +6,8 @@ import ChatMain from "./chat-main";
 import ChatMainMobile from "./chat-main-mobile";
 import { ChatWindowContextProvider } from "./context/chat-window-context";
 import useChatSettings from "./hooks/useChatSettings";
+import ChatUnblockDiscussionDialog from "./dialogs/chat-unblock-discussion-dialog";
+import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-discussion-dialog";
 
 /**
  * Chat component. Renders or not depending on chat settings
@@ -69,6 +71,8 @@ const ChatContent = () => {
       )}
 
       {mobileOrDesktop}
+      <ChatUnblockDiscussionDialog />
+      <ChatCloseAndBlockDiscussionDialog />
     </ChatWindowContextProvider>
   );
 };

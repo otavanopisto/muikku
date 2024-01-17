@@ -7,7 +7,7 @@ import { useChatContext } from "./context/chat-context";
 import { useChatWindowBreakpointsContext } from "./context/chat-window-breakpoints-context";
 import { ChatMyDiscussions } from "./chat-my-discussions";
 import { ChatRoomsLists } from "./chat-rooms";
-import ChatProfile from "./chat-profile";
+import { ChatMyProfileWithSettings } from "./chat-profile";
 import { IconButton } from "../general/button";
 
 const PANEL_RIGHT_MIN_WIDTH = 56;
@@ -222,7 +222,7 @@ function ChatMain(props: ChatMainProps) {
         </div>
 
         <ChatMyDiscussions />
-        <ChatProfile />
+        <ChatMyProfileWithSettings />
       </motion.div>
     </>
   );

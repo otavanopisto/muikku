@@ -1,11 +1,10 @@
 import * as React from "react";
 import Button, { IconButton } from "../general/button";
-import ChatProfileAvatar from "./chat-profile-avatar";
 import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 import { motion } from "framer-motion";
 import { useChatContext } from "./context/chat-context";
-import { ChatRoom, ChatUser } from "~/generated/client";
-import ChatUnblockDiscussionDialog from "./dialogs/chat-unblock-discussion-dialog";
+import { ChatUser } from "~/generated/client";
+import ChatProfile from "./chat-profile";
 
 type OverviewTab = "users" | "rooms" | "blocked";
 
@@ -67,75 +66,6 @@ function ChatOverview() {
         return null;
     }
   }, [activeTab]);
-
-  /* const filterContent = React.useMemo(() => {
-    switch (activeTab) {
-      case "users":
-        return (
-          <div
-            className="chat-overview-filter"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginBottom: "10px",
-            }}
-          >
-            <div
-              className="chat-overview-filter-title"
-              style={{
-                marginBottom: "5px",
-              }}
-            >
-              Suodatus
-            </div>
-            <div
-              className="chat-overview-filter-content"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <div
-                className="chat-overview-filter-content-item"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "5px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  style={{
-                    marginRight: "5px",
-                  }}
-                />
-                <label>Näytä vain paikalla olevat</label>
-              </div>
-              <div
-                className="chat-overview-filter-content-item"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "5px",
-                }}
-              >
-                <input
-                  type="checkbox"
-                  style={{
-                    marginRight: "5px",
-                  }}
-                />
-                <label>Näytä vain keskustelussa olevat</label>
-              </div>
-            </div>
-          </div>
-        );
-      case "rooms":
-        return null;
-      default:
-        return null;
-    }
-  }, [activeTab]); */
 
   return (
     <div
@@ -329,109 +259,58 @@ function ChatOverviewUsersList() {
     return users.filter((user) => user.nick.includes(searchUsers));
   }, [searchUsers, users]);
 
-  const content =
-    filteredUsers.length > 0 ? (
-      filteredUsers.map((user) => (
-        <ChatOverviewUsersListItem
-          key={user.id}
-          chatUser={user}
-          onOpenClick={openDiscussion}
-        />
-      ))
-    ) : (
-      <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>
-    );
-
-  return (
-    <ListContainer
-      className="chat-overview-users-list"
-      emptyMsg="Haulla ei löytyny käyttäjä"
-    >
-      {content}
-    </ListContainer>
-  );
-}
-
-/**
- * ChatOverviewUsersListItemProps
- */
-interface ChatOverviewUsersListItemProps {
-  chatUser: ChatUser;
-  onOpenClick?: (targetIdentifier: string) => void;
-}
-
-/**
- * ChatOverviewUsersListItem
- *
- * @param props props
- * @returns JSX.Element
- */
-function ChatOverviewUsersListItem(props: ChatOverviewUsersListItemProps) {
-  const { chatUser, onOpenClick } = props;
-
   /**
    * Handles open discussion
-   * @param e e
    */
-  const handleOpenDiscussion = (
-    e:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-    onOpenClick && onOpenClick(chatUser.identifier);
+  const handleOpenDiscussion = React.useCallback(
+    (targetIdentifier: string) =>
+      (
+        e:
+          | React.MouseEvent<HTMLDivElement, MouseEvent>
+          | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+      ) => {
+        e.stopPropagation();
+        openDiscussion(targetIdentifier);
+      },
+    [openDiscussion]
+  );
+
+  /**
+   * renderContent
+   * @returns JSX.Element
+   */
+  const renderContent = () => {
+    if (filteredUsers.length === 0) {
+      return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
+    }
+
+    return filteredUsers.map((user) => (
+      <OverviewListItem
+        key={user.id}
+        onOpenClick={handleOpenDiscussion(user.identifier)}
+      >
+        <OverviewListItemContent>
+          <ChatProfile user={user} />
+        </OverviewListItemContent>
+        <OverviewListItemActions>
+          <OverviewListItemAction>
+            <IconButton
+              icon="chat"
+              onClick={handleOpenDiscussion(user.identifier)}
+            />
+          </OverviewListItemAction>
+        </OverviewListItemActions>
+      </OverviewListItem>
+    ));
   };
 
   return (
-    <motion.div
-      className="chat-overview-users-list-item"
-      whileHover={{
-        backgroundColor: "#ccc",
-        cursor: "pointer",
-      }}
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "5px",
-        borderBottom: "1px solid #ccc",
-      }}
-      onClick={handleOpenDiscussion}
+    <OverviewList
+      className="chat-overview-users-list"
+      emptyMsg="Haulla ei löytyny käyttäjä"
     >
-      <div
-        className="chat-overview-users-list-item-user-info"
-        style={{
-          display: "flex",
-        }}
-      >
-        <div className="chat-overview-users-list-item-user-info-avatar">
-          <ChatProfileAvatar
-            hasImage={chatUser.hasImage}
-            id={chatUser.id}
-            nick={chatUser.nick}
-            status={chatUser.isOnline ? "online" : "offline"}
-          />
-        </div>
-        <div
-          className="chat-overview-users-list-item-user-info-details"
-          style={{
-            marginLeft: "10px",
-          }}
-        >
-          <h4 className="chat-overview-users-list-item-user-info-name">
-            {chatUser.nick}
-          </h4>
-          <h5 className="chat-overview-users-list-item-user-info-status">
-            {chatUser.isOnline ? "Paikalla" : "Ei paikalla"}
-          </h5>
-        </div>
-      </div>
-      <div className="chat-overview-users-list-item-actions">
-        <div className="chat-overview-users-list-item-action">
-          <IconButton icon="chat" onClick={handleOpenDiscussion} />
-        </div>
-      </div>
-    </motion.div>
+      {renderContent()}
+    </OverviewList>
   );
 }
 
@@ -440,7 +319,8 @@ function ChatOverviewUsersListItem(props: ChatOverviewUsersListItemProps) {
  * @returns JSX.Element
  */
 function ChatOverviewBlockedList() {
-  const { searchUsers, blockedUsers, openDiscussion } = useChatContext();
+  const { searchUsers, blockedUsers, openDiscussion, openCancelUnblockDialog } =
+    useChatContext();
 
   const filteredUsers = React.useMemo(() => {
     if (!searchUsers) {
@@ -450,125 +330,74 @@ function ChatOverviewBlockedList() {
     return blockedUsers.filter((user) => user.nick.includes(searchUsers));
   }, [searchUsers, blockedUsers]);
 
-  const content =
-    filteredUsers.length > 0 ? (
-      filteredUsers.map((user) => (
-        <ChatOverviewBlockedlistItem
-          key={user.id}
-          chatUser={user}
-          onOpenClick={openDiscussion}
-        />
-      ))
-    ) : (
-      <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>
-    );
+  /**
+   * Handles open discussion
+   */
+  const handleOpenDiscussion = React.useCallback(
+    (targetIdentifier: string) =>
+      (
+        e:
+          | React.MouseEvent<HTMLDivElement, MouseEvent>
+          | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+      ) => {
+        e.stopPropagation();
+        openDiscussion(targetIdentifier);
+      },
+    [openDiscussion]
+  );
+
+  /**
+   * Handles open unblock dialog
+   */
+  const handleOpenUnblockDialog = React.useCallback(
+    (user: ChatUser) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
+      openCancelUnblockDialog(user);
+    },
+    [openCancelUnblockDialog]
+  );
+
+  /**
+   * renderContent
+   * @returns JSX.Element
+   */
+  const renderContent = () => {
+    if (filteredUsers.length === 0) {
+      return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
+    }
+
+    return filteredUsers.map((user) => (
+      <OverviewListItem
+        key={user.id}
+        onOpenClick={handleOpenDiscussion(user.identifier)}
+      >
+        <OverviewListItemContent>
+          <ChatProfile user={user} />
+        </OverviewListItemContent>
+
+        <OverviewListItemActions>
+          <OverviewListItemAction>
+            <IconButton
+              icon="blocked"
+              onClick={handleOpenUnblockDialog(user)}
+            />
+            <IconButton
+              icon="chat"
+              onClick={handleOpenDiscussion(user.identifier)}
+            />
+          </OverviewListItemAction>
+        </OverviewListItemActions>
+      </OverviewListItem>
+    ));
+  };
 
   return (
-    <ListContainer
+    <OverviewList
       className="chat-overview-users-list"
       emptyMsg="Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty"
     >
-      {content}
-    </ListContainer>
-  );
-}
-
-/**
- * ChatOverviewUsersListItemProps
- */
-interface ChatOverviewBlockedlistItemProps {
-  chatUser: ChatUser;
-  onOpenClick?: (targetIdentifier: string) => void;
-  onUnblockClick?: (user: ChatUser) => void;
-}
-
-/**
- * ChatOverviewUsersListItem
- *
- * @param props props
- * @returns JSX.Element
- */
-function ChatOverviewBlockedlistItem(props: ChatOverviewBlockedlistItemProps) {
-  const { chatUser, onOpenClick } = props;
-
-  /**
-   * Handles open discussion
-   * @param e e
-   */
-  const handleOpenDiscussion = React.useCallback(
-    (
-      e:
-        | React.MouseEvent<HTMLDivElement, MouseEvent>
-        | React.MouseEvent<HTMLAnchorElement, MouseEvent>
-    ) => {
-      e.stopPropagation();
-      if (onOpenClick) {
-        onOpenClick(chatUser.identifier);
-      }
-    },
-    [chatUser, onOpenClick]
-  );
-
-  return (
-    <motion.div
-      className="chat-overview-users-list-item"
-      whileHover={{
-        backgroundColor: "#ccc",
-        cursor: "pointer",
-      }}
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "5px",
-        borderBottom: "1px solid #ccc",
-      }}
-      onClick={handleOpenDiscussion}
-    >
-      <div
-        className="chat-overview-users-list-item-user-info"
-        style={{
-          display: "flex",
-        }}
-      >
-        <div className="chat-overview-users-list-item-user-info-avatar">
-          <ChatProfileAvatar
-            hasImage={chatUser.hasImage}
-            id={chatUser.id}
-            nick={chatUser.nick}
-            status={chatUser.isOnline ? "online" : "offline"}
-          />
-        </div>
-        <div
-          className="chat-overview-users-list-item-user-info-details"
-          style={{
-            marginLeft: "10px",
-          }}
-        >
-          <h4 className="chat-overview-users-list-item-user-info-name">
-            {chatUser.nick}
-          </h4>
-          <h5 className="chat-overview-users-list-item-user-info-status">
-            {chatUser.isOnline ? "Paikalla" : "Ei paikalla"}
-          </h5>
-        </div>
-      </div>
-      <div
-        className="chat-overview-users-list-item-actions"
-        style={{
-          display: "flex",
-        }}
-      >
-        <div className="chat-overview-users-list-item-action">
-          <ChatUnblockDiscussionDialog user={chatUser}>
-            <IconButton icon="blocked" />
-          </ChatUnblockDiscussionDialog>
-        </div>
-        <div className="chat-overview-rooms-list-item-action">
-          <IconButton icon="chat" onClick={handleOpenDiscussion} />
-        </div>
-      </div>
-    </motion.div>
+      {renderContent()}
+    </OverviewList>
   );
 }
 
@@ -587,148 +416,77 @@ function ChatOverviewRoomsList() {
     return rooms.filter((room) => room.name.includes(searchRooms));
   }, [searchRooms, rooms]);
 
-  const content =
-    filteredRooms.length > 0 ? (
-      filteredRooms.map((room) => (
-        <ChatOverviewRoomsListItem
-          key={room.identifier}
-          chatRoom={room}
-          onOpenClick={openDiscussion}
-        />
-      ))
-    ) : (
-      <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>
-    );
-
-  return (
-    <ListContainer
-      className="chat-overview-rooms-list"
-      emptyMsg="Haulla ei löytyny käyttäjä"
-    >
-      {content}
-    </ListContainer>
-  );
-}
-
-/**
- * ChatOverviewRoomsListItemProps
- */
-interface ChatOverviewRoomsListItemProps {
-  chatRoom: ChatRoom;
-  onOpenClick?: (targetIdentifier: string) => void;
-}
-
-/**
- * ChatOverviewRoomsListItemProps
- * @param props props
- * @returns JSX.Element
- */
-function ChatOverviewRoomsListItem(props: ChatOverviewRoomsListItemProps) {
-  const { chatRoom, onOpenClick } = props;
-
   /**
    * Handles open discussion
-   * @param e e
    */
-  const handleOpenDiscussion = (
-    e:
-      | React.MouseEvent<HTMLDivElement, MouseEvent>
-      | React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-    onOpenClick && onOpenClick(chatRoom.identifier);
+  const handleOpenDiscussion = React.useCallback(
+    (targetIdentifier: string) =>
+      (
+        e:
+          | React.MouseEvent<HTMLDivElement, MouseEvent>
+          | React.MouseEvent<HTMLAnchorElement, MouseEvent>
+      ) => {
+        e.stopPropagation();
+        openDiscussion(targetIdentifier);
+      },
+    [openDiscussion]
+  );
+
+  /**
+   * renderContent
+   * @returns JSX.Element
+   */
+  const renderContent = () => {
+    if (filteredRooms.length === 0) {
+      return <div style={{ textAlign: "center" }}>Ei huoneita</div>;
+    }
+
+    return filteredRooms.map((room) => (
+      <OverviewListItem
+        key={room.identifier}
+        onOpenClick={handleOpenDiscussion(room.identifier)}
+      >
+        <OverviewListItemContent>
+          <h4>{room.name}</h4>
+        </OverviewListItemContent>
+        <OverviewListItemActions>
+          <OverviewListItemAction>
+            <IconButton
+              icon="chat"
+              onClick={handleOpenDiscussion(room.identifier)}
+            />
+          </OverviewListItemAction>
+        </OverviewListItemActions>
+      </OverviewListItem>
+    ));
   };
 
   return (
-    <motion.div
-      className="chat-overview-rooms-list-item"
-      whileHover={{
-        backgroundColor: "#ccc",
-        cursor: "pointer",
-      }}
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "5px",
-        borderBottom: "1px solid #ccc",
-      }}
-      onClick={handleOpenDiscussion}
+    <OverviewList
+      className="chat-overview-rooms-list"
+      emptyMsg="Haulla ei löytyny käyttäjä"
     >
-      <div
-        className="chat-overview-rooms-list-item-room-info"
-        style={{
-          display: "flex",
-        }}
-      >
-        <h4>{chatRoom.name}</h4>
-      </div>
-      <div className="chat-overview-rooms-list-item-actions">
-        <div className="chat-overview-rooms-list-item-action">
-          <IconButton icon="chat" onClick={handleOpenDiscussion} />
-        </div>
-      </div>
-    </motion.div>
+      {renderContent()}
+    </OverviewList>
   );
 }
 
 /**
- * ListContainerProps
+ * OverviewListProps
  */
-interface ListContainerProps {
+interface OverviewListProps {
   children: React.ReactNode;
   emptyMsg: string;
   className?: string;
   classNameModifiers?: string[];
-  onScrollTop?: () => void;
-  onScrollBottom?: () => void;
 }
 
 /**
- * ListContainer
+ * OverviewList
  * @param props props
  */
-function ListContainer(props: ListContainerProps) {
-  const {
-    children,
-    className,
-    classNameModifiers,
-    onScrollTop,
-    onScrollBottom,
-  } = props;
-
-  const containerRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const container = containerRef.current;
-
-    if (!container) {
-      return;
-    }
-
-    /**
-     * Handles scroll
-     */
-    const handleScroll = () => {
-      if (container.scrollTop === 0) {
-        onScrollTop && onScrollTop();
-      }
-
-      if (
-        Math.abs(
-          container.scrollHeight - container.clientHeight - container.scrollTop
-        ) <= 1
-      ) {
-        onScrollBottom && onScrollBottom();
-      }
-    };
-
-    container.addEventListener("scroll", handleScroll);
-
-    return () => {
-      container.removeEventListener("scroll", handleScroll);
-    };
-  });
+function OverviewList(props: OverviewListProps) {
+  const { children, className, classNameModifiers } = props;
 
   let cName: string = undefined;
 
@@ -744,7 +502,6 @@ function ListContainer(props: ListContainerProps) {
 
   return (
     <div
-      ref={containerRef}
       className={cName}
       style={{
         flexGrow: 1,
@@ -755,5 +512,102 @@ function ListContainer(props: ListContainerProps) {
     </div>
   );
 }
+
+/**
+ * ChatOverviewListItemProps
+ */
+interface OverviewListItemProps {
+  onOpenClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+}
+
+/**
+ * OverviewListItem
+ * @param props props
+ */
+export const OverviewListItem: React.FC<OverviewListItemProps> = (props) => {
+  const { onOpenClick } = props;
+
+  return (
+    <motion.div
+      className="chat-overview-rooms-list-item"
+      whileHover={{
+        backgroundColor: "#ccc",
+        cursor: "pointer",
+      }}
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "5px",
+        borderBottom: "1px solid #ccc",
+      }}
+      onClick={onOpenClick}
+    >
+      {props.children}
+    </motion.div>
+  );
+};
+
+/**
+ * OverviewListItemContentProps
+ */
+interface OverviewListItemContentProps {}
+
+/**
+ * OverviewListItemContent
+ * @param props props
+ */
+export const OverviewListItemContent: React.FC<OverviewListItemContentProps> = (
+  props
+) => {
+  const { children } = props;
+
+  return (
+    <div
+      className="chat-overview-users-list-item-user-info"
+      style={{
+        display: "flex",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+/**
+ * OverviewListItemMainContentProps
+ */
+interface OverviewListItemActionsProps {}
+
+/**
+ * OverviewListItemActions
+ * @param props props
+ */
+export const OverviewListItemActions: React.FC<OverviewListItemActionsProps> = (
+  props
+) => {
+  const { children } = props;
+
+  return (
+    <div className="chat-overview-rooms-list-item-actions">{children}</div>
+  );
+};
+
+/**
+ * OverviewListItemActionProps
+ */
+interface OverviewListItemActionProps {}
+
+/**
+ * OverviewListItemAction
+ * @param props props
+ */
+export const OverviewListItemAction: React.FC<OverviewListItemActionProps> = (
+  props
+) => {
+  const { children } = props;
+
+  return <div className="chat-overview-rooms-list-item-action">{children}</div>;
+};
 
 export default ChatOverview;
