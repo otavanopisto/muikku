@@ -5,6 +5,7 @@
 
 $chat-discussion-panel-header-height: 40px;
 $chat-discussion-panel-footer-height: 40px;
+$chat-border-radius: 5px;
 $chat-resizer-size: 150px;
 $chat-resizer-thickness: 4px;
 $chat-resizer-offset: -6px;
@@ -69,8 +70,10 @@ $chat-resizer-corner-size: 15px;
 
 .chat__header {
   align-items: center;
-  border-bottom: 2px solid $color-default-separator-border;
-  border-top: 4px solid $color-chat-primary;
+  border-bottom: 1px solid $color-default-separator-border;
+  border-top: 5px solid $color-chat-primary;
+  border-top-left-radius: $chat-border-radius;
+  border-top-right-radius: $chat-border-radius;
   display: flex;
   justify-content: flex-end;
   position: relative;
@@ -112,8 +115,11 @@ $chat-resizer-corner-size: 15px;
 
 // Panel that holds the list of available rooms
 .chat__rooms-panel {
+  border-bottom-left-radius: $chat-border-radius;
+  border-right: 1px solid $color-default-separator-border;
   bottom: 0;
-  box-shadow: 2px 0 2px $color-chat-box-shadow;
+
+  // box-shadow: 2px 0 2px $color-chat-box-shadow;
   left: 0;
   overflow-x: hidden;
   overflow-y: auto;
@@ -240,8 +246,11 @@ $chat-resizer-corner-size: 15px;
 
 // Panel that holds the list of users
 .chat__users-panel {
+  border-bottom-right-radius: $chat-border-radius;
+  border-left: 1px solid $color-default-separator-border;
   bottom: 0;
-  box-shadow: -2px 0 2px $color-chat-box-shadow;
+
+  // box-shadow: -2px 0 2px $color-chat-box-shadow;
   overflow-x: hidden;
   overflow-y: auto;
   position: absolute;

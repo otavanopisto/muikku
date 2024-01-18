@@ -124,7 +124,7 @@ function ChatOverview() {
         activeTab={activeTab}
         onTabChange={handleOnTabChange}
       />
-      <main
+      <div
         style={{
           display: "flex",
           flexDirection: "column",
@@ -153,7 +153,7 @@ function ChatOverview() {
           </Dropdown>
         </div>
         {content}
-      </main>
+      </div>
     </div>
   );
 }

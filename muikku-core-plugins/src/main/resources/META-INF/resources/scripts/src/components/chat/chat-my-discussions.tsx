@@ -11,11 +11,7 @@ import ChatProfile from "./chat-profile";
 function ChatMyDiscussions() {
   return (
     <div
-      className="people-list"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-      }}
+      className="chat__users"
     >
       <ChatMyCounselorsDiscussions />
       <ChatMyActiveDiscussions />
@@ -173,13 +169,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
 
   return (
     <div
-      className="user-item"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        color: "white",
-        overflowX: "clip",
-      }}
+      className="chat__user"
       onClick={handleOpenClick}
     >
       <ChatProfile user={user} />

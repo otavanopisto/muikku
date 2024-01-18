@@ -19,38 +19,20 @@ interface ChatRoomsListsProps {
  */
 function ChatRoomsLists(props: ChatRoomsListsProps) {
   const rooms = (
-    <div
-      className="chat-rooms-wrapper"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginBottom: "10px",
-        }}
-      >
+    <>
+      <div className="chat__rooms chat__rooms--public">
         <h4>JH:t</h4>
         <PublicRoomsList />
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div className="chat__rooms chat__rooms--private">
         <h4>PH:t</h4>
         <PrivateRoomList />
       </div>
-    </div>
+    </>
   );
 
-  return <div className="chat-rooms">{rooms}</div>;
+  return <>{rooms}</>;
 }
 
 /**
@@ -75,14 +57,7 @@ function PrivateRoomList(props: PrivateRoomListProps) {
   }
 
   return (
-    <ul
-      className="people-list"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        marginTop: "10px",
-      }}
-    >
+    <ul className="chat__rooms-list">
       {roomsPrivate.map((room) => (
         <ChatRoom key={room.identifier} room={room} />
       ))}
@@ -112,14 +87,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
   }
 
   return (
-    <ul
-      className="people-list"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        marginTop: "10px",
-      }}
-    >
+    <ul className="chat__rooms-list">
       {roomsPublic.map((room) => (
         <ChatRoom key={room.identifier} room={room} canEdit canDelete />
       ))}
@@ -159,21 +127,7 @@ function ChatRoom(props: ChatRoomProps) {
   /* const minimizedName = room.name.slice(0, 4) + "..."; */
 
   return (
-    <li
-      key={room.identifier}
-      className="room-item"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        backgroundColor: "grey",
-        borderRadius: "50px 0 0 50px",
-        color: "white",
-        position: "relative",
-        padding: "10px",
-        marginBottom: "10px",
-        width: "auto",
-      }}
-    >
+    <li key={room.identifier} className="chat__room">
       <Dropdown
         key={room.identifier}
         content={room.name}
@@ -181,16 +135,7 @@ function ChatRoom(props: ChatRoomProps) {
         alignSelf="left"
         alignSelfVertically="top"
       >
-        <div
-          className="room-item__name"
-          onClick={handleRoomClick}
-          style={{
-            overflow: "hidden",
-            textOverflow: "'...'",
-            display: "inline-block",
-            whiteSpace: "nowrap",
-          }}
-        >
+        <div className="chat__room-title" onClick={handleRoomClick}>
           <span>{room.name}</span>
         </div>
       </Dropdown>
@@ -210,31 +155,9 @@ interface ChatRoomNewProps {}
  */
 function ChatRoomNew(props: ChatRoomNewProps) {
   return (
-    <motion.div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        backgroundColor: "grey",
-        borderRadius: "50px 0 0 50px",
-        color: "white",
-        position: "relative",
-        padding: "10px",
-        margin: "10px",
-        width: "auto",
-      }}
-    >
+    <motion.div>
       <ChatRoomNewDialog>
-        <motion.span
-          className="new-room"
-          style={{
-            display: "inline-block",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "clip",
-          }}
-        >
-          New room
-        </motion.span>
+        <motion.span className="new-room">New room</motion.span>
       </ChatRoomNewDialog>
     </motion.div>
   );
