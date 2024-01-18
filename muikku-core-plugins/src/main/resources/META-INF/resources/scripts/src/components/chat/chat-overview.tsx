@@ -705,11 +705,11 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
           <input
             type="checkbox"
             value="offline"
-            id="theory-page-filter"
+            id="user-offline-filter"
             checked={currentFilters.includes("offline")}
             onChange={handleFilterChange}
           />
-          <label htmlFor="theory-page-filter" className="filter-item__label">
+          <label htmlFor="user-offline-filter" className="filter-item__label">
             Ei paikalla
           </label>
         </div>
@@ -719,11 +719,11 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
           <input
             type="checkbox"
             value="online"
-            id="exercise-page-filter"
+            id="user-online-filter"
             checked={currentFilters.includes("online")}
             onChange={handleFilterChange}
           />
-          <label htmlFor="exercise-page-filter" className="filter-item__label">
+          <label htmlFor="user-online-filter" className="filter-item__label">
             Paikalla
           </label>
         </div>
@@ -733,14 +733,11 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
           <input
             type="checkbox"
             value="staff"
-            id="assignment-page-filter"
+            id="user-staff-filter"
             checked={currentFilters.includes("staff")}
             onChange={handleFilterChange}
           />
-          <label
-            htmlFor="assignment-page-filter"
-            className="filter-item__label"
-          >
+          <label htmlFor="user-staff-filter" className="filter-item__label">
             Henkilökunta
           </label>
         </div>
@@ -750,11 +747,11 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
           <input
             type="checkbox"
             value="students"
-            id="journal-page-filter"
+            id="user-students-filter"
             checked={currentFilters.includes("students")}
             onChange={handleFilterChange}
           />
-          <label htmlFor="journal-page-filter" className="filter-item__label">
+          <label htmlFor="user-students-filter" className="filter-item__label">
             Opiskelijat
           </label>
         </div>
@@ -815,11 +812,11 @@ export const OverviewRoomFilters = (props: OverviewRoomFiltersProps) => {
           <input
             type="checkbox"
             value="private"
-            id="theory-page-filter"
+            id="private-room-filter"
             checked={currentFilters.includes("private")}
             onChange={handleFilterChange}
           />
-          <label htmlFor="theory-page-filter" className="filter-item__label">
+          <label htmlFor="private-room-filter" className="filter-item__label">
             Työtila -huone
           </label>
         </div>
@@ -829,11 +826,11 @@ export const OverviewRoomFilters = (props: OverviewRoomFiltersProps) => {
           <input
             type="checkbox"
             value="public"
-            id="exercise-page-filter"
+            id="public-room-filter"
             checked={currentFilters.includes("public")}
             onChange={handleFilterChange}
           />
-          <label htmlFor="exercise-page-filter" className="filter-item__label">
+          <label htmlFor="public-room-filter" className="filter-item__label">
             Julkinen huone
           </label>
         </div>
