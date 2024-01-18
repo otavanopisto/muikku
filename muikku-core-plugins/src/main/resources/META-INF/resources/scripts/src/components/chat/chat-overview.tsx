@@ -22,8 +22,13 @@ type OverviewTab = "users" | "rooms" | "blocked";
  * @returns JSX.Element
  */
 function ChatOverview() {
-  const { roomFilters, updateRoomFilters, userFilters, updateUserFilters } =
-    useChatContext();
+  const {
+    roomFilters,
+    updateRoomFilters,
+    userFilters,
+    updateUserFilters,
+    canModerate,
+  } = useChatContext();
   const [activeTab, setActiveTab] = React.useState<OverviewTab>("users");
 
   const handleOnTabChange = React.useCallback(
@@ -121,6 +126,7 @@ function ChatOverview() {
       }}
     >
       <ChatOverviewHeader
+        canModerate={canModerate}
         activeTab={activeTab}
         onTabChange={handleOnTabChange}
       />
@@ -162,6 +168,7 @@ function ChatOverview() {
  * ChatOverviewHeaderProps
  */
 interface ChatOverviewHeaderProps {
+  canModerate: boolean;
   activeTab?: OverviewTab;
   onTabChange?: (tab: OverviewTab) => void;
 }
@@ -172,7 +179,7 @@ interface ChatOverviewHeaderProps {
  * @returns JSX.Element
  */
 function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
-  const { onTabChange } = props;
+  const { onTabChange, canModerate, activeTab } = props;
 
   const handleTabClick = React.useCallback(
     (tab: OverviewTab) => {
@@ -218,7 +225,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
         <motion.div
           className="chat-overview-header-tab"
           animate={{
-            backgroundColor: props.activeTab === "users" ? "#ccc" : "white",
+            backgroundColor: activeTab === "users" ? "#ccc" : "white",
           }}
           whileHover={{
             backgroundColor: "#ccc",
@@ -235,7 +242,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
         <motion.div
           className="chat-overview-header-tab"
           animate={{
-            backgroundColor: props.activeTab === "blocked" ? "#ccc" : "white",
+            backgroundColor: activeTab === "blocked" ? "#ccc" : "white",
           }}
           whileHover={{
             backgroundColor: "#ccc",
@@ -252,7 +259,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
         <motion.div
           className="chat-overview-header-tab"
           animate={{
-            backgroundColor: props.activeTab === "rooms" ? "#ccc" : "white",
+            backgroundColor: activeTab === "rooms" ? "#ccc" : "white",
           }}
           whileHover={{
             backgroundColor: "#ccc",
@@ -275,13 +282,15 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
           justifyContent: "flex-end",
         }}
       >
-        <div className="chat-overview-header-action">
-          <ChatRoomNewDialog>
-            <Button icon="plus" iconPosition="left">
-              Uusi huone
-            </Button>
-          </ChatRoomNewDialog>
-        </div>
+        {canModerate && (
+          <div className="chat-overview-header-action">
+            <ChatRoomNewDialog>
+              <Button icon="plus" iconPosition="left">
+                Uusi huone
+              </Button>
+            </ChatRoomNewDialog>
+          </div>
+        )}
       </div>
     </div>
   );

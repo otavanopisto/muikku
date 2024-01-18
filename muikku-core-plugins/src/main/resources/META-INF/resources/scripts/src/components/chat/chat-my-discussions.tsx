@@ -3,6 +3,7 @@ import { ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import { IconButton } from "../general/button";
 import ChatProfile from "./chat-profile";
+import { sortUsersAlphabetically } from "./chat-helpers";
 
 /**
  * ChatUsersWithActiveDiscussion
@@ -50,9 +51,11 @@ function ChatMyCounselorsDiscussions() {
     );
   }
 
+  const sortedCounclors = counselorUsers.sort(sortUsersAlphabetically);
+
   return (
     <>
-      {counselorUsers.map((user) => (
+      {sortedCounclors.map((user) => (
         <ChatMyActiveDiscussion key={user.id} user={user} />
       ))}
       <hr
