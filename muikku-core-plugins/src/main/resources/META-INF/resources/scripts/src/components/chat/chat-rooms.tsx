@@ -143,24 +143,4 @@ function ChatRoom(props: ChatRoomProps) {
   );
 }
 
-/**
- * NewChatRoomProps
- */
-interface ChatRoomNewProps {}
-
-/**
- * NewChatRoom
- * @param props props
- * @returns JSX.Element
- */
-function ChatRoomNew(props: ChatRoomNewProps) {
-  return (
-    <motion.div>
-      <ChatRoomNewDialog>
-        <motion.span className="new-room">New room</motion.span>
-      </ChatRoomNewDialog>
-    </motion.div>
-  );
-}
-
-export { ChatRoomsLists, ChatRoom, ChatRoomNew };
+export { ChatRoomsLists, ChatRoom };

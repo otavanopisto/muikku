@@ -235,31 +235,8 @@ function OverviewButton() {
   const { openOverview } = useChatContext();
 
   return (
-    <motion.div
-      onClick={openOverview}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        backgroundColor: "grey",
-        borderRadius: "50px 0 0 50px",
-        color: "white",
-        position: "relative",
-        padding: "10px",
-        margin: "10px",
-        width: "auto",
-      }}
-    >
-      <motion.span
-        className="new-room"
-        style={{
-          display: "inline-block",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "clip",
-        }}
-      >
-        Overview
-      </motion.span>
+    <motion.div onClick={openOverview} className="chat__options">
+      <motion.div className="chat__dashdoard">Dashboard</motion.div>
     </motion.div>
   );
 }
