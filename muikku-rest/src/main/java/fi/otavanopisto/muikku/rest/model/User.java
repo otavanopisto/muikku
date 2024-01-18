@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.rest.model;
 
-import java.util.Date;
-
 public class User {
 
   public User() {
@@ -13,9 +11,7 @@ public class User {
               String nickName,
               String studyProgrammeName,
               boolean hasImage,
-              String email,
-              Date studyStartDate,
-              Date studyTimeEnd
+              String email
               ) {
     super();
     this.id = id;
@@ -25,8 +21,6 @@ public class User {
     this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
     this.email = email;
-    this.studyStartDate = studyStartDate;
-    this.studyTimeEnd = studyTimeEnd;
   }
 
   public Long getId() {
@@ -69,22 +63,6 @@ public class User {
     this.email = email;
   }
 
-  public Date getStudyStartDate() {
-    return studyStartDate;
-  }
-
-  public void setStudyStartDate(Date studyStartDate) {
-    this.studyStartDate = studyStartDate;
-  }
-
-  public Date getStudyTimeEnd() {
-    return studyTimeEnd;
-  }
-
-  public void setStudyTimeEnd(Date studyTimeEnd) {
-    this.studyTimeEnd = studyTimeEnd;
-  }
-
   public String getNickName() {
     return nickName;
   }
@@ -108,6 +86,4 @@ public class User {
   private String studyProgrammeName;
   private boolean hasImage;
   private String email;
-  private Date studyStartDate;
-  private Date studyTimeEnd;
 }
