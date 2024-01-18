@@ -319,7 +319,7 @@ export const ResizerHandle = React.forwardRef<
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           whileHover={{
-            backgroundColor: "#e3e3e3",
+            backgroundColor: "#666",
             scale: 1.1,
           }}
         />

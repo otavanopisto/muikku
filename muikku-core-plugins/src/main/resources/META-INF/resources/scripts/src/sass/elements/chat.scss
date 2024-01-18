@@ -5,6 +5,11 @@
 
 $chat-discussion-panel-header-height: 40px;
 $chat-discussion-panel-footer-height: 40px;
+$chat-resizer-size: 150px;
+$chat-resizer-thickness: 4px;
+$chat-resizer-offset: -6px;
+$chat-resizer-corner-radius: 100%;
+$chat-resizer-corner-size: 15px;
 
 // Chat bubble
 .chat-bubble {
@@ -331,76 +336,81 @@ $chat-discussion-panel-footer-height: 40px;
 
 .chat__resizer {
   background: transparent;
+  border-radius: 3px;
   position: absolute;
   z-index: 5;
 }
 
 .chat__resizer-r {
   cursor: col-resize;
-  height: 50px;
-  margin-top: -25px;
-  right: 0;
+  height: $chat-resizer-size;
+  margin-top: -75px;
+  right: $chat-resizer-offset;
   top: 50%;
-  width: 5px;
+  width: $chat-resizer-thickness;
 }
 
 .chat__resizer-t {
   cursor: row-resize;
-  height: 5px;
+  height: $chat-resizer-thickness;
   left: 50%;
-  margin-left: -25px;
-  top: 0;
-  width: 50px;
+  margin-left: -75px;
+  top: $chat-resizer-offset;
+  width: $chat-resizer-size;
 }
 
 .chat__resizer-b {
-  bottom: 0;
+  bottom: $chat-resizer-offset;
   cursor: row-resize;
-  height: 5px;
+  height: $chat-resizer-thickness;
   left: 50%;
-  margin-left: -25px;
-  width: 50px;
+  margin-left: -75px;
+  width: $chat-resizer-size;
 }
 
 .chat__resizer-l {
   cursor: col-resize;
-  height: 50px;
-  left: 0;
-  margin-top: -25px;
+  height: $chat-resizer-size;
+  left: $chat-resizer-offset;
+  margin-top: -75px;
   top: 50%;
-  width: 5px;
+  width: $chat-resizer-thickness;
 }
 
 .chat__resizer-tl {
+  border-radius: $chat-resizer-corner-radius;
   cursor: nwse-resize;
-  height: 10px;
-  left: 0;
-  top: 0;
-  width: 10px;
+  height: $chat-resizer-corner-size;
+  left: $chat-resizer-offset;
+  top: $chat-resizer-offset;
+  width: $chat-resizer-corner-size;
 }
 
 .chat__resizer-tr {
+  border-radius: $chat-resizer-corner-radius;
   cursor: nesw-resize;
-  height: 10px;
-  right: 0;
-  top: 0;
-  width: 10px;
+  height: $chat-resizer-corner-size;
+  right: $chat-resizer-offset;
+  top: $chat-resizer-offset;
+  width: $chat-resizer-corner-size;
 }
 
 .chat__resizer-bl {
-  bottom: 0;
+  border-radius: $chat-resizer-corner-radius;
+  bottom: $chat-resizer-offset;
   cursor: nesw-resize;
-  height: 10px;
-  left: 0;
-  width: 10px;
+  height: $chat-resizer-corner-size;
+  left: $chat-resizer-offset;
+  width: $chat-resizer-corner-size;
 }
 
 .chat__resizer-br {
-  bottom: 0;
+  border-radius: $chat-resizer-corner-radius;
+  bottom: $chat-resizer-offset;
   cursor: nwse-resize;
-  height: 10px;
-  right: 0;
-  width: 10px;
+  height: $chat-resizer-corner-size;
+  right: $chat-resizer-offset;
+  width: $chat-resizer-corner-size;
 }
 
 // Form styles used in chat
