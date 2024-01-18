@@ -54,6 +54,40 @@ export const selectOptions: ChatSettingVisibilityOption[] = [
 ];
 
 /**
+ * sortUsersAlphabetically
+ * @param a a
+ * @param b b
+ */
+export const sortUsersAlphabetically = (a: ChatUser, b: ChatUser) => {
+  if (a.nick < b.nick) {
+    return -1;
+  }
+
+  if (a.nick > b.nick) {
+    return 1;
+  }
+
+  return 0;
+};
+
+/**
+ * sortRoomsAplhabetically
+ * @param a a
+ * @param b b
+ */
+export const sortRoomsAplhabetically = (a: ChatRoom, b: ChatRoom) => {
+  if (a.name < b.name) {
+    return -1;
+  }
+
+  if (a.name > b.name) {
+    return 1;
+  }
+
+  return 0;
+};
+
+/**
  * filterUsers
  * @param users users
  * @param filters filters

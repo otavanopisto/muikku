@@ -11,6 +11,8 @@ import {
   ChatUserFilter,
   filterRooms,
   filterUsers,
+  sortRoomsAplhabetically,
+  sortUsersAlphabetically,
 } from "./chat-helpers";
 
 type OverviewTab = "users" | "rooms" | "blocked";
@@ -292,12 +294,12 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
 function ChatOverviewUsersList() {
   const { users, userFilters, openDiscussion } = useChatContext();
 
-  const filteredUsers = React.useMemo(() => {
+  const filteredAndSortedUsers = React.useMemo(() => {
     if (!userFilters) {
       return users;
     }
 
-    return filterUsers(users, userFilters);
+    return filterUsers(users, userFilters).sort(sortUsersAlphabetically);
   }, [userFilters, users]);
 
   /**
@@ -321,11 +323,11 @@ function ChatOverviewUsersList() {
    * @returns JSX.Element
    */
   const renderContent = () => {
-    if (filteredUsers.length === 0) {
+    if (filteredAndSortedUsers.length === 0) {
       return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
     }
 
-    return filteredUsers.map((user) => (
+    return filteredAndSortedUsers.map((user) => (
       <OverviewListItem
         key={user.id}
         onOpenClick={handleOpenDiscussion(user.identifier)}
@@ -363,12 +365,12 @@ function ChatOverviewBlockedList() {
   const { userFilters, blockedUsers, openDiscussion, openCancelUnblockDialog } =
     useChatContext();
 
-  const filteredUsers = React.useMemo(() => {
+  const filteredAndSortedUsers = React.useMemo(() => {
     if (!userFilters) {
       return blockedUsers;
     }
 
-    return filterUsers(blockedUsers, userFilters);
+    return filterUsers(blockedUsers, userFilters).sort(sortUsersAlphabetically);
   }, [userFilters, blockedUsers]);
 
   /**
@@ -403,11 +405,11 @@ function ChatOverviewBlockedList() {
    * @returns JSX.Element
    */
   const renderContent = () => {
-    if (filteredUsers.length === 0) {
+    if (filteredAndSortedUsers.length === 0) {
       return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
     }
 
-    return filteredUsers.map((user) => (
+    return filteredAndSortedUsers.map((user) => (
       <OverviewListItem
         key={user.id}
         onOpenClick={handleOpenDiscussion(user.identifier)}
@@ -449,12 +451,12 @@ function ChatOverviewBlockedList() {
 function ChatOverviewRoomsList() {
   const { rooms, roomFilters, openDiscussion } = useChatContext();
 
-  const filteredRooms = React.useMemo(() => {
+  const filteredAndSortedRooms = React.useMemo(() => {
     if (!roomFilters) {
       return rooms;
     }
 
-    return filterRooms(rooms, roomFilters);
+    return filterRooms(rooms, roomFilters).sort(sortRoomsAplhabetically);
   }, [roomFilters, rooms]);
 
   /**
@@ -478,11 +480,11 @@ function ChatOverviewRoomsList() {
    * @returns JSX.Element
    */
   const renderContent = () => {
-    if (filteredRooms.length === 0) {
+    if (filteredAndSortedRooms.length === 0) {
       return <div style={{ textAlign: "center" }}>Ei huoneita</div>;
     }
 
-    return filteredRooms.map((room) => (
+    return filteredAndSortedRooms.map((room) => (
       <OverviewListItem
         key={room.identifier}
         onOpenClick={handleOpenDiscussion(room.identifier)}
