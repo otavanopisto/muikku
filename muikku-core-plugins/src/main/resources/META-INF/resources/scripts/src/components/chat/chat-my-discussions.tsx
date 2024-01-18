@@ -11,12 +11,18 @@ import { sortUsersAlphabetically } from "./chat-helpers";
  */
 function ChatMyDiscussions() {
   return (
-    <div
-      className="chat__users"
-    >
-      <ChatMyCounselorsDiscussions />
-      <ChatMyActiveDiscussions />
-    </div>
+    <>
+      <div className="chat__users chat__users--guidance-councelors">
+        <ul className="chat__rooms-list">
+          <ChatMyCounselorsDiscussions />
+        </ul>
+      </div>
+      <div className="chat__users chat__users--others">
+        <ul className="chat__rooms-list">
+          <ChatMyActiveDiscussions />
+        </ul>
+      </div>
+    </>
   );
 }
 
@@ -42,11 +48,6 @@ function ChatMyCounselorsDiscussions() {
           You dont have student counserlors set yet or they havent activated
           their chat
         </div>
-        <hr
-          style={{
-            margin: "5px",
-          }}
-        />
       </>
     );
   }
@@ -58,11 +59,6 @@ function ChatMyCounselorsDiscussions() {
       {sortedCounclors.map((user) => (
         <ChatMyActiveDiscussion key={user.id} user={user} />
       ))}
-      <hr
-        style={{
-          margin: "5px",
-        }}
-      />
     </>
   );
 }
@@ -148,7 +144,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
    * Handles open click
    */
   const handleOpenClick = React.useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
       e.stopPropagation();
       if (onOpenClick) {
         onOpenClick(user.identifier);
@@ -171,10 +167,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
   );
 
   return (
-    <div
-      className="chat__user"
-      onClick={handleOpenClick}
-    >
+    <li className="chat__user" onClick={handleOpenClick}>
       <ChatProfile user={user} />
 
       {onRemoveClick && (
@@ -186,7 +179,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
           />
         </div>
       )}
-    </div>
+    </li>
   );
 }
 
