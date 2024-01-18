@@ -2,7 +2,7 @@ import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { ChatSettingVisibilityOption } from "../chat-helpers";
+import { ChatSettingVisibilityOption, selectOptions } from "../chat-helpers";
 import Select from "react-select";
 import { useChatContext } from "../context/chat-context";
 import MApi from "~/api/api";
@@ -21,21 +21,6 @@ interface ChatUserSettingDialogProps {
   children?: React.ReactElement<any>;
   displayNotification: DisplayNotificationTriggerType;
 }
-
-const selectOptions: ChatSettingVisibilityOption[] = [
-  {
-    label: "Kaikille",
-    value: "ALL",
-  },
-  {
-    label: "Henkilökunnalle",
-    value: "STAFF",
-  },
-  {
-    label: "Ei kenellekkään",
-    value: "NONE",
-  },
-];
 
 /**
  * NewChatRoomDialog

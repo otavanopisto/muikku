@@ -812,7 +812,7 @@ export const OverviewRoomFilters = (props: OverviewRoomFiltersProps) => {
         <div className="filter-item filter-item--workspace-page">
           <input
             type="checkbox"
-            value="offline"
+            value="private"
             id="theory-page-filter"
             checked={currentFilters.includes("private")}
             onChange={handleFilterChange}
@@ -826,7 +826,7 @@ export const OverviewRoomFilters = (props: OverviewRoomFiltersProps) => {
         <div className="filter-item filter-item--workspace-page">
           <input
             type="checkbox"
-            value="online"
+            value="public"
             id="exercise-page-filter"
             checked={currentFilters.includes("public")}
             onChange={handleFilterChange}

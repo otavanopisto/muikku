@@ -19,6 +19,12 @@ import "~/sass/elements/application-sub-panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
+import Select, { ActionMeta } from "react-select";
+import {
+  ChatSettingVisibilityOption,
+  selectOptions,
+} from "../../../chat/chat-helpers";
+import { ChatUser } from "~/generated/client";
 
 /**
  * ChatSettingsProps
@@ -35,7 +41,8 @@ interface ChatSettingsProps extends WithTranslation<["common"]> {
  * ChatSettingState
  */
 interface ChatSettingState {
-  chatEnable: boolean;
+  chatUserSettings: ChatUser;
+  chatEnabled: ChatSettingVisibilityOption;
   chatNick: string;
   locked: boolean;
 }
@@ -59,7 +66,8 @@ class ChatSettings extends React.Component<
     this.onChatVisibilityChange = this.onChatVisibilityChange.bind(this);
 
     this.state = {
-      chatEnable: false,
+      chatUserSettings: null,
+      chatEnabled: selectOptions[0],
       chatNick: "",
       locked: false,
     };
@@ -73,13 +81,19 @@ class ChatSettings extends React.Component<
 
     this.setState({ locked: true });
 
-    const settings = await chatApi.getChatSettings();
+    const chatUserSettings = await chatApi.getChatSettings();
+    const chatNick = chatUserSettings.nick || "";
+    const chatEnabled =
+      selectOptions.find(
+        (option) => option.value === chatUserSettings.visibility
+      ) || selectOptions[0];
 
-    /* this.setState({
+    this.setState({
       locked: false,
-      chatEnable: settings.enabled,
-      chatNick: settings.nick || "",
-    }); */
+      chatUserSettings,
+      chatEnabled,
+      chatNick,
+    });
   };
 
   /**
@@ -87,27 +101,32 @@ class ChatSettings extends React.Component<
    */
   async save() {
     const chatApi = MApi.getChatApi();
-    const { chatEnable, chatNick } = this.state;
+    const { chatEnabled, chatUserSettings, chatNick } = this.state;
 
     this.setState({ locked: true });
 
-    /* await chatApi.updateChatSettings({
+    await chatApi.updateChatSettings({
       updateChatSettingsRequest: {
-        enabled: chatEnable,
+        ...chatUserSettings,
         nick: chatNick,
+        visibility: chatEnabled.value,
       },
-    }); */
+    });
 
     this.setState({ locked: false });
   }
 
   /**
    * onChatVisibilityChange
-   * @param e e
+   * @param newValue newValue
+   * @param actionMeta actionMeta
    */
-  onChatVisibilityChange(e: React.ChangeEvent<HTMLInputElement>) {
+  onChatVisibilityChange(
+    newValue: ChatSettingVisibilityOption,
+    actionMeta: ActionMeta<ChatSettingVisibilityOption>
+  ) {
     this.setState({
-      chatEnable: e.target.checked,
+      chatEnabled: newValue,
     });
   }
 
@@ -140,16 +159,24 @@ class ChatSettings extends React.Component<
             <div className="application-sub-panel__body">
               <div className="form__row">
                 <div className="form-element">
-                  <label htmlFor="chatNick">
+                  <label htmlFor="chatVisibility">
                     {this.props.t("labels.chatVisibility", { ns: "profile" })}
                   </label>
-                  <input
-                    id="chatNick"
-                    className="form-element__input"
-                    type="checkbox"
-                    checked={this.state.chatEnable}
+                  <Select<ChatSettingVisibilityOption>
+                    id="chatVisibility"
+                    className="react-select-override"
+                    classNamePrefix="react-select-override"
+                    isDisabled={this.state.locked}
+                    value={this.state.chatEnabled}
                     onChange={this.onChatVisibilityChange}
-                    disabled={this.state.locked}
+                    options={selectOptions}
+                    styles={{
+                      // eslint-disable-next-line jsdoc/require-jsdoc
+                      container: (baseStyles, state) => ({
+                        ...baseStyles,
+                        width: "100%",
+                      }),
+                    }}
                   />
                 </div>
               </div>

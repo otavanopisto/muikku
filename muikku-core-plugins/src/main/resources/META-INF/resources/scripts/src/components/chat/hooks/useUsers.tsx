@@ -36,7 +36,7 @@ function useUsers(props: UseUsersProps) {
   // Filters
   const [userFilters, setUserFilters] = React.useState<ChatUserFilters>({
     search: "",
-    searchFilters: [],
+    searchFilters: ["offline", "online", "students", "staff"],
   });
 
   // Users related data

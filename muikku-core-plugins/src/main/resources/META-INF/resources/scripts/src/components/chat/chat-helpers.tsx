@@ -38,6 +38,21 @@ export interface ChatRoomFilters {
 
 export type ChatSettingVisibilityOption = OptionDefault<ChatUserVisibilityEnum>;
 
+export const selectOptions: ChatSettingVisibilityOption[] = [
+  {
+    label: "Kaikille",
+    value: "ALL",
+  },
+  {
+    label: "Henkilökunnalle",
+    value: "STAFF",
+  },
+  {
+    label: "Ei kenellekkään",
+    value: "NONE",
+  },
+];
+
 /**
  * filterUsers
  * @param users users
@@ -56,12 +71,19 @@ export const filterUsers = (users: ChatUser[], filters: ChatUserFilters) => {
       term.toLowerCase().includes(search.toLowerCase())
     );
 
-    const searchFiltersMatch = searchFilters.some((filter) => {
+    const searchFiltersStatusMatch = searchFilters.some((filter) => {
       switch (filter) {
         case "online":
           return user.isOnline;
         case "offline":
           return !user.isOnline;
+        default:
+          return false;
+      }
+    });
+
+    const searchFiltersUserTypeMatch = searchFilters.some((filter) => {
+      switch (filter) {
         case "students":
           return user.type === "STUDENT";
         case "staff":
@@ -71,7 +93,9 @@ export const filterUsers = (users: ChatUser[], filters: ChatUserFilters) => {
       }
     });
 
-    return searchTermsMatch && searchFiltersMatch;
+    return (
+      searchTermsMatch && searchFiltersStatusMatch && searchFiltersUserTypeMatch
+    );
   });
 
   return filteredUsers;

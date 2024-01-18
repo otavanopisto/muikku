@@ -23,7 +23,7 @@ function useRooms() {
 
   const [roomFilters, setRoomFilters] = React.useState<ChatRoomFilters>({
     search: "",
-    searchFilters: [],
+    searchFilters: ["private", "public"],
   });
 
   const componentMounted = React.useRef(true);
