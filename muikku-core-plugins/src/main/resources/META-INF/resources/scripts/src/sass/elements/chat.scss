@@ -97,11 +97,13 @@ $chat-resizer-corner-size: 15px;
   width: 1.625rem;
 }
 
+// Wrapper for rooms panel's show/hide button
 .chat__button-wrapper--rooms {
   justify-content: flex-end;
   width: auto;
 }
 
+// Wrapper for users panel's show/hide button
 .chat__button-wrapper--users {
   justify-content: flex-start;
   width: auto;
@@ -110,11 +112,13 @@ $chat-resizer-corner-size: 15px;
 // Button for closing active discussion from users panel
 .chat__button-wrapper--close-discussion {
   display: none;
-  margin: 0;
+  margin: -13px 0 0;
   position: absolute;
-  right: 15px;
-  top: 7px;
+  right: 5px;
+  top: 50%;
 }
+
+// LEFT PANEL a.k.a ROOMS PANEL
 
 // Panel that holds the list of available rooms
 .chat__rooms-panel {
@@ -130,6 +134,8 @@ $chat-resizer-corner-size: 15px;
   top: 0;
   z-index: 3;
 }
+
+// MIDDLE PANEL a.k.a DISCUSSION PANEL
 
 // Panel that shows selected discussion
 .chat__discussions-panel {
@@ -252,11 +258,12 @@ $chat-resizer-corner-size: 15px;
   width: 100%;
 }
 
+// RIGHT PANEL a.k.a USERS PANEL
+
 // Panel that holds the list of users
 .chat__users-panel {
-  background: $color-default-generic-background;
+  background: $color-chat-panel-background;
   border-bottom-right-radius: $chat-border-radius;
-  border-left: 1px solid $color-default-separator-border;
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
@@ -266,10 +273,8 @@ $chat-resizer-corner-size: 15px;
   z-index: 3;
 }
 
-// Scrolling chat-users container
+// Scrolling container for chat-users
 .chat__users-container {
-  border-top: 2px solid $color-default;
-
   // Height of the logged in chat user's avatar container including top and bottom margin
   bottom: 50px;
   left: 0;
@@ -283,65 +288,60 @@ $chat-resizer-corner-size: 15px;
   width: 100%;
 }
 
-// Container that holds a list of chat users
+// Generic category and container that holds a list of chat users
 .chat__users {
   padding: 0;
 }
 
-// Specific container for guidance councelors
+// Specific category and container for guidance councelors
 .chat__users--guidance-councelors {
-  border-bottom: 2px solid $color-default;
+  border-bottom: 1px solid $color-default;
   padding: 0 0 5px;
 }
 
-// Specific container for other chat users
+// Specific category and container for other chat users
 .chat__users--others {
   padding: 5px 0;
 }
 
-// Container for single chat user
+// Container for single chat user, also acts as a trigger to open private chat. Contains close private discussion button
 .chat__user {
+  border-radius: $chat-border-radius;
+  cursor: pointer;
+  margin: 5px;
+  padding: 5px;
   position: relative;
-  width: 100%;
+  width: calc(100% - 10px);
 
   &:hover {
+    background: lighten($color-chat-panel-background, 10%);
+
     .chat__button-wrapper--close-discussion {
       display: block;
     }
   }
 }
 
+// Container that acts as a badge of chat user
 .chat__profile-container {
   align-items: center;
-  background: transparent;
-  border-radius: $chat-border-radius;
-  bottom: 0;
-  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
   line-height: 1;
-  margin: 5px;
-  padding: 5px;
-
-  // 10px is the sum of left and right margin and needs to be subtracted from 100% width to prevent overflowing
-  width: calc(100% - 10px);
-
-  &:hover {
-    background: $color-default;
-    color: $color-default;
-  }
+  width: 100%;
 }
 
+// Container that acts as a badge of logged in chat user
 .chat__profile-container--my-profile {
   background: lighten($color-default-contrast, 10%);
   border-bottom-left-radius: 0;
+  border-bottom-right-radius: $chat-border-radius;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   bottom: 0;
-  cursor: default;
   margin: 0;
-  padding: 8px;
+  padding: 10px;
   position: absolute;
   width: 100%;
 

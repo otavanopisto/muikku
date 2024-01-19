@@ -13,7 +13,7 @@ import { IconButton } from "../general/button";
 const PANEL_RIGHT_MIN_WIDTH = 52;
 const PANEL_LEFT_MIN_WIDTH = 85;
 
-const PANEL_LEFT_MAX_WIDTH = 250;
+const PANEL_LEFT_MAX_WIDTH = 230;
 const PANEL_RIGHT_MAX_WIDTH = 230;
 
 /**
