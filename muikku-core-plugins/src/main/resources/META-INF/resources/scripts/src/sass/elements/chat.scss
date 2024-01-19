@@ -45,7 +45,7 @@ $chat-resizer-corner-size: 15px;
 
   background: $color-default;
   border-radius: 10px;
-  box-shadow: 0 0 10px $color-chat-box-shadow;
+  box-shadow: 0 0 15px $color-chat-box-shadow;
   display: flex;
   flex-flow: column nowrap;
   height: 500px;
@@ -94,7 +94,7 @@ $chat-resizer-corner-size: 15px;
   height: 1.625rem;
   justify-content: center;
   margin: 5px;
-  width: 2rem;
+  width: 1.625rem;
 }
 
 .chat__button-wrapper--rooms {
@@ -107,22 +107,25 @@ $chat-resizer-corner-size: 15px;
   width: auto;
 }
 
-.chat__rooms-panel,
-.chat__discussions-panel,
-.chat__users-panel {
-  background: $color-default;
+// Button for closing active discussion from users panel
+.chat__button-wrapper--close-discussion {
+  display: none;
+  margin: 0;
+  position: absolute;
+  right: 15px;
+  top: 7px;
 }
 
 // Panel that holds the list of available rooms
 .chat__rooms-panel {
+  background: $color-default-generic-background;
   border-bottom-left-radius: $chat-border-radius;
   border-right: 1px solid $color-default-separator-border;
   bottom: 0;
-
-  // box-shadow: 2px 0 2px $color-chat-box-shadow;
   left: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  padding: 5px;
   position: absolute;
   top: 0;
   z-index: 3;
@@ -137,6 +140,7 @@ $chat-resizer-corner-size: 15px;
 
 // Panel container for selected discussion
 .chat__discussion-panel {
+  background: $color-default;
   bottom: 0;
   height: 100%;
   left: 0;
@@ -205,10 +209,14 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__avatar-container {
-  flex-basis: 2.25rem;
+  flex-basis: $avatar-mobile-chat-size;
   flex-grow: 0;
   flex-shrink: 0;
   position: relative;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: $avatar-desktop-chat-size;
+  }
 }
 
 .chat__message-content-wrapper {
@@ -246,11 +254,10 @@ $chat-resizer-corner-size: 15px;
 
 // Panel that holds the list of users
 .chat__users-panel {
+  background: $color-default-generic-background;
   border-bottom-right-radius: $chat-border-radius;
   border-left: 1px solid $color-default-separator-border;
   bottom: 0;
-
-  // box-shadow: -2px 0 2px $color-chat-box-shadow;
   overflow-x: hidden;
   overflow-y: auto;
   position: absolute;
@@ -259,9 +266,57 @@ $chat-resizer-corner-size: 15px;
   z-index: 3;
 }
 
+// Scrolling chat-users container
+.chat__users-container {
+  border-top: 2px solid $color-default;
+
+  // Height of the logged in chat user's avatar container including top and bottom margin
+  bottom: 50px;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  right: 0;
+
+  // Height of the show/hide panel button wrapper including top and bottom margin
+  top: 36px;
+  width: 100%;
+}
+
+// Container that holds a list of chat users
+.chat__users {
+  padding: 0;
+}
+
+// Specific container for guidance councelors
+.chat__users--guidance-councelors {
+  border-bottom: 2px solid $color-default;
+  padding: 0 0 5px;
+}
+
+// Specific container for other chat users
+.chat__users--others {
+  padding: 5px 0;
+}
+
+// Container for single chat user
+.chat__user {
+  position: relative;
+  width: 100%;
+
+  &:hover {
+    .chat__button-wrapper--close-discussion {
+      display: block;
+    }
+  }
+}
+
 .chat__profile-container {
   align-items: center;
+  background: transparent;
+  border-radius: $chat-border-radius;
   bottom: 0;
+  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
@@ -271,11 +326,32 @@ $chat-resizer-corner-size: 15px;
 
   // 10px is the sum of left and right margin and needs to be subtracted from 100% width to prevent overflowing
   width: calc(100% - 10px);
+
+  &:hover {
+    background: $color-default;
+    color: $color-default;
+  }
 }
 
 .chat__profile-container--my-profile {
+  background: lighten($color-default-contrast, 10%);
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   bottom: 0;
+  cursor: default;
+  margin: 0;
+  padding: 8px;
   position: absolute;
+  width: 100%;
+
+  &:hover {
+    background: lighten($color-default-contrast, 10%);
+  }
+
+  .chat__profile-name-container {
+    color: $color-default;
+  }
 }
 
 // Chat avatar status

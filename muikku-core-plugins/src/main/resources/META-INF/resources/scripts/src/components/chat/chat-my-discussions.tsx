@@ -11,18 +11,14 @@ import { sortUsersAlphabetically } from "./chat-helpers";
  */
 function ChatMyDiscussions() {
   return (
-    <>
+    <div className="chat__users-container">
       <div className="chat__users chat__users--guidance-councelors">
-        <ul className="chat__rooms-list">
-          <ChatMyCounselorsDiscussions />
-        </ul>
+        <ChatMyCounselorsDiscussions />
       </div>
       <div className="chat__users chat__users--others">
-        <ul className="chat__rooms-list">
-          <ChatMyActiveDiscussions />
-        </ul>
+        <ChatMyActiveDiscussions />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -144,7 +140,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
    * Handles open click
    */
   const handleOpenClick = React.useCallback(
-    (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
       if (onOpenClick) {
         onOpenClick(user.identifier);
@@ -167,11 +163,11 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
   );
 
   return (
-    <li className="chat__user" onClick={handleOpenClick}>
+    <div className="chat__user" onClick={handleOpenClick}>
       <ChatProfile user={user} />
 
       {onRemoveClick && (
-        <div className="chat__button-wrapper">
+        <div className="chat__button-wrapper chat__button-wrapper--close-discussion">
           <IconButton
             icon="cross"
             buttonModifiers={["chat"]}
@@ -179,7 +175,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
           />
         </div>
       )}
-    </li>
+    </div>
   );
 }
 

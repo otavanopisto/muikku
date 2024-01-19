@@ -60,12 +60,14 @@ const Avatar = (props: AvatarProps) => {
     <div
       className={`avatar-container ${
         props.size ? "avatar-container--" + props.size : ""
+      } ${
+        props.modifier ? "avatar-container--" + props.modifier : ""
       } rs_skip_always`}
     >
       <div
         className={`avatar avatar--category-${category} ${
           props.size ? "avatar--" + props.size : ""
-        }`}
+        } ${props.modifier ? "avatar--" + props.modifier : ""}`}
       >
         {firstName[0]}
       </div>
