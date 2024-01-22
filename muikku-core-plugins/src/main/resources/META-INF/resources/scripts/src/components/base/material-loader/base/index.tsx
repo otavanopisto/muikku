@@ -276,10 +276,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
 
   /**
-   * componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
+   * UNSAFE_componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: BaseProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: BaseProps) {
     if (nextProps.material.html !== this.props.material.html) {
       const elements = preprocessor(
         $(nextProps.material.html)
@@ -328,9 +328,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }
   }
   /**
-   * componentWillMount
+   * UNSAFE_componentWillMount
    */
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     // When we mount we need to register the websocket event for the answer saved
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.addEventCallback(

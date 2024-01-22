@@ -93,10 +93,10 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: DrawerProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DrawerProps) {
     if (nextProps.open && !this.state.open) {
       this.open();
     } else if (!nextProps.open && this.state.open) {

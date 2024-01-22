@@ -124,7 +124,7 @@ class CommunicatorToolbar extends React.Component<
   }
 
   /**
-   * componentWillUpdate
+   * UNSAFE_componentWillUpdate
    * @param nextProps nextProps
    * @param nextState nextState
    */

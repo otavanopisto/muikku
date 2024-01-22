@@ -69,10 +69,10 @@ export class Droppable extends React.Component<DroppableProps, DroppableState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: DroppableProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DroppableProps) {
     if (typeof nextProps.interactionData !== "undefined") {
       interactionData[this.id] = nextProps.interactionData;
     } else if (

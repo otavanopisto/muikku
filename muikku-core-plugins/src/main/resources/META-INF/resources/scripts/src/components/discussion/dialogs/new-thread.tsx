@@ -81,10 +81,10 @@ class DicussionNewThread extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: DicussionNewThreadProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DicussionNewThreadProps) {
     if (
       (nextProps.discussion.areaId !== this.state.selectedAreaId &&
         nextProps.discussion.areaId) ||
