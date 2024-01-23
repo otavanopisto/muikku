@@ -180,8 +180,6 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
         if (userEntity != null) {
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
           String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
-          Date studyStartDate = getDateResult(o.get("studyStartDate"));
-          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
           ret.add(new fi.otavanopisto.muikku.rest.model.User(
             userEntity.getId(), 
             (String) o.get("firstName"),
@@ -189,13 +187,7 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
             (String) o.get("nickName"), 
             (String) o.get("studyProgrammeName"), 
             hasImage,
-            (String) o.get("nationality"),
-            (String) o.get("language"), 
-            (String) o.get("municipality"), 
-            (String) o.get("school"), 
-            emailAddress,
-            studyStartDate,
-            studyTimeEnd));
+            emailAddress));
         } else {
           logger.warning(String.format("UserEntity not found by id %s", userEntityId));
         }
