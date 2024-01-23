@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.model.users;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,8 +19,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -84,12 +83,10 @@ public class UserSchoolDataIdentifier {
   
   @Transient
   public boolean hasAnyRole(EnvironmentRoleArchetype ... roles) {
-    if (getRoles() != null) {
-      for (EnvironmentRoleEntity roleEntity : getRoles()) {
-        if (ArrayUtils.contains(roles, roleEntity.getArchetype())) {
-          return true;
-        }
-      }
+    List<EnvironmentRoleEntity> roleEntities = getRoles();
+    if (roleEntities != null) {
+      List<EnvironmentRoleArchetype> rolesAsList = Arrays.asList(roles);
+      return roleEntities.stream().map(EnvironmentRoleEntity::getArchetype).anyMatch(rolesAsList::contains);
     }
     
     return false;
