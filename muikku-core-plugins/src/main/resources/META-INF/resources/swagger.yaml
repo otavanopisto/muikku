@@ -14899,20 +14899,12 @@ components:
           type: string
         hasImage:
           type: boolean
-        hasEvaluationFees:
-          type: boolean
         curriculumIdentifier:
           type: string
         studyProgrammeIdentifier:
           type: string
         organizationIdentifier:
           type: string
-        isDefaultOrganization:
-          type: boolean
-        permissions:
-          type: array
-          items:
-            type: string
         roles:
           type: array
           items:
@@ -14923,23 +14915,9 @@ components:
           type: string
         email:
           type: string
-        language:
-          type: string
-        municipality:
-          type: string
-        nationality:
-          type: string
-        school:
-          type: string
-        studyStartDate:
-          type: string
-        studyTimeEnd:
-          type: string
         userEntityId:
           type: integer
           format: int64
-        lastLogin:
-          type: string
         archived:
           type: boolean
         studiesEnded:

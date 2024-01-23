@@ -60,7 +60,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
-import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -1287,43 +1286,6 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/users/{ID}")
-  @RESTPermitUnimplemented
-  public Response findUser(@Context Request request, @PathParam("ID") Long id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    UserEntity userEntity = userEntityController.findUserEntityById(id);
-    if (userEntity == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
-
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-
-    User user = userController.findUserByDataSourceAndIdentifier(
-        userEntity.getDefaultSchoolDataSource(),
-        userEntity.getDefaultIdentifier());
-    if (user == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    return Response
-        .ok(createRestModel(userEntity, user))
-        .cacheControl(cacheControl)
-        .tag(tag)
-        .build();
-  }
-
-  @GET
   @Path("/staffMembers")
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStaffMembers(
@@ -1457,22 +1419,6 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(responseStaffMembers).build();
   }
   
-  private fi.otavanopisto.muikku.rest.model.User createRestModel(UserEntity userEntity,
-      User user) {
-    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-    
-    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
-    
-    Date startDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
-    Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
-    
-    return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
-        user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage,
-        user.getNationality(), user.getLanguage(),
-        user.getMunicipality(), user.getSchool(), emailAddress,
-        startDate, endDate);
-  }
-
   private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(FlagStudent flagStudent) {
     SchoolDataIdentifier studentIdentifier = flagStudent.getStudentIdentifier().schoolDataIdentifier();
     return new fi.otavanopisto.muikku.rest.model.StudentFlag(

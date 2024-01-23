@@ -30,18 +30,6 @@ public class UserRESTServiceTestsIT extends AbstractRESTTest {
    */
   
   @Test
-  public void testFindUser() throws NoSuchFieldException {
-    Long userId = 1l;
-    
-    Response response = asAdmin().get("/user/users/{ID}", userId);
-    
-    response.then().statusCode(200);
-    
-    String expected = "{'id':1,'firstName':'Test','lastName':'User','hasImage':false,'nationality':null,'language':null,'municipality':null,'school':null,'email':'te...@example.com'}";
-    JSONAssert.assertEquals(expected, response.body().asString(), STRICT_JSON);
-  }
-
-  @Test
   public void testFindStudent1AsAdmin() throws NoSuchFieldException {
     String studentId = "PYRAMUS-STUDENT-1";
     
