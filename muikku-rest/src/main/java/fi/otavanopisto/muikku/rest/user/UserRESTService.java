@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1443,7 +1444,7 @@ public class UserRESTService extends AbstractRESTService {
           }
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
 
-          List<String> roles = new ArrayList<>();
+          Set<String> roles = new HashSet<>();
           if (usdi.getRoles() != null) {
             usdi.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
           }

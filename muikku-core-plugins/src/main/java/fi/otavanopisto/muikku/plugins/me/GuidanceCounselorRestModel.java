@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.me;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMember;
@@ -12,7 +12,7 @@ public class GuidanceCounselorRestModel extends StaffMember {
   }
   
   public GuidanceCounselorRestModel(String id, Long userEntityId, String firstName, String lastName, String email,
-      Map<String, String> properties, OrganizationRESTModel organization, List<String> roles, boolean hasImage, boolean chatAvailable) {
+      Map<String, String> properties, OrganizationRESTModel organization, Set<String> roles, boolean hasImage, boolean chatAvailable) {
     super(id, userEntityId, firstName, lastName, email, properties, organization, roles, hasImage);
     this.chatAvailable = chatAvailable;
   }

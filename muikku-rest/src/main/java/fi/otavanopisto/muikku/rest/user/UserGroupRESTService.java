@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.rest.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -477,7 +478,7 @@ public class UserGroupRESTService extends AbstractRESTService {
       if (organizationEntity != null) {
         organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
       }
-      List<String> roles = new ArrayList<>();
+      Set<String> roles = new HashSet<>();
       if (userSchoolDataIdentifier.getRoles() != null) {
         userSchoolDataIdentifier.getRoles().stream().map(roleEntity -> roleEntity.getArchetype().toString()).collect(Collectors.toList());
       }
