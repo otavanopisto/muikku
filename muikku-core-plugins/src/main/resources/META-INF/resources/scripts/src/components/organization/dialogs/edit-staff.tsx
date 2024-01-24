@@ -36,8 +36,6 @@ interface OrganizationUserProps extends WithTranslation {
  */
 interface OrganizationUserState {
   user: {
-    // TODO määritetty kentät jotka tässä luokassa liikkuu, ok?
-    //    [field: string]: string;
     firstName: string;
     lastName: string;
     email: string;

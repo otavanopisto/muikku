@@ -2,8 +2,10 @@ package fi.otavanopisto.muikku.plugins.user.rest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
@@ -132,11 +134,11 @@ public class StudentGuidanceCouncelorsRESTService extends PluginRESTService {
         }
       }
 
-      List<String> roles = new ArrayList<>();
+      Set<String> roles = new HashSet<>();
       if (usdi.getRoles() != null) {
         roles = usdi.getRoles().stream()
             .map(roleEntity -> roleEntity.getArchetype().name())
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
       }
       
       staffMembers.add(new GuidanceCounselorRestModel(

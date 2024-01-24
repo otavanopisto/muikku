@@ -115,31 +115,30 @@ export default class UserPanel extends React.Component<
                     lastName: user.lastName,
                     email: user.email,
                     id: user.id,
-                    roles: user.roles ? user.roles : [ Role.Student ],
+                    roles: user.roles ? user.roles : [Role.Student],
                     studyProgrammeIdentifier: user.studyProgrammeIdentifier,
                   };
-                  const actions =
-                    data.roles.includes(Role.Student) ? (
-                      <div>
-                        <StudentDialog data={data}>
-                          <span className="icon-pencil"></span>
-                        </StudentDialog>
-                      </div>
-                    ) : data.roles.includes(Role.Administrator) ||
-                      data.roles.includes(Role.StudyProgrammeLeader) ? (
-                        /*
-                        * TODO does this need the title-attribute? .. title={data.roles}
-                        */
-                      <div>
-                        <span className="state-DISABLED icon-pencil"></span>
-                      </div>
-                    ) : (
-                      <div>
-                        <StaffDialog data={data}>
-                          <span className="icon-pencil"></span>
-                        </StaffDialog>
-                      </div>
-                    );
+                  const actions = data.roles.includes(Role.Student) ? (
+                    <div>
+                      <StudentDialog data={data}>
+                        <span className="icon-pencil"></span>
+                      </StudentDialog>
+                    </div>
+                  ) : data.roles.includes(Role.Administrator) ||
+                    data.roles.includes(Role.StudyProgrammeLeader) ? (
+                    /*
+                     * TODO does this need the title-attribute? .. title={data.roles}
+                     */
+                    <div>
+                      <span className="state-DISABLED icon-pencil"></span>
+                    </div>
+                  ) : (
+                    <div>
+                      <StaffDialog data={data}>
+                        <span className="icon-pencil"></span>
+                      </StaffDialog>
+                    </div>
+                  );
                   return <User key={user.id} user={user} actions={actions} />;
                 })}
             </ApplicationList>

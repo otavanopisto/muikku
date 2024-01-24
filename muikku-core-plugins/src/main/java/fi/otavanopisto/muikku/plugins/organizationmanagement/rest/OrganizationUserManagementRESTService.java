@@ -175,7 +175,7 @@ public class OrganizationUserManagementRESTService {
       
       UserSchoolDataIdentifier staffMemberUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(staffMemberIdentifier);
       
-      List<String> roles = new ArrayList<>();
+      Set<String> roles = new HashSet<>();
       if (staffMemberUSDI != null && staffMemberUSDI.getRoles() != null) {
         staffMemberUSDI.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
       }
