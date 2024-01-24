@@ -554,44 +554,46 @@ public class HopsRestService {
                 continue;
               }
               
-              if (!onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
+              if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
+                continue;
+              }
                 
-                // If student has no access to sign up on a course, add workspace to suggestion list only if all of these are correct
-                // - Student curriculum OPS2021
-                // - Course curriculum OPS2021
-                // - Published
-                // - Course type 'NONSTOP'
-                
-                if (!studentCurriculumOPS2021) {
-                  continue;
-                }
-                @SuppressWarnings("unchecked")
-                ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
-
-                boolean correctCurriculum = false;
-
-                for (String curriculumIdentifier : curriculumIdentifiers) {
-                  curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
-                  if (StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021")) {
-                    correctCurriculum = true;
-                    break;
-                  }
-                }
-                
-                if (!correctCurriculum) {
-                  continue;
-                }
-                
-                if (workspaceEntity.getAccess() != null && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE && workspaceEntity.getAccess() != WorkspaceAccess.LOGGED_IN)) {
-                  continue;
-                }
-                
-                workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
-
-                if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
-                  continue;
+              // If student has no access to sign up on a course, add workspace to suggestion list only if all of these are correct
+              // - Student curriculum OPS 2021
+              // - Course curriculum OPS 2021
+              // - Published
+              // - Course type 'Nonstop'
+              
+              if (!studentCurriculumOPS2021) {
+                continue;
+              }
+              @SuppressWarnings("unchecked")
+              ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
+              
+              boolean correctCurriculum = false;
+              
+              for (String curriculumIdentifier : curriculumIdentifiers) {
+                curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
+                if (StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021")) {
+                  correctCurriculum = true;
+                  break;
                 }
               }
+              
+              if (!correctCurriculum) {
+                continue;
+              }
+              
+              if (workspaceEntity.getAccess() != null && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE && workspaceEntity.getAccess() != WorkspaceAccess.LOGGED_IN)) {
+                continue;
+              }
+              
+              workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
+              
+              if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
+                continue;
+              }
+              
               
               Integer courseNum = null;
               
@@ -613,6 +615,7 @@ public class HopsRestService {
               suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
               suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
               suggestedWorkspace.setDescription((String) result.get("description"));
+              suggestedWorkspace.setType(workspaceType != null ? workspaceType.getName() : null);
               suggestedWorkspaces.add(suggestedWorkspace);
 
             }
