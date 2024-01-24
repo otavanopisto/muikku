@@ -14997,7 +14997,7 @@ components:
         - addresses
         - emails
         - hasImage
-        - role
+        - roles
         - permissions
         - curriculumName
         - curriculumIdentifier
