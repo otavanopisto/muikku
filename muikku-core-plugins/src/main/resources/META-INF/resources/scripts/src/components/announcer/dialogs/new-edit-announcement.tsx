@@ -392,8 +392,10 @@ class NewEditAnnouncement extends SessionStateComponent<
   createOrModifyAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
 
-    const isTeacher = this.props.status.roles ? this.props.status.roles.includes(Role.Teacher) : false;
-    
+    const isTeacher = this.props.status.roles
+      ? this.props.status.roles.includes(Role.Teacher)
+      : false;
+
     if (isTeacher) {
       if (this.state.currentTarget.length <= 0) {
         this.props.displayNotification(
@@ -593,7 +595,11 @@ class NewEditAnnouncement extends SessionStateComponent<
           context: "target",
         })}
         label={this.props.i18n.t("labels.target", { ns: "messaging" })}
-        required={this.props.status.roles ? this.props.status.roles.includes(Role.Teacher) : false}
+        required={
+          this.props.status.roles
+            ? this.props.status.roles.includes(Role.Teacher)
+            : false
+        }
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">

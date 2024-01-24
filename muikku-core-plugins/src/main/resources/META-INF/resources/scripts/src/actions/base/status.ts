@@ -66,7 +66,7 @@ async function loadWhoAMI(
   const whoAmI = await userApi.getWhoAmI();
 
   const isStudent = whoAmI.roles ? whoAmI.roles.includes(Role.Student) : false;
-  
+
   dispatch({
     type: "UPDATE_STATUS",
     payload: {

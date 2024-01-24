@@ -22,7 +22,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Role } from "~/generated/client";
 
-
 /**
  * OrganizationUserProps
  */
@@ -70,7 +69,7 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        roles: [ Role.Student ],
+        roles: [Role.Student],
       },
       locked: false,
       executing: false,
@@ -105,7 +104,7 @@ class OrganizationUser extends React.Component<
   clearComponentState() {
     this.setState({
       user: {
-        roles: [ Role.Student ],
+        roles: [Role.Student],
         studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier,
       },
       firstNameValid: 2,
@@ -213,7 +212,7 @@ class OrganizationUser extends React.Component<
            */
           success: () => {
             this.setState({
-              user: { roles: [ Role.Student ] },
+              user: { roles: [Role.Student] },
               firstNameValid: 2,
               lastNameValid: 2,
               emailValid: 2,
