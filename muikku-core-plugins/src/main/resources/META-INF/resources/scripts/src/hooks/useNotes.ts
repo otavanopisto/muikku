@@ -28,7 +28,7 @@ export const useOnGoingNotes = (
 
   React.useEffect(() => {
     // This is for students only hook, if you call it as someone else, no loading should happen
-    if (roles ? !roles.includes(Role.Student) : false) {
+    if (!roles.includes(Role.Student)) {
       return;
     }
 

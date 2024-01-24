@@ -65,8 +65,6 @@ async function loadWhoAMI(
 
   const whoAmI = await userApi.getWhoAmI();
 
-  const isStudent = whoAmI.roles ? whoAmI.roles.includes(Role.Student) : false;
-
   dispatch({
     type: "UPDATE_STATUS",
     payload: {
@@ -76,7 +74,7 @@ async function loadWhoAMI(
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
       roles: whoAmI.roles,
-      isStudent: isStudent,
+      isStudent: whoAmI.roles.includes(Role.Student),
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
       permissions: {
