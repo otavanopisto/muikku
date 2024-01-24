@@ -19,7 +19,7 @@ export interface StatusType {
   permissions: any;
   contextPath: string;
   isActiveUser: boolean;
-  role: Role;
+  roles: Role[];
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
@@ -78,7 +78,7 @@ export default function status(
     loggedIn: false, //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
-    role: undefined, // whoami.role
+    roles: undefined, // whoami.roles
     permissions: {},
     contextPath: "", // always empty
     isActiveUser: false, // whoamI.isActive

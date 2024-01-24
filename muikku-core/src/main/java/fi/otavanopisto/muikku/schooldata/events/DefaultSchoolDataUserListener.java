@@ -106,9 +106,15 @@ public class DefaultSchoolDataUserListener {
       // Attach discovered identities to user
       for (SchoolDataUserEventIdentifier eventIdentifier : discoveredIdentifiers) {
         SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
-        
-        EnvironmentRoleEntity environmentRoleEntity = eventIdentifier.getEnvironmentRoleIdentifier() == null ? null : 
-          environmentRoleEntityController.findBy(eventIdentifier.getEnvironmentRoleIdentifier());
+
+        List<EnvironmentRoleEntity> environmentRoleEntities = new ArrayList<>();
+        for (SchoolDataIdentifier environmentRoleIdentifier : eventIdentifier.getEnvironmentRoleIdentifiers()) {
+          EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findBy(environmentRoleIdentifier);
+          if (environmentRoleEntity != null) {
+            environmentRoleEntities.add(environmentRoleEntity);
+          }
+        }
+
         OrganizationEntity organizationEntity = eventIdentifier.getOrganizationIdentifier() == null ? null :
           organizationEntityController.findBy(eventIdentifier.getOrganizationIdentifier());
         
@@ -116,7 +122,7 @@ public class DefaultSchoolDataUserListener {
             identifier.getDataSource(), identifier.getIdentifier());
         if (userSchoolDataIdentifier == null) {
           userSchoolDataIdentifier = userSchoolDataIdentifierController.createUserSchoolDataIdentifier(
-              identifier.getDataSource(), identifier.getIdentifier(), userEntity, environmentRoleEntity, organizationEntity);
+              identifier.getDataSource(), identifier.getIdentifier(), userEntity, environmentRoleEntities, organizationEntity);
           logger.log(Level.FINE, String.format("Added new identifier %s for user %d", identifier, userEntity.getId()));
         }
         else if (userSchoolDataIdentifier.getArchived()) {
@@ -124,7 +130,7 @@ public class DefaultSchoolDataUserListener {
         }
         
         userEmailEntityController.setUserEmails(userSchoolDataIdentifier, getValidEmails(eventIdentifier.getEmails()));
-        userSchoolDataIdentifierController.setUserIdentifierRole(userSchoolDataIdentifier, environmentRoleEntity);
+        userSchoolDataIdentifierController.setUserIdentifierRoles(userSchoolDataIdentifier, environmentRoleEntities);
         userSchoolDataIdentifierController.setUserIdentifierOrganization(userSchoolDataIdentifier, organizationEntity);
       }
       
@@ -135,12 +141,18 @@ public class DefaultSchoolDataUserListener {
         OrganizationEntity organizationEntity = eventIdentifier.getOrganizationIdentifier() == null ? null :
           organizationEntityController.findBy(eventIdentifier.getOrganizationIdentifier());
         
-        EnvironmentRoleEntity environmentRoleEntity = eventIdentifier.getEnvironmentRoleIdentifier() == null ? null : 
-          environmentRoleEntityController.findBy(eventIdentifier.getEnvironmentRoleIdentifier());
         List<UserEmail> emails = eventIdentifier.getEmails();
         
+        List<EnvironmentRoleEntity> environmentRoleEntities = new ArrayList<>();
+        for (SchoolDataIdentifier environmentRoleIdentifier : eventIdentifier.getEnvironmentRoleIdentifiers()) {
+          EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findBy(environmentRoleIdentifier);
+          if (environmentRoleEntity != null) {
+            environmentRoleEntities.add(environmentRoleEntity);
+          }
+        }
+
         userEmailEntityController.setUserEmails(eventIdentifier.getIdentifier(), getValidEmails(emails));
-        userSchoolDataIdentifierController.setUserIdentifierRole(userSchoolDataIdentifier, environmentRoleEntity);
+        userSchoolDataIdentifierController.setUserIdentifierRoles(userSchoolDataIdentifier, environmentRoleEntities);
         userSchoolDataIdentifierController.setUserIdentifierOrganization(userSchoolDataIdentifier, organizationEntity);
       }
       
