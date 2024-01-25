@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -1058,7 +1060,7 @@ public class UserRESTService extends AbstractRESTService {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail()) || CollectionUtils.isEmpty(payload.getRoles())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1142,7 +1144,8 @@ public class UserRESTService extends AbstractRESTService {
     // Payload validation
     
     if (!StringUtils.equals(id, payload.getIdentifier()) ||
-        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+        CollectionUtils.isEmpty(payload.getRoles()) ||
+        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1402,6 +1405,12 @@ public class UserRESTService extends AbstractRESTService {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
+
+          Set<String> roles = new HashSet<>();
+          if (usdi.getRoles() != null) {
+            usdi.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
+          }
+          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             Long.valueOf((Integer) o.get("userEntityId")),
@@ -1410,7 +1419,7 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype"),
+            roles,
             hasImage));
         }
       }

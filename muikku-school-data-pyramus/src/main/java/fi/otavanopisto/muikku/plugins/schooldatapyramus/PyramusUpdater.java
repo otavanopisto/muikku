@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -823,7 +824,7 @@ public class PyramusUpdater {
     List<String> updatedIdentifiers = new ArrayList<>();
     List<String> discoveredIdentifiers = new ArrayList<>();
     Map<SchoolDataIdentifier, List<UserEmail>> emails = new HashMap<>();
-    Map<SchoolDataIdentifier, SchoolDataIdentifier> roles = new HashMap<>();
+    Map<SchoolDataIdentifier, List<SchoolDataIdentifier>> roles = new HashMap<>();
     Map<SchoolDataIdentifier, SchoolDataIdentifier> organizations = new HashMap<>();
     
     // List all person's students and staffMembers
@@ -859,7 +860,7 @@ public class PyramusUpdater {
           // If student is not archived, add it to identifiers list 
           identifiers.add(identifier);
 
-          roles.put(schoolDataIdentifier, studentRoleIdentifier);
+          roles.put(schoolDataIdentifier, Arrays.asList(studentRoleIdentifier));
 
           if (student.getStudyProgrammeId() != null) {
             StudyProgramme studyProgramme = pyramusClient.get().get("/students/studyProgrammes/" + student.getStudyProgrammeId(), StudyProgramme.class);
@@ -913,9 +914,12 @@ public class PyramusUpdater {
 
         identifiers.add(identifier);
 
-        SchoolDataIdentifier roleIdentifier = new SchoolDataIdentifier(identifierMapper.getEnvironmentRoleIdentifier(staffMember.getRole()), 
-            SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-        roles.put(schoolDataIdentifier, roleIdentifier);
+        List<SchoolDataIdentifier> roleIdentifiers = new ArrayList<>();
+        for (UserRole role : staffMember.getRoles()) {
+          roleIdentifiers.add(new SchoolDataIdentifier(identifierMapper.getEnvironmentRoleIdentifier(role), 
+              SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE));
+        }
+        roles.put(schoolDataIdentifier, roleIdentifiers);
 
         SchoolDataIdentifier organizationIdentifier = staffMember.getOrganizationId() != null ? identifierMapper.getOrganizationIdentifier(staffMember.getOrganizationId()) : null;
         organizations.put(schoolDataIdentifier, organizationIdentifier);
@@ -991,16 +995,16 @@ public class PyramusUpdater {
   }
 
   private void fireSchoolDataUserUpdated(Long userEntityId, SchoolDataIdentifier defaultIdentifier, List<SchoolDataIdentifier> removedIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
-      List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<UserEmail>> emails, Map<SchoolDataIdentifier, SchoolDataIdentifier> roles, Map<SchoolDataIdentifier, SchoolDataIdentifier> organizations) {
+      List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<UserEmail>> emails, Map<SchoolDataIdentifier, List<SchoolDataIdentifier>> roles, Map<SchoolDataIdentifier, SchoolDataIdentifier> organizations) {
 
     SchoolDataUserUpdatedEvent event = new SchoolDataUserUpdatedEvent(userEntityId, defaultIdentifier);
     
     if (discoveredIdentifiers != null) {
       for (SchoolDataIdentifier identifier : discoveredIdentifiers) {
-        SchoolDataIdentifier roleIdentifier = roles.get(identifier);
+        List<SchoolDataIdentifier> roleIdentifiers = roles.get(identifier);
         SchoolDataIdentifier organizationIdentifier = organizations.get(identifier);
         
-        SchoolDataUserEventIdentifier eventIdentifier = event.addDiscoveredIdentifier(identifier, roleIdentifier, organizationIdentifier);
+        SchoolDataUserEventIdentifier eventIdentifier = event.addDiscoveredIdentifier(identifier, roleIdentifiers, organizationIdentifier);
         if (emails.containsKey(identifier)) {
           List<UserEmail> identifierEmails = emails.get(identifier);
           identifierEmails.forEach(email -> eventIdentifier.addEmail(email));
@@ -1010,10 +1014,10 @@ public class PyramusUpdater {
     
     if (updatedIdentifiers != null) {
       for (SchoolDataIdentifier identifier : updatedIdentifiers) {
-        SchoolDataIdentifier roleIdentifier = roles.get(identifier);
+        List<SchoolDataIdentifier> roleIdentifiers = roles.get(identifier);
         SchoolDataIdentifier organizationIdentifier = organizations.get(identifier);
 
-        SchoolDataUserEventIdentifier eventIdentifier = event.addUpdatedIdentifier(identifier, roleIdentifier, organizationIdentifier);
+        SchoolDataUserEventIdentifier eventIdentifier = event.addUpdatedIdentifier(identifier, roleIdentifiers, organizationIdentifier);
         if (emails.containsKey(identifier)) {
           List<UserEmail> identifierEmails = emails.get(identifier);
           identifierEmails.forEach(email -> eventIdentifier.addEmail(email));
@@ -1023,10 +1027,10 @@ public class PyramusUpdater {
     
     if (removedIdentifiers != null) {
       for (SchoolDataIdentifier identifier : removedIdentifiers) {
-        SchoolDataIdentifier roleIdentifier = roles.get(identifier);
+        List<SchoolDataIdentifier> roleIdentifiers = roles.get(identifier);
         SchoolDataIdentifier organizationIdentifier = organizations.get(identifier);
 
-        SchoolDataUserEventIdentifier eventIdentifier = event.addRemovedIdentifier(identifier, roleIdentifier, organizationIdentifier);
+        SchoolDataUserEventIdentifier eventIdentifier = event.addRemovedIdentifier(identifier, roleIdentifiers, organizationIdentifier);
         if (emails.containsKey(identifier)) {
           List<UserEmail> identifierEmails = emails.get(identifier);
           identifierEmails.forEach(email -> eventIdentifier.addEmail(email));
@@ -1038,7 +1042,7 @@ public class PyramusUpdater {
   }
   
   private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
-      List<String> discoveredIdentifiers, Map<SchoolDataIdentifier, List<UserEmail>> emails, Map<SchoolDataIdentifier, SchoolDataIdentifier> roles, 
+      List<String> discoveredIdentifiers, Map<SchoolDataIdentifier, List<UserEmail>> emails, Map<SchoolDataIdentifier, List<SchoolDataIdentifier>> roles, 
       Map<SchoolDataIdentifier, SchoolDataIdentifier> organizations) {
     
     fireSchoolDataUserUpdated(userEntityId, 

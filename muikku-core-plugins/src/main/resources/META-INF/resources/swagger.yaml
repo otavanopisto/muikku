@@ -10898,8 +10898,10 @@ components:
                 type: string
               studyProgrammeIdentifier:
                 type: string
-              role:
-                type: string
+              roles:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
               ssn:
                 type: string
 
@@ -12635,7 +12637,7 @@ components:
         - hasImage
         - organization
         - properties
-        - role
+        - roles
       properties:
         id:
           type: string
@@ -12662,8 +12664,10 @@ components:
               type: string
         properties:
           $ref: "#/components/schemas/AnyValue"
-        role:
-          type: string
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
 
     GuiderStudentNotification:
       type: object
@@ -14908,9 +14912,7 @@ components:
         roles:
           type: array
           items:
-            type: string
-        role:
-          type: string
+            $ref: "#/components/schemas/Role"
         ssn:
           type: string
         email:
@@ -14995,7 +14997,7 @@ components:
         - addresses
         - emails
         - hasImage
-        - role
+        - roles
         - permissions
         - curriculumName
         - curriculumIdentifier
@@ -15049,9 +15051,10 @@ components:
         hasImage:
           type: boolean
           nullable: true
-        role:
-          nullable: true
-          $ref: "#/components/schemas/Role"
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
         permissions:
           type: array
           nullable: true
