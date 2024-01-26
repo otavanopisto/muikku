@@ -124,11 +124,13 @@ public class WhoAmIRESTService extends AbstractRESTService {
 
     // User role
     
-    EnvironmentRoleArchetype role = null;
+    Set<EnvironmentRoleArchetype> roles = new HashSet<>();
     if (userIdentifier != null) {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
           findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
-      role = userSchoolDataIdentifier.getRole().getArchetype();
+      if (userSchoolDataIdentifier != null) {
+        roles = userSchoolDataIdentifier.getRoles().stream().map(roleEntity -> roleEntity.getArchetype()).collect(Collectors.toSet());
+      }
     }
     
     // Environment level permissions
@@ -253,7 +255,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
         isDefaultOrganization,
         currentUserSession.isActive(),
         permissionSet,
-        role,
+        roles,
         locale,
         user == null ? null : user.getDisplayName(),
         emails,
