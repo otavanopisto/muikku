@@ -356,7 +356,7 @@ public class ChatController {
   }
   
   public List<ChatMessage> listMessages(UserEntity sourceUserEntity, UserEntity targetUserEntity, Date earlierThan, Integer count) {
-    List<ChatMessage> messages = chatMessageDAO.listBySourceUserAndTargetUserAndDate(sourceUserEntity.getId(), targetUserEntity.getId(), earlierThan, count);
+    List<ChatMessage> messages = chatMessageDAO.listBySourceUserAndTargetUserAndEarlierThan(sourceUserEntity.getId(), targetUserEntity.getId(), earlierThan, count);
     Collections.reverse(messages);
     return messages;
   }

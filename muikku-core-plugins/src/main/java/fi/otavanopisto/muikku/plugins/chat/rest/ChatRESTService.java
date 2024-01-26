@@ -24,13 +24,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.chat.ChatPermissions;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
+import fi.otavanopisto.muikku.plugins.chat.dao.ChatReadDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatBlockType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatRead;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
@@ -54,6 +57,9 @@ public class ChatRESTService {
   
   @Inject
   private ChatMessageDAO chatMessageDAO;
+  
+  @Inject
+  private ChatReadDAO chatReadDAO;
 
   @Inject
   private SessionController sessionController;
@@ -156,6 +162,24 @@ public class ChatRESTService {
     return Response.ok(restUsers).build();
   }
   
+  @Path("/markAsRead/{IDENTIFIER}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)  
+  public Response markAsRead(@PathParam("IDENTIFIER") String identifier) {
+    if (!StringUtils.startsWith(identifier, "user-") || !NumberUtils.isDigits(StringUtils.substringAfter(identifier, "user-"))) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
+    }
+    Long userEntityId = Long.parseLong(StringUtils.substringAfter(identifier, "user-"));
+    ChatRead chatRead = chatReadDAO.findByUserEntityIds(sessionController.getLoggedUserEntity().getId(), userEntityId);
+    if (chatRead == null) {
+      chatReadDAO.create(sessionController.getLoggedUserEntity().getId(), userEntityId);
+    }
+    else {
+      chatReadDAO.update(chatRead);
+    }
+    return Response.noContent().build();
+  }
+  
   @Path("/activity")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -172,11 +196,15 @@ public class ChatRESTService {
     List<ChatActivityRestModel> activities = new ArrayList<>();
     Set<Long> userEntityIds = chatMessageDAO.listPrivateDiscussionPartners(sessionController.getLoggedUserEntity().getId());
     for (Long userEntityId : userEntityIds) {
-       Date d = chatMessageDAO.findLatestDateByTargetUser(sessionController.getLoggedUserEntity().getId(), userEntityId);
-       ChatActivityRestModel activity = new ChatActivityRestModel();
-       activity.setTargetIdentifier(String.format("user-%d", userEntityId));
-       activity.setLatestMessage(d);
-       activities.add(activity);
+      ChatRead chatRead = chatReadDAO.findByUserEntityIds(sessionController.getLoggedUserEntity().getId(), userEntityId);
+      Date since = chatRead == null ? new Date(0) : chatRead.getLastRead();
+      Long unreadMessages = chatMessageDAO.countBySourceUserAndTargetUserAndSince(sessionController.getLoggedUserEntity().getId(), userEntityId, since);
+      Date latest = chatMessageDAO.findLatestDateByTargetUser(sessionController.getLoggedUserEntity().getId(), userEntityId);
+      ChatActivityRestModel activity = new ChatActivityRestModel();
+      activity.setTargetIdentifier(String.format("user-%d", userEntityId));
+      activity.setLatestMessage(latest);
+      activity.setUnreadMessages(unreadMessages);
+      activities.add(activity);
     }
     
     return Response.ok(activities).build();

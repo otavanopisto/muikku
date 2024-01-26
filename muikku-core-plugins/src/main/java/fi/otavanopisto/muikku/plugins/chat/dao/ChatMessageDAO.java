@@ -121,7 +121,7 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     return entityManager.createQuery(criteria).setMaxResults(1).getSingleResult();
   }
   
-  public List<ChatMessage> listBySourceUserAndTargetUserAndDate(Long sourceUserId, Long targetUserId, Date earlierThan, Integer count) {
+  public List<ChatMessage> listBySourceUserAndTargetUserAndEarlierThan(Long sourceUserId, Long targetUserId, Date earlierThan, Integer count) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -146,6 +146,24 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     criteria.orderBy(criteriaBuilder.desc(root.get(ChatMessage_.sent)));
 
     return entityManager.createQuery(criteria).setMaxResults(count).getResultList();
+  }
+
+  public Long countBySourceUserAndTargetUserAndSince(Long sourceUserId, Long targetUserId, Date since) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<ChatMessage> root = criteria.from(ChatMessage.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), targetUserId),
+        criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), sourceUserId),
+        criteriaBuilder.greaterThan(root.get(ChatMessage_.sent), since)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getSingleResult();
   }
 
   public List<ChatMessage> listByTargetRoomAndDate(Long targetRoomId, Date earlierThan, Integer count) {

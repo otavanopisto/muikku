@@ -20,7 +20,16 @@ public class ChatActivityRestModel {
     this.latestMessage = latestMessage;
   }
 
+  public Long getUnreadMessages() {
+    return unreadMessages;
+  }
+
+  public void setUnreadMessages(Long unreadMessages) {
+    this.unreadMessages = unreadMessages;
+  }
+
   private String targetIdentifier;
   private Date latestMessage;
+  private Long unreadMessages;
 
 }
