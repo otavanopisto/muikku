@@ -14,6 +14,7 @@ import {
   sortRoomsAplhabetically,
   sortUsersAlphabetically,
 } from "./chat-helpers";
+import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 
 type OverviewTab = "users" | "rooms" | "blocked";
 
@@ -301,7 +302,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { users, userFilters, openDiscussion } = useChatContext();
+  const { users, userFilters, openDiscussion, chatActivity } = useChatContext();
 
   const filteredAndSortedUsers = React.useMemo(() => {
     if (!userFilters) {
@@ -328,7 +329,7 @@ function ChatOverviewUsersList() {
   );
 
   /**
-   * renderContent
+   * Renders list of users or empty message
    * @returns JSX.Element
    */
   const renderContent = () => {
@@ -336,24 +337,45 @@ function ChatOverviewUsersList() {
       return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
     }
 
-    return filteredAndSortedUsers.map((user) => (
-      <OverviewListItem
-        key={user.id}
-        onOpenClick={handleOpenDiscussion(user.identifier)}
-      >
-        <OverviewListItemContent>
-          <ChatProfile user={user} />
-        </OverviewListItemContent>
-        <OverviewListItemActions>
-          <OverviewListItemAction>
-            <IconButton
-              icon="chat"
-              onClick={handleOpenDiscussion(user.identifier)}
-            />
-          </OverviewListItemAction>
-        </OverviewListItemActions>
-      </OverviewListItem>
-    ));
+    /**
+     * mapUser
+     * @param user user
+     * @returns JSX.Element
+     */
+    const mapUser = (user: ChatUser) => {
+      const lastActivity = chatActivity.find(
+        (a) => a.targetIdentifier === user.identifier
+      );
+
+      const unreadMsgCount = lastActivity?.unreadMessages || 0;
+
+      return (
+        <OverviewListItem
+          key={user.id}
+          onOpenClick={handleOpenDiscussion(user.identifier)}
+        >
+          <OverviewListItemContent>
+            <ChatProfile user={user} />
+          </OverviewListItemContent>
+          <OverviewListItemActions>
+            {unreadMsgCount > 0 && (
+              <OverviewListItemAction>
+                <ChatUnreadMsgCounter number={unreadMsgCount} />
+              </OverviewListItemAction>
+            )}
+
+            <OverviewListItemAction>
+              <IconButton
+                icon="chat"
+                onClick={handleOpenDiscussion(user.identifier)}
+              />
+            </OverviewListItemAction>
+          </OverviewListItemActions>
+        </OverviewListItem>
+      );
+    };
+
+    return filteredAndSortedUsers.map(mapUser);
   };
 
   return (

@@ -13,6 +13,8 @@ import AnimatedView from "./animated-views/animated-view";
 import ChatDiscussion from "./chat-discussion";
 import ChatOverview from "./chat-overview";
 
+export type ActiveDiscussion = ChatRoom | ChatUser | null;
+
 /**
  * ChatUserFilter
  */
