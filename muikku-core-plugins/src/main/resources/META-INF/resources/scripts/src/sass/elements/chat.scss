@@ -122,7 +122,7 @@ $chat-resizer-corner-size: 15px;
 
 // Panel that holds the list of available rooms
 .chat__rooms-panel {
-  background: $color-default-generic-background;
+  background: $color-default;
   border-bottom-left-radius: $chat-border-radius;
   border-right: 1px solid $color-default-separator-border;
   bottom: 0;
@@ -133,6 +133,40 @@ $chat-resizer-corner-size: 15px;
   position: absolute;
   top: 0;
   z-index: 3;
+}
+
+.chat__options,
+.chat__rooms {
+  padding: 0 0 10px;
+}
+
+.chat__option,
+.chat__room {
+  background: transparent;
+  border-radius: $chat-border-radius;
+  cursor: pointer;
+  margin: 2px 5px;
+  padding: 5px;
+  position: relative;
+  width: calc(100% - 10px);
+
+  &:hover {
+    background: darken($color-chat-panel-background, 5%);
+  }
+}
+
+.chat__option-name-container,
+.chat__room-name-container {
+  @include text;
+}
+
+.chat__option-name,
+.chat__room-name {
+  font-size: 0.825rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 // MIDDLE PANEL a.k.a DISCUSSION PANEL
@@ -290,31 +324,36 @@ $chat-resizer-corner-size: 15px;
 
 // Generic category and container that holds a list of chat users
 .chat__users {
-  padding: 0;
+  padding: 0 0 10px;
 }
 
-// Specific category and container for guidance councelors
-.chat__users--guidance-councelors {
-  border-bottom: 1px solid $color-default;
-  padding: 0 0 5px;
-}
-
-// Specific category and container for other chat users
-.chat__users--others {
-  padding: 5px 0;
+// Category title for guidance counselors and active discussions / public and course rooms
+.chat__rooms-category-title,
+.chat__users-category-title {
+  font-size: 0.75rem;
+  margin: 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 // Container for single chat user, also acts as a trigger to open private chat. Contains close private discussion button
 .chat__user {
+  background: transparent;
   border-radius: $chat-border-radius;
   cursor: pointer;
-  margin: 5px;
+  margin: 2px 5px;
   padding: 5px;
   position: relative;
   width: calc(100% - 10px);
 
   &:hover {
-    background: lighten($color-chat-panel-background, 10%);
+    background: darken($color-chat-panel-background, 5%);
+
+    .chat__avatar-status {
+      border-color: darken($color-chat-panel-background, 5%);
+    }
 
     .chat__button-wrapper--close-discussion {
       display: block;
@@ -334,7 +373,7 @@ $chat-resizer-corner-size: 15px;
 
 // Container that acts as a badge of logged in chat user
 .chat__profile-container--my-profile {
-  background: lighten($color-default-contrast, 10%);
+  background: lighten($color-default-contrast, 7%);
   border-bottom-left-radius: 0;
   border-bottom-right-radius: $chat-border-radius;
   border-top-left-radius: 0;
@@ -346,27 +385,34 @@ $chat-resizer-corner-size: 15px;
   width: 100%;
 
   &:hover {
-    background: lighten($color-default-contrast, 10%);
+    background: lighten($color-default-contrast, 7%);
   }
 
   .chat__profile-name-container {
     color: $color-default;
   }
+
+  .chat__profile-literal-status {
+    display: block;
+    font-size: 0.75rem;
+    padding: 2px 0;
+    white-space: nowrap;
+  }
 }
 
 // Chat avatar status
 .chat__avatar-status {
-  border: 2px solid $color-default;
+  border: 2px solid $color-chat-panel-background;
   border-radius: 100%;
   bottom: -3px;
-  flex-basis: 0.975rem;
+  flex-basis: 0.875rem;
   flex-grow: 0;
   flex-shrink: 0;
-  height: 0.975rem;
+  height: 0.875rem;
   position: absolute;
   right: -3px;
-  width: 0.975rem;
-  z-index: 1;
+  width: 0.875rem;
+  z-index: 3;
 }
 
 .chat__avatar-status--online {
@@ -405,7 +451,7 @@ $chat-resizer-corner-size: 15px;
 // Chat window resizer
 .chat__profile-name {
   font-size: 0.825rem;
-  font-weight: bold;
+  font-weight: 600;
   overflow: hidden;
   padding: 2px 0;
   text-overflow: ellipsis;
@@ -413,10 +459,9 @@ $chat-resizer-corner-size: 15px;
   width: 100%;
 }
 
+// Online/offline status, we don't display it for every badge, only visible to loggen in user
 .chat__profile-literal-status {
-  font-size: 0.75rem;
-  padding: 2px 0;
-  white-space: nowrap;
+  display: none;
 }
 
 .chat__resizer {

@@ -16,6 +16,7 @@ function ChatMyDiscussions() {
         <ChatMyCounselorsDiscussions />
       </div>
       <div className="chat__users chat__users--others">
+        <div className="chat__users-category-title">Keskustelut</div>
         <ChatMyActiveDiscussions />
       </div>
     </div>
@@ -38,11 +39,10 @@ function ChatMyCounselorsDiscussions() {
       <>
         <div
           style={{
-            margin: "10px",
+            margin: "5px",
           }}
         >
-          You dont have student counserlors set yet or they havent activated
-          their chat
+          ...
         </div>
       </>
     );
@@ -52,6 +52,7 @@ function ChatMyCounselorsDiscussions() {
 
   return (
     <>
+      <div className="chat__users-category-title">Ohjaajat</div>
       {sortedCounclors.map((user) => (
         <ChatMyActiveDiscussion key={user.id} user={user} />
       ))}

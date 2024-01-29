@@ -1,9 +1,7 @@
 import * as React from "react";
 import { ChatRoom } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
-import { motion } from "framer-motion";
 import Dropdown from "../general/dropdown";
-import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 
 /**
  * ChatRoomsListsProps
@@ -19,17 +17,17 @@ interface ChatRoomsListsProps {
  */
 function ChatRoomsLists(props: ChatRoomsListsProps) {
   const rooms = (
-    <>
+    <div className="chat__rooms-container">
       <div className="chat__rooms chat__rooms--public">
-        <h4>JH:t</h4>
+      <div className="chat__rooms-category-title">Julkiset huoneet</div>
         <PublicRoomsList />
       </div>
 
       <div className="chat__rooms chat__rooms--private">
-        <h4>PH:t</h4>
+      <div className="chat__rooms-category-title">Kurssien huoneet</div>
         <PrivateRoomList />
       </div>
-    </>
+    </div>
   );
 
   return <>{rooms}</>;
@@ -57,11 +55,11 @@ function PrivateRoomList(props: PrivateRoomListProps) {
   }
 
   return (
-    <ul className="chat__rooms-list">
+    <>
       {roomsPrivate.map((room) => (
         <ChatRoom key={room.identifier} room={room} />
       ))}
-    </ul>
+    </>
   );
 }
 
@@ -87,11 +85,11 @@ function PublicRoomsList(props: PublicRoomsListProps) {
   }
 
   return (
-    <ul className="chat__rooms-list">
+    <>
       {roomsPublic.map((room) => (
         <ChatRoom key={room.identifier} room={room} canEdit canDelete />
       ))}
-    </ul>
+    </>
   );
 }
 
@@ -127,7 +125,7 @@ function ChatRoom(props: ChatRoomProps) {
   /* const minimizedName = room.name.slice(0, 4) + "..."; */
 
   return (
-    <li key={room.identifier} className="chat__room">
+    <div key={room.identifier} className="chat__room">
       <Dropdown
         key={room.identifier}
         content={room.name}
@@ -135,11 +133,11 @@ function ChatRoom(props: ChatRoomProps) {
         alignSelf="left"
         alignSelfVertically="top"
       >
-        <div className="chat__room-title" onClick={handleRoomClick}>
-          <span>{room.name}</span>
+        <div className="chat__room-name-container" onClick={handleRoomClick}>
+          <div className="chat__room-name">{room.name}</div>
         </div>
       </Dropdown>
-    </li>
+    </div>
   );
 }
 

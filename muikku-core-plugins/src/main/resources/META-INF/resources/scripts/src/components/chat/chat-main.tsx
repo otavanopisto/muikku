@@ -235,8 +235,14 @@ function OverviewButton() {
   const { openOverview } = useChatContext();
 
   return (
-    <motion.div onClick={openOverview} className="chat__options">
-      <motion.div className="chat__dashdoard">Dashboard</motion.div>
+    <motion.div onClick={openOverview} className="chat__options-container">
+      <div className="chat__options">
+        <motion.div className="chat__option">
+          <div className="chat__option-name-container">
+            <div className="chat__option-name">Dashboard</div>
+          </div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
