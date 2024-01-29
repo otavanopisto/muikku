@@ -497,6 +497,8 @@ public class HopsRestService {
     String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
     
     Boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
+    Boolean studentCurriculumOPS2018 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2018");
+
     
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
 
@@ -543,7 +545,7 @@ public class HopsRestService {
               if (beginDateDouble != null) {
                 long itemLong = (long) (beginDateDouble * 1000);
                 Date beginDate = new Date(itemLong);
-                if (beginDate != null && !beginDate.after(new Date())) {
+                if (beginDate != null && beginDate.after(new Date())) {
                   continue;
                 }
               }
@@ -554,46 +556,54 @@ public class HopsRestService {
                 continue;
               }
               
-              if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
-                continue;
-              }
+              UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
+
+              if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+              
+                  
+                // If student has no access to sign up on a course, add workspace to suggestion list only if all of these are correct
+                // - Student curriculum OPS 2021/OPS 2018
+                // - Course curriculum same as the student's curriculum
+                // - Published
+                // - Course type 'Nonstop'
                 
-              // If student has no access to sign up on a course, add workspace to suggestion list only if all of these are correct
-              // - Student curriculum OPS 2021
-              // - Course curriculum OPS 2021
-              // - Published
-              // - Course type 'Nonstop'
-              
-              if (!studentCurriculumOPS2021) {
-                continue;
-              }
-              @SuppressWarnings("unchecked")
-              ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
-              
-              boolean correctCurriculum = false;
-              
-              for (String curriculumIdentifier : curriculumIdentifiers) {
-                curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
-                if (StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021")) {
-                  correctCurriculum = true;
-                  break;
+                if (!studentCurriculumOPS2021 && !studentCurriculumOPS2018) {
+                  continue;
                 }
+                
+                @SuppressWarnings("unchecked")
+                ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
+                
+                boolean correctCurriculum = false;
+                
+                for (String curriculumIdentifier : curriculumIdentifiers) {
+                  String courseCurriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
+                  if (StringUtils.equalsIgnoreCase(courseCurriculumName, curriculumName)) {
+                    correctCurriculum = true;
+                    break;
+                  }
+//                  
+//                  if (StringUtils.equalsIgnoreCase(courseCurriculumName, "OPS 2018") && studentCurriculumOPS2018) {
+//                    correctCurriculum = true;
+//                    break;
+//                  }
+                }
+                
+                if (!correctCurriculum) {
+                  continue;
+                }
+                
+                if (workspaceEntity.getAccess() != null && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE && workspaceEntity.getAccess() != WorkspaceAccess.LOGGED_IN)) {
+                  continue;
+                }
+                
+                workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
+                
+                if (workspaceType != null && !StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop") && onlySignupWorkspaces) {
+                  continue;
+                }
+                
               }
-              
-              if (!correctCurriculum) {
-                continue;
-              }
-              
-              if (workspaceEntity.getAccess() != null && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE && workspaceEntity.getAccess() != WorkspaceAccess.LOGGED_IN)) {
-                continue;
-              }
-              
-              workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
-              
-              if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
-                continue;
-              }
-              
               
               Integer courseNum = null;
               
@@ -640,9 +650,13 @@ public class HopsRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsSuggestionRestModel payload) {
 
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+
     // Access check
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!userSchoolDataController.amICounselor(schoolDataIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
@@ -662,7 +676,6 @@ public class HopsRestService {
       workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getCourseId());
     }
 
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
     UserEntity counselorEntity = sessionController.getLoggedUserEntity();
 
@@ -762,11 +775,15 @@ public class HopsRestService {
 
     // Create or remove
 
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+
+    // Access check
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!userSchoolDataController.amICounselor(schoolDataIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
     List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
