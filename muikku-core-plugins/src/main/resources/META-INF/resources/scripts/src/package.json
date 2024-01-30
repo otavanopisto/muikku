@@ -16,6 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "@amcharts/amcharts3-react": "3.1.0",
+    "@esbuild-plugins/tsconfig-paths": "^0.1.2",
     "@floating-ui/react": "0.24.0",
     "@fullcalendar/interaction": "5.10.1",
     "@fullcalendar/react": "5.10.1",
@@ -43,6 +44,8 @@
     "audio-recorder-polyfill": "0.4.1",
     "css-loader": "5.2.7",
     "deep-equal": "2.0.5",
+    "esbuild": "^0.19.12",
+    "esbuild-sass-plugin": "^2.16.1",
     "fork-ts-checker-webpack-plugin": "7.2.1",
     "framer-motion": "6.5.1",
     "html-parse-stringify": "3.0.1",

@@ -1,21 +1,23 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="base.xhtml">
-  
+  template="base.xhtml"
+>
   <ui:define name="scripts">
     <script defer="defer">
-	  MUIKKU_ERROR_TITLE = "#{errorTitle}";
-	  MUIKKU_ERROR_DESCRIPTION = "#{errorDescription}";
+      MUIKKU_ERROR_TITLE = "#{errorTitle}";
+      MUIKKU_ERROR_DESCRIPTION = "#{errorDescription}";
     </script>
-    <script defer="defer" src="#{request.contextPath}/scripts/dist/vendor.js" />
-    <script defer="defer" src="#{request.contextPath}/scripts/dist/error.js" />
-  </ui:define>
-  
-  <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="/scripts/dist/error.css" />
-    <link rel="stylesheet" type="text/css" href="/scripts/dist/vendor.css" />
+    <script
+      defer="defer"
+      src="#{request.contextPath}/scripts/dist/error.js"
+      type="module"
+    />
   </ui:define>
 
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/error.css" />
+  </ui:define>
 </ui:composition>
