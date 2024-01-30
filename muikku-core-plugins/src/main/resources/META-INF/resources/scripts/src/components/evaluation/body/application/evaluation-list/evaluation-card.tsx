@@ -6,7 +6,7 @@ import {
   EvaluationImportantStatus,
   UpdateImportanceObject,
 } from "~/@types/evaluation";
-import * as moment from "moment";
+import moment from "moment";
 import {
   SetEvaluationSelectedWorkspace,
   LoadEvaluationAssessmentRequest,

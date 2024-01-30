@@ -18,7 +18,7 @@ import {
 } from "~/actions/base/notifications";
 import Button from "~/components/general/button";
 import { SimpleActionExecutor } from "~/actions/executor";
-import * as moment from "moment";
+import moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";

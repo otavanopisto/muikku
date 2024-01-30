@@ -3,7 +3,7 @@ import { initReactI18next } from "react-i18next";
 import * as en from "./translations/en.json";
 import * as fi from "./translations/fi.json";
 import { outputCorrectMomentLocale } from "~/helper-functions/locale";
-import * as moment from "moment";
+import moment from "moment";
 
 export const resources = {
   en,

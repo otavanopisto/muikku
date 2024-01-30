@@ -8,7 +8,7 @@ import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as moment from "moment";
+import moment from "moment";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
 import SlideDrawer from "./slide-drawer";

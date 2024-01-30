@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import * as moment from "moment";
+import moment from "moment";
 import { useTranslation } from "react-i18next";
 
 /**
