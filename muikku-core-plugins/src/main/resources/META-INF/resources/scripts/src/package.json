@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.frontpage.ts",
   "scripts": {
-    "build": "webpack",
+    "build": "node esbuild.mjs",
     "build-full": "npm run build-client && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
