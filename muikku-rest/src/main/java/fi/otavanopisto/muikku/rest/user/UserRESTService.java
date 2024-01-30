@@ -387,8 +387,7 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
     }
     
-                                                                              // Necessary?
-    if (!canAccessOrganization(userSchoolDataIdentifier.getOrganization()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (!canAccessOrganization(userSchoolDataIdentifier.getOrganization())) {
       return Response.status(Status.FORBIDDEN).build();
     }
 

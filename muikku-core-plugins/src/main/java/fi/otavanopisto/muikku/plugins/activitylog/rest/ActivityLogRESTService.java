@@ -142,7 +142,6 @@ public class ActivityLogRESTService extends PluginRESTService {
     
     if (userActivities.size() == 0 &&
         !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId()) &&
-        // TODO Necessary?
         !userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier) &&
         !sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_USER_STATISTICS)) {
       return Response.status(Status.FORBIDDEN).build();
