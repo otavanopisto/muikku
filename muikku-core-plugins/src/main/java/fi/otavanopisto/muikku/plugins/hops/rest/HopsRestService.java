@@ -542,10 +542,10 @@ public class HopsRestService {
               
               Double beginDateDouble = (Double) result.get("beginDate");
               
-              if (beginDateDouble != null) {
+              if (beginDateDouble != null && onlySignupWorkspaces) {
                 long itemLong = (long) (beginDateDouble * 1000);
                 Date beginDate = new Date(itemLong);
-                if (beginDate != null && beginDate.after(new Date())) {
+                if (beginDate != null && !beginDate.after(new Date())) {
                   continue;
                 }
               }
@@ -582,11 +582,6 @@ public class HopsRestService {
                     correctCurriculum = true;
                     break;
                   }
-//                  
-//                  if (StringUtils.equalsIgnoreCase(courseCurriculumName, "OPS 2018") && studentCurriculumOPS2018) {
-//                    correctCurriculum = true;
-//                    break;
-//                  }
                 }
                 
                 if (!correctCurriculum) {
