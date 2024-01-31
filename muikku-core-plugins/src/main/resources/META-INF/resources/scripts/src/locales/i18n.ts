@@ -4,6 +4,7 @@ import * as en from "./translations/en.json";
 import * as fi from "./translations/fi.json";
 import { outputCorrectMomentLocale } from "~/helper-functions/locale";
 import moment from "moment";
+import "moment/min/locales";
 
 export const resources = {
   en,

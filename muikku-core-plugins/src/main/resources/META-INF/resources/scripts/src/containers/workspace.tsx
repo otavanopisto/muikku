@@ -59,7 +59,6 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { registerLocale } from "react-datepicker";
-import moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionStatePatch } from "~/reducers/discussion";
@@ -74,8 +73,6 @@ import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
-
-moment.locale("fi");
 
 /**
  * WorkspaceProps

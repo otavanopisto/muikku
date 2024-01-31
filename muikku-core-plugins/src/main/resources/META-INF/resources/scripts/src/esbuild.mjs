@@ -1,7 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable jsdoc/require-jsdoc */
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-undef */
 import path from "path";
 import { build as _build } from "esbuild";
 import { readFileSync } from "fs";
@@ -16,8 +12,18 @@ tsConfig.compilerOptions.target = "es5";
 tsConfig.compilerOptions.module = "commonjs";
 tsConfig.compilerOptions.esModuleInterop = true;
 
-// process to build the cache worker and the main app
+// process to build
 const build = _build({
+  logLevel: "info",
+  bundle: true,
+  splitting: true,
+  minify: process.env.NODE_ENV === "production",
+  sourcemap: process.env.NODE_ENV !== "production",
+  define: {
+    "process.env.NODE_ENV": JSON.stringify(
+      process.env.NODE_ENV || "development"
+    ),
+  },
   entryPoints: [
     "./entries/error.ts",
     "./entries/index.frontpage.ts",
@@ -26,17 +32,9 @@ const build = _build({
     "./entries/user-credentials.ts",
     "./entries/workspace.ts",
   ],
-  entryNames: "[name]",
-  sourcemap: "inline",
-  minify: false,
-  define: {
-    "process.env.NODE_ENV": JSON.stringify("development"),
-  },
-  bundle: true,
-  outdir: path.resolve(path.join("../dist")),
-  logLevel: "info",
-  splitting: true,
   format: "esm",
+  entryNames: "[name]",
+  outdir: path.resolve(path.join("../dist")),
   publicPath: "../dist",
   external: ["/gfx/*"],
   loader: {
