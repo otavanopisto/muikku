@@ -621,6 +621,7 @@ public class HopsRestService {
               suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
               suggestedWorkspace.setDescription((String) result.get("description"));
               suggestedWorkspace.setType(workspaceType != null ? workspaceType.getName() : null);
+              suggestedWorkspace.setCanSignup(hopsController.canSignup(workspaceEntity, userEntity));
               suggestedWorkspaces.add(suggestedWorkspace);
 
             }
