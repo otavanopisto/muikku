@@ -454,7 +454,7 @@
       "courseCredits": "Course credits: Mandatory {{mandatoryCredits}}, Summary {{totalCredits}}",
       "evaluablesDone": "{{percent}}% of assignments done",
       "completedWorkspaces": "You have completed",
-      "coursesForYou:": "Courses for you",
+      "coursesForYou": "Courses for you",
       "endDate": " Studies end date",
       "evaluated": "Evaluated {{date}}",
       "enrollmentDate": "Date of enrollment",

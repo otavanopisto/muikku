@@ -455,7 +455,7 @@
       "evaluated": "Arvioitu {{date}}",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "completedWorkspaces": "Olet suorittanut yhteensä",
-      "coursesForYou:": "Kursseja sinulle",
+      "coursesForYou": "Kursseja sinulle",
       "endDate": "Opintojen loppumispäivä",
       "enrollmentDate": "Ilmoittautumispäivämäärä:",
       "exercisesDone": "{{percent}}% harjoitustehtävistä tehty",

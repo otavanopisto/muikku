@@ -43,6 +43,8 @@ const responsive = {
 interface CourseCarouselProps {
   studentId: string;
   studentUserEntityId: number;
+  studyProgrammeName: string;
+  curriculumName: string;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -55,11 +57,17 @@ const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
   const { courseCarousel } = useCourseCarousel(
     props.studentId,
     props.studentUserEntityId,
+    props.studyProgrammeName,
+    props.curriculumName,
     props.displayNotification
   );
 
   if (courseCarousel.isLoading) {
     return <div className="loader-empty" />;
+  }
+
+  if (courseCarousel.carouselItems === null) {
+    return null;
   }
 
   const carouselItems = courseCarousel.carouselItems.map((cItem) => (
