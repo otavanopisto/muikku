@@ -14,6 +14,7 @@ import {
   sortRoomsAplhabetically,
   sortUsersAlphabetically,
 } from "./chat-helpers";
+import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 
 type OverviewTab = "users" | "rooms" | "blocked";
 
@@ -215,7 +216,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { users, userFilters, openDiscussion } = useChatContext();
+  const { users, userFilters, openDiscussion, chatActivity } = useChatContext();
 
   const filteredAndSortedUsers = React.useMemo(() => {
     if (!userFilters) {
@@ -242,7 +243,7 @@ function ChatOverviewUsersList() {
   );
 
   /**
-   * renderContent
+   * Renders list of users or empty message
    * @returns JSX.Element
    */
   const renderContent = () => {

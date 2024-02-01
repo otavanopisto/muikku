@@ -50,19 +50,12 @@ function useChat(userId: number, currentUser: ChatUser) {
     updateRoomFilters,
   } = useRooms();
 
-  const { chatActivity, onNewMsgSentUpdateActivity } = useChatActivity();
-
   const chatViews = useViews({
     views: chatControllerViews,
   });
 
-  // Shared websocket callbacks
-  useWebsocketsWithCallbacks({
-    "chat:message-sent": (data: unknown) => {
-      onNewMgsSentUpdateActiveDiscussions(data);
-      onNewMsgSentUpdateActivity(data);
-    },
-  });
+  const { chatActivity, markMsgsAsRead, onNewMsgSentUpdateActivity } =
+    useChatActivity();
 
   const [discussionInstances, setMessagesInstances] = React.useState<
     ChatDiscussionInstance[]
@@ -80,7 +73,7 @@ function useChat(userId: number, currentUser: ChatUser) {
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
   // Active room or person identifier
-  const [activeRoomOrPerson, setActiveRoomOrPerson] =
+  const [activeDiscussionIdentifier, setActiveDiscussionIdentifier] =
     React.useState<string>(null);
 
   // Editor values
@@ -92,6 +85,14 @@ function useChat(userId: number, currentUser: ChatUser) {
   const [userToBeBlocked, setUserToBeBlocked] = React.useState<ChatUser>(null);
   const [userToBeUnblocked, setUserToBeUnblocked] =
     React.useState<ChatUser>(null);
+
+  // Shared websocket callbacks
+  useWebsocketsWithCallbacks({
+    "chat:message-sent": (data: unknown) => {
+      onNewMgsSentUpdateActiveDiscussions(data);
+      onNewMsgSentUpdateActivity(data, activeDiscussionIdentifier);
+    },
+  });
 
   React.useEffect(() => {
     if (minimized) {
@@ -181,40 +182,49 @@ function useChat(userId: number, currentUser: ChatUser) {
 
   // Sets the active room or person
   const openDiscussion = React.useCallback(
-    (identifier: string) => {
-      unstable_batchedUpdates(() => {
-        if (isMobileWidth) {
+    async (identifier: string) => {
+      if (isMobileWidth) {
+        unstable_batchedUpdates(() => {
           setPanelLeftOpen(false);
           setPanelRightOpen(false);
-        }
+        });
+      }
 
-        // Check if message instance already exists for this identifier
+      // When opening a discussion, mark all messages as read
+      await markMsgsAsRead(identifier);
 
-        const existingIndex = discussionInstances.findIndex(
-          (instance) => instance.targetIdentifier === identifier
+      // Check if message instance already exists for this identifier
+      const existingIndex = discussionInstances.findIndex(
+        (instance) => instance.targetIdentifier === identifier
+      );
+
+      if (existingIndex === -1) {
+        // Create new message instance
+        const newDiscussionInstance = new ChatDiscussionInstance(
+          identifier,
+          [identifier, `user-${userId}`],
+          websocket
         );
 
-        if (existingIndex === -1) {
-          // Create new message instance
-          const newDiscussionInstance = new ChatDiscussionInstance(
-            identifier,
-            [identifier, `user-${userId}`],
-            websocket
-          );
+        const updatedInstanceList = [
+          ...discussionInstances,
+          newDiscussionInstance,
+        ];
 
-          const updatedInstanceList = [
-            ...discussionInstances,
-            newDiscussionInstance,
-          ];
+        setMessagesInstances(updatedInstanceList);
+      }
 
-          setMessagesInstances(updatedInstanceList);
-        }
-
-        setActiveRoomOrPerson(identifier);
-        chatViews.goTo("discussion");
-      });
+      setActiveDiscussionIdentifier(identifier);
+      chatViews.goTo("discussion");
     },
-    [chatViews, isMobileWidth, discussionInstances, userId, websocket]
+    [
+      isMobileWidth,
+      markMsgsAsRead,
+      discussionInstances,
+      chatViews,
+      userId,
+      websocket,
+    ]
   );
 
   /**
@@ -225,12 +235,12 @@ function useChat(userId: number, currentUser: ChatUser) {
       await blockUser(currentUser, "SOFT");
 
       // Close discussion if it is open
-      if (activeRoomOrPerson === currentUser.identifier) {
-        setActiveRoomOrPerson(null);
+      if (activeDiscussionIdentifier === currentUser.identifier) {
+        setActiveDiscussionIdentifier(null);
         chatViews.goTo("overview");
       }
     },
-    [activeRoomOrPerson, blockUser, chatViews]
+    [activeDiscussionIdentifier, blockUser, chatViews]
   );
 
   /**
@@ -241,9 +251,9 @@ function useChat(userId: number, currentUser: ChatUser) {
       await blockUser(currentUser, "HARD");
 
       // Close discussion if it is open
-      if (activeRoomOrPerson === currentUser.identifier) {
+      if (activeDiscussionIdentifier === currentUser.identifier) {
         unstable_batchedUpdates(() => {
-          setActiveRoomOrPerson(null);
+          setActiveDiscussionIdentifier(null);
           setUserToBeBlocked(null);
         });
       } else {
@@ -252,7 +262,7 @@ function useChat(userId: number, currentUser: ChatUser) {
 
       chatViews.goTo("overview");
     },
-    [activeRoomOrPerson, blockUser, chatViews]
+    [activeDiscussionIdentifier, blockUser, chatViews]
   );
 
   /**
@@ -309,14 +319,14 @@ function useChat(userId: number, currentUser: ChatUser) {
 
   // Current active discussion
   const activeDiscussionMemoized = React.useMemo(() => {
-    if (!activeRoomOrPerson || !users || !rooms) {
+    if (!activeDiscussionIdentifier || !users || !rooms) {
       return null;
     }
 
     return [...users, ...rooms].find(
-      (r) => r.identifier === activeRoomOrPerson
+      (r) => r.identifier === activeDiscussionIdentifier
     );
-  }, [users, rooms, activeRoomOrPerson]);
+  }, [users, rooms, activeDiscussionIdentifier]);
 
   return {
     activeDiscussion: activeDiscussionMemoized,
@@ -336,6 +346,7 @@ function useChat(userId: number, currentUser: ChatUser) {
     discussionInstances,
     isMobileWidth,
     loadingRooms,
+    markMsgsAsRead,
     minimized,
     newChatRoom,
     openDiscussion,
