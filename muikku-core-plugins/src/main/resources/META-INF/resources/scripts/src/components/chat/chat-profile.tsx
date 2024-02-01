@@ -28,10 +28,10 @@ function ChatProfile(props: ChatProfileProps) {
         status={user.isOnline ? "online" : "offline"}
       />
       <div className="chat__profile-name-container">
-        <span className="chat__profile-name">{user.nick}</span>
-        <span className="chat__profile-literal-status">
+        <div className="chat__profile-name">{user.nick}</div>
+        <div className="chat__profile-literal-status">
           {user.isOnline ? "Paikalla" : "Ei paikalla"}
-        </span>
+        </div>
       </div>
     </div>
   );
@@ -62,12 +62,12 @@ export function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
         status="online"
       />
       <div className="chat__profile-name-container">
-        <span className="chat__profile-name">{currentUser.nick}</span>
-        <span className="chat__profile-literal-status">Paikalla</span>
+        <div className="chat__profile-name">{currentUser.nick}</div>
+        <div className="chat__profile-literal-status">Paikalla</div>
       </div>
 
       <ChatUserSettingsDialog>
-        <IconButton buttonModifiers={["chat-invert"]} icon="cog" />
+        <IconButton buttonModifiers={["chat"]} icon="cog" />
       </ChatUserSettingsDialog>
     </div>
   );
