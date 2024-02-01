@@ -102,7 +102,11 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
         <div className="chat__discussion-panel-header-title">{props.title}</div>
         <div className="chat__discussion-panel-header-actions">
           {!isBlocked && props.targetUser.type === "STUDENT" && (
-            <IconButton icon="blocked" onClick={handleOpenBlockUserDialog} />
+            <IconButton
+              icon="blocked"
+              buttonModifiers={["chat-block"]}
+              onClick={handleOpenBlockUserDialog}
+            />
           )}
         </div>
       </div>
@@ -125,15 +129,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
 
       {!isBlocked && (
         <div className="chat__discussion-panel-footer">
-          <div
-            className="chat-editor-container"
-            style={{
-              width: "100%",
-              backgroundColor: "rgb(242, 242, 242)",
-              margin: "10px 0 10px 5px",
-              borderRadius: "5px",
-            }}
-          >
+          <div className="chat__discussion-editor-container">
             <ChatEditor
               initialValueString={newMessage}
               onChange={handleEditorChange}

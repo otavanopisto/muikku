@@ -136,17 +136,24 @@ $chat-resizer-corner-size: 15px;
     color: $color-default;
 
     .chat__option-name-container,
-    .chat__room-name-container {
+    .chat__room-name-container,
+    .chat__profile-name-container,
+    .button-icon--chat {
       color: $color-default;
     }
 
     .chat__avatar-status {
       // We change the border-color of status indicator dot to match the parent's background
-      border-color: $color-default-contrast;
+      border-color: darken($color-chat-panel-background, 50%);
     }
 
     &:hover {
       background: darken($color-chat-panel-background, 50%);
+
+      .chat__avatar-status {
+        // We change the border-color of status indicator dot to match the parent's background
+        border-color: darken($color-chat-panel-background, 50%);
+      }
     }
   }
 }
@@ -247,9 +254,11 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__discussion-panel-header {
+  align-items: center;
   background: transparent;
   border-bottom: 1px solid $color-default-item-separator-border;
   display: flex;
+  flex-flow: row nowrap;
   height: $chat-discussion-panel-header-height;
   padding: 10px;
   position: relative;
@@ -258,13 +267,18 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__discussion-panel-header-title {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-weight: 600;
 }
 
 .chat__discussion-panel-header-actions {
   align-items: center;
   display: flex;
-  flex-grow: 2;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   justify-content: flex-end;
 }
 
@@ -346,6 +360,8 @@ $chat-resizer-corner-size: 15px;
 
 .chat__discussion-panel-footer {
   align-items: center;
+  border-bottom-left-radius: $chat-border-radius;
+  border-bottom-right-radius: $chat-border-radius;
   border-top: 1px solid $color-default-item-separator-border;
   bottom: 0;
   display: flex;
@@ -622,7 +638,14 @@ $chat-resizer-corner-size: 15px;
   flex-flow: row nowrap;
   justify-content: space-between;
   margin: 2px 0;
+
+  // We keep this element's min-height as same as avatar's height + top and bottom padding so lists are lined up nicely
+  min-height: calc($avatar-mobile-chat-size + 10px);
   padding: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    min-height: calc($avatar-desktop-chat-size + 10px);
+  }
 
   &:hover {
     background: $color-chat-panel-background;
@@ -634,14 +657,21 @@ $chat-resizer-corner-size: 15px;
   }
 }
 
+// Global overview data container that wraps user and room items
 .chat__overview-panel-item-data {
+  align-items: center;
+  display: flex;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
+  font-weight: 600;
 }
 
 .chat__overview-panel-item-actions {
+  align-items: center;
+  display: flex;
   flex-basis: 0;
+  flex-flow: row nowrap;
   flex-grow: 1;
   flex-shrink: 1;
 }

@@ -837,6 +837,20 @@
   }
 }
 
+.button-icon--chat-block {
+  background: transparent;
+  border-radius: 100%;
+  color: $color-fatal;
+  font-size: 0.875rem;
+  height: 1.625rem;
+  padding: 5px;
+  width: 1.625rem;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);

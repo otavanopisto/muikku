@@ -350,6 +350,8 @@ function ChatOverviewBlockedList() {
               buttonModifiers={["chat"]}
               onClick={handleOpenUnblockDialog(user)}
             />
+          </OverviewListItemAction>
+          <OverviewListItemAction>
             <IconButton
               icon="chat"
               buttonModifiers={["chat"]}
@@ -416,9 +418,7 @@ function ChatOverviewRoomsList() {
         key={room.identifier}
         onOpenClick={handleOpenDiscussion(room.identifier)}
       >
-        <OverviewListItemContent>
-          <h4>{room.name}</h4>
-        </OverviewListItemContent>
+        <OverviewListItemContent>{room.name}</OverviewListItemContent>
         <OverviewListItemActions>
           <OverviewListItemAction>
             <IconButton
