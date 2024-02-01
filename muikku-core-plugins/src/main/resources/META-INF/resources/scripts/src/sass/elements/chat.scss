@@ -41,13 +41,15 @@ $chat-resizer-corner-size: 15px;
 
 // Chat window
 .chat {
-  @include text;
-
-  background: $color-default;
-  border-radius: 10px;
+  border: 1px solid $color-panel-border-color;
+  border-radius: $chat-border-radius;
   box-shadow: 0 0 15px $color-chat-box-shadow;
+  color: $color-text-default;
   display: flex;
   flex-flow: column nowrap;
+  font-family: $system-font-family;
+  font-size: 0.8125rem;
+  font-weight: 400;
   height: 500px;
   overflow: unset;
   position: fixed;
@@ -70,18 +72,23 @@ $chat-resizer-corner-size: 15px;
 
 .chat__header {
   align-items: center;
+  background: $color-default;
   border-bottom: 1px solid $color-default-separator-border;
   border-top: 5px solid $color-chat-primary;
   border-top-left-radius: $chat-border-radius;
   border-top-right-radius: $chat-border-radius;
+  box-shadow: 0 0 2px $color-chat-box-shadow;
   display: flex;
   justify-content: flex-end;
   position: relative;
   width: 100%;
-  z-index: 3;
+  z-index: 5;
 }
 
 .chat__body {
+  background: $color-default-generic-background;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   height: 100%;
   position: relative;
   width: 100%;
@@ -100,12 +107,14 @@ $chat-resizer-corner-size: 15px;
 // Wrapper for rooms panel's show/hide button
 .chat__button-wrapper--rooms {
   justify-content: flex-end;
+  margin: 5px 0;
   width: auto;
 }
 
 // Wrapper for users panel's show/hide button
 .chat__button-wrapper--users {
   justify-content: flex-start;
+  margin: 5px 0;
   width: auto;
 }
 
@@ -118,21 +127,60 @@ $chat-resizer-corner-size: 15px;
   top: 50%;
 }
 
+// Generic style for active chat item, includes tabs, rooms and users elements
+.chat__room,
+.chat__user,
+.chat__tab {
+  &.chat__active-item {
+    background: darken($color-chat-panel-background, 50%);
+    color: $color-default;
+
+    .chat__option-name-container,
+    .chat__room-name-container {
+      color: $color-default;
+    }
+
+    .chat__avatar-status {
+      // We change the border-color of status indicator dot to match the parent's background
+      border-color: $color-default-contrast;
+    }
+
+    &:hover {
+      background: darken($color-chat-panel-background, 50%);
+    }
+  }
+}
+
 // LEFT PANEL a.k.a ROOMS PANEL
 
 // Panel that holds the list of available rooms
 .chat__rooms-panel {
-  background: $color-default;
-  border-bottom-left-radius: $chat-border-radius;
-  border-right: 1px solid $color-default-separator-border;
+  background: $color-chat-panel-background;
   bottom: 0;
   left: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 5px;
+  padding: 0;
   position: absolute;
+  scrollbar-width: thin;
   top: 0;
-  z-index: 3;
+  z-index: 4;
+}
+
+// Scrolling container for chat-rooms + chat__options
+.chat__rooms-container {
+  // Height of the logged in chat user's avatar container including top and bottom margin
+  bottom: 0;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  right: 0;
+  scrollbar-width: thin;
+
+  // Height of the show/hide panel button wrapper including top and bottom margin
+  top: 36px;
+  width: 100%;
 }
 
 .chat__options,
@@ -151,7 +199,7 @@ $chat-resizer-corner-size: 15px;
   width: calc(100% - 10px);
 
   &:hover {
-    background: darken($color-chat-panel-background, 5%);
+    background: darken($color-chat-panel-background, 10%);
   }
 }
 
@@ -162,7 +210,7 @@ $chat-resizer-corner-size: 15px;
 
 .chat__option-name,
 .chat__room-name {
-  font-size: 0.825rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -173,14 +221,18 @@ $chat-resizer-corner-size: 15px;
 
 // Panel that shows selected discussion
 .chat__discussions-panel {
-  height: 100%;
+  background: $color-default;
+  border-radius: $chat-border-radius;
+  box-shadow: 0 0 2px $color-chat-box-shadow;
+  height: calc(100% - 10px);
+  margin: 5px 0;
   position: relative;
   width: auto;
 }
 
 // Panel container for selected discussion
 .chat__discussion-panel {
-  background: $color-default;
+  background: transparent;
   bottom: 0;
   height: 100%;
   left: 0;
@@ -191,7 +243,7 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__discussion-panel-header {
-  background: $color-default;
+  background: transparent;
   border-bottom: 1px solid $color-default-item-separator-border;
   display: flex;
   height: $chat-discussion-panel-header-height;
@@ -215,9 +267,6 @@ $chat-resizer-corner-size: 15px;
 .chat__discussion-panel-body {
   bottom: $chat-discussion-panel-footer-height;
   left: 0;
-
-  // overflow-x: hidden;
-  // overflow-y: auto;
   padding: 10px;
   position: absolute;
   right: 0;
@@ -299,12 +348,13 @@ $chat-resizer-corner-size: 15px;
   background: $color-chat-panel-background;
   border-bottom-right-radius: $chat-border-radius;
   bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
+  padding: 0;
   position: absolute;
   right: 0;
+  scrollbar-width: thin;
   top: 0;
-  z-index: 3;
+  z-index: 4;
 }
 
 // Scrolling container for chat-users
@@ -316,6 +366,7 @@ $chat-resizer-corner-size: 15px;
   overflow-y: auto;
   position: absolute;
   right: 0;
+  scrollbar-width: thin;
 
   // Height of the show/hide panel button wrapper including top and bottom margin
   top: 36px;
@@ -349,10 +400,11 @@ $chat-resizer-corner-size: 15px;
   width: calc(100% - 10px);
 
   &:hover {
-    background: darken($color-chat-panel-background, 5%);
+    background: darken($color-chat-panel-background, 10%);
 
     .chat__avatar-status {
-      border-color: darken($color-chat-panel-background, 5%);
+      // We change the border-color of status indicator dot to match the parent's background
+      border-color: darken($color-chat-panel-background, 10%);
     }
 
     .chat__button-wrapper--close-discussion {
@@ -361,41 +413,38 @@ $chat-resizer-corner-size: 15px;
   }
 }
 
-// Container that acts as a badge of chat user
+// Container that acts as a universal chat badge of user
 .chat__profile-container {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
-  line-height: 1;
   width: 100%;
 }
 
 // Container that acts as a badge of logged in chat user
 .chat__profile-container--my-profile {
-  background: lighten($color-default-contrast, 7%);
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: $chat-border-radius;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  background: darken($color-default-generic-background, 10%);
+  border-radius: $chat-border-radius;
   bottom: 0;
-  margin: 0;
-  padding: 10px;
+  margin: 5px;
+  padding: 5px;
   position: absolute;
-  width: 100%;
+  width: calc(100% - 10px);
 
   &:hover {
-    background: lighten($color-default-contrast, 7%);
+    background: darken($color-default-generic-background, 10%);
   }
 
   .chat__profile-name-container {
-    color: $color-default;
+    // 32px is the width of the [avatar-container], 26px is the width of the [edit-profile-settings] button and 10px is the sum of this elements left and right margin
+    flex-basis: calc(100% - 10px - 26px - 32px);
+    width: calc(100% - 10px - 26px - 32px);
   }
 
   .chat__profile-literal-status {
     display: block;
     font-size: 0.75rem;
-    padding: 2px 0;
     white-space: nowrap;
   }
 }
@@ -437,33 +486,106 @@ $chat-resizer-corner-size: 15px;
   align-items: flex-start;
   display: flex;
 
-  // 32px is the width of the [avatar-container], 26px is the width of the [edit-profile-settings] button and 15px is the sum of this elements left and right margin
-  // flex-basis: calc(100% - 36px - 26px - 15px);
+  // 32px is the width of the [avatar-container] and 10px is the sum of this elements left and right margin
+  flex-basis: calc(100% - 10px - 32px);
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: center;
-  margin: 0 5px 0 10px;
-
-  // max-width: calc(100% - 36px - 26px - 15px);
+  margin: 0 0 0 10px;
+  width: calc(100% - 10px - 32px);
 }
 
-// Chat window resizer
 .chat__profile-name {
-  font-size: 0.825rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   overflow: hidden;
-  padding: 2px 0;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
 }
 
-// Online/offline status, we don't display it for every badge, only visible to loggen in user
+// Online/offline literal status, we don't display it for every badge, only visible to loggen in user
 .chat__profile-literal-status {
   display: none;
 }
 
+// Chat overview/dashboard
+.chat__overview-panel {
+  background: transparent;
+  bottom: 0;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+}
+
+.chat__overview-panel-header {
+  align-items: center;
+  background: transparent;
+  border-bottom: 1px solid $color-default-item-separator-border;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 40px;
+  padding: 10px;
+  position: relative;
+  width: 100%;
+  z-index: 2;
+}
+
+.chat__overview-panel-header-title {
+  font-weight: 600;
+  margin: 0 20px 0 0;
+}
+
+.chat__tabs {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 10px;
+}
+
+.chat__tab {
+  border-radius: $chat-border-radius;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin: 0 2px;
+  padding: 5px;
+
+  &:hover {
+    background: darken($color-chat-panel-background, 10%);
+  }
+}
+
+.chat__overview-panel-body {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 40px;
+  width: 100%;
+}
+
+.chat__overview-panel-search-container {
+  align-items: center;
+  border-bottom: 1px solid $color-default-separator-border;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 10px;
+}
+
+.chat__overview-users-list,
+.chat__overview-rooms-list {
+  height: calc(100% - 58px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+// Chat window resizer
 .chat__resizer {
   background: transparent;
   border-radius: 3px;
@@ -544,15 +666,22 @@ $chat-resizer-corner-size: 15px;
 }
 
 // Form styles used in chat
-.chat__memofield {
-  @include text;
-
+.chat__textfield {
   background: transparent;
-  border: 0;
+  border: 2px solid $color-form-element-border;
+  border-radius: $chat-border-radius;
+  color: $color-text-default;
+  font-family: $system-font-family;
+  font-size: 0.8125rem;
+  font-weight: 400;
   height: 100%;
-  padding: 10px;
+  padding: 8px 5px;
   resize: none;
-  width: calc(100% - $chat-discussion-panel-footer-height);
+  width: 100%;
+}
+
+.chat__textfield--with-filter {
+  margin: 0 5px 0 0;
 }
 
 .chat__submit {

@@ -17,17 +17,17 @@ interface ChatRoomsListsProps {
  */
 function ChatRoomsLists(props: ChatRoomsListsProps) {
   const rooms = (
-    <div className="chat__rooms-container">
-      <div className="chat__rooms chat__rooms--public">
-      <div className="chat__rooms-category-title">Julkiset huoneet</div>
+    <>
+      <div className="chat__rooms chat__rooms--public" role="menu">
+        <div className="chat__rooms-category-title">Julkiset huoneet</div>
         <PublicRoomsList />
       </div>
 
-      <div className="chat__rooms chat__rooms--private">
-      <div className="chat__rooms-category-title">Kurssien huoneet</div>
+      <div className="chat__rooms chat__rooms--private" role="menu">
+        <div className="chat__rooms-category-title">Kurssien huoneet</div>
         <PrivateRoomList />
       </div>
-    </div>
+    </>
   );
 
   return <>{rooms}</>;
@@ -125,19 +125,19 @@ function ChatRoom(props: ChatRoomProps) {
   /* const minimizedName = room.name.slice(0, 4) + "..."; */
 
   return (
-    <div key={room.identifier} className="chat__room">
-      <Dropdown
-        key={room.identifier}
-        content={room.name}
-        openByHover
-        alignSelf="left"
-        alignSelfVertically="top"
-      >
+    <Dropdown
+      key={room.identifier}
+      content={room.name}
+      openByHover
+      alignSelf="left"
+      alignSelfVertically="top"
+    >
+      <div key={room.identifier} className="chat__room" role="menuitem">
         <div className="chat__room-name-container" onClick={handleRoomClick}>
           <div className="chat__room-name">{room.name}</div>
         </div>
-      </Dropdown>
-    </div>
+      </div>
+    </Dropdown>
   );
 }
 

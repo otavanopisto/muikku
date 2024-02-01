@@ -12,10 +12,10 @@ import { sortUsersAlphabetically } from "./chat-helpers";
 function ChatMyDiscussions() {
   return (
     <div className="chat__users-container">
-      <div className="chat__users chat__users--guidance-councelors">
+      <div className="chat__users chat__users--guidance-councelors" role="menu">
         <ChatMyCounselorsDiscussions />
       </div>
-      <div className="chat__users chat__users--others">
+      <div className="chat__users chat__users--others" role="menu">
         <div className="chat__users-category-title">Keskustelut</div>
         <ChatMyActiveDiscussions />
       </div>
@@ -164,7 +164,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
   );
 
   return (
-    <div className="chat__user" onClick={handleOpenClick}>
+    <div className="chat__user" role="menuitem" onClick={handleOpenClick}>
       <ChatProfile user={user} />
 
       {onRemoveClick && (

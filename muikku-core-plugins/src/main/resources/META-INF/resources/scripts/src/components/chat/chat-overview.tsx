@@ -114,48 +114,23 @@ function ChatOverview() {
   ]);
 
   return (
-    <div
-      className="chat-overview"
-      style={{
-        height: "100%",
-        padding: "10px",
-        display: "flex",
-        flexDirection: "column",
-        position: "absolute",
-        inset: 0,
-      }}
-    >
+    <div className="chat__overview-panel">
       <ChatOverviewHeader
         canModerate={canModerate}
         activeTab={activeTab}
         onTabChange={handleOnTabChange}
       />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          overflowY: "auto",
-        }}
-      >
-        <div
-          className="chat-overview-search"
-          style={{
-            margin: "10px 0",
-            display: "flex",
-          }}
-        >
+      <div className="chat__overview-panel-body">
+        <div className="chat__overview-panel-search-container">
           <input
             type="text"
+            className="chat__textfield chat__textfield--with-filter"
             placeholder="Search"
             value={searchValue}
             onChange={handleSearchChange}
-            style={{
-              width: "100%",
-              padding: "5px",
-            }}
           />
           <Dropdown content={filterContent}>
-            <IconButton icon="filter" />
+            <IconButton buttonModifiers={["chat"]} icon="filter" />
           </Dropdown>
         </div>
         {content}
@@ -189,101 +164,40 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   );
 
   return (
-    <div
-      className="chat-overview-header"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        paddingBottom: "5px",
-        borderBottom: "1px solid black",
-      }}
-    >
-      <div
-        className="chat-overview-header-title"
-        style={{
-          marginRight: "5px",
-        }}
-      >
-        <h2>Dashboard</h2>
-      </div>
-      <div
-        className="vertical-divider"
-        style={{
-          width: "1px",
-          height: "25px",
-          backgroundColor: "#ccc",
-        }}
-      />
-      <div
-        className="chat-overview-header-tabs"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginLeft: "5px",
-        }}
-      >
-        <motion.div
-          className="chat-overview-header-tab"
-          animate={{
-            backgroundColor: activeTab === "users" ? "#ccc" : "white",
-          }}
-          whileHover={{
-            backgroundColor: "#ccc",
-            cursor: "pointer",
-          }}
-          style={{
-            padding: "5px",
-            marginRight: "5px",
-          }}
+    <div className="chat__overview-panel-header">
+      <div className="chat__overview-panel-header-title">Dashboard</div>
+      <div className="chat__tabs" role="menu">
+        <div
+          role="menuitem"
+          className={`chat__tab ${
+            activeTab === "users" ? "chat__active-item" : ""
+          }`}
           onClick={() => handleTabClick("users")}
         >
           Ihmiset
-        </motion.div>
-        <motion.div
-          className="chat-overview-header-tab"
-          animate={{
-            backgroundColor: activeTab === "blocked" ? "#ccc" : "white",
-          }}
-          whileHover={{
-            backgroundColor: "#ccc",
-            cursor: "pointer",
-          }}
-          style={{
-            padding: "5px",
-            marginRight: "5px",
-          }}
+        </div>
+        <div
+          role="menuitem"
+          className={`chat__tab ${
+            activeTab === "blocked" ? "chat__active-item" : ""
+          }`}
           onClick={() => handleTabClick("blocked")}
         >
           Estetyt
-        </motion.div>
-        <motion.div
-          className="chat-overview-header-tab"
-          animate={{
-            backgroundColor: activeTab === "rooms" ? "#ccc" : "white",
-          }}
-          whileHover={{
-            backgroundColor: "#ccc",
-            cursor: "pointer",
-          }}
-          style={{
-            padding: "5px",
-            marginRight: "5px",
-          }}
+        </div>
+        <div
+          role="menuitem"
+          className={`chat__tab ${
+            activeTab === "rooms" ? "chat__active-item" : ""
+          }`}
           onClick={() => handleTabClick("rooms")}
         >
           Huoneet
-        </motion.div>
+        </div>
       </div>
-      <div
-        className="chat-overview-header-actions"
-        style={{
-          display: "flex",
-          flexGrow: 1,
-          justifyContent: "flex-end",
-        }}
-      >
+      <div className="chat__overview-panel-header-actions">
         {canModerate && (
-          <div className="chat-overview-header-action">
+          <div className="chat__overview-panel-header-action">
             <ChatRoomNewDialog>
               <Button icon="plus" iconPosition="left">
                 Uusi huone
@@ -358,7 +272,7 @@ function ChatOverviewUsersList() {
 
   return (
     <OverviewList
-      className="chat-overview-users-list"
+      className="chat__overview-users-list"
       emptyMsg="Haulla ei löytyny käyttäjä"
     >
       {renderContent()}
@@ -445,7 +359,7 @@ function ChatOverviewBlockedList() {
 
   return (
     <OverviewList
-      className="chat-overview-users-list"
+      className="chat__overview-users-list"
       emptyMsg="Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty"
     >
       {renderContent()}
@@ -515,8 +429,8 @@ function ChatOverviewRoomsList() {
 
   return (
     <OverviewList
-      className="chat-overview-rooms-list"
-      emptyMsg="Haulla ei löytyny käyttäjä"
+      className="chat__overview-rooms-list"
+      emptyMsg="Haulla ei löytyny huoneita"
     >
       {renderContent()}
     </OverviewList>
@@ -580,23 +494,9 @@ export const OverviewListItem: React.FC<OverviewListItemProps> = (props) => {
   const { onOpenClick } = props;
 
   return (
-    <motion.div
-      className="chat-overview-rooms-list-item"
-      whileHover={{
-        backgroundColor: "#ccc",
-        cursor: "pointer",
-      }}
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "5px",
-        borderBottom: "1px solid #ccc",
-      }}
-      onClick={onOpenClick}
-    >
+    <div className="chat__overview-panel-item" onClick={onOpenClick}>
       {props.children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -615,14 +515,7 @@ export const OverviewListItemContent: React.FC<OverviewListItemContentProps> = (
   const { children } = props;
 
   return (
-    <div
-      className="chat-overview-users-list-item-user-info"
-      style={{
-        display: "flex",
-      }}
-    >
-      {children}
-    </div>
+    <div className="chat-overview-users-list-item-user-info">{children}</div>
   );
 };
 

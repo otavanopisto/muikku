@@ -13,8 +13,10 @@ import { IconButton } from "../general/button";
 const PANEL_RIGHT_MIN_WIDTH = 52;
 const PANEL_LEFT_MIN_WIDTH = 85;
 
-const PANEL_LEFT_MAX_WIDTH = 230;
-const PANEL_RIGHT_MAX_WIDTH = 230;
+const PANEL_GUTTER = 2;
+
+const PANEL_LEFT_MAX_WIDTH = 180;
+const PANEL_RIGHT_MAX_WIDTH = 180;
 
 /**
  * ChatMainProps
@@ -97,7 +99,9 @@ function ChatMain(props: ChatMainProps) {
           // Update mainWrapperRef margin left to roomPanelRef width
           // if peoplePanelRef width is changed and window current width is not mobile
           if (entry.target === roomPanelRef.current && !isMobile) {
-            animationControls.set({ marginLeft: entry.target.clientWidth });
+            animationControls.set({
+              marginLeft: entry.target.clientWidth + PANEL_GUTTER,
+            });
           }
         }
       });
@@ -107,7 +111,9 @@ function ChatMain(props: ChatMainProps) {
           // Update mainWrapperRef margin right to peoplePanelRef width
           // if peoplePanelRef width is changed and window current width is not mobile
           if (entry.target === peoplePanelRef.current && !isMobile) {
-            animationControls.set({ marginRight: entry.target.clientWidth });
+            animationControls.set({
+              marginRight: entry.target.clientWidth + PANEL_GUTTER,
+            });
           }
         }
       });
@@ -130,8 +136,8 @@ function ChatMain(props: ChatMainProps) {
       });
 
       animationControls.start({
-        marginLeft: PANEL_LEFT_MIN_WIDTH,
-        marginRight: PANEL_RIGHT_MIN_WIDTH,
+        marginLeft: PANEL_LEFT_MIN_WIDTH + PANEL_GUTTER,
+        marginRight: PANEL_RIGHT_MIN_WIDTH + PANEL_GUTTER,
         transition: {
           duration: 0.1,
           type: "tween",
@@ -140,8 +146,8 @@ function ChatMain(props: ChatMainProps) {
     } else {
       if (roomPanelRef.current && peoplePanelRef.current) {
         animationControls.start({
-          marginLeft: roomPanelRef.current.clientWidth,
-          marginRight: peoplePanelRef.current.clientWidth,
+          marginLeft: roomPanelRef.current.clientWidth + PANEL_GUTTER,
+          marginRight: peoplePanelRef.current.clientWidth + PANEL_GUTTER,
           transition: {
             duration: 0.1,
             type: "tween",
@@ -168,7 +174,9 @@ function ChatMain(props: ChatMainProps) {
         ref={roomPanelRef}
         initial={false}
         animate={animationControlsLeftPanel}
-        className="chat__rooms-panel"
+        className={`chat__rooms-panel ${
+          panelLeftOpen ? "chat__rooms-panel--open" : ""
+        }`}
         style={{
           width: PANEL_LEFT_MIN_WIDTH,
         }}
@@ -183,9 +191,10 @@ function ChatMain(props: ChatMainProps) {
             <IconButton buttonModifiers={["chat"]} icon="arrow-right" />
           )}
         </div>
-
-        <OverviewButton />
-        <ChatRoomsLists minimized={!panelLeftOpen} />
+        <div className="chat__rooms-container">
+          <OverviewButton />
+          <ChatRoomsLists minimized={!panelLeftOpen} />
+        </div>
       </motion.div>
       <motion.div
         ref={mainWrapperRef}
@@ -193,8 +202,8 @@ function ChatMain(props: ChatMainProps) {
         animate={animationControls}
         className="chat__discussions-panel"
         style={{
-          marginLeft: PANEL_LEFT_MIN_WIDTH,
-          marginRight: PANEL_RIGHT_MIN_WIDTH,
+          marginLeft: PANEL_LEFT_MIN_WIDTH + PANEL_GUTTER,
+          marginRight: PANEL_RIGHT_MIN_WIDTH + PANEL_GUTTER,
         }}
       >
         <ChatViews
@@ -205,7 +214,9 @@ function ChatMain(props: ChatMainProps) {
         ref={peoplePanelRef}
         initial={false}
         animate={animationControlsRightPanel}
-        className="chat__users-panel"
+        className={`chat__users-panel ${
+          panelRightOpen ? "chat__users-panel--open" : ""
+        }`}
         style={{
           width: PANEL_RIGHT_MIN_WIDTH,
         }}
