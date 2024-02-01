@@ -2120,5 +2120,18 @@
     "notifications": {
       "signUpError": "Signing up to course failed"
     }
+  },
+  "courseCarousel": {
+    "actions": {
+      "checkOut": "Check out",
+      "signUp": "Sign up"
+    },
+    "content": {
+      "empty": "No course suggestions available. If you need any help when choosing courses, please contact your guidance counselor."
+    },
+    "labels": {
+      "description": "Description",
+      "guidanceCouncelorSuggestion": "Guidance councelor's suggestion"
+    }
   }
 }

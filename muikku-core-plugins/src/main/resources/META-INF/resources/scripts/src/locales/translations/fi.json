@@ -2120,5 +2120,18 @@
     "notifications": {
       "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
     }
+  },
+  "courseCarousel": {
+    "actions": {
+      "checkOut": "Tutustu",
+      "signUp": "Ilmoittaudu"
+    },
+    "content": {
+      "empty": "Sinulle ei löytynyt yhtään kurssiehdotusta. Jos tarvitset apua kurssin valinnassa, ota yhteyttä ohjaajaasi."
+    },
+    "labels": {
+      "description": "Kuvaus",
+      "guidanceCouncelorSuggestion": "Ohjaajan ehdottama!"
+    }
   }
 }
