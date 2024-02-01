@@ -1182,9 +1182,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           }
         break;
         
+        // Student parent has no phonenumbers at the moment.
         case STUDENTPARENT:
-          // Student parent has no phonenumbers at the moment.
-        break;
+          return Collections.emptyList();
       }
     }
 
