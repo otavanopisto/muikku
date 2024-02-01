@@ -233,15 +233,7 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
         </MessagesContainer>
       </div>
       <div ref={footerRef} className="chat__discussion-panel-footer">
-        <div
-          className="chat-editor-container"
-          style={{
-            width: "100%",
-            backgroundColor: "rgb(242, 242, 242)",
-            margin: "10px 0 10px 5px",
-            borderRadius: "5px",
-          }}
-        >
+        <div className="chat__discussion-editor-container">
           <ChatEditor
             initialValueString={newMessage}
             onChange={handleEditorChange}
@@ -433,12 +425,6 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
       }}
       ref={msgsContainerRef}
       className={`${className} ${mappedModifiers}`}
-      style={{
-        overflowY: "auto",
-        overflowX: "hidden",
-        position: "absolute",
-        inset: 0,
-      }}
     >
       {props.children}
       <div ref={lastMessageRef} className="chat__messages-last-message"></div>

@@ -123,14 +123,7 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
 
-        <div
-          className="chat-editor-container"
-          style={{
-            width: "100%",
-            backgroundColor: "rgb(242, 242, 242)",
-            borderRadius: "5px",
-          }}
-        >
+        <div className="chat-editor-container">
           <ChatEditor
             initialValueString={msg.message}
             onChange={handleEditedMessageChange}
@@ -182,33 +175,13 @@ const ChatMessage = (props: ChatMessageProps) => {
   return (
     <>
       <div className="chat__message-wrapper">
-        <motion.div
+        <div
           ref={activatorDelayHandler}
           {...longPressEvent}
-          initial={{ background: "#fff" }}
-          whileFocus={{ background: "#e3e3e3" }}
-          whileHover={{
-            background: "#e3e3e3",
-            transition: { duration: 0.2 },
-          }}
-          onHoverStart={() => {
-            !editMode && setHoveringActivator(true);
-          }}
-          onHoverEnd={() => {
-            if (activatorDelayHandler.current) {
-              clearTimeout(activatorDelayHandler.current);
-            }
-
-            if (hoveringActivator) {
-              activatorDelayHandler.current = setTimeout(() => {
-                setHoveringActivator(false);
-              }, 200);
-            }
-          }}
           className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
         >
           {chatMessageContent}
-        </motion.div>
+        </div>
 
         <DesktopMessageActions
           mainActions={mainModerationActions}
