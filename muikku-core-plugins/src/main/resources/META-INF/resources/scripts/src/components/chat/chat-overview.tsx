@@ -262,6 +262,7 @@ function ChatOverviewUsersList() {
           <OverviewListItemAction>
             <IconButton
               icon="chat"
+              buttonModifiers={["chat"]}
               onClick={handleOpenDiscussion(user.identifier)}
             />
           </OverviewListItemAction>
@@ -345,10 +346,12 @@ function ChatOverviewBlockedList() {
           <OverviewListItemAction>
             <IconButton
               icon="blocked"
+              buttonModifiers={["chat"]}
               onClick={handleOpenUnblockDialog(user)}
             />
             <IconButton
               icon="chat"
+              buttonModifiers={["chat"]}
               onClick={handleOpenDiscussion(user.identifier)}
             />
           </OverviewListItemAction>
@@ -419,6 +422,7 @@ function ChatOverviewRoomsList() {
           <OverviewListItemAction>
             <IconButton
               icon="chat"
+              buttonModifiers={["chat"]}
               onClick={handleOpenDiscussion(room.identifier)}
             />
           </OverviewListItemAction>
@@ -514,9 +518,7 @@ export const OverviewListItemContent: React.FC<OverviewListItemContentProps> = (
 ) => {
   const { children } = props;
 
-  return (
-    <div className="chat-overview-users-list-item-user-info">{children}</div>
-  );
+  return <div className="chat__overview-panel-item-data">{children}</div>;
 };
 
 /**
@@ -533,9 +535,7 @@ export const OverviewListItemActions: React.FC<OverviewListItemActionsProps> = (
 ) => {
   const { children } = props;
 
-  return (
-    <div className="chat-overview-rooms-list-item-actions">{children}</div>
-  );
+  return <div className="chat__overview-panel-item-actions">{children}</div>;
 };
 
 /**
@@ -552,7 +552,7 @@ export const OverviewListItemAction: React.FC<OverviewListItemActionProps> = (
 ) => {
   const { children } = props;
 
-  return <div className="chat-overview-rooms-list-item-action">{children}</div>;
+  return <div className="chat__overview-panel-item-action">{children}</div>;
 };
 
 /**
