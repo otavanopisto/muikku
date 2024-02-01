@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 $chat-discussion-panel-header-height: 40px;
-$chat-discussion-panel-footer-height: 40px;
+$chat-discussion-panel-footer-height: 35px;
 $chat-border-radius: 5px;
 $chat-resizer-size: 150px;
 $chat-resizer-thickness: 4px;
@@ -358,10 +358,13 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__discussion-editor-container {
+  align-items: center;
   border-right: 1px solid $color-default-item-separator-border;
+  display: flex;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
+  min-height: $chat-discussion-panel-footer-height;
 }
 
 // RIGHT PANEL a.k.a USERS PANEL
@@ -745,9 +748,7 @@ $chat-resizer-corner-size: 15px;
 .chat__submit {
   align-items: center;
   background: transparent;
-  border-bottom: 0;
-  border-right: 0;
-  border-top: 0;
+  border: 0;
   cursor: pointer;
   display: flex;
   height: $chat-discussion-panel-footer-height;

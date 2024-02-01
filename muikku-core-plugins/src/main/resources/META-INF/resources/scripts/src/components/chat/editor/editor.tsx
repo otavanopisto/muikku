@@ -198,6 +198,7 @@ const ChatEditor = (props: ChatEditorProps) => {
           height: "100%",
           maxHeight: "200px",
           overflowY: "auto",
+          width: "100%",
         }}
       />
     </Slate>
