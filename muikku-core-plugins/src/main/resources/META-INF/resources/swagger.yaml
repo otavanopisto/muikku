@@ -12698,21 +12698,16 @@ components:
       required:
         - id
         - email
-        - chatAvailable
         - userEntityId
         - firstName
         - lastName
         - hasImage
-        - organization
         - properties
-        - roles
       properties:
         id:
           type: string
         email:
           type: string
-        chatAvailable:
-          type: boolean
         userEntityId:
           type: integer
           format: int64
@@ -12722,20 +12717,8 @@ components:
           type: string
         hasImage:
           type: boolean
-        organization:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
         properties:
           $ref: "#/components/schemas/AnyValue"
-        roles:
-          type: array
-          items:
-            $ref: "#/components/schemas/Role"
 
     GuiderStudentNotification:
       type: object
