@@ -55,7 +55,6 @@ function useChatActivity() {
 
       if (index !== -1) {
         const updatedList = [...prev];
-        updatedList[index].latestMessage = new Date();
         updatedList[index].unreadMessages = 0;
 
         return updatedList;

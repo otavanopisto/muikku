@@ -44,7 +44,8 @@ interface PrivateRoomListProps {}
  * @returns JSX.Element
  */
 function PrivateRoomList(props: PrivateRoomListProps) {
-  const { roomsPrivate, loadingRooms } = useChatContext();
+  const { roomsPrivate, loadingRooms, activeDiscussion, openDiscussion } =
+    useChatContext();
 
   if (loadingRooms) {
     return <div>Loading...</div>;
@@ -57,7 +58,12 @@ function PrivateRoomList(props: PrivateRoomListProps) {
   return (
     <>
       {roomsPrivate.map((room) => (
-        <ChatRoom key={room.identifier} room={room} />
+        <ChatRoom
+          key={room.identifier}
+          room={room}
+          isActive={activeDiscussion?.identifier === room.identifier}
+          onItemClick={openDiscussion}
+        />
       ))}
     </>
   );
@@ -74,7 +80,8 @@ interface PublicRoomsListProps {}
  * @returns JSX.Element
  */
 function PublicRoomsList(props: PublicRoomsListProps) {
-  const { roomsPublic, loadingRooms } = useChatContext();
+  const { roomsPublic, loadingRooms, openDiscussion, activeDiscussion } =
+    useChatContext();
 
   if (loadingRooms) {
     return <div>Loading...</div>;
@@ -87,7 +94,12 @@ function PublicRoomsList(props: PublicRoomsListProps) {
   return (
     <>
       {roomsPublic.map((room) => (
-        <ChatRoom key={room.identifier} room={room} canEdit canDelete />
+        <ChatRoom
+          key={room.identifier}
+          room={room}
+          onItemClick={openDiscussion}
+          isActive={activeDiscussion?.identifier === room.identifier}
+        />
       ))}
     </>
   );
@@ -98,14 +110,9 @@ function PublicRoomsList(props: PublicRoomsListProps) {
  */
 interface ChatRoomProps {
   room: ChatRoom;
-  canEdit?: boolean;
-  canDelete?: boolean;
+  isActive: boolean;
+  onItemClick?: (identifier: string) => void;
 }
-
-const defaultRoomItemProps: Partial<ChatRoomProps> = {
-  canEdit: false,
-  canDelete: false,
-};
 
 /**
  * ChatRoom
@@ -113,16 +120,18 @@ const defaultRoomItemProps: Partial<ChatRoomProps> = {
  * @returns JSX.Element
  */
 function ChatRoom(props: ChatRoomProps) {
-  props = { ...defaultRoomItemProps, ...props };
-  const { room } = props;
-  const { openDiscussion } = useChatContext();
+  const { room, isActive, onItemClick } = props;
 
+  /**
+   * Handle room click
+   */
   const handleRoomClick = React.useCallback(() => {
-    openDiscussion(room.identifier);
-  }, [openDiscussion, room.identifier]);
+    if (onItemClick) {
+      onItemClick(room.identifier);
+    }
+  }, [onItemClick, room.identifier]);
 
-  // set minimized name to contain only four first letter and three dots
-  /* const minimizedName = room.name.slice(0, 4) + "..."; */
+  const className = isActive ? "chat__room chat__active-item" : "chat__room";
 
   return (
     <Dropdown
@@ -132,7 +141,7 @@ function ChatRoom(props: ChatRoomProps) {
       alignSelf="left"
       alignSelfVertically="top"
     >
-      <div key={room.identifier} className="chat__room" role="menuitem">
+      <div key={room.identifier} className={className} role="menuitem">
         <div className="chat__room-name-container" onClick={handleRoomClick}>
           <div className="chat__room-name">{room.name}</div>
         </div>

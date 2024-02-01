@@ -28,7 +28,8 @@ function ChatMyDiscussions() {
  * @returns JSX.Element
  */
 function ChatMyCounselorsDiscussions() {
-  const { counselorUsers, currentUser } = useChatContext();
+  const { counselorUsers, currentUser, activeDiscussion, openDiscussion } =
+    useChatContext();
 
   if (currentUser.type !== "STUDENT") {
     return null;
@@ -54,7 +55,12 @@ function ChatMyCounselorsDiscussions() {
     <>
       <div className="chat__users-category-title">Ohjaajat</div>
       {sortedCounclors.map((user) => (
-        <ChatMyActiveDiscussion key={user.id} user={user} />
+        <ChatMyActiveDiscussion
+          key={user.id}
+          user={user}
+          isActive={activeDiscussion?.identifier === user.identifier}
+          onOpenClick={openDiscussion}
+        />
       ))}
     </>
   );
@@ -76,6 +82,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
     chatActivity,
     closeDiscussionWithUser,
     openDiscussion,
+    activeDiscussion,
   } = useChatContext();
 
   // Sort discussion by last message activity
@@ -112,6 +119,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
         <ChatMyActiveDiscussion
           key={user.id}
           user={user}
+          isActive={activeDiscussion?.identifier === user.identifier}
           onOpenClick={openDiscussion}
           onRemoveClick={closeDiscussionWithUser}
         />
@@ -125,6 +133,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
  */
 interface ChatMyDiscussionProps {
   user: ChatUser;
+  isActive: boolean;
   onOpenClick?: (targetIdentifier: string) => void;
   onRemoveClick?: (user: ChatUser) => void;
 }
@@ -135,7 +144,7 @@ interface ChatMyDiscussionProps {
  * @returns JSX.Element
  */
 function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
-  const { user, onRemoveClick, onOpenClick } = props;
+  const { user, isActive, onRemoveClick, onOpenClick } = props;
 
   /**
    * Handles open click
@@ -163,8 +172,10 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
     [onRemoveClick, user]
   );
 
+  const className = isActive ? "chat__user chat__active-item" : "chat__user";
+
   return (
-    <div className="chat__user" role="menuitem" onClick={handleOpenClick}>
+    <div className={className} role="menuitem" onClick={handleOpenClick}>
       <ChatProfile user={user} />
 
       {onRemoveClick && (

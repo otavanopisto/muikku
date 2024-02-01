@@ -53,7 +53,7 @@ $chat-resizer-corner-size: 15px;
   height: 500px;
   overflow: unset;
   position: fixed;
-  width: 700px;
+  width: 800px;
   z-index: 9989;
 }
 
@@ -583,6 +583,37 @@ $chat-resizer-corner-size: 15px;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 10px;
+}
+
+.chat__overview-panel-item {
+  align-items: center;
+  border-radius: $chat-border-radius;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  margin: 2px 0;
+  padding: 5px;
+
+  &:hover {
+    background: $color-chat-panel-background;
+
+    .chat__avatar-status {
+      // We change the border-color of status indicator dot to match the parent's background
+      border-color: $color-chat-panel-background;
+    }
+  }
+}
+
+.chat__overview-panel-item-data {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.chat__overview-panel-item-actions {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 // Chat window resizer
