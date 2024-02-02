@@ -131,9 +131,9 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
     <Dialog
       localElementId="chat__body"
       disableScroll={true}
-      title="Chatti asetukset"
+      title="Chatin asetukset"
       content={content}
-      modifier={["wizard", "local"]}
+      modifier={["chat", "local"]}
     >
       {props.children}
     </Dialog>

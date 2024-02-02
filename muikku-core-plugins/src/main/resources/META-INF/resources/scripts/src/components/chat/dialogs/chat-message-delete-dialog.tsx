@@ -80,7 +80,7 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
       disableScroll={true}
       title="Viestin poisto"
       content={content}
-      modifier={["wizard", "local"]}
+      modifier={["chat", "local"]}
     />
   );
 };

@@ -1,9 +1,10 @@
-import Dialog from "~/components/general/dialog";
+import Dialog, { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { ChatRoom } from "~/generated/client";
 import { useChatContext } from "../context/chat-context";
+import Button from "~/components/general/button";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 
@@ -61,7 +62,7 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
    */
   const handleSaveClick =
     (callback: () => void) =>
-    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
       await saveEditedRoom(room.identifier, {
         name: roomEdit.name,
@@ -86,7 +87,7 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
    */
   const handlesCancelEditClick =
     (callback: () => void) =>
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       // if dialog default functionality is info, then canceling will just revert back to info
       // else we will call callback that will close the dialog
       if (defaults === "info") {
@@ -106,53 +107,82 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
    */
   const content = (closeDialog: () => void) =>
     editing ? (
-      <div className="chat-rooms-editor">
-        <h3>Uusi chatti huone</h3>
-        <div
-          className="new-room-form"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <label>Nimi</label>
+      <div>
+        <DialogRow>
+          <label className="chat__label" htmlFor="editRoomName">
+            Nimi
+          </label>
           <input
+            id="editRoomName"
             type="text"
+            className="chat__textfield"
             value={roomEdit.name}
             onChange={handlesNameChange}
           />
-
-          <label>Kuvaus</label>
+        </DialogRow>
+        <DialogRow>
+          <label className="chat__label" htmlFor="editRoowDescription">
+            Kuvaus
+          </label>
           <textarea
+            id="editRoowDescription"
+            className="chat__memofield"
             value={roomEdit.description}
             onChange={handlesDescriptionChange}
           />
-          <button onClick={handleSaveClick(closeDialog)} disabled={disabled}>
-            Tallenna muokkaus
-          </button>
-          <button
+        </DialogRow>
+      </div>
+    ) : (
+      <div>
+        <DialogRow>
+          <strong>{room.name}</strong>
+        </DialogRow>
+        <DialogRow>{room.description}</DialogRow>
+      </div>
+    );
+
+  /**
+   * footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => void) => (
+    <div className="dialog__button-set">
+      {editing ? (
+        <>
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            onClick={handleSaveClick(closeDialog)}
+            disabled={disabled}
+          >
+            Tallenna
+          </Button>
+          <Button
+            buttonModifiers={["standard-cancel", "cancel"]}
             onClick={handlesCancelEditClick(closeDialog)}
             disabled={disabled}
           >
             Peruuta
-          </button>
-        </div>
-      </div>
-    ) : (
-      <div>
-        <h3>{room.name}</h3>
-        <p>{room.description}</p>
-        <button onClick={() => setEditing(true)}>Muokkaa</button>
-      </div>
-    );
+          </Button>
+        </>
+      ) : (
+        <Button
+          buttonModifiers={["standard-ok", "info"]}
+          onClick={() => setEditing(true)}
+        >
+          Muokkaa
+        </Button>
+      )}
+    </div>
+  );
 
   return (
     <Dialog
       localElementId="chat__body"
       disableScroll={true}
-      title="Uusi huone"
+      title={editing ? "Muokkaa huoneen tietoja" : "Huoneen tiedot"}
       content={content}
-      modifier={["wizard", "local"]}
+      footer={footer}
+      modifier={["chat", "local"]}
     >
       {props.children}
     </Dialog>

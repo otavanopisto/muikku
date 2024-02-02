@@ -52,9 +52,8 @@ const ChatUnblockDiscussionDialog = () => {
         <h3>Keskustelun eston poisto</h3>
         <p>
           Olet poistamassa estoa käyttäjän:{" "}
-          <strong>{userToBeUnblocked.nick}</strong>
-          kanssa. Poiston jälkeen käyttäjä voi näkee statuksesi ja hän voi
-          lähettää sinulle viestejä.
+          <strong>{userToBeUnblocked.nick}</strong> kanssa. Poiston jälkeen
+          käyttäjä voi näkee statuksesi ja hän voi lähettää sinulle viestejä.
         </p>
         <button onClick={handleUnblockClick(closeDialog)} disabled={disabled}>
           Poista keskustelu
@@ -71,9 +70,9 @@ const ChatUnblockDiscussionDialog = () => {
       isOpen={!!userToBeUnblocked}
       localElementId="chat__body"
       disableScroll={true}
-      title="Keskustelun eston poisto"
+      title="Käyttäjän eston poistaminen"
       content={content}
-      modifier={["wizard", "local"]}
+      modifier={["chat", "local"]}
     />
   );
 };

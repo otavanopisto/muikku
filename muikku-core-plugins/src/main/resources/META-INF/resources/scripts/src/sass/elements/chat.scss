@@ -267,10 +267,25 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__discussion-panel-header-title {
-  flex-basis: 100%;
+  cursor: pointer;
+  flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
   font-weight: 600;
+  white-space: nowrap;
+}
+
+.chat__discussion-panel-header-description {
+  color: lighten($color-default-contrast, 30%);
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  margin: 0 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .chat__discussion-panel-header-actions {
@@ -765,7 +780,6 @@ $chat-resizer-corner-size: 15px;
   font-family: $system-font-family;
   font-size: 0.8125rem;
   font-weight: 400;
-  height: 100%;
   padding: 8px 5px;
   resize: none;
   width: 100%;
@@ -773,6 +787,20 @@ $chat-resizer-corner-size: 15px;
 
 .chat__textfield--with-filter {
   margin: 0 5px 0 0;
+}
+
+.chat__memofield {
+  background: transparent;
+  border: 2px solid $color-form-element-border;
+  border-radius: $chat-border-radius;
+  color: $color-text-default;
+  font-family: $system-font-family;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  height: 5rem;
+  padding: 8px 5px;
+  resize: none;
+  width: 100%;
 }
 
 .chat__submit {

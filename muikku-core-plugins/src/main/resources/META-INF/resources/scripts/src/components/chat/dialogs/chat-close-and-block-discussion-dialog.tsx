@@ -72,7 +72,7 @@ const ChatCloseAndBlockDiscussionDialog = () => {
       disableScroll={true}
       title="Käyttäjän estäminen"
       content={content}
-      modifier={["wizard", "local"]}
+      modifier={["chat", "local"]}
     />
   );
 };

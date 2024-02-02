@@ -59,7 +59,7 @@ const ChatRoomDeleteDialog = (props: ChatRoomDeleteDialogProps) => {
       disableScroll={true}
       title="Huoneen poisto"
       content={content}
-      modifier={["wizard", "local"]}
+      modifier={["chat", "local"]}
     >
       {props.children}
     </Dialog>

@@ -208,9 +208,12 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
       <div className="chat__discussion-panel-header">
         <ChatRoomEditAndInfoDialog room={props.targetRoom} defaults="info">
           <div className="chat__discussion-panel-header-title">
-            {props.title}
+            {props.targetRoom.name}
           </div>
         </ChatRoomEditAndInfoDialog>
+        <div className="chat__discussion-panel-header-description">
+          {props.targetRoom.description}
+        </div>
       </div>
 
       <div className="chat__discussion-panel-body" ref={contentRef}>

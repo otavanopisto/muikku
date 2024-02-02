@@ -1,8 +1,9 @@
-import Dialog from "~/components/general/dialog";
+import Dialog, { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
+import Button from "~/components/general/button";
 
 /**
  * NewChatRoomDialogProps
@@ -26,7 +27,7 @@ const ChatRoomNewDialog = (props: ChatRoomNewDialogProps) => {
    */
   const handleSaveClick =
     (callback: () => void) =>
-    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
       await saveNewRoom();
       setDisabled(false);
@@ -55,34 +56,57 @@ const ChatRoomNewDialog = (props: ChatRoomNewDialogProps) => {
    * @param closeDialog closeDialog
    */
   const content = (closeDialog: () => void) => (
-    <div className="chat-rooms-editor">
-      <h3>Uusi chatti huone</h3>
-      <div
-        className="new-room-form"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <label>Nimi</label>
-        <input
-          type="text"
-          value={newChatRoom.name}
-          onChange={handleNameChange}
-        />
+    <div>
+      <DialogRow>
+        <div className="form-element">
+          <label className="chat__label" htmlFor="newRoomName">
+            Nimi
+          </label>
+          <input
+            id="newRoomName"
+            type="text"
+            className="chat__textfield"
+            value={newChatRoom.name}
+            onChange={handleNameChange}
+          />
+        </div>
+      </DialogRow>
+      <DialogRow>
+        <div className="form-element">
+          <label className="chat__label" htmlFor="newRoowDescription">
+            Kuvaus
+          </label>
+          <textarea
+            id="newRoowDescription"
+            className="chat__memofield"
+            value={newChatRoom.description}
+            onChange={handleDescriptionChange}
+          />
+        </div>
+      </DialogRow>
+    </div>
+  );
 
-        <label>Kuvaus</label>
-        <textarea
-          value={newChatRoom.description}
-          onChange={handleDescriptionChange}
-        />
-        <button onClick={handleSaveClick(closeDialog)} disabled={disabled}>
-          Tallenna
-        </button>
-        <button onClick={closeDialog} disabled={disabled}>
-          Peruuta
-        </button>
-      </div>
+  /**
+   * footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => void) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["standard-ok", "execute"]}
+        onClick={handleSaveClick(closeDialog)}
+        disabled={disabled}
+      >
+        Tallenna
+      </Button>
+      <Button
+        buttonModifiers={["standard-cancel", "cancel"]}
+        onClick={closeDialog}
+        disabled={disabled}
+      >
+        Peruuta
+      </Button>
     </div>
   );
 
@@ -90,9 +114,10 @@ const ChatRoomNewDialog = (props: ChatRoomNewDialogProps) => {
     <Dialog
       localElementId="chat__body"
       disableScroll={true}
-      title="Uusi huone"
+      title="Luo uusi huone"
       content={content}
-      modifier={["wizard", "local"]}
+      footer={footer}
+      modifier={["chat", "local"]}
     >
       {props.children}
     </Dialog>

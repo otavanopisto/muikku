@@ -20,11 +20,9 @@
 }
 
 .dialog--local {
-  inset: 0;
   position: absolute;
 
   .dialog__window {
-    inset: 0;
     position: relative;
   }
 }
@@ -333,7 +331,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   height: $dialog-title-height;
-  padding: 15px 20px;
+  padding: 15px 50px 15px 20px;
   position: relative;
   width: 100%;
 
@@ -344,7 +342,7 @@
     display: flex;
     height: 3rem;
     min-height: 3rem;
-    padding: 0 20px;
+    padding: 0 50px 0 20px;
   }
 }
 
@@ -397,6 +395,19 @@
     .dialog__close {
       right: 5px;
       top: 25px;
+    }
+  }
+}
+
+.dialog__header--chat {
+  background: $color-default;
+  color: $color-default-contrast;
+
+  .dialog__title {
+    font-size: 0.9375rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1rem;
     }
   }
 }
@@ -455,7 +466,7 @@
 }
 
 .dialog__content {
-  display: flex;
+  // display: flex;
   flex-basis: calc(100% - 6rem - 20px);
   flex-grow: 1;
   flex-shrink: 1;
@@ -485,6 +496,11 @@
 
 .dialog__content-row {
   margin: 0 0 10px;
+  width: 100%;
+
+  &:last-child {
+    margin: 0;
+  }
 
   label {
     font-weight: 600;
