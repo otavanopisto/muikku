@@ -29,16 +29,6 @@ const ChatCloseAndBlockDiscussionDialog = () => {
     };
 
   /**
-   * handleCancelUnblockClick
-   * @param e e
-   */
-  const handleCancelUnblockClick = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    closeBlockUserDialog();
-  };
-
-  /**
    * content
    * @param closeDialog closeDialog
    */
@@ -58,7 +48,7 @@ const ChatCloseAndBlockDiscussionDialog = () => {
         <button onClick={handleBlockUserClick(closeDialog)} disabled={disabled}>
           Estä käyttäjä
         </button>
-        <button onClick={handleCancelUnblockClick} disabled={disabled}>
+        <button onClick={closeDialog} disabled={disabled}>
           Peruuta
         </button>
       </div>
@@ -68,6 +58,7 @@ const ChatCloseAndBlockDiscussionDialog = () => {
   return (
     <Dialog
       isOpen={!!userToBeBlocked}
+      onClose={closeBlockUserDialog}
       localElementId="chat__body"
       disableScroll={true}
       title="Käyttäjän estäminen"
