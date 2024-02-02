@@ -29,16 +29,6 @@ const ChatUnblockDiscussionDialog = () => {
     };
 
   /**
-   * handleCancelUnblockClick
-   * @param e e
-   */
-  const handleCancelUnblockClick = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    closeCancelUnblockDialog();
-  };
-
-  /**
    * content
    * @param closeDialog closeDialog
    */
@@ -58,7 +48,7 @@ const ChatUnblockDiscussionDialog = () => {
         <button onClick={handleUnblockClick(closeDialog)} disabled={disabled}>
           Poista keskustelu
         </button>
-        <button onClick={handleCancelUnblockClick} disabled={disabled}>
+        <button onClick={closeDialog} disabled={disabled}>
           Peruuta
         </button>
       </div>
@@ -68,6 +58,7 @@ const ChatUnblockDiscussionDialog = () => {
   return (
     <Dialog
       isOpen={!!userToBeUnblocked}
+      onClose={closeCancelUnblockDialog}
       localElementId="chat__body"
       disableScroll={true}
       title="Käyttäjän eston poistaminen"

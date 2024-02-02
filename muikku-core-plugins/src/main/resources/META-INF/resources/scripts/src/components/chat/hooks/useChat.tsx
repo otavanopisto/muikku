@@ -286,36 +286,30 @@ function useChat(userId: number, currentUser: ChatUser) {
    * Handles canceling unblocking discussion with user
    * @param user user which unblocking was canceled
    */
-  const openCancelUnblockDialog = React.useCallback(
-    (user: ChatUser) => {
-      setUserToBeUnblocked(user);
-    },
-    [setUserToBeUnblocked]
-  );
+  const openCancelUnblockDialog = React.useCallback((user: ChatUser) => {
+    setUserToBeUnblocked(user);
+  }, []);
 
   /**
    * Handles closing cancel unblocking discussion with user
    */
   const closeCancelUnblockDialog = React.useCallback(() => {
     setUserToBeUnblocked(null);
-  }, [setUserToBeUnblocked]);
+  }, []);
 
   /**
    * Handles opening block user dialog
    */
-  const openBlockUserDialog = React.useCallback(
-    (user: ChatUser) => {
-      setUserToBeBlocked(user);
-    },
-    [setUserToBeBlocked]
-  );
+  const openBlockUserDialog = React.useCallback((user: ChatUser) => {
+    setUserToBeBlocked(user);
+  }, []);
 
   /**
    * Handles closing block user dialog
    */
   const closeBlockUserDialog = React.useCallback(() => {
     setUserToBeBlocked(null);
-  }, [setUserToBeBlocked]);
+  }, []);
 
   // Whether the current user can moderate
   const canModerate = React.useMemo(
