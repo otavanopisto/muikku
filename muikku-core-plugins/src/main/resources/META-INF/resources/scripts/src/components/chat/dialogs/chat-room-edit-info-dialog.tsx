@@ -109,27 +109,31 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
     editing ? (
       <div>
         <DialogRow>
-          <label className="chat__label" htmlFor="editRoomName">
-            Nimi
-          </label>
-          <input
-            id="editRoomName"
-            type="text"
-            className="chat__textfield"
-            value={roomEdit.name}
-            onChange={handlesNameChange}
-          />
+          <div className="form-element">
+            <label className="chat__label" htmlFor="editRoomName">
+              Nimi
+            </label>
+            <input
+              id="editRoomName"
+              type="text"
+              className="chat__textfield"
+              value={roomEdit.name}
+              onChange={handlesNameChange}
+            />
+          </div>
         </DialogRow>
         <DialogRow>
-          <label className="chat__label" htmlFor="editRoowDescription">
-            Kuvaus
-          </label>
-          <textarea
-            id="editRoowDescription"
-            className="chat__memofield"
-            value={roomEdit.description}
-            onChange={handlesDescriptionChange}
-          />
+          <div className="form-element">
+            <label className="chat__label" htmlFor="editRoowDescription">
+              Kuvaus
+            </label>
+            <textarea
+              id="editRoowDescription"
+              className="chat__memofield"
+              value={roomEdit.description}
+              onChange={handlesDescriptionChange}
+            />
+          </div>
         </DialogRow>
       </div>
     ) : (

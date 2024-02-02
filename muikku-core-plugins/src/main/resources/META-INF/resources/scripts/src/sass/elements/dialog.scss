@@ -466,10 +466,10 @@
 }
 
 .dialog__content {
-  // display: flex;
   flex-basis: calc(100% - 6rem - 20px);
   flex-grow: 1;
   flex-shrink: 1;
+  line-height: 1.25rem;
   max-height: calc(100% - 6rem - 20px);
   min-height: 0;
   padding: $dialog-content-padding;
@@ -492,6 +492,11 @@
   @include breakpoint($breakpoint-pad) {
     padding: 0 30px;
   }
+}
+
+// Descrease top and bottom padding in chat's dialogs as they have white background
+.dialog__content--chat {
+  padding: 10px 20px;
 }
 
 .dialog__content-row {

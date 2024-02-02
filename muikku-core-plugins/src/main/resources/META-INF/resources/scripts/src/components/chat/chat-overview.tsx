@@ -199,9 +199,11 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
         {canModerate && (
           <div className="chat__overview-panel-header-action">
             <ChatRoomNewDialog>
-              <Button icon="plus" iconPosition="left">
-                Uusi huone
-              </Button>
+              <IconButton
+                icon="plus"
+                buttonModifiers={["chat"]}
+                iconPosition="left"
+              />
             </ChatRoomNewDialog>
           </div>
         )}

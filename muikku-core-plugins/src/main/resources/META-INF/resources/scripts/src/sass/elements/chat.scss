@@ -171,7 +171,7 @@ $chat-resizer-corner-size: 15px;
   position: absolute;
   scrollbar-width: thin;
   top: 0;
-  transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+  transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96), box-shadow 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: 85px;
   z-index: 4;
 }
@@ -329,8 +329,13 @@ $chat-resizer-corner-size: 15px;
   width: 100%;
 }
 
-.chat__message-wrapper {
+.chat__message {
+  align-items: flex-start;
+  border-radius: $chat-border-radius;
+  display: flex;
+  flex-flow: row nowrap;
   margin: 10px 0;
+  padding: 5px;
   position: relative;
 
   &:first-child {
@@ -340,24 +345,13 @@ $chat-resizer-corner-size: 15px;
   &:last-child {
     margin: 10px 0 0;
   }
-}
-
-.chat__message {
-  border-radius: $chat-border-radius;
-  padding: 5px;
 
   &:hover {
     background: $color-chat-panel-background;
   }
 }
 
-.chat__message-content-container {
-  align-items: flex-start;
-  display: flex;
-  flex-flow: row nowrap;
-}
-
-.chat__avatar-container {
+.chat__message-avatar-container {
   flex-basis: $avatar-mobile-chat-size;
   flex-grow: 0;
   flex-shrink: 0;
@@ -368,7 +362,7 @@ $chat-resizer-corner-size: 15px;
   }
 }
 
-.chat__message-content-wrapper {
+.chat__message-content-container {
   flex-basis: calc(100% - 46px);
   flex-grow: 1;
   flex-shrink: 1;
@@ -387,6 +381,10 @@ $chat-resizer-corner-size: 15px;
 
 .chat__message-meta-timestamp {
   font-size: 0.75rem;
+}
+
+.chat__message-body {
+  line-height: 1.25rem;
 }
 
 .chat__discussion-panel-footer {
@@ -427,7 +425,7 @@ $chat-resizer-corner-size: 15px;
   right: 0;
   scrollbar-width: thin;
   top: 0;
-  transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
+  transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96), box-shadow 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: 52px;
   z-index: 4;
 }
@@ -620,15 +618,21 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__overview-panel-header-title {
+  border-right: 1px solid $color-default-separator-border;
   font-weight: 600;
-  margin: 0 20px 0 0;
+  margin: 0 5px 0 0;
+  padding: 0 10px 0 0;
+}
+
+.chat__overview-panel-header-actions {
+  margin: 0 0 0 auto;
 }
 
 .chat__tabs {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  margin: 0 10px;
+  margin: 0 5px;
 }
 
 .chat__tab {

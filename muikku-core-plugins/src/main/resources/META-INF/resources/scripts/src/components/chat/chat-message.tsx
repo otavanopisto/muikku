@@ -109,13 +109,13 @@ const ChatMessage = (props: ChatMessageProps) => {
   };
 
   const chatMessageContent = editMode ? (
-    <div className="chat__message-content-container" key="editable">
+    <React.Fragment key="editable">
       <ChatProfileAvatar
         id={msg.sourceUserEntityId}
         nick={msg.nick}
         hasImage={msg.hasImage}
       />
-      <div className="chat__message-content-wrapper">
+      <div className="chat__message-content-container">
         <div className="chat__message-meta">
           <span className={`chat__message-meta-sender`}>{msg.nick}</span>
           <span className="chat__message-meta-timestamp">
@@ -123,7 +123,7 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
 
-        <div className="chat-editor-container">
+        <div className="chat__message-editor">
           <ChatEditor
             initialValueString={msg.message}
             onChange={handleEditedMessageChange}
@@ -145,22 +145,22 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
       </div>
-    </div>
+    </React.Fragment>
   ) : (
-    <div className="chat__message-content-container" key="nonEditable">
+    <React.Fragment key="nonEditable">
       <ChatProfileAvatar
         id={msg.sourceUserEntityId}
         nick={msg.nick}
         hasImage={msg.hasImage}
       />
-      <div className="chat__message-content-wrapper">
+      <div className="chat__message-content-container">
         <div className="chat__message-meta">
           <span className={`chat__message-meta-sender`}>{msg.nick}</span>
           <span className="chat__message-meta-timestamp">
             {localize.formatDaily(msg.sentDateTime)}
           </span>
         </div>
-        <div className="chat__message-content">
+        <div className="chat__message-body">
           {archived ? <i>Poistettu</i> : msg.message}
           {editedDateTime && (
             <div className="chat__message-edited-info">
@@ -169,43 +169,41 @@ const ChatMessage = (props: ChatMessageProps) => {
           )}
         </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 
   return (
     <>
-      <div className="chat__message-wrapper">
-        <div
-          ref={activatorDelayHandler}
-          {...longPressEvent}
-          className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
-        >
-          {chatMessageContent}
-        </div>
-
-        <DesktopMessageActions
-          mainActions={mainModerationActions}
-          secondaryActions={secondaryModerationActions}
-          open={showActions && mainModerationActions.length > 0}
-          onHoverActionsStart={() => {
-            if (contentDelayHandler.current) {
-              clearTimeout(contentDelayHandler.current);
-            }
-            if (!hoveringContent && !editMode) setHoveringContent(true);
-          }}
-          onHoverActionsEnd={() => {
-            if (contentDelayHandler.current) {
-              clearTimeout(contentDelayHandler.current);
-            }
-
-            if (hoveringContent) {
-              contentDelayHandler.current = setTimeout(() => {
-                setHoveringContent(false);
-              }, 200);
-            }
-          }}
-        />
+      <div
+        ref={activatorDelayHandler}
+        {...longPressEvent}
+        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
+      >
+        {chatMessageContent}
       </div>
+
+      <DesktopMessageActions
+        mainActions={mainModerationActions}
+        secondaryActions={secondaryModerationActions}
+        open={showActions && mainModerationActions.length > 0}
+        onHoverActionsStart={() => {
+          if (contentDelayHandler.current) {
+            clearTimeout(contentDelayHandler.current);
+          }
+          if (!hoveringContent && !editMode) setHoveringContent(true);
+        }}
+        onHoverActionsEnd={() => {
+          if (contentDelayHandler.current) {
+            clearTimeout(contentDelayHandler.current);
+          }
+
+          if (hoveringContent) {
+            contentDelayHandler.current = setTimeout(() => {
+              setHoveringContent(false);
+            }, 200);
+          }
+        }}
+      />
 
       <ChatMessageDeleteDialog
         open={showDeleteDialog}
