@@ -171,6 +171,7 @@ $chat-resizer-corner-size: 15px;
   position: absolute;
   scrollbar-width: thin;
   top: 0;
+  transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: 85px;
   z-index: 4;
 }
@@ -244,6 +245,7 @@ $chat-resizer-corner-size: 15px;
   height: calc(100% - 10px);
   margin: 5px 54px 5px 87px;
   position: relative;
+  transition: margin 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: auto;
 
   &.chat__discussions-panel--left-panel-open {
@@ -425,6 +427,7 @@ $chat-resizer-corner-size: 15px;
   right: 0;
   scrollbar-width: thin;
   top: 0;
+  transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: 52px;
   z-index: 4;
 }
