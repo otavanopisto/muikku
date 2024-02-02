@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 export type UseWindowBreakpoints = ReturnType<typeof useWindowBreakpoints>;
 
@@ -20,7 +21,7 @@ const breakpoints = {
 function useWindowBreakpoints(props: UseWindowBreakpointsProps) {
   const { windowRef } = props;
 
-  const [isMobile, setIsMobile] = React.useState(false);
+  const [isMobile, setIsMobile] = useLocalStorage("chat-window-mobile", false);
 
   React.useEffect(() => {
     if (windowRef.current) {
@@ -44,7 +45,7 @@ function useWindowBreakpoints(props: UseWindowBreakpointsProps) {
         resizeWindowObserver.disconnect();
       };
     }
-  }, [windowRef]);
+  }, [setIsMobile, windowRef]);
 
   return {
     isMobile,

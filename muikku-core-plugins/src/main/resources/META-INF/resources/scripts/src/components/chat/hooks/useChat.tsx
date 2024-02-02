@@ -18,6 +18,7 @@ import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 import useChatActivity from "./useChatActivity";
 import { useWebsocketsWithCallbacks } from "./useWebsocketsWithCallbacks";
+import { useLocalStorage } from "usehooks-ts";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -62,11 +63,17 @@ function useChat(userId: number, currentUser: ChatUser) {
   >([]);
 
   // Whether to show the control box or bubble
-  const [minimized, setMinimized] = React.useState<boolean>(true);
+  const [minimized, setMinimized] = React.useState(true);
 
   // Panel states
-  const [panelRightOpen, setPanelRightOpen] = React.useState<boolean>(false);
-  const [panelLeftOpen, setPanelLeftOpen] = React.useState<boolean>(false);
+  const [panelRightOpen, setPanelRightOpen] = useLocalStorage(
+    "chat-panel-right",
+    true
+  );
+  const [panelLeftOpen, setPanelLeftOpen] = useLocalStorage(
+    "chat-panel-left",
+    true
+  );
 
   // Whether the current width is mobile
   const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
@@ -93,15 +100,6 @@ function useChat(userId: number, currentUser: ChatUser) {
       onNewMsgSentUpdateActivity(data, activeDiscussionIdentifier);
     },
   });
-
-  React.useEffect(() => {
-    if (minimized) {
-      unstable_batchedUpdates(() => {
-        setPanelRightOpen(false);
-        setPanelLeftOpen(false);
-      });
-    }
-  }, [minimized]);
 
   /**
    * updateNewRoomEditor
@@ -156,22 +154,28 @@ function useChat(userId: number, currentUser: ChatUser) {
   }, []);
 
   // Toggles the left panel or sets it to a specific state
-  const toggleLeftPanel = React.useCallback((nextState?: boolean) => {
-    if (nextState !== undefined) {
-      setPanelLeftOpen(nextState);
-    } else {
-      setPanelLeftOpen((panelLeftOpen) => !panelLeftOpen);
-    }
-  }, []);
+  const toggleLeftPanel = React.useCallback(
+    (nextState?: boolean) => {
+      if (nextState !== undefined) {
+        setPanelLeftOpen(nextState);
+      } else {
+        setPanelLeftOpen((panelLeftOpen) => !panelLeftOpen);
+      }
+    },
+    [setPanelLeftOpen]
+  );
 
   // Toggles the right panel or sets it to a specific state
-  const toggleRightPanel = React.useCallback((nextState?: boolean) => {
-    if (nextState !== undefined) {
-      setPanelRightOpen(nextState);
-    } else {
-      setPanelRightOpen((panelRightOpen) => !panelRightOpen);
-    }
-  }, []);
+  const toggleRightPanel = React.useCallback(
+    (nextState?: boolean) => {
+      if (nextState !== undefined) {
+        setPanelRightOpen(nextState);
+      } else {
+        setPanelRightOpen((panelRightOpen) => !panelRightOpen);
+      }
+    },
+    [setPanelRightOpen]
+  );
 
   /**
    * closeView
@@ -222,6 +226,8 @@ function useChat(userId: number, currentUser: ChatUser) {
       markMsgsAsRead,
       discussionInstances,
       chatViews,
+      setPanelLeftOpen,
+      setPanelRightOpen,
       userId,
       websocket,
     ]
