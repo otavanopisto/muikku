@@ -1,7 +1,6 @@
 import * as React from "react";
 import Button, { IconButton } from "../general/button";
 import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
-import { motion } from "framer-motion";
 import { useChatContext } from "./context/chat-context";
 import { ChatUser } from "~/generated/client";
 import ChatProfile from "./chat-profile";
@@ -14,7 +13,7 @@ import {
   sortRoomsAplhabetically,
   sortUsersAlphabetically,
 } from "./chat-helpers";
-import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
+//import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 
 type OverviewTab = "users" | "rooms" | "blocked";
 
@@ -216,7 +215,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { users, userFilters, openDiscussion, chatActivity } = useChatContext();
+  const { users, userFilters, openDiscussion } = useChatContext();
 
   const filteredAndSortedUsers = React.useMemo(() => {
     if (!userFilters) {
