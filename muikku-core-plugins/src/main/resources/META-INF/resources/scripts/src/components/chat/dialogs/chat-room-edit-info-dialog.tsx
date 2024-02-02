@@ -31,7 +31,7 @@ interface ChatRoomEditAndInfoDialogProps {
 const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
   const { room, defaults } = props;
 
-  const { saveEditedRoom } = useChatContext();
+  const { saveEditedRoom, canModerate } = useChatContext();
 
   const [roomEdit, setRoomEdit] = React.useState<ChatRoom>(room);
   const [editing, setEditing] = React.useState<boolean>(defaults === "edit");
@@ -145,35 +145,41 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
    * footer
    * @param closeDialog closeDialog
    */
-  const footer = (closeDialog: () => void) => (
-    <div className="dialog__button-set">
-      {editing ? (
-        <>
+  const footer = (closeDialog: () => void) => {
+    if (!canModerate) {
+      return null;
+    }
+
+    return (
+      <div className="dialog__button-set">
+        {editing ? (
+          <>
+            <Button
+              buttonModifiers={["standard-ok", "execute"]}
+              onClick={handleSaveClick(closeDialog)}
+              disabled={disabled}
+            >
+              Tallenna
+            </Button>
+            <Button
+              buttonModifiers={["standard-cancel", "cancel"]}
+              onClick={handlesCancelEditClick(closeDialog)}
+              disabled={disabled}
+            >
+              Peruuta
+            </Button>
+          </>
+        ) : (
           <Button
-            buttonModifiers={["standard-ok", "execute"]}
-            onClick={handleSaveClick(closeDialog)}
-            disabled={disabled}
+            buttonModifiers={["standard-ok", "info"]}
+            onClick={() => setEditing(true)}
           >
-            Tallenna
+            Muokkaa
           </Button>
-          <Button
-            buttonModifiers={["standard-cancel", "cancel"]}
-            onClick={handlesCancelEditClick(closeDialog)}
-            disabled={disabled}
-          >
-            Peruuta
-          </Button>
-        </>
-      ) : (
-        <Button
-          buttonModifiers={["standard-ok", "info"]}
-          onClick={() => setEditing(true)}
-        >
-          Muokkaa
-        </Button>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   return (
     <Dialog

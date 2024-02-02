@@ -39,6 +39,11 @@ function ChatMain(props: ChatMainProps) {
     isInitialized.current = true;
   }, []);
 
+  let mainPanelClassModifiers = [];
+
+  panelLeftOpen && mainPanelClassModifiers.push("left-panel-open");
+  panelRightOpen && mainPanelClassModifiers.push("right-panel-open");
+
   let roomPanelClassModifiers = panelLeftOpen ? ["open"] : [];
   let userPanelClassModifiers = panelRightOpen ? ["open"] : [];
 
@@ -54,11 +59,15 @@ function ChatMain(props: ChatMainProps) {
   const panelLeftArrow = panelLeftOpen ? "arrow-left" : "arrow-right";
   const panelRightArrow = panelRightOpen ? "arrow-right" : "arrow-left";
 
+  if (isMobile) {
+    mainPanelClassModifiers = [];
+  }
+
   return (
     <>
       <div
         className={`chat__rooms-panel ${(roomPanelClassModifiers || [])
-          .map((m) => `chat__rooms-panel--${m}`)
+          .map((m) => ` chat__rooms-panel--${m}`)
           .join(" ")}`}
       >
         <div
@@ -72,14 +81,18 @@ function ChatMain(props: ChatMainProps) {
           <ChatRoomsLists minimized={!panelLeftOpen} />
         </div>
       </div>
-      <div className="chat__discussions-panel">
+      <div
+        className={`chat__discussions-panel ${(mainPanelClassModifiers || [])
+          .map((m) => ` chat__discussions-panel--${m}`)
+          .join("")}`}
+      >
         <ChatViews
           wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
         />
       </div>
       <div
         className={`chat__users-panel ${(userPanelClassModifiers || [])
-          .map((m) => `chat__users-panel--${m}`)
+          .map((m) => ` chat__users-panel--${m}`)
           .join(" ")}`}
       >
         <div
