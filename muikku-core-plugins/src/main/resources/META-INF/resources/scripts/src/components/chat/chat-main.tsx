@@ -24,12 +24,20 @@ function ChatMain(props: ChatMainProps) {
 
   const { isMobile } = useChatWindowBreakpointsContext();
 
+  const isInitialized = React.useRef(false);
+
   React.useEffect(() => {
+    if (!isInitialized.current) return;
+
     if (isMobile) {
       toggleLeftPanel(false);
       toggleRightPanel(false);
     }
   }, [isMobile, toggleLeftPanel, toggleRightPanel]);
+
+  React.useEffect(() => {
+    isInitialized.current = true;
+  }, []);
 
   let roomPanelClassModifiers = panelLeftOpen ? ["open"] : [];
   let userPanelClassModifiers = panelRightOpen ? ["open"] : [];
