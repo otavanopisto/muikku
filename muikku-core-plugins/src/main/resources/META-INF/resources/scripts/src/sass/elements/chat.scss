@@ -171,11 +171,17 @@ $chat-resizer-corner-size: 15px;
   position: absolute;
   scrollbar-width: thin;
   top: 0;
+  width: 85px;
   z-index: 4;
+}
+
+.chat__rooms-panel--open {
+  width: 180px;
 }
 
 .chat__rooms-panel--open-as-floating {
   box-shadow: 5px 0 5px $color-chat-box-shadow;
+  width: 180px;
 }
 
 // Scrolling container for chat-rooms + chat__options
@@ -236,9 +242,17 @@ $chat-resizer-corner-size: 15px;
   border-radius: $chat-border-radius;
   box-shadow: 0 0 2px $color-chat-box-shadow;
   height: calc(100% - 10px);
-  margin: 5px 0;
+  margin: 5px 54px 5px 87px;
   position: relative;
   width: auto;
+
+  &.chat__discussions-panel--left-panel-open {
+    margin-left: 182px;
+  }
+
+  &.chat__discussions-panel--right-panel-open {
+    margin-left: 182px;
+  }
 }
 
 // Panel container for selected discussion
@@ -411,11 +425,17 @@ $chat-resizer-corner-size: 15px;
   right: 0;
   scrollbar-width: thin;
   top: 0;
+  width: 52px;
   z-index: 4;
+}
+
+.chat__users-panel--open {
+  width: 180px;
 }
 
 .chat__users-panel--open-as-floating {
   box-shadow: -5px 0 5px $color-chat-box-shadow;
+  width: 180px;
 }
 
 // Scrolling container for chat-users
