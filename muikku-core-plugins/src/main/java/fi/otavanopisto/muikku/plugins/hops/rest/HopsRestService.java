@@ -472,7 +472,7 @@ public class HopsRestService {
   @GET
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces, @QueryParam("userEntityId") Long userEntityId) {
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("userEntityId") Long userEntityId) {
     
     // Student needs to exist and have HOPS available
     
@@ -576,16 +576,17 @@ public class HopsRestService {
             }
             
             // For students, skip courses that they cannot sign up to
+            boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
             
             boolean canSignUp = hopsController.canSignup(workspaceEntity, userEntity);
-            if (onlySignupWorkspaces && !canSignUp) {
+            if (isStudent && !canSignUp) {
               continue;
             }
             
             // For teachers, only list non-stop courses
             
             WorkspaceType workspaceType = null;
-            if (!onlySignupWorkspaces) {
+            if (!isStudent) {
               Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
               workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
               if (workspaceType != null && !StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
