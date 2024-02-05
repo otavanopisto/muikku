@@ -210,6 +210,7 @@ function useUsers(props: UseUsersProps) {
       // Remove callback when unmounting
       websocket.removeEventCallback("chat:user-joined", onChatUserJoinedMsg);
       websocket.removeEventCallback("chat:user-left", onChatUserLeftMsg);
+      websocket.removeEventCallback("chat:nick-change", ChatUsersNickChange);
     };
   }, [websocket]);
 
