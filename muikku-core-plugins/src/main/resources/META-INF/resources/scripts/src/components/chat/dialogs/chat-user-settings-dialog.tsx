@@ -1,4 +1,4 @@
-import Dialog from "~/components/general/dialog";
+import Dialog, { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
@@ -10,6 +10,7 @@ import { StateType } from "~/reducers";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { displayNotification } from "~/actions/base/notifications";
 import { connect } from "react-redux";
+import Button from "~/components/general/button";
 
 const chatApi = MApi.getChatApi();
 
@@ -43,7 +44,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
    */
   const handleSaveClick =
     (callback: () => void) =>
-    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
 
       try {
@@ -85,45 +86,68 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
    * @param closeDialog closeDialog
    */
   const content = (closeDialog: () => void) => (
-    <div className="chat-rooms-editor">
-      <h3>Asetukset</h3>
-      <div
-        className="new-room-form"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <label>Nimimerkki</label>
-        <input
-          type="text"
-          value={currentNickValue}
-          onChange={handleUserNameChange}
-          disabled={disabled}
-        />
-        <Select<ChatSettingVisibilityOption>
-          className="react-select-override"
-          classNamePrefix="react-select-override"
-          isDisabled={disabled}
-          value={currentSelectValue}
-          onChange={handleSelectChange}
-          options={selectOptions}
-          styles={{
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            container: (baseStyles, state) => ({
-              ...baseStyles,
-              width: "100%",
-            }),
-          }}
-        />
+    <div>
+      <DialogRow>
+        <div className="form-element">
+          <label className="chat__label" htmlFor="chatNickName">
+            Nimimerkki
+          </label>
+          <input
+            id="chatNickName"
+            type="text"
+            className="chat__textfield"
+            value={currentNickValue}
+            onChange={handleUserNameChange}
+            disabled={disabled}
+          />
+        </div>
+      </DialogRow>
+      <DialogRow>
+        <div className="form-element">
+          <label className="chat__label" htmlFor="chatVisibility">
+            Näkyvyys
+          </label>
+          <Select<ChatSettingVisibilityOption>
+            id="chatVisibility"
+            className="react-select-override"
+            classNamePrefix="react-select-override"
+            isDisabled={disabled}
+            value={currentSelectValue}
+            onChange={handleSelectChange}
+            options={selectOptions}
+            styles={{
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              container: (baseStyles, state) => ({
+                ...baseStyles,
+                width: "100%",
+              }),
+            }}
+          />
+        </div>
+      </DialogRow>
+    </div>
+  );
 
-        <button onClick={handleSaveClick(closeDialog)} disabled={disabled}>
-          Tallenna
-        </button>
-        <button onClick={closeDialog} disabled={disabled}>
-          Peruuta
-        </button>
-      </div>
+  /**
+   * footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => void) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["standard-ok", "execute"]}
+        onClick={handleSaveClick(closeDialog)}
+        disabled={disabled}
+      >
+        Tallenna
+      </Button>
+      <Button
+        buttonModifiers={["standard-cancel", "cancel"]}
+        onClick={closeDialog}
+        disabled={disabled}
+      >
+        Peruuta
+      </Button>
     </div>
   );
 
@@ -133,6 +157,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
       disableScroll={true}
       title="Chatin asetukset"
       content={content}
+      footer={footer}
       modifier={["chat", "local"]}
     >
       {props.children}
