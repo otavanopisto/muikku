@@ -238,7 +238,10 @@ public class ChatController {
     Set<Long> userEntityIds = listHardBlockedUserEntityIds(sourceUserEntityId);
     List<ChatUserRestModel> chatUsers = new ArrayList<>();
     for (Long userEntityId : userEntityIds) {
-      chatUsers.add(getChatUserRestModel(userEntityId));
+      ChatUserRestModel chatUser = getChatUserRestModel(userEntityId);
+      if (chatUser != null) {
+        chatUsers.add(getChatUserRestModel(userEntityId));
+      }
     }
     return chatUsers;
   }
@@ -513,7 +516,7 @@ public class ChatController {
   }
   
   public ChatUserRestModel getChatUserRestModel(Long userEntityId) {
-    return new ChatUserRestModel(users.get(userEntityId));
+    return users.get(userEntityId) == null ? null : new ChatUserRestModel(users.get(userEntityId));
   }
   
   public void handleSettingsChange(UserEntity userEntity, ChatUserVisibility visibility, String nick, String sessionId) {
