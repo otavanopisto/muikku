@@ -97,8 +97,8 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
           (activity) => activity.targetIdentifier === b.identifier
         );
 
-        const aLastMessage = aActivity.latestMessage;
-        const bLastMessage = bActivity.latestMessage;
+        const aLastMessage = aActivity?.latestMessage || undefined;
+        const bLastMessage = bActivity?.latestMessage || undefined;
 
         if (!aLastMessage) {
           return 1;
