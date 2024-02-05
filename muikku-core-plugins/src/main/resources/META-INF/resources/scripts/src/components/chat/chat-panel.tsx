@@ -236,6 +236,7 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
       <div ref={footerRef} className="chat__discussion-panel-footer">
         <div className="chat__discussion-editor-container">
           <textarea
+            className="chat__new-message"
             value={newMessage}
             onChange={handleEditorChange}
             onKeyDown={handleEnterKeyDown}

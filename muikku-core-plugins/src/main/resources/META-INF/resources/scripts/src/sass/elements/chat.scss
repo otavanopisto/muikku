@@ -837,7 +837,18 @@ $chat-resizer-corner-size: 15px;
   font-size: 0.8125rem;
   font-weight: 400;
   height: 5rem;
+  line-height: 1.25rem;
   padding: 8px 5px;
+  resize: none;
+  width: 100%;
+}
+
+.chat__new-message {
+  border: 10px solid $color-default;
+  height: 1rem;
+  line-height: 1.25rem;
+  min-height: calc(1rem + 20px);
+  padding: 0;
   resize: none;
   width: 100%;
 }
