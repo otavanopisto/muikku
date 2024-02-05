@@ -529,6 +529,12 @@ public class ChatController {
       handleUserEnter(userEntity, visibility, nick, sessionId);
       modified = true;
     }
+    else if (chatUser != null && visibility == ChatUserVisibility.NONE) {
+      // Chat has been turned off
+      chatUserDAO.delete(chatUser);
+      handleUserLeave(userEntity.getId(), true);
+      modified = true;
+    }
     else if (chatUser != null && (visibility != chatUser.getVisibility() || !StringUtils.equals(chatUser.getNick(), nick))) {
       // Chat is on but visibility or nick has changed
       if (visibility != chatUser.getVisibility()) {
@@ -538,12 +544,6 @@ public class ChatController {
         handleNickChange(userEntity.getId(), visibility, nick);
       }
       chatUser = chatUserDAO.update(chatUser, visibility, nick);
-      modified = true;
-    }
-    else if (chatUser != null && visibility == ChatUserVisibility.NONE) {
-      // Chat has been turned off
-      chatUserDAO.delete(chatUser);
-      handleUserLeave(userEntity.getId(), true);
       modified = true;
     }
     
@@ -712,6 +712,9 @@ public class ChatController {
           logger.severe(String.format("Message parse failure: %s", e.getMessage()));
         }
       }
+    }
+    else {
+      
     }
   }
   
