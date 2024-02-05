@@ -353,17 +353,6 @@ $chat-resizer-corner-size: 15px;
   }
 }
 
-.chat__message-avatar-container {
-  flex-basis: $avatar-mobile-chat-size;
-  flex-grow: 0;
-  flex-shrink: 0;
-  position: relative;
-
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: $avatar-desktop-chat-size;
-  }
-}
-
 .chat__message-content-container {
   flex-basis: calc(100% - 46px);
   flex-grow: 1;
@@ -490,6 +479,17 @@ $chat-resizer-corner-size: 15px;
       border-color: darken($color-chat-panel-background, 10%);
     }
 
+    .chat__profile-name-container {
+      // 32px is the width of the [avatar-container], 32px is the width of the [avatar-container], 10px is the elements left margin and 26px is the width of [close-discussion] button
+      flex-basis: calc(100% - 10px - 32px - 26px);
+      flex-flow: column nowrap;
+      flex-grow: 1;
+      flex-shrink: 1;
+      justify-content: center;
+      margin: 0 0 0 10px;
+      max-width: calc(100% - 10px - 32px - 26px);
+    }
+
     .chat__button-wrapper--close-discussion {
       display: block;
     }
@@ -532,6 +532,17 @@ $chat-resizer-corner-size: 15px;
   }
 }
 
+.chat__profile-avatar-container {
+  flex-basis: $avatar-mobile-chat-size;
+  flex-grow: 0;
+  flex-shrink: 0;
+  position: relative;
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: $avatar-desktop-chat-size;
+  }
+}
+
 // Chat avatar status
 .chat__avatar-status {
   border: 2px solid $color-chat-panel-background;
@@ -569,14 +580,14 @@ $chat-resizer-corner-size: 15px;
   align-items: flex-start;
   display: flex;
 
-  // 32px is the width of the [avatar-container] and 10px is the sum of this elements left and right margin
+  // 32px is the width of the [avatar-container], 32px is the width of the [avatar-container] and 10px is the elements left margin
   flex-basis: calc(100% - 10px - 32px);
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: center;
   margin: 0 0 0 10px;
-  width: calc(100% - 10px - 32px);
+  max-width: calc(100% - 10px - 32px);
 }
 
 .chat__profile-name {

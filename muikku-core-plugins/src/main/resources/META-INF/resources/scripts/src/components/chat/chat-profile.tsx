@@ -67,7 +67,9 @@ export function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
       </div>
 
       <ChatUserSettingsDialog>
-        <IconButton buttonModifiers={["chat"]} icon="cog" />
+        <div className="chat__button-wrapper">
+          <IconButton buttonModifiers={["chat"]} icon="cog" />
+        </div>
       </ChatUserSettingsDialog>
     </div>
   );
