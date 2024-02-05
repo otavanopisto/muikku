@@ -487,9 +487,11 @@
 }
 
 .dialog__content--disconnect-warning {
+  line-height: 1.5rem;
   padding: 0 20px;
 
   @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
     padding: 0 30px;
   }
 }

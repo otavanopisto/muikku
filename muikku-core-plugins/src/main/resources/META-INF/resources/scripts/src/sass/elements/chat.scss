@@ -193,7 +193,7 @@ $chat-resizer-corner-size: 15px;
   overflow-y: auto;
   position: absolute;
   right: 0;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 
   // Height of the show/hide panel button wrapper including top and bottom margin
   top: 36px;
@@ -425,7 +425,6 @@ $chat-resizer-corner-size: 15px;
   padding: 0;
   position: absolute;
   right: 0;
-  scrollbar-width: thin;
   top: 0;
   transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96), box-shadow 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: 52px;
@@ -450,7 +449,7 @@ $chat-resizer-corner-size: 15px;
   overflow-y: auto;
   position: absolute;
   right: 0;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 
   // Height of the show/hide panel button wrapper including top and bottom margin
   top: 36px;
