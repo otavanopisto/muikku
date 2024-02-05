@@ -238,7 +238,10 @@ public class ChatController {
     Set<Long> userEntityIds = listHardBlockedUserEntityIds(sourceUserEntityId);
     List<ChatUserRestModel> chatUsers = new ArrayList<>();
     for (Long userEntityId : userEntityIds) {
-      chatUsers.add(getChatUserRestModel(userEntityId));
+      ChatUserRestModel chatUser = getChatUserRestModel(userEntityId);
+      if (chatUser != null) {
+        chatUsers.add(getChatUserRestModel(userEntityId));
+      }
     }
     return chatUsers;
   }
@@ -513,7 +516,7 @@ public class ChatController {
   }
   
   public ChatUserRestModel getChatUserRestModel(Long userEntityId) {
-    return new ChatUserRestModel(users.get(userEntityId));
+    return users.get(userEntityId) == null ? null : new ChatUserRestModel(users.get(userEntityId));
   }
   
   public void handleSettingsChange(UserEntity userEntity, ChatUserVisibility visibility, String nick, String sessionId) {
@@ -529,6 +532,12 @@ public class ChatController {
       handleUserEnter(userEntity, visibility, nick, sessionId);
       modified = true;
     }
+    else if (chatUser != null && visibility == ChatUserVisibility.NONE) {
+      // Chat has been turned off
+      chatUserDAO.delete(chatUser);
+      handleUserLeave(userEntity.getId(), true);
+      modified = true;
+    }
     else if (chatUser != null && (visibility != chatUser.getVisibility() || !StringUtils.equals(chatUser.getNick(), nick))) {
       // Chat is on but visibility or nick has changed
       if (visibility != chatUser.getVisibility()) {
@@ -538,12 +547,6 @@ public class ChatController {
         handleNickChange(userEntity.getId(), visibility, nick);
       }
       chatUser = chatUserDAO.update(chatUser, visibility, nick);
-      modified = true;
-    }
-    else if (chatUser != null && visibility == ChatUserVisibility.NONE) {
-      // Chat has been turned off
-      chatUserDAO.delete(chatUser);
-      handleUserLeave(userEntity.getId(), true);
       modified = true;
     }
     
@@ -712,6 +715,9 @@ public class ChatController {
           logger.severe(String.format("Message parse failure: %s", e.getMessage()));
         }
       }
+    }
+    else {
+      
     }
   }
   
