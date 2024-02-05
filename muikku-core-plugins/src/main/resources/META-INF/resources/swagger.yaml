@@ -10898,8 +10898,10 @@ components:
                 type: string
               studyProgrammeIdentifier:
                 type: string
-              role:
-                type: string
+              roles:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Role"
               ssn:
                 type: string
 
@@ -12635,7 +12637,7 @@ components:
         - hasImage
         - organization
         - properties
-        - role
+        - roles
       properties:
         id:
           type: string
@@ -12662,8 +12664,10 @@ components:
               type: string
         properties:
           $ref: "#/components/schemas/AnyValue"
-        role:
-          type: string
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
 
     GuiderStudentNotification:
       type: object
@@ -14899,47 +14903,23 @@ components:
           type: string
         hasImage:
           type: boolean
-        hasEvaluationFees:
-          type: boolean
         curriculumIdentifier:
           type: string
         studyProgrammeIdentifier:
           type: string
         organizationIdentifier:
           type: string
-        isDefaultOrganization:
-          type: boolean
-        permissions:
-          type: array
-          items:
-            type: string
         roles:
           type: array
           items:
-            type: string
-        role:
-          type: string
+            $ref: "#/components/schemas/Role"
         ssn:
           type: string
         email:
           type: string
-        language:
-          type: string
-        municipality:
-          type: string
-        nationality:
-          type: string
-        school:
-          type: string
-        studyStartDate:
-          type: string
-        studyTimeEnd:
-          type: string
         userEntityId:
           type: integer
           format: int64
-        lastLogin:
-          type: string
         archived:
           type: boolean
         studiesEnded:
@@ -15017,7 +14997,7 @@ components:
         - addresses
         - emails
         - hasImage
-        - role
+        - roles
         - permissions
         - curriculumName
         - curriculumIdentifier
@@ -15071,9 +15051,10 @@ components:
         hasImage:
           type: boolean
           nullable: true
-        role:
-          nullable: true
-          $ref: "#/components/schemas/Role"
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
         permissions:
           type: array
           nullable: true

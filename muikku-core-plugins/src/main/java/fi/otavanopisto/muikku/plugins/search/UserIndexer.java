@@ -90,17 +90,18 @@ public class UserIndexer {
 
         // TODO: we have only one role here but a user(entity) can have several roles via several userschooldataidentifiers
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
-        EnvironmentRoleArchetype archetype = ((userSchoolDataIdentifier != null) && (userSchoolDataIdentifier.getRole() != null)) ? 
-            userSchoolDataIdentifier.getRole().getArchetype() : null;
-        
-        if ((archetype != null) && (userSchoolDataIdentifier != null)) {
+        Set<EnvironmentRoleArchetype> environmentRoles = ((userSchoolDataIdentifier != null) && (userSchoolDataIdentifier.getRoles() != null))
+            ? userSchoolDataIdentifier.getRoles().stream().map(roleEntity -> roleEntity.getArchetype()).collect(Collectors.toSet())
+            : new HashSet<>();
+
+        if (CollectionUtils.isNotEmpty(environmentRoles) && (userSchoolDataIdentifier != null)) {
           UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
           
           boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?
               userEntity.getDefaultIdentifier().equals(user.getIdentifier()) && 
               userEntity.getDefaultSchoolDataSource().getIdentifier().equals(user.getSchoolDataSource()) : false;
 
-          indexedUser.setArchetype(archetype);
+          indexedUser.setRoles(environmentRoles);
           indexedUser.setUserEntityId(userEntity.getId());
           indexedUser.setDefaultIdentifier(isDefaultIdentifier);
           
@@ -122,11 +123,11 @@ public class UserIndexer {
           
           indexedUser.setGroups(userGroupIds);
 
-          if (EnvironmentRoleArchetype.TEACHER.equals(archetype) ||
-              EnvironmentRoleArchetype.STUDY_GUIDER.equals(archetype) ||
-              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(archetype) ||
-              EnvironmentRoleArchetype.MANAGER.equals(archetype) ||
-              EnvironmentRoleArchetype.ADMINISTRATOR.equals(archetype)) {
+          if (environmentRoles.contains(EnvironmentRoleArchetype.TEACHER) ||
+              environmentRoles.contains(EnvironmentRoleArchetype.STUDY_GUIDER) ||
+              environmentRoles.contains(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER) ||
+              environmentRoles.contains(EnvironmentRoleArchetype.MANAGER) ||
+              environmentRoles.contains(EnvironmentRoleArchetype.ADMINISTRATOR)) {
             String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
             indexedUser.setEmail(userDefaultEmailAddress);
           }
