@@ -5,9 +5,6 @@ import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
 import { ChatRoom, ChatUser } from "~/generated/client";
 import { ChatDiscussionInstance } from "./utility/chat-discussion-instance";
 import useDiscussionInstance from "./hooks/useDiscussionInstance";
-import ChatEditor from "./editor/editor";
-import { Editor } from "slate";
-import { CustomEditor } from "./editor/helper";
 import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
 
@@ -74,19 +71,23 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
 
   /**
    * Handles enter key down.
-   * @param editor editor
+   * @param e e
    */
-  const handleEnterKeyDown = async (editor: Editor) => {
-    await postMessage();
-    CustomEditor.reset(editor);
+  const handleEnterKeyDown = async (
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      await postMessage();
+    }
   };
 
   /**
    * Handles editor change.
-   * @param content content
+   * @param e e
    */
-  const handleEditorChange = (content: string) => {
-    instance.newMessage = content;
+  const handleEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    instance.newMessage = e.target.value;
   };
 
   /**
@@ -130,10 +131,10 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
       {!isBlocked && (
         <div className="chat__discussion-panel-footer">
           <div className="chat__discussion-editor-container">
-            <ChatEditor
-              initialValueString={newMessage}
+            <textarea
+              value={newMessage}
               onChange={handleEditorChange}
-              onEnterSubmit={handleEnterKeyDown}
+              onKeyDown={handleEnterKeyDown}
             />
           </div>
           <button className="chat__submit" type="submit" onClick={postMessage}>
@@ -183,24 +184,25 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     return () => resizeObserver.disconnect(); // clean up
   }, []);
 
-  //const isWorkspace = true;
-  //const modifier = isWorkspace ? "workspace" : "other";
-
   /**
    * Handles enter key down.
-   * @param editor editor
+   * @param e e
    */
-  const handleEnterKeyDown = async (editor: Editor) => {
-    await postMessage();
-    CustomEditor.reset(editor);
+  const handleEnterKeyDown = async (
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      await postMessage();
+    }
   };
 
   /**
    * Handles editor change.
-   * @param content content
+   * @param e e
    */
-  const handleEditorChange = (content: string) => {
-    instance.newMessage = content;
+  const handleEditorChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    instance.newMessage = e.target.value;
   };
 
   return (
@@ -233,10 +235,10 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
       </div>
       <div ref={footerRef} className="chat__discussion-panel-footer">
         <div className="chat__discussion-editor-container">
-          <ChatEditor
-            initialValueString={newMessage}
+          <textarea
+            value={newMessage}
             onChange={handleEditorChange}
-            onEnterSubmit={handleEnterKeyDown}
+            onKeyDown={handleEnterKeyDown}
           />
         </div>
 

@@ -143,6 +143,7 @@ function useMessage(msg: ChatMessage) {
   }, [canModerate, mainModerationActions, secondaryModerationActions]);
 
   return {
+    editedMessage,
     showDeleteDialog,
     closeDeleteDialog,
     toggleEditMode,

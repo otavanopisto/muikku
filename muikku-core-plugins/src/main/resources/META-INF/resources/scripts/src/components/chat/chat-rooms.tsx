@@ -55,9 +55,11 @@ function PrivateRoomList(props: PrivateRoomListProps) {
     return <div>No rooms found</div>;
   }
 
+  const sortedRooms = roomsPrivate.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <>
-      {roomsPrivate.map((room) => (
+      {sortedRooms.map((room) => (
         <ChatRoom
           key={room.identifier}
           room={room}
@@ -91,9 +93,11 @@ function PublicRoomsList(props: PublicRoomsListProps) {
     return <div>No rooms found</div>;
   }
 
+  const sortedRooms = roomsPublic.sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <>
-      {roomsPublic.map((room) => (
+      {sortedRooms.map((room) => (
         <ChatRoom
           key={room.identifier}
           room={room}

@@ -17,7 +17,6 @@ import ChatProfileAvatar from "./chat-profile-avatar";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
-import ChatEditor from "./editor/editor";
 
 /**
  * ChatMessageProps
@@ -35,6 +34,7 @@ const ChatMessage = (props: ChatMessageProps) => {
   const { isMobileWidth } = useChatContext();
 
   const {
+    editedMessage,
     showDeleteDialog,
     closeDeleteDialog,
     myMsg,
@@ -108,6 +108,32 @@ const ChatMessage = (props: ChatMessageProps) => {
     saveEditedMessage();
   };
 
+  /**
+   * handleTextareaChange
+   * @param e e
+   */
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    handleEditedMessageChange(e.target.value);
+  };
+
+  /**
+   * Handles enter key down.
+   * @param e e
+   */
+  const handleEnterKeyDown = async (
+    e: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (e.key === "Escape") {
+      toggleEditMode(false);
+      handleEditedMessageChange(msg.message);
+    }
+
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSave();
+    }
+  };
+
   const chatMessageContent = editMode ? (
     <React.Fragment key="editable">
       <ChatProfileAvatar
@@ -124,11 +150,10 @@ const ChatMessage = (props: ChatMessageProps) => {
         </div>
 
         <div className="chat__message-editor">
-          <ChatEditor
-            initialValueString={msg.message}
-            onChange={handleEditedMessageChange}
-            onEnterSubmit={handleSave}
-            onEscape={handleCancelEdit}
+          <textarea
+            value={editedMessage}
+            onChange={handleTextareaChange}
+            onKeyDown={handleEnterKeyDown}
           />
         </div>
 
@@ -178,6 +203,20 @@ const ChatMessage = (props: ChatMessageProps) => {
         ref={activatorDelayHandler}
         {...longPressEvent}
         className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
+        onMouseEnter={() => {
+          setHoveringActivator(true);
+        }}
+        onMouseLeave={() => {
+          if (activatorDelayHandler.current) {
+            clearTimeout(activatorDelayHandler.current);
+          }
+
+          if (hoveringActivator) {
+            activatorDelayHandler.current = setTimeout(() => {
+              setHoveringActivator(false);
+            }, 200);
+          }
+        }}
       >
         {chatMessageContent}
       </div>
