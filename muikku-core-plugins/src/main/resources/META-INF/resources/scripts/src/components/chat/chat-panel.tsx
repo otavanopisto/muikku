@@ -7,6 +7,7 @@ import { ChatDiscussionInstance } from "./utility/chat-discussion-instance";
 import useDiscussionInstance from "./hooks/useDiscussionInstance";
 import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
+import TextareaAutosize from "react-textarea-autosize";
 
 /**
  * ChatPanelProps
@@ -131,7 +132,8 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
       {!isBlocked && (
         <div className="chat__discussion-panel-footer">
           <div className="chat__discussion-editor-container">
-            <textarea
+            <TextareaAutosize
+              className="chat__new-message"
               value={newMessage}
               onChange={handleEditorChange}
               onKeyDown={handleEnterKeyDown}
@@ -235,7 +237,7 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
       </div>
       <div ref={footerRef} className="chat__discussion-panel-footer">
         <div className="chat__discussion-editor-container">
-          <textarea
+          <TextareaAutosize
             className="chat__new-message"
             value={newMessage}
             onChange={handleEditorChange}
