@@ -275,7 +275,7 @@ function ChatOverviewUsersList() {
 
   return (
     <OverviewList
-      className="chat__overview-users-list"
+      className="chat__overview-panel-items-container"
       emptyMsg="Haulla ei löytyny käyttäjä"
     >
       {renderContent()}
@@ -366,7 +366,7 @@ function ChatOverviewBlockedList() {
 
   return (
     <OverviewList
-      className="chat__overview-users-list"
+      className="chat__overview-panel-items-container"
       emptyMsg="Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty"
     >
       {renderContent()}
@@ -435,7 +435,7 @@ function ChatOverviewRoomsList() {
 
   return (
     <OverviewList
-      className="chat__overview-rooms-list"
+      className="chat__overview-panel-items-container"
       emptyMsg="Haulla ei löytyny huoneita"
     >
       {renderContent()}
@@ -472,17 +472,7 @@ function OverviewList(props: OverviewListProps) {
     });
   }
 
-  return (
-    <div
-      className={cName}
-      style={{
-        flexGrow: 1,
-        overflowY: "auto",
-      }}
-    >
-      {children}
-    </div>
-  );
+  return <div className={cName}>{children}</div>;
 }
 
 /**

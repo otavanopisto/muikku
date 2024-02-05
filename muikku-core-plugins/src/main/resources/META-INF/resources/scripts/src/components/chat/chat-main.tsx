@@ -82,8 +82,8 @@ function ChatMain(props: ChatMainProps) {
         </div>
       </div>
       <div
-        className={`chat__discussions-panel ${(mainPanelClassModifiers || [])
-          .map((m) => ` chat__discussions-panel--${m}`)
+        className={`chat__main-panel ${(mainPanelClassModifiers || [])
+          .map((m) => ` chat__main-panel--${m}`)
           .join("")}`}
       >
         <ChatViews

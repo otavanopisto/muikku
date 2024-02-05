@@ -169,7 +169,6 @@ $chat-resizer-corner-size: 15px;
   overflow-y: auto;
   padding: 0;
   position: absolute;
-  scrollbar-width: thin;
   top: 0;
   transition: width 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96), box-shadow 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: 85px;
@@ -238,7 +237,7 @@ $chat-resizer-corner-size: 15px;
 // MIDDLE PANEL a.k.a DISCUSSION PANEL
 
 // Panel that shows selected discussion
-.chat__discussions-panel {
+.chat__main-panel {
   background: $color-default;
   border-radius: $chat-border-radius;
   box-shadow: 0 0 2px $color-chat-box-shadow;
@@ -248,11 +247,11 @@ $chat-resizer-corner-size: 15px;
   transition: margin 0.3s cubic-bezier(0.46, 0.03, 0.52, 0.96);
   width: auto;
 
-  &.chat__discussions-panel--left-panel-open {
+  &.chat__main-panel--left-panel-open {
     margin-left: 182px;
   }
 
-  &.chat__discussions-panel--right-panel-open {
+  &.chat__main-panel--right-panel-open {
     margin-right: 182px;
   }
 }
@@ -316,9 +315,7 @@ $chat-resizer-corner-size: 15px;
 .chat__discussion-panel-body {
   bottom: $chat-discussion-panel-footer-height;
   left: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 10px;
+  overflow: hidden;
   position: absolute;
   right: 0;
   top: $chat-discussion-panel-header-height;
@@ -326,6 +323,11 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__messages-container {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+  scrollbar-width: thin;
   width: 100%;
 }
 
@@ -665,12 +667,12 @@ $chat-resizer-corner-size: 15px;
   padding: 10px;
 }
 
-.chat__overview-users-list,
-.chat__overview-rooms-list {
+.chat__overview-panel-items-container {
   height: calc(100% - 58px);
   overflow-x: hidden;
   overflow-y: auto;
   padding: 10px;
+  scrollbar-width: thin;
 }
 
 .chat__overview-panel-item {
