@@ -577,7 +577,8 @@ public class HopsRestService {
             
             // For students, skip courses that they cannot sign up to
             
-            if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
+            boolean canSignUp = hopsController.canSignup(workspaceEntity, userEntity);
+            if (onlySignupWorkspaces && !canSignUp) {
               continue;
             }
             
@@ -615,7 +616,7 @@ public class HopsRestService {
             suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
             suggestedWorkspace.setDescription((String) result.get("description"));
             suggestedWorkspace.setType(workspaceType != null ? workspaceType.getName() : null);
-            suggestedWorkspace.setCanSignup(hopsController.canSignup(workspaceEntity, userEntity));
+            suggestedWorkspace.setCanSignup(canSignUp);
             suggestedWorkspaces.add(suggestedWorkspace);
 
           }
