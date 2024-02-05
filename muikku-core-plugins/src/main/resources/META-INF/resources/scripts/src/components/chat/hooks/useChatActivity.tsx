@@ -108,6 +108,11 @@ function useChatActivity() {
               unreadMessages: 1,
             };
 
+            // If this is the active discussion, keep unread messages as 0
+            if (dataTyped.targetIdentifier === activeDiscussionIdentifier) {
+              newActivity.unreadMessages = 0;
+            }
+
             return [...prev, newActivity];
           });
         }
