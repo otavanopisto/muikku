@@ -211,7 +211,6 @@ $chat-resizer-corner-size: 15px;
   border-radius: $chat-border-radius;
   cursor: pointer;
   margin: 2px 5px;
-  padding: 5px;
   position: relative;
   width: calc(100% - 10px);
 
@@ -230,6 +229,7 @@ $chat-resizer-corner-size: 15px;
   font-size: 0.8125rem;
   font-weight: 600;
   overflow: hidden;
+  padding: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -350,7 +350,24 @@ $chat-resizer-corner-size: 15px;
 
   &:hover {
     background: $color-chat-panel-background;
+
+    .chat__message-actions {
+      display: flex;
+    }
   }
+}
+
+.chat__message-actions {
+  align-items: center;
+  display: none;
+  flex-flow: row nowrap;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.chat__message-action {
+  padding: 5px;
 }
 
 .chat__message-content-container {

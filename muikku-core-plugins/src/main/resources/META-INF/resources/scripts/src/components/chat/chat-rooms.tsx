@@ -146,8 +146,10 @@ function ChatRoom(props: ChatRoomProps) {
       alignSelfVertically="top"
     >
       <div key={room.identifier} className={className} role="menuitem">
-        <div className="chat__room-name-container" onClick={handleRoomClick}>
-          <div className="chat__room-name">{room.name}</div>
+        <div className="chat__room-name-container">
+          <div className="chat__room-name" onClick={handleRoomClick}>
+            {room.name}
+          </div>
         </div>
       </div>
     </Dropdown>
