@@ -120,12 +120,25 @@ function useMessage(msg: ChatMessage) {
       },
     ];
 
-    if (!myMsg) {
-      defaultActions.pop();
+    // If message is archived, no actions are available
+    if (msg.archived) {
+      return [];
     }
 
-    return canModerate ? defaultActions : [];
-  }, [canModerate, handleDeleteClick, handleEditClick, myMsg]);
+    // If message is user's own, return default actions
+    if (myMsg) {
+      return defaultActions;
+    }
+
+    // If user can moderate, return default actions without edit
+    if (canModerate) {
+      defaultActions.shift();
+      return defaultActions;
+    }
+
+    // default is no actions
+    return [];
+  }, [canModerate, handleDeleteClick, handleEditClick, msg.archived, myMsg]);
 
   const secondaryModerationActions = React.useMemo(() => {
     const defaultActions: MessageAction[] = [];

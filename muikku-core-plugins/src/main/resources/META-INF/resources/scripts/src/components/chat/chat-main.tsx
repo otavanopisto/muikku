@@ -113,12 +113,21 @@ function ChatMain(props: ChatMainProps) {
  * OverviewButton
  */
 function OverviewButton() {
-  const { openOverview } = useChatContext();
+  const { openOverview, chatViews } = useChatContext();
+
+  const isActive =
+    chatViews.views[chatViews.currentViewIndex].identifier === "overview";
+
+  let className = "chat__option";
+
+  if (isActive) {
+    className += ` chat__active-item`;
+  }
 
   return (
     <div className="chat__options-container">
       <div className="chat__options">
-        <div className="chat__option">
+        <div className={className}>
           <div className="chat__option-name-container">
             <div className="chat__option-name" onClick={openOverview}>
               Dashboard

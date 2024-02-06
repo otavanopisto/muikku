@@ -31,6 +31,7 @@ const ChatRoomNewDialog = (props: ChatRoomNewDialogProps) => {
       setDisabled(true);
       await saveNewRoom();
       setDisabled(false);
+      callback();
     };
 
   /**

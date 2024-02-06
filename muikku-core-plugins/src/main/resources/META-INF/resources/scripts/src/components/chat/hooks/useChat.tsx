@@ -182,6 +182,7 @@ function useChat(userId: number, currentUser: ChatUser) {
    */
   const openOverview = React.useCallback(() => {
     chatViews.goTo("overview");
+    setActiveDiscussionIdentifier(null);
   }, [chatViews]);
 
   // Sets the active room or person

@@ -56,6 +56,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
           },
         });
         setDisabled(false);
+        callback();
       } catch (err) {
         props.displayNotification(
           "Virhe chatin asetuksia päivittäessä",
