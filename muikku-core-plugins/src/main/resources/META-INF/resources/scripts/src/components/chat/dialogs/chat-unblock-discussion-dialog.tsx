@@ -1,8 +1,9 @@
-import Dialog from "~/components/general/dialog";
+import Dialog, { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
+import Button from "~/components/general/button";
 
 /**
  * ChatUnblockDiscussionDialog
@@ -22,7 +23,7 @@ const ChatUnblockDiscussionDialog = () => {
    */
   const handleUnblockClick =
     (callback: () => void) =>
-    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
       await unblockDiscussionWithUser(userToBeUnblocked);
       setDisabled(false);
@@ -39,21 +40,37 @@ const ChatUnblockDiscussionDialog = () => {
 
     return (
       <div>
-        <h3>Keskustelun eston poisto</h3>
-        <p>
-          Olet poistamassa estoa käyttäjän:{" "}
+        <DialogRow>
+          Olet poistamassa estoa käyttäjän{" "}
           <strong>{userToBeUnblocked.nick}</strong> kanssa. Poiston jälkeen
-          käyttäjä voi näkee statuksesi ja hän voi lähettää sinulle viestejä.
-        </p>
-        <button onClick={handleUnblockClick(closeDialog)} disabled={disabled}>
-          Poista keskustelu
-        </button>
-        <button onClick={closeDialog} disabled={disabled}>
-          Peruuta
-        </button>
+          käyttäjä näkee statuksesi ja hän voi lähettää sinulle viestejä.
+        </DialogRow>
       </div>
     );
   };
+
+  /**
+   * footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => void) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["standard-ok", "fatal"]}
+        onClick={handleUnblockClick(closeDialog)}
+        disabled={disabled}
+      >
+        Poista esto
+      </Button>
+      <Button
+        buttonModifiers={["standard-cancel", "cancel"]}
+        onClick={closeDialog}
+        disabled={disabled}
+      >
+        Peruuta
+      </Button>
+    </div>
+  );
 
   return (
     <Dialog
@@ -63,6 +80,7 @@ const ChatUnblockDiscussionDialog = () => {
       disableScroll={true}
       title="Käyttäjän eston poistaminen"
       content={content}
+      footer={footer}
       modifier={["chat", "local"]}
     />
   );
