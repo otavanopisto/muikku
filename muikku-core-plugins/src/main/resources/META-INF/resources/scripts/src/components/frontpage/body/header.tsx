@@ -39,7 +39,7 @@ class FrontpageHero extends React.Component<
             >
               <Button
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
-                href="https://pyramus.otavanopisto.fi/applications/index.page"
+                href="/application"
                 openInNewTab="_blank"
               >
                 {this.props.t("actions.apply", {
