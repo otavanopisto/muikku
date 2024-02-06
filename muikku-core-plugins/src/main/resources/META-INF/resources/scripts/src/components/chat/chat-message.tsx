@@ -16,6 +16,20 @@ import useMessage, { MessageAction } from "./hooks/useMessage";
 import ChatProfileAvatar from "./chat-profile-avatar";
 import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
 import { IconButton } from "../general/button";
+import TextareaAutosize from "react-textarea-autosize";
+
+/**
+ * parseLines
+ * @param value value
+ * @returns parsed lines
+ */
+const parseLines = (value: string) =>
+  value.split("\n").map((line, index) => (
+    <React.Fragment key={index}>
+      {line}
+      <br />
+    </React.Fragment>
+  ));
 
 /**
  * ChatMessageProps
@@ -131,10 +145,11 @@ const ChatMessage = (props: ChatMessageProps) => {
         </div>
 
         <div className="chat__message-editor">
-          <textarea
+          <TextareaAutosize
             value={editedMessage}
             onChange={handleTextareaChange}
             onKeyDown={handleEnterKeyDown}
+            autoFocus
           />
         </div>
 
@@ -167,7 +182,7 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
         <div className="chat__message-body">
-          {archived ? <i>Poistettu</i> : msg.message}
+          {archived ? <i>Poistettu</i> : parseLines(msg.message)}
           {editedDateTime && (
             <div className="chat__message-edited-info">
               (Muokattu {localize.formatDaily(editedDateTime)})
