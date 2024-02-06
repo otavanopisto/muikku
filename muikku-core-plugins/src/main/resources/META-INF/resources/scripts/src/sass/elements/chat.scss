@@ -362,6 +362,11 @@ $chat-resizer-corner-size: 15px;
   background: $color-chat-panel-background;
 }
 
+.chat__message-edited-info {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
 .chat__message-actions {
   align-items: center;
   display: none;
@@ -896,8 +901,9 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__edit-message {
-  background: transparent;
-  border: 0;
+  background: darken($color-chat-panel-background, 5%);
+  border: 5px solid darken($color-chat-panel-background, 5%);
+  border-radius: $chat-border-radius;
   font-size: 0.8125rem;
   height: 1rem;
   line-height: 1.25rem;
