@@ -161,7 +161,7 @@ const ChatMessage = (props: ChatMessageProps) => {
           >
             Peruuta
           </span>
-          <span>Tai</span>
+          <span>tai</span>
           <span className="chat__message-footer-action" onClick={handleSave}>
             Tallenna
           </span>
@@ -198,7 +198,9 @@ const ChatMessage = (props: ChatMessageProps) => {
     <>
       <div
         {...longPressEvent}
-        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
+        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName} ${
+          editMode ? "chat__message--editing" : ""
+        }`}
       >
         {chatMessageContent}
 

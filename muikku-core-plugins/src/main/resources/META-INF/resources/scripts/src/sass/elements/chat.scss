@@ -127,7 +127,8 @@ $chat-resizer-corner-size: 15px;
   top: 50%;
 }
 
-// Generic style for active chat item, includes tabs, rooms and users elements
+// Generic style for active chat item, includes tabs, rooms, options and users elements
+.chat__option,
 .chat__room,
 .chat__user,
 .chat__tab {
@@ -357,6 +358,10 @@ $chat-resizer-corner-size: 15px;
   }
 }
 
+.chat__message--editing {
+  background: $color-chat-panel-background;
+}
+
 .chat__message-actions {
   align-items: center;
   display: none;
@@ -393,6 +398,25 @@ $chat-resizer-corner-size: 15px;
 
 .chat__message-body {
   line-height: 1.25rem;
+}
+
+.chat__message-footer {
+  font-size: 0.75rem;
+  padding: 2px 0;
+}
+
+.chat__message-footer-action {
+  color: $color-info;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:first-child {
+    padding: 0 5px 0 0;
+  }
+
+  &:last-child {
+    padding: 0 0 0 5px;
+  }
 }
 
 .chat__discussion-panel-footer {
@@ -862,6 +886,7 @@ $chat-resizer-corner-size: 15px;
 
 .chat__new-message {
   border: 10px solid $color-default;
+  font-size: 0.8125rem;
   height: 1rem;
   line-height: 1.25rem;
   min-height: calc(1rem + 20px);
@@ -871,7 +896,9 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat__edit-message {
+  background: transparent;
   border: 0;
+  font-size: 0.8125rem;
   height: 1rem;
   line-height: 1.25rem;
   padding: 0;
