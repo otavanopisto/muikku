@@ -110,9 +110,9 @@ export const filterUsers = (users: ChatUser[], filters: ChatUserFilters) => {
     const searchFiltersStatusMatch = searchFilters.some((filter) => {
       switch (filter) {
         case "online":
-          return user.isOnline;
+          return user.presence === "ONLINE";
         case "offline":
-          return !user.isOnline;
+          return user.presence === "OFFLINE";
         default:
           return false;
       }

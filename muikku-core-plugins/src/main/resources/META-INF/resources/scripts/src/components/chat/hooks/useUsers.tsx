@@ -81,8 +81,10 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
-              updatedPeople[index].isOnline = true;
+              updatedPeople[index].presence = "ONLINE";
               return updatedPeople;
+            } else {
+              return [...users, dataTyped];
             }
 
             return users;
@@ -96,8 +98,10 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
-              updatedPeople[index].isOnline = true;
+              updatedPeople[index].presence = "ONLINE";
               return updatedPeople;
+            } else {
+              return [...users, dataTyped];
             }
 
             return users;
@@ -130,7 +134,7 @@ function useUsers(props: UseUsersProps) {
                 return updatedPeople;
               }
 
-              updatedPeople[index].isOnline = false;
+              updatedPeople[index].presence = "OFFLINE";
               return updatedPeople;
             }
 
@@ -145,7 +149,7 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
-              updatedPeople[index].isOnline = false;
+              updatedPeople[index].presence = "OFFLINE";
               return updatedPeople;
             }
 

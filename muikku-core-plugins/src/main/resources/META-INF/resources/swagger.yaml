@@ -963,7 +963,7 @@ paths:
           description: Invalid request was sent to the server
         "403":
           description: Attempted to make a call with unauthorized client
-          
+
   /rest/chat/block:
     put:
       operationId: updateBlock
@@ -10211,7 +10211,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/ChatUser"
-              
+
     ChatBlockUpdateRequestBody:
       content:
         application/json:
@@ -12190,7 +12190,7 @@ components:
         price:
           type: number
           format: double
-          
+
     ChatActivity:
       type: object
       required:
@@ -12308,6 +12308,7 @@ components:
         nick:
           description: Nickname of the user.
           type: string
+          nullable: true
         type:
           description: Type of the user.
           type: string
@@ -12345,7 +12346,7 @@ components:
           description: Nickname of the user. Null if not set.
           type: string
           nullable: true
-          
+
     ChatBlock:
       type: object
       required:
