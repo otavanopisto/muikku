@@ -1,8 +1,9 @@
-import Dialog from "~/components/general/dialog";
+import Dialog, { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { ChatMessage } from "~/generated/client";
+import Button from "~/components/general/button";
 
 /**
  * ChatDeleteRoomDialogProps
@@ -41,7 +42,7 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
    */
   const handleDeleteClick =
     (callback: () => void) =>
-    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
 
       try {
@@ -59,16 +60,33 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
    */
   const content = (closeDialog: () => void) => (
     <div>
-      <h3>Uusi chatti huone</h3>
-      <p>
-        Olet poistamassa viestiä: <strong>{message.message}</strong>
-      </p>
-      <button onClick={handleDeleteClick(closeDialog)} disabled={disabled}>
+      <DialogRow>
+        <strong>Olet poistamassa viestiä:</strong>
+      </DialogRow>
+      <DialogRow>{message.message}</DialogRow>
+    </div>
+  );
+
+  /**
+   * footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => void) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["standard-ok", "fatal"]}
+        onClick={handleDeleteClick(closeDialog)}
+        disabled={disabled}
+      >
         Poista
-      </button>
-      <button onClick={closeDialog} disabled={disabled}>
+      </Button>
+      <Button
+        buttonModifiers={["standard-cancel", "cancel"]}
+        onClick={closeDialog}
+        disabled={disabled}
+      >
         Peruuta
-      </button>
+      </Button>
     </div>
   );
 
@@ -80,6 +98,7 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
       disableScroll={true}
       title="Viestin poisto"
       content={content}
+      footer={footer}
       modifier={["chat", "local"]}
     />
   );

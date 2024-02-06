@@ -127,7 +127,8 @@ $chat-resizer-corner-size: 15px;
   top: 50%;
 }
 
-// Generic style for active chat item, includes tabs, rooms and users elements
+// Generic style for active chat item, includes tabs, rooms, options and users elements
+.chat__option,
 .chat__room,
 .chat__user,
 .chat__tab {
@@ -211,7 +212,6 @@ $chat-resizer-corner-size: 15px;
   border-radius: $chat-border-radius;
   cursor: pointer;
   margin: 2px 5px;
-  padding: 5px;
   position: relative;
   width: calc(100% - 10px);
 
@@ -230,6 +230,7 @@ $chat-resizer-corner-size: 15px;
   font-size: 0.8125rem;
   font-weight: 600;
   overflow: hidden;
+  padding: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -350,7 +351,33 @@ $chat-resizer-corner-size: 15px;
 
   &:hover {
     background: $color-chat-panel-background;
+
+    .chat__message-actions {
+      display: flex;
+    }
   }
+}
+
+.chat__message--editing {
+  background: $color-chat-panel-background;
+}
+
+.chat__message-edited-info {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.chat__message-actions {
+  align-items: center;
+  display: none;
+  flex-flow: row nowrap;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.chat__message-action {
+  padding: 5px;
 }
 
 .chat__message-content-container {
@@ -376,6 +403,25 @@ $chat-resizer-corner-size: 15px;
 
 .chat__message-body {
   line-height: 1.25rem;
+}
+
+.chat__message-footer {
+  font-size: 0.75rem;
+  padding: 2px 0;
+}
+
+.chat__message-footer-action {
+  color: $color-info;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:first-child {
+    padding: 0 5px 0 0;
+  }
+
+  &:last-child {
+    padding: 0 0 0 5px;
+  }
 }
 
 .chat__discussion-panel-footer {
@@ -837,7 +883,31 @@ $chat-resizer-corner-size: 15px;
   font-size: 0.8125rem;
   font-weight: 400;
   height: 5rem;
+  line-height: 1.25rem;
   padding: 8px 5px;
+  resize: none;
+  width: 100%;
+}
+
+.chat__new-message {
+  border: 10px solid $color-default;
+  font-size: 0.8125rem;
+  height: 1rem;
+  line-height: 1.25rem;
+  min-height: calc(1rem + 20px);
+  padding: 0;
+  resize: none;
+  width: 100%;
+}
+
+.chat__edit-message {
+  background: darken($color-chat-panel-background, 5%);
+  border: 5px solid darken($color-chat-panel-background, 5%);
+  border-radius: $chat-border-radius;
+  font-size: 0.8125rem;
+  height: 1rem;
+  line-height: 1.25rem;
+  padding: 0;
   resize: none;
   width: 100%;
 }

@@ -7,6 +7,7 @@ import { ChatDiscussionInstance } from "./utility/chat-discussion-instance";
 import useDiscussionInstance from "./hooks/useDiscussionInstance";
 import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
+import TextareaAutosize from "react-textarea-autosize";
 
 /**
  * ChatPanelProps
@@ -54,8 +55,25 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   });
   const { blockedUsers, openBlockUserDialog } = useChatContext();
 
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const footerRef = React.useRef<HTMLDivElement>(null);
+
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
+
+  React.useEffect(() => {
+    const contentCurrent = contentRef.current;
+    const footerCurrent = footerRef.current;
+
+    if (!footerCurrent && !contentCurrent) {
+      return;
+    }
+    const resizeObserver = new ResizeObserver(() => {
+      contentCurrent.style.bottom = `${footerCurrent.clientHeight}px`;
+    });
+    resizeObserver.observe(footerCurrent);
+    return () => resizeObserver.disconnect(); // clean up
+  }, []);
 
   const isBlocked = React.useMemo(() => {
     if (!blockedUsers) {
@@ -112,7 +130,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
         </div>
       </div>
 
-      <div className="chat__discussion-panel-body">
+      <div className="chat__discussion-panel-body" ref={contentRef}>
         <MessagesContainer
           targetIdentifier={props.targetIdentifier}
           existingScrollTopValue={instance.scrollTop}
@@ -129,12 +147,15 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
       </div>
 
       {!isBlocked && (
-        <div className="chat__discussion-panel-footer">
+        <div className="chat__discussion-panel-footer" ref={footerRef}>
           <div className="chat__discussion-editor-container">
-            <textarea
+            <TextareaAutosize
+              className="chat__new-message"
               value={newMessage}
               onChange={handleEditorChange}
               onKeyDown={handleEnterKeyDown}
+              maxRows={5}
+              autoFocus
             />
           </div>
           <button className="chat__submit" type="submit" onClick={postMessage}>
@@ -176,7 +197,9 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     const contentCurrent = contentRef.current;
     const footerCurrent = footerRef.current;
 
-    if (!footerCurrent && !contentCurrent) return;
+    if (!footerCurrent && !contentCurrent) {
+      return;
+    }
     const resizeObserver = new ResizeObserver(() => {
       contentCurrent.style.bottom = `${footerCurrent.clientHeight}px`;
     });
@@ -233,12 +256,15 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
           ))}
         </MessagesContainer>
       </div>
-      <div ref={footerRef} className="chat__discussion-panel-footer">
+      <div className="chat__discussion-panel-footer" ref={footerRef}>
         <div className="chat__discussion-editor-container">
-          <textarea
+          <TextareaAutosize
+            className="chat__new-message"
             value={newMessage}
             onChange={handleEditorChange}
             onKeyDown={handleEnterKeyDown}
+            maxRows={5}
+            autoFocus
           />
         </div>
 

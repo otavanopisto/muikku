@@ -14,9 +14,22 @@ import { useChatContext } from "./context/chat-context";
 import useLongPress from "./hooks/useLongPress";
 import useMessage, { MessageAction } from "./hooks/useMessage";
 import ChatProfileAvatar from "./chat-profile-avatar";
-// eslint-disable-next-line camelcase
-import { unstable_batchedUpdates } from "react-dom";
 import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
+import { IconButton } from "../general/button";
+import TextareaAutosize from "react-textarea-autosize";
+
+/**
+ * parseLines
+ * @param value value
+ * @returns parsed lines
+ */
+const parseLines = (value: string) =>
+  value.split("\n").map((line, index) => (
+    <React.Fragment key={index}>
+      {line}
+      <br />
+    </React.Fragment>
+  ));
 
 /**
  * ChatMessageProps
@@ -54,13 +67,6 @@ const ChatMessage = (props: ChatMessageProps) => {
   const [mobileActionDrawerOpen, setMobileActionDrawerOpen] =
     React.useState(false);
 
-  const [hoveringContent, setHoveringContent] = React.useState(false);
-  const [hoveringActivator, setHoveringActivator] = React.useState(false);
-
-  // Delay handler refs
-  const activatorDelayHandler = React.useRef(null);
-  const contentDelayHandler = React.useRef(null);
-
   const longPressEvent = useLongPress({
     // eslint-disable-next-line jsdoc/require-jsdoc
     onLongPress: (e) => {
@@ -81,18 +87,7 @@ const ChatMessage = (props: ChatMessageProps) => {
 
   const messageDeletedClass = archived ? "chat__message--deleted" : "";
 
-  const showActions = (hoveringContent || hoveringActivator) && !isMobileWidth;
-
   const showMobileActions = mobileActionDrawerOpen && isMobileWidth;
-
-  React.useEffect(() => {
-    if (!editMode) return;
-
-    unstable_batchedUpdates(() => {
-      setHoveringContent(false);
-      setHoveringActivator(false);
-    });
-  }, [editMode]);
 
   /**
    * Handles cancel edit
@@ -149,11 +144,13 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
 
-        <div className="chat__message-editor">
-          <textarea
+        <div className="chat__message-body">
+          <TextareaAutosize
+            className="chat__edit-message"
             value={editedMessage}
             onChange={handleTextareaChange}
             onKeyDown={handleEnterKeyDown}
+            autoFocus
           />
         </div>
 
@@ -164,7 +161,7 @@ const ChatMessage = (props: ChatMessageProps) => {
           >
             Peruuta
           </span>
-          <span>Tai</span>
+          <span>tai</span>
           <span className="chat__message-footer-action" onClick={handleSave}>
             Tallenna
           </span>
@@ -186,7 +183,7 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
         <div className="chat__message-body">
-          {archived ? <i>Poistettu</i> : msg.message}
+          {archived ? <i>Poistettu</i> : parseLines(msg.message)}
           {editedDateTime && (
             <div className="chat__message-edited-info">
               (Muokattu {localize.formatDaily(editedDateTime)})
@@ -200,49 +197,18 @@ const ChatMessage = (props: ChatMessageProps) => {
   return (
     <>
       <div
-        ref={activatorDelayHandler}
         {...longPressEvent}
-        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName}`}
-        onMouseEnter={() => {
-          setHoveringActivator(true);
-        }}
-        onMouseLeave={() => {
-          if (activatorDelayHandler.current) {
-            clearTimeout(activatorDelayHandler.current);
-          }
-
-          if (hoveringActivator) {
-            activatorDelayHandler.current = setTimeout(() => {
-              setHoveringActivator(false);
-            }, 200);
-          }
-        }}
+        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName} ${
+          editMode ? "chat__message--editing" : ""
+        }`}
       >
         {chatMessageContent}
+
+        <DesktopMessageActions
+          mainActions={mainModerationActions}
+          secondaryActions={secondaryModerationActions}
+        />
       </div>
-
-      <DesktopMessageActions
-        mainActions={mainModerationActions}
-        secondaryActions={secondaryModerationActions}
-        open={showActions && mainModerationActions.length > 0}
-        onHoverActionsStart={() => {
-          if (contentDelayHandler.current) {
-            clearTimeout(contentDelayHandler.current);
-          }
-          if (!hoveringContent && !editMode) setHoveringContent(true);
-        }}
-        onHoverActionsEnd={() => {
-          if (contentDelayHandler.current) {
-            clearTimeout(contentDelayHandler.current);
-          }
-
-          if (hoveringContent) {
-            contentDelayHandler.current = setTimeout(() => {
-              setHoveringContent(false);
-            }, 200);
-          }
-        }}
-      />
 
       <ChatMessageDeleteDialog
         open={showDeleteDialog}
@@ -266,9 +232,6 @@ const ChatMessage = (props: ChatMessageProps) => {
 interface DesktopMessageActionsProps {
   mainActions: MessageAction[];
   secondaryActions: MessageAction[];
-  open: boolean;
-  onHoverActionsStart?: () => void;
-  onHoverActionsEnd?: () => void;
 }
 
 /**
@@ -277,70 +240,23 @@ interface DesktopMessageActionsProps {
  * @returns JSX.Element
  */
 function DesktopMessageActions(props: DesktopMessageActionsProps) {
-  const { mainActions, open, onHoverActionsStart, onHoverActionsEnd } = props;
+  const { mainActions } = props;
+
+  if (mainActions.length === 0) {
+    return null;
+  }
 
   return (
-    <AnimatePresence initial={false} exitBeforeEnter>
-      {open && mainActions.length > 0 && (
-        <motion.div
-          initial={{
-            right: "-50px",
-            opacity: 0,
-          }}
-          animate={{
-            right: 10,
-            opacity: 1,
-          }}
-          exit={{
-            right: "-50px",
-            opacity: 0,
-          }}
-          transition={{
-            type: "tween",
-            duration: 0.2,
-          }}
-          onHoverStart={onHoverActionsStart}
-          onHoverEnd={onHoverActionsEnd}
-          className="chat__message-actions-wrapper"
-          style={{
-            position: "absolute",
-            top: 0,
-            right: "10px",
-            display: "flex",
-            justifyContent: "center",
-            padding: "5px",
-            borderRadius: "25px",
-          }}
-        >
-          <div className="chat__message-actions">
-            {mainActions.map((action, index) => (
-              <div
-                key={index}
-                className={`chat__message-action icon-${action.icon}`}
-                onClick={action.onClick}
-              />
-            ))}
-
-            {/* {secondaryActions.length > 0 && (
-              <Dropdown
-                modifier="chat"
-                items={secondaryActions.map((action, index) => (
-                  <Link
-                    key={index}
-                    className={`link link--full link--chat-dropdown`}
-                  >
-                    <span className={`link__icon icon-${action.icon}`}></span>
-                    <span>{action.text}</span>
-                  </Link>
-                ))}
-              >
-                <div className="chat__message-action icon-more_vert" />
-              </Dropdown>
-            )} */}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="chat__message-actions">
+      {mainActions.map((action, index) => (
+        <IconButton
+          key={index}
+          icon={action.icon}
+          buttonModifiers={["chat"]}
+          onClick={action.onClick}
+        />
+      ))}
+    </div>
   );
 }
 
