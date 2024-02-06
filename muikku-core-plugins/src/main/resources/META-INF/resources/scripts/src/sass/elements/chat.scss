@@ -870,6 +870,15 @@ $chat-resizer-corner-size: 15px;
   width: 100%;
 }
 
+.chat__edit-message {
+  border: 0;
+  height: 1rem;
+  line-height: 1.25rem;
+  padding: 0;
+  resize: none;
+  width: 100%;
+}
+
 .chat__submit {
   align-items: center;
   background: transparent;

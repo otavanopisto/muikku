@@ -130,8 +130,9 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
 
-        <div className="chat__message-editor">
+        <div className="chat__message-body">
           <textarea
+            className="chat__edit-message"
             value={editedMessage}
             onChange={handleTextareaChange}
             onKeyDown={handleEnterKeyDown}
