@@ -16,17 +16,17 @@ public class ChatUserRestModel {
     this.type = chatUser.type;
     this.visibility = chatUser.visibility;
     this.hasImage = chatUser.hasImage;
-    this.isOnline = chatUser.isOnline;
+    this.presence = chatUser.presence;
   }
 
-  public ChatUserRestModel(Long id, String nick, String name, ChatUserType type, ChatUserVisibility visibility, boolean hasImage, boolean isOnline) {
+  public ChatUserRestModel(Long id, String nick, String name, ChatUserType type, ChatUserVisibility visibility, boolean hasImage, ChatUserPresence presence) {
     this.id = id;
     this.nick = nick;
     this.name = name;
     this.type = type;
     this.hasImage = hasImage;
     this.visibility = visibility;
-    this.isOnline = isOnline;
+    this.presence = presence;
   }
 
   public Long getId() {
@@ -74,14 +74,6 @@ public class ChatUserRestModel {
     this.hasImage = hasImage;
   }
 
-  public Boolean getIsOnline() {
-    return isOnline;
-  }
-
-  public void setIsOnline(Boolean isOnline) {
-    this.isOnline = isOnline;
-  }
-
   public ChatUserVisibility getVisibility() {
     return visibility;
   }
@@ -90,12 +82,20 @@ public class ChatUserRestModel {
     this.visibility = visibility;
   }
 
+  public ChatUserPresence getPresence() {
+    return presence;
+  }
+
+  public void setPresence(ChatUserPresence presence) {
+    this.presence = presence;
+  }
+
   private Long id;
   private String nick;
   private String name;
   private ChatUserType type;
   private ChatUserVisibility visibility;
   private Boolean hasImage;
-  private Boolean isOnline;
+  private ChatUserPresence presence;
 
 }

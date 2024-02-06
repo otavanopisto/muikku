@@ -507,7 +507,7 @@ public class ChatRESTService {
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT);
     userInfo.setHasImage(userProfilePictureController.hasProfilePicture(userEntity));
-    userInfo.setIsOnline(chatController.isOnline(userEntity));
+    userInfo.setPresence(chatController.getPresence(userEntity));
     return Response.ok(userInfo).build();
   }
 
@@ -530,7 +530,7 @@ public class ChatRESTService {
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
     userInfo.setHasImage(userProfilePictureController.hasProfilePicture(userEntity));
-    userInfo.setIsOnline(chatController.isOnline(userEntity));
+    userInfo.setPresence(chatController.getPresence(userEntity));
     return Response.ok(userInfo).build();
   }
 
@@ -545,6 +545,10 @@ public class ChatRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateChatSettings(ChatUserRestModel payload) {
+    // Make sure nick exists when chat is on
+    if (payload.getVisibility() != ChatUserVisibility.NONE && StringUtils.isEmpty(payload.getNick())) {
+      return Response.status(Status.BAD_REQUEST).entity("Nick is required").build();
+    }
     // Make sure nick is unique
     if (!StringUtils.isEmpty(payload.getNick())) {
       ChatUser nickUser = chatController.getChatUser(payload.getNick());
