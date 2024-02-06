@@ -51,14 +51,6 @@ public class ChatMessage {
     this.targetRoomId = targetRoomId;
   }
 
-  public String getNick() {
-    return nick;
-  }
-
-  public void setNick(String nick) {
-    this.nick = nick;
-  }
-
   public String getMessage() {
     return message;
   }
@@ -111,11 +103,6 @@ public class ChatMessage {
 
   @Column
   private Long targetRoomId;
-
-  @NotNull
-  @NotEmpty
-  @Column(nullable = false)
-  private String nick;
 
   @NotNull
   @NotEmpty

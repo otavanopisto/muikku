@@ -18,12 +18,11 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
 
   private static final long serialVersionUID = 4097537046772954002L;
   
-  public ChatMessage create(Long sourceUserId, Long targetRoomId, Long targetUserId, String nick, String message) {
+  public ChatMessage create(Long sourceUserId, Long targetRoomId, Long targetUserId, String message) {
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setSourceUserEntityId(sourceUserId);
     chatMessage.setTargetRoomId(targetRoomId);
     chatMessage.setTargetUserEntityId(targetUserId);
-    chatMessage.setNick(nick);
     chatMessage.setMessage(message);
     chatMessage.setSent(new Date());
     chatMessage.setArchived(Boolean.FALSE);

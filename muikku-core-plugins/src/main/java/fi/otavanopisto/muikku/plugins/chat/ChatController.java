@@ -137,7 +137,7 @@ public class ChatController {
   }
   
   public void postMessage(ChatRoom room, UserEntity userEntity, String message) {
-    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), room.getId(), null, getNick(userEntity), message);
+    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), room.getId(), null, message);
 
     // Inform users about the new message (public room message to all users, workspace room message to room users)
     
@@ -167,7 +167,7 @@ public class ChatController {
     
     // Post message
     
-    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), null, targetUserEntity.getId(), getNick(userEntity), message);
+    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), null, targetUserEntity.getId(), message);
 
     // Inform both parties of the private conversation about a new private message
     
@@ -230,9 +230,13 @@ public class ChatController {
     }
   }
 
-  public String getNick(UserEntity userEntity) {
-    ChatUserRestModel chatUser = users.get(userEntity.getId());
+  public String getNick(Long userEntityId) {
+    ChatUserRestModel chatUser = users.get(userEntityId);
     return chatUser == null ? null : chatUser.getNick();
+  }
+
+  public String getNick(UserEntity userEntity) {
+    return getNick(userEntity.getId());
   }
   
   public List<ChatUserRestModel> getBlockList(Long sourceUserEntityId) {
@@ -776,7 +780,7 @@ public class ChatController {
     else {
       msg.setTargetIdentifier("user-" + message.getTargetUserEntityId());
     }
-    msg.setNick(message.getNick());
+    msg.setNick(getNick(message.getSourceUserEntityId()));
     msg.setHasImage(userProfilePictureController.hasProfilePicture(message.getSourceUserEntityId()));
     msg.setMessage(message.getArchived() ? null : message.getMessage());
     msg.setSentDateTime(message.getSent());
