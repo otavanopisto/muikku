@@ -48,11 +48,11 @@ function PrivateRoomList(props: PrivateRoomListProps) {
     useChatContext();
 
   if (loadingRooms) {
-    return <div>Loading...</div>;
+    return <div>...</div>;
   }
 
   if (roomsPrivate.length === 0) {
-    return <div>No rooms found</div>;
+    return <div>No rooms</div>;
   }
 
   const sortedRooms = roomsPrivate.sort((a, b) => a.name.localeCompare(b.name));
@@ -86,11 +86,11 @@ function PublicRoomsList(props: PublicRoomsListProps) {
     useChatContext();
 
   if (loadingRooms) {
-    return <div>Loading...</div>;
+    return <div>...</div>;
   }
 
   if (roomsPublic.length === 0) {
-    return <div>No rooms found</div>;
+    return <div>No rooms</div>;
   }
 
   const sortedRooms = roomsPublic.sort((a, b) => a.name.localeCompare(b.name));
