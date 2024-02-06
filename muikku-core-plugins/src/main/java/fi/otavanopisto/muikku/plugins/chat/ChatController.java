@@ -40,6 +40,7 @@ import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomDeletedRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserLeftRestModel;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserPresence;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatUserType;
 import fi.otavanopisto.muikku.plugins.chat.rest.NickChangeRestModel;
@@ -136,7 +137,7 @@ public class ChatController {
   }
   
   public void postMessage(ChatRoom room, UserEntity userEntity, String message) {
-    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), room.getId(), null, getNick(userEntity), message);
+    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), room.getId(), null, message);
 
     // Inform users about the new message (public room message to all users, workspace room message to room users)
     
@@ -166,7 +167,7 @@ public class ChatController {
     
     // Post message
     
-    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), null, targetUserEntity.getId(), getNick(userEntity), message);
+    ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), null, targetUserEntity.getId(), message);
 
     // Inform both parties of the private conversation about a new private message
     
@@ -229,9 +230,13 @@ public class ChatController {
     }
   }
 
-  public String getNick(UserEntity userEntity) {
-    ChatUserRestModel chatUser = users.get(userEntity.getId());
+  public String getNick(Long userEntityId) {
+    ChatUserRestModel chatUser = users.get(userEntityId);
     return chatUser == null ? null : chatUser.getNick();
+  }
+
+  public String getNick(UserEntity userEntity) {
+    return getNick(userEntity.getId());
   }
   
   public List<ChatUserRestModel> getBlockList(Long sourceUserEntityId) {
@@ -240,7 +245,7 @@ public class ChatController {
     for (Long userEntityId : userEntityIds) {
       ChatUserRestModel chatUser = getChatUserRestModel(userEntityId);
       if (chatUser != null) {
-        chatUsers.add(getChatUserRestModel(userEntityId));
+        chatUsers.add(chatUser);
       }
     }
     return chatUsers;
@@ -270,10 +275,18 @@ public class ChatController {
     return users == null ? Collections.emptySet() : Collections.unmodifiableSet(users);
   }
   
+  public ChatUserPresence getPresence(UserEntity userEntity) {
+    return getPresence(userEntity.getId());
+  }
+
+  public ChatUserPresence getPresence(long userEntityId) {
+    return users.containsKey(userEntityId) ? isOnline(userEntityId) ? ChatUserPresence.ONLINE : ChatUserPresence.OFFLINE : ChatUserPresence.DISABLED;
+  }
+
   public boolean isOnline(UserEntity userEntity) {
     return userSessions.containsKey(userEntity.getId());
   }
-
+  
   public boolean isOnline(long userEntityId) {
     return userSessions.containsKey(userEntityId);
   }
@@ -516,7 +529,8 @@ public class ChatController {
   }
   
   public ChatUserRestModel getChatUserRestModel(Long userEntityId) {
-    return users.get(userEntityId) == null ? null : new ChatUserRestModel(users.get(userEntityId));
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    return userEntity == null ? null : toRestModel(userEntity);
   }
   
   public void handleSettingsChange(UserEntity userEntity, ChatUserVisibility visibility, String nick, String sessionId) {
@@ -588,7 +602,7 @@ public class ChatController {
       users.put(userEntity.getId(), toRestModel(chatUserDAO.findByUserEntityId(userEntity.getId())));
     }
     else {
-      chatUser.setIsOnline(Boolean.TRUE);
+      chatUser.setPresence(ChatUserPresence.ONLINE);
     }
     
     // Add user to their workspace rooms
@@ -610,7 +624,7 @@ public class ChatController {
         getUserType(userEntity),
         visibility,
         userProfilePictureController.hasProfilePicture(userEntity),
-        true);
+        ChatUserPresence.ONLINE);
     try {
       if (isStaffMember(userEntity)) {
 
@@ -669,7 +683,7 @@ public class ChatController {
         users.remove(userEntityId);
       }
       else {
-        chatUser.setIsOnline(Boolean.FALSE);
+        chatUser.setPresence(ChatUserPresence.OFFLINE);
       }
     }
     
@@ -766,7 +780,7 @@ public class ChatController {
     else {
       msg.setTargetIdentifier("user-" + message.getTargetUserEntityId());
     }
-    msg.setNick(message.getNick());
+    msg.setNick(getNick(message.getSourceUserEntityId()));
     msg.setHasImage(userProfilePictureController.hasProfilePicture(message.getSourceUserEntityId()));
     msg.setMessage(message.getArchived() ? null : message.getMessage());
     msg.setSentDateTime(message.getSent());
@@ -794,7 +808,7 @@ public class ChatController {
         userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF,
         chatUser == null ? ChatUserVisibility.NONE : chatUser.getVisibility(),
         userProfilePictureController.hasProfilePicture(userEntity),
-        isOnline(userEntity));
+        chatUser == null ? ChatUserPresence.DISABLED : isOnline(userEntity) ? ChatUserPresence.ONLINE : ChatUserPresence.OFFLINE);
   }
 
   public ChatUserRestModel toRestModel(ChatUser chatUser) {

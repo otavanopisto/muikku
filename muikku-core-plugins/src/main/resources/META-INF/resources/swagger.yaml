@@ -1005,7 +1005,7 @@ paths:
         "204":
           description: Chat settings updated successfully
         "400":
-          description: Invalid request was sent to the server
+          description: Nickname not given when chat is on
         "409":
           description: Nickname already exists
 
@@ -12296,7 +12296,7 @@ components:
         - type
         - visibility
         - hasImage
-        - isOnline
+        - presence
       properties:
         id:
           description: Id of the user.
@@ -12324,9 +12324,13 @@ components:
         hasImage:
           description: Whether the user has an image.
           type: boolean
-        isOnline:
-          description: Whether the user is online.
-          type: boolean
+        presence:
+          description: Presence of the user
+          type: string
+          enum:
+            - ONLINE
+            - OFFLINE
+            - DISABLED
 
     ChatSettings:
       type: object
