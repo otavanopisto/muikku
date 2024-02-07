@@ -4807,12 +4807,6 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: onlySignupWorkspaces
-          in: query
-          description: Only signup workspaces
-          schema:
-            type: boolean
-            default: false
       responses:
         "200":
           description: Workspace suggestions

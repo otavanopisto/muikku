@@ -173,7 +173,6 @@ export const useCourseCarousel = (
                       subject: cItem.subjectCode,
                       courseNumber: cItem.courseNumber,
                       userEntityId: userEntityId,
-                      onlySignupWorkspaces: true,
                     });
 
                   suggestions = suggestions.concat(suggestionListForSubject);
@@ -187,7 +186,6 @@ export const useCourseCarousel = (
                       subject: cItem.subjectCode,
                       courseNumber: cItem.courseNumber,
                       userEntityId: userEntityId,
-                      onlySignupWorkspaces: true,
                     });
 
                   suggestionsAsNext = suggestionsAsNext.concat(
