@@ -734,6 +734,7 @@ $chat-resizer-corner-size: 15px;
 .chat__overview-panel-item {
   align-items: center;
   border-radius: $chat-border-radius;
+  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

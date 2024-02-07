@@ -261,13 +261,7 @@ function ChatOverviewUsersList() {
           <ChatProfile user={user} />
         </OverviewListItemContent>
         <OverviewListItemActions>
-          <OverviewListItemAction>
-            <IconButton
-              icon="chat"
-              buttonModifiers={["chat"]}
-              onClick={handleOpenDiscussion(user.identifier)}
-            />
-          </OverviewListItemAction>
+          <IconButton icon="blocked" buttonModifiers={["chat-block"]} />
         </OverviewListItemActions>
       </OverviewListItem>
     ));
@@ -345,20 +339,11 @@ function ChatOverviewBlockedList() {
         </OverviewListItemContent>
 
         <OverviewListItemActions>
-          <OverviewListItemAction>
-            <IconButton
-              icon="blocked"
-              buttonModifiers={["chat"]}
-              onClick={handleOpenUnblockDialog(user)}
-            />
-          </OverviewListItemAction>
-          <OverviewListItemAction>
-            <IconButton
-              icon="chat"
-              buttonModifiers={["chat"]}
-              onClick={handleOpenDiscussion(user.identifier)}
-            />
-          </OverviewListItemAction>
+          <IconButton
+            icon="blocked"
+            buttonModifiers={["chat"]}
+            onClick={handleOpenUnblockDialog(user)}
+          />
         </OverviewListItemActions>
       </OverviewListItem>
     ));
@@ -421,13 +406,8 @@ function ChatOverviewRoomsList() {
       >
         <OverviewListItemContent>{room.name}</OverviewListItemContent>
         <OverviewListItemActions>
-          <OverviewListItemAction>
-            <IconButton
-              icon="chat"
-              buttonModifiers={["chat"]}
-              onClick={handleOpenDiscussion(room.identifier)}
-            />
-          </OverviewListItemAction>
+          <IconButton icon="pencil" buttonModifiers={["chat"]} />
+          <IconButton icon="trash" buttonModifiers={["chat"]} />
         </OverviewListItemActions>
       </OverviewListItem>
     ));
@@ -534,18 +514,6 @@ export const OverviewListItemActions: React.FC<OverviewListItemActionsProps> = (
  * OverviewListItemActionProps
  */
 interface OverviewListItemActionProps {}
-
-/**
- * OverviewListItemAction
- * @param props props
- */
-export const OverviewListItemAction: React.FC<OverviewListItemActionProps> = (
-  props
-) => {
-  const { children } = props;
-
-  return <div className="chat__overview-panel-item-action">{children}</div>;
-};
 
 /**
  * UserFilterProps
