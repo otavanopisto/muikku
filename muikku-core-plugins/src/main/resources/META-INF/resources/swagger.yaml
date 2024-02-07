@@ -1002,8 +1002,12 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/ChatSettingsUpdateRequestBody"
       responses:
-        "204":
+        "200":
           description: Chat settings updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatUser"
         "400":
           description: Nickname not given when chat is on
         "409":
