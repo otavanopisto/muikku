@@ -8,7 +8,7 @@ import {
   GuidanceCouncelorContact,
   UpdateBlockRequestBlockTypeEnum,
 } from "~/generated/client";
-import { ChatUserFilters } from "../chat-helpers";
+import { ChatUserFilters, generateHash } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -81,13 +81,12 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
+              updatedPeople[index].nick = dataTyped.nick;
               updatedPeople[index].presence = "ONLINE";
               return updatedPeople;
             } else {
               return [...users, dataTyped];
             }
-
-            return users;
           });
 
           // Users with active discussion
@@ -98,10 +97,9 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
+              updatedPeople[index].nick = dataTyped.nick;
               updatedPeople[index].presence = "ONLINE";
               return updatedPeople;
-            } else {
-              return [...users, dataTyped];
             }
 
             return users;
@@ -134,7 +132,12 @@ function useUsers(props: UseUsersProps) {
                 return updatedPeople;
               }
 
-              updatedPeople[index].presence = "OFFLINE";
+              updatedPeople[index].nick = dataTyped.permanent
+                ? null
+                : updatedPeople[index].nick;
+              updatedPeople[index].presence = dataTyped.permanent
+                ? "DISABLED"
+                : "OFFLINE";
               return updatedPeople;
             }
 
@@ -149,7 +152,12 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
-              updatedPeople[index].presence = "OFFLINE";
+              updatedPeople[index].nick = dataTyped.permanent
+                ? null
+                : updatedPeople[index].nick;
+              updatedPeople[index].presence = dataTyped.permanent
+                ? "DISABLED"
+                : "OFFLINE";
               return updatedPeople;
             }
 
@@ -372,65 +380,78 @@ function useUsers(props: UseUsersProps) {
     []
   );
 
-  // Memoized users with active discussion
-  const usersWithActiveDiscussionMemoized = React.useMemo(() => {
-    // Remove users that are already in myCounselors list
-    if (myCounselors && myCounselors.length) {
-      let listWithoutCouncelors = [...usersWithActiveDiscussion];
+  // List of users with active chat
+  const usersWithChatActiveIds = React.useMemo(
+    () => users.map((user) => user.id),
+    [users]
+  );
 
-      listWithoutCouncelors = listWithoutCouncelors.filter((user) => {
-        const counselor = myCounselors.find(
-          (counselor) => counselor.userEntityId === user.id
-        );
+  // List of users ids with active discussions
+  const usersWithDiscussionIds = React.useMemo(
+    () => usersWithActiveDiscussion.map((user) => user.id),
+    [usersWithActiveDiscussion]
+  );
 
-        return !counselor;
-      });
+  // List of counselor ids
+  const counselorIds = React.useMemo(
+    () =>
+      myCounselors && myCounselors.length
+        ? myCounselors.map((c) => c.userEntityId)
+        : [],
+    [myCounselors]
+  );
 
-      return listWithoutCouncelors;
-    }
-
-    return usersWithActiveDiscussion;
-  }, [myCounselors, usersWithActiveDiscussion]);
-
-  // Memoized counselor users
-  const counselorUsersMemoized = React.useMemo(() => {
-    if (myCounselors && myCounselors.length && users.length) {
-      const councerlorIds = myCounselors.map(
-        (counselor) => counselor.userEntityId
-      );
-
-      return users.filter((user) => councerlorIds.includes(user.id));
-    }
-
-    return [];
-  }, [myCounselors, users]);
-
-  // Memoized blocked users with status
-  const blockedUsersWithStatusMemoized = React.useMemo(() => {
-    if (!blockedUsers || !users) {
+  // List of blocked users ids
+  const blockedUsersIds = React.useMemo(() => {
+    if (!blockedUsers) {
       return [];
     }
 
-    return blockedUsers.map((user) => {
-      const userWithStatus = users.find((activity) => activity.id === user.id);
+    return blockedUsers.map((user) => user.id);
+  }, [blockedUsers]);
 
-      return {
-        ...user,
-        ...userWithStatus,
-      };
-    });
-  }, [blockedUsers, users]);
+  // Users object for easier access by id
+  const usersObject: {
+    [key: number]: ChatUser;
+  } = React.useMemo(() => {
+    /**
+     * Maps user by adding hash to nick if user has no nick
+     * @param user user
+     */
+    const mapUser = (user: ChatUser) => {
+      if (user.nick === null) {
+        user.nick = `Poistunut#${generateHash(user.identifier)}`;
+      }
+      return user;
+    };
+
+    // Combine users and users with active discussion
+    // some users with active disccussion might not have chat anymore active and are not included
+    // in users list. So we need to combine these two lists to get all users.
+    const allUsers = [...users, ...usersWithActiveDiscussion];
+
+    // Remove duplicates
+    const uniqueUsers = allUsers.filter(
+      (user, index, self) => index === self.findIndex((t) => t.id === user.id)
+    );
+
+    // Map users to object
+    return uniqueUsers
+      .map(mapUser)
+      .reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
+  }, [users, usersWithActiveDiscussion]);
 
   return {
     userFilters,
     updateUserFilters,
-    users,
-    counselorUsers: counselorUsersMemoized,
-    usersWithActiveDiscussion: usersWithActiveDiscussionMemoized,
-    blockedUsers: blockedUsersWithStatusMemoized,
+    usersWithChatActiveIds,
+    counselorIds,
+    usersWithDiscussionIds,
+    blockedUsersIds,
     blockUser,
     unblockUser,
     onNewMgsSentUpdateActiveDiscussions,
+    usersObject,
   };
 }
 

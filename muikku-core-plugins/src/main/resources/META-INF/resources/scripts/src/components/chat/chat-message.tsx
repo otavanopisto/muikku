@@ -44,7 +44,7 @@ interface ChatMessageProps {
  * @returns JSX.Element
  */
 const ChatMessage = (props: ChatMessageProps) => {
-  const { isMobileWidth } = useChatContext();
+  const { isMobileWidth, usersObjectIncludingMe } = useChatContext();
 
   const {
     editedMessage,
@@ -129,16 +129,18 @@ const ChatMessage = (props: ChatMessageProps) => {
     }
   };
 
+  const nick = usersObjectIncludingMe[msg.sourceUserEntityId].nick;
+
   const chatMessageContent = editMode ? (
     <React.Fragment key="editable">
       <ChatProfileAvatar
         id={msg.sourceUserEntityId}
-        nick={msg.nick}
+        nick={nick}
         hasImage={msg.hasImage}
       />
       <div className="chat__message-content-container">
         <div className="chat__message-meta">
-          <span className={`chat__message-meta-sender`}>{msg.nick}</span>
+          <span className={`chat__message-meta-sender`}>{nick}</span>
           <span className="chat__message-meta-timestamp">
             {localize.formatDaily(msg.sentDateTime)}
           </span>
@@ -172,12 +174,12 @@ const ChatMessage = (props: ChatMessageProps) => {
     <React.Fragment key="nonEditable">
       <ChatProfileAvatar
         id={msg.sourceUserEntityId}
-        nick={msg.nick}
+        nick={nick}
         hasImage={msg.hasImage}
       />
       <div className="chat__message-content-container">
         <div className="chat__message-meta">
-          <span className={`chat__message-meta-sender`}>{msg.nick}</span>
+          <span className={`chat__message-meta-sender`}>{nick}</span>
           <span className="chat__message-meta-timestamp">
             {localize.formatDaily(msg.sentDateTime)}
           </span>

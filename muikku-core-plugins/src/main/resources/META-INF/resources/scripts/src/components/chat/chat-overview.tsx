@@ -1,5 +1,5 @@
 import * as React from "react";
-import Button, { IconButton } from "../general/button";
+import { IconButton } from "../general/button";
 import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 import { useChatContext } from "./context/chat-context";
 import { ChatUser } from "~/generated/client";
@@ -9,9 +9,7 @@ import {
   ChatRoomFilter,
   ChatUserFilter,
   filterRooms,
-  filterUsers,
   sortRoomsAplhabetically,
-  sortUsersAlphabetically,
 } from "./chat-helpers";
 //import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 
@@ -217,15 +215,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { users, userFilters, openDiscussion } = useChatContext();
-
-  const filteredAndSortedUsers = React.useMemo(() => {
-    if (!userFilters) {
-      return users;
-    }
-
-    return filterUsers(users, userFilters).sort(sortUsersAlphabetically);
-  }, [userFilters, users]);
+  const { dashboardUsers, openDiscussion } = useChatContext();
 
   /**
    * Handles open discussion
@@ -248,11 +238,11 @@ function ChatOverviewUsersList() {
    * @returns JSX.Element
    */
   const renderContent = () => {
-    if (filteredAndSortedUsers.length === 0) {
+    if (dashboardUsers.length === 0) {
       return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
     }
 
-    return filteredAndSortedUsers.map((user) => (
+    return dashboardUsers.map((user) => (
       <OverviewListItem
         key={user.id}
         onOpenClick={handleOpenDiscussion(user.identifier)}
@@ -282,16 +272,8 @@ function ChatOverviewUsersList() {
  * @returns JSX.Element
  */
 function ChatOverviewBlockedList() {
-  const { userFilters, blockedUsers, openDiscussion, openCancelUnblockDialog } =
+  const { dashboardBlockedUsers, openDiscussion, openCancelUnblockDialog } =
     useChatContext();
-
-  const filteredAndSortedUsers = React.useMemo(() => {
-    if (!userFilters) {
-      return blockedUsers;
-    }
-
-    return filterUsers(blockedUsers, userFilters).sort(sortUsersAlphabetically);
-  }, [userFilters, blockedUsers]);
 
   /**
    * Handles open discussion
@@ -325,11 +307,11 @@ function ChatOverviewBlockedList() {
    * @returns JSX.Element
    */
   const renderContent = () => {
-    if (filteredAndSortedUsers.length === 0) {
+    if (dashboardBlockedUsers.length === 0) {
       return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
     }
 
-    return filteredAndSortedUsers.map((user) => (
+    return dashboardBlockedUsers.map((user) => (
       <OverviewListItem
         key={user.id}
         onOpenClick={handleOpenDiscussion(user.identifier)}

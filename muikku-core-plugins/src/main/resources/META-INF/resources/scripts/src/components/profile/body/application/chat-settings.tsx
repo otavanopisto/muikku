@@ -1,18 +1,7 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { ProfileState } from "~/reducers/main-function/profile";
-import {
-  saveProfileProperty,
-  SaveProfilePropertyTriggerType,
-  updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
-} from "~/actions/main-function/profile";
-import { bindActionCreators, Dispatch } from "redux";
-import {
-  displayNotification,
-  DisplayNotificationTriggerType,
-} from "~/actions/base/notifications";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-sub-panel.scss";
@@ -25,6 +14,7 @@ import {
   selectOptions,
 } from "../../../chat/chat-helpers";
 import { ChatUser } from "~/generated/client";
+import { bindActionCreators } from "redux";
 
 /**
  * ChatSettingsProps
@@ -32,9 +22,6 @@ import { ChatUser } from "~/generated/client";
 interface ChatSettingsProps extends WithTranslation<["common"]> {
   profile: ProfileState;
   status: StatusType;
-  displayNotification: DisplayNotificationTriggerType;
-  saveProfileProperty: SaveProfilePropertyTriggerType;
-  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
 /**
@@ -76,24 +63,36 @@ class ChatSettings extends React.Component<
   /**
    * componentDidMount
    */
-  componentDidMount = async () => {
-    const chatApi = MApi.getChatApi();
+  componentDidMount = () => {
+    if (this.props.status.chatSettings) {
+      const selectedOptions = selectOptions.find(
+        (option) => option.value === this.props.status.chatSettings.visibility
+      );
 
-    this.setState({ locked: true });
+      this.setState({
+        locked: false,
+        chatEnabled: selectedOptions || selectOptions[0],
+        chatNick: this.props.status.chatSettings.nick,
+      });
+    }
+  };
 
-    const chatUserSettings = await chatApi.getChatSettings();
-    const chatNick = chatUserSettings.nick || "";
-    const chatEnabled =
-      selectOptions.find(
-        (option) => option.value === chatUserSettings.visibility
-      ) || selectOptions[0];
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate = (prevProps: ChatSettingsProps) => {
+    if (prevProps.status.chatSettings !== this.props.status.chatSettings) {
+      const selectedOptions = selectOptions.find(
+        (option) => option.value === this.props.status.chatSettings.visibility
+      );
 
-    this.setState({
-      locked: false,
-      chatUserSettings,
-      chatEnabled,
-      chatNick,
-    });
+      this.setState({
+        locked: false,
+        chatEnabled: selectedOptions || selectOptions[0],
+        chatNick: this.props.status.chatSettings.nick,
+      });
+    }
   };
 
   /**
@@ -233,10 +232,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators(
-    { saveProfileProperty, displayNotification, updateProfileChatSettings },
-    dispatch
-  );
+  return bindActionCreators({}, dispatch);
 }
 
 export default withTranslation(["profile"])(
