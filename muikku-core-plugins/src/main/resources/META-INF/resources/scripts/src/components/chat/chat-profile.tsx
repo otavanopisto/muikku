@@ -19,18 +19,16 @@ interface ChatProfileProps {
 function ChatProfile(props: ChatProfileProps) {
   const { user } = props;
 
-  const nick = user.nick || "Tuntematon";
-
   return (
     <div className="chat__profile-container">
       <ChatProfileAvatar
         id={user.id}
-        nick={nick}
+        nick={user.nick}
         hasImage={user.hasImage}
         status={user.presence === "ONLINE" ? "online" : "offline"}
       />
       <div className="chat__profile-name-container">
-        <div className="chat__profile-name">{nick}</div>
+        <div className="chat__profile-name">{user.nick}</div>
         <div className="chat__profile-literal-status">
           {user.presence === "ONLINE" ? "Paikalla" : "Ei paikalla"}
         </div>

@@ -10,7 +10,11 @@ import {
 } from "~/generated/client";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useViews } from "../animated-views/context/hooks/useChatTabs";
-import { chatControllerViews } from "../chat-helpers";
+import {
+  chatControllerViews,
+  filterUsers,
+  sortUsersAlphabetically,
+} from "../chat-helpers";
 import useChatUsers from "./useUsers";
 import useRooms from "./useRooms";
 import variables from "~/sass/_exports.scss";
@@ -31,12 +35,13 @@ function useChat(userId: number, currentUser: ChatUser) {
   const websocket = useChatWebsocketContext();
 
   const {
+    usersObject,
     userFilters,
     updateUserFilters,
-    users,
-    counselorUsers,
-    usersWithActiveDiscussion,
-    blockedUsers,
+    usersWithChatActiveIds,
+    counselorIds,
+    usersWithDiscussionIds,
+    blockedUsersIds,
     blockUser,
     unblockUser,
     onNewMgsSentUpdateActiveDiscussions,
@@ -239,13 +244,12 @@ function useChat(userId: number, currentUser: ChatUser) {
    */
   const closeDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
-      await blockUser(currentUser, "SOFT");
-
       // Close discussion if it is open
       if (activeDiscussionIdentifier === currentUser.identifier) {
         setActiveDiscussionIdentifier(null);
         chatViews.goTo("overview");
       }
+      await blockUser(currentUser, "SOFT");
     },
     [activeDiscussionIdentifier, blockUser, chatViews]
   );
@@ -319,60 +323,139 @@ function useChat(userId: number, currentUser: ChatUser) {
   );
 
   // Current active discussion
-  const activeDiscussionMemoized = React.useMemo(() => {
-    if (!activeDiscussionIdentifier || !users || !rooms) {
+  const activeDiscussion = React.useMemo(() => {
+    if (!activeDiscussionIdentifier || !rooms) {
       return null;
     }
 
-    return [...users, ...rooms].find(
+    // All users with or without active discussion
+    const allUsers = Object.values(usersObject);
+
+    return [...allUsers, ...rooms].find(
       (r) => r.identifier === activeDiscussionIdentifier
     );
-  }, [users, rooms, activeDiscussionIdentifier]);
+  }, [activeDiscussionIdentifier, rooms, usersObject]);
+
+  // Users object including the current user
+  const usersObjectIncludingMe: {
+    [key: string]: ChatUser;
+  } = React.useMemo(
+    () => ({ ...usersObject, [currentUser.id]: currentUser }),
+    [usersObject, currentUser]
+  );
+
+  // Users with chat activated, sorted alphabetically
+  const dashboardUsers = React.useMemo(() => {
+    if (!userFilters) {
+      return usersWithChatActiveIds
+        .map((id) => usersObject[id])
+        .sort(sortUsersAlphabetically);
+    }
+
+    return filterUsers(
+      usersWithChatActiveIds.map((id) => usersObject[id]),
+      userFilters
+    ).sort(sortUsersAlphabetically);
+  }, [usersWithChatActiveIds, userFilters, usersObject]);
+
+  // Blocked users, filtered and sorted alphabetically
+  const dashboardBlockedUsers = React.useMemo(() => {
+    if (!userFilters) {
+      return blockedUsersIds.map((id) => usersObject[id]);
+    }
+
+    return filterUsers(
+      blockedUsersIds.map((id) => usersObject[id]),
+      userFilters
+    ).sort(sortUsersAlphabetically);
+  }, [blockedUsersIds, userFilters, usersObject]);
+
+  // My discussions with counselors, sorted alphabetically
+  const myDiscussionsCouncelors = React.useMemo(
+    () =>
+      counselorIds.map((id) => usersObject[id]).sort(sortUsersAlphabetically),
+    [counselorIds, usersObject]
+  );
+
+  // My discussions with other users than counselors, sorted by activity
+  const myDiscussionsOthers = React.useMemo(() => {
+    const sortUsersByActivity = (a: ChatUser, b: ChatUser) => {
+      const aActivity = chatActivity.find(
+        (activity) => activity.targetIdentifier === a.identifier
+      );
+
+      const bActivity = chatActivity.find(
+        (activity) => activity.targetIdentifier === b.identifier
+      );
+
+      const aLastMessage = aActivity?.latestMessage || undefined;
+      const bLastMessage = bActivity?.latestMessage || undefined;
+
+      if (!aLastMessage) {
+        return 1;
+      }
+
+      if (!bLastMessage) {
+        return -1;
+      }
+
+      return bLastMessage.getTime() - aLastMessage.getTime();
+    };
+
+    if (!chatActivity) {
+      return usersWithDiscussionIds.map((id) => usersObject[id]);
+    }
+
+    return usersWithDiscussionIds
+      .map((id) => usersObject[id])
+      .sort(sortUsersByActivity);
+  }, [usersWithDiscussionIds, chatActivity, usersObject]);
 
   return {
-    activeDiscussion: activeDiscussionMemoized,
-    userToBeBlocked,
-    blockedUsers,
-    userToBeUnblocked,
+    activeDiscussion,
     canModerate,
     chatActivity,
     chatViews,
     closeAndBlockDiscussionWithUser,
-    closeDiscussionWithUser,
     closeBlockUserDialog,
     closeCancelUnblockDialog,
-    counselorUsers,
+    closeDiscussionWithUser,
     currentUser,
+    dashboardBlockedUsers,
+    dashboardUsers,
     deleteCustomRoom,
     discussionInstances,
     isMobileWidth,
     loadingRooms,
     markMsgsAsRead,
     minimized,
+    myDiscussionsCouncelors,
+    myDiscussionsOthers,
     newChatRoom,
-    openDiscussion,
-    openOverview,
     openBlockUserDialog,
     openCancelUnblockDialog,
+    openDiscussion,
+    openOverview,
     panelLeftOpen,
     panelRightOpen,
+    roomFilters,
     rooms,
     roomsPrivate: rooms.filter((r) => r.type === "WORKSPACE"),
     roomsPublic: rooms.filter((r) => r.type === "PUBLIC"),
     saveEditedRoom,
     saveNewRoom,
-    roomFilters,
     toggleControlBox,
     toggleLeftPanel,
     toggleRightPanel,
-    userFilters,
     unblockDiscussionWithUser,
     updateNewRoomEditor,
     updateRoomFilters,
     updateUserFilters,
+    userFilters,
     userId,
-    users,
-    usersWithActiveDiscussion,
+    usersObjectIncludingMe,
+    userToBeBlocked,
+    userToBeUnblocked,
   };
 }
 

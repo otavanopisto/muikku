@@ -3,7 +3,6 @@ import { ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import { IconButton } from "../general/button";
 import ChatProfile from "./chat-profile";
-import { sortUsersAlphabetically } from "./chat-helpers";
 
 /**
  * ChatUsersWithActiveDiscussion
@@ -28,14 +27,18 @@ function ChatMyDiscussions() {
  * @returns JSX.Element
  */
 function ChatMyCounselorsDiscussions() {
-  const { counselorUsers, currentUser, activeDiscussion, openDiscussion } =
-    useChatContext();
+  const {
+    myDiscussionsCouncelors,
+    currentUser,
+    activeDiscussion,
+    openDiscussion,
+  } = useChatContext();
 
   if (currentUser.type !== "STUDENT") {
     return null;
   }
 
-  if (counselorUsers.length === 0) {
+  if (myDiscussionsCouncelors.length === 0) {
     return (
       <>
         <div
@@ -49,12 +52,10 @@ function ChatMyCounselorsDiscussions() {
     );
   }
 
-  const sortedCounclors = counselorUsers.sort(sortUsersAlphabetically);
-
   return (
     <>
       <div className="chat__users-category-title">Ohjaajat</div>
-      {sortedCounclors.map((user) => (
+      {myDiscussionsCouncelors.map((user) => (
         <ChatMyActiveDiscussion
           key={user.id}
           user={user}
@@ -78,44 +79,15 @@ interface ChatMyDiscussionsProps {}
  */
 function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
   const {
-    usersWithActiveDiscussion,
-    chatActivity,
     closeDiscussionWithUser,
     openDiscussion,
     activeDiscussion,
+    myDiscussionsOthers,
   } = useChatContext();
-
-  // Sort discussion by last message activity
-  const sortedDiscussions = React.useMemo(
-    () =>
-      usersWithActiveDiscussion.sort((a, b) => {
-        const aActivity = chatActivity.find(
-          (activity) => activity.targetIdentifier === a.identifier
-        );
-
-        const bActivity = chatActivity.find(
-          (activity) => activity.targetIdentifier === b.identifier
-        );
-
-        const aLastMessage = aActivity?.latestMessage || undefined;
-        const bLastMessage = bActivity?.latestMessage || undefined;
-
-        if (!aLastMessage) {
-          return 1;
-        }
-
-        if (!bLastMessage) {
-          return -1;
-        }
-
-        return bLastMessage.getTime() - aLastMessage.getTime();
-      }),
-    [usersWithActiveDiscussion, chatActivity]
-  );
 
   return (
     <>
-      {sortedDiscussions.map((user) => (
+      {myDiscussionsOthers.map((user) => (
         <ChatMyActiveDiscussion
           key={user.id}
           user={user}

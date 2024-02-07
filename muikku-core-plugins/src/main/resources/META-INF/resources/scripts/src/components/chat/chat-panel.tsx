@@ -48,12 +48,12 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
  * @returns JSX.Element
  */
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
-  const { targetIdentifier } = props;
+  const { targetIdentifier, targetUser } = props;
 
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
-  const { blockedUsers, openBlockUserDialog } = useChatContext();
+  const { dashboardBlockedUsers, openBlockUserDialog } = useChatContext();
 
   const contentRef = React.useRef<HTMLDivElement>(null);
   const footerRef = React.useRef<HTMLDivElement>(null);
@@ -76,16 +76,16 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   }, []);
 
   const isBlocked = React.useMemo(() => {
-    if (!blockedUsers) {
+    if (!dashboardBlockedUsers) {
       return false;
     }
 
     return (
-      blockedUsers.find(
+      dashboardBlockedUsers.find(
         (blockedUser) => blockedUser.identifier === targetIdentifier
       ) !== undefined
     );
-  }, [blockedUsers, targetIdentifier]);
+  }, [dashboardBlockedUsers, targetIdentifier]);
 
   /**
    * Handles enter key down.
@@ -146,23 +146,22 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
         </MessagesContainer>
       </div>
 
-      {!isBlocked && (
-        <div className="chat__discussion-panel-footer" ref={footerRef}>
-          <div className="chat__discussion-editor-container">
-            <TextareaAutosize
-              className="chat__new-message"
-              value={newMessage}
-              onChange={handleEditorChange}
-              onKeyDown={handleEnterKeyDown}
-              maxRows={5}
-              autoFocus
-            />
-          </div>
-          <button className="chat__submit" type="submit" onClick={postMessage}>
-            <span className="icon-arrow-right"></span>
-          </button>
+      <div className="chat__discussion-panel-footer" ref={footerRef}>
+        <div className="chat__discussion-editor-container">
+          <TextareaAutosize
+            className="chat__new-message"
+            value={newMessage}
+            onChange={handleEditorChange}
+            onKeyDown={handleEnterKeyDown}
+            maxRows={5}
+            disabled={isBlocked || targetUser.presence === "DISABLED"}
+            autoFocus
+          />
         </div>
-      )}
+        <button className="chat__submit" type="submit" onClick={postMessage}>
+          <span className="icon-arrow-right"></span>
+        </button>
+      </div>
     </div>
   );
 };

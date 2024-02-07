@@ -72,6 +72,8 @@ import {
 } from "~/actions/workspaces/material";
 import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
+import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
+import Chat from "~/components/chat";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1256,6 +1258,9 @@ export default class Workspace extends React.Component<
       <ReadspeakerProvider>
         <BrowserRouter>
           <div id="root">
+            <ChatWebsocketContextProvider websocket={this.props.websocket}>
+              <Chat />
+            </ChatWebsocketContextProvider>
             <Notifications></Notifications>
             <DisconnectedWarningDialog />
             <EasyToUseFunctions />
