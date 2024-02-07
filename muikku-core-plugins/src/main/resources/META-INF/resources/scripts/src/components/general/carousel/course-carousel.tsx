@@ -13,6 +13,7 @@ import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup"
 import { SuggestedCourse } from "~/@types/shared";
 import Carousel from "react-multi-carousel";
 import WorkspaceDescriptionDialog from "./workspace-description-dialog";
+import { useTranslation } from "react-i18next";
 
 const responsive = {
   desktop: {
@@ -43,6 +44,8 @@ const responsive = {
 interface CourseCarouselProps {
   studentId: string;
   studentUserEntityId: number;
+  studyProgrammeName: string;
+  curriculumName: string;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -52,14 +55,29 @@ interface CourseCarouselProps {
  * @returns JSX.Element
  */
 const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
+  const { t } = useTranslation("courseCarousel");
   const { courseCarousel } = useCourseCarousel(
     props.studentId,
     props.studentUserEntityId,
+    props.studyProgrammeName,
+    props.curriculumName,
     props.displayNotification
   );
 
   if (courseCarousel.isLoading) {
     return <div className="loader-empty" />;
+  }
+
+  if (courseCarousel.carouselItems === null) {
+    return null;
+  }
+
+  if (courseCarousel.carouselItems.length === 0) {
+    return (
+      <div className="empty">
+        <span>{t("content.empty", { ns: "courseCarousel" })}</span>
+      </div>
+    );
   }
 
   const carouselItems = courseCarousel.carouselItems.map((cItem) => (
@@ -102,6 +120,7 @@ interface CourseCarouselItemProps {
  * @returns JSX.Element
  */
 const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
+  const { t } = useTranslation("courseCarousel");
   const { course } = props;
 
   const courseImage = course.hasCustomImage
@@ -132,7 +151,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
             buttonModifiers={["studies-course-action"]}
             href={`/workspace/${course.urlName}`}
           >
-            Tutustu
+            {t("actions.checkOut", { ns: "courseCarousel" })}
           </Button>
 
           <WorkspaceSignup
@@ -147,7 +166,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
               aria-label={course.name}
               buttonModifiers={["studies-course-action"]}
             >
-              Ilmoittaudu
+              {t("actions.signUp", { ns: "courseCarousel" })}
             </Button>
           </WorkspaceSignup>
 
@@ -157,11 +176,17 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
                 aria-label={course.name}
                 buttonModifiers={["studies-course-action"]}
               >
-                Kuvaus
+                {t("labels.description", { ns: "courseCarousel" })}
               </Button>
             </WorkspaceDescriptionDialog>
           )}
-          {course.suggestedAsNext && <span>Ohjaajan ehdottama!</span>}
+          {course.suggestedAsNext && (
+            <span>
+              {t("labels.guidanceCouncelorSuggestion", {
+                ns: "courseCarousel",
+              })}
+            </span>
+          )}
         </div>
       </div>
     </div>
