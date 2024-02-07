@@ -174,12 +174,15 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
             </Button>
           </>
         ) : (
-          <Button
-            buttonModifiers={["standard-ok", "info"]}
-            onClick={() => setEditing(true)}
-          >
-            Muokkaa
-          </Button>
+          <>
+            <Button
+              buttonModifiers={["standard-ok", "info"]}
+              onClick={() => setEditing(true)}
+            >
+              Muokkaa
+            </Button>
+            <Button buttonModifiers={["standard-ok", "fatal"]}>Poista</Button>
+          </>
         )}
       </div>
     );
