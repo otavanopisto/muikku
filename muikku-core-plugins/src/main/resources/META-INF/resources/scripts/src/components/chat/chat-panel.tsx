@@ -158,7 +158,12 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
             autoFocus
           />
         </div>
-        <button className="chat__submit" type="submit" onClick={postMessage}>
+        <button
+          className="chat__submit"
+          type="submit"
+          onClick={postMessage}
+          disabled={isBlocked || targetUser.presence === "DISABLED"}
+        >
           <span className="icon-arrow-right"></span>
         </button>
       </div>
