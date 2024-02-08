@@ -8,6 +8,7 @@ import { ChatWindowContextProvider } from "./context/chat-window-context";
 import useChatSettings from "./hooks/useChatSettings";
 import ChatUnblockDiscussionDialog from "./dialogs/chat-unblock-discussion-dialog";
 import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-discussion-dialog";
+import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
 
 /**
  * Chat component. Renders or not depending on chat settings
@@ -73,6 +74,7 @@ const ChatContent = () => {
       {mobileOrDesktop}
       <ChatUnblockDiscussionDialog />
       <ChatCloseAndBlockDiscussionDialog />
+      <ChatDeleteRoomDialog />
     </ChatWindowContextProvider>
   );
 };

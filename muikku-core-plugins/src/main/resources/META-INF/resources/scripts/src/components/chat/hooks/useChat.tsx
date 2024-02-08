@@ -4,6 +4,7 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
+  ChatRoom,
   ChatUser,
   CreateChatRoomRequest,
   UpdateChatRoomRequest,
@@ -98,6 +99,8 @@ function useChat(userId: number, currentUser: ChatUser) {
   const [userToBeUnblocked, setUserToBeUnblocked] =
     React.useState<ChatUser>(null);
 
+  const [roomToBeDeleted, setRoomToBeDeleted] = React.useState<ChatRoom>(null);
+
   // Shared websocket callbacks
   useWebsocketsWithCallbacks({
     "chat:message-sent": (data: unknown) => {
@@ -148,9 +151,15 @@ function useChat(userId: number, currentUser: ChatUser) {
    */
   const deleteCustomRoom = React.useCallback(
     async (identifier: string) => {
+      // Close discussion if it is open
+      if (activeDiscussionIdentifier === identifier) {
+        setActiveDiscussionIdentifier(null);
+        chatViews.goTo("overview");
+      }
+
       await deleteRoom(identifier);
     },
-    [deleteRoom]
+    [activeDiscussionIdentifier, chatViews, deleteRoom]
   );
 
   // Toggles the control box
@@ -316,6 +325,20 @@ function useChat(userId: number, currentUser: ChatUser) {
     setUserToBeBlocked(null);
   }, []);
 
+  /**
+   * Handles opening delete room dialog
+   */
+  const openDeleteRoomDialog = React.useCallback((room: ChatRoom) => {
+    setRoomToBeDeleted(room);
+  }, []);
+
+  /**
+   * Handles closing delete room dialog
+   */
+  const closeDeleteRoomDialog = React.useCallback(() => {
+    setRoomToBeDeleted(null);
+  }, []);
+
   // Whether the current user can moderate
   const canModerate = React.useMemo(
     () => currentUser.type === "STAFF",
@@ -344,19 +367,22 @@ function useChat(userId: number, currentUser: ChatUser) {
     [usersObject, currentUser]
   );
 
-  // Users with chat activated, sorted alphabetically
+  // Users with chat activated, not blocked, sorted alphabetically
   const dashboardUsers = React.useMemo(() => {
     if (!userFilters) {
       return usersWithChatActiveIds
         .map((id) => usersObject[id])
+        .filter((u) => !blockedUsersIds.includes(u.id))
         .sort(sortUsersAlphabetically);
     }
 
     return filterUsers(
-      usersWithChatActiveIds.map((id) => usersObject[id]),
+      usersWithChatActiveIds
+        .map((id) => usersObject[id])
+        .filter((u) => !blockedUsersIds.includes(u.id)),
       userFilters
     ).sort(sortUsersAlphabetically);
-  }, [usersWithChatActiveIds, userFilters, usersObject]);
+  }, [userFilters, usersWithChatActiveIds, usersObject, blockedUsersIds]);
 
   // Blocked users, filtered and sorted alphabetically
   const dashboardBlockedUsers = React.useMemo(() => {
@@ -420,6 +446,7 @@ function useChat(userId: number, currentUser: ChatUser) {
     closeBlockUserDialog,
     closeCancelUnblockDialog,
     closeDiscussionWithUser,
+    closeDeleteRoomDialog,
     currentUser,
     dashboardBlockedUsers,
     dashboardUsers,
@@ -434,6 +461,7 @@ function useChat(userId: number, currentUser: ChatUser) {
     newChatRoom,
     openBlockUserDialog,
     openCancelUnblockDialog,
+    openDeleteRoomDialog,
     openDiscussion,
     openOverview,
     panelLeftOpen,
@@ -442,6 +470,7 @@ function useChat(userId: number, currentUser: ChatUser) {
     rooms,
     roomsPrivate: rooms.filter((r) => r.type === "WORKSPACE"),
     roomsPublic: rooms.filter((r) => r.type === "PUBLIC"),
+    roomToBeDeleted,
     saveEditedRoom,
     saveNewRoom,
     toggleControlBox,

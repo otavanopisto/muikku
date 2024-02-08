@@ -31,7 +31,7 @@ interface ChatRoomEditAndInfoDialogProps {
 const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
   const { room, defaults } = props;
 
-  const { saveEditedRoom, canModerate } = useChatContext();
+  const { saveEditedRoom, canModerate, deleteCustomRoom } = useChatContext();
 
   const [roomEdit, setRoomEdit] = React.useState<ChatRoom>(room);
   const [editing, setEditing] = React.useState<boolean>(defaults === "edit");
@@ -56,6 +56,27 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
   };
 
   /**
+   * Handles delete click
+   * @param callback callback
+   */
+  const handleDeleteClick =
+    (callback: () => void) =>
+    async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      await deleteCustomRoom(room.identifier);
+      callback();
+    };
+
+  /**
+   * handleEditClick
+   * @param e e
+   */
+  const handleEditClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    setEditing(true);
+  };
+
+  /**
    * Handles save click
    *
    * @param callback callback
@@ -73,8 +94,9 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
         unstable_batchedUpdates(() => {
           setEditing(false);
           setRoomEdit(room);
-          setDisabled(false);
         });
+      } else {
+        callback();
       }
 
       setDisabled(false);
@@ -96,7 +118,6 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
           setRoomEdit(room);
         });
       } else {
-        setEditing(false);
         callback();
       }
     };
@@ -130,7 +151,7 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
             <textarea
               id="editRoowDescription"
               className="chat__memofield"
-              value={roomEdit.description}
+              value={roomEdit.description || ""}
               onChange={handlesDescriptionChange}
             />
           </div>
@@ -177,11 +198,16 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
           <>
             <Button
               buttonModifiers={["standard-ok", "info"]}
-              onClick={() => setEditing(true)}
+              onClick={handleEditClick}
             >
               Muokkaa
             </Button>
-            <Button buttonModifiers={["standard-ok", "fatal"]}>Poista</Button>
+            <Button
+              onClick={handleDeleteClick(closeDialog)}
+              buttonModifiers={["standard-ok", "fatal"]}
+            >
+              Poista
+            </Button>
           </>
         )}
       </div>

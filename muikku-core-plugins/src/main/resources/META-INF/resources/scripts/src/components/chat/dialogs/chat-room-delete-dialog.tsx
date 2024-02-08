@@ -2,7 +2,6 @@ import Dialog, { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { ChatRoom } from "~/generated/client";
 import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
 
@@ -10,10 +9,6 @@ import Button from "~/components/general/button";
  * ChatDeleteRoomDialogProps
  */
 interface ChatRoomDeleteDialogProps {
-  /**
-   * Chat room
-   */
-  room: ChatRoom;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
 }
@@ -22,10 +17,9 @@ interface ChatRoomDeleteDialogProps {
  * ChatDeleteRoomDialog
  * @param props props
  */
-const ChatRoomDeleteDialog = (props: ChatRoomDeleteDialogProps) => {
-  const { room } = props;
-
-  const { deleteCustomRoom } = useChatContext();
+const ChatDeleteRoomDialog = (props: ChatRoomDeleteDialogProps) => {
+  const { deleteCustomRoom, closeDeleteRoomDialog, roomToBeDeleted } =
+    useChatContext();
 
   /**
    * Handles save click
@@ -34,22 +28,39 @@ const ChatRoomDeleteDialog = (props: ChatRoomDeleteDialogProps) => {
   const handleDeleteClick =
     (callback: () => void) =>
     async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      await deleteCustomRoom(room.identifier);
+      await deleteCustomRoom(roomToBeDeleted.identifier);
       callback();
     };
+
+  /**
+   * handleCloseClick
+   * @param e e
+   */
+  const handleCloseClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    closeDeleteRoomDialog();
+  };
 
   /**
    * content
    * @param closeDialog closeDialog
    */
-  const content = (closeDialog: () => void) => (
-    <div>
-      <DialogRow>
-        Oletko varma että haluat poistaa huoneen: <strong>{room.name}</strong>?
-        Kaikki huoneen viestit poistuvat myös.
-      </DialogRow>
-    </div>
-  );
+  const content = (closeDialog: () => void) => {
+    if (!roomToBeDeleted) {
+      return null;
+    }
+
+    return (
+      <div>
+        <DialogRow>
+          Oletko varma että haluat poistaa huoneen:{" "}
+          <strong>{roomToBeDeleted.name}</strong>? Kaikki huoneen viestit
+          poistuvat myös.
+        </DialogRow>
+      </div>
+    );
+  };
 
   /**
    * footer
@@ -65,7 +76,7 @@ const ChatRoomDeleteDialog = (props: ChatRoomDeleteDialogProps) => {
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
-        onClick={closeDialog}
+        onClick={handleCloseClick}
       >
         Peruuta
       </Button>
@@ -74,6 +85,7 @@ const ChatRoomDeleteDialog = (props: ChatRoomDeleteDialogProps) => {
 
   return (
     <Dialog
+      isOpen={!!roomToBeDeleted}
       localElementId="chat__body"
       disableScroll={true}
       title="Huoneen poisto"
@@ -86,4 +98,4 @@ const ChatRoomDeleteDialog = (props: ChatRoomDeleteDialogProps) => {
   );
 };
 
-export default ChatRoomDeleteDialog;
+export default ChatDeleteRoomDialog;

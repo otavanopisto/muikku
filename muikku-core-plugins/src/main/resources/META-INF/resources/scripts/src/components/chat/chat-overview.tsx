@@ -2,7 +2,7 @@ import * as React from "react";
 import { IconButton } from "../general/button";
 import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 import { useChatContext } from "./context/chat-context";
-import { ChatUser } from "~/generated/client";
+import { ChatRoom, ChatUser } from "~/generated/client";
 import ChatProfile from "./chat-profile";
 import Dropdown from "../general/dropdown";
 import {
@@ -11,6 +11,7 @@ import {
   filterRooms,
   sortRoomsAplhabetically,
 } from "./chat-helpers";
+import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
 //import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 
 type OverviewTab = "users" | "rooms" | "blocked";
@@ -215,7 +216,8 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { dashboardUsers, openDiscussion } = useChatContext();
+  const { dashboardUsers, openDiscussion, openBlockUserDialog } =
+    useChatContext();
 
   /**
    * Handles open discussion
@@ -231,6 +233,17 @@ function ChatOverviewUsersList() {
         openDiscussion(targetIdentifier);
       },
     [openDiscussion]
+  );
+
+  /**
+   * Handles block click
+   */
+  const handleBlockClick = React.useCallback(
+    (user: ChatUser) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
+      openBlockUserDialog(user);
+    },
+    [openBlockUserDialog]
   );
 
   /**
@@ -251,7 +264,11 @@ function ChatOverviewUsersList() {
           <ChatProfile user={user} />
         </OverviewListItemContent>
         <OverviewListItemActions>
-          <IconButton icon="blocked" buttonModifiers={["chat-block"]} />
+          <IconButton
+            icon="blocked"
+            buttonModifiers={["chat-block"]}
+            onClick={handleBlockClick(user)}
+          />
         </OverviewListItemActions>
       </OverviewListItem>
     ));
@@ -346,7 +363,13 @@ function ChatOverviewBlockedList() {
  * @returns JSX.Element
  */
 function ChatOverviewRoomsList() {
-  const { rooms, roomFilters, openDiscussion } = useChatContext();
+  const {
+    canModerate,
+    rooms,
+    roomFilters,
+    openDiscussion,
+    openDeleteRoomDialog,
+  } = useChatContext();
 
   const filteredAndSortedRooms = React.useMemo(() => {
     if (!roomFilters) {
@@ -373,6 +396,17 @@ function ChatOverviewRoomsList() {
   );
 
   /**
+   * Handles delete room
+   */
+  const handleDeleteRoom = React.useCallback(
+    (room: ChatRoom) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
+      openDeleteRoomDialog(room);
+    },
+    [openDeleteRoomDialog]
+  );
+
+  /**
    * renderContent
    * @returns JSX.Element
    */
@@ -387,10 +421,20 @@ function ChatOverviewRoomsList() {
         onOpenClick={handleOpenDiscussion(room.identifier)}
       >
         <OverviewListItemContent>{room.name}</OverviewListItemContent>
-        <OverviewListItemActions>
-          <IconButton icon="pencil" buttonModifiers={["chat"]} />
-          <IconButton icon="trash" buttonModifiers={["chat"]} />
-        </OverviewListItemActions>
+
+        {canModerate && room.type === "PUBLIC" && (
+          <OverviewListItemActions>
+            <ChatRoomEditAndInfoDialog room={room} defaults="edit">
+              <IconButton icon="pencil" buttonModifiers={["chat"]} />
+            </ChatRoomEditAndInfoDialog>
+
+            <IconButton
+              icon="trash"
+              buttonModifiers={["chat"]}
+              onClick={handleDeleteRoom(room)}
+            />
+          </OverviewListItemActions>
+        )}
       </OverviewListItem>
     ));
   };
@@ -491,11 +535,6 @@ export const OverviewListItemActions: React.FC<OverviewListItemActionsProps> = (
 
   return <div className="chat__overview-panel-item-actions">{children}</div>;
 };
-
-/**
- * OverviewListItemActionProps
- */
-interface OverviewListItemActionProps {}
 
 /**
  * UserFilterProps
