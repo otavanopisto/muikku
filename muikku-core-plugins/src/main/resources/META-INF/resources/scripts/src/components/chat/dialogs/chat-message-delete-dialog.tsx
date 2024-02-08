@@ -4,6 +4,8 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { ChatMessage } from "~/generated/client";
 import Button from "~/components/general/button";
+import { localize } from "~/locales/i18n";
+import ChatProfileAvatar from "../chat-profile-avatar";
 
 /**
  * ChatDeleteRoomDialogProps
@@ -26,6 +28,19 @@ interface ChatDeleteMessageDialogProps {
    */
   onClose: () => void;
 }
+
+/**
+ * parseLines
+ * @param value value
+ * @returns parsed lines
+ */
+const parseLines = (value: string) =>
+  value.split("\n").map((line, index) => (
+    <React.Fragment key={index}>
+      {line}
+      <br />
+    </React.Fragment>
+  ));
 
 /**
  * ChatDeleteRoomDialog
@@ -60,10 +75,42 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
    */
   const content = (closeDialog: () => void) => (
     <div>
+      {/*
       <DialogRow>
         <strong>Olet poistamassa viestiä:</strong>
       </DialogRow>
-      <DialogRow>{message.message}</DialogRow>
+      <DialogRow><strong>{message.nick}</strong> {localize.formatDaily(message.sentDateTime)}</DialogRow>
+      <DialogRow>{message.message}</DialogRow> */}
+      <DialogRow>
+        <strong>Olet poistamassa viestiä:</strong>
+      </DialogRow>
+      <DialogRow>
+        <div className="chat__message chat__message--deleting">
+          <ChatProfileAvatar
+            id={message.sourceUserEntityId}
+            nick={message.nick}
+            hasImage={message.hasImage}
+          />
+          <div className="chat__message-content-container">
+            <div className="chat__message-meta">
+              <span className={`chat__message-meta-sender`}>
+                {message.nick}
+              </span>
+              <span className="chat__message-meta-timestamp">
+                {localize.formatDaily(message.sentDateTime)}
+              </span>
+            </div>
+            <div className="chat__message-body">
+              {parseLines(message.message)}
+              {message.editedDateTime && (
+                <div className="chat__message-edited-info">
+                  (Muokattu {localize.formatDaily(message.editedDateTime)})
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </DialogRow>
     </div>
   );
 
