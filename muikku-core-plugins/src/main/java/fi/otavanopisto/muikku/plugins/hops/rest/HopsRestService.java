@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -473,34 +472,49 @@ public class HopsRestService {
   @GET
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces, @QueryParam("userEntityId") Long userEntityId) {
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("userEntityId") Long userEntityId) {
     
+    // Student needs to exist and have HOPS available
+    
+    if (userEntityId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing userEntityId").build();
+    }
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    
     SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
-    // Permission checks
-    if(userEntity == null || !hopsController.isHopsAvailable(userIdentifier.getDataSource() + "-" + userIdentifier.getIdentifier())) {
+    if (userEntity == null || !hopsController.isHopsAvailable(userIdentifier.getDataSource() + "-" + userIdentifier.getIdentifier())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
+    // Students may only list suggestions for themselves
+    
     if (userEntity != null && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
-
       if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
+    // Student needs to be active
+    
     User user = userController.findUserByUserEntityDefaults(userEntity);
+    boolean isActive = userSchoolDataController.isActiveUser(user);
+    if (!isActive) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+    
+    // Student needs to be OPS 2018 or OPS 2021
+    
     Map<SchoolDataIdentifier, String> curriculumNameCache = new HashMap<>();
-
     String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
-    
-    Boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
-    
+    boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
+    boolean studentCurriculumOPS2018 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2018");
+    if (!studentCurriculumOPS2021 && !studentCurriculumOPS2018) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
 
-    // Turn code into a Pyramus subject identifier because Elastic index only has that :(
+    // Turn subject code into a Pyramus subject identifier because Elastic index only has that :(
 
     String schoolDataSource = sessionController.getLoggedUserSchoolDataSource();
     Subject subjectObject = courseMetaController.findSubjectByCode(schoolDataSource, subject);
@@ -525,97 +539,87 @@ public class HopsRestService {
             String identifier = id[0];
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
             
-            WorkspaceType workspaceType = null;
+            // Skip unpublished courses
+            
+            Boolean published = (Boolean) result.get("published");
+            if (!published) {
+              continue;
+            }
+
+            // OPS of the course and the student must match
+            
+            @SuppressWarnings("unchecked")
+            ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
+            boolean correctCurriculum = false;
+            for (String curriculumIdentifier : curriculumIdentifiers) {
+              String courseCurriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
+              if (StringUtils.equalsIgnoreCase(courseCurriculumName, curriculumName)) {
+                correctCurriculum = true;
+                break;
+              }
+            }
+            if (!correctCurriculum) {
+              continue;
+            }
+
+            // Skip missing courses
             
             WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
-            
-            if (workspaceEntity != null) {
-              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-              
-              // TODO: We have to fetch workspace from Pyramus to fetch workspace type from Pyramus. Adding workspace type to Elastic would eliminate the need for both calls.
-              
-              if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
-                continue;
-              }
-              
-              Double beginDateDouble = (Double) result.get("beginDate");
-              
-              if (beginDateDouble != null) {
-                long itemLong = (long) (beginDateDouble * 1000);
-                Date beginDate = new Date(itemLong);
-                if (beginDate != null && !beginDate.after(new Date())) {
-                  continue;
-                }
-              }
-              
-              Boolean published = (Boolean) result.get("published");
-              
-              if (!published) {
-                continue;
-              }
-              
-              if (!onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
-                
-                // If student has no access to sign up on a course, add workspace to suggestion list only if all of these are correct
-                // - Student curriculum OPS2021
-                // - Course curriculum OPS2021
-                // - Published
-                // - Course type 'NONSTOP'
-                
-                if (!studentCurriculumOPS2021) {
-                  continue;
-                }
-                @SuppressWarnings("unchecked")
-                ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
-
-                boolean correctCurriculum = false;
-
-                for (String curriculumIdentifier : curriculumIdentifiers) {
-                  curriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
-                  if (StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021")) {
-                    correctCurriculum = true;
-                    break;
-                  }
-                }
-                
-                if (!correctCurriculum) {
-                  continue;
-                }
-                
-                if (workspaceEntity.getAccess() != null && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE && workspaceEntity.getAccess() != WorkspaceAccess.LOGGED_IN)) {
-                  continue;
-                }
-                
-                workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
-
-                if (!StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
-                  continue;
-                }
-              }
-              
-              Integer courseNum = null;
-              
-              @SuppressWarnings("unchecked")
-              List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
-              for (Map<String, Object> s : subjects) {
-                if (subjectObject.getCode().equals(s.get("subjectCode"))){
-                  courseNum = (Integer) s.get("courseNumber");
-                  break;
-                }
-              }
-              
-              SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
-              suggestedWorkspace.setId(workspaceEntity.getId());
-              suggestedWorkspace.setName((String) result.get("name"));
-              suggestedWorkspace.setNameExtension((String) result.get("nameExtension"));
-              suggestedWorkspace.setSubject(subjectObject.getCode());
-              suggestedWorkspace.setCourseNumber(courseNum);
-              suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
-              suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
-              suggestedWorkspace.setDescription((String) result.get("description"));
-              suggestedWorkspaces.add(suggestedWorkspace);
-
+            if (workspaceEntity == null) {
+              continue;
             }
+            
+            // Skip members only courses
+            
+            if (workspaceEntity.getAccess() != null && workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
+              continue;
+            }
+            
+            // For students, skip courses that they cannot sign up to
+            boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
+            
+            boolean canSignUp = hopsController.canSignup(workspaceEntity, userEntity);
+            if (isStudent && !canSignUp) {
+              continue;
+            }
+            
+            // For teachers, only list non-stop courses
+            
+            WorkspaceType workspaceType = null;
+            if (!isStudent) {
+              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+              workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
+              if (workspaceType != null && !StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
+                continue;
+              }
+            }
+            
+            // Course has passed all checks, so add it as a result
+
+            Integer courseNum = null;
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
+            for (Map<String, Object> s : subjects) {
+              if (subjectObject.getCode().equals(s.get("subjectCode"))){
+                courseNum = (Integer) s.get("courseNumber");
+                break;
+              }
+            }
+
+            SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
+            suggestedWorkspace.setId(workspaceEntity.getId());
+            suggestedWorkspace.setName((String) result.get("name"));
+            suggestedWorkspace.setNameExtension((String) result.get("nameExtension"));
+            suggestedWorkspace.setSubject(subjectObject.getCode());
+            suggestedWorkspace.setCourseNumber(courseNum);
+            suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
+            suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
+            suggestedWorkspace.setDescription((String) result.get("description"));
+            suggestedWorkspace.setType(workspaceType != null ? workspaceType.getName() : null);
+            suggestedWorkspace.setCanSignup(canSignUp);
+            suggestedWorkspaces.add(suggestedWorkspace);
+
           }
         }
       }
@@ -637,9 +641,13 @@ public class HopsRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsSuggestionRestModel payload) {
 
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+
     // Access check
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!userSchoolDataController.amICounselor(schoolDataIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
@@ -659,7 +667,6 @@ public class HopsRestService {
       workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getCourseId());
     }
 
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
     UserEntity counselorEntity = sessionController.getLoggedUserEntity();
 
@@ -759,11 +766,15 @@ public class HopsRestService {
 
     // Create or remove
 
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+
+    // Access check
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!userSchoolDataController.amICounselor(schoolDataIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
     List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
