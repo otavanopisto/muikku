@@ -1525,13 +1525,13 @@ export const schoolCourseTableUppersecondary2021: SchoolCurriculumMatrix = {
         },
         {
           name: "Matematiikan nivelvaiheen opintojakso",
-          courseNumber: 5,
+          courseNumber: 15,
           length: 2,
           mandatory: false,
         },
         {
           name: "Sovellukset matematiikan opiskelussa",
-          courseNumber: 6,
+          courseNumber: 16,
           length: 2,
           mandatory: false,
         },
