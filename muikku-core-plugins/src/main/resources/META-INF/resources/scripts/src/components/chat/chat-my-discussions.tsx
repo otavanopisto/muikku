@@ -1,11 +1,12 @@
 import * as React from "react";
-import { ChatUser } from "~/generated/client";
+import { ChatActivity, ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import { IconButton } from "../general/button";
 import ChatProfile from "./chat-profile";
 
 /**
- * ChatUsersWithActiveDiscussion
+ * ChatMyDiscussions. Lists the discussions of the current user have
+ * active and counsellors if the user is a student.
  * @returns JSX.Element
  */
 function ChatMyDiscussions() {
@@ -23,7 +24,7 @@ function ChatMyDiscussions() {
 }
 
 /**
- * ChatMyCounselors
+ * ChatMyCounselorsDiscussions
  * @returns JSX.Element
  */
 function ChatMyCounselorsDiscussions() {
@@ -32,6 +33,7 @@ function ChatMyCounselorsDiscussions() {
     currentUser,
     activeDiscussion,
     openDiscussion,
+    chatActivityByUserObject,
   } = useChatContext();
 
   if (currentUser.type !== "STUDENT") {
@@ -59,6 +61,7 @@ function ChatMyCounselorsDiscussions() {
         <ChatMyActiveDiscussion
           key={user.id}
           user={user}
+          chatActivity={chatActivityByUserObject[user.id]}
           isActive={activeDiscussion?.identifier === user.identifier}
           onOpenClick={openDiscussion}
         />
@@ -83,6 +86,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
     openDiscussion,
     activeDiscussion,
     myDiscussionsOthers,
+    chatActivityByUserObject,
   } = useChatContext();
 
   return (
@@ -92,6 +96,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
           key={user.id}
           user={user}
           isActive={activeDiscussion?.identifier === user.identifier}
+          chatActivity={chatActivityByUserObject[user.id]}
           onOpenClick={openDiscussion}
           onRemoveClick={closeDiscussionWithUser}
         />
@@ -105,6 +110,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
  */
 interface ChatMyDiscussionProps {
   user: ChatUser;
+  chatActivity?: ChatActivity;
   isActive: boolean;
   onOpenClick?: (targetIdentifier: string) => void;
   onRemoveClick?: (user: ChatUser) => void;
@@ -116,7 +122,7 @@ interface ChatMyDiscussionProps {
  * @returns JSX.Element
  */
 function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
-  const { user, isActive, onRemoveClick, onOpenClick } = props;
+  const { user, chatActivity, isActive, onRemoveClick, onOpenClick } = props;
 
   /**
    * Handles open click
@@ -148,7 +154,7 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
 
   return (
     <div className={className} role="menuitem" onClick={handleOpenClick}>
-      <ChatProfile user={user} />
+      <ChatProfile user={user} chatActivity={chatActivity} />
 
       {onRemoveClick && (
         <div className="chat__button-wrapper chat__button-wrapper--close-discussion">

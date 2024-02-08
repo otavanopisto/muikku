@@ -121,8 +121,30 @@ function useChatActivity() {
     []
   );
 
+  const chatActivityByUserObject: {
+    [key: number]: ChatActivity;
+  } = React.useMemo(() => {
+    if (!chatActivity) {
+      return {};
+    }
+
+    // Filter activities that are not user activities
+    const userActivities = chatActivity.filter((activity) =>
+      activity.targetIdentifier.startsWith("user-")
+    );
+
+    return userActivities.reduce(
+      (acc, activity) => ({
+        ...acc,
+        [activity.targetIdentifier.split("-")[1]]: activity,
+      }),
+      {}
+    );
+  }, [chatActivity]);
+
   return {
     chatActivity,
+    chatActivityByUserObject,
     markMsgsAsRead,
     onNewMsgSentUpdateActivity,
   };

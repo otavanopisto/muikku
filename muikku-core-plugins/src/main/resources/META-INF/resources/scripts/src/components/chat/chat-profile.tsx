@@ -1,7 +1,8 @@
 import * as React from "react";
-import { ChatUser } from "~/generated/client";
+import { ChatActivity, ChatUser } from "~/generated/client";
 import { IconButton } from "../general/button";
 import ChatProfileAvatar from "./chat-profile-avatar";
+import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 import { useChatContext } from "./context/chat-context";
 import ChatUserSettingsDialog from "./dialogs/chat-user-settings-dialog";
 
@@ -10,6 +11,7 @@ import ChatUserSettingsDialog from "./dialogs/chat-user-settings-dialog";
  */
 interface ChatProfileProps {
   user: ChatUser;
+  chatActivity?: ChatActivity;
 }
 
 /**
@@ -17,7 +19,7 @@ interface ChatProfileProps {
  * @param props props
  */
 function ChatProfile(props: ChatProfileProps) {
-  const { user } = props;
+  const { user, chatActivity } = props;
 
   return (
     <div className="chat__profile-container">
@@ -27,6 +29,9 @@ function ChatProfile(props: ChatProfileProps) {
         hasImage={user.hasImage}
         status={user.presence === "ONLINE" ? "online" : "offline"}
       />
+      {chatActivity && (
+        <ChatUnreadMsgCounter number={chatActivity.unreadMessages} />
+      )}
       <div className="chat__profile-name-container">
         <div className="chat__profile-name">{user.nick}</div>
         <div className="chat__profile-literal-status">

@@ -2,6 +2,7 @@ import * as React from "react";
 import { ChatRoom } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import Dropdown from "../general/dropdown";
+import { sortRoomsAplhabetically } from "./chat-helpers";
 
 /**
  * ChatRoomsListsProps
@@ -34,7 +35,7 @@ function ChatRoomsLists(props: ChatRoomsListsProps) {
 }
 
 /**
- * RoomsProps
+ * PrivateRoomListProps
  */
 interface PrivateRoomListProps {}
 
@@ -55,7 +56,7 @@ function PrivateRoomList(props: PrivateRoomListProps) {
     return <div>No rooms</div>;
   }
 
-  const sortedRooms = roomsPrivate.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedRooms = roomsPrivate.sort(sortRoomsAplhabetically);
 
   return (
     <>
@@ -93,7 +94,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
     return <div>No rooms</div>;
   }
 
-  const sortedRooms = roomsPublic.sort((a, b) => a.name.localeCompare(b.name));
+  const sortedRooms = roomsPublic.sort(sortRoomsAplhabetically);
 
   return (
     <>

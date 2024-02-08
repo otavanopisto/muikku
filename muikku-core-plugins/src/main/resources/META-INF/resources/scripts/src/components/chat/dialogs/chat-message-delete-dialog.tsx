@@ -73,46 +73,50 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
    * content
    * @param closeDialog closeDialog
    */
-  const content = (closeDialog: () => void) => (
-    <div>
-      {/*
+  const content = (closeDialog: () => void) => {
+    if (!message.message) return null;
+
+    return (
+      <div>
+        {/*
       <DialogRow>
         <strong>Olet poistamassa viestiä:</strong>
       </DialogRow>
       <DialogRow><strong>{message.nick}</strong> {localize.formatDaily(message.sentDateTime)}</DialogRow>
       <DialogRow>{message.message}</DialogRow> */}
-      <DialogRow>
-        <strong>Olet poistamassa viestiä:</strong>
-      </DialogRow>
-      <DialogRow>
-        <div className="chat__message chat__message--deleting">
-          <ChatProfileAvatar
-            id={message.sourceUserEntityId}
-            nick={message.nick}
-            hasImage={message.hasImage}
-          />
-          <div className="chat__message-content-container">
-            <div className="chat__message-meta">
-              <span className={`chat__message-meta-sender`}>
-                {message.nick}
-              </span>
-              <span className="chat__message-meta-timestamp">
-                {localize.formatDaily(message.sentDateTime)}
-              </span>
-            </div>
-            <div className="chat__message-body">
-              {parseLines(message.message)}
-              {message.editedDateTime && (
-                <div className="chat__message-edited-info">
-                  (Muokattu {localize.formatDaily(message.editedDateTime)})
-                </div>
-              )}
+        <DialogRow>
+          <strong>Olet poistamassa viestiä:</strong>
+        </DialogRow>
+        <DialogRow>
+          <div className="chat__message chat__message--deleting">
+            <ChatProfileAvatar
+              id={message.sourceUserEntityId}
+              nick={message.nick}
+              hasImage={message.hasImage}
+            />
+            <div className="chat__message-content-container">
+              <div className="chat__message-meta">
+                <span className={`chat__message-meta-sender`}>
+                  {message.nick}
+                </span>
+                <span className="chat__message-meta-timestamp">
+                  {localize.formatDaily(message.sentDateTime)}
+                </span>
+              </div>
+              <div className="chat__message-body">
+                {parseLines(message.message)}
+                {message.editedDateTime && (
+                  <div className="chat__message-edited-info">
+                    (Muokattu {localize.formatDaily(message.editedDateTime)})
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </DialogRow>
-    </div>
-  );
+        </DialogRow>
+      </div>
+    );
+  };
 
   /**
    * footer

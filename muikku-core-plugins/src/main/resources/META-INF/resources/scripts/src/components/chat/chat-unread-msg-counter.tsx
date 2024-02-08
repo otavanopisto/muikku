@@ -15,6 +15,8 @@ interface ChatUnreadMsgCounterProps {
 export const ChatUnreadMsgCounter = (props: ChatUnreadMsgCounterProps) => {
   const { number, modifiers } = props;
 
+  if (number === 0) return null;
+
   const classModifiers = (modifiers || []).map(
     (modifier) => `chat-unread-msg-counter--${modifier}`
   );

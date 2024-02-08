@@ -12,7 +12,6 @@ import {
   sortRoomsAplhabetically,
 } from "./chat-helpers";
 import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
-//import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 
 type OverviewTab = "users" | "rooms" | "blocked";
 
@@ -216,8 +215,12 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
  * @returns JSX.Element
  */
 function ChatOverviewUsersList() {
-  const { dashboardUsers, openDiscussion, openBlockUserDialog } =
-    useChatContext();
+  const {
+    dashboardUsers,
+    openDiscussion,
+    openBlockUserDialog,
+    chatActivityByUserObject,
+  } = useChatContext();
 
   /**
    * Handles open discussion
@@ -261,7 +264,10 @@ function ChatOverviewUsersList() {
         onOpenClick={handleOpenDiscussion(user.identifier)}
       >
         <OverviewListItemContent>
-          <ChatProfile user={user} />
+          <ChatProfile
+            user={user}
+            chatActivity={chatActivityByUserObject[user.id]}
+          />
         </OverviewListItemContent>
         <OverviewListItemActions>
           <IconButton

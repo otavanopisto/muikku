@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
-// Hook to handle loading roooms and people list from rest api.
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
@@ -61,9 +59,14 @@ function useChat(userId: number, currentUser: ChatUser) {
     views: chatControllerViews,
   });
 
-  const { chatActivity, markMsgsAsRead, onNewMsgSentUpdateActivity } =
-    useChatActivity();
+  const {
+    chatActivity,
+    chatActivityByUserObject,
+    markMsgsAsRead,
+    onNewMsgSentUpdateActivity,
+  } = useChatActivity();
 
+  // Discussion instances, one for each previously opened discussions
   const [discussionInstances, setMessagesInstances] = React.useState<
     ChatDiscussionInstance[]
   >([]);
@@ -95,14 +98,15 @@ function useChat(userId: number, currentUser: ChatUser) {
     description: "",
   });
 
+  // User to be blocked, unblocked, or room to be deleted dialog states
   const [userToBeBlocked, setUserToBeBlocked] = React.useState<ChatUser>(null);
   const [userToBeUnblocked, setUserToBeUnblocked] =
     React.useState<ChatUser>(null);
-
   const [roomToBeDeleted, setRoomToBeDeleted] = React.useState<ChatRoom>(null);
 
   // Shared websocket callbacks
   useWebsocketsWithCallbacks({
+    // eslint-disable-next-line jsdoc/require-jsdoc
     "chat:message-sent": (data: unknown) => {
       onNewMgsSentUpdateActiveDiscussions(data);
       onNewMsgSentUpdateActivity(data, activeDiscussionIdentifier);
@@ -110,7 +114,7 @@ function useChat(userId: number, currentUser: ChatUser) {
   });
 
   /**
-   * updateNewRoomEditor
+   * Handles updating the new room editor
    * @param key key
    * @param value value
    */
@@ -125,7 +129,7 @@ function useChat(userId: number, currentUser: ChatUser) {
   };
 
   /**
-   * saveNewRoom
+   * Handles creating a new room
    */
   const saveNewRoom = React.useCallback(async () => {
     await createNewRoom(newChatRoom);
@@ -137,7 +141,7 @@ function useChat(userId: number, currentUser: ChatUser) {
   }, [createNewRoom, newChatRoom]);
 
   /**
-   * saveEditedRoom
+   * Handles updating a custom room
    */
   const saveEditedRoom = React.useCallback(
     async (identifier: string, editChatRoom: UpdateChatRoomRequest) => {
@@ -147,7 +151,7 @@ function useChat(userId: number, currentUser: ChatUser) {
   );
 
   /**
-   * deleteRoom
+   * Handles deleting a custom room
    */
   const deleteCustomRoom = React.useCallback(
     async (identifier: string) => {
@@ -162,12 +166,16 @@ function useChat(userId: number, currentUser: ChatUser) {
     [activeDiscussionIdentifier, chatViews, deleteRoom]
   );
 
-  // Toggles the control box
+  /**
+   * Toggles the control box
+   */
   const toggleControlBox = React.useCallback(() => {
     setMinimized((minimized) => !minimized);
   }, []);
 
-  // Toggles the left panel or sets it to a specific state
+  /**
+   * Toggles the left panel or sets it to a specific state
+   */
   const toggleLeftPanel = React.useCallback(
     (nextState?: boolean) => {
       if (nextState !== undefined) {
@@ -179,7 +187,9 @@ function useChat(userId: number, currentUser: ChatUser) {
     [setPanelLeftOpen]
   );
 
-  // Toggles the right panel or sets it to a specific state
+  /**
+   * Toggles the right panel or sets it to a specific state
+   */
   const toggleRightPanel = React.useCallback(
     (nextState?: boolean) => {
       if (nextState !== undefined) {
@@ -192,14 +202,16 @@ function useChat(userId: number, currentUser: ChatUser) {
   );
 
   /**
-   * closeView
+   * Handles opening overview
    */
   const openOverview = React.useCallback(() => {
     chatViews.goTo("overview");
     setActiveDiscussionIdentifier(null);
   }, [chatViews]);
 
-  // Sets the active room or person
+  /**
+   * Handles opening discussion with user
+   */
   const openDiscussion = React.useCallback(
     async (identifier: string) => {
       if (isMobileWidth) {
@@ -405,6 +417,11 @@ function useChat(userId: number, currentUser: ChatUser) {
 
   // My discussions with other users than counselors, sorted by activity
   const myDiscussionsOthers = React.useMemo(() => {
+    /**
+     * Sorter for users by activity
+     * @param a a
+     * @param b b
+     */
     const sortUsersByActivity = (a: ChatUser, b: ChatUser) => {
       const aActivity = chatActivity.find(
         (activity) => activity.targetIdentifier === a.identifier
@@ -437,6 +454,18 @@ function useChat(userId: number, currentUser: ChatUser) {
       .sort(sortUsersByActivity);
   }, [usersWithDiscussionIds, chatActivity, usersObject]);
 
+  // Private rooms
+  const roomsPrivate = React.useMemo(
+    () => rooms.filter((r) => r.type === "WORKSPACE"),
+    [rooms]
+  );
+
+  // Public rooms
+  const roomsPublic = React.useMemo(
+    () => rooms.filter((r) => r.type === "PUBLIC"),
+    [rooms]
+  );
+
   return {
     activeDiscussion,
     canModerate,
@@ -468,8 +497,8 @@ function useChat(userId: number, currentUser: ChatUser) {
     panelRightOpen,
     roomFilters,
     rooms,
-    roomsPrivate: rooms.filter((r) => r.type === "WORKSPACE"),
-    roomsPublic: rooms.filter((r) => r.type === "PUBLIC"),
+    roomsPrivate,
+    roomsPublic,
     roomToBeDeleted,
     saveEditedRoom,
     saveNewRoom,
@@ -485,6 +514,7 @@ function useChat(userId: number, currentUser: ChatUser) {
     usersObjectIncludingMe,
     userToBeBlocked,
     userToBeUnblocked,
+    chatActivityByUserObject,
   };
 }
 
