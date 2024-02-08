@@ -189,6 +189,10 @@
   }
 }
 
+.dialog__window--local {
+  max-height: calc(100% - 10px);
+}
+
 .dialog__window--wizard,
 .dialog__window--studies {
   bottom: 0;
@@ -499,6 +503,10 @@
 // Descrease top and bottom padding in chat's dialogs as they have white background
 .dialog__content--chat {
   padding: 10px 20px;
+}
+
+.dialog__content--local {
+  overflow: auto;
 }
 
 .dialog__content-row {
