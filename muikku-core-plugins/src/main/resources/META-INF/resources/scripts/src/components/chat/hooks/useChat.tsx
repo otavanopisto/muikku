@@ -20,7 +20,6 @@ import variables from "~/sass/_exports.scss";
 import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 import useChatActivity from "./useChatActivity";
-import { useWebsocketsWithCallbacks } from "./useWebsocketsWithCallbacks";
 import { useLocalStorage } from "usehooks-ts";
 
 export type UseChat = ReturnType<typeof useChat>;
@@ -43,7 +42,6 @@ function useChat(userId: number, currentUser: ChatUser) {
     blockedUsersIds,
     blockUser,
     unblockUser,
-    onNewMgsSentUpdateActiveDiscussions,
   } = useChatUsers({ currentUser });
   const {
     roomFilters,
@@ -59,12 +57,12 @@ function useChat(userId: number, currentUser: ChatUser) {
     views: chatControllerViews,
   });
 
-  const {
-    chatActivity,
-    chatActivityByUserObject,
-    markMsgsAsRead,
-    onNewMsgSentUpdateActivity,
-  } = useChatActivity();
+  // Active room or person identifier
+  const [activeDiscussionIdentifier, setActiveDiscussionIdentifier] =
+    React.useState<string>(null);
+
+  const { chatActivity, chatActivityByUserObject, markMsgsAsRead } =
+    useChatActivity(activeDiscussionIdentifier);
 
   // Discussion instances, one for each previously opened discussions
   const [discussionInstances, setMessagesInstances] = React.useState<
@@ -88,10 +86,6 @@ function useChat(userId: number, currentUser: ChatUser) {
   const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
   const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
 
-  // Active room or person identifier
-  const [activeDiscussionIdentifier, setActiveDiscussionIdentifier] =
-    React.useState<string>(null);
-
   // Editor values
   const [newChatRoom, setNewChatRoom] = React.useState<CreateChatRoomRequest>({
     name: "",
@@ -103,15 +97,6 @@ function useChat(userId: number, currentUser: ChatUser) {
   const [userToBeUnblocked, setUserToBeUnblocked] =
     React.useState<ChatUser>(null);
   const [roomToBeDeleted, setRoomToBeDeleted] = React.useState<ChatRoom>(null);
-
-  // Shared websocket callbacks
-  useWebsocketsWithCallbacks({
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    "chat:message-sent": (data: unknown) => {
-      onNewMgsSentUpdateActiveDiscussions(data);
-      onNewMsgSentUpdateActivity(data, activeDiscussionIdentifier);
-    },
-  });
 
   /**
    * Handles updating the new room editor

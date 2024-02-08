@@ -212,17 +212,48 @@ function useUsers(props: UseUsersProps) {
       }
     };
 
+    /**
+     * Handles updating active discussions list when new message is sent
+     * @param data data
+     */
+    const onNewMgsSentUpdateActiveDiscussions = (data: unknown) => {
+      if (componentMounted.current) {
+        if (typeof data === "string") {
+          const dataTyped: ChatMessage = JSON.parse(data);
+
+          const sender = usersRef.current.find((u) =>
+            [
+              `user-${dataTyped.sourceUserEntityId}`,
+              dataTyped.targetIdentifier,
+            ].includes(u.identifier)
+          );
+
+          if (sender) {
+            addUserToActiveDiscussionsList(sender);
+          }
+        }
+      }
+    };
+
     // Adding event callback to handle changes when ever
     // there has happened some changes with that message
     websocket.addEventCallback("chat:user-joined", onChatUserJoinedMsg);
     websocket.addEventCallback("chat:user-left", onChatUserLeftMsg);
     websocket.addEventCallback("chat:nick-change", ChatUsersNickChange);
+    websocket.addEventCallback(
+      "chat:message-sent",
+      onNewMgsSentUpdateActiveDiscussions
+    );
 
     return () => {
       // Remove callback when unmounting
       websocket.removeEventCallback("chat:user-joined", onChatUserJoinedMsg);
       websocket.removeEventCallback("chat:user-left", onChatUserLeftMsg);
       websocket.removeEventCallback("chat:nick-change", ChatUsersNickChange);
+      websocket.removeEventCallback(
+        "chat:message-sent",
+        onNewMgsSentUpdateActiveDiscussions
+      );
     };
   }, [websocket]);
 
@@ -342,32 +373,6 @@ function useUsers(props: UseUsersProps) {
   };
 
   /**
-   * Handles updating active discussions list when new message is sent
-   * @param data data
-   */
-  const onNewMgsSentUpdateActiveDiscussions = React.useCallback(
-    (data: unknown) => {
-      if (componentMounted.current) {
-        if (typeof data === "string") {
-          const dataTyped: ChatMessage = JSON.parse(data);
-
-          const sender = usersRef.current.find((u) =>
-            [
-              `user-${dataTyped.sourceUserEntityId}`,
-              dataTyped.targetIdentifier,
-            ].includes(u.identifier)
-          );
-
-          if (sender) {
-            addUserToActiveDiscussionsList(sender);
-          }
-        }
-      }
-    },
-    []
-  );
-
-  /**
    * Update user filters
    */
   const updateUserFilters = React.useCallback(
@@ -450,7 +455,6 @@ function useUsers(props: UseUsersProps) {
     blockedUsersIds,
     blockUser,
     unblockUser,
-    onNewMgsSentUpdateActiveDiscussions,
     usersObject,
   };
 }

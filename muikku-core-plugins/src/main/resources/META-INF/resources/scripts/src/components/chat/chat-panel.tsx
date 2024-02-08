@@ -369,8 +369,16 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
   React.useEffect(() => {
     if (componentMounted.current) {
       if (msgsContainerRef.current && childrenLength > childrenCount.current) {
+        // Attached to bottom, scroll to bottom and update children count
+        if (scrollAttached && lastMessageRef.current) {
+          childrenCount.current = childrenLength;
+
+          lastMessageRef.current.scrollIntoView({
+            behavior: "auto",
+          });
+        }
         // Not attached to bottom, keep scroll position and update children count
-        if (!scrollAttached && currentScrollHeightRef.current) {
+        else if (!scrollAttached && currentScrollHeightRef.current) {
           childrenCount.current = childrenLength;
           msgsContainerRef.current.scrollTop =
             msgsContainerRef.current.scrollHeight -
