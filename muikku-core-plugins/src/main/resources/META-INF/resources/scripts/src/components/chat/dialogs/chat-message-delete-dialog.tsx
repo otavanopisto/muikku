@@ -6,6 +6,7 @@ import { ChatMessage } from "~/generated/client";
 import Button from "~/components/general/button";
 import { localize } from "~/locales/i18n";
 import ChatProfileAvatar from "../chat-profile-avatar";
+import { parseLines } from "../chat-helpers";
 
 /**
  * ChatDeleteRoomDialogProps
@@ -28,19 +29,6 @@ interface ChatDeleteMessageDialogProps {
    */
   onClose: () => void;
 }
-
-/**
- * parseLines
- * @param value value
- * @returns parsed lines
- */
-const parseLines = (value: string) =>
-  value.split("\n").map((line, index) => (
-    <React.Fragment key={index}>
-      {line}
-      <br />
-    </React.Fragment>
-  ));
 
 /**
  * ChatDeleteRoomDialog

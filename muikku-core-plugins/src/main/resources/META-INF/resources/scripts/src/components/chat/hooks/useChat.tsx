@@ -26,10 +26,9 @@ export type UseChat = ReturnType<typeof useChat>;
 
 /**
  * Custom hook for chat that groups all chat related functionality
- * @param userId userId
  * @param currentUser currentUser
  */
-function useChat(userId: number, currentUser: ChatUser) {
+function useChat(currentUser: ChatUser) {
   const websocket = useChatWebsocketContext();
 
   const {
@@ -218,7 +217,7 @@ function useChat(userId: number, currentUser: ChatUser) {
         // Create new message instance
         const newDiscussionInstance = new ChatDiscussionInstance(
           identifier,
-          [identifier, `user-${userId}`],
+          [identifier, currentUser.identifier],
           websocket
         );
 
@@ -240,7 +239,7 @@ function useChat(userId: number, currentUser: ChatUser) {
       chatViews,
       setPanelLeftOpen,
       setPanelRightOpen,
-      userId,
+      currentUser.identifier,
       websocket,
     ]
   );
@@ -495,7 +494,6 @@ function useChat(userId: number, currentUser: ChatUser) {
     updateRoomFilters,
     updateUserFilters,
     userFilters,
-    userId,
     usersObjectIncludingMe,
     userToBeBlocked,
     userToBeUnblocked,

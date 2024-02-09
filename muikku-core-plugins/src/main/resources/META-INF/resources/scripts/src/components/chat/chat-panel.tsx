@@ -13,23 +13,10 @@ import TextareaAutosize from "react-textarea-autosize";
  * ChatPanelProps
  */
 interface ChatPanelProps {
-  title: string;
-  /**
-   * Current user id.
-   */
-  userId: number;
-  /**
-   * Target identifier is used to load messages.
-   */
-  targetIdentifier: string;
   /**
    * Discussion instance.
    */
   discussionInstance: ChatDiscussionInstance;
-  /**
-   * Modifiers
-   */
-  modifiers?: string[];
 }
 
 /**
@@ -48,7 +35,7 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
  * @returns JSX.Element
  */
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
-  const { targetIdentifier, targetUser } = props;
+  const { targetUser } = props;
 
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
@@ -82,10 +69,10 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
 
     return (
       dashboardBlockedUsers.find(
-        (blockedUser) => blockedUser.identifier === targetIdentifier
+        (blockedUser) => blockedUser.identifier === targetUser.identifier
       ) !== undefined
     );
-  }, [dashboardBlockedUsers, targetIdentifier]);
+  }, [dashboardBlockedUsers, targetUser.identifier]);
 
   /**
    * Handles enter key down.
@@ -118,7 +105,9 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   return (
     <div className={`chat__panel chat__panel--private`}>
       <div className="chat__discussion-panel-header">
-        <div className="chat__discussion-panel-header-title">{props.title}</div>
+        <div className="chat__discussion-panel-header-title">
+          {targetUser.nick}
+        </div>
         <div className="chat__discussion-panel-header-actions">
           {!isBlocked && props.targetUser.type === "STUDENT" && (
             <IconButton
@@ -132,7 +121,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
 
       <div className="chat__discussion-panel-body" ref={contentRef}>
         <MessagesContainer
-          targetIdentifier={props.targetIdentifier}
+          targetIdentifier={targetUser.identifier}
           existingScrollTopValue={instance.scrollTop}
           onScrollTop={canLoadMore ? loadMoreMessages : undefined}
           onScrollTopChange={(scrollTop) => {
@@ -187,6 +176,8 @@ interface ChatRoomPanelProps extends ChatPanelProps {
  * @returns JSX.Element
  */
 const ChatRoomPanel = (props: ChatRoomPanelProps) => {
+  const { targetRoom } = props;
+
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
@@ -237,17 +228,17 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
       <div className="chat__discussion-panel-header">
         <ChatRoomEditAndInfoDialog room={props.targetRoom} defaults="info">
           <div className="chat__discussion-panel-header-title">
-            {props.targetRoom.name}
+            {targetRoom.name}
           </div>
         </ChatRoomEditAndInfoDialog>
         <div className="chat__discussion-panel-header-description">
-          {props.targetRoom.description}
+          {targetRoom.description}
         </div>
       </div>
 
       <div className="chat__discussion-panel-body" ref={contentRef}>
         <MessagesContainer
-          targetIdentifier={props.targetIdentifier}
+          targetIdentifier={targetRoom.identifier}
           existingScrollTopValue={instance.scrollTop}
           onScrollTop={canLoadMore ? loadMoreMessages : undefined}
           onScrollTopChange={(scrollTop) => {

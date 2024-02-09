@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/chat.scss";
-import ChatContextProvider, { useChatContext } from "./context/chat-context";
+import { useChatContext, ChatContextProvider } from "./context/chat-context";
 import ChatWindow from "./chat-window";
 import ChatMain from "./chat-main";
 import ChatMainMobile from "./chat-main-mobile";
@@ -17,7 +17,7 @@ import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
 const Chat = () => {
   const { currentUser, chatEnabled } = useChatSettings();
 
-  if (!chatEnabled) {
+  if (!chatEnabled || !currentUser) {
     return null;
   }
 

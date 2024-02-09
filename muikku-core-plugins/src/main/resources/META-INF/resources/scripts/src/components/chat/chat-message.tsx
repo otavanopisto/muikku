@@ -17,19 +17,7 @@ import ChatProfileAvatar from "./chat-profile-avatar";
 import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
 import { IconButton } from "../general/button";
 import TextareaAutosize from "react-textarea-autosize";
-
-/**
- * parseLines
- * @param value value
- * @returns parsed lines
- */
-const parseLines = (value: string) =>
-  value.split("\n").map((line, index) => (
-    <React.Fragment key={index}>
-      {line}
-      <br />
-    </React.Fragment>
-  ));
+import { parseLines } from "./chat-helpers";
 
 /**
  * ChatMessageProps
