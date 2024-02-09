@@ -927,3 +927,39 @@ $chat-resizer-corner-size: 15px;
   justify-content: center;
   width: $chat-discussion-panel-footer-height;
 }
+
+// CHAT MOBILE STYLES
+
+// Chat window for mobile
+.chat-mobile {
+  background: $color-default;
+  bottom: 0;
+  font-family: $system-font-family;
+  font-size: 0.8125rem;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9989;
+}
+
+// Left and Right panel
+.chat-mobile__panel {
+  background: $color-default;
+  bottom: 0;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  transform: none;
+  user-select: none;
+  z-index: 5;
+}
+
+.chat-mobile__back-drop {
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 2;
+}

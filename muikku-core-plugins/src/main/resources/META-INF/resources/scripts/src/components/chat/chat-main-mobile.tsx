@@ -16,6 +16,7 @@ import { AddIcon, swipeConfidenceThreshold, swipePower } from "./chat-helpers";
 import { ChatMyDiscussions } from "./chat-my-discussions";
 import { ChatRoomsLists } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
+import { IconButton } from "../general/button";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
 const PANEL_RIGHT_MAX_WIDTH = 200;
@@ -33,15 +34,11 @@ function ChatMainMobile(props: ChatMainMobileProps) {
   const { toggleLeftPanel, toggleRightPanel, panelLeftOpen, panelRightOpen } =
     useChatContext();
 
+  const panelLeftArrow = panelLeftOpen ? "arrow-left" : "arrow-right";
+  const panelRightArrow = panelRightOpen ? "arrow-right" : "arrow-left";
+
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "fixed",
-        zIndex: 1000,
-      }}
-    >
+    <div className="chat-mobile">
       <ChatPanel
         open={panelLeftOpen}
         panelMaxWidth={PANEL_LEFT_MAX_WIDTH}
@@ -51,15 +48,9 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       >
         <div
           onClick={() => toggleLeftPanel()}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            height: "43px",
-            padding: "10px",
-          }}
+          className="chat__button-wrapper chat__button-wrapper--rooms"
         >
-          <AddIcon />
+          <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
         </div>
 
         <ChatRoomsLists minimized={false} />
@@ -80,15 +71,9 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       >
         <div
           onClick={() => toggleRightPanel()}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            height: "43px",
-            padding: "10px",
-          }}
+          className="chat__button-wrapper chat__button-wrapper--users"
         >
-          <AddIcon />
+          <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
         </div>
         <ChatMyDiscussions />
         <ChatMyProfileWithSettings />
@@ -326,7 +311,7 @@ function ChatPanel(props: ChatLeftPanelProps) {
 
   const leftHandle = (
     <div
-      className="chat-prooms__panel-drag-handle"
+      className="chat-rooms__panel-drag-handle"
       style={{
         position: "absolute",
         width: "15px",
@@ -339,7 +324,7 @@ function ChatPanel(props: ChatLeftPanelProps) {
 
   const rightHandle = (
     <div
-      className="chat-prooms__panel-drag-handle"
+      className="chat-rooms__panel-drag-handle"
       style={{
         position: "absolute",
         width: "15px",
@@ -358,19 +343,11 @@ function ChatPanel(props: ChatLeftPanelProps) {
   const panelStyles: MotionStyle =
     panelPosition === "left"
       ? {
-          position: "absolute",
-          bottom: 0,
-          top: 0,
-          zIndex: 3,
           width: `${panelMaxWidth}px`,
           x,
           left: 0,
         }
       : {
-          position: "absolute",
-          bottom: 0,
-          top: 0,
-          zIndex: 3,
           width: `${panelMaxWidth}px`,
           x,
           right: 0,
@@ -383,16 +360,10 @@ function ChatPanel(props: ChatLeftPanelProps) {
       <AnimatePresence initial={false} exitBeforeEnter>
         {(open || isDragging || isAnimating) && (
           <motion.div
-            className="black-drop-wrapper"
+            className="chat-mobile__back-drop"
             onClick={handleBlackDropClick}
             style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
               background,
-              zIndex: 2,
             }}
           />
         )}
@@ -412,7 +383,7 @@ function ChatPanel(props: ChatLeftPanelProps) {
         }}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
-        className="chat-panel"
+        className="chat-mobile__panel"
         style={panelStyles}
       >
         {panelHandle}
