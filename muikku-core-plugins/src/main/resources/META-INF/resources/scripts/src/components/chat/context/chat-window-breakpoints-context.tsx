@@ -4,7 +4,7 @@ import * as React from "react";
 import { createContext } from "react";
 import useWindowBreakpoints, {
   UseWindowBreakpoints,
-} from "../hooks/use-window-breakpoints";
+} from "../hooks/useWindowBreakpoints";
 
 /**
  * ChatPrivateContextType

@@ -2,9 +2,7 @@
 // State manageses opened private chat list and opened room chat list
 import * as React from "react";
 import { createContext } from "react";
-import { connect } from "react-redux";
 import { ChatUser } from "~/generated/client";
-import { StateType } from "~/reducers";
 import useChat, { UseChat } from "../hooks/useChat";
 
 /**
@@ -20,7 +18,6 @@ const ChatContext = createContext<ChatPrivateContextType | undefined>(
  * ChatContextProviderProps
  */
 interface ChatContextProviderProps {
-  userId: number;
   currentUser: ChatUser;
 }
 
@@ -29,9 +26,9 @@ interface ChatContextProviderProps {
  * @param props props
  */
 const ChatContextProvider: React.FC<ChatContextProviderProps> = (props) => {
-  const { children, userId, currentUser } = props;
+  const { children, currentUser } = props;
 
-  const useChatValue = useChat(userId, currentUser);
+  const useChatValue = useChat(currentUser);
 
   return (
     <ChatContext.Provider value={useChatValue}>{children}</ChatContext.Provider>
@@ -49,27 +46,5 @@ function useChatContext() {
   }
   return context;
 }
-
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    userId: state.status.userId,
-  };
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {};
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChatContextProvider);
 
 export { ChatContextProvider, useChatContext };

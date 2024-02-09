@@ -22,14 +22,14 @@ const chatApi = MApi.getChatApi();
  * @param msg id of message.
  */
 function useMessage(msg: ChatMessage) {
-  const { userId, canModerate } = useChatContext();
+  const { currentUser, canModerate } = useChatContext();
 
   const [editMode, setEditMode] = React.useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] =
     React.useState<boolean>(false);
 
   const [editedMessage, setEditedMessage] = React.useState<string>(msg.message);
-  const myMsg = msg.sourceUserEntityId === userId;
+  const myMsg = msg.sourceUserEntityId === currentUser.id;
 
   /**
    * Delete message
