@@ -11,10 +11,12 @@ import {
 } from "framer-motion";
 import * as React from "react";
 import ChatViews from "./animated-views";
-import { useChatContext } from "./context/chat-context";
 import { swipeConfidenceThreshold, swipePower } from "./chat-helpers";
-import { ChatMyDiscussions } from "./chat-my-discussions";
-import { ChatRoomsLists } from "./chat-rooms";
+import {
+  ChatMyActiveDiscussions,
+  ChatMyCounselorsDiscussions,
+} from "./chat-my-discussions";
+import { PrivateRoomList, PublicRoomsList } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
 import { IconButton } from "../general/button";
 import { OverviewButton } from "./chat-main";
@@ -32,8 +34,8 @@ interface ChatMainMobileProps {}
  * @param props props
  */
 function ChatMainMobile(props: ChatMainMobileProps) {
-  const { toggleLeftPanel, toggleRightPanel, panelLeftOpen, panelRightOpen } =
-    useChatContext();
+  const [panelLeftOpen, setPanelLeftOpen] = React.useState(false);
+  const [panelRightOpen, setPanelRightOpen] = React.useState(false);
 
   const panelLeftArrow = panelLeftOpen ? "arrow-left" : "arrow-right";
   const panelRightArrow = panelRightOpen ? "arrow-right" : "arrow-left";
@@ -44,18 +46,26 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         open={panelLeftOpen}
         panelMaxWidth={PANEL_LEFT_MAX_WIDTH}
         panelPosition="left"
-        onOpen={() => toggleLeftPanel(true)}
-        onClose={() => toggleLeftPanel(false)}
+        onOpen={() => setPanelLeftOpen(true)}
+        onClose={() => setPanelLeftOpen(false)}
       >
         <div
-          onClick={() => toggleLeftPanel()}
+          onClick={() => setPanelLeftOpen(!panelLeftOpen)}
           className="chat__button-wrapper chat__button-wrapper--rooms"
         >
           <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
         </div>
         <div className="chat__rooms-container">
-          <OverviewButton />
-          <ChatRoomsLists />
+          <OverviewButton onClick={() => setPanelLeftOpen(false)} />
+          <div className="chat__rooms chat__rooms--public" role="menu">
+            <div className="chat__rooms-category-title">Julkiset huoneet</div>
+            <PublicRoomsList onItemClick={() => setPanelLeftOpen(false)} />
+          </div>
+
+          <div className="chat__rooms chat__rooms--private" role="menu">
+            <div className="chat__rooms-category-title">Kurssien huoneet</div>
+            <PrivateRoomList onItemClick={() => setPanelLeftOpen(false)} />
+          </div>
         </div>
       </ChatPanel>
 
@@ -67,18 +77,33 @@ function ChatMainMobile(props: ChatMainMobileProps) {
 
       <ChatPanel
         open={panelRightOpen}
-        onOpen={() => toggleRightPanel(true)}
-        onClose={() => toggleRightPanel(false)}
+        onOpen={() => setPanelRightOpen(true)}
+        onClose={() => setPanelRightOpen(false)}
         panelMaxWidth={PANEL_RIGHT_MAX_WIDTH}
         panelPosition="right"
       >
         <div
-          onClick={() => toggleRightPanel()}
+          onClick={() => setPanelRightOpen(!panelRightOpen)}
           className="chat__button-wrapper chat__button-wrapper--users"
         >
           <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
         </div>
-        <ChatMyDiscussions />
+        <div className="chat__users-container">
+          <div
+            className="chat__users chat__users--guidance-councelors"
+            role="menu"
+          >
+            <ChatMyCounselorsDiscussions
+              onItemClick={() => setPanelRightOpen(false)}
+            />
+          </div>
+          <div className="chat__users chat__users--others" role="menu">
+            <div className="chat__users-category-title">Keskustelut</div>
+            <ChatMyActiveDiscussions
+              onItemClick={() => setPanelRightOpen(false)}
+            />
+          </div>
+        </div>
         <ChatMyProfileWithSettings />
       </ChatPanel>
     </div>

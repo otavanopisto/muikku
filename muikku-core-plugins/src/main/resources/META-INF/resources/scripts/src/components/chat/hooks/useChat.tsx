@@ -20,7 +20,6 @@ import variables from "~/sass/_exports.scss";
 import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 import useChatActivity from "./useChatActivity";
-import { useLocalStorage } from "usehooks-ts";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -70,16 +69,6 @@ function useChat(currentUser: ChatUser) {
 
   // Whether to show the control box or bubble
   const [minimized, setMinimized] = React.useState(true);
-
-  // Panel states
-  const [panelRightOpen, setPanelRightOpen] = useLocalStorage(
-    "chat-panel-right",
-    true
-  );
-  const [panelLeftOpen, setPanelLeftOpen] = useLocalStorage(
-    "chat-panel-left",
-    true
-  );
 
   // Whether the current width is mobile
   const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
@@ -158,34 +147,6 @@ function useChat(currentUser: ChatUser) {
   }, []);
 
   /**
-   * Toggles the left panel or sets it to a specific state
-   */
-  const toggleLeftPanel = React.useCallback(
-    (nextState?: boolean) => {
-      if (nextState !== undefined) {
-        setPanelLeftOpen(nextState);
-      } else {
-        setPanelLeftOpen((panelLeftOpen) => !panelLeftOpen);
-      }
-    },
-    [setPanelLeftOpen]
-  );
-
-  /**
-   * Toggles the right panel or sets it to a specific state
-   */
-  const toggleRightPanel = React.useCallback(
-    (nextState?: boolean) => {
-      if (nextState !== undefined) {
-        setPanelRightOpen(nextState);
-      } else {
-        setPanelRightOpen((panelRightOpen) => !panelRightOpen);
-      }
-    },
-    [setPanelRightOpen]
-  );
-
-  /**
    * Handles opening overview
    */
   const openOverview = React.useCallback(() => {
@@ -198,13 +159,6 @@ function useChat(currentUser: ChatUser) {
    */
   const openDiscussion = React.useCallback(
     async (identifier: string) => {
-      if (isMobileWidth) {
-        unstable_batchedUpdates(() => {
-          setPanelLeftOpen(false);
-          setPanelRightOpen(false);
-        });
-      }
-
       // When opening a discussion, mark all messages as read
       await markMsgsAsRead(identifier);
 
@@ -233,12 +187,9 @@ function useChat(currentUser: ChatUser) {
       chatViews.goTo("discussion");
     },
     [
-      isMobileWidth,
       markMsgsAsRead,
       discussionInstances,
       chatViews,
-      setPanelLeftOpen,
-      setPanelRightOpen,
       currentUser.identifier,
       websocket,
     ]
@@ -477,8 +428,6 @@ function useChat(currentUser: ChatUser) {
     openDeleteRoomDialog,
     openDiscussion,
     openOverview,
-    panelLeftOpen,
-    panelRightOpen,
     roomFilters,
     rooms,
     roomsPrivate,
@@ -487,8 +436,6 @@ function useChat(currentUser: ChatUser) {
     saveEditedRoom,
     saveNewRoom,
     toggleControlBox,
-    toggleLeftPanel,
-    toggleRightPanel,
     unblockDiscussionWithUser,
     updateNewRoomEditor,
     updateRoomFilters,

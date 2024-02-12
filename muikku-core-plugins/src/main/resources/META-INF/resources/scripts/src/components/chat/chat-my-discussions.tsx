@@ -5,29 +5,19 @@ import { IconButton } from "../general/button";
 import ChatProfile from "./chat-profile";
 
 /**
- * ChatMyDiscussions. Lists the discussions of the current user have
- * active and counsellors if the user is a student.
- * @returns JSX.Element
+ * ChatMyCounselorsDiscussionsProps
  */
-function ChatMyDiscussions() {
-  return (
-    <div className="chat__users-container">
-      <div className="chat__users chat__users--guidance-councelors" role="menu">
-        <ChatMyCounselorsDiscussions />
-      </div>
-      <div className="chat__users chat__users--others" role="menu">
-        <div className="chat__users-category-title">Keskustelut</div>
-        <ChatMyActiveDiscussions />
-      </div>
-    </div>
-  );
+interface ChatMyCounselorsDiscussionsProps {
+  onItemClick?: () => void;
 }
 
 /**
  * ChatMyCounselorsDiscussions
+ * @param props props
  * @returns JSX.Element
  */
-function ChatMyCounselorsDiscussions() {
+function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
+  const { onItemClick } = props;
   const {
     myDiscussionsCouncelors,
     currentUser,
@@ -35,6 +25,15 @@ function ChatMyCounselorsDiscussions() {
     openDiscussion,
     chatActivityByUserObject,
   } = useChatContext();
+
+  /**
+   * handleOpenClick
+   * @param targetIdentifier targetIdentifier
+   */
+  const handleOpenClick = (targetIdentifier: string) => {
+    openDiscussion(targetIdentifier);
+    onItemClick && onItemClick();
+  };
 
   if (currentUser.type !== "STUDENT") {
     return null;
@@ -63,7 +62,7 @@ function ChatMyCounselorsDiscussions() {
           user={user}
           chatActivity={chatActivityByUserObject[user.id]}
           isActive={activeDiscussion?.identifier === user.identifier}
-          onOpenClick={openDiscussion}
+          onOpenClick={handleOpenClick}
         />
       ))}
     </>
@@ -73,7 +72,9 @@ function ChatMyCounselorsDiscussions() {
 /**
  * ChatMyDiscussionsProps
  */
-interface ChatMyDiscussionsProps {}
+interface ChatMyDiscussionsProps {
+  onItemClick?: () => void;
+}
 
 /**
  * ChatMyActiveDiscussions
@@ -81,6 +82,8 @@ interface ChatMyDiscussionsProps {}
  * @returns JSX.Element
  */
 function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
+  const { onItemClick } = props;
+
   const {
     closeDiscussionWithUser,
     openDiscussion,
@@ -88,6 +91,15 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
     myDiscussionsOthers,
     chatActivityByUserObject,
   } = useChatContext();
+
+  /**
+   * handleOpenClick
+   * @param targetIdentifier targetIdentifier
+   */
+  const handleOpenClick = (targetIdentifier: string) => {
+    openDiscussion(targetIdentifier);
+    onItemClick && onItemClick();
+  };
 
   return (
     <>
@@ -97,7 +109,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
           user={user}
           isActive={activeDiscussion?.identifier === user.identifier}
           chatActivity={chatActivityByUserObject[user.id]}
-          onOpenClick={openDiscussion}
+          onOpenClick={handleOpenClick}
           onRemoveClick={closeDiscussionWithUser}
         />
       ))}
@@ -169,4 +181,4 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
   );
 }
 
-export { ChatMyDiscussions };
+export { ChatMyCounselorsDiscussions, ChatMyActiveDiscussions };
