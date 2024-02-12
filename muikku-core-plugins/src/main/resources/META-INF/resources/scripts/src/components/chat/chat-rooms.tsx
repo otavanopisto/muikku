@@ -7,9 +7,7 @@ import { sortRoomsAplhabetically } from "./chat-helpers";
 /**
  * ChatRoomsListsProps
  */
-interface ChatRoomsListsProps {
-  minimized: boolean;
-}
+interface ChatRoomsListsProps {}
 
 /**
  * ChatRoomsLists

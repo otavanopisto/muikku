@@ -78,7 +78,7 @@ function ChatMain(props: ChatMainProps) {
         </div>
         <div className="chat__rooms-container">
           <OverviewButton />
-          <ChatRoomsLists minimized={!panelLeftOpen} />
+          <ChatRoomsLists />
         </div>
       </div>
       <div
@@ -112,7 +112,7 @@ function ChatMain(props: ChatMainProps) {
 /**
  * OverviewButton
  */
-function OverviewButton() {
+export function OverviewButton() {
   const { openOverview, chatViews } = useChatContext();
 
   const isActive =

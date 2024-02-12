@@ -12,11 +12,12 @@ import {
 import * as React from "react";
 import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
-import { AddIcon, swipeConfidenceThreshold, swipePower } from "./chat-helpers";
+import { swipeConfidenceThreshold, swipePower } from "./chat-helpers";
 import { ChatMyDiscussions } from "./chat-my-discussions";
 import { ChatRoomsLists } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
 import { IconButton } from "../general/button";
+import { OverviewButton } from "./chat-main";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
 const PANEL_RIGHT_MAX_WIDTH = 200;
@@ -52,8 +53,8 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         >
           <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
         </div>
-
-        <ChatRoomsLists minimized={false} />
+        <OverviewButton />
+        <ChatRoomsLists />
       </ChatPanel>
 
       <motion.div>
@@ -118,16 +119,20 @@ function ChatPanel(props: ChatLeftPanelProps) {
     panelPosition === "left" ? 0 : window.innerWidth + panelMaxWidth
   );
 
+  // Range1 is the transform range for the panel
+  // And uses x value to animate the panel
   const useTransformRange1 =
-    panelPosition === "left"
-      ? [-panelMaxWidth, panelMaxWidth]
-      : [0, panelMaxWidth];
+    panelPosition === "left" ? [-panelMaxWidth, 0] : [0, panelMaxWidth];
 
+  // Range2 is the opacity range for the black drop
+  // depending on the panel position and value that is used with conjuction with useTransformRange1
   const useTransformRange2 =
     panelPosition === "left"
       ? ["rgb(0, 0, 0, 0)", "rgb(0, 0, 0, 0.5)"]
       : ["rgb(0, 0, 0, 0.5)", "rgb(0, 0, 0, 0)"];
 
+  // Actual background value that is used to animate the black drop with previous ranges
+  // For example: When left panel x value is 0 then background opacity is 0.5 and vice versa
   const background = useTransform(x, useTransformRange1, useTransformRange2);
 
   React.useEffect(() => {
