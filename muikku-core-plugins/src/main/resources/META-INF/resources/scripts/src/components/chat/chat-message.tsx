@@ -15,7 +15,7 @@ import useLongPress from "./hooks/useLongPress";
 import useMessage, { MessageAction } from "./hooks/useMessage";
 import ChatProfileAvatar from "./chat-profile-avatar";
 import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
-import { IconButton } from "../general/button";
+import Button, { IconButton } from "../general/button";
 import TextareaAutosize from "react-textarea-autosize";
 import { parseLines } from "./chat-helpers";
 
@@ -408,7 +408,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
         <>
           <motion.div
             key="drawer-blackDrop"
-            className="black-drop-wrapper"
+            className="chat-mobile__back-drop"
             onClick={handleBlackDropClick}
             initial={{
               background: `rgba(0,0,0,0)`,
@@ -424,13 +424,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
               duration: 0.2,
             }}
             style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
               background,
-              zIndex: 1,
             }}
           />
 
@@ -448,47 +442,28 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
             animate={drawerAnimateControls}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            className="chat-mobile__action-panel"
             style={{
-              position: "fixed",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              opacity,
-              padding: "10px",
-              width: "100%",
-              zIndex: 1,
               y,
+              opacity,
             }}
           >
-            <ul
-              className="chat__message-actions-mobile"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                listStyle: "none",
-                padding: 0,
-                margin: 0,
-              }}
-            >
+            <div className="chat__message-actions chat__message-actions--mobile">
               {actions.length > 0 &&
                 actions.map((action, index) => (
-                  <motion.li
-                    key={index}
-                    className={`chat__message-action-mobile icon-${action.icon}`}
-                    style={{
-                      padding: "10px 0",
-                      fontSize: "1.2rem",
-                    }}
-                    onClick={(e) => {
-                      action.onClick(e);
-                      onClose && onClose();
-                    }}
-                  >
-                    {action.text}
-                  </motion.li>
+                  <div key={index} className="chat__message-action">
+                    <Button
+                      buttonModifiers={["fatal"]}
+                      onClick={(e) => {
+                        action.onClick(e);
+                        onClose && onClose();
+                      }}
+                    >
+                      {action.text}
+                    </Button>
+                  </div>
                 ))}
-            </ul>
+            </div>
           </motion.div>
         </>
       )}
