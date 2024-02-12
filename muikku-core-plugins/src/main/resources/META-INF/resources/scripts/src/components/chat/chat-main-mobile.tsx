@@ -12,8 +12,11 @@ import {
 import * as React from "react";
 import ChatViews from "./animated-views";
 import { swipeConfidenceThreshold, swipePower } from "./chat-helpers";
-import { ChatMyDiscussions } from "./chat-my-discussions";
-import { ChatRoomsLists } from "./chat-rooms";
+import {
+  ChatMyActiveDiscussions,
+  ChatMyCounselorsDiscussions,
+} from "./chat-my-discussions";
+import { PrivateRoomList, PublicRoomsList } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
 import { IconButton } from "../general/button";
 import { OverviewButton } from "./chat-main";
@@ -53,8 +56,16 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
         </div>
         <div className="chat__rooms-container">
-          <OverviewButton />
-          <ChatRoomsLists />
+          <OverviewButton onClick={() => setPanelLeftOpen(false)} />
+          <div className="chat__rooms chat__rooms--public" role="menu">
+            <div className="chat__rooms-category-title">Julkiset huoneet</div>
+            <PublicRoomsList onItemClick={() => setPanelLeftOpen(false)} />
+          </div>
+
+          <div className="chat__rooms chat__rooms--private" role="menu">
+            <div className="chat__rooms-category-title">Kurssien huoneet</div>
+            <PrivateRoomList onItemClick={() => setPanelLeftOpen(false)} />
+          </div>
         </div>
       </ChatPanel>
 
@@ -77,7 +88,22 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         >
           <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
         </div>
-        <ChatMyDiscussions />
+        <div className="chat__users-container">
+          <div
+            className="chat__users chat__users--guidance-councelors"
+            role="menu"
+          >
+            <ChatMyCounselorsDiscussions
+              onItemClick={() => setPanelRightOpen(false)}
+            />
+          </div>
+          <div className="chat__users chat__users--others" role="menu">
+            <div className="chat__users-category-title">Keskustelut</div>
+            <ChatMyActiveDiscussions
+              onItemClick={() => setPanelRightOpen(false)}
+            />
+          </div>
+        </div>
         <ChatMyProfileWithSettings />
       </ChatPanel>
     </div>

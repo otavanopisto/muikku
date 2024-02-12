@@ -7,14 +7,16 @@ import { sortRoomsAplhabetically } from "./chat-helpers";
 /**
  * ChatRoomsListsProps
  */
-interface ChatRoomsListsProps {}
+/* interface ChatRoomsListsProps {
+  onClick: () => void;
+} */
 
 /**
  * ChatRoomsLists
  * @param props props
  * @returns JSX.Element
  */
-function ChatRoomsLists(props: ChatRoomsListsProps) {
+/* function ChatRoomsLists(props: ChatRoomsListsProps) {
   const rooms = (
     <>
       <div className="chat__rooms chat__rooms--public" role="menu">
@@ -30,12 +32,14 @@ function ChatRoomsLists(props: ChatRoomsListsProps) {
   );
 
   return <>{rooms}</>;
-}
+} */
 
 /**
  * PrivateRoomListProps
  */
-interface PrivateRoomListProps {}
+interface PrivateRoomListProps {
+  onItemClick?: () => void;
+}
 
 /**
  * RoomsList
@@ -43,8 +47,19 @@ interface PrivateRoomListProps {}
  * @returns JSX.Element
  */
 function PrivateRoomList(props: PrivateRoomListProps) {
+  const { onItemClick } = props;
+
   const { roomsPrivate, loadingRooms, activeDiscussion, openDiscussion } =
     useChatContext();
+
+  /**
+   * handleRoomItemClick
+   * @param identifier identifier
+   */
+  const handleRoomItemClick = (identifier: string) => {
+    openDiscussion(identifier);
+    onItemClick && onItemClick();
+  };
 
   if (loadingRooms) {
     return <div>...</div>;
@@ -63,7 +78,7 @@ function PrivateRoomList(props: PrivateRoomListProps) {
           key={room.identifier}
           room={room}
           isActive={activeDiscussion?.identifier === room.identifier}
-          onItemClick={openDiscussion}
+          onItemClick={handleRoomItemClick}
         />
       ))}
     </>
@@ -73,7 +88,9 @@ function PrivateRoomList(props: PrivateRoomListProps) {
 /**
  * PublicRoomsListProps
  */
-interface PublicRoomsListProps {}
+interface PublicRoomsListProps {
+  onItemClick?: () => void;
+}
 
 /**
  * PublicRoomsList
@@ -81,8 +98,19 @@ interface PublicRoomsListProps {}
  * @returns JSX.Element
  */
 function PublicRoomsList(props: PublicRoomsListProps) {
+  const { onItemClick } = props;
+
   const { roomsPublic, loadingRooms, openDiscussion, activeDiscussion } =
     useChatContext();
+
+  /**
+   * handleRoomItemClick
+   * @param identifier identifier
+   */
+  const handleRoomItemClick = (identifier: string) => {
+    openDiscussion(identifier);
+    onItemClick && onItemClick();
+  };
 
   if (loadingRooms) {
     return <div>...</div>;
@@ -100,7 +128,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
         <ChatRoom
           key={room.identifier}
           room={room}
-          onItemClick={openDiscussion}
+          onItemClick={handleRoomItemClick}
           isActive={activeDiscussion?.identifier === room.identifier}
         />
       ))}
@@ -155,4 +183,4 @@ function ChatRoom(props: ChatRoomProps) {
   );
 }
 
-export { ChatRoomsLists, ChatRoom };
+export { PrivateRoomList, PublicRoomsList, ChatRoom };

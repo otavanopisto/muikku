@@ -4,10 +4,14 @@ import * as React from "react";
 import ChatViews from "./animated-views";
 import { useChatContext } from "./context/chat-context";
 import { useChatWindowBreakpointsContext } from "./context/chat-window-breakpoints-context";
-import { ChatMyDiscussions } from "./chat-my-discussions";
-import { ChatRoomsLists } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
 import { IconButton } from "../general/button";
+import { useLocalStorage } from "usehooks-ts";
+import { PrivateRoomList, PublicRoomsList } from "./chat-rooms";
+import {
+  ChatMyActiveDiscussions,
+  ChatMyCounselorsDiscussions,
+} from "./chat-my-discussions";
 
 /**
  * ChatMainProps
@@ -19,10 +23,16 @@ interface ChatMainProps {}
  * @param props props
  */
 function ChatMain(props: ChatMainProps) {
-  const { toggleLeftPanel, toggleRightPanel, panelLeftOpen, panelRightOpen } =
-    useChatContext();
-
   const { isMobile } = useChatWindowBreakpointsContext();
+
+  const [panelRightOpen, setPanelRightOpen] = useLocalStorage(
+    "chat-panel-right",
+    true
+  );
+  const [panelLeftOpen, setPanelLeftOpen] = useLocalStorage(
+    "chat-panel-left",
+    true
+  );
 
   const isInitialized = React.useRef(false);
 
@@ -30,10 +40,10 @@ function ChatMain(props: ChatMainProps) {
     if (!isInitialized.current) return;
 
     if (isMobile) {
-      toggleLeftPanel(false);
-      toggleRightPanel(false);
+      setPanelRightOpen(false);
+      setPanelLeftOpen(false);
     }
-  }, [isMobile, toggleLeftPanel, toggleRightPanel]);
+  }, [isMobile, setPanelLeftOpen, setPanelRightOpen]);
 
   React.useEffect(() => {
     isInitialized.current = true;
@@ -71,14 +81,22 @@ function ChatMain(props: ChatMainProps) {
           .join(" ")}`}
       >
         <div
-          onClick={() => toggleLeftPanel()}
+          onClick={() => setPanelLeftOpen(!panelLeftOpen)}
           className="chat__button-wrapper chat__button-wrapper--rooms"
         >
           <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
         </div>
         <div className="chat__rooms-container">
           <OverviewButton />
-          <ChatRoomsLists />
+          <div className="chat__rooms chat__rooms--public" role="menu">
+            <div className="chat__rooms-category-title">Julkiset huoneet</div>
+            <PublicRoomsList />
+          </div>
+
+          <div className="chat__rooms chat__rooms--private" role="menu">
+            <div className="chat__rooms-category-title">Kurssien huoneet</div>
+            <PrivateRoomList />
+          </div>
         </div>
       </div>
       <div
@@ -96,13 +114,24 @@ function ChatMain(props: ChatMainProps) {
           .join(" ")}`}
       >
         <div
-          onClick={() => toggleRightPanel()}
+          onClick={() => setPanelRightOpen(!panelRightOpen)}
           className="chat__button-wrapper chat__button-wrapper--users"
         >
           <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
         </div>
 
-        <ChatMyDiscussions />
+        <div className="chat__users-container">
+          <div
+            className="chat__users chat__users--guidance-councelors"
+            role="menu"
+          >
+            <ChatMyCounselorsDiscussions />
+          </div>
+          <div className="chat__users chat__users--others" role="menu">
+            <div className="chat__users-category-title">Keskustelut</div>
+            <ChatMyActiveDiscussions />
+          </div>
+        </div>
         <ChatMyProfileWithSettings />
       </div>
     </>
@@ -110,10 +139,27 @@ function ChatMain(props: ChatMainProps) {
 }
 
 /**
- * OverviewButton
+ * OwerviewButtonProps
  */
-export function OverviewButton() {
+interface OwerviewButtonProps {
+  onClick?: () => void;
+}
+
+/**
+ * OverviewButton
+ * @param props props
+ */
+export function OverviewButton(props: OwerviewButtonProps) {
+  const { onClick } = props;
   const { openOverview, chatViews } = useChatContext();
+
+  /**
+   * handleButtonClick
+   */
+  const handleButtonClick = () => {
+    openOverview();
+    onClick && onClick();
+  };
 
   const isActive =
     chatViews.views[chatViews.currentViewIndex].identifier === "overview";
@@ -129,7 +175,7 @@ export function OverviewButton() {
       <div className="chat__options">
         <div className={className}>
           <div className="chat__option-name-container">
-            <div className="chat__option-name" onClick={openOverview}>
+            <div className="chat__option-name" onClick={handleButtonClick}>
               Dashboard
             </div>
           </div>
