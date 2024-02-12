@@ -53,8 +53,10 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         >
           <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
         </div>
-        <OverviewButton />
-        <ChatRoomsLists />
+        <div className="chat__rooms-container">
+          <OverviewButton />
+          <ChatRoomsLists />
+        </div>
       </ChatPanel>
 
       <motion.div>
@@ -293,7 +295,6 @@ function ChatPanel(props: ChatLeftPanelProps) {
   const leftVariantConstraints = (
     <div
       ref={panelConstraints}
-      className="panel-drag-constraints"
       style={{
         width: 2 * panelMaxWidth,
         position: "fixed",
@@ -305,7 +306,6 @@ function ChatPanel(props: ChatLeftPanelProps) {
   const rightVariantConstraints = (
     <div
       ref={panelConstraints}
-      className="right-panel-drag-constraints"
       style={{
         width: 2 * panelMaxWidth,
         position: "fixed",
@@ -393,7 +393,7 @@ function ChatPanel(props: ChatLeftPanelProps) {
       >
         {panelHandle}
 
-        <div className="chat-panel-wrapper">{children}</div>
+        <>{children}</>
       </motion.div>
     </>
   );

@@ -1051,7 +1051,7 @@ function ChatWindow(props: ChatWindowProps) {
   return (
     <ChatWindowBreakpointsContextProvider windowRef={windowRef}>
       <div
-        id="chat-constrains"
+        id="chatConstrains"
         ref={windowConstrainsRef}
         style={{
           position: "fixed",

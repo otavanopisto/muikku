@@ -196,8 +196,8 @@ $chat-resizer-corner-size: 15px;
   right: 0;
   scrollbar-width: none;
 
-  // Height of the show/hide panel button wrapper including top and bottom margin
-  top: 36px;
+  // Height of the show/hide panel button wrapper including it's top and bottom margin
+  top: calc(1.625rem + 10px);
   width: 100%;
 }
 
@@ -490,8 +490,8 @@ $chat-resizer-corner-size: 15px;
   right: 0;
   scrollbar-width: none;
 
-  // Height of the show/hide panel button wrapper including top and bottom margin
-  top: 36px;
+  // Height of the show/hide panel button wrapper including it's top and bottom margin
+  top: calc(1.625rem + 10px);
   width: 100%;
 }
 
@@ -961,5 +961,5 @@ $chat-resizer-corner-size: 15px;
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 2;
+  z-index: 4;
 }
