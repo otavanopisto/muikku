@@ -67,7 +67,7 @@ function ChatMain(props: ChatMainProps) {
     <>
       <div
         className={`chat__rooms-panel ${(roomPanelClassModifiers || [])
-          .map((m) => ` chat__rooms-panel--${m}`)
+          .map((m) => `chat__rooms-panel--${m}`)
           .join(" ")}`}
       >
         <div
@@ -83,8 +83,8 @@ function ChatMain(props: ChatMainProps) {
       </div>
       <div
         className={`chat__main-panel ${(mainPanelClassModifiers || [])
-          .map((m) => ` chat__main-panel--${m}`)
-          .join("")}`}
+          .map((m) => `chat__main-panel--${m}`)
+          .join(" ")}`}
       >
         <ChatViews
           wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
@@ -92,7 +92,7 @@ function ChatMain(props: ChatMainProps) {
       </div>
       <div
         className={`chat__users-panel ${(userPanelClassModifiers || [])
-          .map((m) => ` chat__users-panel--${m}`)
+          .map((m) => `chat__users-panel--${m}`)
           .join(" ")}`}
       >
         <div
