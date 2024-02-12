@@ -1,4 +1,4 @@
-import Dialog, { DialogRow } from "~/components/general/dialog";
+import { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
@@ -11,6 +11,7 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { displayNotification } from "~/actions/base/notifications";
 import { connect } from "react-redux";
 import Button from "~/components/general/button";
+import ChatDialog from "./chat-dialog";
 
 const chatApi = MApi.getChatApi();
 
@@ -153,7 +154,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
   );
 
   return (
-    <Dialog
+    <ChatDialog
       localElementId="chat__body"
       disableScroll={true}
       title="Chatin asetukset"
@@ -162,7 +163,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
       modifier={["chat", "local"]}
     >
       {props.children}
-    </Dialog>
+    </ChatDialog>
   );
 };
 

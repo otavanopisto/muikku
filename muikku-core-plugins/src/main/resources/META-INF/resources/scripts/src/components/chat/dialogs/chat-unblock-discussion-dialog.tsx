@@ -1,9 +1,10 @@
-import Dialog, { DialogRow } from "~/components/general/dialog";
+import { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
+import ChatDialog from "./chat-dialog";
 
 /**
  * ChatUnblockDiscussionDialog
@@ -73,7 +74,7 @@ const ChatUnblockDiscussionDialog = () => {
   );
 
   return (
-    <Dialog
+    <ChatDialog
       isOpen={!!userToBeUnblocked}
       onClose={closeCancelUnblockDialog}
       localElementId="chat__body"

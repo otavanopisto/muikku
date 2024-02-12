@@ -1,4 +1,4 @@
-import Dialog, { DialogRow } from "~/components/general/dialog";
+import { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
@@ -7,6 +7,7 @@ import Button from "~/components/general/button";
 import { localize } from "~/locales/i18n";
 import ChatProfileAvatar from "../chat-profile-avatar";
 import { parseLines } from "../chat-helpers";
+import ChatDialog from "./chat-dialog";
 
 /**
  * ChatDeleteRoomDialogProps
@@ -130,7 +131,7 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
   );
 
   return (
-    <Dialog
+    <ChatDialog
       isOpen={open}
       onClose={onClose}
       localElementId="chat__body"

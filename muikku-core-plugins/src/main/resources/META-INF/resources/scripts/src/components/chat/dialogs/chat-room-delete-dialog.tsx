@@ -1,9 +1,10 @@
-import Dialog, { DialogRow } from "~/components/general/dialog";
+import { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
+import ChatDialog from "./chat-dialog";
 
 /**
  * ChatDeleteRoomDialogProps
@@ -84,7 +85,7 @@ const ChatDeleteRoomDialog = (props: ChatRoomDeleteDialogProps) => {
   );
 
   return (
-    <Dialog
+    <ChatDialog
       isOpen={!!roomToBeDeleted}
       localElementId="chat__body"
       disableScroll={true}
@@ -94,7 +95,7 @@ const ChatDeleteRoomDialog = (props: ChatRoomDeleteDialogProps) => {
       modifier={["chat", "local"]}
     >
       {props.children}
-    </Dialog>
+    </ChatDialog>
   );
 };
 

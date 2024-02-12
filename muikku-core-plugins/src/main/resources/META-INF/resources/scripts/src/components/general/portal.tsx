@@ -208,6 +208,8 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
           );
           if (localElement) {
             localElement.removeChild(this.node);
+          } else {
+            document.body.removeChild(this.node);
           }
         } else {
           document.body.removeChild(this.node);

@@ -18,7 +18,7 @@ import PagerV2 from "~/components/general/pagerV2";
 /**
  * DialogProps
  */
-interface DialogProps {
+export interface DialogProps {
   children?: React.ReactElement<any>;
   title: string | React.ReactElement<any>;
   executing?: boolean;

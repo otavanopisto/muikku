@@ -1,4 +1,4 @@
-import Dialog, { DialogRow } from "~/components/general/dialog";
+import { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
@@ -7,6 +7,7 @@ import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import ChatDialog from "./chat-dialog";
 
 /**
  * NewChatRoomDialogProps
@@ -215,7 +216,7 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
   };
 
   return (
-    <Dialog
+    <ChatDialog
       localElementId="chat__body"
       disableScroll={true}
       title={editing ? "Muokkaa huoneen tietoja" : "Huoneen tiedot"}
@@ -224,7 +225,7 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
       modifier={["chat", "local"]}
     >
       {props.children}
-    </Dialog>
+    </ChatDialog>
   );
 };
 
