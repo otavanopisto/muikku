@@ -12,6 +12,7 @@ import { useChatContext } from "../context/chat-context";
 export interface MessageAction {
   icon: string;
   text: string;
+  modifiers: string[];
   onClick: (e: React.MouseEvent) => void;
 }
 
@@ -112,11 +113,13 @@ function useMessage(msg: ChatMessage) {
         icon: "pencil",
         text: "Muokkaa",
         onClick: handleEditClick,
+        modifiers: ["info"],
       },
       {
         icon: "trash",
         text: "Poista",
         onClick: handleDeleteClick,
+        modifiers: ["fatal"],
       },
     ];
 

@@ -453,7 +453,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
                 actions.map((action, index) => (
                   <div key={index} className="chat__message-action">
                     <Button
-                      buttonModifiers={["fatal"]}
+                      buttonModifiers={action.modifiers}
                       onClick={(e) => {
                         action.onClick(e);
                         onClose && onClose();
