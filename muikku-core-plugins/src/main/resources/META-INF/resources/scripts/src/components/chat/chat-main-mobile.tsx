@@ -111,9 +111,9 @@ function ChatMainMobile(props: ChatMainMobileProps) {
 }
 
 /**
- * ChatLeftPanelProps
+ * ChatPanelProps
  */
-interface ChatLeftPanelProps {
+interface ChatPanelProps {
   open: boolean;
   panelMaxWidth?: number;
   panelPosition?: "left" | "right";
@@ -123,11 +123,11 @@ interface ChatLeftPanelProps {
 }
 
 /**
- * ChatLeftPanel
+ * ChatPanel
  * @param props props
  * @returns JSX.Element
  */
-function ChatPanel(props: ChatLeftPanelProps) {
+function ChatPanel(props: ChatPanelProps) {
   const { open, onOpen, children, onClose, panelMaxWidth, panelPosition } =
     props;
 
@@ -376,11 +376,13 @@ function ChatPanel(props: ChatLeftPanelProps) {
           width: `${panelMaxWidth}px`,
           x,
           left: 0,
+          zIndex: 5,
         }
       : {
           width: `${panelMaxWidth}px`,
           x,
           right: 0,
+          zIndex: 5,
         };
 
   return (
@@ -394,6 +396,7 @@ function ChatPanel(props: ChatLeftPanelProps) {
             onClick={handleBlackDropClick}
             style={{
               background,
+              zIndex: open && 5,
             }}
           />
         )}

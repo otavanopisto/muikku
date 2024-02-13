@@ -64,7 +64,7 @@ function useMessage(msg: ChatMessage) {
   /**
    * Save edited message
    */
-  const saveEditedMessage = async () => {
+  const saveEditedMessage = React.useCallback(async () => {
     await chatApi.updateChatMessage({
       messageId: msg.id,
       updateChatMessageRequest: {
@@ -73,7 +73,7 @@ function useMessage(msg: ChatMessage) {
     });
 
     toggleEditMode(false);
-  };
+  }, [editedMessage, msg.id, toggleEditMode]);
 
   /**
    * Handles edited message change
