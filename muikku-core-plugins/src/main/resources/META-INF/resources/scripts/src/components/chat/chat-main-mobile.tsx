@@ -18,7 +18,7 @@ import {
 } from "./chat-my-discussions";
 import { PrivateRoomList, PublicRoomsList } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
-import { IconButton } from "../general/button";
+import Button, { IconButton } from "../general/button";
 import { OverviewButton } from "./chat-main";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
@@ -69,11 +69,13 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         </div>
       </ChatPanel>
 
+      <div className="chat-mobile__main-container">
       <motion.div>
         <ChatViews
           wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
         />
       </motion.div>
+      </div>
 
       <ChatPanel
         open={panelRightOpen}
@@ -106,6 +108,11 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         </div>
         <ChatMyProfileWithSettings />
       </ChatPanel>
+      <div className="chat-mobile__footer">
+      <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
+      <Button buttonModifiers={["chat"]}>Dashboard</Button>
+      <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
+      </div>
     </div>
   );
 }
