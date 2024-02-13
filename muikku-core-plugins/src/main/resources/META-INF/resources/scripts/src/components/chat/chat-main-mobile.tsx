@@ -370,20 +370,24 @@ function ChatPanel(props: ChatPanelProps) {
   const constrainElement =
     panelPosition === "left" ? leftVariantConstraints : rightVariantConstraints;
 
-  const panelStyles: MotionStyle =
-    panelPosition === "left"
-      ? {
-          width: `${panelMaxWidth}px`,
-          x,
-          left: 0,
-          zIndex: 5,
-        }
-      : {
-          width: `${panelMaxWidth}px`,
-          x,
-          right: 0,
-          zIndex: 5,
-        };
+  const blackDropStyles: MotionStyle = {
+    background,
+    zIndex: open && 5,
+  };
+
+  let panelStyles: MotionStyle = {
+    width: `${panelMaxWidth}px`,
+    x,
+    right: 0,
+    zIndex: 5,
+  };
+
+  if (panelPosition === "left") {
+    panelStyles = {
+      ...panelStyles,
+      left: 0,
+    };
+  }
 
   return (
     <>
@@ -394,10 +398,7 @@ function ChatPanel(props: ChatPanelProps) {
           <motion.div
             className="chat-mobile__back-drop"
             onClick={handleBlackDropClick}
-            style={{
-              background,
-              zIndex: open && 5,
-            }}
+            style={blackDropStyles}
           />
         )}
       </AnimatePresence>
