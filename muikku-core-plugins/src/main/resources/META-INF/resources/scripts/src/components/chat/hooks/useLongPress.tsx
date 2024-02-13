@@ -20,6 +20,10 @@ const useLongPress = (props: UseLongPressProps) => {
   const timeout: any = React.useRef();
   const target: any = React.useRef();
 
+  /**
+   * Start
+   * @param event event
+   */
   const start = React.useCallback(
     (event) => {
       if (props.obj.shouldPreventDefault && event.target) {
@@ -36,6 +40,11 @@ const useLongPress = (props: UseLongPressProps) => {
     [props]
   );
 
+  /**
+   * Clear
+   * @param event event
+   * @param shouldTriggerClick shouldTriggerClick
+   */
   const clear = React.useCallback(
     (event, shouldTriggerClick = true) => {
       timeout.current && clearTimeout(timeout.current);
@@ -60,8 +69,16 @@ const useLongPress = (props: UseLongPressProps) => {
   };
 };
 
+/**
+ * Type guard for touch event
+ * @param event event
+ */
 const isTouchEvent = (event: any) => "touches" in event;
 
+/**
+ * preventDefault
+ * @param event event
+ */
 const preventDefault = (event: any) => {
   if (!isTouchEvent(event)) return;
 

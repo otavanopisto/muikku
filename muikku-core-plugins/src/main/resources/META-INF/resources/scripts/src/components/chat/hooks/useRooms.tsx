@@ -32,55 +32,6 @@ function useRooms() {
     fetchRooms();
   }, []);
 
-  /**
-   * Fetch rooms
-   */
-  const fetchRooms = async () => {
-    setLoadingRooms(true);
-
-    const rooms = await chatApi.getChatRooms();
-
-    unstable_batchedUpdates(() => {
-      setRooms(rooms);
-      setLoadingRooms(false);
-    });
-  };
-
-  /**
-   * createNewRoom
-   * @param newRoom newRoom
-   */
-  const createNewRoom = async (newRoom: CreateChatRoomRequest) => {
-    await chatApi.createChatRoom({
-      createChatRoomRequest: newRoom,
-    });
-  };
-
-  /**
-   * updateRoom
-   * @param identifier identifier
-   * @param updatedRoom updatedRoom
-   */
-  const updateRoom = async (
-    identifier: string,
-    updatedRoom: UpdateChatRoomRequest
-  ) => {
-    await chatApi.updateChatRoom({
-      identifier: identifier,
-      updateChatRoomRequest: updatedRoom,
-    });
-  };
-
-  /**
-   * deleteRoom
-   * @param identifier identifier
-   */
-  const deleteRoom = async (identifier: string) => {
-    await chatApi.deleteChatRoom({
-      identifier: identifier,
-    });
-  };
-
   React.useEffect(() => {
     /**
      * onChatRoomCreateMsg
@@ -163,6 +114,58 @@ function useRooms() {
       websocket.removeEventCallback("chat:room-deleted", onChatRoomDeleteMsg);
     };
   }, [websocket]);
+
+  /**
+   * Fetch rooms
+   */
+  const fetchRooms = async () => {
+    setLoadingRooms(true);
+
+    const rooms = await chatApi.getChatRooms();
+
+    unstable_batchedUpdates(() => {
+      setRooms(rooms);
+      setLoadingRooms(false);
+    });
+  };
+
+  /**
+   * createNewRoom
+   * @param newRoom newRoom
+   */
+  const createNewRoom = React.useCallback(
+    async (newRoom: CreateChatRoomRequest) => {
+      await chatApi.createChatRoom({
+        createChatRoomRequest: newRoom,
+      });
+    },
+    []
+  );
+
+  /**
+   * updateRoom
+   * @param identifier identifier
+   * @param updatedRoom updatedRoom
+   */
+  const updateRoom = React.useCallback(
+    async (identifier: string, updatedRoom: UpdateChatRoomRequest) => {
+      await chatApi.updateChatRoom({
+        identifier: identifier,
+        updateChatRoomRequest: updatedRoom,
+      });
+    },
+    []
+  );
+
+  /**
+   * deleteRoom
+   * @param identifier identifier
+   */
+  const deleteRoom = React.useCallback(async (identifier: string) => {
+    await chatApi.deleteChatRoom({
+      identifier: identifier,
+    });
+  }, []);
 
   /**
    * Update user filters

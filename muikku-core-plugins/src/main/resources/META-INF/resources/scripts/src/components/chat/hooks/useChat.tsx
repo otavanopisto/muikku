@@ -115,6 +115,8 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles updating a custom room
+   * @param identifier identifier
+   * @param editChatRoom editChatRoom
    */
   const saveEditedRoom = React.useCallback(
     async (identifier: string, editChatRoom: UpdateChatRoomRequest) => {
@@ -125,6 +127,7 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles deleting a custom room
+   * @param identifier identifier
    */
   const deleteCustomRoom = React.useCallback(
     async (identifier: string) => {
@@ -156,6 +159,7 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles opening discussion with user
+   * @param identifier identifier
    */
   const openDiscussion = React.useCallback(
     async (identifier: string) => {
@@ -197,6 +201,7 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles closing discussion with user
+   * @param currentUser currentUser
    */
   const closeDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
@@ -212,6 +217,7 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles closing and blocking discussion with user
+   * @param currentUser currentUser
    */
   const closeAndBlockDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
@@ -234,6 +240,7 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles unblocking discussion with user
+   * @param currentUser currentUser
    */
   const unblockDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
@@ -260,6 +267,7 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles opening block user dialog
+   * @param user user to be blocked
    */
   const openBlockUserDialog = React.useCallback((user: ChatUser) => {
     setUserToBeBlocked(user);
@@ -274,6 +282,7 @@ function useChat(currentUser: ChatUser) {
 
   /**
    * Handles opening delete room dialog
+   * @param room room to be deleted
    */
   const openDeleteRoomDialog = React.useCallback((room: ChatRoom) => {
     setRoomToBeDeleted(room);

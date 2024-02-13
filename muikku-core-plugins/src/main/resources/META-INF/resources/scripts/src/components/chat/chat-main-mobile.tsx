@@ -118,9 +118,9 @@ function ChatMainMobile(props: ChatMainMobileProps) {
 }
 
 /**
- * ChatLeftPanelProps
+ * ChatPanelProps
  */
-interface ChatLeftPanelProps {
+interface ChatPanelProps {
   open: boolean;
   panelMaxWidth?: number;
   panelPosition?: "left" | "right";
@@ -130,11 +130,11 @@ interface ChatLeftPanelProps {
 }
 
 /**
- * ChatLeftPanel
+ * ChatPanel
  * @param props props
  * @returns JSX.Element
  */
-function ChatPanel(props: ChatLeftPanelProps) {
+function ChatPanel(props: ChatPanelProps) {
   const { open, onOpen, children, onClose, panelMaxWidth, panelPosition } =
     props;
 
@@ -377,18 +377,24 @@ function ChatPanel(props: ChatLeftPanelProps) {
   const constrainElement =
     panelPosition === "left" ? leftVariantConstraints : rightVariantConstraints;
 
-  const panelStyles: MotionStyle =
-    panelPosition === "left"
-      ? {
-          width: `${panelMaxWidth}px`,
-          x,
-          left: 0,
-        }
-      : {
-          width: `${panelMaxWidth}px`,
-          x,
-          right: 0,
-        };
+  const blackDropStyles: MotionStyle = {
+    background,
+    zIndex: open && 6,
+  };
+
+  let panelStyles: MotionStyle = {
+    width: `${panelMaxWidth}px`,
+    x,
+    right: 0,
+    zIndex: open && 6,
+  };
+
+  if (panelPosition === "left") {
+    panelStyles = {
+      ...panelStyles,
+      left: 0,
+    };
+  }
 
   return (
     <>
@@ -399,9 +405,7 @@ function ChatPanel(props: ChatLeftPanelProps) {
           <motion.div
             className="chat-mobile__back-drop"
             onClick={handleBlackDropClick}
-            style={{
-              background,
-            }}
+            style={blackDropStyles}
           />
         )}
       </AnimatePresence>

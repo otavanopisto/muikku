@@ -304,38 +304,38 @@ function useUsers(props: UseUsersProps) {
    * @param user target chat user
    * @param type type of block. SOFT only hides and HARD also prevents user from sending messages.
    */
-  const blockUser = async (
-    user: ChatUser,
-    type: UpdateBlockRequestBlockTypeEnum
-  ) => {
-    await chatApi.updateBlock({
-      updateBlockRequest: {
-        blockType: type,
-        targetUserEntityId: user.id,
-      },
-    });
-
-    unstable_batchedUpdates(() => {
-      setBlockedUsers((prev) => [...prev, user]);
-      setUsersWithActiveDiscussion((prev) => {
-        const index = prev.findIndex((u) => u.id === user.id);
-
-        if (index !== -1) {
-          const updatedUsers = [...prev];
-          updatedUsers.splice(index, 1);
-          return updatedUsers;
-        }
-
-        return prev;
+  const blockUser = React.useCallback(
+    async (user: ChatUser, type: UpdateBlockRequestBlockTypeEnum) => {
+      await chatApi.updateBlock({
+        updateBlockRequest: {
+          blockType: type,
+          targetUserEntityId: user.id,
+        },
       });
-    });
-  };
+
+      unstable_batchedUpdates(() => {
+        setBlockedUsers((prev) => [...prev, user]);
+        setUsersWithActiveDiscussion((prev) => {
+          const index = prev.findIndex((u) => u.id === user.id);
+
+          if (index !== -1) {
+            const updatedUsers = [...prev];
+            updatedUsers.splice(index, 1);
+            return updatedUsers;
+          }
+
+          return prev;
+        });
+      });
+    },
+    []
+  );
 
   /**
    * Unblock user
    * @param user user
    */
-  const unblockUser = async (user: ChatUser) => {
+  const unblockUser = React.useCallback(async (user: ChatUser) => {
     await chatApi.updateBlock({
       updateBlockRequest: {
         blockType: "NONE",
@@ -354,7 +354,7 @@ function useUsers(props: UseUsersProps) {
 
       return prev;
     });
-  };
+  }, []);
 
   /**
    * Adds user to active discussions list
