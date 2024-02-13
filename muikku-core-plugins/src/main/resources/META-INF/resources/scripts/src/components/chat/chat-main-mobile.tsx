@@ -372,14 +372,14 @@ function ChatPanel(props: ChatPanelProps) {
 
   const blackDropStyles: MotionStyle = {
     background,
-    zIndex: open && 5,
+    zIndex: open && 6,
   };
 
   let panelStyles: MotionStyle = {
     width: `${panelMaxWidth}px`,
     x,
     right: 0,
-    zIndex: 5,
+    zIndex: open && 6,
   };
 
   if (panelPosition === "left") {
