@@ -1,4 +1,4 @@
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import { PedagogyWorkspace } from "~/generated/client";
 
 // used for frontend logic
 const useRoles = [
@@ -76,7 +76,7 @@ export interface SupportActionImplementation {
   /**
    * The details of the action
    */
-  course?: WorkspaceDataType;
+  course?: PedagogyWorkspace;
   /**
    * The extra information of the action
    */
