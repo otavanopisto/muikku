@@ -7,7 +7,7 @@
     "skipDefaultLibCheck": true,
     "noImplicitAny": true,
     "module": "commonjs",
-    "target": "esnext",
+    "target": "ES2017",
     "jsx": "react",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,

@@ -8,9 +8,6 @@ import { TsconfigPathsPlugin } from "@esbuild-plugins/tsconfig-paths";
 // to affect the typescript compiler not to import from nodejs folders
 const tsConfig = JSON.parse(readFileSync("tsconfig.json", "utf-8"));
 delete tsConfig.compilerOptions.paths;
-tsConfig.compilerOptions.target = "es5";
-tsConfig.compilerOptions.module = "commonjs";
-tsConfig.compilerOptions.esModuleInterop = true;
 
 // process to build
 const build = _build({
@@ -51,7 +48,6 @@ const build = _build({
   },
   // commons file name
   chunkNames: "commons-[hash]",
-  target: ["chrome60", "firefox60", "safari11", "edge18"],
   // modified tsconfig
   tsconfigRaw: JSON.stringify({ tsConfig }),
   plugins: [
