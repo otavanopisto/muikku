@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as moment from "moment";
+import moment from "moment";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";

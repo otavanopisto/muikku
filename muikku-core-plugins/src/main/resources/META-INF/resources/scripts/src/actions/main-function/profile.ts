@@ -12,7 +12,7 @@ import {
   ProfileProperty,
   WorklistSection,
 } from "~/reducers/main-function/profile";
-import * as moment from "moment";
+import moment from "moment";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
 import {

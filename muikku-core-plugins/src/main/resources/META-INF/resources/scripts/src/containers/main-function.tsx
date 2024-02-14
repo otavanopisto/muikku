@@ -93,7 +93,6 @@ import loadOrganizationSummary from "~/actions/organization/summary";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
 import CeeposPay from "../components/ceepos/pay";
-import * as moment from "moment";
 import {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationGradingSystemFromServer,
@@ -120,8 +119,6 @@ import { InfoPopperProvider } from "~/components/general/info-popover/context";
 import { Announcement, User } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
-
-moment.locale("fi");
 
 /**
  * MainFunctionProps

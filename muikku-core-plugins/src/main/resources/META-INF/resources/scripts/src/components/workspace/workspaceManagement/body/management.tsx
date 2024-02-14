@@ -40,7 +40,7 @@ import {
 } from "~/actions/base/notifications";
 import { filterMatch, filterHighlight } from "~/util/modifiers";
 import { SearchFormElement } from "~/components/general/form-element";
-import * as moment from "moment";
+import moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 import {

@@ -45,7 +45,7 @@ import {
   WorkspacesActiveFiltersType,
 } from "~/reducers/workspaces";
 import { TagItem } from "~/components/general/tag-input";
-import * as moment from "moment";
+import moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import {

@@ -59,7 +59,6 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { registerLocale } from "react-datepicker";
-import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionStatePatch } from "~/reducers/discussion";
@@ -76,8 +75,6 @@ import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-web
 import Chat from "~/components/chat";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
-
-moment.locale("fi");
 
 /**
  * WorkspaceProps
