@@ -18,7 +18,7 @@ import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
 import { AnyActionType } from "~/actions";
 import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
-import * as moment from "moment";
+import moment from "moment";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 

@@ -33,7 +33,7 @@ import {
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
 import { DiscussionThread } from "~/generated/client";
-import * as moment from "moment";
+import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**

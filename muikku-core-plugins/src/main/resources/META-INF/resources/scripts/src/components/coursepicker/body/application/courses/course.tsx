@@ -147,26 +147,31 @@ class Course extends React.Component<CourseProps, CourseState> {
         expanded: !this.state.expanded,
       });
     } else {
-      /**
-       * Otherwise we get requested data from api
-       */
-      this.setState({
-        loading: true,
-      });
+      // If user is student, we need to check if student can signUp for course
+      // else we just expand course body
+      if (this.props.status.isStudent) {
+        this.setState({
+          loading: true,
+        });
 
-      const canSignUp = await this.checkSignUpStatus();
-
-      /**
-       * Timeout for lazier loading because
-       * otherwise it will flick loader-spinner
-       */
-      setTimeout(() => {
+        const canSignUp = await this.checkSignUpStatus();
+        /**
+         * Timeout for lazier loading because
+         * otherwise it will flick loader-spinner
+         */
+        setTimeout(() => {
+          this.setState({
+            expanded: true,
+            canSignUp,
+            loading: false,
+          });
+        }, 500);
+      } else {
         this.setState({
           expanded: true,
-          canSignUp,
-          loading: false,
+          canSignUp: false,
         });
-      }, 500);
+      }
     }
   }
 
