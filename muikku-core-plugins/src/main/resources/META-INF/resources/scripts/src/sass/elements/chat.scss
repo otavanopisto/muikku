@@ -872,7 +872,7 @@ $chat-resizer-corner-size: 15px;
 // Form styles used in chat
 .chat__textfield {
   background: transparent;
-  border: 2px solid $color-form-element-border;
+  border: 2px solid $color-chat-primary;
   border-radius: $chat-border-radius;
   color: $color-text-default;
   font-family: $system-font-family;
@@ -889,7 +889,7 @@ $chat-resizer-corner-size: 15px;
 
 .chat__memofield {
   background: transparent;
-  border: 2px solid $color-form-element-border;
+  border: 2px solid $color-chat-primary;
   border-radius: $chat-border-radius;
   color: $color-text-default;
   font-family: $system-font-family;
@@ -949,6 +949,24 @@ $chat-resizer-corner-size: 15px;
   right: 0;
   top: 0;
   z-index: 9989;
+
+  .chat__overview-panel-header,
+  .chat__discussion-panel-header {
+    background: darken($color-chat-primary, 10%);
+    color: $color-default;
+  }
+
+  .chat__discussion-panel-header-description {
+    color: lighten($color-chat-primary, 30%);
+  }
+
+  .chat__tab:hover {
+    background: darken($color-chat-primary, 30%);
+  }
+
+  .chat__active-item {
+    background: darken($color-chat-primary, 30%);
+  }
 }
 
 // Left and Right panel

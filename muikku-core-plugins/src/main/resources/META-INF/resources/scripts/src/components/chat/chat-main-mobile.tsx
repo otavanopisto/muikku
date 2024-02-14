@@ -109,9 +109,9 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         <ChatMyProfileWithSettings />
       </ChatPanel>
       <div className="chat-mobile__footer">
-      <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
-      <Button buttonModifiers={["chat"]}>Dashboard</Button>
-      <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
+        <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
+        <Button buttonModifiers={["chat"]}>Dashboard</Button>
+        <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
       </div>
     </div>
   );
