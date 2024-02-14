@@ -1,5 +1,4 @@
 import * as React from "react";
-import moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
 import Link from "~/components/general/link";
@@ -16,6 +15,7 @@ import {
   EvaluationEventType,
 } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * EvaluationEventContentCardProps
@@ -309,7 +309,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
     }
   };
 
-  const parsedDate = moment(date).format("l");
+  const parsedDate = localize.date(date);
 
   return (
     <>

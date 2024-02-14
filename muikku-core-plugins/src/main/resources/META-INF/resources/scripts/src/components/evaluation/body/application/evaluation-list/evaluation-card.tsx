@@ -6,7 +6,6 @@ import {
   EvaluationImportantStatus,
   UpdateImportanceObject,
 } from "~/@types/evaluation";
-import moment from "moment";
 import {
   SetEvaluationSelectedWorkspace,
   LoadEvaluationAssessmentRequest,
@@ -26,6 +25,7 @@ import {
   withTranslation,
 } from "react-i18next";
 import Dropdown from "~/components/general/dropdown";
+import { localize } from "~/locales/i18n";
 
 /**
  * EvaluationCardProps
@@ -181,16 +181,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
 
   const studentName = `${rest.lastName} ${rest.firstName}`;
   const enrollmentDate =
-    rest.enrollmentDate !== null
-      ? moment(rest.enrollmentDate).format("l")
-      : "-";
+    rest.enrollmentDate !== null ? localize.date(rest.enrollmentDate) : "-";
   const evaluationDate =
-    rest.evaluationDate !== null
-      ? moment(rest.evaluationDate).format("l")
-      : "-";
+    rest.evaluationDate !== null ? localize.date(rest.evaluationDate) : "-";
   const assessmentRequestDate =
     rest.assessmentRequestDate !== null
-      ? moment(rest.assessmentRequestDate).format("l")
+      ? localize.date(rest.assessmentRequestDate)
       : "-";
 
   /**
