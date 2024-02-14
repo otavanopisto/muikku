@@ -960,7 +960,7 @@ $chat-resizer-corner-size: 15px;
   top: 0;
   transform: none;
   user-select: none;
-  z-index: 5;
+  z-index: 7;
 }
 
 // COntainer for mobile chat's header and main area. Needs to have same bottom value as [chat-mobile__footer] has height
@@ -984,7 +984,7 @@ $chat-resizer-corner-size: 15px;
   padding: 10px;
   position: fixed;
   right: 0;
-  z-index: 6;
+  z-index: 5;
 }
 
 .chat-mobile__back-drop {
@@ -993,7 +993,7 @@ $chat-resizer-corner-size: 15px;
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 4;
+  z-index: 6;
 }
 
 .chat-mobile__action-panel {
