@@ -20,6 +20,7 @@ import { PrivateRoomList, PublicRoomsList } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
 import Button, { IconButton } from "../general/button";
 import { OverviewButton } from "./chat-main";
+import { useChatContext } from "./context/chat-context";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
 const PANEL_RIGHT_MAX_WIDTH = 200;
@@ -34,6 +35,8 @@ interface ChatMainMobileProps {}
  * @param props props
  */
 function ChatMainMobile(props: ChatMainMobileProps) {
+  const { openOverview } = useChatContext();
+
   const [panelLeftOpen, setPanelLeftOpen] = React.useState(false);
   const [panelRightOpen, setPanelRightOpen] = React.useState(false);
 
@@ -70,11 +73,11 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       </ChatPanel>
 
       <div className="chat-mobile__main-container">
-      <motion.div>
-        <ChatViews
-          wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
-        />
-      </motion.div>
+        <motion.div>
+          <ChatViews
+            wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
+          />
+        </motion.div>
       </div>
 
       <ChatPanel
@@ -109,9 +112,19 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         <ChatMyProfileWithSettings />
       </ChatPanel>
       <div className="chat-mobile__footer">
-        <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
-        <Button buttonModifiers={["chat"]}>Dashboard</Button>
-        <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
+        <IconButton
+          buttonModifiers={["chat"]}
+          icon={panelLeftArrow}
+          onClick={() => setPanelLeftOpen((prev) => !prev)}
+        />
+        <Button buttonModifiers={["chat"]} onClick={() => openOverview()}>
+          Dashboard
+        </Button>
+        <IconButton
+          buttonModifiers={["chat"]}
+          icon={panelRightArrow}
+          onClick={() => setPanelRightOpen((prev) => !prev)}
+        />
       </div>
     </div>
   );
@@ -379,14 +392,14 @@ function ChatPanel(props: ChatPanelProps) {
 
   const blackDropStyles: MotionStyle = {
     background,
-    zIndex: open && 6,
+    zIndex: open && 7,
   };
 
   let panelStyles: MotionStyle = {
     width: `${panelMaxWidth}px`,
     x,
     right: 0,
-    zIndex: open && 6,
+    zIndex: open && 8,
   };
 
   if (panelPosition === "left") {
