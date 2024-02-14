@@ -2,7 +2,7 @@ import * as React from "react";
 import { Document, Page, Text, Image, View } from "@react-pdf/renderer";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import * as moment from "moment";
+import moment from "moment";
 import Html from "react-pdf-html";
 import {
   matriculationSupportActionsOptions,

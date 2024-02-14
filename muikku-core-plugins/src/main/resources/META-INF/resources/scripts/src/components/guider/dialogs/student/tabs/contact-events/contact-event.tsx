@@ -5,7 +5,7 @@ import CommentContactEvent from "./editors/new-comment";
 import EditContactEvent from "./editors/edit-event";
 import EditContactEventComment from "./editors/edit-comment";
 import ContactEventDeletePrompt from "./editors/delete-prompt";
-import * as moment from "moment";
+import moment from "moment";
 import Avatar from "~/components/general/avatar";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
