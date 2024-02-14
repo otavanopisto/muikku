@@ -2,7 +2,7 @@ import { Action } from "redux";
 import { loadLocale } from "~/actions/base/locales";
 import App from "~/containers/index.frontpage";
 import reducer from "~/reducers/index.frontpage";
-import runApp from "~/run";
+import runApp from "../run";
 import tabOrMouse from "~/util/tab-or-mouse";
 
 runApp(reducer, App, async (store) => {

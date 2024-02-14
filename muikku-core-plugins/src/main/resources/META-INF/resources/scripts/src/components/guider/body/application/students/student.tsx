@@ -3,7 +3,7 @@ import { getName } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import * as moment from "moment";
+import moment from "moment";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
 import "~/sass/elements/application-list.scss";

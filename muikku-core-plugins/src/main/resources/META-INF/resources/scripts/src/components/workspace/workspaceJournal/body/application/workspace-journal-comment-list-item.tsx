@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
