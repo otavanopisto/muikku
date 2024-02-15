@@ -11,6 +11,7 @@ import { ReadingRulerControllers } from "./reading-ruler-controllers";
 import useIsAtBreakpoint from "../../../hooks/useIsAtBreakpoint";
 import { throttle } from "lodash";
 import { useTranslation } from "react-i18next";
+import { breakpoints } from "~/util/breakpoints";
 
 /**
  * ReadingRulerProps
@@ -129,7 +130,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
       },
     } as ReadingRulerState);
 
-  const mobileBreakpoint = useIsAtBreakpoint(48);
+  const mobileBreakpoint = useIsAtBreakpoint(breakpoints.breakpointPad);
 
   const top = React.useRef<HTMLDivElement>(null);
   const middle = React.useRef<HTMLDivElement>(null);

@@ -15,10 +15,10 @@ import {
   addFileToCurrentStudent,
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
-import variables from "~/sass/_exports.scss";
 import { useTranslation } from "react-i18next";
 import RecordsGroup from "~/components/general/records-history/records-group";
 import MainChart from "~/components/general/graph/main-chart";
+import { breakpoints } from "~/util/breakpoints";
 
 type studyHistoryAside = "history" | "library";
 
@@ -36,8 +36,7 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const isAtMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
   const { t } = useTranslation("guider");
