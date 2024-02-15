@@ -155,10 +155,10 @@ function ChatPanel(props: ChatPanelProps) {
 
   const panelAnimateControls = useAnimationControls();
 
-  const [initalized, setInitialized] = React.useState(false);
-
   const [isDragging, setIsDragging] = React.useState(false);
   const [isAnimating, setIsAnimating] = React.useState(false);
+
+  const initializedRef = React.useRef(false);
 
   // Using x motion value to animate the black drop opacity
   // change when dragging the drawer
@@ -183,8 +183,8 @@ function ChatPanel(props: ChatPanelProps) {
   const background = useTransform(x, useTransformRange1, useTransformRange2);
 
   React.useEffect(() => {
-    if (!initalized) {
-      setInitialized(true);
+    if (!initializedRef.current) {
+      initializedRef.current = true;
       return;
     }
 
@@ -193,7 +193,6 @@ function ChatPanel(props: ChatPanelProps) {
      */
     const animatePanel = async () => {
       setIsAnimating(true);
-
       if (open) {
         await panelAnimateControls.start("open");
       } else {
@@ -204,7 +203,7 @@ function ChatPanel(props: ChatPanelProps) {
     };
 
     animatePanel();
-  }, [panelAnimateControls, open, panelPosition, initalized]);
+  }, [panelAnimateControls, open, panelPosition]);
 
   /**
    * Animates panel open while tracking animation state
