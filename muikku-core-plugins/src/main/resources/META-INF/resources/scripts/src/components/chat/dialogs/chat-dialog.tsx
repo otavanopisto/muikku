@@ -2,6 +2,7 @@ import * as React from "react";
 import { DialogProps } from "../../general/dialog";
 import Dialog from "../../general/dialog";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
+import { breakpoints } from "~/util/breakpoints";
 
 /**
  * ChatDialogProps
@@ -19,7 +20,7 @@ interface ChatDialogProps extends DialogProps {
 const ChatDialog = (props: ChatDialogProps) => {
   const { children, ...rest } = props;
 
-  const isMobile = useIsAtBreakpoint(40);
+  const isMobile = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
 
   let modifiers = props.modifier;
 

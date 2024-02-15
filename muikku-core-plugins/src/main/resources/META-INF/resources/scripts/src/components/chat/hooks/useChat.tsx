@@ -16,10 +16,10 @@ import {
 } from "../chat-helpers";
 import useChatUsers from "./useUsers";
 import useRooms from "./useRooms";
-import variables from "~/sass/_exports.scss";
 import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 import useChatActivity from "./useChatActivity";
+import { breakpoints } from "~/util/breakpoints";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -71,8 +71,7 @@ function useChat(currentUser: ChatUser) {
   const [minimized, setMinimized] = React.useState(true);
 
   // Whether the current width is mobile
-  const mobileBreakpoint = parseInt(variables.mobileBreakpointXl);
-  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
 
   // Editor values
   const [newChatRoom, setNewChatRoom] = React.useState<CreateChatRoomRequest>({
