@@ -80,11 +80,12 @@ function ChatMain(props: ChatMainProps) {
           .map((m) => `chat__rooms-panel--${m}`)
           .join(" ")}`}
       >
-        <div
-          onClick={() => setPanelLeftOpen(!panelLeftOpen)}
-          className="chat__button-wrapper chat__button-wrapper--rooms"
-        >
-          <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
+        <div className="chat__button-wrapper chat__button-wrapper--rooms">
+          <IconButton
+            buttonModifiers={["chat"]}
+            icon={panelLeftArrow}
+            onClick={() => setPanelLeftOpen(!panelLeftOpen)}
+          />
         </div>
         <div className="chat__rooms-container">
           <OverviewButton />
@@ -113,11 +114,12 @@ function ChatMain(props: ChatMainProps) {
           .map((m) => `chat__users-panel--${m}`)
           .join(" ")}`}
       >
-        <div
-          onClick={() => setPanelRightOpen(!panelRightOpen)}
-          className="chat__button-wrapper chat__button-wrapper--users"
-        >
-          <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
+        <div className="chat__button-wrapper chat__button-wrapper--users">
+          <IconButton
+            buttonModifiers={["chat"]}
+            icon={panelRightArrow}
+            onClick={() => setPanelRightOpen(!panelRightOpen)}
+          />
         </div>
 
         <div className="chat__users-container">

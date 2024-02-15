@@ -40,6 +40,7 @@ function ChatWindow(props: ChatWindowProps) {
   const [, setResizing] = React.useState<boolean>(false);
   const [, setAnimating] = React.useState<boolean>(false);
   const [, setInitialized] = React.useState<boolean>(false);
+  const [dragging, setDragging] = React.useState<boolean>(false);
 
   const dragControls = useDragControls();
   const animationControls = useAnimationControls();
@@ -63,6 +64,16 @@ function ChatWindow(props: ChatWindowProps) {
   const refBottomR = React.useRef<HTMLDivElement>(null);
 
   const componentInitialized = React.useRef(false);
+
+  // When dragging is true, set body overflow to hidden
+  // so overflow won't interfere with dragging
+  React.useEffect(() => {
+    if (dragging) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [dragging]);
 
   // Resize observer for checking if browser window is resized
   // and window is overflowing
@@ -1020,19 +1031,32 @@ function ChatWindow(props: ChatWindowProps) {
     };
   }, [animationControls, fullScreen, detached, windowPositonRef]);
 
-  const handleCloseWindow = React.useCallback(() => {
-    // If detached, update window position ref values before closing
-    if (detached) {
-      windowPositonRef.current = {
-        height: windowRef.current.offsetHeight,
-        width: windowRef.current.offsetWidth,
-        x: windowRef.current.getBoundingClientRect().left,
-        y: windowRef.current.getBoundingClientRect().top,
-      };
-    }
+  const handleCloseWindow = React.useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
 
-    toggleControlBox();
-  }, [detached, toggleControlBox, windowPositonRef]);
+      // If detached, update window position ref values before closing
+      if (detached) {
+        windowPositonRef.current = {
+          height: windowRef.current.offsetHeight,
+          width: windowRef.current.offsetWidth,
+          x: windowRef.current.getBoundingClientRect().left,
+          y: windowRef.current.getBoundingClientRect().top,
+        };
+      }
+
+      toggleControlBox();
+    },
+    [detached, toggleControlBox, windowPositonRef]
+  );
+
+  const handleFullScreenClick = React.useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.stopPropagation();
+      toggleFullscreen();
+    },
+    [toggleFullscreen]
+  );
 
   const windowModifiers: string[] = [];
 
@@ -1075,8 +1099,10 @@ function ChatWindow(props: ChatWindowProps) {
         <header
           onPointerDown={(event) => {
             event.preventDefault();
+            setDragging(true);
             dragControls.start(event);
           }}
+          onPointerUp={() => setDragging(false)}
           className="chat__header"
         >
           <AnimatePresence initial={false}>
@@ -1087,37 +1113,47 @@ function ChatWindow(props: ChatWindowProps) {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
                 className="chat__button-wrapper"
-                onClick={toggleDetached}
               >
                 {detached ? (
                   <IconButton
                     buttonModifiers={["chat"]}
                     icon="arrow-down-right"
+                    onClick={toggleDetached}
                   />
                 ) : (
-                  <IconButton buttonModifiers={["chat"]} icon="arrow-up-left" />
+                  <IconButton
+                    buttonModifiers={["chat"]}
+                    icon="arrow-up-left"
+                    onClick={toggleDetached}
+                  />
                 )}
               </motion.div>
             )}
           </AnimatePresence>
 
-          <motion.div
-            className="chat__button-wrapper"
-            onClick={toggleFullscreen}
-          >
+          <div className="chat__button-wrapper">
             {fullScreen ? (
-              <IconButton buttonModifiers={["chat"]} icon="fullscreen-exit" />
+              <IconButton
+                buttonModifiers={["chat"]}
+                icon="fullscreen-exit"
+                onClick={handleFullScreenClick}
+              />
             ) : (
-              <IconButton buttonModifiers={["chat"]} icon="fullscreen" />
+              <IconButton
+                buttonModifiers={["chat"]}
+                icon="fullscreen"
+                onClick={handleFullScreenClick}
+              />
             )}
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="chat__button-wrapper"
-            onClick={handleCloseWindow}
-          >
-            <IconButton buttonModifiers={["chat"]} icon="cross" />
-          </motion.div>
+          <div className="chat__button-wrapper">
+            <IconButton
+              buttonModifiers={["chat"]}
+              icon="cross"
+              onClick={handleCloseWindow}
+            />
+          </div>
         </header>
         <main id="chat__body" className="chat__body">
           {props.children}
