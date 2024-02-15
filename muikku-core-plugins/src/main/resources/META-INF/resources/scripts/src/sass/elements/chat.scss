@@ -133,7 +133,7 @@ $chat-resizer-corner-size: 15px;
 .chat__user,
 .chat__tab {
   &.chat__active-item {
-    background: $color-chat-primary; // darken($color-chat-panel-background, 50%);
+    background: $color-chat-primary;
     color: $color-default;
 
     .chat__option-name-container,
@@ -143,18 +143,8 @@ $chat-resizer-corner-size: 15px;
       color: $color-default;
     }
 
-    .chat__avatar-status {
-      // We change the border-color of status indicator dot to match the parent's background
-      border-color: $color-chat-primary; // darken($color-chat-panel-background, 50%);
-    }
-
     &:hover {
-      background: $color-chat-primary; // darken($color-chat-panel-background, 50%);
-
-      .chat__avatar-status {
-        // We change the border-color of status indicator dot to match the parent's background
-        border-color: $color-chat-primary; // darken($color-chat-panel-background, 50%);
-      }
+      background: $color-chat-primary;
     }
   }
 }
@@ -216,7 +206,7 @@ $chat-resizer-corner-size: 15px;
   width: calc(100% - 10px);
 
   &:hover {
-    background: darken($color-chat-panel-background, 10%);
+    background: darken($color-chat-panel-background, 5%);
   }
 }
 
@@ -530,12 +520,7 @@ $chat-resizer-corner-size: 15px;
   width: calc(100% - 10px);
 
   &:hover {
-    background: darken($color-chat-panel-background, 10%);
-
-    .chat__avatar-status {
-      // We change the border-color of status indicator dot to match the parent's background
-      border-color: darken($color-chat-panel-background, 10%);
-    }
+    background: darken($color-chat-panel-background, 5%);
 
     .chat__profile-name-container {
       // 32px is the width of the [avatar-container], 32px is the width of the [avatar-container], 10px is the elements left margin and 26px is the width of [close-discussion] button
@@ -603,7 +588,7 @@ $chat-resizer-corner-size: 15px;
 
 // Chat avatar status
 .chat__avatar-status {
-  border: 2px solid $color-chat-panel-background;
+  border: 2px solid $color-default;
   border-radius: 100%;
   bottom: -3px;
   flex-basis: 0.875rem;
@@ -714,7 +699,7 @@ $chat-resizer-corner-size: 15px;
   padding: 5px;
 
   &:hover {
-    background: darken($color-chat-panel-background, 10%);
+    background: $color-chat-panel-background;
   }
 }
 
@@ -762,11 +747,6 @@ $chat-resizer-corner-size: 15px;
 
   &:hover {
     background: $color-chat-panel-background;
-
-    .chat__avatar-status {
-      // We change the border-color of status indicator dot to match the parent's background
-      border-color: $color-chat-panel-background;
-    }
   }
 }
 
@@ -961,14 +941,6 @@ $chat-resizer-corner-size: 15px;
     color: lighten($color-chat-primary, 35%);
   }
 
-  .chat__tab:hover {
-    background: darken($color-chat-primary, 15%);
-  }
-
-  .chat__active-item {
-    background: darken($color-chat-primary, 15%);
-  }
-
   .react-select-override {
     background: darken($color-chat-primary, 15%);
     border-radius: $chat-border-radius;
@@ -1012,10 +984,11 @@ $chat-resizer-corner-size: 15px;
     .react-select-override__option {
       background: $color-default;
       color: $color-default-contrast;
+      font-weight: 600;
     }
 
     .react-select-override__option--is-selected {
-      background: darken($color-chat-primary, 15%);
+      background: $color-chat-primary;
       color: $color-default;
     }
   }
