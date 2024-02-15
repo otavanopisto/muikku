@@ -37,6 +37,8 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const { targetUser } = props;
 
+  const { isMobileWidth } = useChatContext();
+
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
@@ -112,7 +114,9 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
           {!isBlocked && props.targetUser.type === "STUDENT" && (
             <IconButton
               icon="blocked"
-              buttonModifiers={["chat-block"]}
+              buttonModifiers={[
+                `${isMobileWidth ? "chat-invert" : "chat-block"}`,
+              ]}
               onClick={handleOpenBlockUserDialog}
             />
           )}

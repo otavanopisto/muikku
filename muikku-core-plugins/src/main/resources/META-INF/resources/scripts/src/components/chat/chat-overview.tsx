@@ -155,6 +155,8 @@ interface ChatOverviewHeaderProps {
 function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   const { onTabChange, canModerate, activeTab } = props;
 
+  const { isMobileWidth } = useChatContext();
+
   /**
    * Handles tab click
    */
@@ -193,56 +195,60 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   return (
     <div className="chat__overview-panel-header">
       <div className="chat__overview-panel-header-title">Dashboard</div>
-      <Select
-        className="react-select-override"
-        classNamePrefix="react-select-override"
-        options={options}
-        value={options.find((o) => o.value === activeTab)}
-        onChange={handleSelectChange}
-        styles={{
-          // eslint-disable-next-line jsdoc/require-jsdoc
-          container: (baseStyles, state) => ({
-            ...baseStyles,
-            width: "fit-content",
-          }),
-        }}
-      />
-      <div className="chat__tabs" role="menu">
-        <div
-          role="menuitem"
-          className={`chat__tab ${
-            activeTab === "users" ? "chat__active-item" : ""
-          }`}
-          onClick={() => handleTabClick("users")}
-        >
-          Ihmiset
+      {isMobileWidth ? (
+        <Select
+          className="react-select-override"
+          classNamePrefix="react-select-override"
+          options={options}
+          value={options.find((o) => o.value === activeTab)}
+          onChange={handleSelectChange}
+          styles={{
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            container: (baseStyles, state) => ({
+              ...baseStyles,
+              width: "fit-content",
+            }),
+          }}
+        />
+      ) : (
+        <div className="chat__tabs" role="menu">
+          <div
+            role="menuitem"
+            className={`chat__tab ${
+              activeTab === "users" ? "chat__active-item" : ""
+            }`}
+            onClick={() => handleTabClick("users")}
+          >
+            Ihmiset
+          </div>
+          <div
+            role="menuitem"
+            className={`chat__tab ${
+              activeTab === "blocked" ? "chat__active-item" : ""
+            }`}
+            onClick={() => handleTabClick("blocked")}
+          >
+            Estetyt
+          </div>
+          <div
+            role="menuitem"
+            className={`chat__tab ${
+              activeTab === "rooms" ? "chat__active-item" : ""
+            }`}
+            onClick={() => handleTabClick("rooms")}
+          >
+            Huoneet
+          </div>
         </div>
-        <div
-          role="menuitem"
-          className={`chat__tab ${
-            activeTab === "blocked" ? "chat__active-item" : ""
-          }`}
-          onClick={() => handleTabClick("blocked")}
-        >
-          Estetyt
-        </div>
-        <div
-          role="menuitem"
-          className={`chat__tab ${
-            activeTab === "rooms" ? "chat__active-item" : ""
-          }`}
-          onClick={() => handleTabClick("rooms")}
-        >
-          Huoneet
-        </div>
-      </div>
+      )}
+
       <div className="chat__overview-panel-header-actions">
         {canModerate && (
           <div className="chat__overview-panel-header-action">
             <ChatRoomNewDialog>
               <IconButton
                 icon="plus"
-                buttonModifiers={["chat"]}
+                buttonModifiers={[`${isMobileWidth ? "chat-invert" : "chat"}`]}
                 iconPosition="left"
               />
             </ChatRoomNewDialog>

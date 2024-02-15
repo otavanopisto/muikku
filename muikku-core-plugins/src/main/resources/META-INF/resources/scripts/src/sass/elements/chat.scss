@@ -15,11 +15,11 @@ $chat-resizer-corner-size: 15px;
 // Chat bubble
 .chat-bubble {
   align-items: center;
-  background-color: $color-chat-bubble-background;
+  background-color: $color-chat-primary;
   border: 2px solid $color-default;
   border-radius: 100%;
   bottom: 10px;
-  box-shadow: 0 0 20px $color-chat-bubble-box-shadow;
+  box-shadow: 0 0 20px $color-chat-box-shadow;
   color: $color-default;
   cursor: pointer;
   display: flex;
@@ -58,7 +58,7 @@ $chat-resizer-corner-size: 15px;
 }
 
 .chat--detached {
-  box-shadow: 0 0 20px $color-chat-detached-box-shadow;
+  box-shadow: 0 0 20px $color-chat-box-shadow;
 
   .chat__header {
     cursor: move;
@@ -133,7 +133,7 @@ $chat-resizer-corner-size: 15px;
 .chat__user,
 .chat__tab {
   &.chat__active-item {
-    background: darken($color-chat-panel-background, 50%);
+    background: $color-chat-primary; // darken($color-chat-panel-background, 50%);
     color: $color-default;
 
     .chat__option-name-container,
@@ -145,15 +145,15 @@ $chat-resizer-corner-size: 15px;
 
     .chat__avatar-status {
       // We change the border-color of status indicator dot to match the parent's background
-      border-color: darken($color-chat-panel-background, 50%);
+      border-color: $color-chat-primary; // darken($color-chat-panel-background, 50%);
     }
 
     &:hover {
-      background: darken($color-chat-panel-background, 50%);
+      background: $color-chat-primary; // darken($color-chat-panel-background, 50%);
 
       .chat__avatar-status {
         // We change the border-color of status indicator dot to match the parent's background
-        border-color: darken($color-chat-panel-background, 50%);
+        border-color: $color-chat-primary; // darken($color-chat-panel-background, 50%);
       }
     }
   }
@@ -945,6 +945,7 @@ $chat-resizer-corner-size: 15px;
   font-family: $system-font-family;
   font-size: 0.8125rem;
   left: 0;
+  min-width: 320px;
   position: fixed;
   right: 0;
   top: 0;
@@ -952,20 +953,71 @@ $chat-resizer-corner-size: 15px;
 
   .chat__overview-panel-header,
   .chat__discussion-panel-header {
-    background: darken($color-chat-primary, 10%);
+    background: $color-chat-primary;
     color: $color-default;
   }
 
   .chat__discussion-panel-header-description {
-    color: lighten($color-chat-primary, 30%);
+    color: lighten($color-chat-primary, 35%);
   }
 
   .chat__tab:hover {
-    background: darken($color-chat-primary, 30%);
+    background: darken($color-chat-primary, 15%);
   }
 
   .chat__active-item {
-    background: darken($color-chat-primary, 30%);
+    background: darken($color-chat-primary, 15%);
+  }
+
+  .react-select-override {
+    background: darken($color-chat-primary, 15%);
+    border-radius: $chat-border-radius;
+    display: block;
+    height: 1.625rem;
+    margin: 0 5px;
+
+    .react-select-override__control {
+      background: darken($color-chat-primary, 15%);
+      border: 0;
+      border-radius: $chat-border-radius;
+      font-size: 0.8125rem;
+      font-weight: 400;
+      height: 1.625rem;
+      min-height: 1.625rem;
+    }
+
+    .react-select-override__value-container {
+      padding: 0 4px 0 8px;
+    }
+
+    .react-select-override__single-value {
+      color: $color-default;
+      font-weight: 600;
+    }
+
+    .react-select-override__indicator {
+      color: $color-default;
+      padding: 0 8px 0 4px;
+    }
+
+    .react-select-override__indicator-separator {
+      display: none;
+    }
+
+    .react-select-override__menu {
+      border: 1px solid lighten($color-chat-primary, 30%);
+      box-shadow: 0 0 20px $color-chat-box-shadow;
+    }
+
+    .react-select-override__option {
+      background: $color-default;
+      color: $color-default-contrast;
+    }
+
+    .react-select-override__option--is-selected {
+      background: darken($color-chat-primary, 15%);
+      color: $color-default;
+    }
   }
 }
 
