@@ -6,14 +6,15 @@ import { ChatRoom, ChatUser } from "~/generated/client";
 import ChatProfile from "./chat-profile";
 import Dropdown from "../general/dropdown";
 import {
+  ChatDashBoardTab,
   ChatRoomFilter,
   ChatUserFilter,
   filterRooms,
   sortRoomsAplhabetically,
 } from "./chat-helpers";
 import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
-
-type OverviewTab = "users" | "rooms" | "blocked";
+import Select from "react-select";
+import { OptionDefault } from "../general/react-select/types";
 
 /**
  * ChatOverview
@@ -27,10 +28,10 @@ function ChatOverview() {
     updateUserFilters,
     canModerate,
   } = useChatContext();
-  const [activeTab, setActiveTab] = React.useState<OverviewTab>("users");
+  const [activeTab, setActiveTab] = React.useState<ChatDashBoardTab>("users");
 
   const handleOnTabChange = React.useCallback(
-    (tab: OverviewTab) => {
+    (tab: ChatDashBoardTab) => {
       setActiveTab(tab);
     },
     [setActiveTab]
@@ -142,8 +143,8 @@ function ChatOverview() {
  */
 interface ChatOverviewHeaderProps {
   canModerate: boolean;
-  activeTab?: OverviewTab;
-  onTabChange?: (tab: OverviewTab) => void;
+  activeTab?: ChatDashBoardTab;
+  onTabChange?: (tab: ChatDashBoardTab) => void;
 }
 
 /**
@@ -154,16 +155,58 @@ interface ChatOverviewHeaderProps {
 function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   const { onTabChange, canModerate, activeTab } = props;
 
+  /**
+   * Handles tab click
+   */
   const handleTabClick = React.useCallback(
-    (tab: OverviewTab) => {
+    (tab: ChatDashBoardTab) => {
       onTabChange && onTabChange(tab);
     },
     [onTabChange]
   );
 
+  /**
+   * Handles select change
+   */
+  const handleSelectChange = React.useCallback(
+    (option: OptionDefault<ChatDashBoardTab>) => {
+      onTabChange && onTabChange(option.value);
+    },
+    [onTabChange]
+  );
+
+  const options: OptionDefault<ChatDashBoardTab>[] = [
+    {
+      value: "users",
+      label: "Ihmiset",
+    },
+    {
+      value: "blocked",
+      label: "Estetyt",
+    },
+    {
+      value: "rooms",
+      label: "Huoneet",
+    },
+  ];
+
   return (
     <div className="chat__overview-panel-header">
       <div className="chat__overview-panel-header-title">Dashboard</div>
+      <Select
+        className="react-select-override"
+        classNamePrefix="react-select-override"
+        options={options}
+        value={options.find((o) => o.value === activeTab)}
+        onChange={handleSelectChange}
+        styles={{
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          container: (baseStyles, state) => ({
+            ...baseStyles,
+            width: "fit-content",
+          }),
+        }}
+      />
       <div className="chat__tabs" role="menu">
         <div
           role="menuitem"

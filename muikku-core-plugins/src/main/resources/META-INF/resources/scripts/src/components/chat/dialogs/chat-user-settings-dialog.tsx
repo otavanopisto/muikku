@@ -2,7 +2,7 @@ import { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { ChatSettingVisibilityOption, selectOptions } from "../chat-helpers";
+import { ChatSettingVisibilityOption } from "../chat-helpers";
 import Select from "react-select";
 import { useChatContext } from "../context/chat-context";
 import MApi from "~/api/api";
@@ -12,6 +12,7 @@ import { displayNotification } from "~/actions/base/notifications";
 import { connect } from "react-redux";
 import Button from "~/components/general/button";
 import ChatDialog from "./chat-dialog";
+import { ChatUserVisibilityEnum } from "~/generated/client";
 
 const chatApi = MApi.getChatApi();
 
@@ -35,9 +36,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
     currentUser.nick
   );
   const [currentSelectValue, setCurrentSelectValue] =
-    React.useState<ChatSettingVisibilityOption>(
-      selectOptions.find((option) => option.value === currentUser.visibility)
-    );
+    React.useState<ChatUserVisibilityEnum>(currentUser.visibility);
 
   /**
    * Handles save click
@@ -53,7 +52,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
           updateChatSettingsRequest: {
             ...currentUser,
             nick: currentNickValue,
-            visibility: currentSelectValue.value,
+            visibility: currentSelectValue,
           },
         });
         setDisabled(false);
@@ -80,8 +79,23 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
    * @param selectedOption selectedOption
    */
   const handleSelectChange = (selectedOption: ChatSettingVisibilityOption) => {
-    setCurrentSelectValue(selectedOption);
+    setCurrentSelectValue(selectedOption.value);
   };
+
+  const selectOptions: ChatSettingVisibilityOption[] = [
+    {
+      label: "Kaikille",
+      value: "ALL",
+    },
+    {
+      label: "Henkilökunnalle",
+      value: "STAFF",
+    },
+    {
+      label: "Ei kenellekkään",
+      value: "NONE",
+    },
+  ];
 
   /**
    * content
@@ -114,7 +128,9 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
             className="react-select-override"
             classNamePrefix="react-select-override"
             isDisabled={disabled}
-            value={currentSelectValue}
+            value={selectOptions.find(
+              (option) => option.value === currentSelectValue
+            )}
             onChange={handleSelectChange}
             options={selectOptions}
             styles={{

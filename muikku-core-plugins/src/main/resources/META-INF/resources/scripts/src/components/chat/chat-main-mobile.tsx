@@ -19,7 +19,6 @@ import {
 import { PrivateRoomList, PublicRoomsList } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
 import Button, { IconButton } from "../general/button";
-import { OverviewButton } from "./chat-main";
 import { useChatContext } from "./context/chat-context";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
@@ -59,7 +58,6 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
         </div>
         <div className="chat__rooms-container">
-          <OverviewButton onClick={() => setPanelLeftOpen(false)} />
           <div className="chat__rooms chat__rooms--public" role="menu">
             <div className="chat__rooms-category-title">Julkiset huoneet</div>
             <PublicRoomsList onItemClick={() => setPanelLeftOpen(false)} />

@@ -37,6 +37,7 @@ export interface ChatRoomFilters {
   search: string;
   searchFilters: ChatRoomFilter[];
 }
+export type ChatDashBoardTab = "users" | "rooms" | "blocked";
 
 export type ChatSettingVisibilityOption = OptionDefault<ChatUserVisibilityEnum>;
 
