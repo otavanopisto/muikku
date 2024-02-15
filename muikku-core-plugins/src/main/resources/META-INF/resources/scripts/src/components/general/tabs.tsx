@@ -5,10 +5,10 @@ import "swiper/scss";
 import "swiper/scss/a11y";
 import "swiper/scss/pagination";
 import SwiperCore from "swiper";
-import variables from "~/sass/_exports.scss";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { A11y, Pagination } from "swiper";
 import { useTranslation } from "react-i18next";
+import { breakpoints } from "~/util/breakpoints";
 
 /**
  * Tab
@@ -116,8 +116,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     clickable: true,
   };
 
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
 
   return (
     <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
@@ -274,8 +273,7 @@ interface MobileOnlyTabsProps {
  */
 export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
   const { tabs, modifier, activeTab, onTabChange } = props;
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
   const a11yConfig = {
     enabled: true,
   };
