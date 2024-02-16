@@ -100,6 +100,11 @@ function useChatActivity(activeIdentifier: string) {
    * Marks unread messages as read
    */
   const markMsgsAsRead = React.useCallback(async (targetIdentifier: string) => {
+    // Skip rooms as they are not enabled yet for this functionality
+    if (targetIdentifier.startsWith("room-")) {
+      return;
+    }
+
     // Check if the chat activity exists
     const index = chatActivityRef.current?.findIndex(
       (activity) => activity.targetIdentifier === targetIdentifier
