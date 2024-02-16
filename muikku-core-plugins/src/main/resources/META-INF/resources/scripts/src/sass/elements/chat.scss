@@ -55,10 +55,16 @@ $chat-resizer-corner-size: 15px;
   position: fixed;
   width: 800px;
   z-index: 9989;
+
+  .react-select-override {
+    .react-select-override__control {
+      border-color: $color-chat-primary;
+    }
+  }
 }
 
 .chat--detached {
-  box-shadow: 0 0 20px $color-chat-box-shadow;
+  box-shadow: 0 0 25px $color-chat-detached-box-shadow;
 
   .chat__header {
     cursor: move;
@@ -133,7 +139,7 @@ $chat-resizer-corner-size: 15px;
 .chat__user,
 .chat__tab {
   &.chat__active-item {
-    background: $color-chat-primary;
+    background: $color-chat-active-item;
     color: $color-default;
 
     .chat__option-name-container,
@@ -144,7 +150,7 @@ $chat-resizer-corner-size: 15px;
     }
 
     &:hover {
-      background: $color-chat-primary;
+      background: $color-chat-active-item;
     }
   }
 }
