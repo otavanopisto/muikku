@@ -10,7 +10,7 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import * as moment from "moment";
+import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEventComment, ContactType } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";

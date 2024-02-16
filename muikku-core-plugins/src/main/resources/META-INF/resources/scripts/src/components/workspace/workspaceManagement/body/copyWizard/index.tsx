@@ -13,7 +13,7 @@ import {
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { bindActionCreators } from "redux";
-import * as moment from "moment";
+import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 

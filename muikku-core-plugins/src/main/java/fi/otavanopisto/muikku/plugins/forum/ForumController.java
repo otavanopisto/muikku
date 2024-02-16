@@ -21,7 +21,6 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
 import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.security.ResourceRights;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -98,10 +97,6 @@ public class ForumController {
   
   public boolean isEnvironmentForumActive() {
     if (sessionController.isLoggedIn()) {
-      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        return true;
-      }
-      
       String enabledOrganizationsStr = pluginSettingsController.getPluginSetting("forum", "environmentForumOrganizations");
       if (StringUtils.isNotBlank(enabledOrganizationsStr)) {
         Set<SchoolDataIdentifier> organizationIdentifiers = Arrays.stream(StringUtils.split(enabledOrganizationsStr, ','))
@@ -118,7 +113,6 @@ public class ForumController {
         }
       }
     }
-    
     return false;
   }
   
