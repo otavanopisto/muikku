@@ -551,6 +551,7 @@ $chat-resizer-corner-size: 10px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
+  position: relative;
   width: 100%;
 }
 
@@ -651,6 +652,24 @@ $chat-resizer-corner-size: 10px;
 // Online/offline literal status, we don't display it for every badge, only visible to loggen in user
 .chat__profile-literal-status {
   display: none;
+}
+
+// Chat message counter
+.chat__unread-msg-counter {
+  align-items: center;
+  background: $color-indicator-background;
+  border-radius: 100%;
+  color: $color-default;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 0.6875rem;
+  height: 1rem;
+  justify-content: center;
+  left: 20px;
+  position: absolute;
+  top: -3px;
+  width: 1rem;
+  z-index: 2;
 }
 
 // Chat overview/dashboard

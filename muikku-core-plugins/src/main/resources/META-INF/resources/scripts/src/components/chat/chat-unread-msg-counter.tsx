@@ -18,27 +18,13 @@ export const ChatUnreadMsgCounter = (props: ChatUnreadMsgCounterProps) => {
   if (number === 0) return null;
 
   const classModifiers = (modifiers || []).map(
-    (modifier) => `chat-unread-msg-counter--${modifier}`
+    (modifier) => `chat__unread-msg-counter--${modifier}`
   );
 
   const showedNumber = number >= 9 ? "9+" : number;
 
   return (
-    <span
-      className={`chat-unread-msg-counter ${classModifiers}`}
-      style={{
-        backgroundColor: "red",
-        color: "white",
-        borderRadius: "50%",
-        padding: "2.5px",
-        display: "flex",
-        width: "20px",
-        height: "20px",
-        justifyContent: "center",
-        alignItems: "center",
-        fontSize: "0.70rem",
-      }}
-    >
+    <span className={`chat__unread-msg-counter ${classModifiers}`}>
       {showedNumber}
     </span>
   );
