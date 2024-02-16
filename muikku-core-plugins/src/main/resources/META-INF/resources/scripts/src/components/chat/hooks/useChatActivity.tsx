@@ -52,7 +52,10 @@ function useChatActivity(activeIdentifier: string) {
               );
 
               // If discussion is not active, increment unread messages
-              if (dataTyped.targetIdentifier !== activeIdentifier) {
+              if (
+                `user-${dataTyped.sourceUserEntityId}` !== activeIdentifier &&
+                dataTyped.targetIdentifier !== activeIdentifier
+              ) {
                 updatedList[index].unreadMessages++;
               }
 
