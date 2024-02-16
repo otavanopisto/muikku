@@ -1,5 +1,7 @@
 // Hook to handle loading roooms and people list from rest api.
 import * as React from "react";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
+import { breakpoints } from "~/util/breakpoints";
 import { useChatContext } from "../context/chat-context";
 
 export type UseChatWindow = ReturnType<typeof useChatWindow>;
@@ -12,6 +14,8 @@ function useChatWindow() {
 
   const [detached, setDetached] = React.useState<boolean>(false);
   const [fullScreen, setFullScreen] = React.useState<boolean>(false);
+
+  const isPadWith = useIsAtBreakpoint(breakpoints.breakpointDesktop);
 
   // Ref to store and track window position
   const windowPositonRef = React.useRef<{
@@ -58,6 +62,7 @@ function useChatWindow() {
     detached,
     fullScreen,
     windowPositonRef,
+    isPadWith,
   };
 }
 

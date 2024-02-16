@@ -34,10 +34,11 @@ function ChatWindow(props: ChatWindowProps) {
     windowPositonRef,
     detached,
     fullScreen,
+    isPadWith,
   } = useChatWindowContext();
 
   // Setters to control rerendering and updating drag constraints
-  const [, setResizing] = React.useState<boolean>(false);
+  const [resising, setResizing] = React.useState<boolean>(false);
   const [, setAnimating] = React.useState<boolean>(false);
   const [, setInitialized] = React.useState<boolean>(false);
   const [dragging, setDragging] = React.useState<boolean>(false);
@@ -65,15 +66,15 @@ function ChatWindow(props: ChatWindowProps) {
 
   const componentInitialized = React.useRef(false);
 
-  // When dragging is true, set body overflow to hidden
-  // so overflow won't interfere with dragging
+  // When dragging or resizing is true, set body overflow to hidden
+  // so overflow won't interfere with dragging or resizing
   React.useEffect(() => {
-    if (dragging) {
+    if (dragging || resising) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [dragging]);
+  }, [dragging, resising]);
 
   // Resize observer for checking if browser window is resized
   // and window is overflowing
@@ -378,13 +379,13 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownRightResize = (e: MouseEvent) => {
+    const onMouseDownRightResize = (e: PointerEvent) => {
       e.preventDefault();
       windowPositonRef.current.x = e.clientX;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveRightResize);
-      document.addEventListener("mouseup", onMouseUpRightResize);
+      document.addEventListener("pointermove", onMouseMoveRightResize);
+      document.addEventListener("pointerup", onMouseUpRightResize);
     };
 
     /**
@@ -392,7 +393,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveRightResize = (e: MouseEvent) => {
+    const onMouseMoveRightResize = (e: PointerEvent) => {
       e.preventDefault();
 
       if (!windowConstrainsRef.current) {
@@ -431,11 +432,11 @@ function ChatWindow(props: ChatWindowProps) {
      * Handles mouse up event when releasing right resize
      * @param e MouseEvent
      */
-    const onMouseUpRightResize = (e: MouseEvent) => {
+    const onMouseUpRightResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveRightResize);
+      document.removeEventListener("pointermove", onMouseMoveRightResize);
     };
 
     /**
@@ -443,13 +444,13 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownTopResize = (e: MouseEvent) => {
+    const onMouseDownTopResize = (e: PointerEvent) => {
       e.preventDefault();
       windowPositonRef.current.y = e.clientY;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveTopResize);
-      document.addEventListener("mouseup", onMouseUpTopResize);
+      document.addEventListener("pointermove", onMouseMoveTopResize);
+      document.addEventListener("pointerup", onMouseUpTopResize);
     };
 
     /**
@@ -457,7 +458,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveTopResize = (e: MouseEvent) => {
+    const onMouseMoveTopResize = (e: PointerEvent) => {
       e.preventDefault();
 
       // If window is reached minimum width or height
@@ -496,11 +497,11 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseUpTopResize = (e: MouseEvent) => {
+    const onMouseUpTopResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveTopResize);
+      document.removeEventListener("pointermove", onMouseMoveTopResize);
     };
 
     /**
@@ -508,13 +509,13 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownBottomResize = (e: MouseEvent) => {
+    const onMouseDownBottomResize = (e: PointerEvent) => {
       e.preventDefault();
       windowPositonRef.current.y = e.clientY;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveBottomResize);
-      document.addEventListener("mouseup", onMouseUpBottomResize);
+      document.addEventListener("pointermove", onMouseMoveBottomResize);
+      document.addEventListener("pointerup", onMouseUpBottomResize);
     };
 
     /**
@@ -522,7 +523,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveBottomResize = (e: MouseEvent) => {
+    const onMouseMoveBottomResize = (e: PointerEvent) => {
       e.preventDefault();
       if (!windowConstrainsRef.current) {
         return;
@@ -565,11 +566,11 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseUpBottomResize = (e: MouseEvent) => {
+    const onMouseUpBottomResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveBottomResize);
+      document.removeEventListener("pointermove", onMouseMoveBottomResize);
     };
 
     /**
@@ -577,13 +578,13 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownLeftResize = (e: MouseEvent) => {
+    const onMouseDownLeftResize = (e: PointerEvent) => {
       e.preventDefault();
       windowPositonRef.current.x = e.clientX;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveLeftResize);
-      document.addEventListener("mouseup", onMouseUpLeftResize);
+      document.addEventListener("pointermove", onMouseMoveLeftResize);
+      document.addEventListener("pointerup", onMouseUpLeftResize);
     };
 
     /**
@@ -591,7 +592,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveLeftResize = (e: MouseEvent) => {
+    const onMouseMoveLeftResize = (e: PointerEvent) => {
       e.preventDefault();
 
       // If window is reached minimum width or height
@@ -627,11 +628,11 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseUpLeftResize = (e: MouseEvent) => {
+    const onMouseUpLeftResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveLeftResize);
+      document.removeEventListener("pointermove", onMouseMoveLeftResize);
     };
 
     /**
@@ -639,14 +640,14 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownTopLeftResize = (e: MouseEvent) => {
+    const onMouseDownTopLeftResize = (e: PointerEvent) => {
       e.preventDefault();
       windowPositonRef.current.x = e.clientX;
       windowPositonRef.current.y = e.clientY;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveTopLeftResize);
-      document.addEventListener("mouseup", onMouseUpTopLeftResize);
+      document.addEventListener("pointermove", onMouseMoveTopLeftResize);
+      document.addEventListener("pointerup", onMouseUpTopLeftResize);
     };
 
     /**
@@ -654,7 +655,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveTopLeftResize = (e: MouseEvent) => {
+    const onMouseMoveTopLeftResize = (e: PointerEvent) => {
       e.preventDefault();
 
       // If window is reached minimum width or height
@@ -706,11 +707,11 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseUpTopLeftResize = (e: MouseEvent) => {
+    const onMouseUpTopLeftResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveTopLeftResize);
+      document.removeEventListener("pointermove", onMouseMoveTopLeftResize);
     };
 
     /**
@@ -718,14 +719,14 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownTopRightResize = (e: MouseEvent) => {
+    const onMouseDownTopRightResize = (e: PointerEvent) => {
       e.preventDefault();
       windowPositonRef.current.x = e.clientX;
       windowPositonRef.current.y = e.clientY;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveTopRightResize);
-      document.addEventListener("mouseup", onMouseUpTopRightResize);
+      document.addEventListener("pointermove", onMouseMoveTopRightResize);
+      document.addEventListener("pointerup", onMouseUpTopRightResize);
     };
 
     /**
@@ -733,7 +734,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveTopRightResize = (e: MouseEvent) => {
+    const onMouseMoveTopRightResize = (e: PointerEvent) => {
       e.preventDefault();
 
       if (!windowConstrainsRef.current) {
@@ -789,11 +790,11 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseUpTopRightResize = (e: MouseEvent) => {
+    const onMouseUpTopRightResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveTopRightResize);
+      document.removeEventListener("pointermove", onMouseMoveTopRightResize);
     };
 
     /**
@@ -801,15 +802,15 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownBottomLeftResize = (e: MouseEvent) => {
+    const onMouseDownBottomLeftResize = (e: PointerEvent) => {
       e.preventDefault();
 
       windowPositonRef.current.x = e.clientX;
       windowPositonRef.current.y = e.clientY;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveBottomLeftResize);
-      document.addEventListener("mouseup", onMouseUpBottomLeftResize);
+      document.addEventListener("pointermove", onMouseMoveBottomLeftResize);
+      document.addEventListener("pointerup", onMouseUpBottomLeftResize);
     };
 
     /**
@@ -817,7 +818,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveBottomLeftResize = (e: MouseEvent) => {
+    const onMouseMoveBottomLeftResize = (e: PointerEvent) => {
       e.preventDefault();
 
       if (!windowConstrainsRef.current) {
@@ -873,11 +874,11 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseUpBottomLeftResize = (e: MouseEvent) => {
+    const onMouseUpBottomLeftResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveBottomLeftResize);
+      document.removeEventListener("pointermove", onMouseMoveBottomLeftResize);
     };
 
     /**
@@ -885,14 +886,14 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseDownBottomRightResize = (e: MouseEvent) => {
+    const onMouseDownBottomRightResize = (e: PointerEvent) => {
       e.preventDefault();
       windowPositonRef.current.x = e.clientX;
       windowPositonRef.current.y = e.clientY;
 
       setResizing(true);
-      document.addEventListener("mousemove", onMouseMoveBottomRightResize);
-      document.addEventListener("mouseup", onMouseUpBottomRightResize);
+      document.addEventListener("pointermove", onMouseMoveBottomRightResize);
+      document.addEventListener("pointerup", onMouseUpBottomRightResize);
     };
 
     /**
@@ -900,7 +901,7 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseMoveBottomRightResize = (e: MouseEvent) => {
+    const onMouseMoveBottomRightResize = (e: PointerEvent) => {
       e.preventDefault();
 
       if (!windowConstrainsRef.current) {
@@ -955,11 +956,11 @@ function ChatWindow(props: ChatWindowProps) {
      *
      * @param e MouseEvent
      */
-    const onMouseUpBottomRightResize = (e: MouseEvent) => {
+    const onMouseUpBottomRightResize = (e: PointerEvent) => {
       e.preventDefault();
 
       setResizing(false);
-      document.removeEventListener("mousemove", onMouseMoveBottomRightResize);
+      document.removeEventListener("pointermove", onMouseMoveBottomRightResize);
     };
 
     // Mouse event listeners for resizing from sides
@@ -975,57 +976,66 @@ function ChatWindow(props: ChatWindowProps) {
 
     // Mouse event listeners for resizing from sides
     resizerRight &&
-      resizerRight.addEventListener("mousedown", onMouseDownRightResize);
+      resizerRight.addEventListener("pointerdown", onMouseDownRightResize);
     resizerTop &&
-      resizerTop.addEventListener("mousedown", onMouseDownTopResize);
+      resizerTop.addEventListener("pointerdown", onMouseDownTopResize);
     resizerBottom &&
-      resizerBottom.addEventListener("mousedown", onMouseDownBottomResize);
+      resizerBottom.addEventListener("pointerdown", onMouseDownBottomResize);
     resizerLeft &&
-      resizerLeft.addEventListener("mousedown", onMouseDownLeftResize);
+      resizerLeft.addEventListener("pointerdown", onMouseDownLeftResize);
 
     // Mouse event listeners for resizing from corners
     resizerTopLeft &&
-      resizerTopLeft.addEventListener("mousedown", onMouseDownTopLeftResize);
+      resizerTopLeft.addEventListener("pointerdown", onMouseDownTopLeftResize);
     resizerTopRight &&
-      resizerTopRight.addEventListener("mousedown", onMouseDownTopRightResize);
+      resizerTopRight.addEventListener(
+        "pointerdown",
+        onMouseDownTopRightResize
+      );
     resizerBotLeft &&
-      resizerBotLeft.addEventListener("mousedown", onMouseDownBottomLeftResize);
+      resizerBotLeft.addEventListener(
+        "pointerdown",
+        onMouseDownBottomLeftResize
+      );
     resizerBotRight &&
       resizerBotRight.addEventListener(
-        "mousedown",
+        "pointerdown",
         onMouseDownBottomRightResize
       );
 
     return () => {
       // Remove mouse event listeners for resizing from sides
       resizerRight &&
-        resizerRight.removeEventListener("mousedown", onMouseDownRightResize);
+        resizerRight.removeEventListener("pointerdown", onMouseDownRightResize);
       resizerTop &&
-        resizerTop.removeEventListener("mousedown", onMouseDownTopResize);
+        resizerTop.removeEventListener("pointerdown", onMouseDownTopResize);
       resizerBottom &&
-        resizerBottom.removeEventListener("mousedown", onMouseDownBottomResize);
+        resizerBottom.removeEventListener(
+          "pointerdown",
+          onMouseDownBottomResize
+        );
       resizerLeft &&
-        resizerLeft.removeEventListener("mousedown", onMouseDownLeftResize);
+        resizerLeft.removeEventListener("pointerdown", onMouseDownLeftResize);
 
       // Remove mouse event listeners for resizing from corners
       resizerTopLeft &&
         resizerTopLeft.removeEventListener(
-          "mousedown",
+          "pointerdown",
           onMouseDownTopLeftResize
         );
       resizerTopRight &&
         resizerTopRight.removeEventListener(
-          "mousedown",
+          "pointerdown",
           onMouseDownTopRightResize
         );
       resizerBotLeft &&
         resizerBotLeft.removeEventListener(
-          "mousedown",
+          "pointerdown",
           onMouseDownBottomLeftResize
         );
       resizerBotRight &&
         resizerBotRight.removeEventListener(
-          "mousedown",
+          "pointerdown",
           onMouseDownBottomRightResize
         );
     };
@@ -1159,34 +1169,54 @@ function ChatWindow(props: ChatWindowProps) {
           {props.children}
         </main>
 
-        <ResizerHandle visible={!fullScreen} ref={refLeft} direction="l" />
-        <ResizerHandle visible={!fullScreen} ref={refTop} direction="t" />
-        <ResizerHandle visible={!fullScreen} ref={refTopL} direction="tl" />
+        <ResizerHandle
+          visible={!fullScreen}
+          ref={refLeft}
+          direction="l"
+          isPad={isPadWith}
+        />
+        <ResizerHandle
+          visible={!fullScreen}
+          ref={refTop}
+          direction="t"
+          isPad={isPadWith}
+        />
+        <ResizerHandle
+          visible={!fullScreen}
+          ref={refTopL}
+          direction="tl"
+          isPad={isPadWith}
+        />
 
         <ResizerHandle
           visible={!fullScreen && detached}
           ref={refRight}
           direction="r"
+          isPad={isPadWith}
         />
         <ResizerHandle
           visible={!fullScreen && detached}
           ref={refBottom}
           direction="b"
+          isPad={isPadWith}
         />
         <ResizerHandle
           visible={!fullScreen && detached}
           ref={refTopR}
           direction="tr"
+          isPad={isPadWith}
         />
         <ResizerHandle
           visible={!fullScreen && detached}
           ref={refBottomL}
           direction="bl"
+          isPad={isPadWith}
         />
         <ResizerHandle
           visible={!fullScreen && detached}
           ref={refBottomR}
           direction="br"
+          isPad={isPadWith}
         />
       </motion.div>
     </ChatWindowBreakpointsContextProvider>

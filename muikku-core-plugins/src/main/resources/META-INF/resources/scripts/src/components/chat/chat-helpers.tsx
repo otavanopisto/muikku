@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import * as React from "react";
 import {
   ChatRoom,
@@ -291,11 +291,42 @@ export function AddIcon() {
   );
 }
 
+const resizerVariants: Variants = {
+  hidden: {
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    transition: {
+      duration: 0.2,
+    },
+  },
+  visible: {
+    scale: 1,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    transition: {
+      duration: 0.2,
+    },
+  },
+  visiblepad: {
+    scale: 2,
+    backgroundColor: "rgba(1, 1, 1, 0.5)",
+    transition: {
+      duration: 0.2,
+    },
+  },
+  hoverdesktop: {
+    scale: 1.5,
+    backgroundColor: "rgba(1, 1, 1, 0.5)",
+    transition: {
+      duration: 0.2,
+    },
+  },
+};
+
 /**
  * ResizerHandleProps
  */
 interface ResizerHandleProps {
   visible: boolean;
+  isPad: boolean;
   direction?: "tl" | "t" | "tr" | "r" | "l" | "bl" | "b" | "br";
 }
 
@@ -307,12 +338,20 @@ export const ResizerHandle = React.forwardRef<
   HTMLDivElement,
   ResizerHandleProps
 >((props, ref) => {
-  const { visible, direction } = props;
+  const { visible, direction, isPad } = props;
 
   let className = "chat__resizer";
 
   if (direction) {
     className += ` chat__resizer-${direction}`;
+  }
+
+  const activeVariants = visible ? ["visible"] : ["hidden"];
+  let hoverVariant = "hoverdesktop";
+
+  if (isPad) {
+    activeVariants.push("visiblepad");
+    hoverVariant = undefined;
   }
 
   return (
@@ -322,13 +361,11 @@ export const ResizerHandle = React.forwardRef<
           role="button"
           ref={ref}
           className={className}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          whileHover={{
-            backgroundColor: "#666",
-            scale: 1.1,
-          }}
+          variants={resizerVariants}
+          initial={["hidden"]}
+          animate={activeVariants}
+          exit={["hidden"]}
+          whileHover={hoverVariant}
         />
       )}
     </AnimatePresence>
