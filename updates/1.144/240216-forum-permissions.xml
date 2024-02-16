@@ -5,5 +5,6 @@
   <sql>insert into RolePermission (permission_id,role_id) values ((select id from Permission where name='FORUM_WRITE_ENVIRONMENT_MESSAGES'),(select id from RoleEntity where name='STUDY_GUIDER'));</sql>
   <sql>delete from ForumAreaSubscription where forumArea_id in (select id from EnvironmentForumArea);</sql>
   <sql>delete from ForumThreadSubscription where forumThread_id in (select id from ForumMessage where forumArea_id in (select id from EnvironmentForumArea));</sql>
+  <sql>update PluginSetting set value=null where key_id=(select id from PluginSettingKey where plugin='forum' and name='environmentForumOrganizations');</sql>
   
 </update> 
