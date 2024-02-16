@@ -214,7 +214,8 @@ class DiscussionCurrentThread extends React.Component<
       (this.props.permissions.AREA_PERMISSIONS &&
         this.props.permissions.AREA_PERMISSIONS[
           this.props.discussion.current.forumAreaId
-      ]) || {};
+        ]) ||
+      {};
 
     const userCreator = this.props.discussion.current.creator;
 
