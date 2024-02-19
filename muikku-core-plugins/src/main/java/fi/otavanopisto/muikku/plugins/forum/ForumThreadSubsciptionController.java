@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.forum;
 
 import java.util.List;
 
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -12,8 +13,18 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
 import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscriptionDAO;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class ForumThreadSubsciptionController {
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private ForumThreadSubscriptionDAO forumThreadSubscriptionDAO;
@@ -65,6 +76,24 @@ public class ForumThreadSubsciptionController {
   
   public List<ForumThreadSubscription> listByUser(UserEntity userEntity){
     return forumThreadSubscriptionDAO.listByUser(userEntity);
+  }
+
+  /**
+   * When a workspace user is removed, remove all of their workspace discussion area thread subscriptions
+   * 
+   * @param event Workspace user removed event
+   */
+  public void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
+    String userIdentifier = event.getUserIdentifier();
+    String userDataSource = event.getUserDataSource();
+    SchoolDataIdentifier user = new SchoolDataIdentifier(userIdentifier, userDataSource);
+    String workspaceDataSource = event.getWorkspaceDataSource();
+    String workspaceIdentifier = event.getWorkspaceIdentifier();
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(user);
+    if (workspaceEntity != null && userEntity != null) {
+      removeThreadSubscriptions(userEntity, workspaceEntity);
+    }
   }
   
 }
