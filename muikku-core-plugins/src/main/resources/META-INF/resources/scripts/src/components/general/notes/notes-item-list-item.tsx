@@ -1,7 +1,7 @@
 import * as React from "react";
 import { IconButton } from "~/components/general/button";
 import Link from "~/components/general/link";
-import * as moment from "moment";
+import moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
 import NoteInformationDialog from "./dialogs/note-information-dialog";

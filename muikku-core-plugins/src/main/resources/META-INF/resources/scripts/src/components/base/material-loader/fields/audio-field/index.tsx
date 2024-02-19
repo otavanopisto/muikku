@@ -3,7 +3,7 @@ import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ProgressBarLine = require("react-progress-bar.js").Line;
-import * as moment from "moment";
+import moment from "moment";
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";

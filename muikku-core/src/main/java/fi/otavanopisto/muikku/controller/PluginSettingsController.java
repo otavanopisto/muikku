@@ -54,14 +54,40 @@ public class PluginSettingsController {
     return null;
   }
   
+  /**
+   * Return PluginSetting's value or null if it doesn't exist.
+   * 
+   * Creates the key if the key didn't exist. Requires active transaction.
+   * 
+   * @param plugin name of the plugin
+   * @param name name of the setting key
+   * @return plugin setting's value or null if it didn't exist
+   */
   public String getPluginSetting(String plugin, String name) {
+    return getPluginSetting(plugin, name, true);
+  }
+  
+  /**
+   * Return PluginSetting's value or null if it doesn't exist.
+   * 
+   * If the key doesn't exist and createKeyIfMissing is true then
+   * the key is created. If createKeyIfMissing is false, the key
+   * is not created and null is returned. Also doesn't require
+   * transaction if the key is not created.
+   * 
+   * @param plugin name of the plugin
+   * @param name name of the setting key
+   * @param createKeyIfMissing if the key should be created if it doesn't exist (requires transaction)
+   * @return plugin setting's value or null if it didn't exist
+   */
+  public String getPluginSetting(String plugin, String name, boolean createKeyIfMissing) {
     PluginSettingKey key = findPluginSettingKey(plugin, name);
     
-    if (key == null) {
+    if (key == null && createKeyIfMissing) {
       key = pluginSettingKeyDAO.create(plugin, name);
     }
     
-    return findPluginSetting(key);
+    return key != null ? findPluginSetting(key) : null;
   }
   
   public void updatePluginSetting(PluginSettingKey key, String value) {

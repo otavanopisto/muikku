@@ -89,18 +89,6 @@ class MainFunctionNavbar extends React.Component<
         badge: this.props.messageCount,
       },
       {
-        modifier: "discussion",
-        trail: "discussion",
-        text: t("labels.discussion"),
-        href: "/discussion",
-        icon: "bubbles",
-        to: true,
-        condition:
-          this.props.status.isActiveUser &&
-          this.props.status.loggedIn &&
-          this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM,
-      },
-      {
         modifier: "guider",
         trail: "guider",
         text: t("labels.guider"),

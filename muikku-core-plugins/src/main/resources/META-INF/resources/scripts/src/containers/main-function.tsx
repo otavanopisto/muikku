@@ -95,7 +95,6 @@ import loadOrganizationSummary from "~/actions/organization/summary";
 import EvaluationBody from "../components/evaluation/body";
 import CeeposDone from "../components/ceepos/done";
 import CeeposPay from "../components/ceepos/pay";
-import * as moment from "moment";
 import {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationGradingSystemFromServer,
@@ -122,8 +121,6 @@ import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
 import { Announcement, User } from "~/generated/client";
-
-moment.locale("fi");
 
 /**
  * MainFunctionProps

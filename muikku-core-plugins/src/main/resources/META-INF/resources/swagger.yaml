@@ -15876,6 +15876,7 @@ components:
         - hasCustomImage
         - nameExtension
         - courseType
+        - canSignup
       properties:
         id:
           type: integer
@@ -15898,6 +15899,9 @@ components:
         description:
           type: string
           nullable: true
+        canSignup:
+          type: boolean
+          description: If the student can signup to the course by themselves
 
     WorkspaceStudent:
       description: WorkspaceStudent object

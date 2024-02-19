@@ -463,7 +463,7 @@
       "evaluated": "Arvioitu {{date}}",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "completedWorkspaces": "Olet suorittanut yhteensä",
-      "coursesForYou:": "Kursseja sinulle",
+      "coursesForYou": "Kursseja sinulle",
       "endDate": "Opintojen loppumispäivä",
       "enrollmentDate": "Ilmoittautumispäivämäärä:",
       "exercisesDone": "{{percent}}% harjoitustehtävistä tehty",
@@ -2132,6 +2132,19 @@
     },
     "notifications": {
       "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
+    }
+  },
+  "courseCarousel": {
+    "actions": {
+      "checkOut": "Tutustu",
+      "signUp": "Ilmoittaudu"
+    },
+    "content": {
+      "empty": "Sinulle ei löytynyt yhtään kurssiehdotusta. Jos tarvitset apua kurssin valinnassa, ota yhteyttä ohjaajaasi."
+    },
+    "labels": {
+      "description": "Kuvaus",
+      "guidanceCouncelorSuggestion": "Ohjaajan ehdottama!"
     }
   }
 }

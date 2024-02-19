@@ -74,6 +74,14 @@ public class SuggestedWorkspaceRestModel {
     this.description = description;
   }
 
+  public Boolean getCanSignup() {
+    return canSignup;
+  }
+
+  public void setCanSignup(Boolean canSignup) {
+    this.canSignup = canSignup;
+  }
+
   private Long id;
   private String name;
   private String subject;
@@ -83,5 +91,6 @@ public class SuggestedWorkspaceRestModel {
   private Boolean hasCustomImage;
   private String nameExtension;
   private String description;
+  private Boolean canSignup;
 
 }
