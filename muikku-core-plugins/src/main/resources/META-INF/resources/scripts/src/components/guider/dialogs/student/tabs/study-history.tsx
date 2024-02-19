@@ -36,7 +36,7 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
-  const isAtMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
+  const isAtMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
   const { t } = useTranslation("guider");

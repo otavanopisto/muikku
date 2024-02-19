@@ -187,67 +187,72 @@ class ChatSettings extends React.Component<
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="chatVisibility">
-                    {this.props.t("labels.chatVisibility", { ns: "profile" })}
-                  </label>
-                  <select
-                    id="chatVisibility"
-                    className="form-element__select"
-                    value={
-                      this.state.chatVisibility !== null
-                        ? this.state.chatVisibility
-                        : "DISABLED"
-                    }
-                    onChange={this.onChatVisibilityChange}
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="chatVisibility">
+                      {this.props.t("labels.chatVisibility", { ns: "profile" })}
+                    </label>
+                    <select
+                      id="chatVisibility"
+                      className="form-element__select"
+                      value={
+                        this.state.chatVisibility !== null
+                          ? this.state.chatVisibility
+                          : "DISABLED"
+                      }
+                      onChange={this.onChatVisibilityChange}
+                    >
+                      <option value="VISIBLE_TO_ALL">
+                        {this.props.t("labels.chatVisibility", {
+                          ns: "profile",
+                          context: "all",
+                        })}
+                      </option>
+                      <option value="DISABLED">
+                        {this.props.t("labels.chatVisibility", {
+                          ns: "profile",
+                          context: "disabled",
+                        })}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="chatNickname">
+                      {this.props.t("labels.nick", { ns: "profile" })}
+                    </label>
+                    <input
+                      id="chatNickname"
+                      className="form-element__input"
+                      type="text"
+                      onChange={this.onChatNicknameChange}
+                      value={
+                        this.state.chatNickname !== null
+                          ? this.state.chatNickname
+                          : ""
+                      }
+                    />
+                  </div>
+
+                  <div className="form-element__description">
+                    {this.props.t("content.nick", { ns: "profile" })}
+                  </div>
+                </div>
+              </div>
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__buttons">
+                  <Button
+                    buttonModifiers="primary-function-save"
+                    onClick={this.save}
+                    disabled={this.state.locked}
                   >
-                    <option value="VISIBLE_TO_ALL">
-                      {this.props.t("labels.chatVisibility", {
-                        ns: "profile",
-                        context: "all",
-                      })}
-                    </option>
-                    <option value="DISABLED">
-                      {this.props.t("labels.chatVisibility", {
-                        ns: "profile",
-                        context: "disabled",
-                      })}
-                    </option>
-                  </select>
+                    {this.props.t("actions.save")}
+                  </Button>
                 </div>
-              </div>
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="chatNickname">
-                    {this.props.t("labels.nick", { ns: "profile" })}
-                  </label>
-                  <input
-                    id="chatNickname"
-                    className="form-element__input"
-                    type="text"
-                    onChange={this.onChatNicknameChange}
-                    value={
-                      this.state.chatNickname !== null
-                        ? this.state.chatNickname
-                        : ""
-                    }
-                  />
-                </div>
-
-                <div className="form-element__description">
-                  {this.props.t("content.nick", { ns: "profile" })}
-                </div>
-              </div>
-
-              <div className="form__buttons">
-                <Button
-                  buttonModifiers="primary-function-save"
-                  onClick={this.save}
-                  disabled={this.state.locked}
-                >
-                  {this.props.t("actions.save")}
-                </Button>
               </div>
             </div>
           </div>
