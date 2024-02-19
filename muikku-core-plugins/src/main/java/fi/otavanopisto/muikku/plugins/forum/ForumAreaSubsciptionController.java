@@ -12,7 +12,6 @@ import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscription;
 import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscriptionDAO;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -77,13 +76,8 @@ public class ForumAreaSubsciptionController {
    * @param event Workspace user removed event
    */
   public void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
-    String userIdentifier = event.getUserIdentifier();
-    String userDataSource = event.getUserDataSource();
-    SchoolDataIdentifier user = new SchoolDataIdentifier(userIdentifier, userDataSource);
-    String workspaceDataSource = event.getWorkspaceDataSource();
-    String workspaceIdentifier = event.getWorkspaceIdentifier();
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceDataSource, workspaceIdentifier);
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(user);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     if (workspaceEntity != null && userEntity != null) {
       removeAreaSubscriptions(userEntity, workspaceEntity);
     }
