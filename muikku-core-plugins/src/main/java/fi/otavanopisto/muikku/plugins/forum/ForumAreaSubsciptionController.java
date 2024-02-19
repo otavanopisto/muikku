@@ -71,7 +71,7 @@ public class ForumAreaSubsciptionController {
   }
   
   /**
-   * When a workspace user is removed, remove all of their workspace discussion area subscriptions
+   * When a workspace user is removed, remove all of their workspace discussion area subscriptions (#6967)
    * 
    * @param event Workspace user removed event
    */

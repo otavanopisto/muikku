@@ -78,7 +78,7 @@ public class ForumThreadSubsciptionController {
   }
 
   /**
-   * When a workspace user (student or staff) is removed, remove all of their workspace discussion area thread subscriptions
+   * When a workspace user (student or staff) is removed, remove all of their workspace discussion area thread subscriptions (#6967)
    * 
    * @param event Workspace user removed event
    */

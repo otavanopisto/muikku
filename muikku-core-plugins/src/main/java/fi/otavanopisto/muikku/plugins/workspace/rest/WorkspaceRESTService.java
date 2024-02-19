@@ -3005,7 +3005,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    // #6967: When a student is removed from a course, also remove their course discussion subscriptions
+    // #6967: When a student is archived from a course, also remove their course discussion subscriptions
     
     if (!workspaceStudentRestModel.getActive()) {
       UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();

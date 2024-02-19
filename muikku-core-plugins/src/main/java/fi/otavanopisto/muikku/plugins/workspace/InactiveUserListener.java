@@ -39,7 +39,7 @@ public class InactiveUserListener {
   
   public void onSchoolDataUserInactiveEvent(@Observes SchoolDataUserInactiveEvent event) {
     SchoolDataIdentifier schoolDataIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
-    // Remove an inactive user from all workspaces in which they are currently active
+    // Remove an inactive student from all workspaces in which they are currently active
     List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceUserEntitiesByUserIdentifier(schoolDataIdentifier);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.FALSE);
@@ -49,10 +49,12 @@ public class InactiveUserListener {
     if (userSchoolDataIdentifier != null) {
       userIndexer.indexUser(userSchoolDataIdentifier.getUserEntity());
     }
-    // #6967: Remove user's all forum subscriptions
+    // #6967: Remove student's all forum subscriptions in the workspace
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    forumAreaSubsciptionController.removeAreaSubscriptions(userEntity);
-    forumThreadSubsciptionController.removeThreadSubscriptions(userEntity);
+    if (userEntity != null) {
+      forumAreaSubsciptionController.removeAreaSubscriptions(userEntity);
+      forumThreadSubsciptionController.removeThreadSubscriptions(userEntity);
+    }
   }
 
 }
