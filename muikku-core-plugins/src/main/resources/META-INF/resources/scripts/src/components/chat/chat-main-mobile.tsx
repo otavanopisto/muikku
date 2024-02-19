@@ -39,8 +39,8 @@ function ChatMainMobile(props: ChatMainMobileProps) {
   const [panelLeftOpen, setPanelLeftOpen] = React.useState(false);
   const [panelRightOpen, setPanelRightOpen] = React.useState(false);
 
-  const panelLeftArrow = panelLeftOpen ? "arrow-left" : "arrow-right";
-  const panelRightArrow = panelRightOpen ? "arrow-right" : "arrow-left";
+  // const panelLeftArrow = panelLeftOpen ? "arrow-left" : "arrow-right";
+  // const panelRightArrow = panelRightOpen ? "arrow-right" : "arrow-left";
 
   return (
     <div className="chat-mobile">
@@ -94,16 +94,16 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       </ChatPanel>
       <div className="chat-mobile__footer">
         <IconButton
-          buttonModifiers={["chat"]}
-          icon={panelLeftArrow}
+          buttonModifiers={["chat", "chat-mobile-footer"]}
+          icon="stack"
           onClick={() => setPanelLeftOpen((prev) => !prev)}
         />
         <Button buttonModifiers={["chat"]} onClick={() => openOverview()}>
           Dashboard
         </Button>
         <IconButton
-          buttonModifiers={["chat"]}
-          icon={panelRightArrow}
+          buttonModifiers={["chat", "chat-mobile-footer"]}
+          icon="bubbles"
           onClick={() => setPanelRightOpen((prev) => !prev)}
         />
       </div>
