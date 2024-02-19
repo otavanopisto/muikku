@@ -123,12 +123,7 @@ function ChatMain(props: ChatMainProps) {
         </div>
 
         <div className="chat__users-container">
-          <div
-            className="chat__users chat__users--guidance-councelors"
-            role="menu"
-          >
-            <ChatMyCounselorsDiscussions />
-          </div>
+          <ChatMyCounselorsDiscussions />
           <div className="chat__users chat__users--others" role="menu">
             <div className="chat__users-category-title">Keskustelut</div>
             <ChatMyActiveDiscussions />

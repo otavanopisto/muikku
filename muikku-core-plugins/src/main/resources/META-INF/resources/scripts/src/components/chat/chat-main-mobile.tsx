@@ -51,13 +51,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         onOpen={() => setPanelLeftOpen(true)}
         onClose={() => setPanelLeftOpen(false)}
       >
-        <div
-          onClick={() => setPanelLeftOpen(!panelLeftOpen)}
-          className="chat__button-wrapper chat__button-wrapper--rooms"
-        >
-          <IconButton buttonModifiers={["chat"]} icon={panelLeftArrow} />
-        </div>
-        <div className="chat__rooms-container">
+        <div className="chat__rooms-container chat__rooms-container--mobile">
           <div className="chat__rooms chat__rooms--public" role="menu">
             <div className="chat__rooms-category-title">Julkiset huoneet</div>
             <PublicRoomsList onItemClick={() => setPanelLeftOpen(false)} />
@@ -85,21 +79,10 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         panelMaxWidth={PANEL_RIGHT_MAX_WIDTH}
         panelPosition="right"
       >
-        <div
-          onClick={() => setPanelRightOpen(!panelRightOpen)}
-          className="chat__button-wrapper chat__button-wrapper--users"
-        >
-          <IconButton buttonModifiers={["chat"]} icon={panelRightArrow} />
-        </div>
-        <div className="chat__users-container">
-          <div
-            className="chat__users chat__users--guidance-councelors"
-            role="menu"
-          >
-            <ChatMyCounselorsDiscussions
-              onItemClick={() => setPanelRightOpen(false)}
-            />
-          </div>
+        <div className="chat__users-container chat__users-container--mobile">
+          <ChatMyCounselorsDiscussions
+            onItemClick={() => setPanelRightOpen(false)}
+          />
           <div className="chat__users chat__users--others" role="menu">
             <div className="chat__users-category-title">Keskustelut</div>
             <ChatMyActiveDiscussions
