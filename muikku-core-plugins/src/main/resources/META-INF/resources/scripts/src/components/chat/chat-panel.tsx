@@ -105,7 +105,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   };
 
   return (
-    <div className={`chat__panel chat__panel--private`}>
+    <div className={`chat__discussion-panel chat__discussion-panel--private`}>
       <div className="chat__discussion-panel-header">
         <div className="chat__discussion-panel-header-title">
           {targetUser.nick}

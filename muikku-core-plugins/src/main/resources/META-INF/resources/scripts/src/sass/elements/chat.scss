@@ -458,6 +458,7 @@ $chat-resizer-corner-size: 10px;
   flex-flow: row nowrap;
   left: 0;
   min-height: $chat-discussion-panel-footer-height;
+  overflow: hidden;
   position: absolute;
   right: 0;
   width: 100%;
@@ -981,12 +982,14 @@ $chat-resizer-corner-size: 10px;
   .chat__overview-panel-header,
   .chat__discussion-panel-header {
     background: $color-chat-primary;
+    border: 0;
     color: $color-default;
     height: 45px;
   }
 
   .chat__discussion-panel-body,
   .chat__overview-panel-body {
+    background: $color-default;
     top: 45px;
   }
 
