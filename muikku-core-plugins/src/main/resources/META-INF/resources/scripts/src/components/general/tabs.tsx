@@ -116,7 +116,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     clickable: true,
   };
 
-  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
 
   return (
     <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
@@ -273,7 +273,7 @@ interface MobileOnlyTabsProps {
  */
 export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
   const { tabs, modifier, activeTab, onTabChange } = props;
-  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const a11yConfig = {
     enabled: true,
   };

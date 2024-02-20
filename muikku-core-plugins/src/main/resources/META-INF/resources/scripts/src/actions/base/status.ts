@@ -132,15 +132,15 @@ async function loadWhoAMI(
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
         /* CHAT_ACTIVE: whoAmI.services.chat.isActive,
         CHAT_AVAILABLE: whoAmI.services.chat.isAvailable, */
-        FORUM_ACCESSENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
-        FORUM_CREATEENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
-        FORUM_DELETEENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
+        FORUM_ACCESSENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_ACCESSENVIRONMENTFORUM"
+        ),
+        FORUM_CREATEENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_CREATEENVIRONMENTFORUM"
+        ),
+        FORUM_DELETEENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_DELETEENVIRONMENTFORUM"
+        ),
         WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {

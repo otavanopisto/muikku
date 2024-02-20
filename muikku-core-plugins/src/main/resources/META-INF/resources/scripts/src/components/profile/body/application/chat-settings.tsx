@@ -156,57 +156,61 @@ class ChatSettings extends React.Component<
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="chatVisibility">
-                    {this.props.t("labels.chatVisibility", { ns: "profile" })}
-                  </label>
-                  <Select<ChatSettingVisibilityOption>
-                    id="chatVisibility"
-                    className="react-select-override"
-                    classNamePrefix="react-select-override"
-                    isDisabled={this.state.locked}
-                    value={this.state.chatEnabled}
-                    onChange={this.onChatVisibilityChange}
-                    options={selectOptions}
-                    styles={{
-                      // eslint-disable-next-line jsdoc/require-jsdoc
-                      container: (baseStyles, state) => ({
-                        ...baseStyles,
-                        width: "100%",
-                      }),
-                    }}
-                  />
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="chatVisibility">
+                      {this.props.t("labels.chatVisibility", { ns: "profile" })}
+                    </label>
+                    <Select<ChatSettingVisibilityOption>
+                      id="chatVisibility"
+                      className="react-select-override"
+                      classNamePrefix="react-select-override"
+                      isDisabled={this.state.locked}
+                      value={this.state.chatEnabled}
+                      onChange={this.onChatVisibilityChange}
+                      options={selectOptions}
+                      styles={{
+                        // eslint-disable-next-line jsdoc/require-jsdoc
+                        container: (baseStyles, state) => ({
+                          ...baseStyles,
+                          width: "100%",
+                        }),
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="chatNick">
-                    {this.props.t("labels.nick", { ns: "profile" })}
-                  </label>
-                  <input
-                    id="chatNick"
-                    className="form-element__input"
-                    type="text"
-                    onChange={this.onChatNicknameChange}
-                    value={this.state.chatNick}
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="chatNickname">
+                      {this.props.t("labels.nick", { ns: "profile" })}
+                    </label>
+                    <input
+                      id="chatNickname"
+                      className="form-element__input"
+                      type="text"
+                      onChange={this.onChatNicknameChange}
+                      value={this.state.chatNick}
+                    />
+                  </div>
+
+                  <div className="form-element__description">
+                    {this.props.t("content.nick", { ns: "profile" })}
+                  </div>
+                </div>
+              </div>
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__buttons">
+                  <Button
+                    buttonModifiers="primary-function-save"
+                    onClick={this.save}
                     disabled={this.state.locked}
-                  />
+                  >
+                    {this.props.t("actions.save")}
+                  </Button>
                 </div>
-
-                <div className="form-element__description">
-                  {this.props.t("content.nick", { ns: "profile" })}
-                </div>
-              </div>
-
-              <div className="form__buttons">
-                <Button
-                  buttonModifiers="primary-function-save"
-                  onClick={this.save}
-                  disabled={this.state.locked}
-                >
-                  {this.props.t("actions.save")}
-                </Button>
               </div>
             </div>
           </div>
