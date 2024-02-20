@@ -147,7 +147,7 @@ public class ChatRESTService {
         continue;
       }
       // For students, strip other students only visible to staff
-      if (isStudent && restUsers.get(i).getVisibility() == ChatUserVisibility.STAFF) {
+      if (isStudent && restUsers.get(i).getType() == ChatUserType.STUDENT && restUsers.get(i).getVisibility() == ChatUserVisibility.STAFF) {
         restUsers.remove(i);
         continue;
       }
