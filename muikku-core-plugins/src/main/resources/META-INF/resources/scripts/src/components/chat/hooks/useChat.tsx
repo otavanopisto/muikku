@@ -61,7 +61,7 @@ function useChat(currentUser: ChatUser) {
     React.useState<string>(null);
 
   const { chatActivity, chatActivityByUserObject, markMsgsAsRead } =
-    useChatActivity(activeDiscussionIdentifier);
+    useChatActivity(activeDiscussionIdentifier, currentUser.identifier);
 
   // Discussion instances, one for each previously opened discussions
   const [discussionInstances, setMessagesInstances] = React.useState<

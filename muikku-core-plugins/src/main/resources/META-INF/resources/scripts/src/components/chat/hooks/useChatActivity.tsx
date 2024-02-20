@@ -7,9 +7,13 @@ const chatApi = MApi.getChatApi();
 
 /**
  * Custom hook for chat activity
- * @param activeIdentifier active identifier
+ * @param activeDiscussionIdentifier active identifier
+ * @param currentUserIdentifier current user identifier
  */
-function useChatActivity(activeIdentifier: string) {
+function useChatActivity(
+  activeDiscussionIdentifier: string,
+  currentUserIdentifier: string
+) {
   const websocket = useChatWebsocketContext();
 
   const [chatActivity, setChatActivity] = React.useState<ChatActivity[]>();
@@ -37,12 +41,24 @@ function useChatActivity(activeIdentifier: string) {
 
           // Updates the latest message date of the chat activity that the message was sent to
           setChatActivity((prev) => {
-            const index = prev.findIndex((activity) =>
-              [
-                `user-${dataTyped.sourceUserEntityId}`,
-                dataTyped.targetIdentifier,
-              ].includes(activity.targetIdentifier)
-            );
+            if (dataTyped.targetIdentifier.startsWith("room-")) {
+              return prev;
+            }
+
+            const sourceIdentifier = `user-${dataTyped.sourceUserEntityId}`;
+
+            // Try to find the activity in the list using the source identifier or the target identifier
+            // If the current user is the source, use the target identifier
+            // else use the source identifier
+            const index =
+              currentUserIdentifier === sourceIdentifier
+                ? prev.findIndex(
+                    (activity) =>
+                      activity.targetIdentifier === dataTyped.targetIdentifier
+                  )
+                : prev.findIndex(
+                    (activity) => activity.targetIdentifier === sourceIdentifier
+                  );
 
             // If activity already exists, update the latest message date
             if (index !== -1) {
@@ -53,8 +69,8 @@ function useChatActivity(activeIdentifier: string) {
 
               // If discussion is not active, increment unread messages
               if (
-                `user-${dataTyped.sourceUserEntityId}` !== activeIdentifier &&
-                dataTyped.targetIdentifier !== activeIdentifier
+                sourceIdentifier !== activeDiscussionIdentifier &&
+                dataTyped.targetIdentifier !== activeDiscussionIdentifier
               ) {
                 updatedList[index].unreadMessages++;
               }
@@ -70,7 +86,7 @@ function useChatActivity(activeIdentifier: string) {
             };
 
             // If this is the active discussion, keep unread messages as 0
-            if (dataTyped.targetIdentifier === activeIdentifier) {
+            if (dataTyped.targetIdentifier === activeDiscussionIdentifier) {
               newActivity.unreadMessages = 0;
             }
 
@@ -88,7 +104,7 @@ function useChatActivity(activeIdentifier: string) {
         onNewMsgSentUpdateActivity
       );
     };
-  }, [activeIdentifier, websocket]);
+  }, [activeDiscussionIdentifier, currentUserIdentifier, websocket]);
 
   /**
    * Fetches chat activity

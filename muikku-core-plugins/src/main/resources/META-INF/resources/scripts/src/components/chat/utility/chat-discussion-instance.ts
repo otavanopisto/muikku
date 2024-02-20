@@ -195,9 +195,10 @@ export class ChatDiscussionInstance {
     if (typeof data === "string") {
       const dataTyped: ChatMessage = JSON.parse(data);
 
-      const [senderIsCurrentUser, senderIsTarget] = this.whoIsSender(dataTyped);
+      const [senderIsCurrentUser, senderIsTarget, messageToRoom] =
+        this.whoIsSender(dataTyped);
 
-      if (senderIsCurrentUser || senderIsTarget) {
+      if (senderIsCurrentUser || senderIsTarget || messageToRoom) {
         this.messages.push(dataTyped);
 
         this.triggerChangeListeners();
@@ -213,9 +214,10 @@ export class ChatDiscussionInstance {
     if (typeof data === "string") {
       const dataTyped: ChatMessage = JSON.parse(data);
 
-      const [senderIsCurrentUser, senderIsTarget] = this.whoIsSender(dataTyped);
+      const [senderIsCurrentUser, senderIsTarget, messageToRoom] =
+        this.whoIsSender(dataTyped);
 
-      if (senderIsCurrentUser || senderIsTarget) {
+      if (senderIsCurrentUser || senderIsTarget || messageToRoom) {
         const index = this.messages.findIndex((msg) => msg.id === dataTyped.id);
 
         if (index !== -1) {
@@ -235,9 +237,10 @@ export class ChatDiscussionInstance {
     if (typeof data === "string") {
       const dataTyped: ChatMessage = JSON.parse(data);
 
-      const [senderIsCurrentUser, senderIsTarget] = this.whoIsSender(dataTyped);
+      const [senderIsCurrentUser, senderIsTarget, messageToRoom] =
+        this.whoIsSender(dataTyped);
 
-      if (senderIsCurrentUser || senderIsTarget) {
+      if (senderIsCurrentUser || senderIsTarget || messageToRoom) {
         const index = this.messages.findIndex((msg) => msg.id === dataTyped.id);
 
         if (index !== -1) {
@@ -264,7 +267,13 @@ export class ChatDiscussionInstance {
       this.targetIdentifier === sourceIdentifier &&
       this.currentUserIdentifier === msg.targetIdentifier;
 
-    return [senderIsCurrentUser, senderIsTarget];
+    let messageToRoom = false;
+
+    if (this.targetIdentifier.startsWith("room-")) {
+      messageToRoom = this.targetIdentifier === msg.targetIdentifier;
+    }
+
+    return [senderIsCurrentUser, senderIsTarget, messageToRoom];
   };
 
   /**
