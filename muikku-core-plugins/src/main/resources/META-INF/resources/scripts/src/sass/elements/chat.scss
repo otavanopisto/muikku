@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 $chat-discussion-panel-header-height: 40px;
-$chat-discussion-panel-footer-height: 35px;
+$chat-discussion-panel-footer-height: 40px;
 $chat-border-radius: 5px;
 $chat-resizer-size: 150px;
 $chat-resizer-thickness: 4px;
@@ -283,15 +283,22 @@ $chat-resizer-corner-size: 10px;
 
 .chat__discussion-panel-header {
   align-items: center;
-  background: transparent;
-  border-bottom: 1px solid $color-default-item-separator-border;
+  background: $color-chat-primary;
+  color: $color-default;
   display: flex;
   flex-flow: row nowrap;
-  height: $chat-discussion-panel-header-height;
+  height: 45px;
   padding: 10px;
   position: relative;
   width: 100%;
   z-index: 2;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    background: transparent;
+    border-bottom: 1px solid $color-default-item-separator-border;
+    color: $color-default-contrast;
+    height: $chat-discussion-panel-header-height;
+  }
 }
 
 .chat__discussion-panel-header-title {
@@ -304,7 +311,7 @@ $chat-resizer-corner-size: 10px;
 }
 
 .chat__discussion-panel-header-description {
-  color: lighten($color-default-contrast, 30%);
+  color: lighten($color-chat-primary, 35%);
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
@@ -314,6 +321,10 @@ $chat-resizer-corner-size: 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    color: lighten($color-default-contrast, 30%);
+  }
 }
 
 .chat__discussion-panel-header-actions {
@@ -326,13 +337,18 @@ $chat-resizer-corner-size: 10px;
 }
 
 .chat__discussion-panel-body {
+  background: $color-default;
   bottom: $chat-discussion-panel-footer-height;
   left: 0;
   overflow: hidden;
   position: absolute;
   right: 0;
-  top: $chat-discussion-panel-header-height;
+  top: 45px;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    top: $chat-discussion-panel-header-height;
+  }
 }
 
 .chat__messages-container {
@@ -610,7 +626,7 @@ $chat-resizer-corner-size: 10px;
   flex-shrink: 0;
   position: relative;
 
-  @include breakpoint($breakpoint-desktop) {
+  @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: $avatar-desktop-chat-size;
   }
 }
@@ -708,15 +724,22 @@ $chat-resizer-corner-size: 10px;
 
 .chat__overview-panel-header {
   align-items: center;
-  background: transparent;
-  border-bottom: 1px solid $color-default-item-separator-border;
+  background: $color-chat-primary;
+  color: $color-default;
   display: flex;
   flex-flow: row nowrap;
-  height: 40px;
+  height: 45px;
   padding: 10px;
   position: relative;
   width: 100%;
   z-index: 2;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    background: transparent;
+    border-bottom: 1px solid $color-default-item-separator-border;
+    color: $color-default-contrast;
+    height: $chat-discussion-panel-header-height;
+  }
 }
 
 .chat__overview-panel-header-title {
@@ -751,12 +774,18 @@ $chat-resizer-corner-size: 10px;
 }
 
 .chat__overview-panel-body {
+  background: $color-default;
   bottom: 0;
   left: 0;
+  overflow: hidden;
   position: absolute;
   right: 0;
-  top: 40px;
+  top: 45px;
   width: 100%;
+
+  @include breakpoint($breakpoint-desktop) {
+    top: $chat-discussion-panel-header-height;
+  }
 }
 
 .chat__overview-panel-search-container {
@@ -788,7 +817,7 @@ $chat-resizer-corner-size: 10px;
   min-height: calc($avatar-mobile-chat-size + 10px);
   padding: 5px;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-mobile-xl) {
     min-height: calc($avatar-desktop-chat-size + 10px);
   }
 
@@ -979,24 +1008,7 @@ $chat-resizer-corner-size: 10px;
   top: 0;
   z-index: 9989;
 
-  .chat__overview-panel-header,
-  .chat__discussion-panel-header {
-    background: $color-chat-primary;
-    border: 0;
-    color: $color-default;
-    height: 45px;
-  }
-
-  .chat__discussion-panel-body,
-  .chat__overview-panel-body {
-    background: $color-default;
-    top: 45px;
-  }
-
-  .chat__discussion-panel-header-description {
-    color: lighten($color-chat-primary, 35%);
-  }
-
+  // Necessary react-select component's overrides for chat's mobile views
   .react-select-override {
     background: darken($color-chat-primary, 15%);
     border-radius: $chat-border-radius;
