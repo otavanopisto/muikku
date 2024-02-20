@@ -12,6 +12,7 @@ import { useViews } from "../animated-views/context/hooks/useChatTabs";
 import {
   chatControllerViews,
   filterUsers,
+  isObjEmpty,
   sortUsersAlphabetically,
 } from "../chat-helpers";
 import useChatUsers from "./useUsers";
@@ -324,6 +325,10 @@ function useChat(currentUser: ChatUser) {
 
   // Users with chat activated, not blocked, sorted alphabetically
   const dashboardUsers = React.useMemo(() => {
+    if (isObjEmpty(usersObject)) {
+      return [];
+    }
+
     if (!userFilters) {
       return usersWithChatActiveIds
         .map((id) => usersObject[id])
@@ -341,6 +346,10 @@ function useChat(currentUser: ChatUser) {
 
   // Blocked users, filtered and sorted alphabetically
   const dashboardBlockedUsers = React.useMemo(() => {
+    if (isObjEmpty(usersObject)) {
+      return [];
+    }
+
     if (!userFilters) {
       return blockedUsersIds.map((id) => usersObject[id]);
     }
@@ -352,14 +361,22 @@ function useChat(currentUser: ChatUser) {
   }, [blockedUsersIds, userFilters, usersObject]);
 
   // My discussions with counselors, sorted alphabetically
-  const myDiscussionsCouncelors = React.useMemo(
-    () =>
-      counselorIds.map((id) => usersObject[id]).sort(sortUsersAlphabetically),
-    [counselorIds, usersObject]
-  );
+  const myDiscussionsCouncelors = React.useMemo(() => {
+    if (isObjEmpty(usersObject)) {
+      return [];
+    }
+
+    return counselorIds
+      .map((id) => usersObject[id])
+      .sort(sortUsersAlphabetically);
+  }, [counselorIds, usersObject]);
 
   // My discussions with other users than counselors, sorted by activity
   const myDiscussionsOthers = React.useMemo(() => {
+    if (isObjEmpty(usersObject)) {
+      return [];
+    }
+
     /**
      * Sorter for users by activity
      * @param a a

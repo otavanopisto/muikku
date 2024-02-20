@@ -91,6 +91,12 @@ export const sortRoomsAplhabetically = (a: ChatRoom, b: ChatRoom) => {
 };
 
 /**
+ * isObjEmpty
+ * @param obj obj
+ */
+export const isObjEmpty = (obj: object) => Object.keys(obj).length === 0;
+
+/**
  * filterUsers
  * @param users users
  * @param filters filters
