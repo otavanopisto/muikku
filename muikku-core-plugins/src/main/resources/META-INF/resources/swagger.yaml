@@ -6034,6 +6034,11 @@ paths:
           description: Properties as string divided by comma
           schema:
             type: string
+        - name: onlyChatEnabled
+          in: query
+          description: Guidance counselors with chat enabled
+          schema:
+            type: boolean
       responses:
         "200":
           description: Guidance counselors

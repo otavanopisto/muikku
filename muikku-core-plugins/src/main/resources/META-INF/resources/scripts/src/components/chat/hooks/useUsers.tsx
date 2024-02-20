@@ -283,7 +283,9 @@ function useUsers(props: UseUsersProps) {
    * Fetch my counselors
    */
   const fetchMyCounselors = async () => {
-    const counselors = await meApi.getGuidanceCounselors();
+    const counselors = await meApi.getGuidanceCounselors({
+      onlyChatEnabled: true,
+    });
 
     setMyCounselors(counselors);
   };
