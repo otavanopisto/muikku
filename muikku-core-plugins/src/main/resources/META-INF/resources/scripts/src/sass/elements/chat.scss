@@ -55,10 +55,16 @@ $chat-resizer-corner-size: 10px;
   position: fixed;
   width: 800px;
   z-index: 9989;
+
+  .react-select-override {
+    .react-select-override__control {
+      border-color: $color-chat-primary;
+    }
+  }
 }
 
 .chat--detached {
-  box-shadow: 0 0 20px $color-chat-box-shadow;
+  box-shadow: 0 0 25px $color-chat-detached-box-shadow;
 
   .chat__header {
     cursor: move;
@@ -111,6 +117,17 @@ $chat-resizer-corner-size: 10px;
   width: auto;
 }
 
+// Wrapper for rooms panel's show/hide button in mobile views
+.chat__button-wrapper--mobile {
+  bottom: 0;
+  height: 3rem;
+  left: 0;
+  margin: 0;
+  padding: 10px;
+  position: absolute;
+  right: 0;
+}
+
 // Wrapper for users panel's show/hide button
 .chat__button-wrapper--users {
   justify-content: flex-start;
@@ -133,7 +150,7 @@ $chat-resizer-corner-size: 10px;
 .chat__user,
 .chat__tab {
   &.chat__active-item {
-    background: $color-chat-primary;
+    background: $color-chat-active-item;
     color: $color-default;
 
     .chat__option-name-container,
@@ -144,7 +161,7 @@ $chat-resizer-corner-size: 10px;
     }
 
     &:hover {
-      background: $color-chat-primary;
+      background: $color-chat-active-item;
     }
   }
 }
@@ -189,6 +206,11 @@ $chat-resizer-corner-size: 10px;
   // Height of the show/hide panel button wrapper including it's top and bottom margin
   top: calc(1.625rem + 10px);
   width: 100%;
+}
+
+.chat__rooms-container--mobile {
+  padding: 10px 5px;
+  top: 0;
 }
 
 .chat__options,
@@ -430,12 +452,13 @@ $chat-resizer-corner-size: 10px;
   align-items: center;
   border-bottom-left-radius: $chat-border-radius;
   border-bottom-right-radius: $chat-border-radius;
-  border-top: 1px solid $color-default-item-separator-border;
+  border-top: 1px solid $color-default-separator-border;
   bottom: 0;
   display: flex;
   flex-flow: row nowrap;
   left: 0;
   min-height: $chat-discussion-panel-footer-height;
+  overflow: hidden;
   position: absolute;
   right: 0;
   width: 100%;
@@ -443,7 +466,7 @@ $chat-resizer-corner-size: 10px;
 
 .chat__discussion-editor-container {
   align-items: center;
-  border-right: 1px solid $color-default-item-separator-border;
+  border-right: 1px solid $color-default-separator-border;
   display: flex;
   flex-basis: 100%;
   flex-grow: 1;
@@ -491,6 +514,11 @@ $chat-resizer-corner-size: 10px;
   // Height of the show/hide panel button wrapper including it's top and bottom margin
   top: calc(1.625rem + 10px);
   width: 100%;
+}
+
+.chat__users-container--mobile {
+  padding: 10px 5px;
+  top: 0;
 }
 
 // Generic category and container that holds a list of chat users
@@ -545,6 +573,7 @@ $chat-resizer-corner-size: 10px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
+  position: relative;
   width: 100%;
 }
 
@@ -645,6 +674,24 @@ $chat-resizer-corner-size: 10px;
 // Online/offline literal status, we don't display it for every badge, only visible to loggen in user
 .chat__profile-literal-status {
   display: none;
+}
+
+// Chat message counter
+.chat__unread-msg-counter {
+  align-items: center;
+  background: $color-indicator-background;
+  border-radius: 100%;
+  color: $color-default;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 0.6875rem;
+  height: 1rem;
+  justify-content: center;
+  left: 22px;
+  position: absolute;
+  top: -3px;
+  width: 1rem;
+  z-index: 2;
 }
 
 // Chat overview/dashboard
@@ -884,6 +931,7 @@ $chat-resizer-corner-size: 10px;
 
 .chat__new-message {
   border: 10px solid $color-default;
+  border-radius: $chat-border-radius;
   font-size: 0.8125rem;
   height: 1rem;
   line-height: 1.25rem;
@@ -934,7 +982,15 @@ $chat-resizer-corner-size: 10px;
   .chat__overview-panel-header,
   .chat__discussion-panel-header {
     background: $color-chat-primary;
+    border: 0;
     color: $color-default;
+    height: 45px;
+  }
+
+  .chat__discussion-panel-body,
+  .chat__overview-panel-body {
+    background: $color-default;
+    top: 45px;
   }
 
   .chat__discussion-panel-header-description {
@@ -978,7 +1034,8 @@ $chat-resizer-corner-size: 10px;
 
     .react-select-override__menu {
       border: 1px solid lighten($color-chat-primary, 30%);
-      box-shadow: 0 0 20px $color-chat-box-shadow;
+      box-shadow: 0 10px 20px $color-dropdown-default-shadow;
+      max-width: 150px;
     }
 
     .react-select-override__option {
@@ -1009,10 +1066,12 @@ $chat-resizer-corner-size: 10px;
 // COntainer for mobile chat's header and main area. Needs to have same bottom value as [chat-mobile__footer] has height
 .chat-mobile__main-container {
   bottom: 3rem;
+  box-shadow: 0 2px 5px $color-chat-box-shadow;
   left: 0;
   position: fixed;
   right: 0;
   top: 0;
+  z-index: 6;
 }
 
 // Navigation footer for mobile views
@@ -1036,7 +1095,7 @@ $chat-resizer-corner-size: 10px;
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 6;
+  z-index: 7;
 }
 
 .chat-mobile__action-panel {
@@ -1048,5 +1107,5 @@ $chat-resizer-corner-size: 10px;
   position: fixed;
   right: 0;
   width: 100%;
-  z-index: 5;
+  z-index: 8;
 }

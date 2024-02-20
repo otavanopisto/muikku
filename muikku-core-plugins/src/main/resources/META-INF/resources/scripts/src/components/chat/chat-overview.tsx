@@ -128,7 +128,7 @@ function ChatOverview() {
             value={searchValue}
             onChange={handleSearchChange}
           />
-          <Dropdown content={filterContent}>
+          <Dropdown modifier="chat" content={filterContent}>
             <IconButton buttonModifiers={["chat"]} icon="filter" />
           </Dropdown>
         </div>
@@ -639,7 +639,7 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
         </div>
       </div>
       <div className="dropdown__container-item">
-        <div className="filter-item filter-item--workspace-page">
+        <div className="filter-item filter-item--chat">
           <input
             type="checkbox"
             value="offline"
@@ -653,7 +653,7 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
         </div>
       </div>
       <div className="dropdown__container-item">
-        <div className="filter-item filter-item--workspace-page">
+        <div className="filter-item filter-item--chat">
           <input
             type="checkbox"
             value="online"
@@ -667,7 +667,7 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
         </div>
       </div>
       <div className="dropdown__container-item">
-        <div className="filter-item filter-item--workspace-page">
+        <div className="filter-item filter-item--chat">
           <input
             type="checkbox"
             value="staff"
@@ -681,7 +681,7 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
         </div>
       </div>
       <div className="dropdown__container-item">
-        <div className="filter-item filter-item--workspace-page">
+        <div className="filter-item filter-item--chat">
           <input
             type="checkbox"
             value="students"

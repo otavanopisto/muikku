@@ -820,6 +820,14 @@
   }
 }
 
+.button-icon--chat-mobile-footer {
+  background: $color-default;
+  color: lighten($color-default-contrast, 20%);
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
+}
+
 .button-icon--chat-invert {
   background: transparent;
   border-radius: 100%;

@@ -54,7 +54,7 @@ function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
   }
 
   return (
-    <>
+    <div className="chat__users chat__users--guidance-councelors" role="menu">
       <div className="chat__users-category-title">Ohjaajat</div>
       {myDiscussionsCouncelors.map((user) => (
         <ChatMyActiveDiscussion
@@ -65,7 +65,7 @@ function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
           onOpenClick={handleOpenClick}
         />
       ))}
-    </>
+    </div>
   );
 }
 
