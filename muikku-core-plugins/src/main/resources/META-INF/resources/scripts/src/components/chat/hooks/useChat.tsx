@@ -175,7 +175,7 @@ function useChat(currentUser: ChatUser) {
         // Create new message instance
         const newDiscussionInstance = new ChatDiscussionInstance(
           identifier,
-          [identifier, currentUser.identifier],
+          currentUser.identifier,
           websocket
         );
 

@@ -17,7 +17,7 @@ interface Listener {
  */
 export interface ChatDiscussionInstanceState {
   targetIdentifier: string;
-  targetIdentifiersToListen: string[];
+  currentUserIdentifier: string;
   messages: ChatMessage[];
   newMessage: string;
   canLoadMore: boolean;
@@ -37,9 +37,9 @@ export class ChatDiscussionInstance {
    */
   private _targetIdentifier: string;
   /**
-   * targetIdentifiersToListen
+   * currentUserIdentifier
    */
-  private _targetIdentifiersToListen: string[] = [];
+  private _currentUserIdentifier: string;
   /**
    * Websocket instance
    */
@@ -79,16 +79,16 @@ export class ChatDiscussionInstance {
   /**
    * Constructor for ChatInstance
    * @param targetIdentifier targetIdentifier
-   * @param targetIdentifiersToListen targetIdentifiersToListen
+   * @param currentUserIdentifier currentUserIdentifier
    * @param websocket websocket
    */
   constructor(
     targetIdentifier: string,
-    targetIdentifiersToListen: string[],
+    currentUserIdentifier: string,
     websocket: Websocket
   ) {
     this._targetIdentifier = targetIdentifier;
-    this._targetIdentifiersToListen = targetIdentifiersToListen;
+    this._currentUserIdentifier = currentUserIdentifier;
     this.websocket = websocket;
 
     this.getInitialMessages = this.getInitialMessages.bind(this);
@@ -124,18 +124,18 @@ export class ChatDiscussionInstance {
 
   /**
    * getTargetIdentifiersToListen
-   * @returns targetIdentifiersToListen
+   * @returns currentUserIdentifier
    */
-  get targetIdentifiersToListen(): string[] {
-    return this._targetIdentifiersToListen;
+  get currentUserIdentifier(): string {
+    return this._currentUserIdentifier;
   }
 
   /**
    * setTargetIdentifiersToListen
-   * @param targetIdentifiersToListen targetIdentifiersToListen
+   * @param currentUserIdentifier currentUserIdentifier
    */
-  set targetIdentifiersToListen(targetIdentifiersToListen: string[]) {
-    this._targetIdentifiersToListen = targetIdentifiersToListen;
+  set currentUserIdentifier(currentUserIdentifier: string) {
+    this._currentUserIdentifier = currentUserIdentifier;
     this.triggerChangeListeners();
   }
 
@@ -195,7 +195,9 @@ export class ChatDiscussionInstance {
     if (typeof data === "string") {
       const dataTyped: ChatMessage = JSON.parse(data);
 
-      if (this.targetIdentifiersToListen.includes(dataTyped.targetIdentifier)) {
+      const [senderIsCurrentUser, senderIsTarget] = this.whoIsSender(dataTyped);
+
+      if (senderIsCurrentUser || senderIsTarget) {
         this.messages.push(dataTyped);
 
         this.triggerChangeListeners();
@@ -211,7 +213,9 @@ export class ChatDiscussionInstance {
     if (typeof data === "string") {
       const dataTyped: ChatMessage = JSON.parse(data);
 
-      if (this.targetIdentifiersToListen.includes(dataTyped.targetIdentifier)) {
+      const [senderIsCurrentUser, senderIsTarget] = this.whoIsSender(dataTyped);
+
+      if (senderIsCurrentUser || senderIsTarget) {
         const index = this.messages.findIndex((msg) => msg.id === dataTyped.id);
 
         if (index !== -1) {
@@ -231,7 +235,9 @@ export class ChatDiscussionInstance {
     if (typeof data === "string") {
       const dataTyped: ChatMessage = JSON.parse(data);
 
-      if (this.targetIdentifiersToListen.includes(dataTyped.targetIdentifier)) {
+      const [senderIsCurrentUser, senderIsTarget] = this.whoIsSender(dataTyped);
+
+      if (senderIsCurrentUser || senderIsTarget) {
         const index = this.messages.findIndex((msg) => msg.id === dataTyped.id);
 
         if (index !== -1) {
@@ -241,6 +247,24 @@ export class ChatDiscussionInstance {
         }
       }
     }
+  };
+
+  /**
+   * Checks if the sender is the current user or the target
+   * @param msg msg
+   */
+  private whoIsSender = (msg: ChatMessage) => {
+    const sourceIdentifier = `user-${msg.sourceUserEntityId}`;
+
+    const senderIsCurrentUser =
+      this._currentUserIdentifier === sourceIdentifier &&
+      msg.targetIdentifier === this.targetIdentifier;
+
+    const senderIsTarget =
+      this.targetIdentifier === sourceIdentifier &&
+      this.currentUserIdentifier === msg.targetIdentifier;
+
+    return [senderIsCurrentUser, senderIsTarget];
   };
 
   /**
@@ -321,7 +345,7 @@ export class ChatDiscussionInstance {
   getCurrentState(): ChatDiscussionInstanceState {
     return {
       targetIdentifier: this.targetIdentifier,
-      targetIdentifiersToListen: this.targetIdentifiersToListen,
+      currentUserIdentifier: this.currentUserIdentifier,
       messages: this.messages,
       newMessage: this.newMessage,
       canLoadMore: this.canLoadMore,
