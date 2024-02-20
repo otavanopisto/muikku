@@ -290,12 +290,12 @@ public class ChatRESTService {
     for (int i = restUsers.size() - 1; i >= 0; i--) {
       // Don't list ourselves 
       if (restUsers.get(i).getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        restUsers.remove(restUsers.get(i));
+        restUsers.remove(i);
         continue;
       }
       // For students, strip other students only visible to staff
       if (isStudent && restUsers.get(i).getVisibility() == ChatUserVisibility.STAFF) {
-        restUsers.remove(restUsers.get(i));
+        restUsers.remove(i);
         continue;
       }
       // Students may not know each others' names
