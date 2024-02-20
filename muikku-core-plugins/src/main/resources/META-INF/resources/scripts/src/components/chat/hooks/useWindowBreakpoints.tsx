@@ -11,7 +11,7 @@ interface UseWindowBreakpointsProps {
 }
 
 const breakpoints = {
-  mobileBreakpoint: 650,
+  mobileBreakpoint: 640,
 };
 
 /**
