@@ -69,12 +69,12 @@ function ChatWindow(props: ChatWindowProps) {
   // When dragging or resizing is true, set body overflow to hidden
   // so overflow won't interfere with dragging or resizing
   React.useEffect(() => {
-    if (dragging || resising) {
+    if ((dragging || resising) && detached) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [dragging, resising]);
+  }, [detached, dragging, resising]);
 
   // Resize observer for checking if browser window is resized
   // and window is overflowing
@@ -1107,12 +1107,15 @@ function ChatWindow(props: ChatWindowProps) {
         transition={{ type: "tween", duration: 0.3 }}
       >
         <header
-          onPointerDown={(event) => {
-            event.preventDefault();
+          onPointerDown={(e) => {
+            e.preventDefault();
             setDragging(true);
-            dragControls.start(event);
+            dragControls.start(e);
           }}
-          onPointerUp={() => setDragging(false)}
+          onPointerUp={(e) => {
+            e.preventDefault();
+            setDragging(false);
+          }}
           className="chat__header"
         >
           <AnimatePresence initial={false}>
@@ -1129,12 +1132,14 @@ function ChatWindow(props: ChatWindowProps) {
                     buttonModifiers={["chat"]}
                     icon="arrow-down-right"
                     onClick={toggleDetached}
+                    onPointerDownCapture={(e) => e.stopPropagation()}
                   />
                 ) : (
                   <IconButton
                     buttonModifiers={["chat"]}
                     icon="arrow-up-left"
                     onClick={toggleDetached}
+                    onPointerDownCapture={(e) => e.stopPropagation()}
                   />
                 )}
               </motion.div>
@@ -1147,12 +1152,14 @@ function ChatWindow(props: ChatWindowProps) {
                 buttonModifiers={["chat"]}
                 icon="fullscreen-exit"
                 onClick={handleFullScreenClick}
+                onPointerDownCapture={(e) => e.stopPropagation()}
               />
             ) : (
               <IconButton
                 buttonModifiers={["chat"]}
                 icon="fullscreen"
                 onClick={handleFullScreenClick}
+                onPointerDownCapture={(e) => e.stopPropagation()}
               />
             )}
           </div>
@@ -1162,6 +1169,7 @@ function ChatWindow(props: ChatWindowProps) {
               buttonModifiers={["chat"]}
               icon="cross"
               onClick={handleCloseWindow}
+              onPointerDownCapture={(e) => e.stopPropagation()}
             />
           </div>
         </header>
