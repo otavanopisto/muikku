@@ -845,7 +845,7 @@ public class ChatController {
   // UserEntityId -> Set<UserEntityId>
   private ConcurrentHashMap<Long, Set<Long>> softBlocks;
 
-  // UserEntityId -> UserEntityId
+  // UserEntityId -> Set<UserEntityId>
   private ConcurrentHashMap<Long, Set<Long>> hardBlocks;
   
   private ObjectMapper mapper;

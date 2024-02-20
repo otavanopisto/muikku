@@ -287,20 +287,20 @@ public class ChatRESTService {
     }
 
     boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
-    for (ChatUserRestModel restUser : restUsers) {
+    for (int i = restUsers.size() - 1; i >= 0; i--) {
       // Don't list ourselves 
-      if (restUser.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        restUsers.remove(restUser);
+      if (restUsers.get(i).getId().equals(sessionController.getLoggedUserEntity().getId())) {
+        restUsers.remove(restUsers.get(i));
         continue;
       }
       // For students, strip other students only visible to staff
-      if (isStudent && restUser.getVisibility() == ChatUserVisibility.STAFF) {
-        restUsers.remove(restUser);
+      if (isStudent && restUsers.get(i).getVisibility() == ChatUserVisibility.STAFF) {
+        restUsers.remove(restUsers.get(i));
         continue;
       }
       // Students may not know each others' names
-      if (isStudent && restUser.getType() == ChatUserType.STUDENT) {
-        restUser.setName(null);
+      if (isStudent && restUsers.get(i).getType() == ChatUserType.STUDENT) {
+        restUsers.get(i).setName(null);
       }
     }
     
