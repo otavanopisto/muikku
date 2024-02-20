@@ -401,7 +401,7 @@ function useUsers(props: UseUsersProps) {
   const counselorIds = React.useMemo(
     () =>
       myCounselors && myCounselors.length
-        ? myCounselors.map((c) => c.userEntityId)
+        ? myCounselors.filter((c) => c.chatAvailable).map((c) => c.userEntityId)
         : [],
     [myCounselors]
   );
