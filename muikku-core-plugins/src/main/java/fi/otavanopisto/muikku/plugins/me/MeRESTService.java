@@ -31,6 +31,8 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -149,7 +151,8 @@ public class MeRESTService {
     List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
     
     for (UserEntity userEntity : guidanceCouncelors) {
-      boolean chatEnabled = chatController.isChatEnabled(userEntity);
+      ChatUser chatUser = chatController.getChatUser(userEntity);
+      boolean chatEnabled = chatUser != null && chatUser.getVisibility() == ChatUserVisibility.ALL;
 
       if (onlyChatEnabled && !chatEnabled) {
         continue;
