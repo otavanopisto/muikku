@@ -559,7 +559,7 @@ public class ChatController {
         handleVisibilityChange(userEntity.getId(), visibility);
       }
       if (!StringUtils.equals(chatUser.getNick(), nick)) {
-        handleNickChange(userEntity.getId(), visibility, nick);
+        handleNickChange(userEntity.getId(), nick);
       }
       chatUser = chatUserDAO.update(chatUser, visibility, nick);
       modified = true;
@@ -741,19 +741,14 @@ public class ChatController {
     }
   }
   
-  private void handleNickChange(Long userEntityId, ChatUserVisibility visibility, String nick) {
+  private void handleNickChange(Long userEntityId, String nick) {
     ChatUserRestModel chatUser = users.get(userEntityId);
     if (chatUser != null) {
       chatUser.setNick(nick);
     }
     try {
       NickChangeRestModel nickChange = new NickChangeRestModel(userEntityId, nick); 
-      if (visibility == ChatUserVisibility.STAFF) {
-        webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listOnlineUserEntityIds(ChatUserType.STAFF));
-      }
-      else {
-        webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listOnlineUserEntityIds());
-      }
+      webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), listOnlineUserEntityIds());
     }
     catch (JsonProcessingException e) {
       logger.severe(String.format("Message parse failure: %s", e.getMessage()));
