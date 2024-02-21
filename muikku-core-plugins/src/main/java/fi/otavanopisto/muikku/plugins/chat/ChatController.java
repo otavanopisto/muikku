@@ -35,6 +35,7 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
+import fi.otavanopisto.muikku.plugins.chat.rest.ChatLeaveType;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatMessageRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomDeletedRestModel;
 import fi.otavanopisto.muikku.plugins.chat.rest.ChatRoomRestModel;
@@ -130,7 +131,7 @@ public class ChatController {
       if (sessionIds != null) {
         sessionIds.remove(sessionId);
         if (sessionIds.isEmpty()) {
-          handleUserLeave(userEntityId, false);
+          handleUserLeave(userEntityId, ChatLeaveType.OFFLINE);
         }
       }
     }
@@ -549,7 +550,7 @@ public class ChatController {
     else if (chatUser != null && visibility == ChatUserVisibility.NONE) {
       // Chat has been turned off
       chatUserDAO.delete(chatUser);
-      handleUserLeave(userEntity.getId(), true);
+      handleUserLeave(userEntity.getId(), ChatLeaveType.PERMANENT);
       modified = true;
     }
     else if (chatUser != null && (visibility != chatUser.getVisibility() || !StringUtils.equals(chatUser.getNick(), nick))) {
@@ -659,7 +660,7 @@ public class ChatController {
     }
   }
 
-  private void handleUserLeave(Long userEntityId, boolean permanent) {
+  private void handleUserLeave(Long userEntityId, ChatLeaveType type) {
     
     // Remove all session data related to the user
     
@@ -682,7 +683,7 @@ public class ChatController {
     
     ChatUserRestModel chatUser = users.get(userEntityId);
     if (chatUser != null) {
-      if (permanent) {
+      if (type == ChatLeaveType.PERMANENT) {
         users.remove(userEntityId);
       }
       else {
@@ -694,7 +695,7 @@ public class ChatController {
     
     if (!userSessions.isEmpty()) {
       try {
-        ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, permanent);
+        ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, type);
         webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), listOnlineUserEntityIds());
       }
       catch (JsonProcessingException e) {
@@ -727,7 +728,7 @@ public class ChatController {
       userEntityIds.remove(userEntityId); // don't send message to ourselves
       if (!userEntityIds.isEmpty()) {
         try {
-          ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, true);
+          ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, ChatLeaveType.HIDDEN);
           webSocketMessenger.sendMessage("chat:user-left", mapper.writeValueAsString(userLeft), userEntityIds);
         }
         catch (JsonProcessingException e) {
