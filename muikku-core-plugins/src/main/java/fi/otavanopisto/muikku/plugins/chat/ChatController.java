@@ -264,7 +264,7 @@ public class ChatController {
   }
   
   public Set<Long> listOnlineUserEntityIds() {
-    return Collections.unmodifiableSet(userSessions.keySet()); 
+    return new HashSet<>(userSessions.keySet());
   }
   
   public Set<Long> listRoomUserEntityIds(ChatRoom chatRoom) {
@@ -632,6 +632,7 @@ public class ChatController {
 
         userRestModel.setName(name);
         Set<Long> userEntityIds = visibility == ChatUserVisibility.STAFF ? listOnlineUserEntityIds(ChatUserType.STAFF) : listOnlineUserEntityIds();
+        userEntityIds.remove(userEntity.getId()); // don't send message to ourselves
         webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
       }
       else {
@@ -640,11 +641,13 @@ public class ChatController {
 
         if (visibility == ChatUserVisibility.ALL) {
           Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+          userEntityIds.remove(userEntity.getId()); // don't send message to ourselves
           if (!userEntityIds.isEmpty()) {
             webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
           }
         }
         Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STAFF);
+        userEntityIds.remove(userEntity.getId()); // don't send message to ourselves
         if (!userEntityIds.isEmpty()) {
           userRestModel.setName(name);
           webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
@@ -708,6 +711,7 @@ public class ChatController {
     if (visibility == ChatUserVisibility.ALL) {
       // Visible to all, so let other students know the person is now around
       Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+      userEntityIds.remove(userEntityId); // don't send message to ourselves
       if (!userEntityIds.isEmpty()) {
         try {
           webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(chatUser), userEntityIds);
@@ -720,6 +724,7 @@ public class ChatController {
     else if (visibility == ChatUserVisibility.STAFF) {
       // Visible to staff, so let other students know the person not around
       Set<Long> userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+      userEntityIds.remove(userEntityId); // don't send message to ourselves
       if (!userEntityIds.isEmpty()) {
         try {
           ChatUserLeftRestModel userLeft = new ChatUserLeftRestModel(userEntityId, true);
