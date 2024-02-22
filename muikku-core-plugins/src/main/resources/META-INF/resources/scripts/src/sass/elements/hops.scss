@@ -530,7 +530,6 @@
 
   @include breakpoint($breakpoint-desktop) {
     display: flex;
-    min-height: 600px;
   }
 }
 

@@ -76,9 +76,12 @@ class GeneralInformation extends React.Component<
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="form__row">
-                <ProfilePicture />
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <ProfilePicture />
+                </div>
               </div>
+
               <ProfileProperty
                 modifier="study-start-date"
                 condition={!!this.props.status.profile.studyStartDate}

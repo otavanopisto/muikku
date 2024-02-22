@@ -85,6 +85,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     }, 10);
     this.props.executeOnOpen && this.props.executeOnOpen();
     this.props.onOpen && this.props.onOpen(element);
+
     if (this.props.disableScroll == true) {
       document.body.style.overflow = "hidden";
     }

@@ -308,6 +308,7 @@ export interface BasicInformation {
   studyTimeEnd?: string | null;
   educationalLevel?: string | null;
   counselorList?: string[];
+  curriculumName: string | null;
 }
 
 /**
@@ -388,6 +389,14 @@ export interface StudentSelfImage {
   canUseBasicComputerFunctionalities?: number;
   somethingElse?: string;
   wishesForTeachersAndSupervisors?: string;
+}
+
+/**
+ * SchoolSubjectMatrix
+ */
+export interface SchoolCurriculumMatrix {
+  curriculumName: string;
+  subjectsTable: SchoolSubject[];
 }
 
 /**

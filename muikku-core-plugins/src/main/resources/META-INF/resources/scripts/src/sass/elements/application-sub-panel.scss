@@ -786,7 +786,8 @@
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 0;
+  margin: 5px 0;
+  padding: 0 10px 0 0;
 
   &:not(:last-child) {
     border: 0;
@@ -1064,6 +1065,10 @@
 
 .application-sub-panel__item-data-container {
   display: flex;
+}
+
+.application-sub-panel__item-data-container--guider-course-credits {
+  flex-direction: column;
 }
 
 .application-sub-panel__item-data-container--organization-summary *:not(:first-child) {

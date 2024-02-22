@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChromePicker } from "react-color";
+import { ChromePicker, RGBColor } from "react-color";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { useLocalStorage } from "usehooks-ts";
@@ -11,6 +11,7 @@ import { ReadingRulerControllers } from "./reading-ruler-controllers";
 import useIsAtBreakpoint from "../../../hooks/useIsAtBreakpoint";
 import { throttle } from "lodash";
 import { useTranslation } from "react-i18next";
+import { breakpoints } from "~/util/breakpoints";
 
 /**
  * ReadingRulerProps
@@ -40,7 +41,7 @@ interface ReadingRulerPresetSettings {
   rulerHeight: number;
   invert: boolean;
   overlayClickActive: boolean;
-  backgroundColor: string;
+  backgroundColorRGBA: RGBColor | undefined;
 }
 
 /**
@@ -59,7 +60,12 @@ const readingRulerPresetCustom: Partial<ReadingRulerPresetSettings> = {
   rulerHeight: defaultProps.defaultRulerHeight,
   invert: defaultProps.defaultInverted,
   overlayClickActive: false,
-  backgroundColor: "#000000",
+  backgroundColorRGBA: {
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 0.5,
+  },
 };
 
 /**
@@ -69,7 +75,12 @@ const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
   rulerHeight: 10,
   invert: defaultProps.defaultInverted,
   overlayClickActive: false,
-  backgroundColor: "#000000",
+  backgroundColorRGBA: {
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 0.5,
+  },
 };
 
 /**
@@ -79,7 +90,7 @@ const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
 //   rulerHeight: 10,
 //   invert: defaultProps.defaultInverted,
 //   overlayClickActive: true,
-//   backgroundColor: "#1dafdd",
+//   backgroundColorRGBA: "#1dafdd",
 // };
 
 /**
@@ -89,7 +100,7 @@ const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
 //   rulerHeight: 10,
 //   invert: defaultProps.defaultInverted,
 //   overlayClickActive: true,
-//   backgroundColor: "#dd1daf",
+//   backgroundColorRGBA: "#dd1daf",
 // };
 
 /**
@@ -119,7 +130,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
       },
     } as ReadingRulerState);
 
-  const mobileBreakpoint = useIsAtBreakpoint(48);
+  const mobileBreakpoint = useIsAtBreakpoint(breakpoints.breakpointPad);
 
   const top = React.useRef<HTMLDivElement>(null);
   const middle = React.useRef<HTMLDivElement>(null);
@@ -130,7 +141,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   const { activePreset, activePresetSettings, customPresetSettings } =
     readingRulerState;
 
-  const { rulerHeight, invert, overlayClickActive, backgroundColor } =
+  const { rulerHeight, invert, overlayClickActive, backgroundColorRGBA } =
     activePresetSettings;
 
   React.useEffect(() => {
@@ -269,15 +280,31 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
           middle.current.style.width = "100%";
         }
 
+        // Because previous version did have possibility to value to be string (hex)
+        // and after latest update it is always RGBColor type.
+        // These are default values if backgroundColorRGBA is string. In this case its coming as undefined
+        // from localstorage
+        let redValue = 0;
+        let greenValue = 0;
+        let blueValue = 0;
+        let alphaValue = 0.5;
+
+        if (backgroundColorRGBA) {
+          redValue = backgroundColorRGBA.r;
+          greenValue = backgroundColorRGBA.g;
+          blueValue = backgroundColorRGBA.b;
+          alphaValue = backgroundColorRGBA.a;
+        }
+
         // Background color changes and invert settings
         if (!overlayClickActive && invert) {
           top.current.style.background = "unset";
-          middle.current.style.background = backgroundColor;
+          middle.current.style.background = `rgba(${redValue}, ${greenValue}, ${blueValue} , ${alphaValue})`;
           bottom.current.style.background = "unset";
         } else {
-          top.current.style.background = backgroundColor;
+          top.current.style.background = `rgba(${redValue}, ${greenValue}, ${blueValue} , ${alphaValue})`;
           middle.current.style.background = "unset";
-          bottom.current.style.background = backgroundColor;
+          bottom.current.style.background = `rgba(${redValue}, ${greenValue}, ${blueValue} , ${alphaValue})`;
         }
       }
     };
@@ -289,7 +316,7 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
     activePreset,
     rulerHeight,
     cursorLocation,
-    backgroundColor,
+    backgroundColorRGBA,
     invert,
     pinned,
     overlayClickActive,
@@ -547,10 +574,9 @@ export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
               content={
                 <div>
                   <ChromePicker
-                    disableAlpha
-                    color={backgroundColor}
+                    color={backgroundColorRGBA}
                     onChange={(e) =>
-                      handleSettingsChange("backgroundColor", e.hex)
+                      handleSettingsChange("backgroundColorRGBA", e.rgb)
                     }
                   />
                 </div>

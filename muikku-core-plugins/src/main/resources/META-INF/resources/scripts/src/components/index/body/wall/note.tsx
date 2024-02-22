@@ -1,7 +1,7 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { isOverdue } from "~/helper-functions/dates";
-import * as moment from "moment";
+import moment from "moment";
 import { useTranslation } from "react-i18next";
 import NotesItemEdit from "~/components/general/notes/notes-item-edit";
 import Link from "~/components/general/link";

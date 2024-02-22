@@ -24,15 +24,15 @@ import "~/sass/elements/application-sub-panel.scss";
 import { bindActionCreators } from "redux";
 import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 import { useTranslation } from "react-i18next";
-import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
 import { useRecordWorkspace } from "./hooks/useRecordWorkpace";
+import { WorkspaceActivity } from "~/generated/client";
 
 /**
  * AssignmentsAndDiariesProps
  */
 interface AssignmentsAndDiariesProps {
   status: StatusType;
-  credit: RecordWorkspaceActivity;
+  credit: WorkspaceActivity;
   userEntityId: number;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -542,7 +542,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       ),
     },
     {
-      id: "EXCERCISE",
+      id: "EXERCISE",
       name: t("labels.exercises", { ns: "materials" }),
       type: "excercises",
       component: (

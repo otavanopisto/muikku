@@ -204,6 +204,7 @@ const Notes: React.FC<NotesProps> = (props) => {
       activeTab={activeTab}
       onTabChange={handleTabChange}
       tabs={notesTabs}
+      nested
     />
   );
 };

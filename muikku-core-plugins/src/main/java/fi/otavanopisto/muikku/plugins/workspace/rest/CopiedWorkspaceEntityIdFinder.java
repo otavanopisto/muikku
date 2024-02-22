@@ -15,7 +15,7 @@ public class CopiedWorkspaceEntityIdFinder {
 
   @Transactional (value = TxType.REQUIRES_NEW)
   public Long findCopiedWorkspaceEntityId(Workspace workspace) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(workspace.getSchoolDataSource(), workspace.getIdentifier());
     return workspaceEntity == null ? null : workspaceEntity.getId();
   }
 

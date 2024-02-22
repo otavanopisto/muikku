@@ -1279,7 +1279,6 @@ class MaterialEditor extends React.Component<
               hintText={t("content.add", { ns: "materials", context: "file" })}
               deleteFileText={t("actions.remove")}
               downloadFileText={t("actions.download")}
-              showURL
               notificationOfSuccessText={t("notifications.uploadSuccess", {
                 ns: "files",
               })}
