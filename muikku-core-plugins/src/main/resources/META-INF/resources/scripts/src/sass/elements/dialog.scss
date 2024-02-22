@@ -95,20 +95,20 @@
 .dialog__window {
   align-items: flex-start;
   background-color: $color-dialog-default-background;
-  bottom: 0;
+  border-radius: 5px;
+  bottom: 10px;
   display: flex;
   flex-flow: column nowrap;
   font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   justify-content: flex-start;
-  left: 0;
+  left: 10px;
   position: fixed;
-  right: 0;
-  top: 0;
-  width: 100%;
+  right: 10px;
+  top: 10px;
+  width: calc(100% - 20px);
 
   @include breakpoint($breakpoint-pad) {
-    border-radius: 5px;
     bottom: auto;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
@@ -329,6 +329,7 @@
 .dialog__header {
   align-items: center;
   background-color: $color-dialog-mobile-background;
+  border-radius: 5px 5px 0 0;
   color: $color-dialog-mobile-text;
   display: flex;
   flex-basis: 3rem;
@@ -341,7 +342,6 @@
 
   @include breakpoint($breakpoint-pad) {
     background-color: $color-dialog-desktop-background;
-    border-radius: 5px 5px 0 0;
     color: $color-dialog-desktop-text;
     display: flex;
     height: 3rem;
