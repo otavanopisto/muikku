@@ -2,10 +2,8 @@ package fi.otavanopisto.muikku.plugins.communicator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -104,8 +102,10 @@ public class CommunicatorAutoReplyController {
           else {
             replySubject = localeController.getText(sessionController.getLocale(), "plugin.communicator.autoreply", new String[] { startDate,endDate});
           }
-          List<UserEntity> recipientsList = new ArrayList<UserEntity>();
-          recipientsList.add(sender);
+
+          CommunicatorMessageRecipientList recipientsList = new CommunicatorMessageRecipientList();
+          recipientsList.addRecipient(sender);
+
           VacationNotifications vacationNotification = communicatorController.findVacationNotification(sender, recipient);
           
           if (vacationNotification != null) {
@@ -119,13 +119,13 @@ public class CommunicatorAutoReplyController {
               communicatorController.updateVacationNotificationDate(vacationNotification, notificationDate);
               CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
               CommunicatorMessageCategory category = communicatorController.persistCategory("autoVacationReply");
-              communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, category, replySubject, replyMessage, null);
+              communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, category, replySubject, replyMessage, null);
             }
           } else {
             communicatorController.createVacationNotification(sender, recipient, notificationDate);
             CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
             CommunicatorMessageCategory category = communicatorController.persistCategory("autoVacationReply");
-            communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, null, null, null, category, replySubject, replyMessage, null);
+            communicatorController.createMessage(communicatorMessageId, recipient, recipientsList, category, replySubject, replyMessage, null);
           }
         }
       }
