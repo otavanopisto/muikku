@@ -40,6 +40,7 @@ function useChat(currentUser: ChatUser) {
     usersWithDiscussionIds,
     blockedUsersIds,
     blockUser,
+    closePrivateDiscussion,
     unblockUser,
   } = useChatUsers({ currentUser });
   const {
@@ -210,9 +211,9 @@ function useChat(currentUser: ChatUser) {
         setActiveDiscussionIdentifier(null);
         chatViews.goTo("overview");
       }
-      await blockUser(currentUser, "SOFT");
+      await closePrivateDiscussion(currentUser);
     },
-    [activeDiscussionIdentifier, blockUser, chatViews]
+    [activeDiscussionIdentifier, chatViews, closePrivateDiscussion]
   );
 
   /**
@@ -221,7 +222,7 @@ function useChat(currentUser: ChatUser) {
    */
   const closeAndBlockDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
-      await blockUser(currentUser, "HARD");
+      await blockUser(currentUser);
 
       // Close discussion if it is open
       if (activeDiscussionIdentifier === currentUser.identifier) {
@@ -316,9 +317,7 @@ function useChat(currentUser: ChatUser) {
   }, [activeDiscussionIdentifier, rooms, usersObject]);
 
   // Users object including the current user
-  const usersObjectIncludingMe: {
-    [key: string]: ChatUser;
-  } = React.useMemo(
+  const usersObjectIncludingMe = React.useMemo(
     () => ({ ...usersObject, [currentUser.id]: currentUser }),
     [usersObject, currentUser]
   );
@@ -362,12 +361,12 @@ function useChat(currentUser: ChatUser) {
 
   // My discussions with counselors, sorted alphabetically
   const myDiscussionsCouncelors = React.useMemo(() => {
-    if (isObjEmpty(usersObject)) {
+    if (isObjEmpty(usersObject) || counselorIds.length === 0) {
       return [];
     }
 
-    return counselorIds
-      .map((id) => usersObject[id])
+    return Object.values(usersObject)
+      .filter((u) => counselorIds.includes(u.id))
       .sort(sortUsersAlphabetically);
   }, [counselorIds, usersObject]);
 

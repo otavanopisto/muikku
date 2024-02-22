@@ -6,7 +6,6 @@ import {
   ChatMessage,
   ChatUser,
   GuidanceCouncelorContact,
-  UpdateBlockRequestBlockTypeEnum,
 } from "~/generated/client";
 import { ChatUserFilters, generateHash } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
@@ -117,7 +116,7 @@ function useUsers(props: UseUsersProps) {
         if (typeof data === "string") {
           const dataTyped: {
             id: number;
-            permanent: boolean;
+            reason: "OFFLINE" | "HIDDEN" | "PERMANENT";
           } = JSON.parse(data);
           // Full users list
           setUsers((users) => {
@@ -127,17 +126,17 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
-              if (dataTyped.permanent) {
-                updatedPeople.splice(index, 1);
-                return updatedPeople;
+
+              switch (dataTyped.reason) {
+                case "OFFLINE":
+                  updatedPeople[index].presence = "OFFLINE";
+                  break;
+                case "HIDDEN":
+                case "PERMANENT":
+                  updatedPeople.splice(index, 1);
+                  break;
               }
 
-              updatedPeople[index].nick = dataTyped.permanent
-                ? null
-                : updatedPeople[index].nick;
-              updatedPeople[index].presence = dataTyped.permanent
-                ? "DISABLED"
-                : "OFFLINE";
               return updatedPeople;
             }
 
@@ -152,12 +151,20 @@ function useUsers(props: UseUsersProps) {
 
             if (index !== -1) {
               const updatedPeople = [...users];
-              updatedPeople[index].nick = dataTyped.permanent
-                ? null
-                : updatedPeople[index].nick;
-              updatedPeople[index].presence = dataTyped.permanent
-                ? "DISABLED"
-                : "OFFLINE";
+
+              switch (dataTyped.reason) {
+                case "OFFLINE":
+                  updatedPeople[index].presence = "OFFLINE";
+                  break;
+                case "HIDDEN":
+                  updatedPeople[index].presence =
+                    currentUser.type === "STUDENT" ? "DISABLED" : "OFFLINE";
+                  break;
+                case "PERMANENT":
+                  updatedPeople[index].presence = "DISABLED";
+                  break;
+              }
+
               return updatedPeople;
             }
 
@@ -255,7 +262,7 @@ function useUsers(props: UseUsersProps) {
         onNewMgsSentUpdateActiveDiscussions
       );
     };
-  }, [websocket]);
+  }, [currentUser.type, websocket]);
 
   /**
    * Fetch users
@@ -283,9 +290,7 @@ function useUsers(props: UseUsersProps) {
    * Fetch my counselors
    */
   const fetchMyCounselors = async () => {
-    const counselors = await meApi.getGuidanceCounselors({
-      onlyChatEnabled: true,
-    });
+    const counselors = await meApi.getGuidanceCounselors();
 
     setMyCounselors(counselors);
   };
@@ -306,46 +311,59 @@ function useUsers(props: UseUsersProps) {
    * @param user target chat user
    * @param type type of block. SOFT only hides and HARD also prevents user from sending messages.
    */
-  const blockUser = React.useCallback(
-    async (user: ChatUser, type: UpdateBlockRequestBlockTypeEnum) => {
-      await chatApi.updateBlock({
-        updateBlockRequest: {
-          blockType: type,
-          targetUserEntityId: user.id,
-        },
+  const blockUser = React.useCallback(async (user: ChatUser) => {
+    await chatApi.blockUser({
+      identifier: user.identifier,
+    });
+
+    unstable_batchedUpdates(() => {
+      setBlockedUsers((prev) => [...prev, user]);
+      setUsersWithActiveDiscussion((prev) => {
+        const index = prev.findIndex((u) => u.id === user.id);
+
+        if (index !== -1) {
+          const updatedUsers = [...prev];
+          updatedUsers.splice(index, 1);
+          return updatedUsers;
+        }
+
+        return prev;
       });
-
-      unstable_batchedUpdates(() => {
-        setBlockedUsers((prev) => [...prev, user]);
-        setUsersWithActiveDiscussion((prev) => {
-          const index = prev.findIndex((u) => u.id === user.id);
-
-          if (index !== -1) {
-            const updatedUsers = [...prev];
-            updatedUsers.splice(index, 1);
-            return updatedUsers;
-          }
-
-          return prev;
-        });
-      });
-    },
-    []
-  );
+    });
+  }, []);
 
   /**
    * Unblock user
    * @param user user
    */
   const unblockUser = React.useCallback(async (user: ChatUser) => {
-    await chatApi.updateBlock({
-      updateBlockRequest: {
-        blockType: "NONE",
-        targetUserEntityId: user.id,
-      },
+    await chatApi.unblockUser({
+      identifier: user.identifier,
     });
 
     setBlockedUsers((prev) => {
+      const index = prev.findIndex((u) => u.id === user.id);
+
+      if (index !== -1) {
+        const updatedUsers = [...prev];
+        updatedUsers.splice(index, 1);
+        return updatedUsers;
+      }
+
+      return prev;
+    });
+  }, []);
+
+  /**
+   * Close private discussion
+   * @param user user
+   */
+  const closePrivateDiscussion = React.useCallback(async (user: ChatUser) => {
+    await chatApi.closeConversation({
+      identifier: user.identifier,
+    });
+
+    setUsersWithActiveDiscussion((prev) => {
       const index = prev.findIndex((u) => u.id === user.id);
 
       if (index !== -1) {
@@ -403,7 +421,7 @@ function useUsers(props: UseUsersProps) {
   const counselorIds = React.useMemo(
     () =>
       myCounselors && myCounselors.length
-        ? myCounselors.filter((c) => c.chatAvailable).map((c) => c.userEntityId)
+        ? myCounselors.map((c) => c.userEntityId)
         : [],
     [myCounselors]
   );
@@ -449,15 +467,16 @@ function useUsers(props: UseUsersProps) {
   }, [users, usersWithActiveDiscussion]);
 
   return {
-    userFilters,
-    updateUserFilters,
-    usersWithChatActiveIds,
-    counselorIds,
-    usersWithDiscussionIds,
     blockedUsersIds,
     blockUser,
+    closePrivateDiscussion,
+    counselorIds,
     unblockUser,
+    updateUserFilters,
+    userFilters,
     usersObject,
+    usersWithChatActiveIds,
+    usersWithDiscussionIds,
   };
 }
 

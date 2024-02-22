@@ -21,7 +21,6 @@ function useChatActivity(
   const chatActivityRef = React.useRef(chatActivity);
   chatActivityRef.current = chatActivity;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const componentMounted = React.useRef(true);
 
   // Initial fetch
@@ -161,7 +160,7 @@ function useChatActivity(
       return {};
     }
 
-    // Filter activities that are not user activities
+    // Filter activities that are user activities
     const userActivities = chatActivity.filter((activity) =>
       activity.targetIdentifier.startsWith("user-")
     );

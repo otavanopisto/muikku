@@ -17,7 +17,7 @@ import ChatProfileAvatar from "./chat-profile-avatar";
 import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
 import Button, { IconButton } from "../general/button";
 import TextareaAutosize from "react-textarea-autosize";
-import { parseLines } from "./chat-helpers";
+import { generateHash, parseLines } from "./chat-helpers";
 
 /**
  * ChatMessageProps
@@ -32,7 +32,7 @@ interface ChatMessageProps {
  * @returns JSX.Element
  */
 const ChatMessage = (props: ChatMessageProps) => {
-  const { isMobileWidth, usersObjectIncludingMe } = useChatContext();
+  const { isMobileWidth } = useChatContext();
 
   const {
     editedMessage,
@@ -117,7 +117,10 @@ const ChatMessage = (props: ChatMessageProps) => {
     }
   };
 
-  const nick = usersObjectIncludingMe[msg.sourceUserEntityId].nick;
+  // If message nick exists, use it, else use a generated hash that indicates that the
+  // user has closed the chat for good
+  const nick =
+    msg.nick || `Poistunut#${generateHash(`user-${msg.sourceUserEntityId}`)}`;
 
   const chatMessageContent = editMode ? (
     <React.Fragment key="editable">

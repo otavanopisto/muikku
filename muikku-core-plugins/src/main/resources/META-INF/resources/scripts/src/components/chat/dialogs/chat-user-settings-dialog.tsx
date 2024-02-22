@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 import Button from "~/components/general/button";
 import ChatDialog from "./chat-dialog";
 import { ChatUserVisibilityEnum } from "~/generated/client";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 const chatApi = MApi.getChatApi();
 
@@ -37,6 +39,13 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
   );
   const [currentSelectValue, setCurrentSelectValue] =
     React.useState<ChatUserVisibilityEnum>(currentUser.visibility);
+
+  React.useEffect(() => {
+    unstable_batchedUpdates(() => {
+      setCurrentNickValue(currentUser.nick);
+      setCurrentSelectValue(currentUser.visibility);
+    });
+  }, [currentUser]);
 
   /**
    * Handles save click
