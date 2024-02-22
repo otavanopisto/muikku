@@ -386,9 +386,13 @@ public class ChatRESTService {
         return Response.status(Status.FORBIDDEN).build();
       }
       
-      // If target had closed conversation with us, reopen it
+      // If target had closed conversation with us (or vice versa), reopen it
       
       ChatClosedConvo closedConvo = chatClosedConvoDAO.findBySourceUserEntityIdAndTargetUserEntityId(targetUserEntity.getId(), sessionController.getLoggedUserEntity().getId());
+      if (closedConvo != null) {
+        chatClosedConvoDAO.delete(closedConvo);
+      }
+      closedConvo = chatClosedConvoDAO.findBySourceUserEntityIdAndTargetUserEntityId(sessionController.getLoggedUserEntity().getId(), targetUserEntity.getId());
       if (closedConvo != null) {
         chatClosedConvoDAO.delete(closedConvo);
       }
