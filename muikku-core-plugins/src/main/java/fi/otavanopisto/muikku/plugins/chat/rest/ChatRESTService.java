@@ -29,9 +29,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.chat.ChatPermissions;
+import fi.otavanopisto.muikku.plugins.chat.dao.ChatBlockDAO;
+import fi.otavanopisto.muikku.plugins.chat.dao.ChatClosedConvoDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatReadDAO;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatBlockType;
+import fi.otavanopisto.muikku.plugins.chat.dao.ChatUserDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatBlock;
+import fi.otavanopisto.muikku.plugins.chat.model.ChatClosedConvo;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRead;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
@@ -60,6 +64,15 @@ public class ChatRESTService {
   
   @Inject
   private ChatReadDAO chatReadDAO;
+
+  @Inject
+  private ChatBlockDAO chatBlockDAO;
+
+  @Inject
+  private ChatClosedConvoDAO chatClosedConvoDAO;
+
+  @Inject
+  private ChatUserDAO chatUserDAO;
 
   @Inject
   private SessionController sessionController;
@@ -135,6 +148,10 @@ public class ChatRESTService {
     if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    ChatUser chatUser = chatUserDAO.findByUserEntityId(sessionController.getLoggedUserEntity().getId());
+    if (chatUser == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Chat user not found" ).build();
+    }
     
     // Action
     
@@ -144,6 +161,10 @@ public class ChatRESTService {
       // Don't list ourselves 
       if (restUsers.get(i).getId().equals(sessionController.getLoggedUserEntity().getId())) {
         restUsers.remove(i);
+        continue;
+      }
+      // If I am a student with staff only visibility, I can't see other students at all (a bit dumb)
+      if (isStudent && chatUser.getVisibility() == ChatUserVisibility.STAFF && restUsers.get(i).getType() == ChatUserType.STUDENT) {
         continue;
       }
       // For students, strip those only visible to staff
@@ -220,26 +241,23 @@ public class ChatRESTService {
     if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    ChatUser chatUser = chatUserDAO.findByUserEntityId(sessionController.getLoggedUserEntity().getId());
+    if (chatUser == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Chat user not found" ).build();
+    }
     
     // Action
     
-    List<ChatUserRestModel> restUsers = chatController.getBlockList(sessionController.getLoggedUserEntity().getId());
     boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
-    for (int i = restUsers.size() - 1; i >= 0; i--) {
-      // Don't list ourselves 
-      if (restUsers.get(i).getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        restUsers.remove(i);
-        continue;
-      }
-      // For students, strip other students only visible to staff
-      if (isStudent && restUsers.get(i).getVisibility() == ChatUserVisibility.STAFF) {
-        restUsers.remove(i);
-        continue;
-      }
+    List<ChatUserRestModel> restUsers = new ArrayList<>();
+    List<ChatBlock> blocks = chatBlockDAO.listBySourceUserEntityId(sessionController.getLoggedUserEntity().getId());
+    for (ChatBlock block : blocks) {
+      ChatUserRestModel restUser = chatController.getChatUserRestModel(block.getTargetUserEntityId());
       // Students may not know each others' names
-      if (isStudent && restUsers.get(i).getType() == ChatUserType.STUDENT) {
-        restUsers.get(i).setName(null);
+      if (isStudent && restUser.getType() == ChatUserType.STUDENT) {
+        restUser.setName(null);
       }
+      restUsers.add(restUser);
     }
     
     // Response
@@ -247,19 +265,6 @@ public class ChatRESTService {
     return Response.ok(restUsers).build();
   }
   
-  @Path("/block")
-  @PUT
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateBlock(ChatBlockRestModel payload) {
-    if (payload.getBlockType() == ChatBlockType.NONE) {
-      chatController.removeBlock(sessionController.getLoggedUserEntity().getId(), payload.getTargetUserEntityId());
-    }
-    else {
-      chatController.addBlock(sessionController.getLoggedUserEntity().getId(), payload.getTargetUserEntityId(), payload.getBlockType());
-    }
-    return Response.noContent().build();
-  }
-
   @Path("/privateDiscussions")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -276,8 +281,13 @@ public class ChatRESTService {
     Set<Long> userEntityIds = chatMessageDAO.listPrivateDiscussionPartners(sessionController.getLoggedUserEntity().getId());
     List<ChatUserRestModel> restUsers = new ArrayList<>();
     for (Long userEntityId : userEntityIds) {
-      ChatBlockType blockType = chatController.getBlockType(sessionController.getLoggedUserEntity().getId(), userEntityId);
-      if (blockType != ChatBlockType.NONE) {
+      // Don't list ourselves 
+      if (userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+        continue;
+      }
+      // Skip discussions that we have closed ourselves
+      ChatClosedConvo closedConvo = chatClosedConvoDAO.findBySourceUserEntityIdAndTargetUserEntityId(sessionController.getLoggedUserEntity().getId(), userEntityId);
+      if (closedConvo != null) {
         continue;
       }
       ChatUserRestModel chatUser = chatController.getChatUserRestModel(userEntityId); 
@@ -287,20 +297,12 @@ public class ChatRESTService {
     }
 
     boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
-    for (int i = restUsers.size() - 1; i >= 0; i--) {
-      // Don't list ourselves 
-      if (restUsers.get(i).getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        restUsers.remove(i);
-        continue;
-      }
-      // For students, strip other students only visible to staff
-      if (isStudent && restUsers.get(i).getVisibility() == ChatUserVisibility.STAFF) {
-        restUsers.remove(i);
-        continue;
-      }
-      // Students may not know each others' names
-      if (isStudent && restUsers.get(i).getType() == ChatUserType.STUDENT) {
-        restUsers.get(i).setName(null);
+    if (isStudent) {
+      for (int i = restUsers.size() - 1; i >= 0; i--) {
+        // Students may not know each others' names
+        if (restUsers.get(i).getType() == ChatUserType.STUDENT) {
+          restUsers.get(i).setName(null);
+        }
       }
     }
     
@@ -378,8 +380,16 @@ public class ChatRESTService {
       
       // Check that the target user has not blocked us
       
-      if (chatController.getBlockType(sessionController.getLoggedUserEntity().getId(), targetUserEntity.getId()) == ChatBlockType.HARD) {
+      ChatBlock chatBlock = chatBlockDAO.findBySourceUserEntityIdAndTargetUserEntityId(targetUserEntity.getId(), sessionController.getLoggedUserEntity().getId());
+      if (chatBlock != null) {
         return Response.status(Status.FORBIDDEN).build();
+      }
+      
+      // If target had closed conversation with us, reopen it
+      
+      ChatClosedConvo closedConvo = chatClosedConvoDAO.findBySourceUserEntityIdAndTargetUserEntityId(targetUserEntity.getId(), sessionController.getLoggedUserEntity().getId());
+      if (closedConvo != null) {
+        chatClosedConvoDAO.delete(closedConvo);
       }
       
       chatController.postMessage(targetUserEntity, sessionController.getLoggedUserEntity(), payload.getMessage());
@@ -440,6 +450,42 @@ public class ChatRESTService {
     }
     
     chatController.deleteMessage(chatMessage, sessionController.getLoggedUserEntity());
+    return Response.status(Status.NO_CONTENT).build();
+  }
+  
+  @Path("/block/{IDENTIFIER}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response blockUser(@PathParam("IDENTIFIER") String identifier) {
+    Long id = extractId(identifier);
+    ChatBlock chatBlock = chatBlockDAO.findBySourceUserEntityIdAndTargetUserEntityId(sessionController.getLoggedUserEntity().getId(), id);
+    if (chatBlock == null) {
+      chatBlockDAO.create(sessionController.getLoggedUserEntity().getId(), id);
+    }
+    return Response.status(Status.NO_CONTENT).build();
+  }
+
+  @Path("/unblock/{IDENTIFIER}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response unblockUser(@PathParam("IDENTIFIER") String identifier) {
+    Long id = extractId(identifier);
+    ChatBlock chatBlock = chatBlockDAO.findBySourceUserEntityIdAndTargetUserEntityId(sessionController.getLoggedUserEntity().getId(), id);
+    if (chatBlock != null) {
+      chatBlockDAO.delete(chatBlock);
+    }
+    return Response.status(Status.NO_CONTENT).build();
+  }
+
+  @Path("/closeDiscussion/{IDENTIFIER}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response closeDiscussion(@PathParam("IDENTIFIER") String identifier) {
+    Long id = extractId(identifier);
+    ChatClosedConvo closedConvo = chatClosedConvoDAO.findBySourceUserEntityIdAndTargetUserEntityId(sessionController.getLoggedUserEntity().getId(), id);
+    if (closedConvo == null) {
+      chatClosedConvoDAO.create(sessionController.getLoggedUserEntity().getId(), id);
+    }
     return Response.status(Status.NO_CONTENT).build();
   }
   

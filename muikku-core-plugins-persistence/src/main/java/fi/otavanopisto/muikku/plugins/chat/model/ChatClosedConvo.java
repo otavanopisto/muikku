@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
       @UniqueConstraint( columnNames = {"sourceUserEntityId", "targetUserEntityId"} )
     }
   )
-public class ChatBlock {
+public class ChatClosedConvo {
 
   public Long getId() {
     return id;
