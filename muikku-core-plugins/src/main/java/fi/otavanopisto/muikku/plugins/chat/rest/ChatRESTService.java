@@ -165,6 +165,7 @@ public class ChatRESTService {
       }
       // If I am a student with staff only visibility, I can't see other students at all (a bit dumb)
       if (isStudent && chatUser.getVisibility() == ChatUserVisibility.STAFF && restUsers.get(i).getType() == ChatUserType.STUDENT) {
+        restUsers.remove(i);
         continue;
       }
       // For students, strip those only visible to staff
