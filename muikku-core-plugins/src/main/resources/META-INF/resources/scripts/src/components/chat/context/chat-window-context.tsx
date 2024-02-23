@@ -5,7 +5,7 @@ import { createContext } from "react";
 import useChatWindow, { UseChatWindow } from "../hooks/useChatWindow";
 
 /**
- * ChatPrivateContextType
+ * ChatWindowContext
  */
 export interface ChatWindowContext extends UseChatWindow {}
 

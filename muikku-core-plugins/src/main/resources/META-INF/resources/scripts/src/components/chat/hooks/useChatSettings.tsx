@@ -42,16 +42,17 @@ function useChatSettings() {
 
   React.useEffect(() => {
     /**
-     * onChatSettingsChange
+     * Handles chat settings change event
      * @param data data
      */
     const onChatSettingsChange = (data: unknown) => {
       if (componentMounted.current) {
         if (typeof data === "string") {
-          const parsedData = JSON.parse(data) as {
+          const parsedData: {
             nick: string;
             visibility: ChatUserVisibilityEnum;
-          };
+          } = JSON.parse(data);
+
           setCurrentUser((prev) => ({
             ...prev,
             nick: parsedData.nick,

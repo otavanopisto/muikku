@@ -24,7 +24,7 @@ interface UseUsersProps {
 }
 
 /**
- * Custom hook to handle loading users from rest api.
+ * Custom hook to handle loading and updating users from rest api.
  * @param props props
  */
 function useUsers(props: UseUsersProps) {
@@ -46,7 +46,7 @@ function useUsers(props: UseUsersProps) {
     React.useState<GuidanceCouncelorContact[]>(null);
   const [blockedUsers, setBlockedUsers] = React.useState<ChatUser[]>([]);
 
-  const usersRef = React.useRef([]);
+  const usersRef = React.useRef<ChatUser[]>([]);
 
   const componentMounted = React.useRef(true);
 
@@ -68,7 +68,7 @@ function useUsers(props: UseUsersProps) {
 
   React.useEffect(() => {
     /**
-     * onChatUserJoinedMsg
+     * Handles updating user presence when user joins chat
      * @param data user joined chat.
      */
     const onChatUserJoinedMsg = (data: unknown) => {
@@ -112,7 +112,7 @@ function useUsers(props: UseUsersProps) {
     };
 
     /**
-     * onChatUserLeftMsg
+     * Handles updating user presence when user leaves chat
      * @param data data from server.
      */
     const onChatUserLeftMsg = (data: unknown) => {
@@ -180,10 +180,10 @@ function useUsers(props: UseUsersProps) {
     };
 
     /**
-     * ChatUsersNickChange
+     * Handles updating user nick when user changes it
      * @param data data from server.
      */
-    const ChatUsersNickChange = (data: unknown) => {
+    const onChatUsersNickChange = (data: unknown) => {
       if (componentMounted.current) {
         if (typeof data === "string") {
           const dataTyped = JSON.parse(data) as {
@@ -241,7 +241,15 @@ function useUsers(props: UseUsersProps) {
           );
 
           if (sender) {
-            addUserToActiveDiscussionsList(sender);
+            setBookmarkedUsers((prev) => {
+              const index = prev.findIndex((u) => u.id === sender.id);
+
+              if (index === -1) {
+                return [sender, ...prev];
+              }
+
+              return prev;
+            });
           }
         }
       }
@@ -251,7 +259,7 @@ function useUsers(props: UseUsersProps) {
     // there has happened some changes with that message
     websocket.addEventCallback("chat:user-joined", onChatUserJoinedMsg);
     websocket.addEventCallback("chat:user-left", onChatUserLeftMsg);
-    websocket.addEventCallback("chat:nick-change", ChatUsersNickChange);
+    websocket.addEventCallback("chat:nick-change", onChatUsersNickChange);
     websocket.addEventCallback(
       "chat:message-sent",
       onNewMgsSentUpdateActiveDiscussions
@@ -261,7 +269,7 @@ function useUsers(props: UseUsersProps) {
       // Remove callback when unmounting
       websocket.removeEventCallback("chat:user-joined", onChatUserJoinedMsg);
       websocket.removeEventCallback("chat:user-left", onChatUserLeftMsg);
-      websocket.removeEventCallback("chat:nick-change", ChatUsersNickChange);
+      websocket.removeEventCallback("chat:nick-change", onChatUsersNickChange);
       websocket.removeEventCallback(
         "chat:message-sent",
         onNewMgsSentUpdateActiveDiscussions
@@ -310,9 +318,7 @@ function useUsers(props: UseUsersProps) {
   };
 
   /**
-   * Soft block user aka only hide user from my discussions and depending
-   * on the block type also prevents user from sending messages to me.
-   *
+   * Blocks user and removes it from bookmarked users
    * @param user target chat user
    * @param type type of block. SOFT only hides and HARD also prevents user from sending messages.
    */
@@ -338,7 +344,7 @@ function useUsers(props: UseUsersProps) {
   }, []);
 
   /**
-   * Unblock user
+   * Unblocks user
    * @param user user
    */
   const unblockUser = React.useCallback(async (user: ChatUser) => {
@@ -360,7 +366,7 @@ function useUsers(props: UseUsersProps) {
   }, []);
 
   /**
-   * Close private discussion
+   * Close private discussion and remove it from bookmarked users
    * @param user user
    */
   const closePrivateDiscussion = React.useCallback(async (user: ChatUser) => {
@@ -382,23 +388,9 @@ function useUsers(props: UseUsersProps) {
   }, []);
 
   /**
-   * Adds user to active discussions list
-   * @param user user
-   */
-  const addUserToActiveDiscussionsList = (user: ChatUser) => {
-    setBookmarkedUsers((prev) => {
-      const index = prev.findIndex((u) => u.id === user.id);
-
-      if (index === -1) {
-        return [user, ...prev];
-      }
-
-      return prev;
-    });
-  };
-
-  /**
    * Update user filters
+   * @param key key of filter
+   * @param value value of filter
    */
   const updateUserFilters = React.useCallback(
     <T extends keyof ChatUserFilters>(key: T, value: ChatUserFilters[T]) => {
@@ -459,7 +451,9 @@ function useUsers(props: UseUsersProps) {
     const allUsers = [...users];
 
     // Add bookmarked users to all users if they are not already there
-    // and set their presence to disabled
+    // and set their presence to disabled because main user list is source of truth
+    // and if not included already in that list we can assume that user is offline
+    // or users presence cannot be shown
     bookmarkedUsers.forEach((user) => {
       if (!allUsers.find((u) => u.id === user.id)) {
         allUsers.push({

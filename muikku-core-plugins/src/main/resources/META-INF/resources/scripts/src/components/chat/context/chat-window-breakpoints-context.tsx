@@ -7,7 +7,7 @@ import useWindowBreakpoints, {
 } from "../hooks/useWindowBreakpoints";
 
 /**
- * ChatPrivateContextType
+ * ChatWindowBreakpointsContext
  */
 export interface ChatWindowBreakpointsContext extends UseWindowBreakpoints {}
 
@@ -23,7 +23,7 @@ interface ChatWindowBreakpointsContextProviderProps {
 }
 
 /**
- * ChatPrivateContextProvider
+ * Chat window breakpoints context provider
  * @param props props
  */
 const ChatWindowBreakpointsContextProvider: React.FC<
@@ -43,7 +43,7 @@ const ChatWindowBreakpointsContextProvider: React.FC<
 };
 
 /**
- * Method to returns context of follow up.
+ * Method to returns context of window breakpoint context.
  * Check if context is defined and if not, throw an error
  */
 function useChatWindowBreakpointsContext() {

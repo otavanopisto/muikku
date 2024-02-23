@@ -8,11 +8,9 @@ import useChat, { UseChat } from "../hooks/useChat";
 /**
  * ChatPrivateContextType
  */
-export interface ChatPrivateContextType extends UseChat {}
+export interface ChatContextValue extends UseChat {}
 
-const ChatContext = createContext<ChatPrivateContextType | undefined>(
-  undefined
-);
+const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
 /**
  * ChatContextProviderProps
@@ -22,7 +20,7 @@ interface ChatContextProviderProps {
 }
 
 /**
- * ChatPrivateContextProvider
+ * Chat context provider
  * @param props props
  */
 const ChatContextProvider: React.FC<ChatContextProviderProps> = (props) => {
@@ -36,7 +34,7 @@ const ChatContextProvider: React.FC<ChatContextProviderProps> = (props) => {
 };
 
 /**
- * Method to returns context of follow up.
+ * Method to returns context of chat.
  * Check if context is defined and if not, throw an error
  */
 function useChatContext() {

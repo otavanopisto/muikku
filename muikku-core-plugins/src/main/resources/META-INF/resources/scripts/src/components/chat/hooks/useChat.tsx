@@ -64,7 +64,7 @@ function useChat(currentUser: ChatUser) {
   const { chatActivity, chatActivityByUserObject, markMsgsAsRead } =
     useChatActivity(activeDiscussionIdentifier, currentUser.identifier);
 
-  // Discussion instances, one for each previously opened discussions
+  // Discussion instances
   const [discussionInstances, setMessagesInstances] = React.useState<
     ChatDiscussionInstance[]
   >([]);
@@ -425,16 +425,30 @@ function useChat(currentUser: ChatUser) {
     [rooms]
   );
 
+  // count for unread messages
+  const unreadMsgCount = React.useMemo(() => {
+    let counter = 0;
+
+    if (!chatActivity) return counter;
+
+    chatActivity.forEach((cA) => {
+      counter += cA.unreadMessages;
+    });
+
+    return counter;
+  }, [chatActivity]);
+
   return {
     activeDiscussion,
     canModerate,
     chatActivity,
+    chatActivityByUserObject,
     chatViews,
     closeAndBlockDiscussionWithUser,
     closeBlockUserDialog,
     closeCancelUnblockDialog,
-    closeDiscussionWithUser,
     closeDeleteRoomDialog,
+    closeDiscussionWithUser,
     currentUser,
     dashboardBlockedUsers,
     dashboardUsers,
@@ -461,6 +475,7 @@ function useChat(currentUser: ChatUser) {
     saveNewRoom,
     toggleControlBox,
     unblockDiscussionWithUser,
+    unreadMsgCount,
     updateNewRoomEditor,
     updateRoomFilters,
     updateUserFilters,
@@ -468,7 +483,6 @@ function useChat(currentUser: ChatUser) {
     usersObjectIncludingMe,
     userToBeBlocked,
     userToBeUnblocked,
-    chatActivityByUserObject,
   };
 }
 

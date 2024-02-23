@@ -9,6 +9,7 @@ import useChatSettings from "./hooks/useChatSettings";
 import ChatUnblockDiscussionDialog from "./dialogs/chat-unblock-discussion-dialog";
 import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-discussion-dialog";
 import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
+import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
 
 /**
  * Chat component. Renders or not depending on chat settings
@@ -33,8 +34,13 @@ const Chat = () => {
  * @returns JSX.Element
  */
 const ChatContent = () => {
-  const { minimized, toggleControlBox, isMobileWidth, discussionInstances } =
-    useChatContext();
+  const {
+    minimized,
+    toggleControlBox,
+    isMobileWidth,
+    discussionInstances,
+    unreadMsgCount,
+  } = useChatContext();
 
   // Use effect to destroy all messages instances when component unmounts
   React.useEffect(
@@ -68,6 +74,7 @@ const ChatContent = () => {
       {minimized && (
         <div onClick={toggleControlBox} className="chat-bubble">
           <span className="icon-chat"></span>
+          <ChatUnreadMsgCounter number={unreadMsgCount} />
         </div>
       )}
 

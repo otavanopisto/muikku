@@ -14,7 +14,7 @@ interface ChatWebsocketContextProviderProps {
 }
 
 /**
- * ChatPrivateContextProvider
+ * Chat websocket context provider
  * @param props props
  */
 export const ChatWebsocketContextProvider: React.FC<
@@ -30,14 +30,14 @@ export const ChatWebsocketContextProvider: React.FC<
 };
 
 /**
- * Method to returns context of follow up.
+ * Method to returns context of websocket.
  * Check if context is defined and if not, throw an error
  */
 function useChatWebsocketContext() {
   const context = React.useContext(ChatWebsocketContext);
   if (context === undefined) {
     throw new Error(
-      "useChatContext must be used within a ChatWebsocketContextProvider"
+      "useChatWebsocketContext must be used within a ChatWebsocketContextProvider"
     );
   }
   return context;

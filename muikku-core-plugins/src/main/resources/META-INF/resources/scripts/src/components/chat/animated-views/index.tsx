@@ -19,12 +19,6 @@ export interface ChatViewsProps {
    */
   modifiers?: string[];
   /**
-   * Custom header component. Use it under WizardProvider
-   * to access the wizard context and its methods and values.
-   * There is a default header component that can be used
-   */
-  header?: React.ReactNode;
-  /**
    * Wrapper component to wrap the active step component.
    * Can be used to add custom styles or animations to the active step
    */
