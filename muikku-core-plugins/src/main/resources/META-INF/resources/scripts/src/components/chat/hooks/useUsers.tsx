@@ -54,7 +54,9 @@ function useUsers(props: UseUsersProps) {
 
   // When current user visibility changes we need to fetch all users again
   React.useEffect(() => {
-    fetchAllUsers();
+    if (currentUser.visibility !== "NONE") {
+      fetchAllUsers();
+    }
   }, [currentUser.visibility]);
 
   React.useEffect(() => {
