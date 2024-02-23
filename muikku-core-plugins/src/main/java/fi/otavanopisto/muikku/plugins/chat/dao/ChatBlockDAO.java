@@ -9,23 +9,16 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatBlock;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatBlockType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatBlock_;
 
 public class ChatBlockDAO extends CorePluginsDAO<ChatBlock> {
 
   private static final long serialVersionUID = -5106608786461811523L;
 
-  public ChatBlock create(Long sourceUserEntityid, Long targetUserEntityId, ChatBlockType blockType) {
+  public ChatBlock create(Long sourceUserEntityid, Long targetUserEntityId) {
     ChatBlock chatBlock = new ChatBlock();
     chatBlock.setSourceUserEntityId(sourceUserEntityid);
     chatBlock.setTargetUserEntityId(targetUserEntityId);
-    chatBlock.setBlockType(blockType);
-    return persist(chatBlock);
-  }
-  
-  public ChatBlock update(ChatBlock chatBlock, ChatBlockType blockType) {
-    chatBlock.setBlockType(blockType);
     return persist(chatBlock);
   }
   
@@ -46,7 +39,7 @@ public class ChatBlockDAO extends CorePluginsDAO<ChatBlock> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-  public List<ChatBlock> listBySourceUserEntityIdAndBlockType(Long sourceUserEntityId, ChatBlockType blockType) {
+  public List<ChatBlock> listBySourceUserEntityId(Long sourceUserEntityId) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -54,10 +47,7 @@ public class ChatBlockDAO extends CorePluginsDAO<ChatBlock> {
     Root<ChatBlock> root = criteria.from(ChatBlock.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(ChatBlock_.sourceUserEntityId), sourceUserEntityId),
-        criteriaBuilder.equal(root.get(ChatBlock_.blockType), blockType)
-      )
+      criteriaBuilder.equal(root.get(ChatBlock_.sourceUserEntityId), sourceUserEntityId)
     );
 
     return entityManager.createQuery(criteria).getResultList();

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import MApi from "~/api/api";
-import { ChatMessage } from "~/generated/client";
+import { ChatMessage, ChatUser } from "~/generated/client";
 import Websocket from "~/util/websocket";
 
 const chatApi = MApi.getChatApi();
@@ -103,6 +103,9 @@ export class ChatDiscussionInstance {
       "chat:message-deleted",
       this.onChatMsgDeletedMsg
     );
+    websocket.addEventCallback("chat:nick-change", this.onNickMsgChange);
+    websocket.addEventCallback("chat:user-joined", this.onChangeUserJoinedMsgs);
+    websocket.addEventCallback("chat:user-left", this.onChatUserLeftMsgs);
   }
 
   /**
@@ -173,7 +176,7 @@ export class ChatDiscussionInstance {
   }
 
   /**
-   * getInitialMessages
+   * Loads the initial messages
    * @returns messages
    */
   private async getInitialMessages() {
@@ -188,7 +191,7 @@ export class ChatDiscussionInstance {
   }
 
   /**
-   * onChatMsgSentMsg
+   * Handles new message sent event
    * @param data created ChatMessage.
    */
   private onChatMsgSentMsg = (data: unknown) => {
@@ -207,7 +210,7 @@ export class ChatDiscussionInstance {
   };
 
   /**
-   * onChatMsgEditedMsg
+   * Handles new message edited event
    * @param data edited ChatMessage.
    */
   private onChatMsgEditedMsg = (data: unknown) => {
@@ -230,7 +233,7 @@ export class ChatDiscussionInstance {
   };
 
   /**
-   * onChatMsgDeletedMsg
+   * Handles chat message deleted event
    * @param data data from server.
    */
   private onChatMsgDeletedMsg = (data: unknown) => {
@@ -249,6 +252,78 @@ export class ChatDiscussionInstance {
           this.triggerChangeListeners();
         }
       }
+    }
+  };
+
+  /**
+   * Handles nick change event
+   * @param data data from server.
+   */
+  private onNickMsgChange = (data: unknown) => {
+    if (typeof data === "string") {
+      const dataTyped = JSON.parse(data) as {
+        userEntityId: number;
+        nick: string;
+      };
+
+      // Update messages nicks if user changed nick
+      // and sourceUserEntityId is matches with the id coming from the server
+      this.messages = this.messages.map((msg) => {
+        if (msg.sourceUserEntityId === dataTyped.userEntityId) {
+          msg.nick = dataTyped.nick;
+        }
+        return msg;
+      });
+
+      this.triggerChangeListeners();
+    }
+  };
+
+  /**
+   * Handles user joined event
+   * @param data data from server.
+   */
+  private onChangeUserJoinedMsgs = (data: unknown) => {
+    if (typeof data === "string") {
+      const dataTyped: ChatUser = JSON.parse(data);
+
+      // Update nick if user joined with a new nick
+      // and sourceUserEntityId is matches with the id coming from the server
+      this.messages = this.messages.map((msg) => {
+        if (
+          msg.sourceUserEntityId === dataTyped.id &&
+          msg.nick !== dataTyped.nick
+        ) {
+          msg.nick = dataTyped.nick;
+        }
+        return msg;
+      });
+
+      this.triggerChangeListeners();
+    }
+  };
+
+  /**
+   * Handles user left event
+   * @param data data from server.
+   */
+  private onChatUserLeftMsgs = (data: unknown) => {
+    if (typeof data === "string") {
+      const dataTyped: {
+        id: number;
+        reason: "OFFLINE" | "HIDDEN" | "PERMANENT";
+      } = JSON.parse(data);
+
+      // Update nick to null if user left permanently
+      // and sourceUserEntityId is matches with the id coming from the server
+      this.messages = this.messages.map((msg) => {
+        if (msg.sourceUserEntityId === dataTyped.id) {
+          msg.nick = dataTyped.reason === "PERMANENT" ? null : msg.nick;
+        }
+        return msg;
+      });
+
+      this.triggerChangeListeners();
     }
   };
 
@@ -286,7 +361,7 @@ export class ChatDiscussionInstance {
   }
 
   /**
-   * loadMoreMessages
+   * Method to load more messages
    * @returns messages
    */
   async loadMoreMessages() {
@@ -380,6 +455,18 @@ export class ChatDiscussionInstance {
     this.websocket.removeEventCallback(
       "chat:message-deleted",
       this.onChatMsgDeletedMsg
+    );
+    this.websocket.removeEventCallback(
+      "chat:nick-change",
+      this.onNickMsgChange
+    );
+    this.websocket.removeEventCallback(
+      "chat:user-joined",
+      this.onChangeUserJoinedMsgs
+    );
+    this.websocket.removeEventCallback(
+      "chat:user-left",
+      this.onChatUserLeftMsgs
     );
   }
 }

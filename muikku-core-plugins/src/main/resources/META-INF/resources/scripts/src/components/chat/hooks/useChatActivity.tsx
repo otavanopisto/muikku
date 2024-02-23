@@ -21,7 +21,6 @@ function useChatActivity(
   const chatActivityRef = React.useRef(chatActivity);
   chatActivityRef.current = chatActivity;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const componentMounted = React.useRef(true);
 
   // Initial fetch
@@ -80,10 +79,16 @@ function useChatActivity(
 
             // If activity doesn't exist, create a new one and add it to the list with unread messages set to 1
             const newActivity: ChatActivity = {
-              targetIdentifier: dataTyped.targetIdentifier,
+              targetIdentifier: `user-${dataTyped.sourceUserEntityId}`,
               latestMessage: new Date(dataTyped.sentDateTime),
               unreadMessages: 1,
             };
+
+            // By default new activity target identifier is the source identifier
+            // If the current user is the source, use the target identifier
+            if (dataTyped.targetIdentifier !== currentUserIdentifier) {
+              newActivity.targetIdentifier = dataTyped.targetIdentifier;
+            }
 
             // If this is the active discussion, keep unread messages as 0
             if (dataTyped.targetIdentifier === activeDiscussionIdentifier) {
@@ -161,7 +166,7 @@ function useChatActivity(
       return {};
     }
 
-    // Filter activities that are not user activities
+    // Filter activities that are user activities
     const userActivities = chatActivity.filter((activity) =>
       activity.targetIdentifier.startsWith("user-")
     );

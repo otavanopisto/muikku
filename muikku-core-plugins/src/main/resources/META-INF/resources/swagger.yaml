@@ -886,6 +886,57 @@ paths:
         "400":
           description: Invalid identifier format
 
+  /rest/chat/block/{identifier}:
+    get:
+      operationId: blockUser
+      summary: Blocks the given user
+      tags:
+        - Chat
+      parameters:
+        - name: identifier
+          in: path
+          description: Target user identifier, e.g. user-123
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Operation successful
+
+  /rest/chat/unblock/{identifier}:
+    get:
+      operationId: unblockUser
+      summary: Unblocks the given user
+      tags:
+        - Chat
+      parameters:
+        - name: identifier
+          in: path
+          description: Target user identifier, e.g. user-123
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Operation successful
+
+  /rest/chat/closeDiscussion/{identifier}:
+    get:
+      operationId: closeConversation
+      summary: Closes a private discussion with the given user
+      tags:
+        - Chat
+      parameters:
+        - name: identifier
+          in: path
+          description: Target user identifier, e.g. user-123
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Operation successful
+
   /rest/chat/activity:
     get:
       operationId: getChatActivity
@@ -963,18 +1014,6 @@ paths:
           description: Invalid request was sent to the server
         "403":
           description: Attempted to make a call with unauthorized client
-
-  /rest/chat/block:
-    put:
-      operationId: updateBlock
-      summary: Update block between users
-      tags:
-        - Chat
-      requestBody:
-        $ref: "#/components/requestBodies/ChatBlockUpdateRequestBody"
-      responses:
-        "204":
-          description: Block updated successfully
 
   /rest/chat/settings:
     get:
@@ -10220,13 +10259,6 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/ChatUser"
-
-    ChatBlockUpdateRequestBody:
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/ChatBlock"
 
     CeeposOrderCreateRequestBody:
       content:

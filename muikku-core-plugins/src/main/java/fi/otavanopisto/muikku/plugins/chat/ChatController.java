@@ -24,12 +24,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.chat.dao.ChatBlockDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatRoomDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatUserDAO;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatBlock;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatBlockType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatMessage;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoom;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
@@ -82,9 +79,6 @@ public class ChatController {
   @Inject
   private ChatRoomDAO chatRoomDAO;
 
-  @Inject
-  private ChatBlockDAO chatBlockDAO;
-
   @PostConstruct
   public void init() {
     mapper = new ObjectMapper();
@@ -93,27 +87,12 @@ public class ChatController {
     users = new ConcurrentHashMap<>();
     sessionUsers = new ConcurrentHashMap<>();
     userSessions = new ConcurrentHashMap<>();
-    softBlocks = new ConcurrentHashMap<>();
-    hardBlocks = new ConcurrentHashMap<>();
     
     // Cache all chat users
     
     List<ChatUser> chatUsers = chatUserDAO.listAll();
     for (ChatUser chatUser : chatUsers) {
       users.put(chatUser.getUserEntityId(), toRestModel(chatUser));
-    }
-    
-    // Cache blocks
-    
-    List<ChatBlock> blocks = chatBlockDAO.listAll();
-    for (ChatBlock block : blocks) {
-      ConcurrentHashMap<Long, Set<Long>> map = block.getBlockType() == ChatBlockType.SOFT ? softBlocks : hardBlocks;
-      Set<Long> userEntityIds = map.get(block.getSourceUserEntityId());
-      if (userEntityIds == null) {
-        userEntityIds = new HashSet<Long>();
-        map.put(block.getSourceUserEntityId(), userEntityIds);
-      }
-      userEntityIds.add(block.getTargetUserEntityId());
     }
   }
   
@@ -155,16 +134,6 @@ public class ChatController {
   }
   
   public void postMessage(UserEntity targetUserEntity, UserEntity userEntity, String message) {
-    
-    // Handle soft and hard blocks
-    
-    ChatBlockType blockType = getBlockType(targetUserEntity.getId(), userEntity.getId());
-    if (blockType == ChatBlockType.HARD) {
-      return;
-    }
-    else if (blockType == ChatBlockType.SOFT) {
-      removeBlock(targetUserEntity.getId(), userEntity.getId());
-    }
     
     // Post message
     
@@ -238,18 +207,6 @@ public class ChatController {
 
   public String getNick(UserEntity userEntity) {
     return getNick(userEntity.getId());
-  }
-  
-  public List<ChatUserRestModel> getBlockList(Long sourceUserEntityId) {
-    Set<Long> userEntityIds = listHardBlockedUserEntityIds(sourceUserEntityId);
-    List<ChatUserRestModel> chatUsers = new ArrayList<>();
-    for (Long userEntityId : userEntityIds) {
-      ChatUserRestModel chatUser = getChatUserRestModel(userEntityId);
-      if (chatUser != null) {
-        chatUsers.add(chatUser);
-      }
-    }
-    return chatUsers;
   }
   
   public List<ChatUserRestModel> listChatUsers(boolean onlyOnline) {
@@ -396,48 +353,6 @@ public class ChatController {
   
   public boolean isChatEnabled(UserEntity userEntity) {
     return userEntity == null ? false : chatUserDAO.findByUserEntityId(userEntity.getId()) != null;
-  }
-  
-  public void addBlock(Long sourceUserEntityId, Long targetUserEntityId, ChatBlockType blockType) {
-    ConcurrentHashMap<Long, Set<Long>> map = blockType == ChatBlockType.SOFT ? softBlocks : hardBlocks;
-    Set<Long> userEntityIds = map.get(sourceUserEntityId);
-    if (userEntityIds == null) {
-      userEntityIds = new HashSet<Long>();
-      map.put(sourceUserEntityId, userEntityIds);
-    }
-    userEntityIds.add(targetUserEntityId);
-    ChatBlock chatBlock = chatBlockDAO.findBySourceUserEntityIdAndTargetUserEntityId(sourceUserEntityId, targetUserEntityId);
-    if (chatBlock == null) {
-      chatBlock = chatBlockDAO.create(sourceUserEntityId, targetUserEntityId, blockType);
-    }
-    else {
-      chatBlock = chatBlockDAO.update(chatBlock, blockType);
-    }
-  }
-  
-  public void removeBlock(Long sourceUserEntityId, Long targetUserEntityId) {
-    ChatBlockType type = getBlockType(sourceUserEntityId, targetUserEntityId);
-    ConcurrentHashMap<Long, Set<Long>> map = type == ChatBlockType.SOFT ? softBlocks : hardBlocks;
-    Set<Long> blocks = map.get(sourceUserEntityId);
-    if (blocks != null && blocks.contains(targetUserEntityId)) {
-      blocks.remove(targetUserEntityId);
-      ChatBlock chatBlock = chatBlockDAO.findBySourceUserEntityIdAndTargetUserEntityId(sourceUserEntityId, targetUserEntityId);
-      if (chatBlock != null) {
-        chatBlockDAO.delete(chatBlock);
-      }
-    }
-  }
-  
-  public ChatBlockType getBlockType(Long sourceUserEntityId, Long targetUserEntityId) {
-    Set<Long> blocks = softBlocks.get(sourceUserEntityId);
-    if (blocks != null && blocks.contains(targetUserEntityId)) {
-      return ChatBlockType.SOFT;
-    }
-    blocks = hardBlocks.get(sourceUserEntityId);
-    if (blocks != null && blocks.contains(targetUserEntityId)) {
-      return ChatBlockType.HARD;
-    }
-    return ChatBlockType.NONE;
   }
   
   public void toggleWorkspaceChatRoom(WorkspaceEntity workspaceEntity, String roomName, boolean enabled, UserEntity modifier) {
@@ -653,6 +568,15 @@ public class ChatController {
           userRestModel.setName(name);
           webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
         }
+        
+        // If the new user is student with STAFF visibility, send a nick change to other students (just in case of private convos)
+        
+        if (userRestModel.getType() == ChatUserType.STUDENT && visibility == ChatUserVisibility.STAFF) {
+          userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+          userEntityIds.remove(userEntity.getId()); // don't send message to ourselves
+          NickChangeRestModel nickChange = new NickChangeRestModel(userEntity.getId(), nick); 
+          webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), userEntityIds);
+        }
       }
     }
     catch (JsonProcessingException e) {
@@ -827,10 +751,6 @@ public class ChatController {
     return userEntityIds;
   }
 
-  private Set<Long> listHardBlockedUserEntityIds(Long sourceUserEntityId) {
-    return hardBlocks.containsKey(sourceUserEntityId) ? Collections.unmodifiableSet(hardBlocks.get(sourceUserEntityId)) : Collections.emptySet();
-  }
-
   // UserEntityId -> ChatUserRestModel
   private ConcurrentHashMap<Long, ChatUserRestModel> users;
 
@@ -842,12 +762,6 @@ public class ChatController {
   
   // UserEntityId -> List<HttpSessionId>
   private ConcurrentHashMap<Long, Set<String>> userSessions;
-  
-  // UserEntityId -> Set<UserEntityId>
-  private ConcurrentHashMap<Long, Set<Long>> softBlocks;
-
-  // UserEntityId -> Set<UserEntityId>
-  private ConcurrentHashMap<Long, Set<Long>> hardBlocks;
   
   private ObjectMapper mapper;
 
