@@ -425,6 +425,19 @@ function useChat(currentUser: ChatUser) {
     [rooms]
   );
 
+  // count for unread messages
+  const unreadMsgCount = React.useMemo(() => {
+    let counter = 0;
+
+    if (!chatActivity) return counter;
+
+    chatActivity.forEach((cA) => {
+      counter += cA.unreadMessages;
+    });
+
+    return counter;
+  }, [chatActivity]);
+
   return {
     activeDiscussion,
     canModerate,
@@ -462,6 +475,7 @@ function useChat(currentUser: ChatUser) {
     saveNewRoom,
     toggleControlBox,
     unblockDiscussionWithUser,
+    unreadMsgCount,
     updateNewRoomEditor,
     updateRoomFilters,
     updateUserFilters,
