@@ -14,19 +14,28 @@
   color: $color-default;
   cursor: pointer;
   display: flex;
+  font-family: $system-font-family;
   font-size: 1.85rem;
   height: 55px;
   justify-content: center;
   order: 2;
   position: fixed;
   right: 10px;
-  transform: rotate(-15deg);
   transition: transform 0.3s ease-in-out;
   width: 55px;
   z-index: 9989;
 
   &:hover {
-    transform: rotate(360deg);
+    transform: rotate(15deg);
+  }
+
+  .chat__unread-msg-counter {
+    font-size: 0.825rem;
+    height: 1.25rem;
+    left: auto;
+    line-height: 1;
+    right: -3px;
+    width: 1.25rem;
   }
 }
 
@@ -184,6 +193,7 @@
   left: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   position: absolute;
   right: 0;
   scrollbar-width: none;
@@ -509,6 +519,7 @@
   left: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   position: absolute;
   right: 0;
   scrollbar-width: none;
