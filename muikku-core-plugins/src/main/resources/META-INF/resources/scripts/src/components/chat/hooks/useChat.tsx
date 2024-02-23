@@ -64,7 +64,7 @@ function useChat(currentUser: ChatUser) {
   const { chatActivity, chatActivityByUserObject, markMsgsAsRead } =
     useChatActivity(activeDiscussionIdentifier, currentUser.identifier);
 
-  // Discussion instances, one for each previously opened discussions
+  // Discussion instances
   const [discussionInstances, setMessagesInstances] = React.useState<
     ChatDiscussionInstance[]
   >([]);
@@ -429,12 +429,13 @@ function useChat(currentUser: ChatUser) {
     activeDiscussion,
     canModerate,
     chatActivity,
+    chatActivityByUserObject,
     chatViews,
     closeAndBlockDiscussionWithUser,
     closeBlockUserDialog,
     closeCancelUnblockDialog,
-    closeDiscussionWithUser,
     closeDeleteRoomDialog,
+    closeDiscussionWithUser,
     currentUser,
     dashboardBlockedUsers,
     dashboardUsers,
@@ -468,7 +469,6 @@ function useChat(currentUser: ChatUser) {
     usersObjectIncludingMe,
     userToBeBlocked,
     userToBeUnblocked,
-    chatActivityByUserObject,
   };
 }
 

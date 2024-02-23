@@ -34,10 +34,10 @@ function useRooms() {
 
   React.useEffect(() => {
     /**
-     * onChatRoomCreateMsg
+     * Handles chat room create event
      * @param data created ChatRoom.
      */
-    const onChatRoomCreateMsg = (data: ChatRoom) => {
+    const onChatRoomCreateMsg = (data: unknown) => {
       if (componentMounted.current) {
         if (typeof data === "string") {
           const dataTyped: ChatRoom = JSON.parse(data);
@@ -47,7 +47,7 @@ function useRooms() {
     };
 
     /**
-     * onChatRoomUpdateMsg
+     * Handles chat room update event
      * @param data updated ChatRoom.
      */
     const onChatRoomUpdateMsg = (data: unknown) => {
@@ -74,7 +74,6 @@ function useRooms() {
 
     /**
      * Handles changes when ever there has happened some changes with defined message
-     *
      * @param data deleted ChatRoom.
      */
     const onChatRoomDeleteMsg = (data: unknown) => {
@@ -130,7 +129,7 @@ function useRooms() {
   };
 
   /**
-   * createNewRoom
+   * Create new room
    * @param newRoom newRoom
    */
   const createNewRoom = React.useCallback(
@@ -143,7 +142,7 @@ function useRooms() {
   );
 
   /**
-   * updateRoom
+   * Update room
    * @param identifier identifier
    * @param updatedRoom updatedRoom
    */
@@ -158,7 +157,7 @@ function useRooms() {
   );
 
   /**
-   * deleteRoom
+   * Delete room
    * @param identifier identifier
    */
   const deleteRoom = React.useCallback(async (identifier: string) => {
@@ -169,6 +168,8 @@ function useRooms() {
 
   /**
    * Update user filters
+   * @param key key of filter
+   * @param value value of filter
    */
   const updateRoomFilters = React.useCallback(
     <T extends keyof ChatRoomFilters>(key: T, value: ChatRoomFilters[T]) => {

@@ -122,6 +122,7 @@ function useChatActivity(
 
   /**
    * Marks unread messages as read
+   * @param targetIdentifier target identifier
    */
   const markMsgsAsRead = React.useCallback(async (targetIdentifier: string) => {
     // Skip rooms as they are not enabled yet for this functionality
@@ -159,6 +160,7 @@ function useChatActivity(
     });
   }, []);
 
+  // Activities as key value pair
   const chatActivityByUserObject: {
     [key: number]: ChatActivity;
   } = React.useMemo(() => {
