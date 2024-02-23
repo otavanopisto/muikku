@@ -40,8 +40,8 @@ function useUsers(props: UseUsersProps) {
 
   // Users related data
   const [users, setUsers] = React.useState<ChatUser[]>([]);
-  const [usersWithActiveDiscussion, setUsersWithActiveDiscussion] =
-    React.useState<ChatUser[]>([]);
+  // Discussions that currently are active
+  const [bookmarkedUsers, setBookmarkedUsers] = React.useState<ChatUser[]>([]);
   const [myCounselors, setMyCounselors] =
     React.useState<GuidanceCouncelorContact[]>(null);
   const [blockedUsers, setBlockedUsers] = React.useState<ChatUser[]>([]);
@@ -52,8 +52,12 @@ function useUsers(props: UseUsersProps) {
 
   usersRef.current = users;
 
+  // When current user visibility changes we need to fetch all users again
   React.useEffect(() => {
     fetchAllUsers();
+  }, [currentUser.visibility]);
+
+  React.useEffect(() => {
     fetchUsersWithDiscussions();
     fetchBlockedUsers();
 
@@ -89,7 +93,7 @@ function useUsers(props: UseUsersProps) {
           });
 
           // Users with active discussion
-          setUsersWithActiveDiscussion((users) => {
+          setBookmarkedUsers((users) => {
             const index = users.findIndex(
               (person) => person.id === dataTyped.id
             );
@@ -144,7 +148,7 @@ function useUsers(props: UseUsersProps) {
           });
 
           // Users with active discussion
-          setUsersWithActiveDiscussion((users) => {
+          setBookmarkedUsers((users) => {
             const index = users.findIndex(
               (person) => person.id === dataTyped.id
             );
@@ -162,6 +166,7 @@ function useUsers(props: UseUsersProps) {
                   break;
                 case "PERMANENT":
                   updatedPeople[index].presence = "DISABLED";
+                  updatedPeople[index].nick = null;
                   break;
               }
 
@@ -202,7 +207,7 @@ function useUsers(props: UseUsersProps) {
           });
 
           // Users with active discussion
-          setUsersWithActiveDiscussion((users) => {
+          setBookmarkedUsers((users) => {
             const index = users.findIndex(
               (person) => person.id === dataTyped.userEntityId
             );
@@ -283,7 +288,7 @@ function useUsers(props: UseUsersProps) {
 
     chatUsers.reverse();
 
-    setUsersWithActiveDiscussion(chatUsers);
+    setBookmarkedUsers(chatUsers);
   };
 
   /**
@@ -318,7 +323,7 @@ function useUsers(props: UseUsersProps) {
 
     unstable_batchedUpdates(() => {
       setBlockedUsers((prev) => [...prev, user]);
-      setUsersWithActiveDiscussion((prev) => {
+      setBookmarkedUsers((prev) => {
         const index = prev.findIndex((u) => u.id === user.id);
 
         if (index !== -1) {
@@ -363,7 +368,7 @@ function useUsers(props: UseUsersProps) {
       identifier: user.identifier,
     });
 
-    setUsersWithActiveDiscussion((prev) => {
+    setBookmarkedUsers((prev) => {
       const index = prev.findIndex((u) => u.id === user.id);
 
       if (index !== -1) {
@@ -381,7 +386,7 @@ function useUsers(props: UseUsersProps) {
    * @param user user
    */
   const addUserToActiveDiscussionsList = (user: ChatUser) => {
-    setUsersWithActiveDiscussion((prev) => {
+    setBookmarkedUsers((prev) => {
       const index = prev.findIndex((u) => u.id === user.id);
 
       if (index === -1) {
@@ -413,8 +418,8 @@ function useUsers(props: UseUsersProps) {
 
   // List of users ids with active discussions
   const usersWithDiscussionIds = React.useMemo(
-    () => usersWithActiveDiscussion.map((user) => user.id),
-    [usersWithActiveDiscussion]
+    () => bookmarkedUsers.map((user) => user.id),
+    [bookmarkedUsers]
   );
 
   // List of counselor ids
@@ -450,21 +455,25 @@ function useUsers(props: UseUsersProps) {
       return user;
     };
 
-    // Combine users and users with active discussion
-    // some users with active disccussion might not have chat anymore active and are not included
-    // in users list. So we need to combine these two lists to get all users.
-    const allUsers = [...users, ...usersWithActiveDiscussion];
+    // Lets combine users and bookmarked users
+    const allUsers = [...users];
 
-    // Remove duplicates
-    const uniqueUsers = allUsers.filter(
-      (user, index, self) => index === self.findIndex((t) => t.id === user.id)
-    );
+    // Add bookmarked users to all users if they are not already there
+    // and set their presence to disabled
+    bookmarkedUsers.forEach((user) => {
+      if (!allUsers.find((u) => u.id === user.id)) {
+        allUsers.push({
+          ...user,
+          presence: "DISABLED",
+        });
+      }
+    });
 
     // Map users to object
-    return uniqueUsers
+    return allUsers
       .map(mapUser)
       .reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
-  }, [users, usersWithActiveDiscussion]);
+  }, [users, bookmarkedUsers]);
 
   return {
     blockedUsersIds,

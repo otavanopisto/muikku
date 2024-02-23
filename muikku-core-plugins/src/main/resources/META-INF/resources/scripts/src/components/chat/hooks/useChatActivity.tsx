@@ -79,10 +79,16 @@ function useChatActivity(
 
             // If activity doesn't exist, create a new one and add it to the list with unread messages set to 1
             const newActivity: ChatActivity = {
-              targetIdentifier: dataTyped.targetIdentifier,
+              targetIdentifier: `user-${dataTyped.sourceUserEntityId}`,
               latestMessage: new Date(dataTyped.sentDateTime),
               unreadMessages: 1,
             };
+
+            // By default new activity target identifier is the source identifier
+            // If the current user is the source, use the target identifier
+            if (dataTyped.targetIdentifier !== currentUserIdentifier) {
+              newActivity.targetIdentifier = dataTyped.targetIdentifier;
+            }
 
             // If this is the active discussion, keep unread messages as 0
             if (dataTyped.targetIdentifier === activeDiscussionIdentifier) {
