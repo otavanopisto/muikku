@@ -197,7 +197,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
       <div className="chat__overview-panel-header-title">Dashboard</div>
       {isMobileWidth ? (
         <Select
-          className="react-select-override"
+          className="react-select-override react-select-override--chat-mobile"
           classNamePrefix="react-select-override"
           options={options}
           value={options.find((o) => o.value === activeTab)}

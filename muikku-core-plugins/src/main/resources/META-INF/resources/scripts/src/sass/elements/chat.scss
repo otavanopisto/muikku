@@ -3,15 +3,6 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
-$chat-discussion-panel-header-height: 40px;
-$chat-discussion-panel-footer-height: 40px;
-$chat-border-radius: 5px;
-$chat-resizer-size: 150px;
-$chat-resizer-thickness: 4px;
-$chat-resizer-offset: -6px;
-$chat-resizer-corner-radius: 100%;
-$chat-resizer-corner-size: 10px;
-
 // Chat bubble
 .chat-bubble {
   align-items: center;
@@ -55,12 +46,6 @@ $chat-resizer-corner-size: 10px;
   position: fixed;
   width: 800px;
   z-index: 9989;
-
-  .react-select-override {
-    .react-select-override__control {
-      border-color: $color-chat-primary;
-    }
-  }
 }
 
 .chat--detached {
@@ -355,6 +340,7 @@ $chat-resizer-corner-size: 10px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 10px;
   scrollbar-width: thin;
   width: 100%;
@@ -800,6 +786,7 @@ $chat-resizer-corner-size: 10px;
   height: calc(100% - 58px);
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 10px;
   scrollbar-width: thin;
 }
@@ -1007,60 +994,6 @@ $chat-resizer-corner-size: 10px;
   right: 0;
   top: 0;
   z-index: 9989;
-
-  // Necessary react-select component's overrides for chat's mobile views
-  .react-select-override {
-    background: darken($color-chat-primary, 15%);
-    border-radius: $chat-border-radius;
-    display: block;
-    height: 1.625rem;
-    margin: 0 5px;
-
-    .react-select-override__control {
-      background: darken($color-chat-primary, 15%);
-      border: 0;
-      border-radius: $chat-border-radius;
-      font-size: 0.8125rem;
-      font-weight: 400;
-      height: 1.625rem;
-      min-height: 1.625rem;
-    }
-
-    .react-select-override__value-container {
-      padding: 0 4px 0 8px;
-    }
-
-    .react-select-override__single-value {
-      color: $color-default;
-      font-weight: 600;
-    }
-
-    .react-select-override__indicator {
-      color: $color-default;
-      padding: 0 8px 0 4px;
-    }
-
-    .react-select-override__indicator-separator {
-      display: none;
-    }
-
-    .react-select-override__menu {
-      border: 1px solid lighten($color-chat-primary, 30%);
-      box-shadow: 0 10px 20px $color-dropdown-default-shadow;
-      max-width: 150px;
-    }
-
-    .react-select-override__option {
-      background: $color-default;
-      color: $color-default-contrast;
-      font-weight: 600;
-    }
-
-    .react-select-override__option--is-selected {
-      background: $color-chat-primary;
-      color: $color-default;
-    }
-  }
 }
 
 // Left and Right panel
