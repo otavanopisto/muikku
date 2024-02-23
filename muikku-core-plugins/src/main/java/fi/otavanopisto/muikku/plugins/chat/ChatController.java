@@ -568,6 +568,15 @@ public class ChatController {
           userRestModel.setName(name);
           webSocketMessenger.sendMessage("chat:user-joined", mapper.writeValueAsString(userRestModel), userEntityIds);
         }
+        
+        // If the new user is student with STAFF visibility, send a nick change to other students (just in case of private convos)
+        
+        if (userRestModel.getType() == ChatUserType.STUDENT && visibility == ChatUserVisibility.STAFF) {
+          userEntityIds = listOnlineUserEntityIds(ChatUserType.STUDENT);
+          userEntityIds.remove(userEntity.getId()); // don't send message to ourselves
+          NickChangeRestModel nickChange = new NickChangeRestModel(userEntity.getId(), nick); 
+          webSocketMessenger.sendMessage("chat:nick-change", mapper.writeValueAsString(nickChange), userEntityIds);
+        }
       }
     }
     catch (JsonProcessingException e) {
