@@ -35,11 +35,7 @@ function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
     onItemClick && onItemClick();
   };
 
-  if (currentUser.type !== "STUDENT") {
-    return null;
-  }
-
-  if (myDiscussionsCouncelors.length === 0) {
+  if (currentUser.type !== "STUDENT" || myDiscussionsCouncelors.length === 0) {
     return null;
   }
 
