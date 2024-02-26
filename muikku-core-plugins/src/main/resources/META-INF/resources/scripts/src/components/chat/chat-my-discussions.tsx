@@ -40,17 +40,7 @@ function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
   }
 
   if (myDiscussionsCouncelors.length === 0) {
-    return (
-      <>
-        <div
-          style={{
-            margin: "5px",
-          }}
-        >
-          ...
-        </div>
-      </>
-    );
+    return null;
   }
 
   return (
