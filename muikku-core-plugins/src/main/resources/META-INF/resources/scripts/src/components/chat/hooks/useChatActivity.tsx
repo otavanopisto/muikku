@@ -38,12 +38,13 @@ function useChatActivity(
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
+          // Skip rooms as they are not enabled yet for this functionality
+          if (dataTyped.targetIdentifier.startsWith("room-")) {
+            return;
+          }
+
           // Updates the latest message date of the chat activity that the message was sent to
           setChatActivity((prev) => {
-            if (dataTyped.targetIdentifier.startsWith("room-")) {
-              return prev;
-            }
-
             const sourceIdentifier = `user-${dataTyped.sourceUserEntityId}`;
 
             // Try to find the activity in the list using the source identifier or the target identifier

@@ -316,12 +316,6 @@ function useChat(currentUser: ChatUser) {
     );
   }, [activeDiscussionIdentifier, rooms, usersObject]);
 
-  // Users object including the current user
-  const usersObjectIncludingMe = React.useMemo(
-    () => ({ ...usersObject, [currentUser.id]: currentUser }),
-    [usersObject, currentUser]
-  );
-
   // Users with chat activated, not blocked, sorted alphabetically
   const dashboardUsers = React.useMemo(() => {
     if (isObjEmpty(usersObject)) {
@@ -481,7 +475,6 @@ function useChat(currentUser: ChatUser) {
     updateRoomFilters,
     updateUserFilters,
     userFilters,
-    usersObjectIncludingMe,
     userToBeBlocked,
     userToBeUnblocked,
   };
