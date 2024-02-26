@@ -7,7 +7,7 @@ import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-sub-panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
-import MApi from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import Select, { ActionMeta } from "react-select";
 import {
   ChatSettingVisibilityOption,
@@ -109,34 +109,42 @@ class ChatSettings extends React.Component<
 
     this.setState({ locked: true });
 
-    if (chatVisiblity.value === "ALL" && chatNick === "") {
-      this.props.displayNotification("Please enter a nickname", "fatal");
-
-      this.setState({ locked: false });
-      return;
-    }
-
     try {
       await chatApi.updateChatSettings({
         updateChatSettingsRequest: {
           ...chatUserSettings,
-          nick: chatNick,
+          nick: chatNick.trim(),
           visibility: chatVisiblity.value,
         },
       });
 
       this.props.displayNotification(
-        "Chat settings saved succesfully",
+        "Asetukset päivitetty onnistuneesti",
         "success"
       );
     } catch (err) {
-      this.props.displayNotification(
-        "Error while updating chat settings",
-        "error"
-      );
+      if (!isMApiError(err)) {
+        throw err;
+      } else if (isResponseError(err)) {
+        if (err.response.status === 400) {
+          this.props.displayNotification("Anna puuttuva nimimerkki", "error");
+        }
+
+        if (err.response.status === 409) {
+          this.props.displayNotification(
+            "Valittu nimimerkki on jo käytössä, valitse toinen",
+            "error"
+          );
+        }
+      } else {
+        this.props.displayNotification(
+          "Virhe chatin asetuksia päivittäessä",
+          "error"
+        );
+      }
     }
 
-    this.setState({ locked: false });
+    this.setState({ locked: false, chatNick: chatNick.trim() });
   }
 
   /**

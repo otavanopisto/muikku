@@ -235,6 +235,11 @@ function useUsers(props: UseUsersProps) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
+          // If message is from room, skip
+          if (dataTyped.targetIdentifier.startsWith("room-")) {
+            return;
+          }
+
           const sender = usersRef.current.find((u) =>
             [
               `user-${dataTyped.sourceUserEntityId}`,
