@@ -596,7 +596,7 @@ public class ChatRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateChatSettings(ChatUserRestModel payload) {
-    String nick = StringUtils.trim(payload.getNick());
+    String nick = StringUtils.replacePattern(StringUtils.trim(payload.getNick()), " +", " ");
     // Make sure nick exists when chat is on
     if (payload.getVisibility() != ChatUserVisibility.NONE && StringUtils.isEmpty(nick)) {
       return Response.status(Status.BAD_REQUEST).entity("Nick is required").build();
