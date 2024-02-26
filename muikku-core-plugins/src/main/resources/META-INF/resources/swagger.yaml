@@ -816,32 +816,6 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  /rest/chat/messages/{messageId}/authorInfo:
-    get:
-      operationId: getChatMessageAuthorInfo
-      summary: Get chat message author info.
-      tags:
-        - Chat
-      parameters:
-        - name: messageId
-          in: path
-          description: Chat message id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Chat message author info successfully retrieved
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ChatUser"
-        "400":
-          description: Invalid request was sent to the server
-        "403":
-          description: Attempted to make a call with unauthorized client
-
   /rest/chat/users:
     get:
       operationId: getChatUsers

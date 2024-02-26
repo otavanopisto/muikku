@@ -101,6 +101,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
         <Button buttonModifiers={["chat"]} onClick={() => openOverview()}>
           Dashboard
         </Button>
+        <Button buttonModifiers={["chat"]}>Sulje</Button>
         <IconButton
           buttonModifiers={["chat", "chat-mobile-footer"]}
           icon="bubbles"

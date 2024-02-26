@@ -535,33 +535,6 @@ public class ChatRESTService {
     return Response.ok(restMessages).build();
   }
 
-  @Path("/messages/{ID}/authorInfo")
-  @GET
-  @RESTPermit(ChatPermissions.CHAT_MESSAGE_AUTHOR_INFO)
-  public Response getMessageAuthorInfo(@PathParam("ID") Long id) {
-    if (!chatController.isOnline(sessionController.getLoggedUserEntity())) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    ChatMessage chatMessage = chatController.findChatMessageByIdAndArchived(id, Boolean.FALSE);
-    if (chatMessage == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Message %d not found", id)).build();
-    }
-    UserEntity userEntity = userEntityController.findUserEntityById(chatMessage.getSourceUserEntityId());
-    if (userEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("User %d not found", chatMessage.getSourceUserEntityId())).build();
-    }
-    ChatUser chatUser = chatController.getChatUser(userEntity);
-    UserEntityName userEntityName = userEntityController.getName(userEntity, true);
-    ChatUserRestModel userInfo = new ChatUserRestModel();
-    userInfo.setId(userEntity.getId());
-    userInfo.setNick(chatUser.getNick());
-    userInfo.setName(userEntityName.getDisplayNameWithLine());
-    userInfo.setType(chatController.isStaffMember(userEntity) ? ChatUserType.STAFF : ChatUserType.STUDENT);
-    userInfo.setHasImage(userProfilePictureController.hasProfilePicture(userEntity));
-    userInfo.setPresence(chatController.getPresence(userEntity));
-    return Response.ok(userInfo).build();
-  }
-
   @Path("/users/{ID}")
   @GET
   @RESTPermit(ChatPermissions.CHAT_USER_INFO)

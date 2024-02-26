@@ -282,7 +282,7 @@
   color: $color-default;
   display: flex;
   flex-flow: row nowrap;
-  height: 45px;
+  height: $chat-discussion-panel-mobile-header-height;
   padding: 10px;
   position: relative;
   width: 100%;
@@ -333,15 +333,16 @@
 
 .chat__discussion-panel-body {
   background: $color-default;
-  bottom: $chat-discussion-panel-footer-height;
+  bottom: $chat-discussion-panel-mobile-footer-height;
   left: 0;
   overflow: hidden;
   position: absolute;
   right: 0;
-  top: 45px;
+  top: $chat-discussion-panel-mobile-header-height;
   width: 100%;
 
   @include breakpoint($breakpoint-mobile-xl) {
+    bottom: $chat-discussion-panel-footer-height;
     top: $chat-discussion-panel-header-height;
   }
 }
@@ -468,22 +469,31 @@
   bottom: 0;
   display: flex;
   flex-flow: row nowrap;
+  height: $chat-discussion-panel-mobile-footer-height;
   left: 0;
-  min-height: $chat-discussion-panel-footer-height;
+  min-height: $chat-discussion-panel-mobile-footer-height;
   overflow: hidden;
   position: absolute;
   right: 0;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    height: $chat-discussion-panel-footer-height;
+    min-height: $chat-discussion-panel-footer-height;
+  }
 }
 
 .chat__discussion-editor-container {
   align-items: center;
-  border-right: 1px solid $color-default-separator-border;
   display: flex;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
   min-height: $chat-discussion-panel-footer-height;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    border-right: 1px solid $color-default-separator-border;
+  }
 }
 
 // RIGHT PANEL a.k.a USERS PANEL
@@ -957,15 +967,27 @@
 }
 
 .chat__new-message {
-  border: 10px solid $color-default;
-  border-radius: $chat-border-radius;
+  background: $color-default-generic-background;
+  border: 0;
+  border-radius: 20px;
   font-size: 0.8125rem;
-  height: 1rem;
+  height: calc($chat-discussion-panel-footer-height - 10px);
   line-height: 1.25rem;
-  min-height: calc(1rem + 20px);
-  padding: 0;
+  margin: 10px;
+  min-height: calc($chat-discussion-panel-footer-height - 10px);
+  padding: 5px 15px;
   resize: none;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    background: transparent;
+    border: 10px solid $color-default;
+    border-radius: $chat-border-radius;
+    height: $chat-discussion-panel-footer-height;
+    margin: 0;
+    min-height: $chat-discussion-panel-footer-height;
+    padding: 0;
+  }
 }
 
 .chat__edit-message {
@@ -982,13 +1004,26 @@
 
 .chat__submit {
   align-items: center;
-  background: transparent;
+  background: $color-chat-primary;
   border: 0;
+  border-radius: 100%;
+  color: $color-default;
   cursor: pointer;
   display: flex;
-  height: $chat-discussion-panel-footer-height;
+  height: 30px;
   justify-content: center;
-  width: $chat-discussion-panel-footer-height;
+  margin: 10px 10px 10px 0;
+  min-width: 30px;
+  width: 30px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    background: transparent;
+    border-radius: 0;
+    color: $color-default-contrast;
+    height: $chat-discussion-panel-footer-height;
+    margin: 0;
+    width: $chat-discussion-panel-footer-height;
+  }
 }
 
 // CHAT MOBILE STYLES
