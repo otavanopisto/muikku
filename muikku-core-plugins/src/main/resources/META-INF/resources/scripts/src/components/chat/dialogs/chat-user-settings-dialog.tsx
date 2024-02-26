@@ -5,7 +5,7 @@ import "~/sass/elements/wizard.scss";
 import { ChatSettingVisibilityOption } from "../chat-helpers";
 import Select from "react-select";
 import { useChatContext } from "../context/chat-context";
-import MApi from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { StateType } from "~/reducers";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { displayNotification } from "~/actions/base/notifications";
@@ -60,18 +60,37 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
         await chatApi.updateChatSettings({
           updateChatSettingsRequest: {
             ...currentUser,
-            nick: currentNickValue,
+            nick: currentNickValue.trim(),
             visibility: currentSelectValue,
           },
         });
         setDisabled(false);
         callback();
       } catch (err) {
-        props.displayNotification(
-          "Virhe chatin asetuksia päivittäessä",
-          "error"
-        );
-        setDisabled(false);
+        if (!isMApiError(err)) {
+          throw err;
+        } else if (isResponseError(err)) {
+          if (err.response.status === 400) {
+            props.displayNotification("Anna puuttuva nimimerkki", "error");
+          }
+
+          if (err.response.status === 409) {
+            props.displayNotification(
+              "Valittu nimimerkki on jo käytössä, valitse toinen",
+              "error"
+            );
+          }
+        } else {
+          props.displayNotification(
+            "Virhe chatin asetuksia päivittäessä",
+            "error"
+          );
+        }
+
+        unstable_batchedUpdates(() => {
+          setCurrentNickValue(currentUser.nick.trim());
+          setDisabled(false);
+        });
       }
     };
 
