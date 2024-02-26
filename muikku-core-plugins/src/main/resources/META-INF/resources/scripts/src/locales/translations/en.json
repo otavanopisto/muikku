@@ -633,7 +633,7 @@
     "actions": {
       "apply": "Submit application",
       "confirmSave": "Information is correct",
-      "dependantStudies": "Dependant's studies",
+      "dependantStudies": "Dependant's study summary and study records",
       "exploreMaterials": "Explore materials",
       "exploreCourses": "Explore courses",
       "readMore": "Read rest of the article",
@@ -654,7 +654,7 @@
       "nettilukio": "Aim at Adult Upper Secondary School Certificate.",
       "nettiperuskoulu": "Aim at Adult Secondary School Certificate.",
       "noWorkspaces": "You have no courses.",
-      "noWorkspaces_guardian": "Your dependant has no active courses.",
+      "noWorkspaces_guardian": "Your dependant is not currently enrolled in any courses",
       "noWorkspaces_body": "You are not a student in any of the courses. Search or browse courses in the",
       "noWorkspaces_link": "coursepicker",
       "noUserByEmail": "Muikku has no user account corresponding to email address {{email}.",

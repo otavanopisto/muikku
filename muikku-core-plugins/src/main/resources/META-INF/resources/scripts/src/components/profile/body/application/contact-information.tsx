@@ -417,7 +417,7 @@ class ContactInformation extends React.Component<
 
               <ProfileProperty
                 condition={!!this.props.status.profile.phoneNumbers.length}
-                label="plugin.profile.phoneNumbers.label"
+                label={this.props.t("labels.phone")}
                 value={this.props.status.profile.phoneNumbers}
               />
 

@@ -49,7 +49,8 @@
 }
 
 .item-list__item--continue-studies,
-.item-list__item--next-studies {
+.item-list__item--next-studies,
+.item-list__item--dependant-workspaces  {
   cursor: default;
 }
 
@@ -166,6 +167,7 @@
 }
 
 .item-list__icon--workspaces,
+.item-list__icon--dependant-workspaces,
 .item-list__icon--next-studies {
   color: $color-index-item-list-item-panel-workspaces-icon;
 }

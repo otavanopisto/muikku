@@ -633,7 +633,7 @@
     "actions": {
       "apply": "Hae opiskelemaan",
       "confirmSave": "Tiedot ovat oikein",
-      "dependantStudies": "Opiskelijan opinnot",
+      "dependantStudies": "Opintojen yhteenveto ja suoritustiedot",
       "exploreMaterials": "Tutustu materiaaleihin",
       "exploreCourses": "Tutustu kursseihin",
       "readMore": "Lue koko artikkeli",
@@ -654,7 +654,7 @@
       "nettilukio": "Tavoitteena aikuislukion päättötodistus ja ylioppilaslakki.",
       "nettiperuskoulu": "Tavoitteena aikuisten perusopetuksen päättötodistus.",
       "noWorkspaces": "Sinulla ei ole yhtään kurssia",
-      "noWorkspaces_guardian": "Huolletavallasi ei ole yhtään kurssia",
+      "noWorkspaces_guardian": "Huollettavasi ei opiskele tällä hetkellä millään kurssilla",
       "noWorkspaces_body": "Et ole opiskelijana millään kurssilla. Hae tai selaa kursseja",
       "noWorkspaces_link": "kurssipoimurista",
       "noUserByEmail": "Muikussa ei ole käyttäjätiliä, jonka sähköpostiosoite olisi {{email}}.",

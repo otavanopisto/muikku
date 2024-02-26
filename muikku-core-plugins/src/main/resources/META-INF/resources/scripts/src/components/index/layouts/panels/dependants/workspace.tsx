@@ -19,8 +19,8 @@ const DependantWorkspace: React.FC<DependantWorkspaceProps> = (props) => {
   const { workspace } = props;
   const { t } = useTranslation("studies");
   return (
-    <div className="item-list__item item-list__item--workspaces">
-      <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
+    <div className="item-list__item item-list__item--dependant-workspaces">
+      <span className="item-list__icon item-list__icon--dependant-workspaces icon-books"></span>
       <span className="item-list__text-body">
         {`${workspace.name} ${
           workspace.nameExtension ? "(" + workspace.nameExtension + ")" : ""
