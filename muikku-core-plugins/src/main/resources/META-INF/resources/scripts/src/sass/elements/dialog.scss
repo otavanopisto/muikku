@@ -476,8 +476,9 @@
   line-height: 1.25rem;
   max-height: calc(100% - 6rem - 20px);
   min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
   padding: $dialog-content-padding;
-  position: relative;
   width: 100%;
 }
 
@@ -503,10 +504,6 @@
 // Descrease top and bottom padding in chat's dialogs as they have white background
 .dialog__content--chat {
   padding: 10px 20px;
-}
-
-.dialog__content--local {
-  overflow: auto;
 }
 
 .dialog__content-row {

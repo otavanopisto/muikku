@@ -134,7 +134,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
           </label>
           <Select<ChatSettingVisibilityOption>
             id="chatVisibility"
-            className="react-select-override"
+            className="react-select-override react-select-override--chat"
             classNamePrefix="react-select-override"
             isDisabled={disabled}
             value={selectOptions.find(

@@ -410,8 +410,9 @@ function useChat(currentUser: ChatUser) {
 
     return usersWithDiscussionIds
       .map((id) => usersObject[id])
+      .filter((u) => counselorIds.indexOf(u.id) === -1)
       .sort(sortUsersByActivity);
-  }, [usersObject, chatActivity, usersWithDiscussionIds]);
+  }, [usersObject, chatActivity, usersWithDiscussionIds, counselorIds]);
 
   // Private rooms
   const roomsPrivate = React.useMemo(

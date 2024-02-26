@@ -15,6 +15,10 @@ import {
 } from "../../../chat/chat-helpers";
 import { ChatUser } from "~/generated/client";
 import { bindActionCreators } from "redux";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
 
 /**
  * ChatSettingsProps
@@ -22,6 +26,7 @@ import { bindActionCreators } from "redux";
 interface ChatSettingsProps extends WithTranslation<["common"]> {
   profile: ProfileState;
   status: StatusType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -29,7 +34,7 @@ interface ChatSettingsProps extends WithTranslation<["common"]> {
  */
 interface ChatSettingState {
   chatUserSettings: ChatUser;
-  chatEnabled: ChatSettingVisibilityOption;
+  chatVisiblity: ChatSettingVisibilityOption;
   chatNick: string;
   locked: boolean;
 }
@@ -54,7 +59,7 @@ class ChatSettings extends React.Component<
 
     this.state = {
       chatUserSettings: null,
-      chatEnabled: selectOptions[0],
+      chatVisiblity: selectOptions[0],
       chatNick: "",
       locked: false,
     };
@@ -71,8 +76,8 @@ class ChatSettings extends React.Component<
 
       this.setState({
         locked: false,
-        chatEnabled: selectedOptions || selectOptions[0],
-        chatNick: this.props.status.chatSettings.nick,
+        chatVisiblity: selectedOptions || selectOptions[0],
+        chatNick: this.props.status.chatSettings.nick || "",
       });
     }
   };
@@ -89,8 +94,8 @@ class ChatSettings extends React.Component<
 
       this.setState({
         locked: false,
-        chatEnabled: selectedOptions || selectOptions[0],
-        chatNick: this.props.status.chatSettings.nick,
+        chatVisiblity: selectedOptions || selectOptions[0],
+        chatNick: this.props.status.chatSettings.nick || "",
       });
     }
   };
@@ -100,17 +105,36 @@ class ChatSettings extends React.Component<
    */
   async save() {
     const chatApi = MApi.getChatApi();
-    const { chatEnabled, chatUserSettings, chatNick } = this.state;
+    const { chatVisiblity, chatUserSettings, chatNick } = this.state;
 
     this.setState({ locked: true });
 
-    await chatApi.updateChatSettings({
-      updateChatSettingsRequest: {
-        ...chatUserSettings,
-        nick: chatNick,
-        visibility: chatEnabled.value,
-      },
-    });
+    if (chatVisiblity.value === "ALL" && chatNick === "") {
+      this.props.displayNotification("Please enter a nickname", "fatal");
+
+      this.setState({ locked: false });
+      return;
+    }
+
+    try {
+      await chatApi.updateChatSettings({
+        updateChatSettingsRequest: {
+          ...chatUserSettings,
+          nick: chatNick,
+          visibility: chatVisiblity.value,
+        },
+      });
+
+      this.props.displayNotification(
+        "Chat settings saved succesfully",
+        "success"
+      );
+    } catch (err) {
+      this.props.displayNotification(
+        "Error while updating chat settings",
+        "error"
+      );
+    }
 
     this.setState({ locked: false });
   }
@@ -125,7 +149,7 @@ class ChatSettings extends React.Component<
     actionMeta: ActionMeta<ChatSettingVisibilityOption>
   ) {
     this.setState({
-      chatEnabled: newValue,
+      chatVisiblity: newValue,
     });
   }
 
@@ -167,7 +191,7 @@ class ChatSettings extends React.Component<
                       className="react-select-override"
                       classNamePrefix="react-select-override"
                       isDisabled={this.state.locked}
-                      value={this.state.chatEnabled}
+                      value={this.state.chatVisiblity}
                       onChange={this.onChatVisibilityChange}
                       options={selectOptions}
                       styles={{
@@ -236,7 +260,12 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      displayNotification,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation(["profile"])(
