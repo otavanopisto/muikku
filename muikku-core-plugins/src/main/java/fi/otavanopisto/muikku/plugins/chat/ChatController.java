@@ -445,6 +445,9 @@ public class ChatController {
   }
   
   public ChatUserRestModel getChatUserRestModel(Long userEntityId) {
+    if (users.containsKey(userEntityId)) {
+      return new ChatUserRestModel(users.get(userEntityId));
+    }
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     return userEntity == null ? null : toRestModel(userEntity);
   }
