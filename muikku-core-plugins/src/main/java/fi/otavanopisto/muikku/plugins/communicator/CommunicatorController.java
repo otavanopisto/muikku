@@ -446,7 +446,15 @@ public class CommunicatorController {
   public Long countMessagesByUserAndMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId, boolean inTrash) {
     return communicatorMessageDAO.countMessagesByUserAndMessageId(user, communicatorMessageId, inTrash);
   }
-  
+
+  /**
+   * Return the maximum id value of CommunicatorMessages
+   * @return the maximum id value of CommunicatorMessages
+   */
+  public Long getMaximumCommunicatorMessageId() {
+    return communicatorMessageDAO.getMaximumCommunicatorMessageId();
+  }
+
   public Long countTotalMessages() {
     return communicatorMessageDAO.count();
   }
@@ -621,6 +629,18 @@ public class CommunicatorController {
   
   public List<CommunicatorMessage> listAllMessages(int firstResult, int maxResults) {
     return communicatorMessageDAO.listAll(firstResult, maxResults);
+  }
+
+  /**
+   * Lists all messages in reverse order (i.e. having smaller or equal index 
+   * than supplied).
+   * 
+   * @param highestId highest index returned
+   * @param maxResults how many results at most
+   * @return at most maxResults messages that have smaller than or equal index to highestIndex
+   */
+  public List<CommunicatorMessage> listAllMessagesInReverseFromId(Long highestId, int maxResults) {
+    return communicatorMessageDAO.listAllMessagesInReverseFromId(highestId, maxResults);
   }
 
   public List<CommunicatorMessageRecipient> listAllRecipients() {
@@ -818,4 +838,5 @@ public class CommunicatorController {
   public VacationNotifications findVacationNotification(UserEntity sender, UserEntity receiver) {
     return vacationNotificationsDAO.findNotification(sender, receiver);
   }
+
 }
