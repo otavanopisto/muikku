@@ -596,13 +596,14 @@ public class ChatRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateChatSettings(ChatUserRestModel payload) {
+    String nick = StringUtils.trim(payload.getNick());
     // Make sure nick exists when chat is on
-    if (payload.getVisibility() != ChatUserVisibility.NONE && StringUtils.isEmpty(payload.getNick())) {
+    if (payload.getVisibility() != ChatUserVisibility.NONE && StringUtils.isEmpty(nick)) {
       return Response.status(Status.BAD_REQUEST).entity("Nick is required").build();
     }
     // Make sure nick is unique
-    if (!StringUtils.isEmpty(payload.getNick())) {
-      ChatUser nickUser = chatController.getChatUser(payload.getNick());
+    if (!StringUtils.isEmpty(nick)) {
+      ChatUser nickUser = chatController.getChatUser(nick);
       if (nickUser != null && !nickUser.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
         return Response.status(Status.CONFLICT).entity("Nick already in use").build();
       }
@@ -612,7 +613,7 @@ public class ChatRESTService {
     chatController.handleSettingsChange(
         sessionController.getLoggedUserEntity(),
         payload.getVisibility(),
-        payload.getNick(),
+        nick,
         session == null ? null : session.getId());
     return Response.ok(chatController.toRestModel(sessionController.getLoggedUserEntity())).build();    
   }
