@@ -34,13 +34,10 @@ interface ChatMainMobileProps {}
  * @param props props
  */
 function ChatMainMobile(props: ChatMainMobileProps) {
-  const { openOverview } = useChatContext();
+  const { openOverview, toggleControlBox } = useChatContext();
 
   const [panelLeftOpen, setPanelLeftOpen] = React.useState(false);
   const [panelRightOpen, setPanelRightOpen] = React.useState(false);
-
-  // const panelLeftArrow = panelLeftOpen ? "arrow-left" : "arrow-right";
-  // const panelRightArrow = panelRightOpen ? "arrow-right" : "arrow-left";
 
   return (
     <div className="chat-mobile">
@@ -98,10 +95,12 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           icon="stack"
           onClick={() => setPanelLeftOpen((prev) => !prev)}
         />
-        <Button buttonModifiers={["chat"]} onClick={() => openOverview()}>
+        <Button buttonModifiers={["chat"]} onClick={openOverview}>
           Dashboard
         </Button>
-        <Button buttonModifiers={["chat"]}>Sulje</Button>
+        <Button buttonModifiers={["chat"]} onClick={toggleControlBox}>
+          Sulje
+        </Button>
         <IconButton
           buttonModifiers={["chat", "chat-mobile-footer"]}
           icon="bubbles"
