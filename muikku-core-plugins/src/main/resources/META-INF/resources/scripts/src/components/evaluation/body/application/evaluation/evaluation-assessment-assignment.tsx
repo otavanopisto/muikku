@@ -8,7 +8,6 @@ import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import * as moment from "moment";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
 import SlideDrawer from "./slide-drawer";
@@ -28,6 +27,7 @@ import {
 } from "~/generated/client";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * EvaluationCardProps
@@ -409,7 +409,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   {t("labels.done", { ns: "evaluation" })}
                 </span>
                 <span className="evaluation-modal__item-meta-item-data">
-                  {moment(hasSubmitted).format("l")}
+                  {localize.date(hasSubmitted)}
                 </span>
               </div>
             )
@@ -421,7 +421,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                 {t("labels.evaluated", { ns: "workspace" })}
               </span>
               <span className="evaluation-modal__item-meta-item-data">
-                {moment(evaluationDate).format("l")}
+                {localize.date(evaluationDate)}
               </span>
             </div>
           )}

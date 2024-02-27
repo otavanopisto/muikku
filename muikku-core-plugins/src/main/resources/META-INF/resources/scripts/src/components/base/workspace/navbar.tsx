@@ -227,8 +227,8 @@ class WorkspaceNavbar extends React.Component<
     let assessmentState =
       this.props.currentWorkspace &&
       this.props.currentWorkspace.activity &&
-      this.props.currentWorkspace.activity.assessmentState.length > 0
-        ? this.props.currentWorkspace.activity.assessmentState[0]
+      this.props.currentWorkspace.activity.assessmentStates.length > 0
+        ? this.props.currentWorkspace.activity.assessmentStates[0]
         : undefined;
 
     let canCancelRequest =
@@ -238,16 +238,16 @@ class WorkspaceNavbar extends React.Component<
       assessmentState =
         this.props.currentWorkspace &&
         this.props.currentWorkspace.activity &&
-        this.props.currentWorkspace.activity.assessmentState.length > 0
+        this.props.currentWorkspace.activity.assessmentStates.length > 0
           ? getPrioritizedAssessmentState(
-              this.props.currentWorkspace.activity.assessmentState
+              this.props.currentWorkspace.activity.assessmentStates
             )
           : undefined;
 
       canCancelRequest =
         assessmentState &&
         canCancelAssessmentRequest(
-          this.props.currentWorkspace.activity.assessmentState
+          this.props.currentWorkspace.activity.assessmentStates
         );
     }
 

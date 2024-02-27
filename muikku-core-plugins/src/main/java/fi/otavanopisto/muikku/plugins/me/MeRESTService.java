@@ -2,9 +2,12 @@ package fi.otavanopisto.muikku.plugins.me;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -174,6 +177,13 @@ public class MeRESTService {
         }
       }
 
+      Set<String> roles = new HashSet<>();
+      if (usdi.getRoles() != null) {
+        roles = usdi.getRoles().stream()
+            .map(roleEntity -> roleEntity.getArchetype().name())
+            .collect(Collectors.toSet());
+      }
+      
       staffMembers.add(new GuidanceCounselorRestModel(
           userEntity.defaultSchoolDataIdentifier().toId(),
           userEntity.getId(),
@@ -182,7 +192,7 @@ public class MeRESTService {
           email,
           propertyMap,
           organizationRESTModel,
-          usdi.getRole() != null && usdi.getRole().getArchetype() != null ? usdi.getRole().getArchetype().name() : null,
+          roles,
           hasImage,
           chatEnabled));
     }

@@ -8,7 +8,7 @@ import { AnyActionType } from "../../../actions/index";
 import { StateType } from "../../../reducers/index";
 import { connect, Dispatch } from "react-redux";
 import { StatusType } from "../../../reducers/base/status";
-import * as moment from "moment";
+import moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { withTranslation, WithTranslation } from "react-i18next";

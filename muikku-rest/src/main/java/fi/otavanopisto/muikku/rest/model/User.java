@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.rest.model;
 
-import java.util.Date;
-
 public class User {
 
   public User() {
@@ -13,13 +11,7 @@ public class User {
               String nickName,
               String studyProgrammeName,
               boolean hasImage,
-              String nationality,
-              String language,
-              String municipality,
-              String school,
-              String email,
-              Date studyStartDate,
-              Date studyTimeEnd
+              String email
               ) {
     super();
     this.id = id;
@@ -28,13 +20,7 @@ public class User {
     this.nickName = nickName;
     this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
-    this.nationality = nationality;
-    this.language = language;
-    this.municipality = municipality;
-    this.school = school;
     this.email = email;
-    this.studyStartDate = studyStartDate;
-    this.studyTimeEnd = studyTimeEnd;
   }
 
   public Long getId() {
@@ -69,60 +55,12 @@ public class User {
     this.hasImage = hasImage;
   }
 
-  public String getNationality() {
-    return nationality;
-  }
-
-  public void setNationality(String nationality) {
-    this.nationality = nationality;
-  }
-
-  public String getLanguage() {
-    return language;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
-  }
-
-  public String getMunicipality() {
-    return municipality;
-  }
-
-  public void setMunicipality(String municipality) {
-    this.municipality = municipality;
-  }
-
-  public String getSchool() {
-    return school;
-  }
-
-  public void setSchool(String school) {
-    this.school = school;
-  }
-
   public String getEmail() {
     return email;
   }
 
   public void setEmail(String email) {
     this.email = email;
-  }
-
-  public Date getStudyStartDate() {
-    return studyStartDate;
-  }
-
-  public void setStudyStartDate(Date studyStartDate) {
-    this.studyStartDate = studyStartDate;
-  }
-
-  public Date getStudyTimeEnd() {
-    return studyTimeEnd;
-  }
-
-  public void setStudyTimeEnd(Date studyTimeEnd) {
-    this.studyTimeEnd = studyTimeEnd;
   }
 
   public String getNickName() {
@@ -147,11 +85,5 @@ public class User {
   private String nickName;
   private String studyProgrammeName;
   private boolean hasImage;
-  private String nationality;
-  private String language;
-  private String municipality;
-  private String school;
   private String email;
-  private Date studyStartDate;
-  private Date studyTimeEnd;
 }

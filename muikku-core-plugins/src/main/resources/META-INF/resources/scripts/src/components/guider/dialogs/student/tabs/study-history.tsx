@@ -7,8 +7,6 @@ import FileDeleteDialog from "../../../dialogs/file-delete";
 import FileUploader from "~/components/general/file-uploader";
 import { bindActionCreators } from "redux";
 import { UserFileType } from "~/reducers/user-index";
-import Workspaces from "../workspaces";
-import MainChart from "~/components/general/graph/main-chart";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Navigation, { NavigationElement } from "~/components/general/navigation";
@@ -17,8 +15,10 @@ import {
   addFileToCurrentStudent,
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
-import variables from "~/sass/_exports.scss";
 import { useTranslation } from "react-i18next";
+import RecordsGroup from "~/components/general/records-history/records-group";
+import MainChart from "~/components/general/graph/main-chart";
+import { breakpoints } from "~/util/breakpoints";
 
 type studyHistoryAside = "history" | "library";
 
@@ -36,8 +36,7 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const isAtMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
   const { t } = useTranslation("guider");
@@ -45,6 +44,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   if (
     !props.guider.currentStudent ||
     !props.guider.currentStudent.pastWorkspaces ||
+    !props.guider.currentStudent.pastStudies ||
     !props.guider.currentStudent.activityLogs
   ) {
     return null;
@@ -53,12 +53,12 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const { addFileToCurrentStudent } = props;
   const {
     activityLogs,
-    activityLogState,
-    pastWorkspaces,
-    pastWorkspacesState,
-    currentWorkspaces,
+    pastStudies,
     basic,
     files,
+    currentWorkspaces,
+    pastWorkspaces,
+    activityLogState,
   } = props.guider.currentStudent;
 
   /**
@@ -143,20 +143,40 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     </div>
   );
 
-  const historyComponent = (
-    <React.Fragment key="history-component">
-      <ApplicationSubPanel>
-        <ApplicationSubPanel.Header>
-          {t("labels.workspaces", { ns: "workspace" })}
-        </ApplicationSubPanel.Header>
-        <ApplicationSubPanel.Body>
-          {pastWorkspacesState === "READY" ? (
-            <Workspaces workspaces={pastWorkspaces} />
+  /**
+   * studentRecords
+   */
+  const studentRecords = (
+    <ApplicationSubPanel>
+      {pastStudies.map((lineCategoryData, i) => (
+        <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
+          {lineCategoryData.credits.length +
+            lineCategoryData.transferCredits.length >
+          0 ? (
+            <RecordsGroup
+              key={`credit-category-${i}`}
+              recordGroup={lineCategoryData}
+            />
           ) : (
-            <div className="loader-empty" />
+            <div className="application-sub-panel__item">
+              <div className="empty">
+                <span>
+                  {t("content.empty", {
+                    ns: "studies",
+                    context: "workspaces",
+                  })}
+                </span>
+              </div>
+            </div>
           )}
         </ApplicationSubPanel.Body>
-      </ApplicationSubPanel>
+      ))}
+    </ApplicationSubPanel>
+  );
+
+  const historyComponent = (
+    <React.Fragment key="history-component">
+      <ApplicationSubPanel>{studentRecords}</ApplicationSubPanel>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
           {t("labels.stats", { ns: "common" })}

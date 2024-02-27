@@ -80,6 +80,10 @@
   opacity: 100%;
 }
 
+.dialog--workspace-signup-dialog {
+  z-index: 9999;
+}
+
 .dialog__window {
   align-items: flex-start;
   background-color: $color-dialog-default-background;
@@ -449,6 +453,11 @@
   min-height: 0;
   padding: $dialog-content-padding;
   position: relative;
+  width: 100%;
+}
+
+.dialog__content--workspace-signup-dialog {
+  display: block;
   width: 100%;
 }
 

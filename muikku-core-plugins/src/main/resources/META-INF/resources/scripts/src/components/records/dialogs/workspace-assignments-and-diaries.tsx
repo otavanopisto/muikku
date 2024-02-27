@@ -3,14 +3,14 @@ import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import AssignmentsAndDiaries from "../body/application/assignments-and-diaries/assignments-and-diaries";
-import { RecordWorkspaceActivity } from "~/reducers/main-function/records";
+import { WorkspaceActivity } from "~/generated/client";
 
 /**
  * MatriculationExaminationWizardDialogProps
  */
 interface WorkspaceAssignmentsAndDiaryDialogProps {
   workspaceId: number;
-  credit: RecordWorkspaceActivity;
+  credit: WorkspaceActivity;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
 }

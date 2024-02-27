@@ -63,6 +63,7 @@
 
 .form__subdivision {
   flex-basis: 100%;
+  margin: 5px 0;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 50%;
