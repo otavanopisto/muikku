@@ -1,5 +1,5 @@
 import * as React from "react";
-import "~/sass/elements/popper.scss";
+import "~/sass/elements/popover.scss";
 import {
   Popover,
   PopoverArrow,
