@@ -901,7 +901,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers")
   @RESTPermit (handling = Handling.INLINE)
-  public Response createWorkspaceMaterialProducer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, List<String> payload) {
+  public Response createWorkspaceMaterialProducers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, List<String> payload) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
