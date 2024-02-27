@@ -12308,6 +12308,7 @@ components:
         - id
         - identifier
         - nick
+        - name
         - type
         - visibility
         - hasImage
@@ -12322,6 +12323,10 @@ components:
           type: string
         nick:
           description: Nickname of the user.
+          type: string
+          nullable: true
+        name:
+          description: Full name of the user with studyprogramme in parentheses.
           type: string
           nullable: true
         type:

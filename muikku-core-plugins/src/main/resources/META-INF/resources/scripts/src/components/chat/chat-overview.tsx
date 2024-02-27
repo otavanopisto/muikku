@@ -266,6 +266,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
 function ChatOverviewUsersList() {
   const {
     dashboardUsers,
+    currentUser,
     openDiscussion,
     openBlockUserDialog,
     chatActivityByUserObject,
@@ -315,6 +316,8 @@ function ChatOverviewUsersList() {
         <OverviewListItemContent>
           <ChatProfile
             user={user}
+            primaryInfo={user.nick}
+            secondaryInfo={currentUser.type === "STAFF" && user.name}
             chatActivity={chatActivityByUserObject[user.id]}
           />
         </OverviewListItemContent>
@@ -344,8 +347,12 @@ function ChatOverviewUsersList() {
  * @returns JSX.Element
  */
 function ChatOverviewBlockedList() {
-  const { dashboardBlockedUsers, openDiscussion, openCancelUnblockDialog } =
-    useChatContext();
+  const {
+    dashboardBlockedUsers,
+    currentUser,
+    openDiscussion,
+    openCancelUnblockDialog,
+  } = useChatContext();
 
   /**
    * Handles open discussion
@@ -389,7 +396,11 @@ function ChatOverviewBlockedList() {
         onOpenClick={handleOpenDiscussion(user.identifier)}
       >
         <OverviewListItemContent>
-          <ChatProfile user={user} />
+          <ChatProfile
+            user={user}
+            primaryInfo={user.nick}
+            secondaryInfo={currentUser.type === "STAFF" && user.name}
+          />
         </OverviewListItemContent>
 
         <OverviewListItemActions>

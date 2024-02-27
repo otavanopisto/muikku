@@ -46,6 +46,7 @@ function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
         <ChatMyActiveDiscussion
           key={user.id}
           user={user}
+          currentUser={currentUser}
           chatActivity={chatActivityByUserObject[user.id]}
           isActive={activeDiscussion?.identifier === user.identifier}
           onOpenClick={handleOpenClick}
@@ -76,6 +77,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
     activeDiscussion,
     myDiscussionsOthers,
     chatActivityByUserObject,
+    currentUser,
   } = useChatContext();
 
   /**
@@ -93,6 +95,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
         <ChatMyActiveDiscussion
           key={user.id}
           user={user}
+          currentUser={currentUser}
           isActive={activeDiscussion?.identifier === user.identifier}
           chatActivity={chatActivityByUserObject[user.id]}
           onOpenClick={handleOpenClick}
@@ -108,6 +111,7 @@ function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
  */
 interface ChatMyDiscussionProps {
   user: ChatUser;
+  currentUser: ChatUser;
   chatActivity?: ChatActivity;
   isActive: boolean;
   onOpenClick?: (targetIdentifier: string) => void;
@@ -120,7 +124,14 @@ interface ChatMyDiscussionProps {
  * @returns JSX.Element
  */
 function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
-  const { user, chatActivity, isActive, onRemoveClick, onOpenClick } = props;
+  const {
+    user,
+    currentUser,
+    chatActivity,
+    isActive,
+    onRemoveClick,
+    onOpenClick,
+  } = props;
 
   /**
    * Handles open click
@@ -152,7 +163,12 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
 
   return (
     <div className={className} role="menuitem" onClick={handleOpenClick}>
-      <ChatProfile user={user} chatActivity={chatActivity} />
+      <ChatProfile
+        user={user}
+        primaryInfo={user.nick}
+        secondaryInfo={currentUser.type === "STAFF" && user.name}
+        chatActivity={chatActivity}
+      />
 
       {onRemoveClick && (
         <div className="chat__button-wrapper chat__button-wrapper--close-discussion">
