@@ -27,7 +27,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSettings;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
@@ -105,22 +104,22 @@ public class WorkspaceController {
     workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
   }
 
-  public void archiveWorkspace(Workspace workspace) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
+  public void archiveWorkspace(SchoolDataIdentifier workspaceIdentifier) {
+    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
     if (workspaceEntity != null) {
       archiveWorkspaceEntity(workspaceEntity);
     }
 
-    workspaceSchoolDataController.removeWorkspace(workspace);
+    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
   }
 
-  public void deleteWorkspace(Workspace workspace) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
+  public void deleteWorkspace(SchoolDataIdentifier workspaceIdentifier) {
+    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
     if (workspaceEntity != null) {
       deleteWorkspaceEntity(workspaceEntity);
     }
 
-    workspaceSchoolDataController.removeWorkspace(workspace);
+    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
   }
   
   /* WorkspaceType */
@@ -139,8 +138,8 @@ public class WorkspaceController {
 
   /* Workspace Entity */
 
-  public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
-    return workspaceSchoolDataController.findWorkspaceEntity(workspace);
+  public WorkspaceEntity findWorkspaceEntity(SchoolDataIdentifier workspaceIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
   }
 
   public WorkspaceEntity findWorkspaceEntityById(Long workspaceId) {
@@ -231,8 +230,8 @@ public class WorkspaceController {
 
   /* WorkspaceUsers */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
-    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, role);
+  public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role) {
+    return workspaceSchoolDataController.createWorkspaceUser(workspaceIdentifier, userIdentifier, role);
   }
 
   public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity) {

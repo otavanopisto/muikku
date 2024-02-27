@@ -20,6 +20,7 @@ import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { Role } from "~/generated/client";
 
 /**
  * OrganizationUserProps
@@ -38,7 +39,12 @@ interface OrganizationUserProps extends WithTranslation {
  */
 interface OrganizationUserState {
   user: {
-    [field: string]: string;
+    studyProgrammeIdentifier?: string;
+    ssn?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    roles: Role[];
   };
   locked: boolean;
   executing: boolean;
@@ -63,7 +69,7 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        role: "STUDENT",
+        roles: [Role.Student],
       },
       locked: false,
       executing: false,
@@ -98,7 +104,7 @@ class OrganizationUser extends React.Component<
   clearComponentState() {
     this.setState({
       user: {
-        role: "STUDENT",
+        roles: [Role.Student],
         studyProgrammeIdentifier: this.props.studyprogrammes.list[0].identifier,
       },
       firstNameValid: 2,
@@ -146,7 +152,7 @@ class OrganizationUser extends React.Component<
       valid = false;
     }
 
-    if (this.state.user.role == "STUDENT") {
+    if (this.state.user.roles.includes(Role.Student)) {
       if (
         this.state.user.studyProgrammeIdentifier == "" ||
         this.state.user.studyProgrammeIdentifier == undefined
@@ -199,14 +205,14 @@ class OrganizationUser extends React.Component<
             firstName: this.state.user.firstName,
             lastName: this.state.user.lastName,
             email: this.state.user.email,
-            role: this.state.user.role,
+            roles: this.state.user.roles,
           },
           /**
            * success
            */
           success: () => {
             this.setState({
-              user: { role: "STUDENT" },
+              user: { roles: [Role.Student] },
               firstNameValid: 2,
               lastNameValid: 2,
               emailValid: 2,
@@ -288,7 +294,7 @@ class OrganizationUser extends React.Component<
             label={t("labels.email", { ns: "users" })}
           />
         </DialogRow>
-        {this.state.user.role == "STUDENT" ? (
+        {this.state.user.roles.includes(Role.Student) ? (
           <>
             <DialogRow modifiers="new-user">
               <SSNFormElement

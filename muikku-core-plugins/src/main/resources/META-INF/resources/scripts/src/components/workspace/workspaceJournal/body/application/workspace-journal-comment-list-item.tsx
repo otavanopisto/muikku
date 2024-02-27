@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import moment from "moment";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -25,6 +25,7 @@ import {
 } from "../../../../../actions/workspaces/journals";
 import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * WorkspaceJournalCommentListProps
@@ -98,9 +99,6 @@ export const WorkspaceJournalCommentListItem: React.FC<
 
   const creatorIsMe = status.userId === authorId;
   const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
-  const formatedDate = `${moment(created).format("l")} - ${moment(
-    created
-  ).format("LT")}`;
 
   return (
     <ApplicationListItem className="journal journal--comment">
@@ -119,7 +117,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
           </span>
         </div>
         <div className="application-list__item-header-aside application-list__item-header-aside--journal-comment">
-          {formatedDate}
+          {localize.date(created)} - {localize.date(created, "LT")}
         </div>
       </ApplicationListItemHeader>
 

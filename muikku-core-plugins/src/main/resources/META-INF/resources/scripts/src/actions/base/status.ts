@@ -5,6 +5,7 @@ import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { WorkspaceBasicInfo } from "~/generated/client";
 import { localize } from "~/locales/i18n";
+import { Role } from "~/generated/client";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -72,8 +73,8 @@ async function loadWhoAMI(
       hasImage: whoAmI.hasImage,
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
-      role: whoAmI.role,
-      isStudent: whoAmI.role === "STUDENT",
+      roles: whoAmI.roles,
+      isStudent: whoAmI.roles.includes(Role.Student),
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
       permissions: {
@@ -112,15 +113,15 @@ async function loadWhoAMI(
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
         CHAT_ACTIVE: whoAmI.services.chat.isActive,
         CHAT_AVAILABLE: whoAmI.services.chat.isAvailable,
-        FORUM_ACCESSENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
-        FORUM_CREATEENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
-        FORUM_DELETEENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
+        FORUM_ACCESSENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_ACCESSENVIRONMENTFORUM"
+        ),
+        FORUM_CREATEENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_CREATEENVIRONMENTFORUM"
+        ),
+        FORUM_DELETEENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_DELETEENVIRONMENTFORUM"
+        ),
         WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {

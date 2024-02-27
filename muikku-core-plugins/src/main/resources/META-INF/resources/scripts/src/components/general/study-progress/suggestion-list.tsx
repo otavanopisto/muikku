@@ -1,7 +1,5 @@
 import * as React from "react";
-import { useSuggestionList } from "./hooks/useSuggestedList";
 import { connect, Dispatch } from "react-redux";
-import { Course } from "~/@types/shared";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
@@ -9,23 +7,32 @@ import {
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
-import { StudentStudyActivity } from "~/generated/client";
+import { useSuggestionList } from "./hooks/useSuggestedList";
+import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
+import { Course } from "~/@types/shared";
+import { useTranslation } from "react-i18next";
 
 /**
  * SuggestionListProps
  */
 interface HopsSuggestionListProps {
-  subjectCode: string;
-  suggestedActivityCourses?: StudentStudyActivity[];
-  course: Course;
   studentId: string;
   studentsUserEntityId: number;
+  course: Course;
+  subjectCode: string;
+  suggestedActivityCourses?: StudentStudyActivity[];
   displayNotification: DisplayNotificationTriggerType;
   loadData?: boolean;
-  canSuggestForNext: boolean;
-  onLoad?: () => void;
+  /**
+   * Handler for suggestion next click
+   * Must be passed as a prop because portal is used
+   */
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
-  updateSuggestionOptional?: (params: UpdateSuggestionParams) => void;
+  openSignUpBehalfDialog: (
+    studentEntityId: number,
+    suggestion: WorkspaceSuggestion
+  ) => void;
+  onCloseSignUpBehalfDialog: () => void;
 }
 
 /**
@@ -36,14 +43,15 @@ const defaultSuggestionListProps = {
 };
 
 /**
- * SuggestionList
+ * Suggestion list component
+ *
  * @param props props
  * @returns JSX.Element
  */
-const HopsSuggestionList = (props: HopsSuggestionListProps) => {
+const SuggestionList = (props: HopsSuggestionListProps) => {
   props = { ...defaultSuggestionListProps, ...props };
 
-  const { onLoad } = props;
+  const { t } = useTranslation("studyMatrix");
 
   const { isLoading, suggestionsList } = useSuggestionList(
     props.subjectCode,
@@ -53,14 +61,20 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
     props.loadData
   );
 
-  React.useEffect(() => {
-    if (!isLoading && onLoad) {
-      onLoad();
-    }
-  }, [isLoading, onLoad]);
+  /**
+   * Handles open sign up behalf dialog
+   * @param studentEntityId studentEntityId
+   * @param suggestion suggestion
+   */
+  const handleOpenSignUpBehalfDialog =
+    (studentEntityId: number, suggestion: WorkspaceSuggestion) =>
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      props.openSignUpBehalfDialog(studentEntityId, suggestion);
+    };
 
   /**
-   * handleSuggestionNextClick
+   * Handles suggestion next click
+   *
    * @param params params
    */
   const handleSuggestionNextClick =
@@ -69,29 +83,29 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
       props.updateSuggestionNext && props.updateSuggestionNext(params);
     };
 
-  /**
-   * list of suggestion items
-   */
+  // list of suggestion items
   const listItems =
     suggestionsList.length > 0 ? (
       suggestionsList.map((suggestion) => {
         // By default action type is always add
         let suggestionNextActionType: "add" | "remove" = "add";
 
-        /**
-         * If there is suggested activity courses
-         */
+        // If there is suggested activity courses
         if (props.suggestedActivityCourses) {
           const suggestedCourse = props.suggestedActivityCourses.find(
             (item) => item.courseId === suggestion.id
           );
 
-          /**
-           * If any of these condition happens, changes respectivily action type
-           */
+          // If any of these condition happens, changes respectivily action type
           if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
             suggestionNextActionType = "remove";
           }
+        }
+
+        let name = suggestion.name;
+
+        if (suggestion.nameExtension) {
+          name += ` (${suggestion.nameExtension})`;
         }
 
         return (
@@ -100,24 +114,40 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
             className="hops-container__study-tool-dropdow-suggestion-subsection"
           >
             <div className="hops-container__study-tool-dropdow-title">
-              {suggestion.name} ({suggestion.nameExtension})
+              {name}
             </div>
+
+            {suggestion.canSignup && (
+              <Button
+                buttonModifiers={[
+                  "guider-hops-studytool",
+                  "guider-hops-studytool-next",
+                ]}
+                onClick={handleSuggestionNextClick({
+                  actionType: suggestionNextActionType,
+                  courseNumber: props.course.courseNumber,
+                  subjectCode: props.subjectCode,
+                  courseId: suggestion.id,
+                  studentId: props.studentId,
+                })}
+              >
+                {suggestionNextActionType === "remove"
+                  ? t("actions.suggested")
+                  : t("actions.suggestToNext")}
+              </Button>
+            )}
+
             <Button
               buttonModifiers={[
                 "guider-hops-studytool",
                 "guider-hops-studytool-next",
               ]}
-              onClick={handleSuggestionNextClick({
-                actionType: suggestionNextActionType,
-                courseNumber: props.course.courseNumber,
-                subjectCode: props.subjectCode,
-                courseId: suggestion.id,
-                studentId: props.studentId,
-              })}
+              onClick={handleOpenSignUpBehalfDialog(
+                props.studentsUserEntityId,
+                suggestion
+              )}
             >
-              {suggestionNextActionType === "remove"
-                ? "Ehdotettu"
-                : "Ehdota seuraavaksi"}
+              {t("actions.signupStudentToWorkspace")}
             </Button>
           </div>
         );
@@ -125,7 +155,7 @@ const HopsSuggestionList = (props: HopsSuggestionListProps) => {
     ) : (
       <div className="hops-container__study-tool-dropdow-suggestion-subsection">
         <div className="hops-container__study-tool-dropdow-title">
-          Ei kursseja. Tarkista kurssitarjonta!
+          {t("content.noSuggestionAvailable")}
         </div>
       </div>
     );
@@ -145,4 +175,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return { displayNotification };
 }
 
-export default connect(null, mapDispatchToProps)(HopsSuggestionList);
+export default connect(null, mapDispatchToProps)(SuggestionList);

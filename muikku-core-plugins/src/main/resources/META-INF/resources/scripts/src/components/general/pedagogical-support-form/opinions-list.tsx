@@ -4,7 +4,7 @@ import { TextField } from "../hops-compulsory-education-wizard/text-field";
 import CKEditor from "../ckeditor";
 import Button from "../button";
 import CkeditorLoaderContent from "../../base/ckeditor-loader/content";
-import * as moment from "moment";
+import moment from "moment";
 import { useTranslation } from "react-i18next";
 
 /**

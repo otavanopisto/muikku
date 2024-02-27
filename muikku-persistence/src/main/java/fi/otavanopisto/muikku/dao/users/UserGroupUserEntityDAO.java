@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
@@ -134,7 +135,7 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     CriteriaQuery<UserGroupUserEntity> criteria = criteriaBuilder.createQuery(UserGroupUserEntity.class);
     Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
     Join<UserGroupUserEntity, UserSchoolDataIdentifier> userSchoolDataIdentifier = root.join(UserGroupUserEntity_.userSchoolDataIdentifier);
-    Join<UserSchoolDataIdentifier, EnvironmentRoleEntity> environmentRole = userSchoolDataIdentifier.join(UserSchoolDataIdentifier_.role);
+    ListJoin<UserSchoolDataIdentifier, EnvironmentRoleEntity> environmentRole = userSchoolDataIdentifier.join(UserSchoolDataIdentifier_.roles);
 
     EnumSet<EnvironmentRoleArchetype> staffMemberRoles = EnumSet.of(
         EnvironmentRoleArchetype.ADMINISTRATOR,
@@ -154,6 +155,7 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     
     criteria
       .select(root)
+      .distinct(true)
       .where(criteriaBuilder.and(predicates.array()));
    
     return entityManager.createQuery(criteria).getResultList();

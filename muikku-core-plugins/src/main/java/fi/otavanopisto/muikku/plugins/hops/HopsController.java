@@ -32,7 +32,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
-import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -41,9 +40,6 @@ public class HopsController {
 
   @Inject
   private SessionController sessionController;
-
-  @Inject
-  private CurrentUserSession currentUserSession;
 
   @Inject
   private HopsDAO hopsDAO;
@@ -88,7 +84,7 @@ public class HopsController {
       // Hops is always available for admins
       
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      if (userSchoolDataIdentifier != null && (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER))) {
         return true;
       }
       SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
@@ -102,23 +98,22 @@ public class HopsController {
     return false;
   }
   
-  public boolean canSignup(WorkspaceEntity workspaceEntity, UserEntity studentEntity) {
+  public boolean canSignup(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
     boolean canSignUp = false;
     
-    if (studentEntity == null) {
-      return canSignUp;
+    if (userEntity == null) {
+      return false;
     }
+
     // Check that user isn't already in the workspace. If not, check if they could sign up
     
-    if (sessionController.isLoggedIn() && currentUserSession.isActive()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentEntity.defaultSchoolDataIdentifier());
-      canSignUp = workspaceUserEntity == null && workspaceEntityController.canSignup(studentEntity.defaultSchoolDataIdentifier(), workspaceEntity);
-    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+    canSignUp = workspaceUserEntity == null && workspaceEntityController.canSignup(userEntity.defaultSchoolDataIdentifier(), workspaceEntity);
     
     // If user could sign up, revoke that if they have already been evaluated
     
     if (canSignUp) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentEntity.defaultSchoolDataIdentifier());
+      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
       if (workspaceUserEntity != null) {
         WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
         WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();

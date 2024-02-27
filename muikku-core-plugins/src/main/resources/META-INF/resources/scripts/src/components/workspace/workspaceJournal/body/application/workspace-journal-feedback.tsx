@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import * as moment from "moment";
+import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -33,7 +33,7 @@ const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
             {t("labels.feedbackDate")}:
           </div>
           <div className="journal__meta-item-data">
-            {moment(journalFeedback.created).format("l")}
+            {localize.date(journalFeedback.created)}
           </div>
         </div>
         <div className="journal__meta-item">

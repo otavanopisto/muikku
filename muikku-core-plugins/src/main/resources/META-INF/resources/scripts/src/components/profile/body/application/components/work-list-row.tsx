@@ -14,7 +14,7 @@ import {
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
-import * as moment from "moment";
+import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { WorklistBillingStateType, WorklistItem } from "~/generated/client";

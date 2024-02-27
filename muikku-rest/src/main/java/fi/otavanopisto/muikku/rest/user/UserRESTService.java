@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -60,7 +62,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
-import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -256,46 +257,37 @@ public class UserRESTService extends AbstractRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
-    Map<String, String> result = new HashMap<String, String>();
-    
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+
     Boolean isStudent = userEntityController.isStudent(userEntity);
-
-    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-      
-      // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
-      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        result.put("moreInfoForLoggedUser", "true");
-      } else if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
-        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
-        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
-
-        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
-        
-        if (!commonWorkspaces.isEmpty()) {
-          result.put("moreInfoForLoggedUser", "true");
-        } else {
-          result.put("moreInfoForLoggedUser", "false");
-        }
-      } else {
-        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
-        
-        // True if logged user is student's counselor / searchable user is not student
-        if (amICounselor || !isStudent) {
-          result.put("moreInfoForLoggedUser", "true");
-        } else {
-          result.put("moreInfoForLoggedUser", "false");
-        }
-      }
-    } else {
-      if (!isStudent) {
-        result.put("moreInfoForLoggedUser", "true");
-      }
-    }
-    
     if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && isStudent) {
       return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
+
+    Map<String, String> result = new HashMap<>();
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      // Admins, study programme leaders, and managers always see extra info
+      if (!isStudent || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER)) {
+        result.put("moreInfoForLoggedUser", Boolean.toString(true));
+      }
+      else {
+        // Extra info if staff and student share common courses
+        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
+        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
+        if (!commonWorkspaces.isEmpty()) {
+          result.put("moreInfoForLoggedUser", Boolean.toString(true));
+        }
+        else {
+          // Extra info if staff is student's counselor
+          result.put("moreInfoForLoggedUser", Boolean.toString(userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier())));
+        }
+      }
+    }
+    else {
+      // Extra info for students querying staff
+      result.put("moreInfoForLoggedUser", Boolean.toString(!isStudent));
     }
     
     result.put("isStudent", isStudent.toString());
@@ -1068,7 +1060,7 @@ public class UserRESTService extends AbstractRESTService {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail()) || CollectionUtils.isEmpty(payload.getRoles())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1152,7 +1144,8 @@ public class UserRESTService extends AbstractRESTService {
     // Payload validation
     
     if (!StringUtils.equals(id, payload.getIdentifier()) ||
-        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+        CollectionUtils.isEmpty(payload.getRoles()) ||
+        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1296,43 +1289,6 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/users/{ID}")
-  @RESTPermitUnimplemented
-  public Response findUser(@Context Request request, @PathParam("ID") Long id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    UserEntity userEntity = userEntityController.findUserEntityById(id);
-    if (userEntity == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
-
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-
-    User user = userController.findUserByDataSourceAndIdentifier(
-        userEntity.getDefaultSchoolDataSource(),
-        userEntity.getDefaultIdentifier());
-    if (user == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    return Response
-        .ok(createRestModel(userEntity, user))
-        .cacheControl(cacheControl)
-        .tag(tag)
-        .build();
-  }
-
-  @GET
   @Path("/staffMembers")
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStaffMembers(
@@ -1449,6 +1405,12 @@ public class UserRESTService extends AbstractRESTService {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
+
+          Set<String> roles = new HashSet<>();
+          if (usdi.getRoles() != null) {
+            usdi.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
+          }
+          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             Long.valueOf((Integer) o.get("userEntityId")),
@@ -1457,7 +1419,7 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype"),
+            roles,
             hasImage));
         }
       }
@@ -1466,22 +1428,6 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(responseStaffMembers).build();
   }
   
-  private fi.otavanopisto.muikku.rest.model.User createRestModel(UserEntity userEntity,
-      User user) {
-    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-    
-    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
-    
-    Date startDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
-    Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
-    
-    return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
-        user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage,
-        user.getNationality(), user.getLanguage(),
-        user.getMunicipality(), user.getSchool(), emailAddress,
-        startDate, endDate);
-  }
-
   private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(FlagStudent flagStudent) {
     SchoolDataIdentifier studentIdentifier = flagStudent.getStudentIdentifier().schoolDataIdentifier();
     return new fi.otavanopisto.muikku.rest.model.StudentFlag(
