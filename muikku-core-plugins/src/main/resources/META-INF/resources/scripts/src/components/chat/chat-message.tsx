@@ -18,6 +18,7 @@ import ChatMessageDeleteDialog from "./dialogs/chat-message-delete-dialog";
 import Button, { IconButton } from "../general/button";
 import TextareaAutosize from "react-textarea-autosize";
 import { generateHash, parseLines } from "./chat-helpers";
+import ChatUserInfoPopover from "./chat-user-info-popover";
 
 /**
  * ChatMessageProps
@@ -32,7 +33,7 @@ interface ChatMessageProps {
  * @returns JSX.Element
  */
 const ChatMessage = (props: ChatMessageProps) => {
-  const { isMobileWidth } = useChatContext();
+  const { isMobileWidth, currentUser } = useChatContext();
 
   const {
     editedMessage,
@@ -170,7 +171,14 @@ const ChatMessage = (props: ChatMessageProps) => {
       />
       <div className="chat__message-content-container">
         <div className="chat__message-meta">
-          <span className={`chat__message-meta-sender`}>{nick}</span>
+          {currentUser.type === "STAFF" && !myMsg ? (
+            <ChatUserInfoPopover userId={msg.sourceUserEntityId}>
+              <span className={`chat__message-meta-sender`}>{nick}</span>
+            </ChatUserInfoPopover>
+          ) : (
+            <span className={`chat__message-meta-sender`}>{nick}</span>
+          )}
+
           <span className="chat__message-meta-timestamp">
             {localize.formatDaily(msg.sentDateTime)}
           </span>

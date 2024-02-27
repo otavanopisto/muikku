@@ -37,7 +37,7 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const { targetUser } = props;
 
-  const { isMobileWidth } = useChatContext();
+  const { isMobileWidth, currentUser } = useChatContext();
 
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
@@ -104,12 +104,16 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
     openBlockUserDialog(props.targetUser);
   };
 
+  let title = targetUser.nick;
+
+  if (currentUser.type === "STAFF") {
+    title += ` - ${targetUser.name}`;
+  }
+
   return (
     <div className={`chat__discussion-panel chat__discussion-panel--private`}>
       <div className="chat__discussion-panel-header">
-        <div className="chat__discussion-panel-header-title">
-          {targetUser.nick}
-        </div>
+        <div className="chat__discussion-panel-header-title">{title}</div>
         <div className="chat__discussion-panel-header-actions">
           {!isBlocked && props.targetUser.type === "STUDENT" && (
             <IconButton
