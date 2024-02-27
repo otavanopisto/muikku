@@ -269,10 +269,10 @@ public class SchoolDataSearchReindexListener {
 
         for (CommunicatorMessage message : batch) {
           try {
-            communicatorMessageIndexer.indexMessage(message);
-
             // Move index towards the smallest index in the list
             communicatorIndex = Math.min(communicatorIndex, message.getId().intValue());
+            
+            communicatorMessageIndexer.indexMessage(message);
           }
           catch (Exception e) {
             logger.log(Level.WARNING, "could not index Communicator message #" + message.getId(), e);
