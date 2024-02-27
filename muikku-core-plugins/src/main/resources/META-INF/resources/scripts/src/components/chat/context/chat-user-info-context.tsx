@@ -25,7 +25,7 @@ type State = { infosByUserId: ChatUserInfoByUserId };
 /**
  * PedagogyContextValue
  */
-interface ChatUserInfoPopperContextValue {
+interface ChatUserInfoContextValue {
   state: State;
   dispatch: Dispatch;
 }
@@ -33,12 +33,12 @@ interface ChatUserInfoPopperContextValue {
 /**
  * WizardProviderProps
  */
-interface ChatUserInfoPopperProviderProps {
+interface ChatUserInfoProviderProps {
   children: React.ReactNode;
 }
 
-export const ChatInfoPopperContext = React.createContext<
-  ChatUserInfoPopperContextValue | undefined
+export const ChatInfoContext = React.createContext<
+  ChatUserInfoContextValue | undefined
 >(undefined);
 
 /**
@@ -118,7 +118,7 @@ async function fetchUserInfo(
  *
  * @param props props
  */
-function ChatUserInfoPopperProvider(props: ChatUserInfoPopperProviderProps) {
+function ChatUserInfoProvider(props: ChatUserInfoProviderProps) {
   const { children } = props;
   const [state, dispatch] = React.useReducer(UserInfoReducer, {
     infosByUserId: {},
@@ -127,9 +127,9 @@ function ChatUserInfoPopperProvider(props: ChatUserInfoPopperProviderProps) {
   const memoizedValue = React.useMemo(() => ({ state, dispatch }), [state]);
 
   return (
-    <ChatInfoPopperContext.Provider value={memoizedValue}>
+    <ChatInfoContext.Provider value={memoizedValue}>
       {children}
-    </ChatInfoPopperContext.Provider>
+    </ChatInfoContext.Provider>
   );
 }
 
@@ -137,18 +137,14 @@ function ChatUserInfoPopperProvider(props: ChatUserInfoPopperProviderProps) {
  * Method to returns context of Info popper.
  * Check if context is defined and if not, throw an error
  */
-function useChatUserInfoPopperContext() {
-  const context = React.useContext(ChatInfoPopperContext);
+function useChatUserInfoContext() {
+  const context = React.useContext(ChatInfoContext);
   if (context === undefined) {
     throw new Error(
-      "useChatUserInfoPopperContext must be used within a ChatUserInfoPopperProvider"
+      "useChatUserInfoContext must be used within a ChatUserInfoProvider"
     );
   }
   return context;
 }
 
-export {
-  useChatUserInfoPopperContext,
-  ChatUserInfoPopperProvider,
-  fetchUserInfo,
-};
+export { useChatUserInfoContext, ChatUserInfoProvider, fetchUserInfo };

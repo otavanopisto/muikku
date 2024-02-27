@@ -19,6 +19,10 @@ import Button, { IconButton } from "../general/button";
 import TextareaAutosize from "react-textarea-autosize";
 import { generateHash, parseLines } from "./chat-helpers";
 import ChatUserInfoPopover from "./chat-user-info-popover";
+import {
+  fetchUserInfo,
+  useChatUserInfoContext,
+} from "./context/chat-user-info-context";
 
 /**
  * ChatMessageProps
@@ -33,6 +37,8 @@ interface ChatMessageProps {
  * @returns JSX.Element
  */
 const ChatMessage = (props: ChatMessageProps) => {
+  const { msg } = props;
+
   const { isMobileWidth, currentUser } = useChatContext();
 
   const {
@@ -48,18 +54,34 @@ const ChatMessage = (props: ChatMessageProps) => {
     deleteMessage,
     saveEditedMessage,
     handleEditedMessageChange,
-  } = useMessage(props.msg);
+  } = useMessage(msg);
 
-  const { msg } = props;
+  const context = useChatUserInfoContext();
+
   const { archived, editedDateTime } = msg;
 
   const [mobileActionDrawerOpen, setMobileActionDrawerOpen] =
     React.useState(false);
 
+  // User specific info is only avalable for staff members and when msg
+  // is not sent by the current user
+  const userInfoAvailable = currentUser.type === "STAFF" && !myMsg;
+
   const longPressEvent = useLongPress({
     // eslint-disable-next-line jsdoc/require-jsdoc
     onLongPress: (e) => {
-      setMobileActionDrawerOpen(true);
+      // Fetch user info if it's not already fetched/fetching
+      if (
+        userInfoAvailable &&
+        !context.state.infosByUserId[msg.sourceUserEntityId]
+      ) {
+        fetchUserInfo(context.dispatch, msg.sourceUserEntityId);
+      }
+
+      // Open mobile action drawer if there are any actions
+      if (mobileModerationActions.length > 0) {
+        setMobileActionDrawerOpen(true);
+      }
     },
     obj: {
       shouldPreventDefault: true,
@@ -67,12 +89,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     },
   });
 
-  const on = true;
-
   const senderClass = myMsg ? "sender-me" : "sender-them";
-  const messageLoadingClassName = !on
-    ? "chat__message--loading"
-    : "chat__message--loaded";
 
   const messageDeletedClass = archived ? "chat__message--deleted" : "";
 
@@ -171,7 +188,7 @@ const ChatMessage = (props: ChatMessageProps) => {
       />
       <div className="chat__message-content-container">
         <div className="chat__message-meta">
-          {currentUser.type === "STAFF" && !myMsg ? (
+          {userInfoAvailable ? (
             <ChatUserInfoPopover userId={msg.sourceUserEntityId}>
               <span className={`chat__message-meta-sender`}>{nick}</span>
             </ChatUserInfoPopover>
@@ -199,7 +216,7 @@ const ChatMessage = (props: ChatMessageProps) => {
     <>
       <div
         {...longPressEvent}
-        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${messageLoadingClassName} ${
+        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${
           editMode ? "chat__message--editing" : ""
         }`}
       >
@@ -220,9 +237,16 @@ const ChatMessage = (props: ChatMessageProps) => {
 
       <MobileMessageActions
         actions={mobileModerationActions}
-        open={showMobileActions && mobileModerationActions.length > 0}
+        open={showMobileActions}
         onClose={() => setMobileActionDrawerOpen(false)}
-      />
+      >
+        {context.state.infosByUserId[msg.sourceUserEntityId] &&
+          context.state.infosByUserId[msg.sourceUserEntityId].info && (
+            <p>
+              {context.state.infosByUserId[msg.sourceUserEntityId].info.name}
+            </p>
+          )}
+      </MobileMessageActions>
     </>
   );
 };
@@ -265,6 +289,7 @@ function DesktopMessageActions(props: DesktopMessageActionsProps) {
  * MobileMessageActionsProps
  */
 interface MobileMessageActionsProps {
+  children?: React.ReactNode;
   actions: MessageAction[];
   open: boolean;
   onClose?: () => void;
@@ -295,7 +320,7 @@ const variants: Variants = {
  * @param props props
  */
 function MobileMessageActions(props: MobileMessageActionsProps) {
-  const { open, actions, onClose } = props;
+  const { open, actions, onClose, children } = props;
 
   const actionsPanelRef = React.useRef<HTMLDivElement>(null);
 
@@ -459,6 +484,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
               opacity,
             }}
           >
+            {children}
             <div className="chat__message-actions chat__message-actions--mobile">
               {actions.length > 0 &&
                 actions.map((action, index) => (
