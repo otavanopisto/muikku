@@ -10,7 +10,7 @@ import ChatUnblockDiscussionDialog from "./dialogs/chat-unblock-discussion-dialo
 import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-discussion-dialog";
 import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
 import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
-import { ChatUserInfoPopperProvider } from "./context/chat-user-info-context";
+import { ChatUserInfoProvider } from "./context/chat-user-info-context";
 
 /**
  * Chat component. Renders or not depending on chat settings
@@ -25,9 +25,9 @@ const Chat = () => {
 
   return (
     <ChatContextProvider currentUser={currentUser}>
-      <ChatUserInfoPopperProvider>
+      <ChatUserInfoProvider>
         <ChatContent />
-      </ChatUserInfoPopperProvider>
+      </ChatUserInfoProvider>
     </ChatContextProvider>
   );
 };
