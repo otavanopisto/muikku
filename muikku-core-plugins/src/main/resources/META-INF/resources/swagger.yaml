@@ -8450,7 +8450,7 @@ paths:
   /rest/workspace/workspaces/{workspaceEntityId}/materialProducers:
     get:
       operationId: getWorkspaceMaterialProducers
-      summary: Returns list of workspace material producers
+      summary: Returns list of workspace material producers list
       tags:
         - Workspace
       parameters:
@@ -8476,8 +8476,8 @@ paths:
           description: Internal server error
 
     post:
-      operationId: createWorkspaceMaterialProducer
-      summary: Creates and returns workspace material producer
+      operationId: createWorkspaceMaterialProducers
+      summary: Creates and returns workspace material producers list
       tags:
         - Workspace
       parameters:
@@ -8489,43 +8489,16 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/WorkspaceMaterialProducerCreateRequestBody"
+        $ref: "#/components/requestBodies/WorkspaceMaterialProducersCreateRequestBody"
       responses:
         "200":
           description: Workspace material producer created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WorkspaceMaterialProducer"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/workspace/workspaces/{workspaceEntityId}/materialProducers/{producerId}:
-    delete:
-      operationId: deleteWorkspaceMaterialProducer
-      summary: Deletes workspace material producer
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace entity id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: producerId
-          in: path
-          description: Workspace material producer id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "204":
-          description: Workspace material producer deleted successfully
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkspaceMaterialProducer"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11382,13 +11355,14 @@ components:
                 type: integer
                 format: int64
 
-    WorkspaceMaterialProducerCreateRequestBody:
+    WorkspaceMaterialProducersCreateRequestBody:
       required: true
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: "#/components/schemas/WorkspaceMaterialProducer"
+            type: array
+            items:
+              type: string
 
     WorkspaceHelpCreateRequestBody:
       content:
