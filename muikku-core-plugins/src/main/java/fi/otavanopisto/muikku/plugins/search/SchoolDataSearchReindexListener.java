@@ -260,12 +260,12 @@ public class SchoolDataSearchReindexListener {
   private boolean reindexCommunicatorMessages() {
     try {
       final int batchStartCommunicatorIndex = getOffset("communicatorIndex");
-      final int batchSize = getBatchSize();
+      final int batchMaxSize = getBatchSize();
 
       if (batchStartCommunicatorIndex > 0) {
         int communicatorIndex = batchStartCommunicatorIndex;
         
-        List<CommunicatorMessage> batch = communicatorController.listAllMessagesInReverseFromId((long) communicatorIndex, batchSize);
+        List<CommunicatorMessage> batch = communicatorController.listAllMessagesInReverseFromId((long) communicatorIndex, batchMaxSize);
 
         for (CommunicatorMessage message : batch) {
           try {
@@ -281,6 +281,17 @@ public class SchoolDataSearchReindexListener {
 
         logger.log(Level.INFO, String.format("Reindexed %d communicator messages from index %d.", batch.size(), batchStartCommunicatorIndex));
 
+        /*
+         * If listAllMessagesInReverseFromId works as it should, getting non-full batch has to 
+         * mean we're at the beginning of the list (smallest ids). However, if we had a situation 
+         * where the smallest id doesn't exist in the last batch this reindexer could end up 
+         * trickling down one index at a time. Thus, stop if the batch is not full.
+         */
+        if (batch.size() < batchMaxSize && communicatorIndex > 1) {
+          logger.log(Level.INFO, "Returned batch is smaller than max batch size indicating there's no more messages to index, stopping.");
+          communicatorIndex = 0;
+        }
+        
         // Index at this point should be the smallest index found in the batch and is already handled so decrement one for next batch
         communicatorIndex = Math.max(0, communicatorIndex - 1);
         setOffset("communicatorIndex", communicatorIndex);

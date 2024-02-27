@@ -632,12 +632,12 @@ public class CommunicatorController {
   }
 
   /**
-   * Lists all messages in reverse order (i.e. having smaller or equal index 
-   * than supplied).
+   * Lists all messages in reverse order starting from given index 
+   * (i.e. having smaller or equal id than supplied).
    * 
-   * @param highestId highest index returned
+   * @param highestId highest id returned
    * @param maxResults how many results at most
-   * @return at most maxResults messages that have smaller than or equal index to highestIndex
+   * @return at most maxResults messages that have smaller than or equal id to highestId
    */
   public List<CommunicatorMessage> listAllMessagesInReverseFromId(Long highestId, int maxResults) {
     return communicatorMessageDAO.listAllMessagesInReverseFromId(highestId, maxResults);
