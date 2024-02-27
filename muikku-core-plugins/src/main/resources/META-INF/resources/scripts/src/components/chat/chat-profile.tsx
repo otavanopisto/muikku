@@ -11,6 +11,8 @@ import ChatUserSettingsDialog from "./dialogs/chat-user-settings-dialog";
  */
 interface ChatProfileProps {
   user: ChatUser;
+  primaryInfo: string;
+  secondaryInfo?: string;
   chatActivity?: ChatActivity;
 }
 
@@ -19,7 +21,7 @@ interface ChatProfileProps {
  * @param props props
  */
 function ChatProfile(props: ChatProfileProps) {
-  const { user, chatActivity } = props;
+  const { user, primaryInfo, secondaryInfo, chatActivity } = props;
 
   return (
     <div className="chat__profile-container">
@@ -33,10 +35,10 @@ function ChatProfile(props: ChatProfileProps) {
         <ChatUnreadMsgCounter number={chatActivity.unreadMessages} />
       )}
       <div className="chat__profile-name-container">
-        <div className="chat__profile-name">{user.nick}</div>
-        <div className="chat__profile-literal-status">
-          {user.presence === "ONLINE" ? "Paikalla" : "Ei paikalla"}
-        </div>
+        <div className="chat__profile-name">{primaryInfo}</div>
+        {secondaryInfo && (
+          <div className="chat__profile-literal-status">{secondaryInfo}</div>
+        )}
       </div>
     </div>
   );
