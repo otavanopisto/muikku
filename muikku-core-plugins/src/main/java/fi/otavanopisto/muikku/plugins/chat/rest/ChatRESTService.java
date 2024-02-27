@@ -550,7 +550,7 @@ public class ChatRESTService {
     UserEntityName userEntityName = userEntityController.getName(userEntity, true);
     ChatUserRestModel userInfo = new ChatUserRestModel();
     userInfo.setId(userEntity.getId());
-    userInfo.setNick(chatUser.getNick());
+    userInfo.setNick(chatUser == null ? null : chatUser.getNick());
     userInfo.setName(userEntityName.getDisplayNameWithLine());
     userInfo.setType(userEntityController.isStudent(userEntity) ? ChatUserType.STUDENT : ChatUserType.STAFF);
     userInfo.setHasImage(userProfilePictureController.hasProfilePicture(userEntity));
