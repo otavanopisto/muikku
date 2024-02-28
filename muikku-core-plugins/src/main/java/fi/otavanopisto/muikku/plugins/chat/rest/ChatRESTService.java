@@ -366,6 +366,9 @@ public class ChatRESTService {
     if (StringUtils.isEmpty(payload.getMessage())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing message content").build();
     }
+    if (payload.getMessage().length() > 32767) {
+      return Response.status(Status.BAD_REQUEST).entity("Message content too long").build();
+    }
     Long id = extractId(identifier);
     if (isUserIdentifier(identifier)) {
       
@@ -576,6 +579,9 @@ public class ChatRESTService {
     }
     // Make sure nick is unique
     if (!StringUtils.isEmpty(nick)) {
+      if (nick.length() > 127) {
+        return Response.status(Status.BAD_REQUEST).entity("Nick too long").build();
+      }
       ChatUser nickUser = chatController.getChatUser(nick);
       if (nickUser != null && !nickUser.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
         return Response.status(Status.CONFLICT).entity("Nick already in use").build();
