@@ -397,13 +397,19 @@
   font-style: italic;
 }
 
+.chat__message-user-info {
+  align-items: center;
+  display: flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  justify-content: center;
+  padding: 10px;
+}
+
 .chat__message-actions {
   align-items: center;
   display: none;
   flex-flow: row nowrap;
-  position: absolute;
-  right: 0;
-  top: 0;
 }
 
 .chat__message-actions--mobile {

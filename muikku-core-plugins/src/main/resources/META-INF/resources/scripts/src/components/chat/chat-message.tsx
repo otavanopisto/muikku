@@ -242,9 +242,7 @@ const ChatMessage = (props: ChatMessageProps) => {
       >
         {context.state.infosByUserId[msg.sourceUserEntityId] &&
           context.state.infosByUserId[msg.sourceUserEntityId].info && (
-            <p>
-              {context.state.infosByUserId[msg.sourceUserEntityId].info.name}
-            </p>
+            <>{context.state.infosByUserId[msg.sourceUserEntityId].info.name}</>
           )}
       </MobileMessageActions>
     </>
@@ -484,7 +482,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
               opacity,
             }}
           >
-            {children}
+            <div className="chat__message-user-info">{children}</div>
             <div className="chat__message-actions chat__message-actions--mobile">
               {actions.length > 0 &&
                 actions.map((action, index) => (
