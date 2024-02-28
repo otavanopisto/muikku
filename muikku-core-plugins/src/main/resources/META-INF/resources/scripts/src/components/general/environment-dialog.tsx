@@ -1,7 +1,7 @@
 import Dialog from "./dialog";
 import Portal from "./portal";
 import * as React from "react";
-import * as FocusTrap from "focus-trap-react";
+import FocusTrap from "focus-trap-react";
 import "~/sass/elements/environment-dialog.scss";
 
 /**

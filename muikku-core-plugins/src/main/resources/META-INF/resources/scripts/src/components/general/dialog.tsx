@@ -14,7 +14,7 @@ import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
 import PagerV2 from "~/components/general/pagerV2";
-import * as FocusTrap from "focus-trap-react";
+import FocusTrap from "focus-trap-react";
 import { IconButton } from "./button";
 
 /**
