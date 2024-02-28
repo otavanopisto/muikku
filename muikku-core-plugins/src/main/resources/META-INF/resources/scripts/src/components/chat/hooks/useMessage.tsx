@@ -150,13 +150,10 @@ function useMessage(msg: ChatMessage) {
   }, [canModerate]);
 
   const mobileModerationActions = React.useMemo(() => {
-    const defaultActions: MessageAction[] = [
-      ...mainModerationActions,
-      ...secondaryModerationActions,
-    ];
+    const defaultActions: MessageAction[] = [...mainModerationActions];
 
-    return canModerate ? defaultActions : [];
-  }, [canModerate, mainModerationActions, secondaryModerationActions]);
+    return defaultActions;
+  }, [mainModerationActions]);
 
   return {
     editedMessage,

@@ -9,7 +9,7 @@ import {
 import "~/sass/elements/item-list.scss";
 import {
   fetchUserInfo,
-  useChatUserInfoPopperContext,
+  useChatUserInfoContext,
 } from "./context/chat-user-info-context";
 
 /**
@@ -38,7 +38,7 @@ const ChatUserInfoPopover = (props: ChatUserInfoPopoverProps) => {
   const { userId, children } = props;
 
   // Context
-  const context = useChatUserInfoPopperContext();
+  const context = useChatUserInfoContext();
 
   const [hoveringContent, setHoveringContent] = React.useState(false);
   const [hoveringActivator, setHoveringActivator] = React.useState(false);
