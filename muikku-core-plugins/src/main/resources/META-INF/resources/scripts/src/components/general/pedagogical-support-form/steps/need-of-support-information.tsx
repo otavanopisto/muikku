@@ -53,29 +53,6 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
   };
 
   /**
-   * Handles support reason select change
-   *
-   * @param options options
-   * @param actionMeta actionMeta
-   */
-  /* const handleSupportReasonChange = (
-    options: readonly OptionDefault<SupportReason>[],
-    actionMeta: ActionMeta<OptionDefault<SupportReason>>
-  ) => {
-    const updatedFormData: FormData = {
-      ...formData,
-    };
-
-    updatedFormData.supportReasons = options.map((option) => option.value);
-
-    if (!updatedFormData.supportReasons.includes("other")) {
-      updatedFormData.supportReasonOther = undefined;
-    }
-
-    setFormDataAndUpdateChangedFields(updatedFormData);
-  };
- */
-  /**
    * Handles support action select change
    *
    * @param options options
