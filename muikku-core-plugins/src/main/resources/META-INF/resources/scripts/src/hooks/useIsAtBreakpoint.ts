@@ -17,9 +17,9 @@ const useIsAtBreakpoint = (breakPoint: number): boolean => {
   useEffect(() => {
     /**
      * A Handler for the resize event
-     *
+     * @param e - UIEvent
      */
-    const handleResize = () => () => {
+    const handleResize = (e: UIEvent) => {
       const width = Math.round(window.innerWidth / 16); // Width on resize
       const direction = countRef.current < width ? "out" : "in"; // Direction of the resize
 
@@ -37,9 +37,9 @@ const useIsAtBreakpoint = (breakPoint: number): boolean => {
       }
     };
 
-    window.addEventListener("resize", handleResize());
-    return () => window.removeEventListener("resize", handleResize());
-  }, []);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [breakPoint]);
 
   return currentWidth <= breakPoint;
 };

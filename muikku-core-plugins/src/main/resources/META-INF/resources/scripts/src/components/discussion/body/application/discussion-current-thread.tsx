@@ -33,7 +33,7 @@ import {
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
 import { DiscussionThread } from "~/generated/client";
-import * as moment from "moment";
+import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -211,9 +211,11 @@ class DiscussionCurrentThread extends React.Component<
       ) !== -1;
 
     const areaPermissions =
-      this.props.permissions.AREA_PERMISSIONS[
-        this.props.discussion.current.forumAreaId
-      ] || {};
+      (this.props.permissions.AREA_PERMISSIONS &&
+        this.props.permissions.AREA_PERMISSIONS[
+          this.props.discussion.current.forumAreaId
+        ]) ||
+      {};
 
     const userCreator = this.props.discussion.current.creator;
 

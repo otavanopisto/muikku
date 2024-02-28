@@ -8,10 +8,10 @@ import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 
 public class SchoolDataUserEventIdentifier {
 
-  public SchoolDataUserEventIdentifier(SchoolDataIdentifier identifier, SchoolDataIdentifier environmentRoleIdentifier, 
+  public SchoolDataUserEventIdentifier(SchoolDataIdentifier identifier, List<SchoolDataIdentifier> environmentRoleIdentifiers, 
       SchoolDataIdentifier organizationIdentifier) {
     this.identifier = identifier;
-    this.environmentRoleIdentifier = environmentRoleIdentifier;
+    this.environmentRoleIdentifiers = environmentRoleIdentifiers;
     this.organizationIdentifier = organizationIdentifier;
   }
 
@@ -27,8 +27,8 @@ public class SchoolDataUserEventIdentifier {
     return emails;
   }
 
-  public SchoolDataIdentifier getEnvironmentRoleIdentifier() {
-    return environmentRoleIdentifier;
+  public List<SchoolDataIdentifier> getEnvironmentRoleIdentifiers() {
+    return environmentRoleIdentifiers;
   }
 
   public SchoolDataIdentifier getOrganizationIdentifier() {
@@ -37,6 +37,6 @@ public class SchoolDataUserEventIdentifier {
 
   private final SchoolDataIdentifier identifier;
   private final List<UserEmail> emails = new ArrayList<>();
-  private final SchoolDataIdentifier environmentRoleIdentifier;
+  private final List<SchoolDataIdentifier> environmentRoleIdentifiers;
   private final SchoolDataIdentifier organizationIdentifier;
 }

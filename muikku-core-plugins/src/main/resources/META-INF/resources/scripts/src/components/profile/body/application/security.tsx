@@ -196,76 +196,87 @@ class Security extends React.Component<SecurityProps, SecurityState> {
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="profileUsername">
-                    {this.props.t("labels.userName")}
-                  </label>
-                  <input
-                    id="profileUsername"
-                    type="text"
-                    className="form-element__input"
-                    value={this.state.username}
-                    onChange={this.updateField.bind(this, "username")}
-                  />
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileUsername">
+                      {this.props.t("labels.userName")}
+                    </label>
+                    <input
+                      id="profileUsername"
+                      type="text"
+                      className="form-element__input"
+                      value={this.state.username}
+                      onChange={this.updateField.bind(this, "username")}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="profileOldPassword">
-                    {this.props.t("labels.oldPassword")}
-                  </label>
-                  <input
-                    id="profileOldPassword"
-                    type="password"
-                    className="form-element__input"
-                    value={this.state.oldPassword}
-                    onChange={this.updateField.bind(this, "oldPassword")}
-                  />
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileOldPassword">
+                      {this.props.t("labels.oldPassword")}
+                    </label>
+                    <input
+                      id="profileOldPassword"
+                      type="password"
+                      className="form-element__input"
+                      value={this.state.oldPassword}
+                      onChange={this.updateField.bind(this, "oldPassword")}
+                    />
+                  </div>
                 </div>
               </div>
-
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="profileNewPassword1">
-                    {this.props.t("labels.password1")}
-                  </label>
-                  <input
-                    id="profileNewPassword1"
-                    type="password"
-                    className="form-element__input"
-                    value={this.state.newPassword}
-                    onChange={this.updateField.bind(this, "newPassword")}
-                  />
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileNewPassword1">
+                      {this.props.t("labels.password1")}
+                    </label>
+                    <input
+                      id="profileNewPassword1"
+                      type="password"
+                      className="form-element__input"
+                      value={this.state.newPassword}
+                      onChange={this.updateField.bind(this, "newPassword")}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="profileNewPassword2">
-                    {this.props.t("labels.password2")}
-                  </label>
-                  <input
-                    id="profileNewPassword2"
-                    type="password"
-                    className={`form-element__input ${
-                      this.state.newPassword !== this.state.newPasswordConfirm
-                        ? "form-element__input--profile-error"
-                        : ""
-                    }`}
-                    value={this.state.newPasswordConfirm}
-                    onChange={this.updateField.bind(this, "newPasswordConfirm")}
-                  />
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileNewPassword2">
+                      {this.props.t("labels.password2")}
+                    </label>
+                    <input
+                      id="profileNewPassword2"
+                      type="password"
+                      className={`form-element__input ${
+                        this.state.newPassword !== this.state.newPasswordConfirm
+                          ? "form-element__input--profile-error"
+                          : ""
+                      }`}
+                      value={this.state.newPasswordConfirm}
+                      onChange={this.updateField.bind(
+                        this,
+                        "newPasswordConfirm"
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
-
-              <div className="form__buttons">
-                <Button
-                  buttonModifiers="primary-function-save"
-                  onClick={this.update}
-                  disabled={this.state.locked}
-                >
-                  {this.props.t("actions.save")}
-                </Button>
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__buttons">
+                  <Button
+                    buttonModifiers="primary-function-save"
+                    onClick={this.update}
+                    disabled={this.state.locked}
+                  >
+                    {this.props.t("actions.save")}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

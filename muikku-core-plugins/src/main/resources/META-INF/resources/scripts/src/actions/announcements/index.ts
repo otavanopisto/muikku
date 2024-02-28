@@ -16,7 +16,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch } from "react-redux";
-import * as moment from "moment";
+import moment from "moment";
 
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",

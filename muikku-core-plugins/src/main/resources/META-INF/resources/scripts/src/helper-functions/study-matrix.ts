@@ -187,6 +187,10 @@ export const compulsoryOrUpperSecondary = (
 
   switch (studyProgrammeName) {
     case "Nettiperuskoulu":
+    case "Nettiperuskoulu/yksityisopiskelu":
+    case "Aineopiskelu/perusopetus":
+    case "Aineopiskelu/perusopetus (oppilaitos ilmoittaa)":
+    case "Aineopiskelu/oppivelvolliset/korottajat (pk)":
       return matrixTableBasedOnOPS(compulsoryMatrices);
 
     case "Nettilukio":

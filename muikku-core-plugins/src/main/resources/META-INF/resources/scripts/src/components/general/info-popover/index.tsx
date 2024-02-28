@@ -14,7 +14,7 @@ import { ButtonPill } from "~/components/general/button";
 import { fetchUserInfo, useInfoPopperContext } from "./context";
 import { WhatsappButtonLink } from "../whatsapp-link";
 import { GuiderStudentLink } from "../guider-link";
-import * as moment from "moment";
+import moment from "moment";
 import {
   Popover,
   PopoverArrow,

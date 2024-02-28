@@ -1,6 +1,6 @@
 import App from "~/containers/workspace";
 import reducer from "~/reducers/workspace";
-import runApp from "~/run";
+import runApp from "../run";
 
 import mainFunctionDefault from "~/util/base-main-function";
 import { updateWorkspaceEditModeState } from "~/actions/workspaces";

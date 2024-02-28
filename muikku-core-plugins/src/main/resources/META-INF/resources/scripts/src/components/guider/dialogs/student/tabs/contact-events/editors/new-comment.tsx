@@ -9,7 +9,7 @@ import {
 } from "~/actions/main-function/guider";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import * as moment from "moment";
+import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**

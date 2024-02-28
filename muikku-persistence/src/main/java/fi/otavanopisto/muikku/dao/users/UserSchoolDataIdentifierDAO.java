@@ -23,13 +23,13 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
   private static final long serialVersionUID = 6176973178652139440L;
 
   public UserSchoolDataIdentifier create(SchoolDataSource dataSource, String identifier, UserEntity userEntity, 
-      EnvironmentRoleEntity environmentRoleEntity, OrganizationEntity organizationEntity, Boolean archived) {
+      List<EnvironmentRoleEntity> environmentRoleEntities, OrganizationEntity organizationEntity, Boolean archived) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = new UserSchoolDataIdentifier();
 
     userSchoolDataIdentifier.setIdentifier(identifier);
     userSchoolDataIdentifier.setDataSource(dataSource);
     userSchoolDataIdentifier.setUserEntity(userEntity);
-    userSchoolDataIdentifier.setRole(environmentRoleEntity);
+    userSchoolDataIdentifier.setRoles(environmentRoleEntities);
     userSchoolDataIdentifier.setOrganization(organizationEntity);
     userSchoolDataIdentifier.setArchived(archived);
     
@@ -129,8 +129,8 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
     return persist(userSchoolDataIdentifier);
   }
 
-  public UserSchoolDataIdentifier updateRole(UserSchoolDataIdentifier userSchoolDataIdentifier, EnvironmentRoleEntity environmentRoleEntity) {
-    userSchoolDataIdentifier.setRole(environmentRoleEntity);
+  public UserSchoolDataIdentifier updateRoles(UserSchoolDataIdentifier userSchoolDataIdentifier, List<EnvironmentRoleEntity> environmentRoleEntities) {
+    userSchoolDataIdentifier.setRoles(environmentRoleEntities);
     return persist(userSchoolDataIdentifier);
   }
 

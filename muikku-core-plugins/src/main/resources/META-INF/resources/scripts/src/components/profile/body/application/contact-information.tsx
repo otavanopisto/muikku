@@ -299,101 +299,115 @@ class ContactInformation extends React.Component<
               value={this.props.status.profile.addresses} />
             */}
               {this.props.status.isStudent && (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profileStreetAddress">
-                      {this.props.t("labels.streetAddress", {
-                        ns: "frontPage",
-                      })}
-                    </label>
-                    <input
-                      id="profileStreetAddress"
-                      type="text"
-                      className="form-element__input"
-                      value={this.state.street}
-                      onChange={(e) =>
-                        this.updateField("street", e.target.value)
-                      }
-                      autoComplete="address-line1"
-                    />
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="profileStreetAddress">
+                        {this.props.t("labels.streetAddress", {
+                          ns: "frontPage",
+                        })}
+                      </label>
+                      <input
+                        id="profileStreetAddress"
+                        type="text"
+                        className="form-element__input"
+                        value={this.state.street}
+                        onChange={(e) =>
+                          this.updateField("street", e.target.value)
+                        }
+                        autoComplete="address-line1"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
 
               {this.props.status.isStudent && (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profilePostalCode">
-                      {this.props.t("labels.postalCode", { ns: "frontPage" })}
-                    </label>
-                    <input
-                      id="profilePostalCode"
-                      type="text"
-                      className="form-element__input"
-                      value={this.state.postalCode}
-                      onChange={(e) =>
-                        this.updateField("postalCode", e.target.value)
-                      }
-                      autoComplete="postal-code"
-                    />
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="profilePostalCode">
+                        {this.props.t("labels.postalCode", { ns: "frontPage" })}
+                      </label>
+                      <input
+                        id="profilePostalCode"
+                        type="text"
+                        className="form-element__input"
+                        value={this.state.postalCode}
+                        onChange={(e) =>
+                          this.updateField("postalCode", e.target.value)
+                        }
+                        autoComplete="postal-code"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
 
               {this.props.status.isStudent && (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profileCity">
-                      {this.props.t("labels.city", { ns: "frontPage" })}
-                    </label>
-                    <input
-                      id="profileCity"
-                      type="text"
-                      className="form-element__input"
-                      value={this.state.city}
-                      onChange={(e) => this.updateField("city", e.target.value)}
-                      autoComplete="address-level2"
-                    />
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="profileCity">
+                        {this.props.t("labels.city", { ns: "frontPage" })}
+                      </label>
+                      <input
+                        id="profileCity"
+                        type="text"
+                        className="form-element__input"
+                        value={this.state.city}
+                        onChange={(e) =>
+                          this.updateField("city", e.target.value)
+                        }
+                        autoComplete="address-level2"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
 
               {this.props.status.isStudent && (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profileCountry">
-                      {this.props.t("labels.country", { ns: "frontPage" })}
-                    </label>
-                    <input
-                      id="profileCountry"
-                      type="text"
-                      className="form-element__input"
-                      value={this.state.country}
-                      onChange={(e) =>
-                        this.updateField("country", e.target.value)
-                      }
-                      autoComplete="country-name"
-                    />
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="profileCountry">
+                        {this.props.t("labels.country", { ns: "frontPage" })}
+                      </label>
+                      <input
+                        id="profileCountry"
+                        type="text"
+                        className="form-element__input"
+                        value={this.state.country}
+                        onChange={(e) =>
+                          this.updateField("country", e.target.value)
+                        }
+                        autoComplete="country-name"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
 
               {this.props.status.isStudent && (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profileMunicipality">
-                      {this.props.t("labels.municipality", { ns: "frontPage" })}
-                    </label>
-                    <input
-                      id="profileMunicipality"
-                      type="text"
-                      className="form-element__input"
-                      value={this.state.municipality}
-                      onChange={(e) =>
-                        this.updateField("municipality", e.target.value)
-                      }
-                      autoComplete="address-level3"
-                    />
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="profileMunicipality">
+                        {this.props.t("labels.municipality", {
+                          ns: "frontPage",
+                        })}
+                      </label>
+                      <input
+                        id="profileMunicipality"
+                        type="text"
+                        className="form-element__input"
+                        value={this.state.municipality}
+                        onChange={(e) =>
+                          this.updateField("municipality", e.target.value)
+                        }
+                        autoComplete="address-level3"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -405,147 +419,160 @@ class ContactInformation extends React.Component<
               />
 
               {!this.props.status.isStudent ? (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profilePhoneNumber">
-                      {this.props.t("labels.phone")}
-                    </label>
-                    <input
-                      id="profilePhoneNumber"
-                      className="form-element__input"
-                      type="text"
-                      autoComplete="tel-national"
-                      onChange={(e) =>
-                        this.updateField("phoneNumber", e.target.value)
-                      }
-                      value={this.state.phoneNumber}
-                    />
-                  </div>
-                </div>
-              ) : null}
-
-              {!this.props.status.isStudent ? (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label>
-                      {this.props.t("labels.whatsAppintegration", {
-                        ns: "profile",
-                      })}
-                    </label>
-                    <div className="form-element form-element--icon-with-label">
-                      <IconButton
-                        icon="whatsapp"
-                        buttonModifiers={[
-                          "whatsapp-me",
-                          this.props.profile.properties["profile-whatsapp"] ===
-                          "true"
-                            ? "whatsapp-active"
-                            : "whatsapp-inactive",
-                        ]}
-                        onClick={this.handleActivateWhatsappClick}
-                      />
-                      {this.props.profile.properties["profile-whatsapp"] ===
-                      "true" ? (
-                        <span>
-                          {this.props.t("labels.whatsAppintegration", {
-                            ns: "profile",
-                            context: "on",
-                          })}
-                        </span>
-                      ) : (
-                        <span>
-                          {this.props.t("labels.whatsAppintegration", {
-                            ns: "profile",
-                            context: "off",
-                          })}
-                        </span>
-                      )}
-                    </div>
-                    <div className="form-element__description">
-                      {this.props.t("content.whatsAppIntegration", {
-                        ns: "profile",
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-
-              {!this.props.status.isStudent ? (
-                <div className="form__row">
-                  <div className="form-element form-element--appointment-calendar">
-                    <legend className="form__legend">
-                      {this.props.t("labels.appointmentCalendar", {
-                        ns: "profile",
-                      })}
-                    </legend>
-                    <fieldset className="form__fieldset">
-                      <div className="form__fieldset-content form__fieldset-content--horizontal">
-                        <label htmlFor="profileAppointmentCalendar">
-                          {this.props.t("labels.appointmentCalendar", {
-                            context: "url",
-                            ns: "profile",
-                          })}
-                        </label>
-                        <input
-                          id="profileAppointmentCalendar"
-                          className="form-element__input"
-                          type="text"
-                          autoComplete="tel-national"
-                          onChange={(e) =>
-                            this.updateField(
-                              "appointmentCalendar",
-                              e.target.value
-                            )
-                          }
-                          value={this.state.appointmentCalendar}
-                        />
-                        <Button
-                          href={this.state.appointmentCalendar}
-                          buttonModifiers="primary-function-content"
-                          openInNewTab="_blank"
-                          disabled={hasACalendar}
-                        >
-                          {this.props.t("actions.test", { ns: "profile" })}
-                        </Button>
-                      </div>
-                    </fieldset>
-                    <div className="form-element__description">
-                      {this.props.t("content.appointmentCalendar", {
-                        ns: "profile",
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-
-              {!this.props.status.isStudent ? (
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="profileExtraInfo">
-                      {this.props.t("labels.additionalInfo", { ns: "profile" })}
-                    </label>
-                    <div className="form-element__textarea-container">
-                      <textarea
-                        id="profileExtraInfo"
-                        className="form-element__textarea form-element__textarea--profile-extra-info"
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="profilePhoneNumber">
+                        {this.props.t("labels.phone")}
+                      </label>
+                      <input
+                        id="profilePhoneNumber"
+                        className="form-element__input"
+                        type="text"
+                        autoComplete="tel-national"
                         onChange={(e) =>
-                          this.updateField("extraInfo", e.target.value)
+                          this.updateField("phoneNumber", e.target.value)
                         }
-                        value={this.state.extraInfo}
+                        value={this.state.phoneNumber}
                       />
                     </div>
                   </div>
                 </div>
               ) : null}
 
-              <div className="form__buttons">
-                <Button
-                  buttonModifiers="primary-function-save"
-                  onClick={this.save}
-                  disabled={this.state.locked}
-                >
-                  {this.props.t("actions.save")}
-                </Button>
+              {!this.props.status.isStudent ? (
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label>
+                        {this.props.t("labels.whatsAppintegration", {
+                          ns: "profile",
+                        })}
+                      </label>
+                      <div className="form-element form-element--icon-with-label">
+                        <IconButton
+                          icon="whatsapp"
+                          buttonModifiers={[
+                            "whatsapp-me",
+                            this.props.profile.properties[
+                              "profile-whatsapp"
+                            ] === "true"
+                              ? "whatsapp-active"
+                              : "whatsapp-inactive",
+                          ]}
+                          onClick={this.handleActivateWhatsappClick}
+                        />
+                        {this.props.profile.properties["profile-whatsapp"] ===
+                        "true" ? (
+                          <span>
+                            {this.props.t("labels.whatsAppintegration", {
+                              ns: "profile",
+                              context: "on",
+                            })}
+                          </span>
+                        ) : (
+                          <span>
+                            {this.props.t("labels.whatsAppintegration", {
+                              ns: "profile",
+                              context: "off",
+                            })}
+                          </span>
+                        )}
+                      </div>
+                      <div className="form-element__description">
+                        {this.props.t("content.whatsAppIntegration", {
+                          ns: "profile",
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {!this.props.status.isStudent ? (
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element form-element--appointment-calendar">
+                      <legend className="form__legend">
+                        {this.props.t("labels.appointmentCalendar", {
+                          ns: "profile",
+                        })}
+                      </legend>
+                      <fieldset className="form__fieldset">
+                        <div className="form__fieldset-content form__fieldset-content--horizontal">
+                          <label htmlFor="profileAppointmentCalendar">
+                            {this.props.t("labels.appointmentCalendar", {
+                              context: "url",
+                              ns: "profile",
+                            })}
+                          </label>
+                          <input
+                            id="profileAppointmentCalendar"
+                            className="form-element__input"
+                            type="text"
+                            autoComplete="tel-national"
+                            onChange={(e) =>
+                              this.updateField(
+                                "appointmentCalendar",
+                                e.target.value
+                              )
+                            }
+                            value={this.state.appointmentCalendar}
+                          />
+                          <Button
+                            href={this.state.appointmentCalendar}
+                            buttonModifiers="primary-function-content"
+                            openInNewTab="_blank"
+                            disabled={hasACalendar}
+                          >
+                            {this.props.t("actions.test", { ns: "profile" })}
+                          </Button>
+                        </div>
+                      </fieldset>
+                      <div className="form-element__description">
+                        {this.props.t("content.appointmentCalendar", {
+                          ns: "profile",
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {!this.props.status.isStudent ? (
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="profileExtraInfo">
+                        {this.props.t("labels.additionalInfo", {
+                          ns: "profile",
+                        })}
+                      </label>
+                      <div className="form-element__textarea-container">
+                        <textarea
+                          id="profileExtraInfo"
+                          className="form-element__textarea form-element__textarea--profile-extra-info"
+                          onChange={(e) =>
+                            this.updateField("extraInfo", e.target.value)
+                          }
+                          value={this.state.extraInfo}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__buttons">
+                  <Button
+                    buttonModifiers="primary-function-save"
+                    onClick={this.save}
+                    disabled={this.state.locked}
+                  >
+                    {this.props.t("actions.save")}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
