@@ -73,7 +73,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   let categoryName = recordGroup.lineCategory;
 
   if (recordGroup.showCredits) {
-    categoryName += ` - ${t("labels.courseCredits", {
+    categoryName += ` – ${t("labels.courseCredits", {
       ns: "studies",
       mandatoryCredits: recordGroup.mandatoryCourseCredits,
       totalCredits: recordGroup.completedCourseCredits,
