@@ -34,10 +34,10 @@ function ChatProfile(props: ChatProfileProps) {
       {chatActivity && (
         <ChatUnreadMsgCounter number={chatActivity.unreadMessages} />
       )}
-      <div className="chat__profile-name-container">
-        <div className="chat__profile-name">{primaryInfo}</div>
+      <div className="chat__profile-info-container">
+        <div className="chat__profile-info-primary">{primaryInfo}</div>
         {secondaryInfo && (
-          <div className="chat__profile-literal-status">{secondaryInfo}</div>
+          <div className="chat__profile-info-secondary">{secondaryInfo}</div>
         )}
       </div>
     </div>
@@ -68,9 +68,9 @@ export function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
         hasImage={currentUser.hasImage}
         status="online"
       />
-      <div className="chat__profile-name-container">
-        <div className="chat__profile-name">{currentUser.nick}</div>
-        <div className="chat__profile-literal-status">Paikalla</div>
+      <div className="chat__profile-info-container">
+        <div className="chat__profile-info-primary">{currentUser.nick}</div>
+        <div className="chat__profile-info-secondary">Paikalla</div>
       </div>
 
       <ChatUserSettingsDialog>

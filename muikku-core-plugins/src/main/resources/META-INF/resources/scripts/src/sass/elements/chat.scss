@@ -573,7 +573,7 @@
   &:hover {
     background: darken($color-chat-panel-background, 5%);
 
-    .chat__profile-name-container {
+    .chat__profile-info-container {
       // 32px is the width of the [avatar-container], 32px is the width of the [avatar-container], 10px is the elements left margin and 26px is the width of [close-discussion] button
       flex-basis: calc(100% - 10px - 32px - 26px);
       flex-flow: column nowrap;
@@ -614,16 +614,10 @@
     background: darken($color-default-generic-background, 10%);
   }
 
-  .chat__profile-name-container {
+  .chat__profile-info-container {
     // 32px is the width of the [avatar-container], 26px is the width of the [edit-profile-settings] button and 10px is the sum of this elements left and right margin
     flex-basis: calc(100% - 10px - 26px - 32px);
     width: calc(100% - 10px - 26px - 32px);
-  }
-
-  .chat__profile-literal-status {
-    display: block;
-    font-size: 0.75rem;
-    white-space: nowrap;
   }
 }
 
@@ -669,7 +663,7 @@
   background: $color-chat-user-status-away;
 }
 
-.chat__profile-name-container {
+.chat__profile-info-container {
   @include text;
 
   align-items: flex-start;
@@ -685,7 +679,7 @@
   max-width: calc(100% - 10px - 32px);
 }
 
-.chat__profile-name {
+.chat__profile-info-primary {
   font-size: 0.8125rem;
   font-weight: 600;
   overflow: hidden;
@@ -694,9 +688,12 @@
   width: 100%;
 }
 
-// Online/offline literal status, we don't display it for every badge, only visible to loggen in user
-.chat__profile-literal-status {
-  display: none;
+.chat__profile-info-secondary {
+  font-size: 0.625rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
 // Chat message counter

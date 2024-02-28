@@ -133,7 +133,7 @@ const ChatUserInfoPopover = (props: ChatUserInfoPopoverProps) => {
                 }, 200);
               }
             }}
-            className="item-list__item item-list__item--info-popper"
+            className="item-list__item item-list__item--info-popover"
           >
             <div className="item-list__text-body item-list__text-body--multiline">
               <div className="item-list__user-name">{data.info.name}</div>

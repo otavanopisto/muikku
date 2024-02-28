@@ -18,5 +18,6 @@
 }
 
 .popover--chat {
+  border-radius: $chat-border-radius;
   z-index: 9999;
 }
