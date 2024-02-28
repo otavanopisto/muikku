@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { SuggestedCourse } from "~/@types/shared";
+import { SchoolCurriculumMatrix, SuggestedCourse } from "~/@types/shared";
 import MApi, { isMApiError } from "~/api/api";
 import { WorkspaceSuggestion } from "~/generated/client";
 import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
@@ -11,7 +11,7 @@ import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
  */
 export interface UseCourseCarousel {
   isLoading: boolean;
-  carouselItems: SuggestedCourse[];
+  carouselItems: SuggestedCourse[] | null;
 }
 
 /**
@@ -22,16 +22,6 @@ interface CarouselSuggestion {
   courseNumber: number;
 }
 
-/**
- * compareAll
- * @param obj1 obj1
- * @param obj2 obj2
- * @returns boolean
- */
-const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
-  obj1.subjectCode === obj2.subjectCode &&
-  obj1.courseNumber === obj2.courseNumber;
-
 const hopsApi = MApi.getHopsApi();
 
 /**
@@ -39,12 +29,16 @@ const hopsApi = MApi.getHopsApi();
  *
  * @param studentId studentId
  * @param userEntityId userEntityId
+ * @param studyProgrammeName studyProgrammeName
+ * @param curriculumName curriculumName
  * @param displayNotification displayNotification
  * @returns array of course carousel items
  */
 export const useCourseCarousel = (
   studentId: string,
   userEntityId: number,
+  studyProgrammeName: string,
+  curriculumName: string,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   // This hook cannot be called for anyone else but students (without an error)
@@ -64,6 +58,21 @@ export const useCourseCarousel = (
      * @param studentId of student
      */
     const loadStudentActivityListData = async (studentId: string) => {
+      const matrix = carouselMatrixByStudyProgrammeAndCurriculum(
+        studyProgrammeName,
+        curriculumName
+      );
+
+      // If matrix is not found, cancel function and return
+      if (!matrix) {
+        setCourseCarousel((courseCarousel) => ({
+          ...courseCarousel,
+          carouselItems: null,
+          isLoading: false,
+        }));
+        return;
+      }
+
       setCourseCarousel((courseCarousel) => ({
         ...courseCarousel,
         isLoading: true,
@@ -97,7 +106,7 @@ export const useCourseCarousel = (
             const suggestedNextIdList: number[] = [];
 
             const filteredSchoolCourseTable = filterCompulsorySubjects(
-              schoolCourseTableCompulsory2018.subjectsTable,
+              matrix,
               loadedStudentAlternativeOptions
             );
 
@@ -229,9 +238,68 @@ export const useCourseCarousel = (
     };
 
     loadStudentActivityListData(studentId);
-  }, [studentId, userEntityId, displayNotification]);
+  }, [
+    studentId,
+    userEntityId,
+    displayNotification,
+    studyProgrammeName,
+    curriculumName,
+  ]);
 
   return {
     courseCarousel,
   };
+};
+
+/**
+ * compareAll
+ * @param obj1 obj1
+ * @param obj2 obj2
+ * @returns boolean
+ */
+const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
+  obj1.subjectCode === obj2.subjectCode &&
+  obj1.courseNumber === obj2.courseNumber;
+
+/**
+ * carouselMatrixByStudyProgrammeAndCurriculum
+ * @param studyProgrammeName studyProgrammeName
+ * @param curriculumName curriculumName
+ * @returns Matrix or null if matrix is not found
+ */
+export const carouselMatrixByStudyProgrammeAndCurriculum = (
+  studyProgrammeName: string,
+  curriculumName: string
+) => {
+  const compulsoryMatrices = [schoolCourseTableCompulsory2018];
+  // Will be enabled later
+  //const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
+
+  /**
+   * Finds and returns OPS based matrix
+   *
+   * @param matrices list of matrices
+   * @returns OPS based matrix or null if OPS based matrix is not found
+   */
+  const matrixTableBasedOnOPS = (matrices: SchoolCurriculumMatrix[]) => {
+    const matrix = matrices.find(
+      (matrix) => matrix.curriculumName === curriculumName
+    );
+
+    if (matrix) {
+      return matrix.subjectsTable;
+    }
+    return null;
+  };
+
+  switch (studyProgrammeName) {
+    case "Nettiperuskoulu":
+    case "Nettiperuskoulu/yksityisopiskelu":
+    case "Aineopiskelu/perusopetus":
+    case "Aineopiskelu/oppivelvolliset/korottajat (pk)":
+      return matrixTableBasedOnOPS(compulsoryMatrices);
+
+    default:
+      return null;
+  }
 };

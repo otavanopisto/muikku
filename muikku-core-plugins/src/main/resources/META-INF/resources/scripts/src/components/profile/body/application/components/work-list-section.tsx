@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import Link from "~/components/general/link";
-import * as moment from "moment";
+import moment from "moment";
 import { WorklistSection } from "~/reducers/main-function/profile";
 import WorkListRow from "./work-list-row";
 import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";

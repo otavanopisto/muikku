@@ -1,6 +1,6 @@
 import App from "~/containers/error";
 import reducer from "~/reducers/error";
-import runApp from "~/run";
+import runApp from "../run";
 import mainFunctionDefault from "~/util/base-main-function";
 
 import titleActions from "~/actions/base/title";

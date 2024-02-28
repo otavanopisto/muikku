@@ -4,3 +4,5 @@ dist
 sass
 webpack.config.js
 generated
+esbuild.mjs
+esbuild.css.plugin.mjs

@@ -116,23 +116,26 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
             <div className="hops-container__study-tool-dropdow-title">
               {name}
             </div>
-            <Button
-              buttonModifiers={[
-                "guider-hops-studytool",
-                "guider-hops-studytool-next",
-              ]}
-              onClick={handleSuggestionNextClick({
-                actionType: suggestionNextActionType,
-                courseNumber: props.course.courseNumber,
-                subjectCode: props.subjectCode,
-                courseId: suggestion.id,
-                studentId: props.studentId,
-              })}
-            >
-              {suggestionNextActionType === "remove"
-                ? t("actions.suggested")
-                : t("actions.suggestToNext")}
-            </Button>
+
+            {suggestion.canSignup && (
+              <Button
+                buttonModifiers={[
+                  "guider-hops-studytool",
+                  "guider-hops-studytool-next",
+                ]}
+                onClick={handleSuggestionNextClick({
+                  actionType: suggestionNextActionType,
+                  courseNumber: props.course.courseNumber,
+                  subjectCode: props.subjectCode,
+                  courseId: suggestion.id,
+                  studentId: props.studentId,
+                })}
+              >
+                {suggestionNextActionType === "remove"
+                  ? t("actions.suggested")
+                  : t("actions.suggestToNext")}
+              </Button>
+            )}
 
             <Button
               buttonModifiers={[

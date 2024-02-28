@@ -542,7 +542,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
       ),
     },
     {
-      id: "EXCERCISE",
+      id: "EXERCISE",
       name: t("labels.exercises", { ns: "materials" }),
       type: "excercises",
       component: (

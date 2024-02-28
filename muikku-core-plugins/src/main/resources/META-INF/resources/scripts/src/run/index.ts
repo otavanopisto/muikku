@@ -6,8 +6,6 @@ import { render } from "react-dom";
 import { composeWithDevTools } from "@redux-devtools/extension";
 import { StateType } from "~/reducers";
 
-import { logger } from "redux-logger";
-
 /**
  * runApp
  * @param reducer reducer

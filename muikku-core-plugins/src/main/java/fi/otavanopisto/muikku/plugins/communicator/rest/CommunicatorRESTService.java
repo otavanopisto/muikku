@@ -51,6 +51,7 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentControl
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAutoReplyController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
@@ -551,6 +552,11 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
         }
 
+        if (!communicatorController.isActiveUser(recipient)) {
+          logger.log(Level.WARNING, String.format("Inactive student passed as recipient %d", recipientId));
+          return Response.status(Status.BAD_REQUEST).entity("One or more of the recipients are inactive and the message cannot be sent to them. Contact support for help.").build();
+        }
+        
         recipients.add(recipient);
       } else {
         return Response.status(Status.BAD_REQUEST).build();
@@ -610,9 +616,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
+    CommunicatorMessageRecipientList prepareRecipientList = communicatorController.prepareRecipientList(
+        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients);
+
+    if (!prepareRecipientList.hasRecipients()) {
+      return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+    }
+    
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, userEntity, 
-        recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
-        newMessage.getCaption(), newMessage.getContent(), tagList);
+        prepareRecipientList, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
     
     sendNewMessageNotifications(message);
     
@@ -724,6 +736,11 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
         }
         
+        if (!communicatorController.isActiveUser(recipient)) {
+          logger.log(Level.WARNING, String.format("Inactive student passed as recipient %d", recipientId));
+          return Response.status(Status.BAD_REQUEST).entity("One or more of the recipients are inactive and the message cannot be sent to them. Contact support for help.").build();
+        }
+        
         recipients.add(recipient);
       } else {
         return Response.status(Status.BAD_REQUEST).build();
@@ -779,9 +796,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
+    CommunicatorMessageRecipientList prepareRecipientList = communicatorController.prepareRecipientList(
+        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients);
+
+    if (!prepareRecipientList.hasRecipients()) {
+      return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+    }
+    
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, userEntity, 
-        recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
-        newMessage.getCaption(), newMessage.getContent(), tagList);
+        prepareRecipientList, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
 
     sendNewMessageNotifications(message);
     
