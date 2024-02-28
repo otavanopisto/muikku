@@ -845,6 +845,7 @@
   flex-grow: 1;
   flex-shrink: 1;
   font-weight: 600;
+  max-width: calc(100% - 26px);
 }
 
 .chat__overview-panel-item-actions {
@@ -854,6 +855,8 @@
   flex-flow: row nowrap;
   flex-grow: 1;
   flex-shrink: 1;
+  max-width: 26px;
+  width: 26px;
 }
 
 // Chat window resizer
