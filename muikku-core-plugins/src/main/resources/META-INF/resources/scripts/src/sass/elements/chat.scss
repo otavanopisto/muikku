@@ -213,6 +213,11 @@
   padding: 0 0 10px;
 }
 
+.chat__rooms-empty {
+  margin: 2px 5px;
+  padding: 5px;
+}
+
 .chat__option,
 .chat__room {
   background: transparent;
@@ -225,11 +230,6 @@
   &:hover {
     background: darken($color-chat-panel-background, 5%);
   }
-}
-
-.chat__rooms-empty {
-  margin: 2px 5px;
-  padding: 5px;
 }
 
 .chat__option-name-container,
