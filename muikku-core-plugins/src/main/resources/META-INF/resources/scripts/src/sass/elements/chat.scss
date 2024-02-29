@@ -150,7 +150,8 @@
     .chat__option-name-container,
     .chat__room-name-container,
     .chat__profile-info-container,
-    .button-icon--chat {
+    .button-icon--chat,
+    .chat__staff-user-indicator {
       color: $color-default;
     }
 
@@ -607,9 +608,10 @@
 
 .chat__staff-user-indicator {
   color: $color-chat-primary;
-  left: -5px;
+  font-size: 0.625rem;
+  left: -4px;
   position: absolute;
-  top: -5px;
+  top: -4px;
   z-index: 3;
 }
 
