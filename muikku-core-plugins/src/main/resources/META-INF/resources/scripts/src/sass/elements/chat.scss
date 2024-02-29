@@ -227,6 +227,11 @@
   }
 }
 
+.chat__rooms-empty {
+  margin: 2px 5px;
+  padding: 5px;
+}
+
 .chat__option-name-container,
 .chat__room-name-container {
   @include text;

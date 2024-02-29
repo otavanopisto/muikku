@@ -66,7 +66,7 @@ function PrivateRoomList(props: PrivateRoomListProps) {
   }
 
   if (roomsPrivate.length === 0) {
-    return <div>No rooms</div>;
+    return <div className="chat__rooms-empty">-</div>;
   }
 
   const sortedRooms = roomsPrivate.sort(sortRoomsAplhabetically);
@@ -117,7 +117,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
   }
 
   if (roomsPublic.length === 0) {
-    return <div>No rooms</div>;
+    return <div className="chat__rooms-empty">-</div>;
   }
 
   const sortedRooms = roomsPublic.sort(sortRoomsAplhabetically);
