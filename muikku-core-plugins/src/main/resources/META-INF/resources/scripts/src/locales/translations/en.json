@@ -1334,6 +1334,14 @@
       "updateError_page": "Updating the material page failed",
       "updateError_answers": "Changing the assignment state failed",
       "updateError_compositeReplies": "Updating the answer failed"
+    },
+    "wcag": {
+      "organizerTermSelected": "Term selected",
+      "organizerTermInUse": "Term in use",
+      "organizerTermInUseAndSelected": "Term selected and in use",
+      "organiserTermRemove": "Remove term from category {{name}}",
+      "organizerCategoryName": "Category {{name}}",
+      "sorterTermSelected": "Term selected"
     }
   },
   "notebook": {

@@ -287,6 +287,15 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   }
 
   /**
+   * handleKeyUp
+   * @param item item
+   */
+  handleKeyUp = (item: SorterFieldItemType) => (e: React.KeyboardEvent) => {
+    if (e.key !== "Enter") return;
+    this.selectItem(item);
+  };
+
+  /**
    * cancelSelectedItem
    */
   cancelSelectedItem() {
@@ -476,11 +485,18 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                 );
               }
 
+              const ariaLabel =
+                this.state.selectedItem &&
+                this.state.selectedItem.id === item.id
+                  ? this.props.t("wcag.sorterTermSelected", { ns: "materials" })
+                  : "";
+
               // The draggable version, note how on interaction we swap
               // the parent component is a class name always make sure to have the right class name not to overflow
               // the interaction data is the item itself so the argument would be that
               return (
                 <Draggable
+                  tabIndex={0}
                   denyWidth={this.props.content.orientation === "horizontal"}
                   as="span"
                   parentContainerSelector=".material-page__sorterfield"
@@ -497,6 +513,8 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                   onClick={this.selectItem.bind(this, item)}
                   onDrag={this.selectItem.bind(this, item)}
                   onDropInto={this.cancelSelectedItem}
+                  onKeyUp={this.handleKeyUp(item)}
+                  aria-label={ariaLabel}
                 >
                   <span className="material-page__sorterfield-item-icon icon-move"></span>
                   <span className="material-page__sorterfield-item-label">
