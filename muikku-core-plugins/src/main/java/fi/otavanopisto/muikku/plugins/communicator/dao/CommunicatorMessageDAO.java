@@ -528,6 +528,45 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     return entityManager.createQuery(criteria).getSingleResult();
   }
 
+  /**
+   * Returns the maximum value of the id field of CommunicatorMessage.
+   * 
+   * @return the max id
+   */
+  public Long getMaximumCommunicatorMessageId() {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<CommunicatorMessage> root = criteria.from(CommunicatorMessage.class);
+
+    criteria.select(criteriaBuilder.max(root.get(CommunicatorMessage_.id)));
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  /**
+   * Return messages in reverse id order starting from the highest id (included in results).
+   * 
+   * @param highestId message with highest id
+   * @param maxResults maximum results to return
+   * @return messages in reverse order starting from the highest index
+   */
+  public List<CommunicatorMessage> listAllMessagesInReverseFromId(Long highestId, int maxResults) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessage> root = criteria.from(CommunicatorMessage.class);
+
+    criteria.select(root).orderBy(criteriaBuilder.desc(root.get(CommunicatorMessage_.id)));
+    criteria.where(
+        criteriaBuilder.lessThanOrEqualTo(root.get(CommunicatorMessage_.id), highestId)
+    );
+    
+    return entityManager.createQuery(criteria).setMaxResults(maxResults).getResultList();
+  }
+  
   public List<CommunicatorMessage> listMessagesInSentThread(UserEntity sender, CommunicatorMessageId communicatorMessageId, boolean trashed, boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -586,5 +625,5 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
   public void delete(CommunicatorMessage e) {
     super.delete(e);
   }
-  
+
 }
