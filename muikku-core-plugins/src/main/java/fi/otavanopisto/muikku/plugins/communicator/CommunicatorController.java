@@ -521,27 +521,30 @@ public class CommunicatorController {
   public void unTrashAllThreadMessages(UserEntity user, CommunicatorMessageId messageId) {
     List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId, true, false);
     for (CommunicatorMessageRecipient recipient : received) {
-      communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, false);
+      CommunicatorMessageRecipient updatedRecipient = communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, false);
+      CommunicatorMessage message = updatedRecipient.getCommunicatorMessage();
+      communicatorMessageIndexer.indexMessage(message);
     }
     
     List<CommunicatorMessage> sentMessages = communicatorMessageDAO.listMessagesInSentThread(user, messageId, true, false);
     for (CommunicatorMessage message : sentMessages) {
-      communicatorMessageDAO.updateTrashedBySender(message, false);
+      CommunicatorMessage updatedMessage = communicatorMessageDAO.updateTrashedBySender(message, false);
+      communicatorMessageIndexer.indexMessage(updatedMessage);
     }
   }
 
   public void archiveTrashedMessages(UserEntity user, CommunicatorMessageId threadId) {
     List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, threadId, true, false);
     for (CommunicatorMessageRecipient recipient : received) {
-      communicatorMessageRecipientDAO.updateArchivedByReceiver(recipient, true);
-      CommunicatorMessage message = recipient.getCommunicatorMessage();
+      CommunicatorMessageRecipient updatedRecipient = communicatorMessageRecipientDAO.updateArchivedByReceiver(recipient, true);
+      CommunicatorMessage message = updatedRecipient.getCommunicatorMessage();
       communicatorMessageIndexer.indexMessage(message);
     }
     
     List<CommunicatorMessage> sent = communicatorMessageDAO.listMessagesInSentThread(user, threadId, true, false);
     for (CommunicatorMessage msg : sent) {
-      communicatorMessageDAO.updateArchivedBySender(msg, true);
-      communicatorMessageIndexer.indexMessage(msg);
+      CommunicatorMessage updatedMessage = communicatorMessageDAO.updateArchivedBySender(msg, true);
+      communicatorMessageIndexer.indexMessage(updatedMessage);
     }
   }
 
