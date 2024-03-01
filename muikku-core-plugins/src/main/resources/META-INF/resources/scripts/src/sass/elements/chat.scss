@@ -860,11 +860,20 @@
 .chat__overview-panel-item-data {
   align-items: center;
   display: flex;
-  flex-basis: 100%;
+  flex-basis: calc(100% - 26px);
   flex-grow: 1;
   flex-shrink: 1;
   font-weight: 600;
   max-width: calc(100% - 26px);
+}
+
+// Specific case of [chat__overview-panel-item-data] inside Rooms overview panel.
+// Rooms overview panel has more action icons per item which decreases max-witdh and flex-basis calcs.
+.chat__overview-panel-items-container--rooms {
+  .chat__overview-panel-item-data {
+    flex-basis: calc(100% - 52px);
+    max-width: calc(100% - 52px);
+  }
 }
 
 .chat__overview-panel-item-actions {

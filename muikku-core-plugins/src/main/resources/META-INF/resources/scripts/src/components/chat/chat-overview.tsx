@@ -336,6 +336,7 @@ function ChatOverviewUsersList() {
     <OverviewList
       className="chat__overview-panel-items-container"
       emptyMsg="Haulla ei löytyny käyttäjä"
+      classNameModifiers={["users"]}
     >
       {renderContent()}
     </OverviewList>
@@ -418,6 +419,7 @@ function ChatOverviewBlockedList() {
     <OverviewList
       className="chat__overview-panel-items-container"
       emptyMsg="Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty"
+      classNameModifiers={["blocked"]}
     >
       {renderContent()}
     </OverviewList>
@@ -509,6 +511,7 @@ function ChatOverviewRoomsList() {
     <OverviewList
       className="chat__overview-panel-items-container"
       emptyMsg="Haulla ei löytyny huoneita"
+      classNameModifiers={["rooms"]}
     >
       {renderContent()}
     </OverviewList>
@@ -540,7 +543,7 @@ function OverviewList(props: OverviewListProps) {
 
   if (props.classNameModifiers) {
     classNameModifiers.forEach((modifier) => {
-      cName += ` ${props.className}-${modifier}`;
+      cName += ` ${props.className}--${modifier}`;
     });
   }
 
