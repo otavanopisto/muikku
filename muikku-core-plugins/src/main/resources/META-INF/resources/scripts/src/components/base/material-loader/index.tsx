@@ -71,7 +71,21 @@ const STATES = [
   },
   {
     "assignment-type": "EXERCISE",
-    state: ["SUBMITTED", "PASSED", "FAILED", "INCOMPLETE"],
+    state: ["SUBMITTED"],
+
+    //With this property active whenever in this state the answers will be checked
+    "checks-answers": true,
+    "displays-hide-show-answers-on-request-button-if-allowed": true,
+    "button-class": "muikku-submit-exercise",
+    "button-text": "actions.sent",
+    "button-disabled": false,
+    "success-state": "ANSWERED",
+    //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
+    "modify-state": "ANSWERED",
+  },
+  {
+    "assignment-type": "EXERCISE",
+    state: ["PASSED", "FAILED", "INCOMPLETE"],
 
     //With this property active whenever in this state the answers will be checked
     "checks-answers": true,
