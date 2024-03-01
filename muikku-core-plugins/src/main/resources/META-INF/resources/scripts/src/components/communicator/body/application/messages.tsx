@@ -393,13 +393,13 @@ class CommunicatorMessages extends BodyScrollLoader<
 
     return (
       <BodyScrollKeeper hidden={!!this.props.currentThread}>
-        {this.props.messages.location === "trash" ? (
+        {this.props.messages.location === "trash" && (
           <div className="application-list__item application-list__item--notification">
             {this.props.t("notifications.automaticlyEmptyTrash", {
               ns: "messaging",
             })}
           </div>
-        ) : null}
+        )}
         <SelectableList
           as={ApplicationList}
           selectModeModifiers="select-mode"
