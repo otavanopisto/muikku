@@ -1721,7 +1721,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("material not found").build();
       }
 
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers());
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers(), entity.getTitleLanguage());
       if (entity.getNextSiblingId() != null) {
         WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
         if (nextSibling == null) {
@@ -1754,7 +1754,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                     material,
                     workspaceMaterial.getUrlName(),
                     workspaceMaterial.getAssignmentType(),
-                    workspaceMaterial.getCorrectAnswers());
+                    workspaceMaterial.getCorrectAnswers(),
+                    workspaceMaterial.getLanguage());
               }
             }
           }
