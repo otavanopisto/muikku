@@ -1,5 +1,6 @@
 import * as React from "react";
 import Avatar from "../general/avatar";
+import { ChatUserTypeEnum } from "~/generated/client";
 
 /**
  * ChatProfileAvatarProps
@@ -9,6 +10,7 @@ interface ChatProfileAvatarProps {
   hasImage: boolean;
   id: number;
   status?: "online" | "away" | "busy" | "offline";
+  userType?: ChatUserTypeEnum;
 }
 
 /**
@@ -42,6 +44,12 @@ function ChatProfileAvatar(props: ChatProfileAvatarProps) {
           className={`chat__avatar-status chat__avatar-status--${statusColorModifier}`}
         />
       )}
+
+      {props.userType === "STAFF" ? (
+        <div className="chat__staff-user-indicator">
+          <span className="icon-star-full"></span>
+        </div>
+      ) : null}
     </div>
   );
 }

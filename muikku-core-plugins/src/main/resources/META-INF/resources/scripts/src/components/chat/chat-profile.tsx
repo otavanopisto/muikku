@@ -30,15 +30,11 @@ function ChatProfile(props: ChatProfileProps) {
         nick={user.nick}
         hasImage={user.hasImage}
         status={user.presence === "ONLINE" ? "online" : "offline"}
+        userType={user.type}
       />
       {chatActivity && (
         <ChatUnreadMsgCounter number={chatActivity.unreadMessages} />
       )}
-      {user.type === "STAFF" ? (
-        <div className="chat__staff-user-indicator">
-          <span className="icon-star-full"></span>
-        </div>
-      ) : null}
       <div className="chat__profile-info-container">
         <div className="chat__profile-info-primary">{primaryInfo}</div>
         {secondaryInfo && (
