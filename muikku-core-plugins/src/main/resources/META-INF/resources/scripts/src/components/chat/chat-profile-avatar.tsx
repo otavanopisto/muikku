@@ -45,7 +45,7 @@ function ChatProfileAvatar(props: ChatProfileAvatarProps) {
         />
       )}
 
-      {props.userType === "STAFF" ? (
+      {props.userType && props.userType === "STAFF" ? (
         <div className="chat__staff-user-indicator">
           <span className="icon-star-full"></span>
         </div>
