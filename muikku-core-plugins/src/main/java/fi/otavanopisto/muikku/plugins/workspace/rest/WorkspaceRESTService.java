@@ -89,6 +89,8 @@ import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
 import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
+import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -288,6 +290,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private PedagogyController pedagogyController;
+  
+  @Inject
+  private ForumAreaSubsciptionController forumAreaSubsciptionController;
+  
+  @Inject
+  private ForumThreadSubsciptionController forumThreadSubsciptionController;
 
   @GET
   @Path("/workspaceTypes")
@@ -2989,6 +2997,14 @@ public class WorkspaceRESTService extends PluginRESTService {
           }
         }
       }
+    }
+    
+    // #6967: When a student is archived from a course, also remove their course discussion subscriptions
+    
+    if (!workspaceStudentRestModel.getActive()) {
+      UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+      forumAreaSubsciptionController.removeAreaSubscriptions(userEntity, workspaceEntity);
+      forumThreadSubsciptionController.removeThreadSubscriptions(userEntity, workspaceEntity);
     }
 
     return Response.noContent().build();

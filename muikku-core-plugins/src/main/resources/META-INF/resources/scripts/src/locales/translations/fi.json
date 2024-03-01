@@ -838,6 +838,7 @@
       "archiveError": "Arkistointi epäonnistui",
       "archiveSuccess": "Arkistointi onnistui",
       "availableError": "Tätä tiedotetta ei ole saatavilla tai sitä ei ole olemassa.",
+      "automaticlyEmptyTrash": "Roskakorissa 30 päivää olleet viestit poistuvat automaattisesti",
       "createError": "$t(common:notifications.createError)",
       "createError_announcement": "Tiedotteen luonti epäonnistui. Yritä uudelleen.",
       "createError_contactLog": "Yhteydenoton luonti epäonnistui. Yritä uudelleen.",

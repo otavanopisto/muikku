@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table CommunicatorMessage add column trashedBySenderTimestamp datetime;</sql>
+  <sql>alter table CommunicatorMessageRecipient add column trashedByReceiverTimestamp datetime;</sql>
+
+  <sql>
+    update CommunicatorMessage
+    set trashedBySenderTimestamp = now()
+    where trashedBySender = true and archivedBySender = false;
+  </sql>
+
+  <sql>
+    update CommunicatorMessageRecipient
+    set trashedByReceiverTimestamp = now()
+    where trashedByReceiver = true and archivedByReceiver = false;
+  </sql>
+  
+  <sql>create index IDX9dyjjd5d5ln3b1fadwyfdbf8 on CommunicatorMessage (archivedBySender, trashedBySender, trashedBySenderTimestamp);</sql>
+  <sql>create index IDX75nd4o9puuidnce6j7ic1iyg9 on CommunicatorMessageRecipient (archivedByReceiver, trashedByReceiver, trashedByReceiverTimestamp);</sql>
+  
+</update> 
