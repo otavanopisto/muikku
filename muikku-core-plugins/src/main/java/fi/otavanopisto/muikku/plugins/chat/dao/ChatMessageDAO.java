@@ -94,6 +94,21 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
+  public Date findLatestDateByTargetRoom(Long targetRoomId) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Date> criteria = criteriaBuilder.createQuery(Date.class);
+    Root<ChatMessage> root = criteria.from(ChatMessage.class);
+    criteria.select(root.get(ChatMessage_.sent));
+    criteria.where(
+      criteriaBuilder.equal(root.get(ChatMessage_.targetRoomId), targetRoomId)
+    );
+    criteria.orderBy(criteriaBuilder.desc(root.get(ChatMessage_.sent)));
+
+    return entityManager.createQuery(criteria).setMaxResults(1).getSingleResult();
+  }
+
   public Date findLatestDateByTargetUser(Long sourceUserId, Long targetUserId) {
     EntityManager entityManager = getEntityManager();
     
@@ -158,6 +173,23 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(ChatMessage_.sourceUserEntityId), targetUserId),
         criteriaBuilder.equal(root.get(ChatMessage_.targetUserEntityId), sourceUserId),
+        criteriaBuilder.greaterThan(root.get(ChatMessage_.sent), since)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  public Long countByTargetRoomAndSince(Long targetRoomId, Date since) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<ChatMessage> root = criteria.from(ChatMessage.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(ChatMessage_.targetRoomId), targetRoomId),
         criteriaBuilder.greaterThan(root.get(ChatMessage_.sent), since)
       )
     );

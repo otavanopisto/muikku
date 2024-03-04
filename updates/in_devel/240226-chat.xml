@@ -43,7 +43,7 @@
          id bigint not null auto_increment,
          lastRead datetime not null,
          sourceUserEntityId bigint not null,
-         targetUserEntityId bigint not null,
+         targetIdentifier varchar(255) not null,
          primary key (id)
        );</sql>
 
@@ -69,7 +69,7 @@
 
   <sql>alter table ChatUser add constraint UK_jsb7gjq97m2idr29kxvxkl38t unique (userEntityId);</sql>
 
-  <sql>create index IDXek68mer0j1gn9fs5jusdmfvkx on ChatRead (sourceUserEntityId, targetUserEntityId);</sql>
+  <sql>create index IDXfbnr7boyjgref2oa513v4vbng on ChatRead (sourceUserEntityId, targetIdentifier);</sql>
 
   <sql>alter table ChatBlock add constraint UK9u2afwuji0kql24m2dkffmcc4 unique (sourceUserEntityId, targetUserEntityId);</sql>
 

@@ -15,10 +15,10 @@ public class ChatReadDAO extends CorePluginsDAO<ChatRead> {
 
   private static final long serialVersionUID = -6705409883677398725L;
   
-  public ChatRead create(Long sourceUserEntityId, Long targetUserEntityId) {
+  public ChatRead create(Long sourceUserEntityId, String targetIdentifier) {
     ChatRead chatRead = new ChatRead();
     chatRead.setSourceUserEntityId(sourceUserEntityId);
-    chatRead.setTargetUserEntityId(targetUserEntityId);
+    chatRead.setTargetIdentifier(targetIdentifier);
     chatRead.setLastRead(new Date());
     return persist(chatRead);
   }
@@ -28,7 +28,7 @@ public class ChatReadDAO extends CorePluginsDAO<ChatRead> {
     return persist(chatRead);
   }
   
-  public ChatRead findByUserEntityIds(Long sourceUserEntityId, Long targetUserEntityId) {
+  public ChatRead findByUserEntityIdAndTargetIdentifier(Long sourceUserEntityId, String targetIdentifier) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -38,7 +38,7 @@ public class ChatReadDAO extends CorePluginsDAO<ChatRead> {
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(ChatRead_.sourceUserEntityId), sourceUserEntityId),
-        criteriaBuilder.equal(root.get(ChatRead_.targetUserEntityId), targetUserEntityId)
+        criteriaBuilder.equal(root.get(ChatRead_.targetIdentifier), targetIdentifier)
       )
     );
 

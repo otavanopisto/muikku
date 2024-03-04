@@ -9,12 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table (
     indexes = {
-      @Index ( columnList = "sourceUserEntityId, targetUserEntityId" )
+      @Index ( columnList = "sourceUserEntityId, targetIdentifier" )
     }
   )
 public class ChatRead {
@@ -31,20 +32,20 @@ public class ChatRead {
     this.sourceUserEntityId = sourceUserEntityId;
   }
 
-  public Long getTargetUserEntityId() {
-    return targetUserEntityId;
-  }
-
-  public void setTargetUserEntityId(Long targetUserEntityId) {
-    this.targetUserEntityId = targetUserEntityId;
-  }
-
   public Date getLastRead() {
     return lastRead;
   }
 
   public void setLastRead(Date lastRead) {
     this.lastRead = lastRead;
+  }
+
+  public String getTargetIdentifier() {
+    return targetIdentifier;
+  }
+
+  public void setTargetIdentifier(String targetIdentifier) {
+    this.targetIdentifier = targetIdentifier;
   }
 
   @Id
@@ -56,8 +57,9 @@ public class ChatRead {
   private Long sourceUserEntityId;
 
   @NotNull
+  @NotEmpty
   @Column(nullable = false)
-  private Long targetUserEntityId;
+  private String targetIdentifier;
   
   @NotNull
   @Column(nullable = false)
