@@ -280,7 +280,9 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
         </View>
 
         <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>{t("labels.needForSupport", { ns: "pedagogySupportPlan" })}</Text>
+          <Text style={styles.infoFieldLabel}>
+            {t("labels.needForSupport", { ns: "pedagogySupportPlan" })}
+          </Text>
           <Text style={styles.infoFieldValue}>
             {formData?.needOfSupport || "-"}
           </Text>
