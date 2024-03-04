@@ -76,12 +76,21 @@ public class ChatMessageRestModel {
     this.hasImage = hasImage;
   }
 
+  public ChatUserType getUserType() {
+    return userType;
+  }
+
+  public void setUserType(ChatUserType userType) {
+    this.userType = userType;
+  }
+
   private Long id;
   private Long sourceUserEntityId;
   private String targetIdentifier;
   private String nick;
   private Boolean hasImage;
   private String message;
+  private ChatUserType userType;
   private Date sentDateTime;
   private Date editedDateTime;
   private Boolean archived;

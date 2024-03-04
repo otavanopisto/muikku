@@ -12258,6 +12258,12 @@ components:
           description: Message content. Null if message is deleted.
           type: string
           nullable: true
+        userType:
+          description: Type of the user who sent the message.
+          type: string
+          enum:
+            - STUDENT
+            - STAFF
         sentDateTime:
           description: Time when the message was sent. ISO 8601.
           type: string

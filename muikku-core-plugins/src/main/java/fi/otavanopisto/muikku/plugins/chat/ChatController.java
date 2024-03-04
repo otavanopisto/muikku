@@ -341,6 +341,11 @@ public class ChatController {
     return messages;
   }
   
+  public boolean isStaffMember(Long userEntityId) {
+    ChatUserRestModel chatUser = users.get(userEntityId);
+    return chatUser != null && chatUser.getType() == ChatUserType.STAFF;
+  }
+
   public boolean isStaffMember(UserEntity userEntity) {
     ChatUserRestModel chatUser = users.get(userEntity.getId());
     return chatUser != null && chatUser.getType() == ChatUserType.STAFF;
@@ -711,6 +716,7 @@ public class ChatController {
     msg.setNick(getNick(message.getSourceUserEntityId()));
     msg.setHasImage(userProfilePictureController.hasProfilePicture(message.getSourceUserEntityId()));
     msg.setMessage(message.getArchived() ? null : message.getMessage());
+    msg.setUserType(isStaffMember(message.getSourceUserEntityId()) ? ChatUserType.STAFF : ChatUserType.STUDENT);
     msg.setSentDateTime(message.getSent());
     msg.setEditedDateTime(message.getEdited());
     msg.setArchived(message.getArchived());
