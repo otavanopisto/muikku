@@ -714,9 +714,6 @@ class WorkspaceEditor extends SessionStateComponent<
         basePriceFromServer = basePriceFromServer / 2;
       }
 
-      const roundedPrice =
-        Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100;
-
       /**
        * Full billing -> available for course evaluations and raised grades
        */
@@ -724,8 +721,10 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${t("labels.billing", {
           ns: "evaluation",
           context: "full",
-        })} ${roundedPrice} €`,
-        value: roundedPrice,
+        })} ${
+          Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
+        } €`,
+        value: Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100,
       });
 
       /**
@@ -762,13 +761,21 @@ class WorkspaceEditor extends SessionStateComponent<
         /**
          * If the price from server is not in our options...
          */
-        if (
+
+        const condition1 =
           this.state.basePriceFromServer !==
-            this.state.existingBilledPriceObject.price &&
-          this.state.basePriceFromServer / 2 !==
-            this.state.existingBilledPriceObject.price &&
-          this.state.existingBilledPriceObject.price > 0
-        ) {
+          this.state.existingBilledPriceObject.price;
+
+        const condition2 =
+          Math.round(
+            (this.state.basePriceFromServer / 2 + Number.EPSILON) * 100
+          ) /
+            100 !==
+          this.state.existingBilledPriceObject.price;
+
+        const condition3 = this.state.existingBilledPriceObject.price > 0;
+
+        if (condition1 && condition2 && condition3) {
           /**
            * ...then add a custom option with the current price
            */
