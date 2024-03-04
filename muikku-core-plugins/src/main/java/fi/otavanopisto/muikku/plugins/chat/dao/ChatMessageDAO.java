@@ -105,8 +105,9 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
       criteriaBuilder.equal(root.get(ChatMessage_.targetRoomId), targetRoomId)
     );
     criteria.orderBy(criteriaBuilder.desc(root.get(ChatMessage_.sent)));
-
-    return entityManager.createQuery(criteria).setMaxResults(1).getSingleResult();
+    
+    List<Date> result = entityManager.createQuery(criteria).setMaxResults(1).getResultList();
+    return result.isEmpty() ? null : result.get(0);
   }
 
   public Date findLatestDateByTargetUser(Long sourceUserId, Long targetUserId) {
@@ -132,7 +133,8 @@ public class ChatMessageDAO extends CorePluginsDAO<ChatMessage> {
     );
     criteria.orderBy(criteriaBuilder.desc(root.get(ChatMessage_.sent)));
 
-    return entityManager.createQuery(criteria).setMaxResults(1).getSingleResult();
+    List<Date> result = entityManager.createQuery(criteria).setMaxResults(1).getResultList();
+    return result.isEmpty() ? null : result.get(0);
   }
   
   public List<ChatMessage> listBySourceUserAndTargetUserAndEarlierThan(Long sourceUserId, Long targetUserId, Date earlierThan, Integer count) {
