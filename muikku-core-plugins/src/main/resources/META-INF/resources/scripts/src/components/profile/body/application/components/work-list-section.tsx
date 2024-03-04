@@ -97,13 +97,17 @@ export function WorkListSection(props: WorkListSectionProps) {
           .reduce((a, b) => a + b)
       : null;
 
+  const totalCostSummaryRounded = totalCostSummary
+    ? (Math.round((totalCostSummary + Number.EPSILON) * 100) / 100).toFixed(2)
+    : null;
+
   const sectionTotalRow = (
     <div className="application-sub-panel__item application-sub-panel__item--worklist-total">
       <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">
         {t("labels.total", { ns: "worklist" })}
       </div>
       <div className="application-sub-panel__item-data  application-sub-panel__item-data--worklist-total">
-        {totalCostSummary}
+        {totalCostSummaryRounded}
       </div>
     </div>
   );
