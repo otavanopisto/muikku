@@ -26,7 +26,6 @@ const workspaceApi = MApi.getWorkspaceApi();
  * Custom hook for student study hours
  * @param workspaceId workspaceId
  * @param journalEntryId journalEntryId
- * @param i18n i18nType
  * @param displayNotification displayNotification
  * @returns student study hours
  */
