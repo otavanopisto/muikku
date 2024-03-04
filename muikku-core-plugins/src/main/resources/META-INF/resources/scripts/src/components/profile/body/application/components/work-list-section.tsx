@@ -98,7 +98,7 @@ export function WorkListSection(props: WorkListSectionProps) {
       : null;
 
   const totalCostSummaryRounded = totalCostSummary
-    ? Math.round((totalCostSummary + Number.EPSILON) * 100) / 100
+    ? (Math.round((totalCostSummary + Number.EPSILON) * 100) / 100).toFixed(2)
     : null;
 
   const sectionTotalRow = (
