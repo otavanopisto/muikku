@@ -129,7 +129,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
           <div className="hops__form-element-container">
             <Textarea
               id="needOfSupport"
-              label="Tuen tarve"
+              label={t("labels.needForSupport", { ns: "pedagogySupportPlan" })}
               className="hops__textarea"
               onChange={(e) =>
                 handleTextAreaChange("needOfSupport", e.target.value)
