@@ -6310,6 +6310,51 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/pedagogy/form/{studentIdentifier}/workspaces:
+    get:
+      operationId: getPedagogyFormWorkspaces
+      summary: Get list of student workspaces
+      description: Get list of student workspaces. Lists workspaces that student has completed or is currently working on.
+      tags:
+        - Pedagogy
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: query string
+          schema:
+            type: string
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Pedagogy form workspaces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PedagogyWorkspace"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   #HOPSUPPERSECONDARY
   /rest/records/hops:
     get:
@@ -14279,6 +14324,29 @@ components:
           type: string
           format: date-time
           nullable: true
+
+    PedagogyWorkspace:
+      type: object
+      description: Only basic informations of the workspace for pedagogy form use
+      required:
+        - id
+        - name
+        - nameExtension
+        - urlName
+      properties:
+        id:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        name:
+          description: The name of the workspace
+          type: string
+        nameExtension:
+          description: The name extension of the workspace
+          type: string
+        urlName:
+          description: The url of the workspace
+          type: string
 
     RecordsWorkspace:
       allOf:

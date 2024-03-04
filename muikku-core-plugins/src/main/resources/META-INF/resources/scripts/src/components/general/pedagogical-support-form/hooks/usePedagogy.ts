@@ -354,6 +354,7 @@ export const usePedagogy = (
     sendToStudent,
     approveForm,
     updateFormData,
+    studentId,
     setFormDataAndUpdateChangedFields,
     setFormIsApproved,
     setExtraDetails,
