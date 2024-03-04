@@ -714,6 +714,9 @@ class WorkspaceEditor extends SessionStateComponent<
         basePriceFromServer = basePriceFromServer / 2;
       }
 
+      const roundedPrice =
+        Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100;
+
       /**
        * Full billing -> available for course evaluations and raised grades
        */
@@ -721,8 +724,8 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${t("labels.billing", {
           ns: "evaluation",
           context: "full",
-        })} ${basePriceFromServer.toFixed(2)} €`,
-        value: basePriceFromServer,
+        })} ${roundedPrice} €`,
+        value: roundedPrice,
       });
 
       /**
@@ -733,8 +736,11 @@ class WorkspaceEditor extends SessionStateComponent<
           name: `${t("labels.billing", {
             ns: "evaluation",
             context: "half",
-          })} ${(basePriceFromServer / 2).toFixed(2)} €`,
-          value: basePriceFromServer / 2,
+          })} ${
+            Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
+          } €`,
+          value:
+            Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100,
         });
       }
 
@@ -770,8 +776,17 @@ class WorkspaceEditor extends SessionStateComponent<
             name: `${t("labels.billing", {
               ns: "evaluation",
               context: "else",
-            })} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
-            value: this.state.existingBilledPriceObject.price,
+            })} ${
+              Math.round(
+                (this.state.existingBilledPriceObject.price + Number.EPSILON) *
+                  100
+              ) / 100
+            }`,
+            value:
+              Math.round(
+                (this.state.existingBilledPriceObject.price + Number.EPSILON) *
+                  100
+              ) / 100,
           });
         }
       }
