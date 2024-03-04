@@ -363,7 +363,6 @@ export const usePedagogy = (
 };
 
 const defaultFormData: FormData = {
-  supportReasons: [],
   supportActions: [],
   matriculationExaminationSupport: [],
   supportActionsImplemented: [],

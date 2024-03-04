@@ -131,13 +131,9 @@ export interface FormData {
    */
   studentStrengths?: string;
   /**
-   * Reasoning for the support
+   * The description of the student's challenges
    */
-  supportReasons: SupportReason[];
-  /**
-   * Some other reason for the support
-   */
-  supportReasonOther?: string;
+  needOfSupport?: string;
   /**
    * Actions to support the student
    */
