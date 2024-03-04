@@ -1,6 +1,8 @@
 import * as React from "react";
 import MApi from "~/api/api";
 import { ChatActivity, ChatMessage } from "~/generated/client";
+import { useBrowserFocus } from "~/hooks/useBrowserFocus";
+import { useDocumentVisible } from "~/hooks/useDocumentVisible";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -15,6 +17,8 @@ function useChatActivity(
   currentUserIdentifier: string
 ) {
   const websocket = useChatWebsocketContext();
+  const documentVisible = useDocumentVisible();
+  const browserFocused = useBrowserFocus();
 
   const [chatActivity, setChatActivity] = React.useState<ChatActivity[]>();
 
@@ -22,6 +26,8 @@ function useChatActivity(
   chatActivityRef.current = chatActivity;
 
   const componentMounted = React.useRef(true);
+
+  const browserIsVisibleAndFocused = documentVisible && browserFocused;
 
   // Initial fetch
   React.useEffect(() => {
@@ -69,8 +75,9 @@ function useChatActivity(
 
               // If discussion is not active, increment unread messages
               if (
-                sourceIdentifier !== activeDiscussionIdentifier &&
-                dataTyped.targetIdentifier !== activeDiscussionIdentifier
+                !browserIsVisibleAndFocused ||
+                (sourceIdentifier !== activeDiscussionIdentifier &&
+                  dataTyped.targetIdentifier !== activeDiscussionIdentifier)
               ) {
                 updatedList[index].unreadMessages++;
               }
@@ -91,8 +98,12 @@ function useChatActivity(
               newActivity.targetIdentifier = dataTyped.targetIdentifier;
             }
 
-            // If this is the active discussion, keep unread messages as 0
-            if (dataTyped.targetIdentifier === activeDiscussionIdentifier) {
+            // If browser is visible and
+            // this is the active discussion, keep unread messages as 0
+            if (
+              browserIsVisibleAndFocused &&
+              dataTyped.targetIdentifier === activeDiscussionIdentifier
+            ) {
               newActivity.unreadMessages = 0;
             }
 
@@ -110,7 +121,12 @@ function useChatActivity(
         onNewMsgSentUpdateActivity
       );
     };
-  }, [activeDiscussionIdentifier, currentUserIdentifier, websocket]);
+  }, [
+    activeDiscussionIdentifier,
+    browserIsVisibleAndFocused,
+    currentUserIdentifier,
+    websocket,
+  ]);
 
   /**
    * Fetches chat activity

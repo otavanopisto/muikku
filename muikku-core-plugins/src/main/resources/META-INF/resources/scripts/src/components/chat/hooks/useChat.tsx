@@ -164,9 +164,6 @@ function useChat(currentUser: ChatUser) {
    */
   const openDiscussion = React.useCallback(
     async (identifier: string) => {
-      // When opening a discussion, mark all messages as read
-      await markMsgsAsRead(identifier);
-
       // Check if message instance already exists for this identifier
       const existingIndex = discussionInstances.findIndex(
         (instance) => instance.targetIdentifier === identifier
@@ -191,13 +188,7 @@ function useChat(currentUser: ChatUser) {
       setActiveDiscussionIdentifier(identifier);
       chatViews.goTo("discussion");
     },
-    [
-      markMsgsAsRead,
-      discussionInstances,
-      chatViews,
-      currentUser.identifier,
-      websocket,
-    ]
+    [discussionInstances, chatViews, currentUser.identifier, websocket]
   );
 
   /**

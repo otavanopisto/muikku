@@ -37,7 +37,7 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const { targetUser } = props;
 
-  const { isMobileWidth, currentUser } = useChatContext();
+  const { isMobileWidth, currentUser, markMsgsAsRead } = useChatContext();
 
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
@@ -104,6 +104,30 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
     openBlockUserDialog(props.targetUser);
   };
 
+  /**
+   * Handles scroll top.
+   */
+  const handleScrollTop = () => {
+    if (canLoadMore) {
+      loadMoreMessages();
+    }
+  };
+
+  /**
+   * Handles scroll bottom.
+   */
+  const handleScrollBottom = () => {
+    markMsgsAsRead(targetUser.identifier);
+  };
+
+  /**
+   * Handles scroll top change.
+   * @param scrollTop scrollTop
+   */
+  const handleScrollTopChange = (scrollTop: number) => {
+    instance.scrollTop = scrollTop;
+  };
+
   let title = targetUser.nick;
 
   if (currentUser.type === "STAFF") {
@@ -131,10 +155,9 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
         <MessagesContainer
           targetIdentifier={targetUser.identifier}
           existingScrollTopValue={instance.scrollTop}
-          onScrollTop={canLoadMore ? loadMoreMessages : undefined}
-          onScrollTopChange={(scrollTop) => {
-            instance.scrollTop = scrollTop;
-          }}
+          onScrollTop={handleScrollTop}
+          onScrollTopChange={handleScrollTopChange}
+          onScrollBottom={handleScrollBottom}
           className="chat__messages-container"
         >
           {messages.map((msg) => (
@@ -231,6 +254,23 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     instance.newMessage = e.target.value;
   };
 
+  /**
+   * Handles scroll top change.
+   * @param scrollTop scrollTop
+   */
+  const handleScrollTopChange = (scrollTop: number) => {
+    instance.scrollTop = scrollTop;
+  };
+
+  /**
+   * Handles scroll top.
+   */
+  const handleScrollTop = () => {
+    if (canLoadMore) {
+      loadMoreMessages();
+    }
+  };
+
   return (
     <div className="chat__discussion-panel">
       <div className="chat__discussion-panel-header">
@@ -248,10 +288,8 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
         <MessagesContainer
           targetIdentifier={targetRoom.identifier}
           existingScrollTopValue={instance.scrollTop}
-          onScrollTop={canLoadMore ? loadMoreMessages : undefined}
-          onScrollTopChange={(scrollTop) => {
-            instance.scrollTop = scrollTop;
-          }}
+          onScrollTop={handleScrollTop}
+          onScrollTopChange={handleScrollTopChange}
           className="chat__messages-container"
         >
           {messages.map((msg) => (
@@ -289,6 +327,7 @@ interface MessagesContainerProps {
   existingScrollTopValue?: number | null;
   onScrollTop?: () => void;
   onScrollTopChange?: (scrollTop: number) => void;
+  onScrollBottom?: () => void;
 }
 
 /**
@@ -304,8 +343,10 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
     existingScrollTopValue,
     onScrollTop,
     onScrollTopChange,
+    onScrollBottom,
   } = props;
 
+  const firstMessageRef = React.useRef<HTMLDivElement>(null);
   const lastMessageRef = React.useRef<HTMLDivElement>(null);
   const msgsContainerRef = React.useRef<HTMLDivElement>(null);
   const currentScrollHeightRef = React.useRef<number>(null);
@@ -319,6 +360,83 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
     [children]
   );
 
+  // Intersection observer to detect if the user has scrolled to the top
+  React.useEffect(() => {
+    if (!firstMessageRef.current || !msgsContainerRef.current) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && onScrollTop) {
+        const target = msgsContainerRef.current;
+
+        const scrollable = target.scrollHeight > target.clientHeight;
+
+        // If not scrollable, skip
+        if (!scrollable) {
+          return;
+        }
+
+        // Save scroll position when scroll is at the top
+        currentScrollHeightRef.current = target.scrollHeight;
+
+        onScrollTop();
+      }
+    });
+
+    observer.observe(firstMessageRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [onScrollTop]);
+
+  // Intersection observer to detect if the user has scrolled to the bottom
+  React.useEffect(() => {
+    if (!lastMessageRef.current) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        // If already attached to bottom, skip
+        if (scrollAttached) return;
+
+        onScrollBottom && onScrollBottom();
+        setScrollAttached(true);
+      } else {
+        setScrollAttached(false);
+      }
+    });
+
+    observer.observe(lastMessageRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [onScrollBottom, scrollAttached]);
+
+  // Scroll listener to trace the scroll position
+  React.useEffect(() => {
+    if (!msgsContainerRef.current) return;
+
+    /**
+     * handleScroll
+     * @param e e
+     */
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLDivElement;
+
+      if (onScrollTopChange) {
+        onScrollTopChange(scrollAttached ? null : target.scrollTop);
+      }
+    };
+
+    const ref = msgsContainerRef.current;
+
+    ref.addEventListener("scroll", handleScroll);
+
+    return () => {
+      ref.removeEventListener("scroll", handleScroll);
+    };
+  }, [onScrollTopChange, scrollAttached]);
+
   // If scroll to top is disabled, reset scroll position
   React.useLayoutEffect(() => {
     if (!onScrollTop) {
@@ -326,7 +444,6 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
     }
   }, [onScrollTop]);
 
-  //
   React.useEffect(() => {
     const contentCurrent = msgsContainerRef.current;
 
@@ -351,12 +468,10 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
         if (existingScrollTopValue) {
           msgsContainerRef.current.scrollTop = existingScrollTopValue;
         } else {
-          setTimeout(() => {
-            msgsContainerRef.current.scrollTo({
-              top: msgsContainerRef.current.scrollHeight,
-              behavior: "auto",
-            });
-          }, 50);
+          msgsContainerRef.current.scrollTo({
+            top: msgsContainerRef.current.scrollHeight,
+            behavior: "auto",
+          });
         }
       }
 
@@ -375,6 +490,8 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
           lastMessageRef.current.scrollIntoView({
             behavior: "auto",
           });
+
+          onScrollBottom && onScrollBottom();
         }
         // Not attached to bottom, keep scroll position and update children count
         else if (!scrollAttached && currentScrollHeightRef.current) {
@@ -388,7 +505,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
         }
       }
     }
-  }, [childrenLength, scrollAttached]);
+  }, [childrenLength, onScrollBottom, scrollAttached]);
 
   React.useEffect(() => {
     componentMounted.current = true;
@@ -397,47 +514,6 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
       componentMounted.current = false;
     };
   }, []);
-
-  React.useEffect(() => {
-    /**
-     * handleScroll
-     * @param e e
-     */
-    const handleScroll = (e: Event) => {
-      const target = e.target as HTMLDivElement;
-
-      // Check if target is scrollable
-      const isScrollable = target.scrollHeight > target.clientHeight;
-
-      // Check if scroll has reached the top
-      const reachedTop = target.scrollTop === 0;
-
-      // Check if scroll has reached the bottom
-      const Reacthedbottom =
-        Math.abs(
-          target.scrollHeight - target.clientHeight - target.scrollTop
-        ) <= 1;
-
-      onScrollTopChange &&
-        onScrollTopChange(Reacthedbottom ? null : target.scrollTop);
-
-      setScrollAttached(Reacthedbottom);
-
-      if (isScrollable && reachedTop && msgsContainerRef.current) {
-        // Save scroll position when scroll is at the top
-        currentScrollHeightRef.current = msgsContainerRef.current.scrollHeight;
-        onScrollTop && onScrollTop();
-      }
-    };
-
-    const ref = msgsContainerRef.current;
-
-    ref && ref.addEventListener("scroll", handleScroll);
-
-    return () => {
-      ref && ref.removeEventListener("scroll", handleScroll);
-    };
-  }, [onScrollTop, onScrollTopChange]);
 
   const mappedModifiers = modifiers
     ? modifiers.map((modifier) => `${className}--${modifier}`)
@@ -455,6 +531,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
       ref={msgsContainerRef}
       className={`${className} ${mappedModifiers}`}
     >
+      <div ref={firstMessageRef} className="chat__messages-first-message"></div>
       {props.children}
       <div ref={lastMessageRef} className="chat__messages-last-message"></div>
     </motion.div>

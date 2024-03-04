@@ -12236,6 +12236,7 @@ components:
         - sentDateTime
         - editedDateTime
         - archived
+        - userType
       properties:
         id:
           description: Id of the message.

@@ -185,6 +185,7 @@ const ChatMessage = (props: ChatMessageProps) => {
         id={msg.sourceUserEntityId}
         nick={nick}
         hasImage={msg.hasImage}
+        userType={msg.userType}
       />
       <div className="chat__message-content-container">
         <div className="chat__message-meta">
