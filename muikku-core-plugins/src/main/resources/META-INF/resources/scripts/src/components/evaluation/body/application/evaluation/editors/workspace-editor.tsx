@@ -721,10 +721,14 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${t("labels.billing", {
           ns: "evaluation",
           context: "full",
-        })} ${
+        })} ${(
           Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
-        } €`,
-        value: Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100,
+        ).toFixed(2)} €`,
+        value: parseFloat(
+          (
+            Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
+          ).toFixed(2)
+        ),
       });
 
       /**
@@ -735,11 +739,14 @@ class WorkspaceEditor extends SessionStateComponent<
           name: `${t("labels.billing", {
             ns: "evaluation",
             context: "half",
-          })} ${
+          })} ${(
             Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
-          } €`,
-          value:
-            Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100,
+          ).toFixed(2)} €`,
+          value: parseFloat(
+            (
+              Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
+            ).toFixed(2)
+          ),
         });
       }
 
@@ -783,17 +790,21 @@ class WorkspaceEditor extends SessionStateComponent<
             name: `${t("labels.billing", {
               ns: "evaluation",
               context: "else",
-            })} ${
+            })} ${(
               Math.round(
                 (this.state.existingBilledPriceObject.price + Number.EPSILON) *
                   100
               ) / 100
-            }`,
-            value:
-              Math.round(
-                (this.state.existingBilledPriceObject.price + Number.EPSILON) *
-                  100
-              ) / 100,
+            ).toFixed(2)}`,
+            value: parseFloat(
+              (
+                Math.round(
+                  (this.state.existingBilledPriceObject.price +
+                    Number.EPSILON) *
+                    100
+                ) / 100
+              ).toFixed(2)
+            ),
           });
         }
       }
