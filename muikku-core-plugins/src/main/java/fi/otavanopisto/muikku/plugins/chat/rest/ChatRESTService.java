@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
@@ -33,6 +32,7 @@ import fi.otavanopisto.muikku.plugins.chat.dao.ChatBlockDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatClosedConvoDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatMessageDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatReadDAO;
+import fi.otavanopisto.muikku.plugins.chat.dao.ChatRoomDAO;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatUserDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatBlock;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatClosedConvo;
@@ -59,6 +59,9 @@ public class ChatRESTService {
   @Inject
   private ChatController chatController;
   
+  @Inject
+  private ChatRoomDAO chatRoomDAO;
+
   @Inject
   private ChatMessageDAO chatMessageDAO;
   
@@ -188,13 +191,9 @@ public class ChatRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)  
   public Response markAsRead(@PathParam("IDENTIFIER") String identifier) {
-    if (!StringUtils.startsWith(identifier, "user-") || !NumberUtils.isDigits(StringUtils.substringAfter(identifier, "user-"))) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
-    }
-    Long userEntityId = Long.parseLong(StringUtils.substringAfter(identifier, "user-"));
-    ChatRead chatRead = chatReadDAO.findByUserEntityIds(sessionController.getLoggedUserEntity().getId(), userEntityId);
+    ChatRead chatRead = chatReadDAO.findByUserEntityIdAndTargetIdentifier(sessionController.getLoggedUserEntity().getId(), identifier);
     if (chatRead == null) {
-      chatReadDAO.create(sessionController.getLoggedUserEntity().getId(), userEntityId);
+      chatReadDAO.create(sessionController.getLoggedUserEntity().getId(), identifier);
     }
     else {
       chatReadDAO.update(chatRead);
@@ -213,17 +212,34 @@ public class ChatRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    // Action
+    // Private discussion activity
     
     List<ChatActivityRestModel> activities = new ArrayList<>();
     Set<Long> userEntityIds = chatMessageDAO.listPrivateDiscussionPartners(sessionController.getLoggedUserEntity().getId());
     for (Long userEntityId : userEntityIds) {
-      ChatRead chatRead = chatReadDAO.findByUserEntityIds(sessionController.getLoggedUserEntity().getId(), userEntityId);
+      String identifier = String.format("user-%d", userEntityId);
+      ChatRead chatRead = chatReadDAO.findByUserEntityIdAndTargetIdentifier(sessionController.getLoggedUserEntity().getId(), identifier);
       Date since = chatRead == null ? new Date(0) : chatRead.getLastRead();
       Long unreadMessages = chatMessageDAO.countBySourceUserAndTargetUserAndSince(sessionController.getLoggedUserEntity().getId(), userEntityId, since);
       Date latest = chatMessageDAO.findLatestDateByTargetUser(sessionController.getLoggedUserEntity().getId(), userEntityId);
       ChatActivityRestModel activity = new ChatActivityRestModel();
-      activity.setTargetIdentifier(String.format("user-%d", userEntityId));
+      activity.setTargetIdentifier(identifier);
+      activity.setLatestMessage(latest);
+      activity.setUnreadMessages(unreadMessages);
+      activities.add(activity);
+    }
+
+    // Public room activity
+    
+    List<ChatRoom> chatRooms = chatRoomDAO.listByArchived(Boolean.FALSE);
+    for (ChatRoom chatRoom : chatRooms) {
+      String identifier = String.format("room-%d", chatRoom.getId());
+      ChatRead chatRead = chatReadDAO.findByUserEntityIdAndTargetIdentifier(sessionController.getLoggedUserEntity().getId(), identifier);
+      Date since = chatRead == null ? new Date(0) : chatRead.getLastRead();
+      Long unreadMessages = chatMessageDAO.countByTargetRoomAndSince(chatRoom.getId(), since);
+      Date latest = chatMessageDAO.findLatestDateByTargetRoom(chatRoom.getId());
+      ChatActivityRestModel activity = new ChatActivityRestModel();
+      activity.setTargetIdentifier(identifier);
       activity.setLatestMessage(latest);
       activity.setUnreadMessages(unreadMessages);
       activities.add(activity);
