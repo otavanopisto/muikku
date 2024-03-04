@@ -14,6 +14,8 @@ import { UiSelectItem } from "../base/input-select-autofill";
 import { SelectItem } from "~/actions/workspaces/index";
 import Avatar from "~/components/general/avatar";
 import PagerV2 from "~/components/general/pagerV2";
+import FocusTrap from "focus-trap-react";
+import { IconButton } from "./button";
 
 /**
  * DialogProps
@@ -137,71 +139,80 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
               ? [this.props.modifier]
               : this.props.modifier;
           return (
-            <div
-              className={`dialog ${(modifiers || [])
-                .map((s) => `dialog--${s}`)
-                .join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
-              onClick={
-                closeOnOverlayClick
-                  ? this.onOverlayClick.bind(this, closePortal)
-                  : null
-              }
+            <FocusTrap
+              active={this.state.visible}
+              focusTrapOptions={{ allowOutsideClick: true }}
             >
-              {/* Execution container is missing from here */}
-              <section
+              <div
                 role="dialog"
-                aria-labelledby={`dialog-title--${modifiers[0]}`}
+                className={`dialog ${(modifiers || [])
+                  .map((s) => `dialog--${s}`)
+                  .join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
+                onClick={
+                  closeOnOverlayClick
+                    ? this.onOverlayClick.bind(this, closePortal)
+                    : null
+                }
                 aria-modal="true"
-                className={`dialog__window ${(modifiers || [])
-                  .map((s) => `dialog__window--${s}`)
-                  .join(" ")}`}
+                aria-label="Dialog"
+                aria-labelledby={`dialog-title--${modifiers[0]}`}
               >
-                {this.props.executing && this.props.executing === true ? (
-                  <div className="dialog__overlay dialog__overlay--executing">
-                    {this.props.executeContent ? (
-                      <div className="dialog__overlay-content">
-                        <div className="loader__executing--dialog"></div>
-                        {this.props.executeContent}
-                      </div>
-                    ) : (
-                      <div className="loader__executing"></div>
-                    )}
-                  </div>
-                ) : null}
-                <header
-                  className={`dialog__header ${(modifiers || [])
-                    .map((s) => `dialog__header--${s}`)
-                    .join(" ")}`}
-                >
-                  <div
-                    className="dialog__title"
-                    id={`dialog-title--${modifiers[0]}`}
-                  >
-                    {this.props.title}
-                  </div>
-                  <div
-                    className="dialog__close icon-cross"
-                    onClick={closePortal}
-                  ></div>
-                </header>
+                {/* Execution container is missing from here */}
                 <section
-                  className={`dialog__content ${(modifiers || [])
-                    .map((s) => `dialog__content--${s}`)
+                  className={`dialog__window ${(modifiers || [])
+                    .map((s) => `dialog__window--${s}`)
                     .join(" ")}`}
                 >
-                  {this.props.content(closePortal)}
-                </section>
-                {this.props.footer ? (
-                  <footer
-                    className={`dialog__footer ${(modifiers || [])
-                      .map((s) => `dialog__footer--${s}`)
+                  {this.props.executing && this.props.executing === true ? (
+                    <div className="dialog__overlay dialog__overlay--executing">
+                      {this.props.executeContent ? (
+                        <div className="dialog__overlay-content">
+                          <div className="loader__executing--dialog"></div>
+                          {this.props.executeContent}
+                        </div>
+                      ) : (
+                        <div className="loader__executing"></div>
+                      )}
+                    </div>
+                  ) : null}
+                  <header
+                    className={`dialog__header ${(modifiers || [])
+                      .map((s) => `dialog__header--${s}`)
                       .join(" ")}`}
                   >
-                    {this.props.footer && this.props.footer(closePortal)}
-                  </footer>
-                ) : null}
-              </section>
-            </div>
+                    <div
+                      className="dialog__title"
+                      id={`dialog-title--${modifiers[0]}`}
+                    >
+                      {this.props.title}
+                    </div>
+                    <IconButton
+                      aria-label="Sulje"
+                      buttonModifiers={["dialog-close"]}
+                      role="button"
+                      icon="cross"
+                      onClick={closePortal}
+                    />
+                  </header>
+                  <section
+                    className={`dialog__content ${(modifiers || [])
+                      .map((s) => `dialog__content--${s}`)
+                      .join(" ")}`}
+                  >
+                    {this.props.content(closePortal)}
+                  </section>
+                  {this.props.footer ? (
+                    <footer
+                      className={`dialog__footer ${(modifiers || [])
+                        .map((s) => `dialog__footer--${s}`)
+                        .join(" ")}`}
+                    >
+                      {this.props.footer && this.props.footer(closePortal)}
+                    </footer>
+                  ) : null}
+                </section>
+              </div>
+            </FocusTrap>
           );
         }}
       </Portal>
