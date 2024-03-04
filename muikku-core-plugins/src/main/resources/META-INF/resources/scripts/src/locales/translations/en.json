@@ -346,7 +346,7 @@
       "lastEvaluationPassed": "Latest nonpassing grade: {{value}}",
       "lastJournalEntry": "Latest entry: {{value}}",
       "lastSubmittedAssignment": "Latest assignment submission: {{value}}",
-      "notInWorkspaces": "Student is not in any courses",
+      "notInWorkspaces": "The student has not completed any courses yet",
       "numberOfAssignments": "{{value}} assignments",
       "numberOfExercises": "{{value}} exercises",
       "numberOfJournalEntries": "{{value}} entries",

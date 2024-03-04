@@ -346,7 +346,7 @@
       "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
       "lastJournalEntry": "viimeisin merkintä: {{value}}",
       "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
-      "notInWorkspaces": "Opiskelija ei ole millään kurssilla",
+      "notInWorkspaces": "Opiskelija ei ole suorittanut vielä yhtään kurssia",
       "numberOfAssignments": "{{value}} arvioitavaa tehtävää",
       "numberOfExercises": "{{value}} harjoitustehtävää",
       "numberOfJournalEntries": "{{value}} oppimispäiväkirjamerkintää",
