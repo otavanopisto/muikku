@@ -178,59 +178,57 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * @param id id
    * @param type type
    */
-  const handleAssignmentByTypeClick =
-    (id: number, type: AssignmentsTabType) =>
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      switch (type) {
-        case "EXERCISE": {
-          const updatedList = [...exerciseOpen];
+  const handleAssignmentByTypeOpen = (id: number, type: AssignmentsTabType) => {
+    switch (type) {
+      case "EXERCISE": {
+        const updatedList = [...exerciseOpen];
 
-          const index = updatedList.indexOf(id);
+        const index = updatedList.indexOf(id);
 
-          if (index !== -1) {
-            updatedList.splice(index, 1);
-          } else {
-            updatedList.push(id);
-          }
-
-          setExerciseOpen(updatedList);
-          break;
+        if (index !== -1) {
+          updatedList.splice(index, 1);
+        } else {
+          updatedList.push(id);
         }
 
-        case "EVALUATED": {
-          const updatedList = [...evaluatedOpen];
-
-          const index = updatedList.indexOf(id);
-
-          if (index !== -1) {
-            updatedList.splice(index, 1);
-          } else {
-            updatedList.push(id);
-          }
-
-          setEvaluatedOpen(updatedList);
-          break;
-        }
-
-        case "INTERIM_EVALUATION": {
-          const updatedList = [...interimOpen];
-
-          const index = updatedList.indexOf(id);
-
-          if (index !== -1) {
-            updatedList.splice(index, 1);
-          } else {
-            updatedList.push(id);
-          }
-
-          setInterimOpen(updatedList);
-          break;
-        }
-
-        default:
-          break;
+        setExerciseOpen(updatedList);
+        break;
       }
-    };
+
+      case "EVALUATED": {
+        const updatedList = [...evaluatedOpen];
+
+        const index = updatedList.indexOf(id);
+
+        if (index !== -1) {
+          updatedList.splice(index, 1);
+        } else {
+          updatedList.push(id);
+        }
+
+        setEvaluatedOpen(updatedList);
+        break;
+      }
+
+      case "INTERIM_EVALUATION": {
+        const updatedList = [...interimOpen];
+
+        const index = updatedList.indexOf(id);
+
+        if (index !== -1) {
+          updatedList.splice(index, 1);
+        } else {
+          updatedList.push(id);
+        }
+
+        setInterimOpen(updatedList);
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
 
   /**
    * handleOpenAllJournalsClick
@@ -250,20 +248,19 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
    * handleJournalClick
    * @param id id
    */
-  const handleJournalClick =
-    (id: number) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      const updatedList = [...journalsOpen];
+  const handleJournalOpen = (id: number) => {
+    const updatedList = [...journalsOpen];
 
-      const index = updatedList.indexOf(id);
+    const index = updatedList.indexOf(id);
 
-      if (index !== -1) {
-        updatedList.splice(index, 1);
-      } else {
-        updatedList.push(id);
-      }
+    if (index !== -1) {
+      updatedList.splice(index, 1);
+    } else {
+      updatedList.push(id);
+    }
 
-      setJournalsOpen(updatedList);
-    };
+    setJournalsOpen(updatedList);
+  };
 
   /**
    * Renders materials
@@ -299,7 +296,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               compositeReply={compositeReply}
               status={status}
               open={open}
-              onMaterialClick={handleAssignmentByTypeClick}
+              onMaterialOpen={handleAssignmentByTypeOpen}
             />
           );
         })
@@ -347,7 +344,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               compositeReply={compositeReply}
               status={status}
               open={open}
-              onMaterialClick={handleAssignmentByTypeClick}
+              onMaterialOpen={handleAssignmentByTypeOpen}
             />
           );
         })
@@ -396,7 +393,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 compositeReply={compositeReply}
                 status={status}
                 open={open}
-                onMaterialClick={handleAssignmentByTypeClick}
+                onMaterialOpen={handleAssignmentByTypeOpen}
               />
             );
           }
@@ -482,7 +479,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 key={journal.id}
                 journal={journal}
                 open={isOpen}
-                onJournalClick={handleJournalClick}
+                onJournalOpen={handleJournalOpen}
               />
             );
           })

@@ -242,6 +242,7 @@
       "alternateNavigation": "Muikun käyttäjäprofiilin ja kielivalinnan navigaatio",
       "chooseRulersColor": "Valitse lukiviivaimen taustaväri",
       "clickThroughRuler": "Lukiviivaimen läpiklikkaus",
+      "closeMaterial": "Sulje tehtäväsisältö",
       "closeRuler": "Sulje lukiviivain",
       "closeRulersToolbar": "Sulje lukiviivaimen työkalut",
       "currentPage": "Olet sivulla",
@@ -252,6 +253,7 @@
       "invertRulersColors": "Käännä lukiviivaimen värit",
       "localeMenu": "Muikun käyttöliittymän kielivalikko",
       "mainNavigation": "Muikun päänavigaatio",
+      "openMaterial": "Avaa tehtäväsisältö",
       "openRulersToolbar": "Avaa lukiviivaimen työkalut",
       "pinRuler": "Kiinnitä lukiviivain",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
@@ -348,7 +350,7 @@
       "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
       "lastJournalEntry": "viimeisin merkintä: {{value}}",
       "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
-      "notInWorkspaces": "Opiskelija ei ole millään kurssilla",
+      "notInWorkspaces": "Opiskelija ei ole suorittanut vielä yhtään kurssia",
       "numberOfAssignments": "{{value}} arvioitavaa tehtävää",
       "numberOfExercises": "{{value}} harjoitustehtävää",
       "numberOfJournalEntries": "{{value}} oppimispäiväkirjamerkintää",
@@ -1188,8 +1190,8 @@
       "empty_audio": "Ei äänitiedostoja",
       "empty_materials": "Kurssilla ei ole materiaaleja",
       "hiddenButAnswered": "Piilotettu tehtävä",
-      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on poistettu. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee vastauksesi ja voi sen arvioida.",
-      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on poistettu. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee vastauksesi.",
+      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on poistettu käytöstä. Olet kuitenkin ehtinyt vastata tähän tehtävään, joten opettaja näkee vastauksesi ja voi arvioida sen.",
+      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on poistettu käytöstä. Olet kuitenkin ehtinyt vastata tähän tehtävään, joten opettaja näkee vastauksesi.",
       "interimEvaluationDisclaimer": "Välipalautetta ei voi pyytää, kun kurssista on olemassa aktiivinen arviointipyyntö. Peruuta arviointipyyntö tai odota, että pyyntö on käsitelty.",
       "noRecordings": "Ei äänityksiä",
       "materialLinked": "Materiaali on linkitetty ja käytössä {{materialCount}} kurssilla. Huomaathan, että jos muokkaat materiaalia, se muuttuu myös muilla kursseilla, joilla materiaali on käytössä.",
@@ -1710,6 +1712,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_entry": "Oppimispäiväkirjamerkinnän muokkaus epäonnistui",
       "updateError_comment": "Oppimispäiväkirjamerkinnän kommentin muokkaus epäonnistui: {{error}}"
+    },
+    "wcag": {
+      "closeContent": "Sulje päiväkirjamerkinnän sisältö",
+      "closeComments": "Sulje päiväkirjamerkinnän kommentit",
+      "showContent": "Näytä päiväkirjamerkinnän sisältö",
+      "showComments": "Näytä päiväkirjamerkinnän kommentit"
     }
   },
   "files": {
@@ -1876,6 +1884,12 @@
       "updateError_evaluation": "Virhe arvioinnin päivittämisessä: {{error}}",
       "updateError_pricing": "Virhe kurssin maksutietojen päivittämisessä: {{error}}",
       "updateError_sorting": "Virhe lajittelutietojen päivittämisessä: {{error}}"
+    },
+    "wcag": {
+      "evaluationAssessmentFailed": "Hylätty arviointi",
+      "evaluationAssessmentPassed": "Hyväksytty arviointi",
+      "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
+      "evaluationAssessmentUnassessed": "Arvioimaton"
     }
   },
   "calendar": {
@@ -2064,6 +2078,7 @@
       "limitedAudioMaterial": "Ääniaineistoltaan rajoitettu koe",
       "matriculationPrePlan": "Ennakkosuunnitelma ylioppilaskirjoituksiin",
       "matriculationPrePlan_else": "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide",
+      "needForSupport": "Tuen tarve",
       "opinionOfSupport": "Näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_school": "Oppilaitoksen näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_student": "Opiskelijan näkemys tuen vaikuttavuudesta",

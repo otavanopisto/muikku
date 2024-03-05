@@ -243,6 +243,21 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<WorkspaceUserEntity> listByUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<WorkspaceUserEntity> listByUserSchoolDataIdentifierAndArchived(UserSchoolDataIdentifier userSchoolDataIdentifier, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     

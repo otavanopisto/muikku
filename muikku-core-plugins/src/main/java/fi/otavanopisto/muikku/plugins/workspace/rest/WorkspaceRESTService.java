@@ -903,7 +903,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers")
   @RESTPermit (handling = Handling.INLINE)
-  public Response createWorkspaceMaterialProducer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceMaterialProducer payload) {
+  public Response createWorkspaceMaterialProducers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, List<String> payload) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -912,11 +912,23 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-
-    WorkspaceMaterialProducer materialProducer = workspaceController.createWorkspaceMaterialProducer(workspaceEntity, payload.getName());
+    
+    // Out with the old
+    
+    List<WorkspaceMaterialProducer> producers = workspaceController.listWorkspaceMaterialProducers(workspaceEntity);
+    for (WorkspaceMaterialProducer producer : producers) {
+      workspaceController.deleteWorkspaceMaterialProducer(producer);
+    }
+    
+    // In with the new
+    
+    producers = new ArrayList<>();
+    for (String producer : payload) {
+      producers.add(workspaceController.createWorkspaceMaterialProducer(workspaceEntity, producer));
+    }
 
     return Response
-      .ok(createRestModel(materialProducer))
+      .ok(createRestModel(producers.toArray(new WorkspaceMaterialProducer[0])))
       .build();
   }
 
@@ -965,28 +977,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     return Response
       .ok(createRestModel(workspaceController.listWorkspaceMaterialProducers(workspaceEntity).toArray(new WorkspaceMaterialProducer[0])))
-      .build();
-  }
-
-  @DELETE
-  @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers/{ID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteWorkspaceMaterialProducer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceMaterialProducerId) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    WorkspaceMaterialProducer materialProducer = workspaceController.findWorkspaceMaterialProducer(workspaceMaterialProducerId);
-
-    workspaceController.deleteWorkspaceMaterialProducer(materialProducer);
-
-    return Response
-      .noContent()
       .build();
   }
 
@@ -1715,7 +1705,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("material not found").build();
       }
 
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers());
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers(), entity.getTitleLanguage());
       if (entity.getNextSiblingId() != null) {
         WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
         if (nextSibling == null) {
@@ -1748,7 +1738,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                     material,
                     workspaceMaterial.getUrlName(),
                     workspaceMaterial.getAssignmentType(),
-                    workspaceMaterial.getCorrectAnswers());
+                    workspaceMaterial.getCorrectAnswers(),
+                    workspaceMaterial.getLanguage());
               }
             }
           }

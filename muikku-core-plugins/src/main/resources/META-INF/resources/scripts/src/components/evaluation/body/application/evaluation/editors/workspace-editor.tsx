@@ -721,8 +721,14 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${t("labels.billing", {
           ns: "evaluation",
           context: "full",
-        })} ${basePriceFromServer.toFixed(2)} €`,
-        value: basePriceFromServer,
+        })} ${(
+          Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
+        ).toFixed(2)} €`,
+        value: parseFloat(
+          (
+            Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
+          ).toFixed(2)
+        ),
       });
 
       /**
@@ -733,8 +739,14 @@ class WorkspaceEditor extends SessionStateComponent<
           name: `${t("labels.billing", {
             ns: "evaluation",
             context: "half",
-          })} ${(basePriceFromServer / 2).toFixed(2)} €`,
-          value: basePriceFromServer / 2,
+          })} ${(
+            Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
+          ).toFixed(2)} €`,
+          value: parseFloat(
+            (
+              Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
+            ).toFixed(2)
+          ),
         });
       }
 
@@ -756,13 +768,21 @@ class WorkspaceEditor extends SessionStateComponent<
         /**
          * If the price from server is not in our options...
          */
-        if (
+
+        const condition1 =
           this.state.basePriceFromServer !==
-            this.state.existingBilledPriceObject.price &&
-          this.state.basePriceFromServer / 2 !==
-            this.state.existingBilledPriceObject.price &&
-          this.state.existingBilledPriceObject.price > 0
-        ) {
+          this.state.existingBilledPriceObject.price;
+
+        const condition2 =
+          Math.round(
+            (this.state.basePriceFromServer / 2 + Number.EPSILON) * 100
+          ) /
+            100 !==
+          this.state.existingBilledPriceObject.price;
+
+        const condition3 = this.state.existingBilledPriceObject.price > 0;
+
+        if (condition1 && condition2 && condition3) {
           /**
            * ...then add a custom option with the current price
            */
@@ -770,8 +790,21 @@ class WorkspaceEditor extends SessionStateComponent<
             name: `${t("labels.billing", {
               ns: "evaluation",
               context: "else",
-            })} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
-            value: this.state.existingBilledPriceObject.price,
+            })} ${(
+              Math.round(
+                (this.state.existingBilledPriceObject.price + Number.EPSILON) *
+                  100
+              ) / 100
+            ).toFixed(2)}`,
+            value: parseFloat(
+              (
+                Math.round(
+                  (this.state.existingBilledPriceObject.price +
+                    Number.EPSILON) *
+                    100
+                ) / 100
+              ).toFixed(2)
+            ),
           });
         }
       }

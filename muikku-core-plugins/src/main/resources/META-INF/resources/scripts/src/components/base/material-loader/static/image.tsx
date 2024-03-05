@@ -301,9 +301,8 @@ class Image extends React.Component<ImageProps, ImageState> {
         return (
           <>
             <ReadspeakerMessage
-              text={this.props.t("messages.assignment", {
+              text={this.props.t("messages.image", {
                 ns: "readSpeaker",
-                context: "image",
               })}
             />
             <Zoom key={props.key} imgsrc={props.src}>
