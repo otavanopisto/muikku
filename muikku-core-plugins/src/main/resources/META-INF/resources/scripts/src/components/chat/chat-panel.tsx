@@ -213,6 +213,8 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     instance: props.discussionInstance,
   });
 
+  const { markMsgsAsRead } = useChatContext();
+
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
 
@@ -271,6 +273,13 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     }
   };
 
+  /**
+   * Handles scroll bottom.
+   */
+  const handleScrollBottom = () => {
+    markMsgsAsRead(targetRoom.identifier);
+  };
+
   return (
     <div className="chat__discussion-panel">
       <div className="chat__discussion-panel-header">
@@ -290,6 +299,7 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
           existingScrollTopValue={instance.scrollTop}
           onScrollTop={handleScrollTop}
           onScrollTopChange={handleScrollTopChange}
+          onScrollBottom={handleScrollBottom}
           className="chat__messages-container"
         >
           {messages.map((msg) => (

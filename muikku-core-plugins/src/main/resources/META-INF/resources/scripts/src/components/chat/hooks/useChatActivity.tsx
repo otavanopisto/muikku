@@ -20,10 +20,13 @@ function useChatActivity(
   const documentVisible = useDocumentVisible();
   const browserFocused = useBrowserFocus();
 
-  const [chatActivity, setChatActivity] = React.useState<ChatActivity[]>();
+  const [chatUsersActivities, setChatUsersActivities] =
+    React.useState<ChatActivity[]>();
+  const [chatRoomsActivities, setChatRoomsActivities] =
+    React.useState<ChatActivity[]>();
 
-  const chatActivityRef = React.useRef(chatActivity);
-  chatActivityRef.current = chatActivity;
+  const chatActivityRef = React.useRef(chatUsersActivities);
+  chatActivityRef.current = chatUsersActivities;
 
   const componentMounted = React.useRef(true);
 
@@ -46,11 +49,47 @@ function useChatActivity(
 
           // Skip rooms as they are not enabled yet for this functionality
           if (dataTyped.targetIdentifier.startsWith("room-")) {
-            return;
+            setChatRoomsActivities((prev) => {
+              const index = prev.findIndex(
+                (activity) =>
+                  activity.targetIdentifier === dataTyped.targetIdentifier
+              );
+
+              if (index !== -1) {
+                const updatedList = [...prev];
+                updatedList[index].latestMessage = new Date(
+                  dataTyped.sentDateTime
+                );
+
+                if (
+                  !browserIsVisibleAndFocused ||
+                  dataTyped.targetIdentifier !== activeDiscussionIdentifier
+                ) {
+                  updatedList[index].unreadMessages++;
+                }
+
+                return updatedList;
+              }
+
+              const newActivity: ChatActivity = {
+                targetIdentifier: dataTyped.targetIdentifier,
+                latestMessage: new Date(dataTyped.sentDateTime),
+                unreadMessages: 1,
+              };
+
+              if (
+                browserIsVisibleAndFocused &&
+                dataTyped.targetIdentifier === activeDiscussionIdentifier
+              ) {
+                newActivity.unreadMessages = 0;
+              }
+
+              return prev;
+            });
           }
 
           // Updates the latest message date of the chat activity that the message was sent to
-          setChatActivity((prev) => {
+          setChatUsersActivities((prev) => {
             const sourceIdentifier = `user-${dataTyped.sourceUserEntityId}`;
 
             // Try to find the activity in the list using the source identifier or the target identifier
@@ -134,7 +173,16 @@ function useChatActivity(
   const fetchChatActivity = async () => {
     const activity = await chatApi.getChatActivity();
 
-    setChatActivity(activity);
+    const userActivities = activity.filter((activity) =>
+      activity.targetIdentifier.startsWith("user-")
+    );
+
+    const roomActivities = activity.filter((activity) =>
+      activity.targetIdentifier.startsWith("room-")
+    );
+
+    setChatUsersActivities(userActivities);
+    setChatRoomsActivities(roomActivities);
   };
 
   /**
@@ -161,7 +209,7 @@ function useChatActivity(
       identifier: targetIdentifier,
     });
 
-    setChatActivity((prev) => {
+    setChatUsersActivities((prev) => {
       const index = prev.findIndex(
         (activity) => activity.targetIdentifier === targetIdentifier
       );
@@ -177,16 +225,16 @@ function useChatActivity(
     });
   }, []);
 
-  // Activities as key value pair
+  // Activities as key (user id) value pair
   const chatActivityByUserObject: {
     [key: number]: ChatActivity;
   } = React.useMemo(() => {
-    if (!chatActivity) {
+    if (!chatUsersActivities) {
       return {};
     }
 
     // Filter activities that are user activities
-    const userActivities = chatActivity.filter((activity) =>
+    const userActivities = chatUsersActivities.filter((activity) =>
       activity.targetIdentifier.startsWith("user-")
     );
 
@@ -197,11 +245,35 @@ function useChatActivity(
       }),
       {}
     );
-  }, [chatActivity]);
+  }, [chatUsersActivities]);
+
+  // Activities as key (room id) value pair
+  const chatActivityByRoomObject: {
+    [key: number]: ChatActivity;
+  } = React.useMemo(() => {
+    if (!chatRoomsActivities) {
+      return {};
+    }
+
+    // Filter activities that are room activities
+    const roomActivities = chatRoomsActivities.filter((activity) =>
+      activity.targetIdentifier.startsWith("room-")
+    );
+
+    return roomActivities.reduce(
+      (acc, activity) => ({
+        ...acc,
+        [activity.targetIdentifier.split("-")[1]]: activity,
+      }),
+      {}
+    );
+  }, [chatRoomsActivities]);
 
   return {
-    chatActivity,
+    chatUsersActivities,
+    chatRoomsActivities,
     chatActivityByUserObject,
+    chatActivityByRoomObject,
     markMsgsAsRead,
   };
 }

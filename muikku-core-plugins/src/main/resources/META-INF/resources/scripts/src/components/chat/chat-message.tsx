@@ -202,8 +202,12 @@ const ChatMessage = (props: ChatMessageProps) => {
           </span>
         </div>
         <div className="chat__message-body">
-          {archived ? <i>Poistettu</i> : parseLines(msg.message)}
-          {editedDateTime && (
+          {archived ? (
+            <i>Poistettu {localize.date(msg.editedDateTime)} </i>
+          ) : (
+            parseLines(msg.message)
+          )}
+          {!archived && editedDateTime && (
             <div className="chat__message-edited-info">
               (Muokattu {localize.formatDaily(editedDateTime)})
             </div>

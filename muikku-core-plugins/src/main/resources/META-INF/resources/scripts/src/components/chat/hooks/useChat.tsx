@@ -61,8 +61,13 @@ function useChat(currentUser: ChatUser) {
   const [activeDiscussionIdentifier, setActiveDiscussionIdentifier] =
     React.useState<string>(null);
 
-  const { chatActivity, chatActivityByUserObject, markMsgsAsRead } =
-    useChatActivity(activeDiscussionIdentifier, currentUser.identifier);
+  const {
+    chatUsersActivities,
+    chatRoomsActivities,
+    chatActivityByUserObject,
+    chatActivityByRoomObject,
+    markMsgsAsRead,
+  } = useChatActivity(activeDiscussionIdentifier, currentUser.identifier);
 
   // Discussion instances
   const [discussionInstances, setMessagesInstances] = React.useState<
@@ -367,11 +372,11 @@ function useChat(currentUser: ChatUser) {
      * @param b b
      */
     const sortUsersByActivity = (a: ChatUser, b: ChatUser) => {
-      const aActivity = chatActivity.find(
+      const aActivity = chatUsersActivities.find(
         (activity) => activity.targetIdentifier === a.identifier
       );
 
-      const bActivity = chatActivity.find(
+      const bActivity = chatUsersActivities.find(
         (activity) => activity.targetIdentifier === b.identifier
       );
 
@@ -389,7 +394,7 @@ function useChat(currentUser: ChatUser) {
       return bLastMessage.getTime() - aLastMessage.getTime();
     };
 
-    if (!chatActivity) {
+    if (!chatUsersActivities) {
       return usersWithDiscussionIds.map((id) => usersObject[id]);
     }
 
@@ -397,7 +402,7 @@ function useChat(currentUser: ChatUser) {
       .map((id) => usersObject[id])
       .filter((u) => counselorIds.indexOf(u.id) === -1)
       .sort(sortUsersByActivity);
-  }, [usersObject, chatActivity, usersWithDiscussionIds, counselorIds]);
+  }, [usersObject, chatUsersActivities, usersWithDiscussionIds, counselorIds]);
 
   // Private rooms
   const roomsPrivate = React.useMemo(
@@ -415,20 +420,22 @@ function useChat(currentUser: ChatUser) {
   const unreadMsgCount = React.useMemo(() => {
     let counter = 0;
 
-    if (!chatActivity) return counter;
+    if (!chatUsersActivities) return counter;
 
-    chatActivity.forEach((cA) => {
+    chatUsersActivities.forEach((cA) => {
       counter += cA.unreadMessages;
     });
 
     return counter;
-  }, [chatActivity]);
+  }, [chatUsersActivities]);
 
   return {
     activeDiscussion,
     canModerate,
-    chatActivity,
+    chatUsersActivities,
+    chatRoomsActivities,
     chatActivityByUserObject,
+    chatActivityByRoomObject,
     chatViews,
     closeAndBlockDiscussionWithUser,
     closeBlockUserDialog,

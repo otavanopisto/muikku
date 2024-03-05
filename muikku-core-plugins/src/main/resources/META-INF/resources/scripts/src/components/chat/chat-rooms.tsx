@@ -1,38 +1,8 @@
 import * as React from "react";
-import { ChatRoom } from "~/generated/client";
+import { ChatActivity, ChatRoom } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import Dropdown from "../general/dropdown";
 import { sortRoomsAplhabetically } from "./chat-helpers";
-
-/**
- * ChatRoomsListsProps
- */
-/* interface ChatRoomsListsProps {
-  onClick: () => void;
-} */
-
-/**
- * ChatRoomsLists
- * @param props props
- * @returns JSX.Element
- */
-/* function ChatRoomsLists(props: ChatRoomsListsProps) {
-  const rooms = (
-    <>
-      <div className="chat__rooms chat__rooms--public" role="menu">
-        <div className="chat__rooms-category-title">Julkiset huoneet</div>
-        <PublicRoomsList />
-      </div>
-
-      <div className="chat__rooms chat__rooms--private" role="menu">
-        <div className="chat__rooms-category-title">Kurssien huoneet</div>
-        <PrivateRoomList />
-      </div>
-    </>
-  );
-
-  return <>{rooms}</>;
-} */
 
 /**
  * PrivateRoomListProps
@@ -49,8 +19,13 @@ interface PrivateRoomListProps {
 function PrivateRoomList(props: PrivateRoomListProps) {
   const { onItemClick } = props;
 
-  const { roomsPrivate, loadingRooms, activeDiscussion, openDiscussion } =
-    useChatContext();
+  const {
+    roomsPrivate,
+    loadingRooms,
+    activeDiscussion,
+    openDiscussion,
+    chatActivityByRoomObject,
+  } = useChatContext();
 
   /**
    * handleRoomItemClick
@@ -73,14 +48,19 @@ function PrivateRoomList(props: PrivateRoomListProps) {
 
   return (
     <>
-      {sortedRooms.map((room) => (
-        <ChatRoom
-          key={room.identifier}
-          room={room}
-          isActive={activeDiscussion?.identifier === room.identifier}
-          onItemClick={handleRoomItemClick}
-        />
-      ))}
+      {sortedRooms.map((room) => {
+        const roomId = parseInt(room.identifier.split("-")[1]);
+
+        return (
+          <ChatRoom
+            key={room.identifier}
+            room={room}
+            isActive={activeDiscussion?.identifier === room.identifier}
+            chatActivity={chatActivityByRoomObject[roomId]}
+            onItemClick={handleRoomItemClick}
+          />
+        );
+      })}
     </>
   );
 }
@@ -100,8 +80,13 @@ interface PublicRoomsListProps {
 function PublicRoomsList(props: PublicRoomsListProps) {
   const { onItemClick } = props;
 
-  const { roomsPublic, loadingRooms, openDiscussion, activeDiscussion } =
-    useChatContext();
+  const {
+    roomsPublic,
+    loadingRooms,
+    openDiscussion,
+    activeDiscussion,
+    chatActivityByRoomObject,
+  } = useChatContext();
 
   /**
    * handleRoomItemClick
@@ -124,14 +109,19 @@ function PublicRoomsList(props: PublicRoomsListProps) {
 
   return (
     <>
-      {sortedRooms.map((room) => (
-        <ChatRoom
-          key={room.identifier}
-          room={room}
-          onItemClick={handleRoomItemClick}
-          isActive={activeDiscussion?.identifier === room.identifier}
-        />
-      ))}
+      {sortedRooms.map((room) => {
+        const roomId = parseInt(room.identifier.split("-")[1]);
+
+        return (
+          <ChatRoom
+            key={room.identifier}
+            room={room}
+            isActive={activeDiscussion?.identifier === room.identifier}
+            chatActivity={chatActivityByRoomObject[roomId]}
+            onItemClick={handleRoomItemClick}
+          />
+        );
+      })}
     </>
   );
 }
@@ -142,6 +132,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
 interface ChatRoomProps {
   room: ChatRoom;
   isActive: boolean;
+  chatActivity?: ChatActivity;
   onItemClick?: (identifier: string) => void;
 }
 
@@ -151,7 +142,7 @@ interface ChatRoomProps {
  * @returns JSX.Element
  */
 function ChatRoom(props: ChatRoomProps) {
-  const { room, isActive, onItemClick } = props;
+  const { room, isActive, chatActivity, onItemClick } = props;
 
   /**
    * Handle room click
@@ -162,7 +153,12 @@ function ChatRoom(props: ChatRoomProps) {
     }
   }, [onItemClick, room.identifier]);
 
-  const className = isActive ? "chat__room chat__active-item" : "chat__room";
+  const roomClassName = isActive
+    ? "chat__room chat__active-item"
+    : "chat__room";
+
+  const roomNameModifiers =
+    chatActivity?.unreadMessages > 0 ? ["highlight"] : [];
 
   return (
     <Dropdown
@@ -172,9 +168,14 @@ function ChatRoom(props: ChatRoomProps) {
       alignSelf="left"
       alignSelfVertically="top"
     >
-      <div key={room.identifier} className={className} role="menuitem">
+      <div key={room.identifier} className={roomClassName} role="menuitem">
         <div className="chat__room-name-container">
-          <div className="chat__room-name" onClick={handleRoomClick}>
+          <div
+            className={`chat__room-name ${roomNameModifiers
+              .map((modifier) => `chat__room-name--${modifier}`)
+              .join(" ")}`}
+            onClick={handleRoomClick}
+          >
             {room.name}
           </div>
         </div>
