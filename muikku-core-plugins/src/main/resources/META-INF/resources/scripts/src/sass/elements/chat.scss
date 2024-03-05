@@ -241,11 +241,15 @@
 .chat__option-name,
 .chat__room-name {
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 400;
   overflow: hidden;
   padding: 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.chat__room-name--highlight {
+  font-weight: 600;
 }
 
 // MIDDLE PANEL a.k.a DISCUSSION PANEL
@@ -737,6 +741,11 @@
   top: -3px;
   width: 1rem;
   z-index: 2;
+}
+
+.chat__unread-msg-counter-number,
+.chat__unread-msg-counter-plus {
+  letter-spacing: -2px;
 }
 
 // Chat overview/dashboard

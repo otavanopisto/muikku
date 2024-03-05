@@ -21,7 +21,15 @@ export const ChatUnreadMsgCounter = (props: ChatUnreadMsgCounterProps) => {
     .map((modifier) => `chat__unread-msg-counter--${modifier}`)
     .join(" ");
 
-  const showedNumber = number >= 9 ? "9+" : number;
+  const showedNumber =
+    number >= 9 ? (
+      <>
+        <span className="chat__unread-msg-counter-number">9</span>
+        <span className="chat__unread-msg-counter-plus">+</span>
+      </>
+    ) : (
+      number
+    );
 
   return (
     <span className={`chat__unread-msg-counter ${classModifiers}`}>
