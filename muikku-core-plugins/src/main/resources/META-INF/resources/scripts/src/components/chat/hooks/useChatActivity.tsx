@@ -192,47 +192,52 @@ function useChatActivity(
    * Marks unread messages as read
    * @param targetIdentifier target identifier
    */
-  const markMsgsAsRead = React.useCallback(async (targetIdentifier: string) => {
-    if (targetIdentifier.startsWith("room-")) {
-      await chatApi.markAsRead({
-        identifier: targetIdentifier,
-      });
+  const markMsgsAsRead = React.useCallback(
+    async (targetIdentifier: string) => {
+      if (!browserIsVisibleAndFocused) return;
 
-      setChatRoomsActivities((prev) => {
-        const index = prev.findIndex(
-          (activity) => activity.targetIdentifier === targetIdentifier
-        );
+      if (targetIdentifier.startsWith("room-")) {
+        await chatApi.markAsRead({
+          identifier: targetIdentifier,
+        });
 
-        if (index !== -1) {
-          const updatedList = [...prev];
-          updatedList[index].unreadMessages = 0;
+        setChatRoomsActivities((prev) => {
+          const index = prev.findIndex(
+            (activity) => activity.targetIdentifier === targetIdentifier
+          );
 
-          return updatedList;
-        }
+          if (index !== -1) {
+            const updatedList = [...prev];
+            updatedList[index].unreadMessages = 0;
 
-        return prev;
-      });
-    } else {
-      await chatApi.markAsRead({
-        identifier: targetIdentifier,
-      });
+            return updatedList;
+          }
 
-      setChatUsersActivities((prev) => {
-        const index = prev.findIndex(
-          (activity) => activity.targetIdentifier === targetIdentifier
-        );
+          return prev;
+        });
+      } else {
+        await chatApi.markAsRead({
+          identifier: targetIdentifier,
+        });
 
-        if (index !== -1) {
-          const updatedList = [...prev];
-          updatedList[index].unreadMessages = 0;
+        setChatUsersActivities((prev) => {
+          const index = prev.findIndex(
+            (activity) => activity.targetIdentifier === targetIdentifier
+          );
 
-          return updatedList;
-        }
+          if (index !== -1) {
+            const updatedList = [...prev];
+            updatedList[index].unreadMessages = 0;
 
-        return prev;
-      });
-    }
-  }, []);
+            return updatedList;
+          }
+
+          return prev;
+        });
+      }
+    },
+    [browserIsVisibleAndFocused]
+  );
 
   // Activities as key (user id) value pair
   const chatActivityByUserObject: {

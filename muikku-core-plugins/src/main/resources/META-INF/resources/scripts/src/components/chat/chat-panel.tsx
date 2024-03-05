@@ -221,6 +221,8 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   const footerRef = React.useRef<HTMLDivElement>(null);
 
+  const messagesContainerRef = React.useRef<MessagesContainerHandle>(null);
+
   React.useEffect(() => {
     const contentCurrent = contentRef.current;
     const footerCurrent = footerRef.current;
@@ -245,6 +247,11 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       await postMessage();
+
+      // When current user send a message, scroll to bottom
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollToBottom();
+      }
     }
   };
 
@@ -295,6 +302,7 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
 
       <div className="chat__discussion-panel-body" ref={contentRef}>
         <MessagesContainer
+          ref={messagesContainerRef}
           targetIdentifier={targetRoom.identifier}
           existingScrollTopValue={instance.scrollTop}
           onScrollTop={handleScrollTop}
@@ -331,20 +339,38 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
  * MessagesContainerProps
  */
 interface MessagesContainerProps {
+  children: React.ReactNode;
   targetIdentifier: string;
   className?: string;
   modifiers?: string[];
   existingScrollTopValue?: number | null;
+  /**
+   * When scroll reaches top
+   */
   onScrollTop?: () => void;
+  /**
+   * When scroll top changes
+   * @param scrollTop scrollTop
+   */
   onScrollTopChange?: (scrollTop: number) => void;
+  /**
+   * When scroll reaches bottom
+   */
   onScrollBottom?: () => void;
 }
+
+export type MessagesContainerHandle = {
+  scrollToBottom: () => void;
+};
 
 /**
  * List of messages with scroll to bottom.
  * @param props props
  */
-const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
+const MessagesContainer = React.forwardRef<
+  MessagesContainerHandle,
+  MessagesContainerProps
+>((props, ref) => {
   const {
     className,
     modifiers,
@@ -525,6 +551,22 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
     };
   }, []);
 
+  /**
+   * Handles scroll to bottom.
+   */
+  const handleScrollToBottom = () => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({
+        behavior: "auto",
+      });
+    }
+  };
+
+  // Way to expose scrollToBottom to parent component
+  React.useImperativeHandle(ref, () => ({
+    scrollToBottom: handleScrollToBottom,
+  }));
+
   const mappedModifiers = modifiers
     ? modifiers.map((modifier) => `${className}--${modifier}`)
     : "";
@@ -546,6 +588,8 @@ const MessagesContainer: React.FC<MessagesContainerProps> = (props) => {
       <div ref={lastMessageRef} className="chat__messages-last-message"></div>
     </motion.div>
   );
-};
+});
+
+MessagesContainer.displayName = "MessagesContainer";
 
 export { ChatPrivatePanel, ChatRoomPanel };
