@@ -47,6 +47,8 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   const footerRef = React.useRef<HTMLDivElement>(null);
 
+  const messagesContainerRef = React.useRef<MessagesContainerHandle>(null);
+
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
 
@@ -86,6 +88,10 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       await postMessage();
+
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollToBottom();
+      }
     }
   };
 
