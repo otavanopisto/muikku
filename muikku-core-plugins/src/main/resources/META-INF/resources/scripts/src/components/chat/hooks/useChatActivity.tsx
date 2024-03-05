@@ -25,8 +25,10 @@ function useChatActivity(
   const [chatRoomsActivities, setChatRoomsActivities] =
     React.useState<ChatActivity[]>();
 
-  const chatActivityRef = React.useRef(chatUsersActivities);
-  chatActivityRef.current = chatUsersActivities;
+  const chatUsersActivitiesRef = React.useRef(chatUsersActivities);
+  const chatRoomsActivitiesRef = React.useRef(chatRoomsActivities);
+  chatUsersActivitiesRef.current = chatUsersActivities;
+  chatRoomsActivitiesRef.current = chatRoomsActivities;
 
   const componentMounted = React.useRef(true);
 
@@ -47,7 +49,7 @@ function useChatActivity(
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          // Skip rooms as they are not enabled yet for this functionality
+          // Room activities
           if (dataTyped.targetIdentifier.startsWith("room-")) {
             setChatRoomsActivities((prev) => {
               const index = prev.findIndex(
@@ -86,68 +88,69 @@ function useChatActivity(
 
               return prev;
             });
-          }
+          } else {
+            // User activities
+            setChatUsersActivities((prev) => {
+              const sourceIdentifier = `user-${dataTyped.sourceUserEntityId}`;
 
-          // Updates the latest message date of the chat activity that the message was sent to
-          setChatUsersActivities((prev) => {
-            const sourceIdentifier = `user-${dataTyped.sourceUserEntityId}`;
+              // Try to find the activity in the list using the source identifier or the target identifier
+              // If the current user is the source, use the target identifier
+              // else use the source identifier
+              const index =
+                currentUserIdentifier === sourceIdentifier
+                  ? prev.findIndex(
+                      (activity) =>
+                        activity.targetIdentifier === dataTyped.targetIdentifier
+                    )
+                  : prev.findIndex(
+                      (activity) =>
+                        activity.targetIdentifier === sourceIdentifier
+                    );
 
-            // Try to find the activity in the list using the source identifier or the target identifier
-            // If the current user is the source, use the target identifier
-            // else use the source identifier
-            const index =
-              currentUserIdentifier === sourceIdentifier
-                ? prev.findIndex(
-                    (activity) =>
-                      activity.targetIdentifier === dataTyped.targetIdentifier
-                  )
-                : prev.findIndex(
-                    (activity) => activity.targetIdentifier === sourceIdentifier
-                  );
+              // If activity already exists, update the latest message date
+              if (index !== -1) {
+                const updatedList = [...prev];
+                updatedList[index].latestMessage = new Date(
+                  dataTyped.sentDateTime
+                );
 
-            // If activity already exists, update the latest message date
-            if (index !== -1) {
-              const updatedList = [...prev];
-              updatedList[index].latestMessage = new Date(
-                dataTyped.sentDateTime
-              );
+                // If discussion is not active, increment unread messages
+                if (
+                  !browserIsVisibleAndFocused ||
+                  (sourceIdentifier !== activeDiscussionIdentifier &&
+                    dataTyped.targetIdentifier !== activeDiscussionIdentifier)
+                ) {
+                  updatedList[index].unreadMessages++;
+                }
 
-              // If discussion is not active, increment unread messages
-              if (
-                !browserIsVisibleAndFocused ||
-                (sourceIdentifier !== activeDiscussionIdentifier &&
-                  dataTyped.targetIdentifier !== activeDiscussionIdentifier)
-              ) {
-                updatedList[index].unreadMessages++;
+                return updatedList;
               }
 
-              return updatedList;
-            }
+              // If activity doesn't exist, create a new one and add it to the list with unread messages set to 1
+              const newActivity: ChatActivity = {
+                targetIdentifier: `user-${dataTyped.sourceUserEntityId}`,
+                latestMessage: new Date(dataTyped.sentDateTime),
+                unreadMessages: 1,
+              };
 
-            // If activity doesn't exist, create a new one and add it to the list with unread messages set to 1
-            const newActivity: ChatActivity = {
-              targetIdentifier: `user-${dataTyped.sourceUserEntityId}`,
-              latestMessage: new Date(dataTyped.sentDateTime),
-              unreadMessages: 1,
-            };
+              // By default new activity target identifier is the source identifier
+              // If the current user is the source, use the target identifier
+              if (dataTyped.targetIdentifier !== currentUserIdentifier) {
+                newActivity.targetIdentifier = dataTyped.targetIdentifier;
+              }
 
-            // By default new activity target identifier is the source identifier
-            // If the current user is the source, use the target identifier
-            if (dataTyped.targetIdentifier !== currentUserIdentifier) {
-              newActivity.targetIdentifier = dataTyped.targetIdentifier;
-            }
+              // If browser is visible and
+              // this is the active discussion, keep unread messages as 0
+              if (
+                browserIsVisibleAndFocused &&
+                dataTyped.targetIdentifier === activeDiscussionIdentifier
+              ) {
+                newActivity.unreadMessages = 0;
+              }
 
-            // If browser is visible and
-            // this is the active discussion, keep unread messages as 0
-            if (
-              browserIsVisibleAndFocused &&
-              dataTyped.targetIdentifier === activeDiscussionIdentifier
-            ) {
-              newActivity.unreadMessages = 0;
-            }
-
-            return [...prev, newActivity];
-          });
+              return [...prev, newActivity];
+            });
+          }
         }
       }
     };
@@ -190,39 +193,45 @@ function useChatActivity(
    * @param targetIdentifier target identifier
    */
   const markMsgsAsRead = React.useCallback(async (targetIdentifier: string) => {
-    // Skip rooms as they are not enabled yet for this functionality
     if (targetIdentifier.startsWith("room-")) {
-      return;
+      await chatApi.markAsRead({
+        identifier: targetIdentifier,
+      });
+
+      setChatRoomsActivities((prev) => {
+        const index = prev.findIndex(
+          (activity) => activity.targetIdentifier === targetIdentifier
+        );
+
+        if (index !== -1) {
+          const updatedList = [...prev];
+          updatedList[index].unreadMessages = 0;
+
+          return updatedList;
+        }
+
+        return prev;
+      });
+    } else {
+      await chatApi.markAsRead({
+        identifier: targetIdentifier,
+      });
+
+      setChatUsersActivities((prev) => {
+        const index = prev.findIndex(
+          (activity) => activity.targetIdentifier === targetIdentifier
+        );
+
+        if (index !== -1) {
+          const updatedList = [...prev];
+          updatedList[index].unreadMessages = 0;
+
+          return updatedList;
+        }
+
+        return prev;
+      });
     }
-
-    // Check if the chat activity exists
-    const index = chatActivityRef.current?.findIndex(
-      (activity) => activity.targetIdentifier === targetIdentifier
-    );
-
-    // If the chat activity doesn't exist, return
-    if (index === -1) {
-      return;
-    }
-
-    await chatApi.markAsRead({
-      identifier: targetIdentifier,
-    });
-
-    setChatUsersActivities((prev) => {
-      const index = prev.findIndex(
-        (activity) => activity.targetIdentifier === targetIdentifier
-      );
-
-      if (index !== -1) {
-        const updatedList = [...prev];
-        updatedList[index].unreadMessages = 0;
-
-        return updatedList;
-      }
-
-      return prev;
-    });
   }, []);
 
   // Activities as key (user id) value pair
