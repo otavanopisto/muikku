@@ -150,7 +150,9 @@ class WorkListEditable extends React.Component<
     }
 
     if (props.base && props.base.price) {
-      newState.price = props.base.price.toString();
+      newState.price = (
+        Math.round((props.base.price + Number.EPSILON) * 100) / 100
+      ).toFixed(2);
 
       if (props.locales.current !== "en") {
         newState.price = newState.price.replace(".", ",");

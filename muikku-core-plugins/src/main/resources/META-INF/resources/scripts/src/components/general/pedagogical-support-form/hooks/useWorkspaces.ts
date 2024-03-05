@@ -1,19 +1,23 @@
 import * as React from "react";
-import { WorkspaceDataType } from "~/reducers/workspaces";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi from "~/api/api";
+import { PedagogyWorkspace } from "~/generated/client";
+
+const pedagogyApi = MApi.getPedagogyApi();
 
 /**
  * useWorkspaces
+ * @param studentIdentifier studentIdentifier
  * @param displayNotification displayNotification
  */
 export const useWorkspaces = (
+  studentIdentifier: string,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [textInput, setTextInput] = React.useState<string>("");
-  const [workspaces, setWorkspaces] = React.useState<WorkspaceDataType[]>([]);
+  const [workspaces, setWorkspaces] = React.useState<PedagogyWorkspace[]>([]);
   const [loadingWorkspaces, setLoadingWorkspaces] =
     React.useState<boolean>(true);
 
@@ -26,14 +30,12 @@ export const useWorkspaces = (
     const loadWorkspaces = async () => {
       setLoadingWorkspaces(true);
 
-      const coursepickerApi = MApi.getCoursepickerApi();
-
       try {
-        const workspaces = (await coursepickerApi.getCoursepickerWorkspaces({
+        const workspaces = (await pedagogyApi.getPedagogyFormWorkspaces({
+          studentIdentifier: studentIdentifier,
           q: textInput,
           maxResults: 20,
-          myWorkspaces: true,
-        })) as WorkspaceDataType[];
+        })) as PedagogyWorkspace[];
 
         if (componentMounted.current) {
           unstable_batchedUpdates(() => {
@@ -49,7 +51,7 @@ export const useWorkspaces = (
     };
 
     loadWorkspaces();
-  }, [textInput, displayNotification]);
+  }, [textInput, displayNotification, studentIdentifier]);
 
   /**
    * handleTextInput

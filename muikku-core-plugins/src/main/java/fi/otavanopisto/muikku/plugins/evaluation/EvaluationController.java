@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,6 +28,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestCancellationDAO;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -481,13 +481,14 @@ public class EvaluationController {
           new String[] {workspaceUrl, workspaceName, verbalAssessment});
 
       CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
+      
+      CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+      recipients.addRecipient(student);
+      
       CommunicatorMessage communicatorMessage = communicatorController.createMessage(
           communicatorController.createMessageId(),
           sessionController.getLoggedUserEntity(),
-          Arrays.asList(student),
-          null,
-          null,
-          null,
+          recipients,
           category,
           messageTitle,
           messageBody,
@@ -772,13 +773,14 @@ public class EvaluationController {
 
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
+
+    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    recipients.addRecipient(student);
+    
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(
         communicatorController.createMessageId(),
         teacher,
-        Arrays.asList(student),
-        null,
-        null,
-        null,
+        recipients,
         category,
         localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationCaption"),
         localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationText", new Object[] {workspaceUrl, workspaceName, verbalAssessment}),
@@ -898,13 +900,14 @@ public class EvaluationController {
     }
 
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
+
+    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    recipients.addRecipient(student);
+    
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(
         communicatorController.createMessageId(),
         evaluator,
-        Arrays.asList(student),
-        null,
-        null,
-        null,
+        recipients,
         category,
         messageTitle,
         messageContent,
