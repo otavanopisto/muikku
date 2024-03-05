@@ -250,6 +250,18 @@
 
 .chat__room-name--highlight {
   font-weight: 600;
+
+  &::before {
+    background: $color-default-contrast;
+    border-radius: 100%;
+    content: " ";
+    display: block;
+    height: 3px;
+    left: 0;
+    position: absolute;
+    top: calc(50% - 1px);
+    width: 3px;
+  }
 }
 
 // MIDDLE PANEL a.k.a DISCUSSION PANEL
