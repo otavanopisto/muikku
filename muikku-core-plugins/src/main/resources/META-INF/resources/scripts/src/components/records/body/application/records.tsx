@@ -18,6 +18,7 @@ import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
 import RecordsGroup from "~/components/general/records-history/records-group";
+import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 
 /**
  * RecordsProps
@@ -88,31 +89,38 @@ class Records extends React.Component<RecordsProps, RecordsState> {
      * studentRecords
      */
     const studentRecords = (
-      <ApplicationSubPanel>
-        {this.props.records.userData.map((lineCategoryData, i) => (
-          <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-            {lineCategoryData.credits.length +
-              lineCategoryData.transferCredits.length >
-            0 ? (
-              <RecordsGroup
-                key={`credit-category-${i}`}
-                recordGroup={lineCategoryData}
-              />
-            ) : (
-              <div className="application-sub-panel__item">
-                <div className="empty">
-                  <span>
-                    {t("content.empty", {
-                      ns: "studies",
-                      context: "workspaces",
-                    })}
-                  </span>
+      <RecordsInfoProvider
+        value={{
+          identifier: this.props.status.userSchoolDataIdentifier,
+          userEntityId: this.props.status.userId,
+        }}
+      >
+        <ApplicationSubPanel>
+          {this.props.records.userData.map((lineCategoryData, i) => (
+            <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
+              {lineCategoryData.credits.length +
+                lineCategoryData.transferCredits.length >
+              0 ? (
+                <RecordsGroup
+                  key={`credit-category-${i}`}
+                  recordGroup={lineCategoryData}
+                />
+              ) : (
+                <div className="application-sub-panel__item">
+                  <div className="empty">
+                    <span>
+                      {t("content.empty", {
+                        ns: "studies",
+                        context: "workspaces",
+                      })}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            )}
-          </ApplicationSubPanel.Body>
-        ))}
-      </ApplicationSubPanel>
+              )}
+            </ApplicationSubPanel.Body>
+          ))}
+        </ApplicationSubPanel>
+      </RecordsInfoProvider>
     );
 
     return (
