@@ -1433,50 +1433,13 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
       // Then producers
       if (appliedProducers) {
-        const existingProducers = currentWorkspace.producers;
-        const workspaceProducersToAdd =
-          existingProducers.length == 0
-            ? appliedProducers
-            : appliedProducers.filter((producer) => {
-                if (!producer.id) {
-                  return producer;
-                }
-              });
-
-        const workspaceProducersToDelete = existingProducers.filter(
-          (producer) => {
-            if (producer.id) {
-              return !appliedProducers.find(
-                (keepProducer) => keepProducer.id === producer.id
-              );
-            }
-          }
-        );
-
-        await Promise.all(
-          workspaceProducersToAdd.map((p) =>
-            workspaceApi.createWorkspaceMaterialProducer({
-              workspaceEntityId: currentWorkspace.id,
-              createWorkspaceMaterialProducerRequest: p,
-            })
-          )
-        );
-
-        await Promise.all(
-          workspaceProducersToDelete.map((p) =>
-            workspaceApi.deleteWorkspaceMaterialProducer({
-              workspaceEntityId: currentWorkspace.id,
-              producerId: p.id,
-            })
-          )
-        );
-
-        // For some reason the results of the request don't give the new workspace producers
-        // it's a mess but whatever
-        data.update.producers =
-          await workspaceApi.getWorkspaceMaterialProducers({
+        const updatedProducersList =
+          await workspaceApi.createWorkspaceMaterialProducers({
             workspaceEntityId: currentWorkspace.id,
+            requestBody: appliedProducers.map((p) => p.name),
           });
+
+        data.update.producers = updatedProducersList;
       }
 
       // All saved and stitched together again, dispatch to state
@@ -2063,50 +2026,11 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
 
       try {
         const state = getState();
-        const existingProducers = state.workspaces.currentWorkspace.producers;
 
-        const workspaceProducersToAdd =
-          existingProducers.length == 0
-            ? data.appliedProducers
-            : data.appliedProducers.filter((producer) => {
-                if (!producer.id) {
-                  return producer;
-                }
-              });
-
-        const workspaceProducersToDelete = existingProducers.filter(
-          (producer) => {
-            if (producer.id) {
-              return !data.appliedProducers.find(
-                (keepProducer) => keepProducer.id === producer.id
-              );
-            }
-          }
-        );
-
-        await Promise.all(
-          workspaceProducersToAdd.map((p) =>
-            workspaceApi.createWorkspaceMaterialProducer({
-              workspaceEntityId: state.workspaces.currentWorkspace.id,
-              createWorkspaceMaterialProducerRequest: p,
-            })
-          )
-        );
-
-        await Promise.all(
-          workspaceProducersToDelete.map((p) =>
-            workspaceApi.deleteWorkspaceMaterialProducer({
-              workspaceEntityId: state.workspaces.currentWorkspace.id,
-              producerId: p.id,
-            })
-          )
-        );
-
-        // For some reason the results of the request don't give the new workspace producers
-        // it's a mess but whatever
-        const newActualWorkspaceProducers =
-          await workspaceApi.getWorkspaceMaterialProducers({
+        const updatedProducersList =
+          await workspaceApi.createWorkspaceMaterialProducers({
             workspaceEntityId: state.workspaces.currentWorkspace.id,
+            requestBody: data.appliedProducers.map((p) => p.name),
           });
 
         const currentWorkspace = getState().workspaces.currentWorkspace;
@@ -2116,7 +2040,7 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
           payload: {
             original: currentWorkspace,
             update: {
-              producers: newActualWorkspaceProducers,
+              producers: updatedProducersList,
             },
           },
         });

@@ -354,6 +354,7 @@ export const usePedagogy = (
     sendToStudent,
     approveForm,
     updateFormData,
+    studentId,
     setFormDataAndUpdateChangedFields,
     setFormIsApproved,
     setExtraDetails,
@@ -362,7 +363,6 @@ export const usePedagogy = (
 };
 
 const defaultFormData: FormData = {
-  supportReasons: [],
   supportActions: [],
   matriculationExaminationSupport: [],
   supportActionsImplemented: [],

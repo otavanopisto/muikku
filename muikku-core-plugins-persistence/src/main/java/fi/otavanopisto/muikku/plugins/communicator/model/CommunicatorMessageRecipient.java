@@ -1,16 +1,28 @@
 package fi.otavanopisto.muikku.plugins.communicator.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import fi.otavanopisto.security.ContextReference;
 
 @Entity
+@Table (
+    indexes = {
+        // Index for automated trash folder archive task
+        @Index ( columnList = "archivedByReceiver, trashedByReceiver, trashedByReceiverTimestamp" ),
+    }
+)
 public class CommunicatorMessageRecipient implements ContextReference {
 
   public Long getId() {
@@ -65,6 +77,14 @@ public class CommunicatorMessageRecipient implements ContextReference {
     this.recipientGroup = recipientGroup;
   }
 
+  public Date getTrashedByReceiverTimestamp() {
+    return trashedByReceiverTimestamp;
+  }
+
+  public void setTrashedByReceiverTimestamp(Date trashedByReceiverTimestamp) {
+    this.trashedByReceiverTimestamp = trashedByReceiverTimestamp;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -85,6 +105,10 @@ public class CommunicatorMessageRecipient implements ContextReference {
   @NotNull
   @Column(nullable = false)
   private Boolean trashedByReceiver;
+
+  @Column
+  @Temporal (value = TemporalType.TIMESTAMP)
+  private Date trashedByReceiverTimestamp;
 
   @NotNull
   @Column(nullable = false)

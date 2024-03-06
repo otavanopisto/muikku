@@ -84,6 +84,8 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
+import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
@@ -278,9 +280,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceRestModels workspaceRestModels;
-  
+
   @Inject
   private PedagogyController pedagogyController;
+
+  @Inject
+  private ForumAreaSubsciptionController forumAreaSubsciptionController;
+
+  @Inject
+  private ForumThreadSubsciptionController forumThreadSubsciptionController;
 
   @GET
   @Path("/workspaceTypes")
@@ -373,7 +381,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       for (WorkspaceMaterialProducer workspaceMaterialProducer : workspaceMaterialProducers) {
         workspaceController.createWorkspaceMaterialProducer(workspaceEntity, workspaceMaterialProducer.getName());
       }
-      
+
       workspaceEntity.setLanguage(sourceWorkspaceEntity.getLanguage());
     }
 
@@ -895,7 +903,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers")
   @RESTPermit (handling = Handling.INLINE)
-  public Response createWorkspaceMaterialProducer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceMaterialProducer payload) {
+  public Response createWorkspaceMaterialProducers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, List<String> payload) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -905,10 +913,22 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    WorkspaceMaterialProducer materialProducer = workspaceController.createWorkspaceMaterialProducer(workspaceEntity, payload.getName());
+    // Out with the old
+
+    List<WorkspaceMaterialProducer> producers = workspaceController.listWorkspaceMaterialProducers(workspaceEntity);
+    for (WorkspaceMaterialProducer producer : producers) {
+      workspaceController.deleteWorkspaceMaterialProducer(producer);
+    }
+
+    // In with the new
+
+    producers = new ArrayList<>();
+    for (String producer : payload) {
+      producers.add(workspaceController.createWorkspaceMaterialProducer(workspaceEntity, producer));
+    }
 
     return Response
-      .ok(createRestModel(materialProducer))
+      .ok(createRestModel(producers.toArray(new WorkspaceMaterialProducer[0])))
       .build();
   }
 
@@ -960,28 +980,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       .build();
   }
 
-  @DELETE
-  @Path("/workspaces/{WORKSPACEENTITYID}/materialProducers/{ID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteWorkspaceMaterialProducer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceMaterialProducerId) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    WorkspaceMaterialProducer materialProducer = workspaceController.findWorkspaceMaterialProducer(workspaceMaterialProducerId);
-
-    workspaceController.deleteWorkspaceMaterialProducer(materialProducer);
-
-    return Response
-      .noContent()
-      .build();
-  }
-
   @PUT
   @Path("/workspaces/{ID}/details")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -1024,7 +1022,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspace.setWorkspaceTypeId(typeIdentifier);
       workspaceController.updateWorkspace(workspace);
     }
-    
+
     String roomName = constructWorkspaceChatRoomName(workspace);
     chatController.toggleWorkspaceChatRoom(workspaceEntity, roomName, payload.getChatEnabled(), sessionController.getLoggedUserEntity());
 
@@ -1045,15 +1043,15 @@ public class WorkspaceRESTService extends PluginRESTService {
         frontPage.getParent().getId(),
         payload.getChatEnabled())).build();
   }
-  
+
   private String constructWorkspaceChatRoomName(Workspace workspace) {
     if (workspace.getSubjects() != null && workspace.getSubjects().size() > 1) {
       /**
        *  Workspaces that have multiple subjects use naming convention of
-       *  
+       *
        *  When nameExtension exists:
        *  workspace.name - workspace.nameExtension
-       *  
+       *
        *  Otherwise:
        *  workspace.name
        */
@@ -1070,10 +1068,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     else {
       /**
        * Workspaces that have only one subject
-       * 
+       *
        * When nameExtension exists:
        * subjectCode + courseNumber - nameExtension
-       * 
+       *
        * Otherwise:
        * subjectCode + courseNumber - name
        */
@@ -1159,7 +1157,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
-    
+
     if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
       workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
     }
@@ -1435,8 +1433,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity,
         WorkspaceMaterialAssignmentType.EVALUATED);
     result.put("assignmentsTotal", Long.valueOf(evaluatedAssignments.size()));
-    
-    // Done number of evaluated assignments  
+
+    // Done number of evaluated assignments
 
     List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
     replyStates.add(WorkspaceMaterialReplyState.FAILED);
@@ -1765,7 +1763,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("material not found").build();
       }
 
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers());
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers(), entity.getTitleLanguage());
       if (entity.getNextSiblingId() != null) {
         WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
         if (nextSibling == null) {
@@ -1798,7 +1796,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                     material,
                     workspaceMaterial.getUrlName(),
                     workspaceMaterial.getAssignmentType(),
-                    workspaceMaterial.getCorrectAnswers());
+                    workspaceMaterial.getCorrectAnswers(),
+                    workspaceMaterial.getLanguage());
               }
             }
           }
@@ -2027,7 +2026,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         result.add(compositeReply);
       }
-      
+
       if (result.isEmpty()) {
         return Response.ok(Collections.emptyList()).build();
       }
@@ -2522,9 +2521,9 @@ public class WorkspaceRESTService extends PluginRESTService {
       Workspace workspace,
       EducationTypeMapping educationTypeMapping) {
 
-    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
+    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null)
         ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
-    
+
     return createRestModel(
         workspaceEntity,
         workspace.getName(),
@@ -2610,7 +2609,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       try {
 
         // #6638: When remove answers flag is on, refuse delete for non-admins if material's workspace is published or has student answers
-        
+
         if (removeAnswers && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS)) {
           if (workspaceEntity.getPublished() || workspaceMaterialController.hasStudentAnswers(workspaceMaterial)) {
             logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing student answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
@@ -2638,14 +2637,14 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
           }
         }
-        
+
         // Actual delete
 
         workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
         return Response.noContent().build();
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
-        
+
         // #6638: When remove answers flag is off, either refuse delete for non-admins if the material's workspace is published, or notify frontend of the conflict
 
         if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceEntity.getPublished()) {
@@ -2758,9 +2757,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
     MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
-    
+
     WorkspaceLanguage titleLanguage = restFolder.getTitleLanguage();
-    
+
 
     workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict, titleLanguage);
     return Response.ok(createRestModel(workspaceFolder)).build();
@@ -2821,7 +2820,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // WorkspaceMaterial
-    
+
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(restWorkspaceMaterial.getId());
     if (workspaceMaterial == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -2844,9 +2843,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceMaterial, materialId, parentNode, nextSibling, hidden,
         restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle(), restWorkspaceMaterial.getTitleLanguage());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
-    
+
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
-    
+
     if (restWorkspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.JOURNAL && titleChanged) {
       List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
       List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies =
@@ -2861,7 +2860,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
     }
-    
+
     return Response.ok(restWorkspaceMaterial).build();
   }
 
@@ -3027,6 +3026,14 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
     userIndexer.indexUser(userSchoolDataIdentifier.getDataSource().getIdentifier(), userSchoolDataIdentifier.getIdentifier());
+
+    // #6967: When a student is archived from a course, also remove their course discussion subscriptions
+
+    if (!workspaceStudentRestModel.getActive()) {
+      UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+      forumAreaSubsciptionController.removeAreaSubscriptions(userEntity, workspaceEntity);
+      forumThreadSubsciptionController.removeThreadSubscriptions(userEntity, workspaceEntity);
+    }
 
     return Response.noContent().build();
   }
@@ -3637,13 +3644,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setIsMaterialField(workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null);
 
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
-      
+
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
-      
+
       Long replyId = Long.parseLong(identifiers[1]);
-      
+
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
-      
+
       if (reply != null) {
         result.setWorkspaceMaterialReplyState(reply.getState());
       }

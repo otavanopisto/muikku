@@ -3,7 +3,6 @@ import { connect, Dispatch } from "react-redux";
 import Select from "react-select";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { WorkspaceDataType } from "~/reducers/workspaces";
 import { OptionDefault } from "../react-select/types";
 import { useWorkspaces } from "./hooks/useWorkspaces";
 import {
@@ -11,6 +10,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { useTranslation } from "react-i18next";
+import { PedagogyWorkspace } from "~/generated/client";
 
 /**
  * WorkspaceSelectProps
@@ -19,15 +19,19 @@ interface WorkspaceSelectProps {
   /**
    * Selected value
    */
-  selectedValue?: OptionDefault<WorkspaceDataType>;
+  selectedValue?: OptionDefault<PedagogyWorkspace>;
   /**
    * On change
    */
-  onChange: (selectedWorkspace?: OptionDefault<WorkspaceDataType>) => void;
+  onChange: (selectedWorkspace?: OptionDefault<PedagogyWorkspace>) => void;
   /**
    * If select is disabled
    */
   disabled: boolean;
+  /**
+   * Student identifier
+   */
+  studentIdentifier: string;
   id: string;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -38,19 +42,28 @@ interface WorkspaceSelectProps {
  */
 const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { selectedValue, id, onChange, disabled, displayNotification } = props;
-  const { workspaces, loadingWorkspaces, handleTextInput } =
-    useWorkspaces(displayNotification);
+  const {
+    selectedValue,
+    id,
+    onChange,
+    disabled,
+    displayNotification,
+    studentIdentifier,
+  } = props;
+  const { workspaces, loadingWorkspaces, handleTextInput } = useWorkspaces(
+    studentIdentifier,
+    displayNotification
+  );
 
   /**
    * handleSelectChange
    * @param option option
    */
-  const handleSelectChange = (option: OptionDefault<WorkspaceDataType>) => {
+  const handleSelectChange = (option: OptionDefault<PedagogyWorkspace>) => {
     onChange(option);
   };
 
-  const options: OptionDefault<WorkspaceDataType>[] = workspaces.map(
+  const options: OptionDefault<PedagogyWorkspace>[] = workspaces.map(
     (workspace) => ({
       value: workspace,
       label: workspace.nameExtension
