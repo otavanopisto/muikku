@@ -21,13 +21,8 @@ import { OptionDefault } from "../general/react-select/types";
  * @returns JSX.Element
  */
 function ChatOverview() {
-  const {
-    roomFilters,
-    updateRoomFilters,
-    userFilters,
-    updateUserFilters,
-    canModerate,
-  } = useChatContext();
+  const { roomFilters, updateRoomFilters, userFilters, updateUserFilters } =
+    useChatContext();
   const [activeTab, setActiveTab] = React.useState<ChatDashBoardTab>("users");
 
   const handleOnTabChange = React.useCallback(
@@ -115,7 +110,6 @@ function ChatOverview() {
   return (
     <div className="chat__overview-panel">
       <ChatOverviewHeader
-        canModerate={canModerate}
         activeTab={activeTab}
         onTabChange={handleOnTabChange}
       />
@@ -142,7 +136,6 @@ function ChatOverview() {
  * ChatOverviewHeaderProps
  */
 interface ChatOverviewHeaderProps {
-  canModerate: boolean;
   activeTab?: ChatDashBoardTab;
   onTabChange?: (tab: ChatDashBoardTab) => void;
 }
@@ -153,9 +146,9 @@ interface ChatOverviewHeaderProps {
  * @returns JSX.Element
  */
 function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
-  const { onTabChange, canModerate, activeTab } = props;
+  const { onTabChange, activeTab } = props;
 
-  const { isMobileWidth } = useChatContext();
+  const { isMobileWidth, canManagePublicRooms } = useChatContext();
 
   /**
    * Handles tab click
@@ -243,7 +236,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
       )}
 
       <div className="chat__overview-panel-header-actions">
-        {canModerate && (
+        {canManagePublicRooms && (
           <div className="chat__overview-panel-header-action">
             <ChatRoomNewDialog>
               <IconButton
@@ -432,11 +425,11 @@ function ChatOverviewBlockedList() {
  */
 function ChatOverviewRoomsList() {
   const {
-    canModerate,
     rooms,
     roomFilters,
     openDiscussion,
     openDeleteRoomDialog,
+    canManagePublicRooms,
   } = useChatContext();
 
   const filteredAndSortedRooms = React.useMemo(() => {
@@ -490,7 +483,7 @@ function ChatOverviewRoomsList() {
       >
         <OverviewListItemContent>{room.name}</OverviewListItemContent>
 
-        {canModerate && room.type === "PUBLIC" && (
+        {canManagePublicRooms && room.type === "PUBLIC" && (
           <OverviewListItemActions>
             <ChatRoomEditAndInfoDialog room={room} defaults="edit">
               <IconButton icon="pencil" buttonModifiers={["chat"]} />

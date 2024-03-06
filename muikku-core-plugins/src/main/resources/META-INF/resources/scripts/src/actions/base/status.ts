@@ -105,6 +105,9 @@ async function loadWhoAMI(
         ),
         ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
         ANNOUNCER_TOOL: whoAmI.permissions.includes("ANNOUNCER_TOOL"),
+        CHAT_MANAGE_PUBLIC_ROOMS: whoAmI.permissions.includes(
+          "CHAT_MANAGE_PUBLIC_ROOMS"
+        ),
         COMMUNICATOR_GROUP_MESSAGING: whoAmI.permissions.includes(
           "COMMUNICATOR_GROUP_MESSAGING"
         ),
@@ -130,8 +133,6 @@ async function loadWhoAMI(
         PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
         LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
-        /* CHAT_ACTIVE: whoAmI.services.chat.isActive,
-        CHAT_AVAILABLE: whoAmI.services.chat.isAvailable, */
         FORUM_ACCESSENVIRONMENTFORUM: whoAmI.permissions.includes(
           "FORUM_ACCESSENVIRONMENTFORUM"
         ),
