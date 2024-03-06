@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/chat.scss";
-import { useChatContext, ChatContextProvider } from "./context/chat-context";
+import ChatContextProvider, { useChatContext } from "./context/chat-context";
 import ChatWindow from "./chat-window";
 import ChatMain from "./chat-main";
 import ChatMainMobile from "./chat-main-mobile";

@@ -501,7 +501,6 @@
   bottom: 0;
   display: flex;
   flex-flow: row nowrap;
-  height: $chat-discussion-panel-mobile-footer-height;
   left: 0;
   min-height: $chat-discussion-panel-mobile-footer-height;
   overflow: hidden;
@@ -510,7 +509,6 @@
   width: 100%;
 
   @include breakpoint($breakpoint-mobile-xl) {
-    height: $chat-discussion-panel-footer-height;
     min-height: $chat-discussion-panel-footer-height;
   }
 }
