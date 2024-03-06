@@ -465,8 +465,17 @@ const MessagesContainer = React.forwardRef<
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLDivElement;
 
+      const reacthedbottom =
+        Math.abs(
+          target.scrollHeight - target.clientHeight - target.scrollTop
+        ) <= 1;
+
       if (onScrollTopChange) {
-        onScrollTopChange(scrollAttached ? null : target.scrollTop);
+        if (reacthedbottom) {
+          onScrollTopChange(null);
+        } else {
+          onScrollTopChange(target.scrollTop);
+        }
       }
     };
 
@@ -477,7 +486,7 @@ const MessagesContainer = React.forwardRef<
     return () => {
       ref.removeEventListener("scroll", handleScroll);
     };
-  }, [onScrollTopChange, scrollAttached]);
+  }, [onScrollTopChange]);
 
   // If scroll to top is disabled, reset scroll position
   React.useLayoutEffect(() => {
@@ -507,7 +516,7 @@ const MessagesContainer = React.forwardRef<
   React.useEffect(() => {
     if (!componentMounted.current) {
       if (msgsContainerRef.current) {
-        if (existingScrollTopValue) {
+        if (existingScrollTopValue !== null) {
           msgsContainerRef.current.scrollTop = existingScrollTopValue;
         } else {
           msgsContainerRef.current.scrollTo({

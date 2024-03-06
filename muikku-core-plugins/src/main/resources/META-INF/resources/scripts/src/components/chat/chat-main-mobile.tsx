@@ -339,34 +339,6 @@ function ChatPanel(props: ChatPanelProps) {
     />
   );
 
-  const leftHandle = (
-    <div
-      className="chat-rooms__panel-drag-handle"
-      style={{
-        position: "absolute",
-        width: "15px",
-        right: "-15px",
-        top: "0",
-        bottom: "0",
-      }}
-    />
-  );
-
-  const rightHandle = (
-    <div
-      className="chat-rooms__panel-drag-handle"
-      style={{
-        position: "absolute",
-        width: "15px",
-        left: "-15px",
-        top: "0",
-        bottom: "0",
-      }}
-    />
-  );
-
-  const panelHandle = panelPosition === "left" ? leftHandle : rightHandle;
-
   const constrainElement =
     panelPosition === "left" ? leftVariantConstraints : rightVariantConstraints;
 
@@ -420,8 +392,6 @@ function ChatPanel(props: ChatPanelProps) {
         className="chat-mobile__panel"
         style={panelStyles}
       >
-        {panelHandle}
-
         <>{children}</>
       </motion.div>
     </>

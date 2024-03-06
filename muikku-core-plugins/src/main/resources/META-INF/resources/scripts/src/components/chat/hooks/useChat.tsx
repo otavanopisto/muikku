@@ -201,15 +201,21 @@ function useChat(currentUser: ChatUser) {
    * @param currentUser currentUser
    */
   const closeDiscussionWithUser = React.useCallback(
-    async (currentUser: ChatUser) => {
+    async (targetUser: ChatUser) => {
       // Close discussion if it is open
-      if (activeDiscussionIdentifier === currentUser.identifier) {
+      if (activeDiscussionIdentifier === targetUser.identifier) {
         setActiveDiscussionIdentifier(null);
         chatViews.goTo("overview");
       }
-      await closePrivateDiscussion(currentUser);
+      await closePrivateDiscussion(targetUser);
+      await markMsgsAsRead(targetUser.identifier);
     },
-    [activeDiscussionIdentifier, chatViews, closePrivateDiscussion]
+    [
+      activeDiscussionIdentifier,
+      chatViews,
+      closePrivateDiscussion,
+      markMsgsAsRead,
+    ]
   );
 
   /**
@@ -217,11 +223,12 @@ function useChat(currentUser: ChatUser) {
    * @param currentUser currentUser
    */
   const closeAndBlockDiscussionWithUser = React.useCallback(
-    async (currentUser: ChatUser) => {
-      await blockUser(currentUser);
+    async (targetUser: ChatUser) => {
+      await blockUser(targetUser);
+      await markMsgsAsRead(targetUser.identifier);
 
       // Close discussion if it is open
-      if (activeDiscussionIdentifier === currentUser.identifier) {
+      if (activeDiscussionIdentifier === targetUser.identifier) {
         unstable_batchedUpdates(() => {
           setActiveDiscussionIdentifier(null);
           setUserToBeBlocked(null);
@@ -232,7 +239,7 @@ function useChat(currentUser: ChatUser) {
 
       chatViews.goTo("overview");
     },
-    [activeDiscussionIdentifier, blockUser, chatViews]
+    [activeDiscussionIdentifier, blockUser, chatViews, markMsgsAsRead]
   );
 
   /**
