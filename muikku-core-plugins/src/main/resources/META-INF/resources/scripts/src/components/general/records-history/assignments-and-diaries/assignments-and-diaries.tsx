@@ -10,9 +10,6 @@ import {
 } from "~/actions/base/notifications";
 import { localize } from "~/locales/i18n";
 import ApplicationList from "~/components/general/application-list";
-import { StatusType } from "../../../../../reducers/base/status";
-import Material from "../current-record/material";
-import Journal from "../current-record/journal";
 import Tabs, { Tab } from "~/components/general/tabs";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { useExerciseAssignments } from "./hooks/useExercises";
@@ -26,14 +23,24 @@ import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 import { useTranslation } from "react-i18next";
 import { useRecordWorkspace } from "./hooks/useRecordWorkpace";
 import { WorkspaceActivity } from "~/generated/client";
+import { StatusType } from "~/reducers/base/status";
+import Material from "./material";
+import Journal from "./journal";
 
 /**
  * AssignmentsAndDiariesProps
  */
 interface AssignmentsAndDiariesProps {
-  status: StatusType;
-  credit: WorkspaceActivity;
+  /**
+   * User data school identifier "PYRAMUS-STUDENT-XX" or "PYRAMUS-STAFF-XX"
+   */
+  userIdentifier: string;
+  /**
+   * Users entity id
+   */
   userEntityId: number;
+  credit: WorkspaceActivity;
+  status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -48,7 +55,8 @@ export type AssignmentsTabType =
  * @returns JSX.Element
  */
 const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
-  const { status, credit, userEntityId, displayNotification } = props;
+  const { status, userIdentifier, credit, userEntityId, displayNotification } =
+    props;
 
   const { t } = useTranslation([
     "studies",
@@ -67,7 +75,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const [interimOpen, setInterimOpen] = React.useState<number[]>([]);
 
   const recordWorkspace = useRecordWorkspace(
-    status.userSchoolDataIdentifier,
+    userIdentifier,
     credit.id,
     displayNotification
   );
@@ -654,7 +662,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    userEntityId: state.status.userId,
   };
 }
 
