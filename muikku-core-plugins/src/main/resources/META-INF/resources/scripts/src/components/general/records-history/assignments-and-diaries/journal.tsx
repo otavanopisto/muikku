@@ -8,8 +8,6 @@ import ApplicationList, {
   ApplicationListItemBody,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { useJournalComments } from "../assignments-and-diaries/hooks/useJournalComments";
 import { useTranslation } from "react-i18next";
 import {
   displayNotification,
@@ -18,6 +16,8 @@ import {
 import JournalComment from "./journalComment";
 import { WorkspaceJournal } from "~/generated/client";
 import { localize } from "~/locales/i18n";
+import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
+import { useJournalComments } from "./hooks/useJournalComments";
 
 /**
  * JournalProps

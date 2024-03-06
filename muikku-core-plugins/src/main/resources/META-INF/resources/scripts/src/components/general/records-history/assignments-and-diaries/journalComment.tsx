@@ -10,7 +10,7 @@ import { WorkspaceJournalComment } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
-import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
+import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 
 /**
  * JournalCommentProps
@@ -24,7 +24,7 @@ interface JournalCommentProps extends WorkspaceJournalComment {
  * @param props props
  * @returns JSX.Element
  */
-const WorkspaceJournalComment: React.FC<JournalCommentProps> = (props) => {
+const JournalComment: React.FC<JournalCommentProps> = (props) => {
   const { comment, status, created, id, firstName, lastName, authorId } = props;
   const creatorIsMe = status.userId === authorId;
   const { t } = useTranslation();
@@ -72,7 +72,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceJournalComment);
+export default connect(mapStateToProps, mapDispatchToProps)(JournalComment);
