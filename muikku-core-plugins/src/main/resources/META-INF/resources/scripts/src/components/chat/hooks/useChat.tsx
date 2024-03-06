@@ -21,6 +21,7 @@ import { ChatDiscussionInstance } from "../utility/chat-discussion-instance";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 import useChatActivity from "./useChatActivity";
 import { breakpoints } from "~/util/breakpoints";
+import { useLocalStorage } from "usehooks-ts";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -75,7 +76,10 @@ function useChat(currentUser: ChatUser) {
   >([]);
 
   // Whether to show the control box or bubble
-  const [minimized, setMinimized] = React.useState(true);
+  const [minimized, setMinimized] = useLocalStorage<boolean>(
+    "chat-minimized",
+    false
+  );
 
   // Whether the current width is mobile
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
@@ -153,7 +157,7 @@ function useChat(currentUser: ChatUser) {
    */
   const toggleControlBox = React.useCallback(() => {
     setMinimized((minimized) => !minimized);
-  }, []);
+  }, [setMinimized]);
 
   /**
    * Handles opening overview
