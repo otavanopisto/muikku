@@ -100,6 +100,7 @@ class WorkspaceMaterial extends React.Component<
       (this.props.compositeReplies.state === "INCOMPLETE" ||
         this.props.compositeReplies.state === "PASSED" ||
         this.props.compositeReplies.state === "FAILED" ||
+        this.props.compositeReplies.state === "SUBMITTED" ||
         this.props.compositeReplies.state === "WITHDRAWN");
 
     const isBinary = this.props.materialContentNode.type === "binary";
