@@ -161,9 +161,8 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
             <div className="application-sub-panel__item">
               <div className="empty">
                 <span>
-                  {t("content.empty", {
-                    ns: "studies",
-                    context: "workspaces",
+                  {t("content.notInWorkspaces", {
+                    ns: "guider",
                   })}
                 </span>
               </div>
