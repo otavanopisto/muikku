@@ -151,7 +151,7 @@ const ChatMessage = (props: ChatMessageProps) => {
         <div className="chat__message-meta">
           <span className={`chat__message-meta-sender`}>{nick}</span>
           <span className="chat__message-meta-timestamp">
-            {localize.formatDaily(msg.sentDateTime)}
+            {localize.formatDaily(msg.sentDateTime, "LT")}
           </span>
         </div>
 
@@ -198,18 +198,18 @@ const ChatMessage = (props: ChatMessageProps) => {
           )}
 
           <span className="chat__message-meta-timestamp">
-            {localize.formatDaily(msg.sentDateTime)}
+            {localize.formatDaily(msg.sentDateTime, "LT")}
           </span>
         </div>
         <div className="chat__message-body">
           {archived ? (
-            <i>Poistettu {localize.date(msg.editedDateTime)} </i>
+            <i>Poistettu {localize.formatDaily(msg.editedDateTime, "LT")} </i>
           ) : (
             parseLines(msg.message)
           )}
           {!archived && editedDateTime && (
             <div className="chat__message-edited-info">
-              (Muokattu {localize.formatDaily(editedDateTime)})
+              (Muokattu {localize.formatDaily(editedDateTime, "LT")})
             </div>
           )}
         </div>
