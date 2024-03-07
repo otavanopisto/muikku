@@ -389,7 +389,7 @@ export class ChatDiscussionInstance {
   }
 
   /**
-   * Posts a message to the selected chat
+   * Posts a message to the selected chat and mark it as read straight
    */
   async postMessage() {
     await chatApi.createChatMessage({
@@ -397,6 +397,10 @@ export class ChatDiscussionInstance {
       createChatMessageRequest: {
         message: this.newMessage,
       },
+    });
+
+    await chatApi.markAsRead({
+      identifier: this.targetIdentifier,
     });
 
     this.newMessage = "";

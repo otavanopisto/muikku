@@ -12,10 +12,10 @@ interface UseMessagesInstanceProps {
 }
 
 /**
- * useMessagesInstance
+ * Handles discussion instance data and state
  * @param props props
  */
-function useMessagesInstance(props: UseMessagesInstanceProps) {
+function useDiscussionInstance(props: UseMessagesInstanceProps) {
   const { instance } = props;
 
   const [infoState, setInfoState] = React.useState<ChatDiscussionInstanceState>(
@@ -23,7 +23,7 @@ function useMessagesInstance(props: UseMessagesInstanceProps) {
   );
 
   /**
-   * reRenderCallback
+   * If instance state changes, re-render so changes are reflected
    */
   const reRenderCallback = React.useCallback(() => {
     setInfoState(instance.getCurrentState());
@@ -43,4 +43,4 @@ function useMessagesInstance(props: UseMessagesInstanceProps) {
   };
 }
 
-export default useMessagesInstance;
+export default useDiscussionInstance;

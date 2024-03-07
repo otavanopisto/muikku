@@ -1,8 +1,7 @@
 import * as React from "react";
 import MApi from "~/api/api";
+import { useWindowContext } from "~/context/window-context";
 import { ChatActivity, ChatMessage } from "~/generated/client";
-import { useBrowserFocus } from "~/hooks/useBrowserFocus";
-import { useDocumentVisible } from "~/hooks/useDocumentVisible";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -17,22 +16,15 @@ function useChatActivity(
   currentUserIdentifier: string
 ) {
   const websocket = useChatWebsocketContext();
-  const documentVisible = useDocumentVisible();
-  const browserFocused = useBrowserFocus();
 
   const [chatUsersActivities, setChatUsersActivities] =
     React.useState<ChatActivity[]>();
   const [chatRoomsActivities, setChatRoomsActivities] =
     React.useState<ChatActivity[]>();
 
-  const chatUsersActivitiesRef = React.useRef(chatUsersActivities);
-  const chatRoomsActivitiesRef = React.useRef(chatRoomsActivities);
-  chatUsersActivitiesRef.current = chatUsersActivities;
-  chatRoomsActivitiesRef.current = chatRoomsActivities;
-
   const componentMounted = React.useRef(true);
 
-  const browserIsVisibleAndFocused = documentVisible && browserFocused;
+  const browserIsVisibleAndFocused = useWindowContext();
 
   // Initial fetch
   React.useEffect(() => {
@@ -194,13 +186,33 @@ function useChatActivity(
    */
   const markMsgsAsRead = React.useCallback(
     async (targetIdentifier: string) => {
-      if (!browserIsVisibleAndFocused) return;
+      // If the target identifier is a room, find the activity in the room activities list
+      // else find the activity in the user activities list
+      const existingActivity = targetIdentifier.startsWith("room-")
+        ? chatRoomsActivities?.find(
+            (activity) => activity.targetIdentifier === targetIdentifier
+          )
+        : chatUsersActivities?.find(
+            (activity) => activity.targetIdentifier === targetIdentifier
+          );
 
+      // If browser is not visible and focused or
+      // there is no existing activity or there are no unread messages, return
+      if (
+        !browserIsVisibleAndFocused ||
+        !existingActivity ||
+        existingActivity.unreadMessages === 0
+      ) {
+        return;
+      }
+
+      await chatApi.markAsRead({
+        identifier: targetIdentifier,
+      });
+
+      // Otherwise mark the messages as read for the target identifier
+      // and update correct activity list (room or user)
       if (targetIdentifier.startsWith("room-")) {
-        await chatApi.markAsRead({
-          identifier: targetIdentifier,
-        });
-
         setChatRoomsActivities((prev) => {
           const index = prev.findIndex(
             (activity) => activity.targetIdentifier === targetIdentifier
@@ -216,10 +228,6 @@ function useChatActivity(
           return prev;
         });
       } else {
-        await chatApi.markAsRead({
-          identifier: targetIdentifier,
-        });
-
         setChatUsersActivities((prev) => {
           const index = prev.findIndex(
             (activity) => activity.targetIdentifier === targetIdentifier
@@ -236,7 +244,7 @@ function useChatActivity(
         });
       }
     },
-    [browserIsVisibleAndFocused]
+    [browserIsVisibleAndFocused, chatRoomsActivities, chatUsersActivities]
   );
 
   // Activities as key (user id) value pair

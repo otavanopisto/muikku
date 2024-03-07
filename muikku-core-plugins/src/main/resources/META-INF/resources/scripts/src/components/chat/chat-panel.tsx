@@ -8,6 +8,7 @@ import useDiscussionInstance from "./hooks/useDiscussionInstance";
 import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
 import TextareaAutosize from "react-textarea-autosize";
+import { useWindowContext } from "~/context/window-context";
 
 /**
  * ChatPanelProps
@@ -388,12 +389,15 @@ const MessagesContainer = React.forwardRef<
     onScrollBottom,
   } = props;
 
+  const [scrollAttached, setScrollAttached] = React.useState<boolean>(false);
+
+  const browserFocusIsActive = useWindowContext();
+  const browserIsActiveRef = React.useRef<boolean>(null);
+
   const firstMessageRef = React.useRef<HTMLDivElement>(null);
   const lastMessageRef = React.useRef<HTMLDivElement>(null);
   const msgsContainerRef = React.useRef<HTMLDivElement>(null);
   const currentScrollHeightRef = React.useRef<number>(null);
-  const [scrollAttached, setScrollAttached] = React.useState<boolean>(false);
-
   const componentMounted = React.useRef<boolean>(false);
   const childrenCount = React.useRef<number>(React.Children.count(children));
 
@@ -401,6 +405,15 @@ const MessagesContainer = React.forwardRef<
     () => React.Children.count(children),
     [children]
   );
+
+  // When browser focus changes while attached to bottom, fire onScrollBottom
+  // Only if active and not already fired
+  React.useEffect(() => {
+    if (browserFocusIsActive && scrollAttached) {
+      onScrollBottom && onScrollBottom();
+      browserIsActiveRef.current = browserFocusIsActive;
+    }
+  }, [browserFocusIsActive, onScrollBottom, scrollAttached]);
 
   // Intersection observer to detect if the user has scrolled to the top
   React.useEffect(() => {
@@ -440,9 +453,11 @@ const MessagesContainer = React.forwardRef<
         // If already attached to bottom, skip
         if (scrollAttached) return;
 
-        onScrollBottom && onScrollBottom();
         setScrollAttached(true);
       } else {
+        // If not attached to bottom, skip
+        if (!scrollAttached) return;
+
         setScrollAttached(false);
       }
     });
@@ -452,7 +467,7 @@ const MessagesContainer = React.forwardRef<
     return () => {
       observer.disconnect();
     };
-  }, [onScrollBottom, scrollAttached]);
+  }, [scrollAttached]);
 
   // Scroll listener to trace the scroll position
   React.useEffect(() => {
@@ -541,8 +556,6 @@ const MessagesContainer = React.forwardRef<
           lastMessageRef.current.scrollIntoView({
             behavior: "auto",
           });
-
-          onScrollBottom && onScrollBottom();
         }
         // Not attached to bottom, keep scroll position and update children count
         else if (!scrollAttached && currentScrollHeightRef.current) {

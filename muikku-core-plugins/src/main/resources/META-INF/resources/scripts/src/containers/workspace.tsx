@@ -73,6 +73,7 @@ import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import Chat from "~/components/chat";
+import { WindowContextProvider } from "~/context/window-context";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1255,58 +1256,60 @@ export default class Workspace extends React.Component<
       <ReadspeakerProvider>
         <BrowserRouter>
           <div id="root">
-            <ChatWebsocketContextProvider websocket={this.props.websocket}>
-              <Chat />
-            </ChatWebsocketContextProvider>
-            <Notifications></Notifications>
-            <DisconnectedWarningDialog />
-            <EasyToUseFunctions />
+            <WindowContextProvider>
+              <ChatWebsocketContextProvider websocket={this.props.websocket}>
+                <Chat />
+              </ChatWebsocketContextProvider>
+              <Notifications></Notifications>
+              <DisconnectedWarningDialog />
+              <EasyToUseFunctions />
 
-            <Route
-              exact
-              path="/workspace/:workspaceUrl/"
-              render={this.renderWorkspaceHome}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/help"
-              render={this.renderWorkspaceHelp}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/discussions"
-              render={this.renderWorkspaceDiscussions}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/announcements"
-              render={this.renderWorkspaceAnnouncements}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/announcer"
-              render={this.renderWorkspaceAnnouncer}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/materials"
-              render={this.renderWorkspaceMaterials}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/users"
-              render={this.renderWorkspaceUsers}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/journal"
-              render={this.renderWorkspaceJournal}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/workspace-management"
-              render={this.renderWorkspaceManagement}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/permissions"
-              render={this.renderWorkspacePermissions}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/evaluation"
-              render={this.renderWorkspaceEvaluation}
-            />
+              <Route
+                exact
+                path="/workspace/:workspaceUrl/"
+                render={this.renderWorkspaceHome}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/help"
+                render={this.renderWorkspaceHelp}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/discussions"
+                render={this.renderWorkspaceDiscussions}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/announcements"
+                render={this.renderWorkspaceAnnouncements}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/announcer"
+                render={this.renderWorkspaceAnnouncer}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/materials"
+                render={this.renderWorkspaceMaterials}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/users"
+                render={this.renderWorkspaceUsers}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/journal"
+                render={this.renderWorkspaceJournal}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/workspace-management"
+                render={this.renderWorkspaceManagement}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/permissions"
+                render={this.renderWorkspacePermissions}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/evaluation"
+                render={this.renderWorkspaceEvaluation}
+              />
+            </WindowContextProvider>
           </div>
         </BrowserRouter>
       </ReadspeakerProvider>
