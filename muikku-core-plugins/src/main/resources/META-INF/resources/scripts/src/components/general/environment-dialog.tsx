@@ -25,7 +25,7 @@ export default class EnvironmentDialog extends Dialog {
       >
         {(closePortal: () => any) => (
           <FocusTrap
-            active={this.state.visible}
+            active={false}
             focusTrapOptions={{ allowOutsideClick: true }}
           >
             <div
