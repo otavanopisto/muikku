@@ -79,7 +79,7 @@
     "swiper": "8.0.7",
     "ts-loader": "9.2.8",
     "typescript": "4.9.5",
-    "usehooks-ts": "2.6.0",
+    "usehooks-ts": "2.16.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {

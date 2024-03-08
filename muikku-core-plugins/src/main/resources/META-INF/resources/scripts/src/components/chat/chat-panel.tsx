@@ -9,6 +9,7 @@ import { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
 import TextareaAutosize from "react-textarea-autosize";
 import { useWindowContext } from "~/context/window-context";
+import { useIntersectionObserver } from "usehooks-ts";
 
 /**
  * ChatPanelProps
@@ -160,6 +161,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
 
       <div className="chat__discussion-panel-body" ref={contentRef}>
         <MessagesContainer
+          ref={messagesContainerRef}
           targetIdentifier={targetUser.identifier}
           existingScrollTopValue={instance.scrollTop}
           onScrollTop={handleScrollTop}
@@ -182,7 +184,6 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
             onKeyDown={handleEnterKeyDown}
             maxRows={5}
             disabled={isBlocked || targetUser.presence === "DISABLED"}
-            autoFocus
           />
         </div>
         <button
@@ -322,22 +323,23 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
           ))}
         </MessagesContainer>
       </div>
-      <div className="chat__discussion-panel-footer" ref={footerRef}>
-        <div className="chat__discussion-editor-container">
-          <TextareaAutosize
-            className="chat__new-message"
-            value={newMessage}
-            onChange={handleEditorChange}
-            onKeyDown={handleEnterKeyDown}
-            maxRows={5}
-            autoFocus
-          />
-        </div>
+      <form onSubmit={postMessage}>
+        <div className="chat__discussion-panel-footer" ref={footerRef}>
+          <div className="chat__discussion-editor-container">
+            <TextareaAutosize
+              className="chat__new-message"
+              value={newMessage}
+              onChange={handleEditorChange}
+              onKeyDown={handleEnterKeyDown}
+              maxRows={5}
+            />
+          </div>
 
-        <button className="chat__submit" type="submit" onClick={postMessage}>
-          <span className="icon-arrow-right"></span>
-        </button>
-      </div>
+          <button className="chat__submit" type="submit">
+            <span className="icon-arrow-right"></span>
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
@@ -394,7 +396,6 @@ const MessagesContainer = React.forwardRef<
   const browserFocusIsActive = useWindowContext();
   const browserIsActiveRef = React.useRef<boolean>(null);
 
-  const firstMessageRef = React.useRef<HTMLDivElement>(null);
   const lastMessageRef = React.useRef<HTMLDivElement>(null);
   const msgsContainerRef = React.useRef<HTMLDivElement>(null);
   const currentScrollHeightRef = React.useRef<number>(null);
@@ -406,6 +407,48 @@ const MessagesContainer = React.forwardRef<
     [children]
   );
 
+  // Intersection observer to detect if the user has scrolled to the top
+  const firstMsgsIntersectionObserver = useIntersectionObserver({
+    /**
+     * Intersection observer callback
+     * @param isIntersecting isIntersecting
+     * @param entry entry
+     */
+    onChange(isIntersecting, entry) {
+      const { target } = entry;
+
+      if (isIntersecting && onScrollTop) {
+        const scrollable = target.scrollHeight > target.clientHeight;
+
+        if (!scrollable) {
+          return;
+        }
+
+        onScrollTop();
+      }
+    },
+  });
+
+  // Intersection observer to detect if the user has scrolled to the bottom
+  const lastMsgIntersectionObserver = useIntersectionObserver({
+    /**
+     * Intersection observer callback
+     * @param isIntersecting isIntersecting
+     */
+    onChange(isIntersecting) {
+      if (isIntersecting) {
+        // If already attached to bottom, skip
+        if (scrollAttached) return;
+
+        setScrollAttached(true);
+      } else {
+        // If not attached to bottom, skip
+        if (!scrollAttached) return;
+        setScrollAttached(false);
+      }
+    },
+  });
+
   // When browser focus changes while attached to bottom, fire onScrollBottom
   // Only if active and not already fired
   React.useEffect(() => {
@@ -414,60 +457,6 @@ const MessagesContainer = React.forwardRef<
       browserIsActiveRef.current = browserFocusIsActive;
     }
   }, [browserFocusIsActive, onScrollBottom, scrollAttached]);
-
-  // Intersection observer to detect if the user has scrolled to the top
-  React.useEffect(() => {
-    if (!firstMessageRef.current || !msgsContainerRef.current) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && onScrollTop) {
-        const target = msgsContainerRef.current;
-
-        const scrollable = target.scrollHeight > target.clientHeight;
-
-        // If not scrollable, skip
-        if (!scrollable) {
-          return;
-        }
-
-        // Save scroll position when scroll is at the top
-        currentScrollHeightRef.current = target.scrollHeight;
-
-        onScrollTop();
-      }
-    });
-
-    observer.observe(firstMessageRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [onScrollTop]);
-
-  // Intersection observer to detect if the user has scrolled to the bottom
-  React.useEffect(() => {
-    if (!lastMessageRef.current) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        // If already attached to bottom, skip
-        if (scrollAttached) return;
-
-        setScrollAttached(true);
-      } else {
-        // If not attached to bottom, skip
-        if (!scrollAttached) return;
-
-        setScrollAttached(false);
-      }
-    });
-
-    observer.observe(lastMessageRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [scrollAttached]);
 
   // Scroll listener to trace the scroll position
   React.useEffect(() => {
@@ -579,20 +568,18 @@ const MessagesContainer = React.forwardRef<
     };
   }, []);
 
-  /**
-   * Handles scroll to bottom.
-   */
-  const handleScrollToBottom = () => {
-    if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({
-        behavior: "auto",
-      });
-    }
-  };
-
   // Way to expose scrollToBottom to parent component
   React.useImperativeHandle(ref, () => ({
-    scrollToBottom: handleScrollToBottom,
+    /**
+     * Handles scroll to bottom.
+     */
+    scrollToBottom: () => {
+      if (lastMessageRef.current) {
+        lastMessageRef.current.scrollIntoView({
+          behavior: "auto",
+        });
+      }
+    },
   }));
 
   const mappedModifiers = modifiers
@@ -611,9 +598,18 @@ const MessagesContainer = React.forwardRef<
       ref={msgsContainerRef}
       className={`${className} ${mappedModifiers}`}
     >
-      <div ref={firstMessageRef} className="chat__messages-first-message"></div>
+      <div
+        ref={firstMsgsIntersectionObserver.ref}
+        className="chat__messages-first-message"
+      ></div>
       {props.children}
-      <div ref={lastMessageRef} className="chat__messages-last-message"></div>
+      <div
+        ref={(ref) => {
+          lastMsgIntersectionObserver.ref(ref);
+          lastMessageRef.current = ref;
+        }}
+        className="chat__messages-last-message"
+      ></div>
     </motion.div>
   );
 });

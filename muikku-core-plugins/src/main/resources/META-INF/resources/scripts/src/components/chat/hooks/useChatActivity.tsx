@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useReadLocalStorage } from "usehooks-ts";
 import MApi from "~/api/api";
 import { useWindowContext } from "~/context/window-context";
 import { ChatActivity, ChatMessage } from "~/generated/client";
@@ -25,6 +26,8 @@ function useChatActivity(
   const componentMounted = React.useRef(true);
 
   const browserIsVisibleAndFocused = useWindowContext();
+
+  const minimized = useReadLocalStorage<boolean>("chat-minimized");
 
   // Initial fetch
   React.useEffect(() => {
@@ -57,6 +60,7 @@ function useChatActivity(
 
                 if (
                   !browserIsVisibleAndFocused ||
+                  minimized ||
                   dataTyped.targetIdentifier !== activeDiscussionIdentifier
                 ) {
                   updatedList[index].unreadMessages++;
@@ -109,6 +113,7 @@ function useChatActivity(
                 // If discussion is not active, increment unread messages
                 if (
                   !browserIsVisibleAndFocused ||
+                  minimized ||
                   (sourceIdentifier !== activeDiscussionIdentifier &&
                     dataTyped.targetIdentifier !== activeDiscussionIdentifier)
                 ) {
@@ -159,6 +164,7 @@ function useChatActivity(
     activeDiscussionIdentifier,
     browserIsVisibleAndFocused,
     currentUserIdentifier,
+    minimized,
     websocket,
   ]);
 
