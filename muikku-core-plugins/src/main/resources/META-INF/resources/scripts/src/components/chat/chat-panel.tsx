@@ -39,21 +39,35 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
 const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const { targetUser } = props;
 
-  const { isMobileWidth, currentUser, markMsgsAsRead } = useChatContext();
+  const {
+    isMobileWidth,
+    currentUser,
+    markMsgsAsRead,
+    dashboardBlockedUsers,
+    openBlockUserDialog,
+  } = useChatContext();
 
+  // Discussion instance to handle instance changes
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
-  const { dashboardBlockedUsers, openBlockUserDialog } = useChatContext();
 
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const footerRef = React.useRef<HTMLDivElement>(null);
-
-  const messagesContainerRef = React.useRef<MessagesContainerHandle>(null);
-
+  // Deconstructing infoState
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
 
+  // Refs for content and footer
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const footerRef = React.useRef<HTMLDivElement>(null);
+
+  // Imperative ref to expose scrollToBottom
+  const messagesContainerRef = React.useRef<MessagesContainerRef>(null);
+
+  // State to track whether user is scrolling or not and timeout ref
+  const [isScrolling, setIsScrolling] = React.useState<boolean>(false);
+  const timeOut = React.useRef<NodeJS.Timeout>(null);
+
+  // Resize observer to track footer height and adjust content bottom
   React.useEffect(() => {
     const contentCurrent = contentRef.current;
     const footerCurrent = footerRef.current;
@@ -81,6 +95,17 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   }, [dashboardBlockedUsers, targetUser.identifier]);
 
   /**
+   * Method to debounce scrolling.
+   */
+  const debounce = () => {
+    setIsScrolling(true);
+    clearTimeout(timeOut.current);
+    timeOut.current = setTimeout(function () {
+      setIsScrolling(false);
+    }, 1000);
+  };
+
+  /**
    * Handles enter key down.
    * @param e e
    */
@@ -91,6 +116,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
       e.preventDefault();
       await postMessage();
 
+      // When current user send a message, scroll to bottom
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollToBottom();
       }
@@ -113,6 +139,27 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   };
 
   /**
+   * Handles scroll to track scroll top and
+   * whether scroll is active or not state track with debounce.
+   * @param e e
+   */
+  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const target = e.currentTarget;
+
+    const reacthedbottom =
+      Math.abs(target.scrollHeight - target.clientHeight - target.scrollTop) <=
+      1;
+
+    if (reacthedbottom) {
+      instance.scrollTop = null;
+    } else {
+      instance.scrollTop = target.scrollTop;
+    }
+
+    debounce();
+  };
+
+  /**
    * Handles scroll top.
    */
   const handleScrollTop = () => {
@@ -126,14 +173,6 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
    */
   const handleScrollBottom = () => {
     markMsgsAsRead(targetUser.identifier);
-  };
-
-  /**
-   * Handles scroll top change.
-   * @param scrollTop scrollTop
-   */
-  const handleScrollTopChange = (scrollTop: number) => {
-    instance.scrollTop = scrollTop;
   };
 
   let title = targetUser.nick;
@@ -164,13 +203,17 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
           ref={messagesContainerRef}
           targetIdentifier={targetUser.identifier}
           existingScrollTopValue={instance.scrollTop}
+          onScroll={handleScroll}
           onScrollTop={handleScrollTop}
-          onScrollTopChange={handleScrollTopChange}
           onScrollBottom={handleScrollBottom}
           className="chat__messages-container"
         >
           {messages.map((msg) => (
-            <ChatMessage key={msg.id} msg={msg} />
+            <ChatMessage
+              key={msg.id}
+              msg={msg}
+              disableLongPress={isScrolling}
+            />
           ))}
         </MessagesContainer>
       </div>
@@ -217,20 +260,29 @@ interface ChatRoomPanelProps extends ChatPanelProps {
 const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   const { targetRoom } = props;
 
+  const { markMsgsAsRead } = useChatContext();
+
+  // Discussion instance to handle instance changes
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
   });
 
-  const { markMsgsAsRead } = useChatContext();
-
+  // Deconstructing infoState
   const { messages, newMessage, canLoadMore, loadMoreMessages, postMessage } =
     infoState;
 
+  // Refs for content and footer
   const contentRef = React.useRef<HTMLDivElement>(null);
   const footerRef = React.useRef<HTMLDivElement>(null);
 
-  const messagesContainerRef = React.useRef<MessagesContainerHandle>(null);
+  // Imperative ref to expose scrollToBottom
+  const messagesContainerRef = React.useRef<MessagesContainerRef>(null);
 
+  // State to track whether user is scrolling or not and timeout ref
+  const [isScrolling, setIsScrolling] = React.useState<boolean>(false);
+  const timeOut = React.useRef<NodeJS.Timeout>(null);
+
+  // Resize observer to track footer height and adjust content bottom
   React.useEffect(() => {
     const contentCurrent = contentRef.current;
     const footerCurrent = footerRef.current;
@@ -244,6 +296,17 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     resizeObserver.observe(footerCurrent);
     return () => resizeObserver.disconnect(); // clean up
   }, []);
+
+  /**
+   * Method to debounce scrolling.
+   */
+  const debounce = () => {
+    setIsScrolling(true);
+    clearTimeout(timeOut.current);
+    timeOut.current = setTimeout(function () {
+      setIsScrolling(false);
+    }, 1000);
+  };
 
   /**
    * Handles enter key down.
@@ -272,11 +335,24 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   };
 
   /**
-   * Handles scroll top change.
-   * @param scrollTop scrollTop
+   * Handles scroll to track scroll top and
+   * whether scroll is active or not state track with debounce.
+   * @param e e
    */
-  const handleScrollTopChange = (scrollTop: number) => {
-    instance.scrollTop = scrollTop;
+  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const target = e.currentTarget;
+
+    const reacthedbottom =
+      Math.abs(target.scrollHeight - target.clientHeight - target.scrollTop) <=
+      1;
+
+    if (reacthedbottom) {
+      instance.scrollTop = null;
+    } else {
+      instance.scrollTop = target.scrollTop;
+    }
+
+    debounce();
   };
 
   /**
@@ -313,13 +389,17 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
           ref={messagesContainerRef}
           targetIdentifier={targetRoom.identifier}
           existingScrollTopValue={instance.scrollTop}
+          onScroll={handleScroll}
           onScrollTop={handleScrollTop}
-          onScrollTopChange={handleScrollTopChange}
           onScrollBottom={handleScrollBottom}
           className="chat__messages-container"
         >
           {messages.map((msg) => (
-            <ChatMessage key={msg.id} msg={msg} />
+            <ChatMessage
+              key={msg.id}
+              msg={msg}
+              disableLongPress={isScrolling}
+            />
           ))}
         </MessagesContainer>
       </div>
@@ -354,21 +434,21 @@ interface MessagesContainerProps {
   modifiers?: string[];
   existingScrollTopValue?: number | null;
   /**
+   * onScroll
+   * @param target target
+   */
+  onScroll?: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
+  /**
    * When scroll reaches top
    */
   onScrollTop?: () => void;
-  /**
-   * When scroll top changes
-   * @param scrollTop scrollTop
-   */
-  onScrollTopChange?: (scrollTop: number) => void;
   /**
    * When scroll reaches bottom
    */
   onScrollBottom?: () => void;
 }
 
-export type MessagesContainerHandle = {
+export type MessagesContainerRef = {
   scrollToBottom: () => void;
 };
 
@@ -377,7 +457,7 @@ export type MessagesContainerHandle = {
  * @param props props
  */
 const MessagesContainer = React.forwardRef<
-  MessagesContainerHandle,
+  MessagesContainerRef,
   MessagesContainerProps
 >((props, ref) => {
   const {
@@ -386,8 +466,8 @@ const MessagesContainer = React.forwardRef<
     targetIdentifier,
     children,
     existingScrollTopValue,
+    onScroll,
     onScrollTop,
-    onScrollTopChange,
     onScrollBottom,
   } = props;
 
@@ -457,40 +537,6 @@ const MessagesContainer = React.forwardRef<
       browserIsActiveRef.current = browserFocusIsActive;
     }
   }, [browserFocusIsActive, onScrollBottom, scrollAttached]);
-
-  // Scroll listener to trace the scroll position
-  React.useEffect(() => {
-    if (!msgsContainerRef.current) return;
-
-    /**
-     * handleScroll
-     * @param e e
-     */
-    const handleScroll = (e: Event) => {
-      const target = e.target as HTMLDivElement;
-
-      const reacthedbottom =
-        Math.abs(
-          target.scrollHeight - target.clientHeight - target.scrollTop
-        ) <= 1;
-
-      if (onScrollTopChange) {
-        if (reacthedbottom) {
-          onScrollTopChange(null);
-        } else {
-          onScrollTopChange(target.scrollTop);
-        }
-      }
-    };
-
-    const ref = msgsContainerRef.current;
-
-    ref.addEventListener("scroll", handleScroll);
-
-    return () => {
-      ref.removeEventListener("scroll", handleScroll);
-    };
-  }, [onScrollTopChange]);
 
   // If scroll to top is disabled, reset scroll position
   React.useLayoutEffect(() => {
@@ -596,6 +642,7 @@ const MessagesContainer = React.forwardRef<
         duration: 0.3,
       }}
       ref={msgsContainerRef}
+      onScroll={onScroll}
       className={`${className} ${mappedModifiers}`}
     >
       <div

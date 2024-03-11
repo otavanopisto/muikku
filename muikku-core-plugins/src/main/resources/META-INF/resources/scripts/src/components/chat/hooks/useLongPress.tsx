@@ -6,19 +6,40 @@ import * as React from "react";
  * useLongPressProps
  */
 interface UseLongPressProps {
+  /**
+   * Callback for long press
+   * @param e e
+   */
   onLongPress: (e: any) => void;
+  /**
+   * Callback for click
+   * @param e e
+   */
   onClick?: (e: any) => void;
+  /**
+   * Options
+   */
   obj: { shouldPreventDefault: boolean; delay: number };
+  /**
+   * If true, the long press will be disabled
+   */
+  disabled: boolean;
 }
 
 /**
- * useLongPress
+ * Custom hook for long press
  * @param props props
  */
 const useLongPress = (props: UseLongPressProps) => {
   const [longPressTriggered, setLongPressTriggered] = React.useState(false);
-  const timeout: any = React.useRef();
-  const target: any = React.useRef();
+  const timeout = React.useRef<NodeJS.Timeout>();
+  const target = React.useRef<any>();
+
+  React.useEffect(() => {
+    if (props.disabled && timeout.current) {
+      clearTimeout(timeout.current);
+    }
+  }, [props.disabled]);
 
   /**
    * Start

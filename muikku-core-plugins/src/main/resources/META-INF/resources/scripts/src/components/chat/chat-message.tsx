@@ -29,6 +29,7 @@ import {
  */
 interface ChatMessageProps {
   msg: ChatMessage;
+  disableLongPress: boolean;
 }
 
 /**
@@ -37,7 +38,7 @@ interface ChatMessageProps {
  * @returns JSX.Element
  */
 const ChatMessage = (props: ChatMessageProps) => {
-  const { msg } = props;
+  const { msg, disableLongPress } = props;
 
   const { isMobileWidth, currentUser } = useChatContext();
 
@@ -87,6 +88,7 @@ const ChatMessage = (props: ChatMessageProps) => {
       shouldPreventDefault: true,
       delay: 500,
     },
+    disabled: disableLongPress,
   });
 
   const senderClass = myMsg ? "sender-me" : "sender-them";
