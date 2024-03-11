@@ -19,10 +19,20 @@ export interface MessageAction {
 const chatApi = MApi.getChatApi();
 
 /**
- * useMessage
- * @param msg id of message.
+ * UseMessageProps
  */
-function useMessage(msg: ChatMessage) {
+interface UseMessageProps {
+  msg: ChatMessage;
+  onEditClick: (msg: ChatMessage) => void;
+}
+
+/**
+ * useMessage
+ * @param props props.
+ */
+function useMessage(props: UseMessageProps) {
+  const { msg, onEditClick } = props;
+
   const { currentUser, canModerate } = useChatContext();
 
   const [editMode, setEditMode] = React.useState<boolean>(false);
@@ -105,7 +115,8 @@ function useMessage(msg: ChatMessage) {
    */
   const handleEditClick = React.useCallback(() => {
     toggleEditMode(true);
-  }, [toggleEditMode]);
+    onEditClick && onEditClick(msg);
+  }, [msg, onEditClick, toggleEditMode]);
 
   const mainModerationActions = React.useMemo(() => {
     const defaultActions: MessageAction[] = [

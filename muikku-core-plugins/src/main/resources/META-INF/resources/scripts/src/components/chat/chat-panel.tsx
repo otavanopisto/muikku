@@ -67,6 +67,10 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
   const [isScrolling, setIsScrolling] = React.useState<boolean>(false);
   const timeOut = React.useRef<NodeJS.Timeout>(null);
 
+  const [msgToEdited, setMsgToEdited] = React.useState<ChatMessage | null>(
+    null
+  );
+
   // Resize observer to track footer height and adjust content bottom
   React.useEffect(() => {
     const contentCurrent = contentRef.current;
@@ -181,6 +185,14 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
     title += ` - ${targetUser.name}`;
   }
 
+  /**
+   * Handles edit click.
+   * @param msg msg
+   */
+  const handleEditClick = (msg: ChatMessage) => {
+    setMsgToEdited(msg);
+  };
+
   return (
     <div className={`chat__discussion-panel chat__discussion-panel--private`}>
       <div className="chat__discussion-panel-header">
@@ -212,7 +224,9 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
             <ChatMessage
               key={msg.id}
               msg={msg}
+              editModeActive={msgToEdited?.id === msg.id}
               disableLongPress={isScrolling}
+              onEditClick={handleEditClick}
             />
           ))}
         </MessagesContainer>
@@ -281,6 +295,10 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
   // State to track whether user is scrolling or not and timeout ref
   const [isScrolling, setIsScrolling] = React.useState<boolean>(false);
   const timeOut = React.useRef<NodeJS.Timeout>(null);
+
+  const [msgToEdited, setMsgToEdited] = React.useState<ChatMessage | null>(
+    null
+  );
 
   // Resize observer to track footer height and adjust content bottom
   React.useEffect(() => {
@@ -371,6 +389,14 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
     markMsgsAsRead(targetRoom.identifier);
   };
 
+  /**
+   * Handles edit click.
+   * @param msg msg
+   */
+  const handleEditClick = (msg: ChatMessage) => {
+    setMsgToEdited(msg);
+  };
+
   return (
     <div className="chat__discussion-panel">
       <div className="chat__discussion-panel-header">
@@ -398,7 +424,9 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
             <ChatMessage
               key={msg.id}
               msg={msg}
+              editModeActive={msgToEdited?.id === msg.id}
               disableLongPress={isScrolling}
+              onEditClick={handleEditClick}
             />
           ))}
         </MessagesContainer>

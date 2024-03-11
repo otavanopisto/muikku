@@ -30,6 +30,8 @@ import {
 interface ChatMessageProps {
   msg: ChatMessage;
   disableLongPress: boolean;
+  editModeActive: boolean;
+  onEditClick: (msg: ChatMessage) => void;
 }
 
 /**
@@ -37,224 +39,245 @@ interface ChatMessageProps {
  * @param props props
  * @returns JSX.Element
  */
-const ChatMessage = (props: ChatMessageProps) => {
-  const { msg, disableLongPress } = props;
+const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
+  (props, ref) => {
+    const { msg, editModeActive, onEditClick, disableLongPress } = props;
 
-  const { isMobileWidth, currentUser } = useChatContext();
+    const { isMobileWidth, currentUser } = useChatContext();
 
-  const {
-    editedMessage,
-    showDeleteDialog,
-    closeDeleteDialog,
-    myMsg,
-    editMode,
-    mainModerationActions,
-    secondaryModerationActions,
-    mobileModerationActions,
-    toggleEditMode,
-    deleteMessage,
-    saveEditedMessage,
-    handleEditedMessageChange,
-  } = useMessage(msg);
+    const {
+      editedMessage,
+      showDeleteDialog,
+      closeDeleteDialog,
+      myMsg,
+      editMode,
+      mainModerationActions,
+      secondaryModerationActions,
+      mobileModerationActions,
+      toggleEditMode,
+      deleteMessage,
+      saveEditedMessage,
+      handleEditedMessageChange,
+    } = useMessage({
+      msg,
+      onEditClick: onEditClick,
+    });
 
-  const context = useChatUserInfoContext();
+    const context = useChatUserInfoContext();
 
-  const { archived, editedDateTime } = msg;
+    const { archived, editedDateTime } = msg;
 
-  const [mobileActionDrawerOpen, setMobileActionDrawerOpen] =
-    React.useState(false);
+    const [mobileActionDrawerOpen, setMobileActionDrawerOpen] =
+      React.useState(false);
 
-  // User specific info is only avalable for staff members and when msg
-  // is not sent by the current user
-  const userInfoAvailable = currentUser.type === "STAFF" && !myMsg;
+    // User specific info is only avalable for staff members and when msg
+    // is not sent by the current user
+    const userInfoAvailable = currentUser.type === "STAFF" && !myMsg;
 
-  const longPressEvent = useLongPress({
-    // eslint-disable-next-line jsdoc/require-jsdoc
-    onLongPress: (e) => {
-      // Fetch user info if it's not already fetched/fetching
-      if (
-        userInfoAvailable &&
-        !context.state.infosByUserId[msg.sourceUserEntityId]
-      ) {
-        fetchUserInfo(context.dispatch, msg.sourceUserEntityId);
+    // If prop editModeActive has changed to false and components internal
+    // state editMode is still true, toggle edit mode off
+    React.useEffect(() => {
+      if (!editModeActive) {
+        toggleEditMode(false);
       }
+    }, [editModeActive, toggleEditMode]);
 
-      // Open mobile action drawer if there are any actions
-      if (mobileModerationActions.length > 0) {
-        setMobileActionDrawerOpen(true);
-      }
-    },
-    obj: {
-      shouldPreventDefault: true,
-      delay: 500,
-    },
-    disabled: disableLongPress,
-  });
+    const longPressEvent = useLongPress({
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      onLongPress: (e) => {
+        // Fetch user info if it's not already fetched/fetching
+        if (
+          userInfoAvailable &&
+          !context.state.infosByUserId[msg.sourceUserEntityId]
+        ) {
+          fetchUserInfo(context.dispatch, msg.sourceUserEntityId);
+        }
 
-  const senderClass = myMsg ? "sender-me" : "sender-them";
+        // Open mobile action drawer if there are any actions
+        if (mobileModerationActions.length > 0) {
+          setMobileActionDrawerOpen(true);
+        }
+      },
+      obj: {
+        shouldPreventDefault: true,
+        delay: 500,
+      },
+      disabled: disableLongPress,
+    });
 
-  const messageDeletedClass = archived ? "chat__message--deleted" : "";
-
-  const showMobileActions = mobileActionDrawerOpen && isMobileWidth;
-
-  /**
-   * Handles cancel edit
-   */
-  const handleCancelEdit = () => {
-    toggleEditMode(false);
-  };
-
-  /**
-   * Handles save
-   */
-  const handleSave = () => {
-    saveEditedMessage();
-  };
-
-  /**
-   * handleTextareaChange
-   * @param e e
-   */
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    handleEditedMessageChange(e.target.value);
-  };
-
-  /**
-   * Handles enter key down.
-   * @param e e
-   */
-  const handleEnterKeyDown = async (
-    e: React.KeyboardEvent<HTMLTextAreaElement>
-  ) => {
-    if (e.key === "Escape") {
+    /**
+     * Handles cancel edit
+     */
+    const handleCancelEdit = () => {
       toggleEditMode(false);
-      handleEditedMessageChange(msg.message);
-    }
+    };
 
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSave();
-    }
-  };
+    /**
+     * Handles save
+     */
+    const handleSave = () => {
+      saveEditedMessage();
+    };
 
-  // If message nick exists, use it, else use a generated hash that indicates that the
-  // user has closed the chat for good
-  const nick =
-    msg.nick || `Poistunut#${generateHash(`user-${msg.sourceUserEntityId}`)}`;
+    /**
+     * handleTextareaChange
+     * @param e e
+     */
+    const handleTextareaChange = (
+      e: React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
+      handleEditedMessageChange(e.target.value);
+    };
 
-  const chatMessageContent = editMode ? (
-    <React.Fragment key="editable">
-      <ChatProfileAvatar
-        id={msg.sourceUserEntityId}
-        nick={nick}
-        hasImage={msg.hasImage}
-      />
-      <div className="chat__message-content-container">
-        <div className="chat__message-meta">
-          <span className={`chat__message-meta-sender`}>{nick}</span>
-          <span className="chat__message-meta-timestamp">
-            {localize.formatDaily(msg.sentDateTime, "LT")}
-          </span>
+    /**
+     * Handles enter key down.
+     * @param e e
+     */
+    const handleEnterKeyDown = async (
+      e: React.KeyboardEvent<HTMLTextAreaElement>
+    ) => {
+      if (e.key === "Escape") {
+        toggleEditMode(false);
+        handleEditedMessageChange(msg.message);
+      }
+
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+
+    const senderClass = myMsg ? "sender-me" : "sender-them";
+
+    const messageDeletedClass = archived ? "chat__message--deleted" : "";
+
+    const showMobileActions = mobileActionDrawerOpen && isMobileWidth;
+
+    // If message nick exists, use it, else use a generated hash that indicates that the
+    // user has closed the chat for good
+    const nick =
+      msg.nick || `Poistunut#${generateHash(`user-${msg.sourceUserEntityId}`)}`;
+
+    const chatMessageContent = editMode ? (
+      <React.Fragment key="editable">
+        <ChatProfileAvatar
+          id={msg.sourceUserEntityId}
+          nick={nick}
+          hasImage={msg.hasImage}
+          userType={msg.userType}
+        />
+        <div className="chat__message-content-container">
+          <div className="chat__message-meta">
+            <span className={`chat__message-meta-sender`}>{nick}</span>
+            <span className="chat__message-meta-timestamp">
+              {localize.formatDaily(msg.sentDateTime, "LT")}
+            </span>
+          </div>
+
+          <div className="chat__message-body">
+            <TextareaAutosize
+              className="chat__edit-message"
+              value={editedMessage}
+              onChange={handleTextareaChange}
+              onKeyDown={handleEnterKeyDown}
+              autoFocus
+            />
+          </div>
+
+          <div className="chat__message-footer">
+            <span
+              className="chat__message-footer-action"
+              onClick={handleCancelEdit}
+            >
+              Peruuta
+            </span>
+            <span>tai</span>
+            <span className="chat__message-footer-action" onClick={handleSave}>
+              Tallenna
+            </span>
+          </div>
         </div>
+      </React.Fragment>
+    ) : (
+      <React.Fragment key="nonEditable">
+        <ChatProfileAvatar
+          id={msg.sourceUserEntityId}
+          nick={nick}
+          hasImage={msg.hasImage}
+          userType={msg.userType}
+        />
+        <div className="chat__message-content-container">
+          <div className="chat__message-meta">
+            {userInfoAvailable ? (
+              <ChatUserInfoPopover userId={msg.sourceUserEntityId}>
+                <span className={`chat__message-meta-sender`}>{nick}</span>
+              </ChatUserInfoPopover>
+            ) : (
+              <span className={`chat__message-meta-sender`}>{nick}</span>
+            )}
 
-        <div className="chat__message-body">
-          <TextareaAutosize
-            className="chat__edit-message"
-            value={editedMessage}
-            onChange={handleTextareaChange}
-            onKeyDown={handleEnterKeyDown}
-            autoFocus
+            <span className="chat__message-meta-timestamp">
+              {localize.formatDaily(msg.sentDateTime, "LT")}
+            </span>
+          </div>
+          <div className="chat__message-body">
+            {archived ? (
+              <i>Poistettu {localize.formatDaily(msg.editedDateTime, "LT")} </i>
+            ) : (
+              parseLines(msg.message)
+            )}
+            {!archived && editedDateTime && (
+              <div className="chat__message-edited-info">
+                (Muokattu {localize.formatDaily(editedDateTime, "LT")})
+              </div>
+            )}
+          </div>
+        </div>
+      </React.Fragment>
+    );
+
+    return (
+      <>
+        <div
+          {...longPressEvent}
+          ref={ref}
+          className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${
+            editMode ? "chat__message--editing" : ""
+          }`}
+        >
+          {chatMessageContent}
+
+          <DesktopMessageActions
+            mainActions={mainModerationActions}
+            secondaryActions={secondaryModerationActions}
           />
         </div>
 
-        <div className="chat__message-footer">
-          <span
-            className="chat__message-footer-action"
-            onClick={handleCancelEdit}
-          >
-            Peruuta
-          </span>
-          <span>tai</span>
-          <span className="chat__message-footer-action" onClick={handleSave}>
-            Tallenna
-          </span>
-        </div>
-      </div>
-    </React.Fragment>
-  ) : (
-    <React.Fragment key="nonEditable">
-      <ChatProfileAvatar
-        id={msg.sourceUserEntityId}
-        nick={nick}
-        hasImage={msg.hasImage}
-        userType={msg.userType}
-      />
-      <div className="chat__message-content-container">
-        <div className="chat__message-meta">
-          {userInfoAvailable ? (
-            <ChatUserInfoPopover userId={msg.sourceUserEntityId}>
-              <span className={`chat__message-meta-sender`}>{nick}</span>
-            </ChatUserInfoPopover>
-          ) : (
-            <span className={`chat__message-meta-sender`}>{nick}</span>
-          )}
-
-          <span className="chat__message-meta-timestamp">
-            {localize.formatDaily(msg.sentDateTime, "LT")}
-          </span>
-        </div>
-        <div className="chat__message-body">
-          {archived ? (
-            <i>Poistettu {localize.formatDaily(msg.editedDateTime, "LT")} </i>
-          ) : (
-            parseLines(msg.message)
-          )}
-          {!archived && editedDateTime && (
-            <div className="chat__message-edited-info">
-              (Muokattu {localize.formatDaily(editedDateTime, "LT")})
-            </div>
-          )}
-        </div>
-      </div>
-    </React.Fragment>
-  );
-
-  return (
-    <>
-      <div
-        {...longPressEvent}
-        className={`chat__message chat__message--${senderClass} ${messageDeletedClass} ${
-          editMode ? "chat__message--editing" : ""
-        }`}
-      >
-        {chatMessageContent}
-
-        <DesktopMessageActions
-          mainActions={mainModerationActions}
-          secondaryActions={secondaryModerationActions}
+        <ChatMessageDeleteDialog
+          open={showDeleteDialog}
+          message={msg}
+          onDelete={deleteMessage}
+          onClose={closeDeleteDialog}
         />
-      </div>
 
-      <ChatMessageDeleteDialog
-        open={showDeleteDialog}
-        message={msg}
-        onDelete={deleteMessage}
-        onClose={closeDeleteDialog}
-      />
+        <MobileMessageActions
+          actions={mobileModerationActions}
+          open={showMobileActions}
+          onClose={() => setMobileActionDrawerOpen(false)}
+        >
+          {context.state.infosByUserId[msg.sourceUserEntityId] &&
+            context.state.infosByUserId[msg.sourceUserEntityId].info && (
+              <>
+                {context.state.infosByUserId[msg.sourceUserEntityId].info.name}
+              </>
+            )}
+        </MobileMessageActions>
+      </>
+    );
+  }
+);
 
-      <MobileMessageActions
-        actions={mobileModerationActions}
-        open={showMobileActions}
-        onClose={() => setMobileActionDrawerOpen(false)}
-      >
-        {context.state.infosByUserId[msg.sourceUserEntityId] &&
-          context.state.infosByUserId[msg.sourceUserEntityId].info && (
-            <>{context.state.infosByUserId[msg.sourceUserEntityId].info.name}</>
-          )}
-      </MobileMessageActions>
-    </>
-  );
-};
+ChatMessage.displayName = "ChatMessage";
 
 /**
  * DesktopMessageActionsProps
