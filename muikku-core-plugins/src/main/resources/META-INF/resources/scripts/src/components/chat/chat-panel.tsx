@@ -520,18 +520,19 @@ const MessagesContainer = React.forwardRef<
     /**
      * Intersection observer callback
      * @param isIntersecting isIntersecting
-     * @param entry entry
      */
-    onChange(isIntersecting, entry) {
-      const { target } = entry;
+    onChange(isIntersecting) {
+      const msgsContainerCurrent = msgsContainerRef.current;
 
-      if (isIntersecting && onScrollTop) {
-        const scrollable = target.scrollHeight > target.clientHeight;
+      if (isIntersecting && onScrollTop && msgsContainerCurrent) {
+        const scrollable =
+          msgsContainerCurrent.scrollHeight > msgsContainerCurrent.clientHeight;
 
         if (!scrollable) {
           return;
         }
-
+        // Save scroll position when scroll is at the top
+        currentScrollHeightRef.current = msgsContainerCurrent.scrollHeight;
         onScrollTop();
       }
     },
