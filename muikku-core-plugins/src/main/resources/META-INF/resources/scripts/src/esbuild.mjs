@@ -11,6 +11,7 @@ delete tsConfig.compilerOptions.paths;
 
 // process to build
 const build = _build({
+  platform: "node",
   logLevel: "info",
   bundle: true,
   splitting: true,
