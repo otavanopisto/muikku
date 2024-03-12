@@ -19,6 +19,7 @@ const ChatWindowBreakpointsContext = createContext<
  * ChatContextProviderProps
  */
 interface ChatWindowBreakpointsContextProviderProps {
+  children: React.ReactNode;
   windowRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -26,9 +27,9 @@ interface ChatWindowBreakpointsContextProviderProps {
  * Chat window breakpoints context provider
  * @param props props
  */
-const ChatWindowBreakpointsContextProvider: React.FC<
-  ChatWindowBreakpointsContextProviderProps
-> = (props) => {
+function ChatWindowBreakpointsContextProvider(
+  props: ChatWindowBreakpointsContextProviderProps
+) {
   const { children, windowRef } = props;
 
   const windowBreakPoints = useWindowBreakpoints({
@@ -40,7 +41,7 @@ const ChatWindowBreakpointsContextProvider: React.FC<
       {children}
     </ChatWindowBreakpointsContext.Provider>
   );
-};
+}
 
 /**
  * Method to returns context of window breakpoint context.

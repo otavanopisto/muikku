@@ -18,7 +18,7 @@ interface ChatRoomNewDialogProps {
  * NewChatRoomDialog
  * @param props props
  */
-const ChatRoomNewDialog = (props: ChatRoomNewDialogProps) => {
+function ChatRoomNewDialog(props: ChatRoomNewDialogProps) {
   const { newChatRoom, updateNewRoomEditor, saveNewRoom } = useChatContext();
   const [disabled, setDisabled] = React.useState<boolean>(false);
 
@@ -124,6 +124,6 @@ const ChatRoomNewDialog = (props: ChatRoomNewDialogProps) => {
       {props.children}
     </ChatDialog>
   );
-};
+}
 
 export default ChatRoomNewDialog;

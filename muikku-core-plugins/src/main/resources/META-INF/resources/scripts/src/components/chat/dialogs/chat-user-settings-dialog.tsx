@@ -31,7 +31,7 @@ interface ChatUserSettingDialogProps {
  * NewChatRoomDialog
  * @param props props
  */
-const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
+function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
   const { currentUser } = useChatContext();
   const [disabled, setDisabled] = React.useState<boolean>(false);
   const [currentNickValue, setCurrentNickValue] = React.useState(
@@ -209,7 +209,7 @@ const ChatUserSettingsDialog = (props: ChatUserSettingDialogProps) => {
       {props.children}
     </ChatDialog>
   );
-};
+}
 
 /**
  * mapStateToProps

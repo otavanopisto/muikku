@@ -35,7 +35,7 @@ interface ChatDeleteMessageDialogProps {
  * ChatDeleteRoomDialog
  * @param props props
  */
-const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
+function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
   const { open, message, onClose, onDelete } = props;
 
   const [disabled, setDisabled] = React.useState<boolean>(false);
@@ -67,12 +67,6 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
 
     return (
       <div>
-        {/*
-      <DialogRow>
-        <strong>Olet poistamassa viestiä:</strong>
-      </DialogRow>
-      <DialogRow><strong>{message.nick}</strong> {localize.formatDaily(message.sentDateTime)}</DialogRow>
-      <DialogRow>{message.message}</DialogRow> */}
         <DialogRow>
           <strong>Olet poistamassa viestiä:</strong>
         </DialogRow>
@@ -142,6 +136,6 @@ const ChatDeleteMessageDialog = (props: ChatDeleteMessageDialogProps) => {
       modifier={["chat", "local"]}
     />
   );
-};
+}
 
 export default ChatDeleteMessageDialog;

@@ -32,29 +32,29 @@ interface AnimatedViewProps {}
  * @param props props
  * @returns JSX.Element
  */
-const AnimatedView: React.FC<AnimatedViewProps> = React.memo((props) => {
-  const { children } = props;
+const AnimatedView: React.FC<AnimatedViewProps> = React.memo(
+  function AnimatedView(props) {
+    const { children } = props;
 
-  return (
-    <motion.div
-      variants={variants}
-      initial="enter"
-      animate="center"
-      exit="exit"
-      transition={{
-        type: "tween",
-        duration: 0.2,
-        ease: "easeInOut",
-      }}
-      style={{
-        height: "100%",
-      }}
-    >
-      {children}
-    </motion.div>
-  );
-});
-
-AnimatedView.displayName = "AnimatedView";
+    return (
+      <motion.div
+        variants={variants}
+        initial="enter"
+        animate="center"
+        exit="exit"
+        transition={{
+          type: "tween",
+          duration: 0.2,
+          ease: "easeInOut",
+        }}
+        style={{
+          height: "100%",
+        }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+);
 
 export default AnimatedView;

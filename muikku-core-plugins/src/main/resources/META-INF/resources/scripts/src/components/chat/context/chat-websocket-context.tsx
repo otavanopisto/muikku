@@ -10,6 +10,7 @@ const ChatWebsocketContext = createContext<Websocket | undefined>(undefined);
  * ChatWebsocketContextProviderProps
  */
 interface ChatWebsocketContextProviderProps {
+  children: React.ReactNode;
   websocket: Websocket;
 }
 
@@ -17,9 +18,9 @@ interface ChatWebsocketContextProviderProps {
  * Chat websocket context provider
  * @param props props
  */
-export const ChatWebsocketContextProvider: React.FC<
-  ChatWebsocketContextProviderProps
-> = (props) => {
+function ChatWebsocketContextProvider(
+  props: ChatWebsocketContextProviderProps
+) {
   const { children, websocket } = props;
 
   return (
@@ -27,7 +28,7 @@ export const ChatWebsocketContextProvider: React.FC<
       {children}
     </ChatWebsocketContext.Provider>
   );
-};
+}
 
 /**
  * Method to returns context of websocket.
@@ -43,4 +44,4 @@ function useChatWebsocketContext() {
   return context;
 }
 
-export { ChatWebsocketContext, useChatWebsocketContext };
+export { ChatWebsocketContextProvider, useChatWebsocketContext };

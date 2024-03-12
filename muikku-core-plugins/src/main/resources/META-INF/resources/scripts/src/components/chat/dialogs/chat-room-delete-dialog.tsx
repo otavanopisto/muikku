@@ -18,7 +18,7 @@ interface ChatRoomDeleteDialogProps {
  * ChatDeleteRoomDialog
  * @param props props
  */
-const ChatDeleteRoomDialog = (props: ChatRoomDeleteDialogProps) => {
+function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
   const { deleteCustomRoom, closeDeleteRoomDialog, roomToBeDeleted } =
     useChatContext();
 
@@ -97,6 +97,6 @@ const ChatDeleteRoomDialog = (props: ChatRoomDeleteDialogProps) => {
       {props.children}
     </ChatDialog>
   );
-};
+}
 
 export default ChatDeleteRoomDialog;

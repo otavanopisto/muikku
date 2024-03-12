@@ -30,7 +30,7 @@ interface UseLongPressProps {
  * Custom hook for long press
  * @param props props
  */
-const useLongPress = (props: UseLongPressProps) => {
+function useLongPress(props: UseLongPressProps) {
   const [longPressTriggered, setLongPressTriggered] = React.useState(false);
   const timeout = React.useRef<NodeJS.Timeout>();
   const target = React.useRef<any>();
@@ -88,7 +88,7 @@ const useLongPress = (props: UseLongPressProps) => {
     onMouseLeave: (e: any) => clear(e, false),
     onTouchEnd: (e: any) => clear(e),
   };
-};
+}
 
 /**
  * Type guard for touch event

@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChatActivity, ChatUser } from "~/generated/client";
 import { IconButton } from "../general/button";
 import ChatProfileAvatar from "./chat-profile-avatar";
-import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
+import ChatUnreadMsgCounter from "./chat-unread-msg-counter";
 import { useChatContext } from "./context/chat-context";
 import ChatUserSettingsDialog from "./dialogs/chat-user-settings-dialog";
 
@@ -54,7 +54,7 @@ interface ChatProfileWithSettingsProps {}
  * ChatMyProfileWithSettings
  * @param props props
  */
-export function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
+function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
   const { currentUser } = useChatContext();
 
   if (!currentUser) {
@@ -83,4 +83,4 @@ export function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
   );
 }
 
-export default ChatProfile;
+export { ChatProfile, ChatMyProfileWithSettings };

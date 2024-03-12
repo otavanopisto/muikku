@@ -30,7 +30,7 @@ interface ChatContextProviderProps {
  * Chat context provider
  * @param props props
  */
-const ChatContextProvider = (props: ChatContextProviderProps) => {
+function ChatContextProvider(props: ChatContextProviderProps) {
   const { children, currentUser, canManagePublicRooms } = props;
 
   const useChatValue = useChat(currentUser);
@@ -40,7 +40,7 @@ const ChatContextProvider = (props: ChatContextProviderProps) => {
       {children}
     </ChatContext.Provider>
   );
-};
+}
 
 /**
  * Method to returns context of chat.

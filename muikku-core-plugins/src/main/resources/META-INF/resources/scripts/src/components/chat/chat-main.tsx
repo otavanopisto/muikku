@@ -146,7 +146,7 @@ interface OwerviewButtonProps {
  * OverviewButton
  * @param props props
  */
-export function OverviewButton(props: OwerviewButtonProps) {
+function OverviewButton(props: OwerviewButtonProps) {
   const { onClick } = props;
   const { openOverview, chatViews } = useChatContext();
 

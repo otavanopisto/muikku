@@ -29,7 +29,7 @@ interface ChatRoomEditAndInfoDialogProps {
  * ChatRoomInfoDialog
  * @param props props
  */
-const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
+function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
   const { room, defaults } = props;
 
   const { saveEditedRoom, canModerate, deleteCustomRoom } = useChatContext();
@@ -227,6 +227,6 @@ const ChatRoomEditAndInfoDialog = (props: ChatRoomEditAndInfoDialogProps) => {
       {props.children}
     </ChatDialog>
   );
-};
+}
 
 export default ChatRoomEditAndInfoDialog;

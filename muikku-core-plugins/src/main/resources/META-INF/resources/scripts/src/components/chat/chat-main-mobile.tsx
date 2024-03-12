@@ -41,7 +41,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
 
   return (
     <div className="chat-mobile">
-      <ChatPanel
+      <ChatSidePanel
         open={panelLeftOpen}
         panelMaxWidth={PANEL_LEFT_MAX_WIDTH}
         panelPosition="left"
@@ -59,17 +59,15 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             <PrivateRoomList onItemClick={() => setPanelLeftOpen(false)} />
           </div>
         </div>
-      </ChatPanel>
+      </ChatSidePanel>
 
       <div className="chat-mobile__main-container">
-        <motion.div>
-          <ChatViews
-            wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
-          />
-        </motion.div>
+        <ChatViews
+          wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
+        />
       </div>
 
-      <ChatPanel
+      <ChatSidePanel
         open={panelRightOpen}
         onOpen={() => setPanelRightOpen(true)}
         onClose={() => setPanelRightOpen(false)}
@@ -88,7 +86,8 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           </div>
         </div>
         <ChatMyProfileWithSettings />
-      </ChatPanel>
+      </ChatSidePanel>
+
       <div className="chat-mobile__footer">
         <IconButton
           buttonModifiers={["chat", "chat-mobile-footer"]}
@@ -114,7 +113,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
 /**
  * ChatPanelProps
  */
-interface ChatPanelProps {
+interface ChatSidePanelProps {
   open: boolean;
   panelMaxWidth?: number;
   panelPosition?: "left" | "right";
@@ -128,7 +127,7 @@ interface ChatPanelProps {
  * @param props props
  * @returns JSX.Element
  */
-function ChatPanel(props: ChatPanelProps) {
+function ChatSidePanel(props: ChatSidePanelProps) {
   const { open, onOpen, children, onClose, panelMaxWidth, panelPosition } =
     props;
 

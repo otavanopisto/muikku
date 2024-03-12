@@ -29,7 +29,7 @@ export interface ChatViewsProps {
  * ChatTabs
  * @param props props
  */
-const ChatViews = (props: ChatViewsProps) => {
+function ChatViews(props: ChatViewsProps) {
   const { chatViews } = useChatContext();
 
   const clonedChildren = React.useMemo(
@@ -51,6 +51,6 @@ const ChatViews = (props: ChatViewsProps) => {
   );
 
   return <>{enhancedActiveViewContent}</>;
-};
+}
 
 export default ChatViews;

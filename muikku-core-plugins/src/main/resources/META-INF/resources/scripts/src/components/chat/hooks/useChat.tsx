@@ -8,7 +8,7 @@ import {
   UpdateChatRoomRequest,
 } from "~/generated/client";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
-import { useViews } from "../animated-views/context/hooks/useChatTabs";
+import useViews from "../animated-views/context/hooks/useChatTabs";
 import {
   chatControllerViews,
   filterUsers,

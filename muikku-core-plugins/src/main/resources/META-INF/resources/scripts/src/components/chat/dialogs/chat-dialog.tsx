@@ -17,7 +17,7 @@ interface ChatDialogProps extends DialogProps {
  * logic
  * @param props props
  */
-const ChatDialog = (props: ChatDialogProps) => {
+function ChatDialog(props: ChatDialogProps) {
   const { children, ...rest } = props;
 
   const isMobile = useIsAtBreakpoint(breakpoints.breakpointMobileXl);
@@ -36,6 +36,6 @@ const ChatDialog = (props: ChatDialogProps) => {
       {children}
     </Dialog>
   );
-};
+}
 
 export default ChatDialog;

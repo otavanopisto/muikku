@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChatActivity, ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import { IconButton } from "../general/button";
-import ChatProfile from "./chat-profile";
+import { ChatProfile } from "./chat-profile";
 
 /**
  * ChatMyCounselorsDiscussionsProps

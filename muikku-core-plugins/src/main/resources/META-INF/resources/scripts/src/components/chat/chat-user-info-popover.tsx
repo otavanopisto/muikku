@@ -34,7 +34,7 @@ interface ChatUserInfoPopoverProps {
  * @param props InfoPopoverProps
  * @returns JSX.Element
  */
-const ChatUserInfoPopover = (props: ChatUserInfoPopoverProps) => {
+function ChatUserInfoPopover(props: ChatUserInfoPopoverProps) {
   const { userId, children } = props;
 
   // Context
@@ -144,6 +144,6 @@ const ChatUserInfoPopover = (props: ChatUserInfoPopoverProps) => {
       </PopoverContent>
     </Popover>
   );
-};
+}
 
 export default ChatUserInfoPopover;

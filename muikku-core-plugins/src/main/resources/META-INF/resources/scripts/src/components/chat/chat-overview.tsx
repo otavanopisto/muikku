@@ -3,7 +3,7 @@ import { IconButton } from "../general/button";
 import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 import { useChatContext } from "./context/chat-context";
 import { ChatRoom, ChatUser } from "~/generated/client";
-import ChatProfile from "./chat-profile";
+import { ChatProfile } from "./chat-profile";
 import Dropdown from "../general/dropdown";
 import {
   ChatDashBoardTab,
@@ -547,6 +547,7 @@ function OverviewList(props: OverviewListProps) {
  * ChatOverviewListItemProps
  */
 interface OverviewListItemProps {
+  children?: React.ReactNode;
   onOpenClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
@@ -554,49 +555,49 @@ interface OverviewListItemProps {
  * OverviewListItem
  * @param props props
  */
-export const OverviewListItem: React.FC<OverviewListItemProps> = (props) => {
-  const { onOpenClick } = props;
+export function OverviewListItem(props: OverviewListItemProps) {
+  const { onOpenClick, children } = props;
 
   return (
     <div className="chat__overview-panel-item" onClick={onOpenClick}>
-      {props.children}
+      {children}
     </div>
   );
-};
+}
 
 /**
  * OverviewListItemContentProps
  */
-interface OverviewListItemContentProps {}
+interface OverviewListItemContentProps {
+  children?: React.ReactNode;
+}
 
 /**
  * OverviewListItemContent
  * @param props props
  */
-export const OverviewListItemContent: React.FC<OverviewListItemContentProps> = (
-  props
-) => {
+export function OverviewListItemContent(props: OverviewListItemContentProps) {
   const { children } = props;
 
   return <div className="chat__overview-panel-item-data">{children}</div>;
-};
+}
 
 /**
  * OverviewListItemMainContentProps
  */
-interface OverviewListItemActionsProps {}
+interface OverviewListItemActionsProps {
+  children?: React.ReactNode;
+}
 
 /**
  * OverviewListItemActions
  * @param props props
  */
-export const OverviewListItemActions: React.FC<OverviewListItemActionsProps> = (
-  props
-) => {
+export function OverviewListItemActions(props: OverviewListItemActionsProps) {
   const { children } = props;
 
   return <div className="chat__overview-panel-item-actions">{children}</div>;
-};
+}
 
 /**
  * UserFilterProps
@@ -611,7 +612,7 @@ interface OverviewUserFiltersProps {
  * @param props props
  * @returns JSX.Element
  */
-export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
+export function OverviewUserFilters(props: OverviewUserFiltersProps) {
   const { currentFilters, onFiltersChange } = props;
 
   /**
@@ -703,7 +704,7 @@ export const OverviewUserFilters = (props: OverviewUserFiltersProps) => {
       </div>
     </>
   );
-};
+}
 
 /**
  * OverviewRoomFiltersProps
@@ -718,7 +719,7 @@ interface OverviewRoomFiltersProps {
  * @param props props
  * @returns JSX.Element
  */
-export const OverviewRoomFilters = (props: OverviewRoomFiltersProps) => {
+export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
   const { currentFilters, onFiltersChange } = props;
 
   /**
@@ -782,6 +783,6 @@ export const OverviewRoomFilters = (props: OverviewRoomFiltersProps) => {
       </div>
     </>
   );
-};
+}
 
 export default ChatOverview;

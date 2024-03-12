@@ -16,7 +16,7 @@ export type UseChatViewsType = ReturnType<typeof useViews>;
  * @param props props
  * @returns wizard method and state values
  */
-export const useViews = (props: UseViewsProps) => {
+function useViews(props: UseViewsProps) {
   const [currentViewIndex, setCurrentViewIndex] = React.useState<number>(0);
   const [views] = React.useState<ChatView[]>(props.views);
 
@@ -42,4 +42,6 @@ export const useViews = (props: UseViewsProps) => {
     currentViewIndex,
     goTo,
   };
-};
+}
+
+export default useViews;

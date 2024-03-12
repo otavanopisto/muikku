@@ -40,7 +40,7 @@ interface ChatMessageProps {
  * @returns JSX.Element
  */
 const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
-  (props, ref) => {
+  function ChatMessage(props, ref) {
     const { msg, editModeActive, onEditClick, disableLongPress } = props;
 
     const { isMobileWidth, currentUser } = useChatContext();
@@ -276,8 +276,6 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
     );
   }
 );
-
-ChatMessage.displayName = "ChatMessage";
 
 /**
  * DesktopMessageActionsProps

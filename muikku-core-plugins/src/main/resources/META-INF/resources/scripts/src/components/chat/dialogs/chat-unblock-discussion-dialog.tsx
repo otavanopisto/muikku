@@ -9,7 +9,7 @@ import ChatDialog from "./chat-dialog";
 /**
  * ChatUnblockDiscussionDialog
  */
-const ChatUnblockDiscussionDialog = () => {
+function ChatUnblockDiscussionDialog() {
   const {
     unblockDiscussionWithUser,
     userToBeUnblocked,
@@ -85,6 +85,6 @@ const ChatUnblockDiscussionDialog = () => {
       modifier={["chat", "local"]}
     />
   );
-};
+}
 
 export default ChatUnblockDiscussionDialog;

@@ -36,7 +36,7 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
  * @param props props
  * @returns JSX.Element
  */
-const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
+function ChatPrivatePanel(props: ChatPrivatePanelProps) {
   const { targetUser } = props;
 
   const {
@@ -254,7 +254,7 @@ const ChatPrivatePanel = (props: ChatPrivatePanelProps) => {
       </div>
     </div>
   );
-};
+}
 
 /**
  * ChatRoomPanelProps
@@ -271,7 +271,7 @@ interface ChatRoomPanelProps extends ChatPanelProps {
  * @param props props
  * @returns JSX.Element
  */
-const ChatRoomPanel = (props: ChatRoomPanelProps) => {
+function ChatRoomPanel(props: ChatRoomPanelProps) {
   const { targetRoom } = props;
 
   const { markMsgsAsRead } = useChatContext();
@@ -450,7 +450,7 @@ const ChatRoomPanel = (props: ChatRoomPanelProps) => {
       </form>
     </div>
   );
-};
+}
 
 /**
  * MessagesContainerProps
@@ -487,7 +487,7 @@ export type MessagesContainerRef = {
 const MessagesContainer = React.forwardRef<
   MessagesContainerRef,
   MessagesContainerProps
->((props, ref) => {
+>(function MessagesContainer(props, ref) {
   const {
     className,
     modifiers,
@@ -689,7 +689,5 @@ const MessagesContainer = React.forwardRef<
     </motion.div>
   );
 });
-
-MessagesContainer.displayName = "MessagesContainer";
 
 export { ChatPrivatePanel, ChatRoomPanel };

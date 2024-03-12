@@ -9,7 +9,7 @@ import ChatDialog from "./chat-dialog";
 /**
  * ChatDeleteRoomDialog
  */
-const ChatCloseAndBlockDiscussionDialog = () => {
+function ChatCloseAndBlockDiscussionDialog() {
   const {
     closeAndBlockDiscussionWithUser,
     userToBeBlocked,
@@ -85,6 +85,6 @@ const ChatCloseAndBlockDiscussionDialog = () => {
       modifier={["chat", "local"]}
     />
   );
-};
+}
 
 export default ChatCloseAndBlockDiscussionDialog;

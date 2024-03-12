@@ -12,7 +12,7 @@ interface ChatUnreadMsgCounterProps {
  * ChatUnreadMsgCounter
  * @param props props
  */
-export const ChatUnreadMsgCounter = (props: ChatUnreadMsgCounterProps) => {
+function ChatUnreadMsgCounter(props: ChatUnreadMsgCounterProps) {
   const { number, modifiers } = props;
 
   if (number === 0) return null;
@@ -36,4 +36,6 @@ export const ChatUnreadMsgCounter = (props: ChatUnreadMsgCounterProps) => {
       {showedNumber}
     </span>
   );
-};
+}
+
+export default ChatUnreadMsgCounter;

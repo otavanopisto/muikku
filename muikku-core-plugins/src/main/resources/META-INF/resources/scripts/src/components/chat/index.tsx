@@ -9,7 +9,7 @@ import useChatSettings from "./hooks/useChatSettings";
 import ChatUnblockDiscussionDialog from "./dialogs/chat-unblock-discussion-dialog";
 import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-discussion-dialog";
 import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
-import { ChatUnreadMsgCounter } from "./chat-unread-msg-counter";
+import ChatUnreadMsgCounter from "./chat-unread-msg-counter";
 import { ChatUserInfoProvider } from "./context/chat-user-info-context";
 
 /**

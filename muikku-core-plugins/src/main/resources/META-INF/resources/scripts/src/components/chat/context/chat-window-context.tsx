@@ -16,15 +16,15 @@ const ChatWindowBreakpointsContext = createContext<
 /**
  * ChatContextProviderProps
  */
-interface ChatWindowContextProviderProps {}
+interface ChatWindowContextProviderProps {
+  children: React.ReactNode;
+}
 
 /**
  * ChatPrivateContextProvider
  * @param props props
  */
-const ChatWindowContextProvider: React.FC<ChatWindowContextProviderProps> = (
-  props
-) => {
+function ChatWindowContextProvider(props: ChatWindowContextProviderProps) {
   const { children } = props;
 
   const chatWindowValues = useChatWindow();
@@ -34,7 +34,7 @@ const ChatWindowContextProvider: React.FC<ChatWindowContextProviderProps> = (
       {children}
     </ChatWindowBreakpointsContext.Provider>
   );
-};
+}
 
 /**
  * Method to returns context of follow up.
