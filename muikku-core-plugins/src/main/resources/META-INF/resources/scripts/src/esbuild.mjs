@@ -3,6 +3,7 @@ import { build as _build } from "esbuild";
 import { readFileSync } from "fs";
 import { sassPlugin } from "esbuild-sass-plugin";
 import { TsconfigPathsPlugin } from "@esbuild-plugins/tsconfig-paths";
+import moment from "moment";
 
 // the tsconfig to use in here will be slightly modified the reason is that we want
 // to affect the typescript compiler not to import from nodejs folders
@@ -11,7 +12,6 @@ delete tsConfig.compilerOptions.paths;
 
 // process to build
 const build = _build({
-  platform: "node",
   logLevel: "info",
   bundle: true,
   splitting: true,
@@ -74,6 +74,6 @@ const build = _build({
 // first let's build the service worker
 build
   .then(() => {
-    console.log("DONE");
+    console.log("DONE", moment().format("YYYY-MM-DD HH:mm:ss"));
   })
   .catch((err) => console.error(err.stack));

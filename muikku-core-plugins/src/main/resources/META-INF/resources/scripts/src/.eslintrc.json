@@ -64,6 +64,7 @@
     "jsdoc/require-param-type": 0,
     "jsdoc/require-returns-type": 0,
     "jsdoc/require-returns": 0,
+    "jsdoc/tag-lines": 0,
     "jsdoc/require-jsdoc": [
       1,
       {
