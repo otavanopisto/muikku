@@ -48,7 +48,7 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
    * with this permission roles may be permitted to list them too.
    */
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
   public static final String LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS = "LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS";
 
   @Scope (PermissionScope.WORKSPACE)
