@@ -902,13 +902,16 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (sessionController.hasWorkspacePermission(permission.getName(), workspaceEntity)) {
         
         /*
-         * MANAGE_WORKSPACE has exception cases which are handled by canIManageWorkspace method. If
-         * it returns false, MANAGE_WORKSPACE doesn't apply to user.
+         * The following have exception cases which are handled differently with separate methods.
          */
         if (MuikkuPermissions.MANAGE_WORKSPACE.equals(permission.getName()) && !workspaceController.canIManageWorkspace(workspaceEntity)) {
           continue;
         }
-        
+
+        if (MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS.equals(permission.getName()) && !workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
+          continue;
+        }
+
         permissionSet.add(permission.getName());
       }
     }
