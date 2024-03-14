@@ -18,15 +18,21 @@
   font-size: 1.85rem;
   height: 55px;
   justify-content: center;
+  left: 10px;
   order: 2;
   position: fixed;
-  right: 10px;
+  right: auto;
   transition: transform 0.3s ease-in-out;
   width: 55px;
   z-index: 9989;
 
   &:hover {
     transform: rotate(15deg);
+  }
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    left: auto;
+    right: 10px;
   }
 
   .chat__unread-msg-counter {
