@@ -993,11 +993,15 @@
   border-radius: $chat-border-radius;
   color: $color-text-default;
   font-family: $system-font-family;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 400;
   padding: 8px 5px;
   resize: none;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 0.8125rem;
+  }
 }
 
 .chat__textfield--with-filter {
@@ -1010,20 +1014,24 @@
   border-radius: $chat-border-radius;
   color: $color-text-default;
   font-family: $system-font-family;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 400;
   height: 5rem;
   line-height: 1.25rem;
   padding: 8px 5px;
   resize: none;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 0.8125rem;
+  }
 }
 
 .chat__new-message {
   background: $color-default-generic-background;
   border: 0;
   border-radius: 20px;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   height: calc($chat-discussion-panel-footer-height - 10px);
   line-height: 1.25rem;
   margin: 10px;
