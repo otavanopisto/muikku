@@ -840,6 +840,8 @@
   width: 100%;
 
   @include breakpoint($breakpoint-desktop) {
+    border-bottom-left-radius: $chat-border-radius;
+    border-bottom-right-radius: $chat-border-radius;
     top: $chat-discussion-panel-header-height;
   }
 }
