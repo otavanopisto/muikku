@@ -677,6 +677,15 @@
   font-weight: 600;
 }
 
+.button--chat {
+  background: transparent;
+  color: $color-info;
+  font-size: 0.75rem;
+  margin: 0 4px;
+  padding: 0;
+  text-transform: none;
+}
+
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);

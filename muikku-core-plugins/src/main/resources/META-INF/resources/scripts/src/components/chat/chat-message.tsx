@@ -185,16 +185,13 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
           </div>
 
           <div className="chat__message-footer">
-            <span
-              className="chat__message-footer-action"
-              onClick={handleCancelEdit}
-            >
+            <Button buttonModifiers={["chat"]} onClick={handleCancelEdit}>
               Peruuta
-            </span>
+            </Button>
             <span>tai</span>
-            <span className="chat__message-footer-action" onClick={handleSave}>
+            <Button buttonModifiers={["chat"]} onClick={handleSave}>
               Tallenna
-            </span>
+            </Button>
           </div>
         </div>
       </React.Fragment>
