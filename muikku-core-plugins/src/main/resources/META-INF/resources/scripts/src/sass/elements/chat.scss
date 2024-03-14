@@ -1110,7 +1110,6 @@
 // COntainer for mobile chat's header and main area. Needs to have same bottom value as [chat-mobile__footer] has height
 .chat-mobile__main-container {
   bottom: 3rem;
-  box-shadow: 0 2px 5px $color-chat-box-shadow;
   left: 0;
   position: fixed;
   right: 0;
@@ -1121,7 +1120,7 @@
 // Navigation footer for mobile views
 .chat-mobile__footer {
   align-items: center;
-  background: $color-chat-panel-background;
+  background: darken($color-chat-panel-background, 5%);
   bottom: 0;
   display: flex;
   height: 3rem;
