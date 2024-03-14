@@ -30,7 +30,7 @@ const PANEL_RIGHT_MAX_WIDTH = 200;
 interface ChatMainMobileProps {}
 
 /**
- * ChatMain
+ * ChatMainMobile
  * @param props props
  */
 function ChatMainMobile(props: ChatMainMobileProps) {
@@ -119,7 +119,7 @@ interface ChatSidePanelProps {
 }
 
 /**
- * ChatPanel
+ * ChatSidePanel
  * @param props props
  * @returns JSX.Element
  */
@@ -222,7 +222,7 @@ function ChatSidePanel(props: ChatSidePanelProps) {
   };
 
   /**
-   * handleDragENd
+   * Handles drag end
    * @param event event
    * @param info info
    */
