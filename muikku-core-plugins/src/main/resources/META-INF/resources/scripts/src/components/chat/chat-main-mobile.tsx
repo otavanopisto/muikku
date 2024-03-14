@@ -94,12 +94,8 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           icon="stack"
           onClick={() => setPanelLeftOpen((prev) => !prev)}
         />
-        <Button buttonModifiers={["chat"]} onClick={openOverview}>
-          Dashboard
-        </Button>
-        <Button buttonModifiers={["chat"]} onClick={toggleControlBox}>
-          Sulje
-        </Button>
+        <Button onClick={openOverview}>Dashboard</Button>
+        <Button onClick={toggleControlBox}>Sulje</Button>
         <IconButton
           buttonModifiers={["chat", "chat-mobile-footer"]}
           icon="bubbles"

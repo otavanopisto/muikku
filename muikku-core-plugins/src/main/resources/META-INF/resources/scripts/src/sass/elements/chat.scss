@@ -993,11 +993,15 @@
   border-radius: $chat-border-radius;
   color: $color-text-default;
   font-family: $system-font-family;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 400;
   padding: 8px 5px;
   resize: none;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 0.8125rem;
+  }
 }
 
 .chat__textfield--with-filter {
@@ -1010,20 +1014,24 @@
   border-radius: $chat-border-radius;
   color: $color-text-default;
   font-family: $system-font-family;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   font-weight: 400;
   height: 5rem;
   line-height: 1.25rem;
   padding: 8px 5px;
   resize: none;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 0.8125rem;
+  }
 }
 
 .chat__new-message {
   background: $color-default-generic-background;
   border: 0;
   border-radius: 20px;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   height: calc($chat-discussion-panel-footer-height - 10px);
   line-height: 1.25rem;
   margin: 10px;
@@ -1110,7 +1118,6 @@
 // COntainer for mobile chat's header and main area. Needs to have same bottom value as [chat-mobile__footer] has height
 .chat-mobile__main-container {
   bottom: 3rem;
-  box-shadow: 0 2px 5px $color-chat-box-shadow;
   left: 0;
   position: fixed;
   right: 0;
@@ -1121,7 +1128,7 @@
 // Navigation footer for mobile views
 .chat-mobile__footer {
   align-items: center;
-  background: $color-chat-panel-background;
+  background: darken($color-chat-panel-background, 5%);
   bottom: 0;
   display: flex;
   height: 3rem;
