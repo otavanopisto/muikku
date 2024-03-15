@@ -105,7 +105,7 @@ public class PedagogyRestService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAccesss(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
-    return Response.ok(getAccess(studentIdentifier, true)).build();
+    return Response.ok(getAccess(studentIdentifier, true, PedagogyFormAccessType.READ)).build();
   }
   
   /**
@@ -133,7 +133,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false, PedagogyFormAccessType.WRITE);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -153,7 +153,7 @@ public class PedagogyRestService {
     
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.READ);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -193,7 +193,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false, PedagogyFormAccessType.WRITE);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -215,7 +215,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.READ);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -241,7 +241,7 @@ public class PedagogyRestService {
     
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.WRITE);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -276,7 +276,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.READ);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -450,7 +450,12 @@ public class PedagogyRestService {
     return infoMap;
   }
   
-  private PedagogyFormAccessRestModel getAccess(String studentIdentifier, boolean allowStudent) {
+  enum PedagogyFormAccessType {
+    READ,
+    WRITE
+  }
+  
+  private PedagogyFormAccessRestModel getAccess(String studentIdentifier, boolean allowStudent, PedagogyFormAccessType accessType) {
 
     // Master access flag and various roles
     
@@ -499,7 +504,7 @@ public class PedagogyRestService {
       // if the form exists and form state is approved by student
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
-      accessible = isAdmin || specEdTeacher || studentParent;
+      accessible = isAdmin || specEdTeacher || (studentParent && accessType == PedagogyFormAccessType.READ);
       if (!accessible && form != null && form.getState() == PedagogyFormState.APPROVED) {
         accessible = relation.isGuidanceCounselor() || courseTeacher;
       }
