@@ -477,6 +477,7 @@ public class ChatController {
       modified = true;
     }
     else if (chatUser != null && (visibility != chatUser.getVisibility() || !StringUtils.equals(chatUser.getNick(), nick))) {
+      chatUser = chatUserDAO.update(chatUser, visibility, nick);
       // Chat is on but visibility or nick has changed
       if (visibility != chatUser.getVisibility()) {
         handleVisibilityChange(userEntity.getId(), visibility);
@@ -484,7 +485,6 @@ public class ChatController {
       if (!StringUtils.equals(chatUser.getNick(), nick)) {
         handleNickChange(userEntity.getId(), nick);
       }
-      chatUser = chatUserDAO.update(chatUser, visibility, nick);
       modified = true;
     }
     
@@ -734,8 +734,12 @@ public class ChatController {
   }
   
   public ChatUserRestModel toRestModel(UserEntity userEntity) {
-    ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
-    return new ChatUserRestModel(
+    if (users.containsKey(userEntity.getId())) {
+      return new ChatUserRestModel(users.get(userEntity.getId()));
+    }
+    else {
+      ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
+      return new ChatUserRestModel(
         userEntity.getId(),
         chatUser == null ? null : chatUser.getNick(),
         userEntityController.getName(userEntity.defaultSchoolDataIdentifier(), true).getDisplayNameWithLine(),
@@ -743,6 +747,7 @@ public class ChatController {
         chatUser == null ? ChatUserVisibility.NONE : chatUser.getVisibility(),
         userProfilePictureController.hasProfilePicture(userEntity),
         chatUser == null ? ChatUserPresence.DISABLED : isOnline(userEntity) ? ChatUserPresence.ONLINE : ChatUserPresence.OFFLINE);
+    }
   }
 
   public ChatUserRestModel toRestModel(ChatUser chatUser) {
