@@ -1,7 +1,9 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import MApi from "~/api/api";
+import { useTranslation } from "react-i18next";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
 import {
   ChatRoom,
   CreateChatRoomRequest,
@@ -14,8 +16,9 @@ const chatApi = MApi.getChatApi();
 
 /**
  * Custom hook to handle loading rooms from rest api.
+ * @param displayNotification displayNotification
  */
-function useRooms() {
+function useRooms(displayNotification: DisplayNotificationTriggerType) {
   const websocket = useChatWebsocketContext();
 
   const [rooms, setRooms] = React.useState<ChatRoom[]>([]);
@@ -28,9 +31,39 @@ function useRooms() {
 
   const componentMounted = React.useRef(true);
 
+  const { t } = useTranslation("chat");
+
   React.useEffect(() => {
+    /**
+     * Fetch rooms
+     */
+    const fetchRooms = async () => {
+      try {
+        setLoadingRooms(true);
+
+        const rooms = await chatApi.getChatRooms();
+
+        unstable_batchedUpdates(() => {
+          setRooms(rooms);
+          setLoadingRooms(false);
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification(
+          t("notifications.loadError", {
+            context: "rooms",
+          }),
+          "error"
+        );
+
+        setLoadingRooms(false);
+      }
+    };
+
     fetchRooms();
-  }, []);
+  }, [displayNotification, t]);
 
   React.useEffect(() => {
     /**
@@ -115,30 +148,28 @@ function useRooms() {
   }, [websocket]);
 
   /**
-   * Fetch rooms
-   */
-  const fetchRooms = async () => {
-    setLoadingRooms(true);
-
-    const rooms = await chatApi.getChatRooms();
-
-    unstable_batchedUpdates(() => {
-      setRooms(rooms);
-      setLoadingRooms(false);
-    });
-  };
-
-  /**
    * Create new room
    * @param newRoom newRoom
    */
   const createNewRoom = React.useCallback(
     async (newRoom: CreateChatRoomRequest) => {
-      await chatApi.createChatRoom({
-        createChatRoomRequest: newRoom,
-      });
+      try {
+        await chatApi.createChatRoom({
+          createChatRoomRequest: newRoom,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification(
+          t("notifications.postError", {
+            context: "room",
+          }),
+          "error"
+        );
+      }
     },
-    []
+    [displayNotification, t]
   );
 
   /**
@@ -148,23 +179,50 @@ function useRooms() {
    */
   const updateRoom = React.useCallback(
     async (identifier: string, updatedRoom: UpdateChatRoomRequest) => {
-      await chatApi.updateChatRoom({
-        identifier: identifier,
-        updateChatRoomRequest: updatedRoom,
-      });
+      try {
+        await chatApi.updateChatRoom({
+          identifier: identifier,
+          updateChatRoomRequest: updatedRoom,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification(
+          t("notifications.updateError", {
+            context: "room",
+          }),
+          "error"
+        );
+      }
     },
-    []
+    [displayNotification, t]
   );
 
   /**
    * Delete room
    * @param identifier identifier
    */
-  const deleteRoom = React.useCallback(async (identifier: string) => {
-    await chatApi.deleteChatRoom({
-      identifier: identifier,
-    });
-  }, []);
+  const deleteRoom = React.useCallback(
+    async (identifier: string) => {
+      try {
+        await chatApi.deleteChatRoom({
+          identifier: identifier,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification(
+          t("notifications.deleteError", {
+            context: "room",
+          }),
+          "error"
+        );
+      }
+    },
+    [displayNotification, t]
+  );
 
   /**
    * Update user filters

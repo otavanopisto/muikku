@@ -1,7 +1,9 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import MApi from "~/api/api";
+import { useTranslation } from "react-i18next";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
 import { ChatUser, ChatUserVisibilityEnum } from "~/generated/client";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
@@ -11,8 +13,9 @@ export type UseChatSettings = ReturnType<typeof useChatSettings>;
 
 /**
  * Custom hook to handle loading chat settings from rest api.
+ * @param displayNotification displayNotification
  */
-function useChatSettings() {
+function useChatSettings(displayNotification: DisplayNotificationTriggerType) {
   const websocket = useChatWebsocketContext();
 
   const [currentUser, setCurrentUser] = React.useState<ChatUser>(null);
@@ -21,24 +24,41 @@ function useChatSettings() {
 
   const componentMounted = React.useRef(true);
 
+  const { t } = useTranslation("chat");
+
   React.useEffect(() => {
+    /**
+     * Fetch chat settings
+     */
+    const fetchChatSettings = async () => {
+      setLoadingChatSettings(true);
+
+      try {
+        const chatUserSettings = await chatApi.getChatSettings();
+
+        unstable_batchedUpdates(() => {
+          setCurrentUser(chatUserSettings);
+          setChatEnabled(chatUserSettings.visibility !== "NONE");
+          setLoadingChatSettings(false);
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        displayNotification(
+          t("notifications.loadError", {
+            context: "settings",
+          }),
+          "error"
+        );
+
+        setLoadingChatSettings(false);
+      }
+    };
+
     fetchChatSettings();
-  }, []);
-
-  /**
-   * Fetch chat settings
-   */
-  const fetchChatSettings = async () => {
-    setLoadingChatSettings(true);
-
-    const chatUserSettings = await chatApi.getChatSettings();
-
-    unstable_batchedUpdates(() => {
-      setCurrentUser(chatUserSettings);
-      setChatEnabled(chatUserSettings.visibility !== "NONE");
-      setLoadingChatSettings(false);
-    });
-  };
+  }, [displayNotification, t]);
 
   React.useEffect(() => {
     /**

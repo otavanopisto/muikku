@@ -176,6 +176,7 @@
       "yes": "Yes"
     },
     "notifications": {
+      "400": "Bad request",
       "403": "Muikku session has expired. If you are doing course assignments/exercises please copy all unsaved answers to your computer and re-log into Muikku.",
       "403_password": "Please check your password to proceed with password change",
       "409": "Already exists",
@@ -2148,6 +2149,35 @@
     "labels": {
       "description": "Description",
       "guidanceCouncelorSuggestion": "Guidance councelor's suggestion"
+    }
+  },
+  "chat": {
+    "notifications": {
+      "400_settings": "Anna puuttuva nimimerkki",
+      "409_settings": "Valittu nimimerkki on jo käytössä, valitse toinen",
+      "loadError": "Chat lataaminen epäonnistui",
+      "loadError_activity": "Chat -tapahtumien lataaminen epäonnistui",
+      "loadError_settings": "Chat -asetusten lataaminen epäonnistui",
+      "loadError_rooms": "Chat -huoneiden lataaminen epäonnistui",
+      "loadError_users": "Chat -käyttäjien lataaminen epäonnistui",
+      "loadError_discussions": "Chat -Keskustelujen lataaminen epäonnistui",
+      "loadError_blockedUsers": "Chat -estettyjen käyttäjien lataaminen epäonnistui",
+      "loadError_councelors": "Chat -ohjaajien lataaminen epäonnistui",
+      "postError": "",
+      "postError_message": "Viestin lähettäminen epäonnistui",
+      "postError_room": "Huoneen luonti epäonnistui",
+      "updateError": "Päivittäminen epäonnistu",
+      "updateError_message": "Viestin päivittäminen epäonnistui",
+      "updateError_room": "Huoneen päivittäminen epäonnistui",
+      "updateError_settings": "Chat -asetusten päivittäminen epäonnistui",
+      "deleteError": "Poistaminen epäonnistui",
+      "deleteError_message": "Viestin poistaminen epäonnistui",
+      "deleteError_room": "Huoneen poistaminen epäonnistui",
+      "markAsReadError": "Lukemattomien viestien merkitseminen luetuiksi epäonnistui",
+      "blockUserError": "Käyttäjän estäminen epäonnistui",
+      "unblockUserError": "Käyttäjän eston poistaminen epäonnistui",
+      "closeDiscussionError": "Keskustelun sulkeminen epäonnistui",
+      "updateSuccess_settings": "Asetukset päivitetty onnistuneesti"
     }
   }
 }

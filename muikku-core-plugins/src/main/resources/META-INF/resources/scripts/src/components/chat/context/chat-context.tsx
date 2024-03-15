@@ -2,17 +2,17 @@
 // State manageses opened private chat list and opened room chat list
 import * as React from "react";
 import { createContext } from "react";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
 import { ChatUser } from "~/generated/client";
-import { StateType } from "~/reducers";
 import useChat, { UseChat } from "../hooks/useChat";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { ChatPermissions } from "../chat-helpers";
 
 /**
  * ChatPrivateContextType
  */
 export interface ChatContextValue extends UseChat {
-  canManagePublicRooms: boolean;
+  chatPermissions: ChatPermissions;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined);
@@ -23,7 +23,8 @@ const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 interface ChatContextProviderProps {
   children: React.ReactNode;
   currentUser: ChatUser;
-  canManagePublicRooms: boolean;
+  chatPermissions: ChatPermissions;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -31,12 +32,14 @@ interface ChatContextProviderProps {
  * @param props props
  */
 function ChatContextProvider(props: ChatContextProviderProps) {
-  const { children, currentUser, canManagePublicRooms } = props;
+  const { children, currentUser, chatPermissions, displayNotification } = props;
 
-  const useChatValue = useChat(currentUser);
+  const useChatValue = useChat(currentUser, displayNotification);
 
   return (
-    <ChatContext.Provider value={{ ...useChatValue, canManagePublicRooms }}>
+    <ChatContext.Provider
+      value={{ ...useChatValue, chatPermissions, displayNotification }}
+    >
       {children}
     </ChatContext.Provider>
   );
@@ -54,25 +57,4 @@ export function useChatContext() {
   return context;
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    canManagePublicRooms: state.status.permissions.CHAT_MANAGE_PUBLIC_ROOMS,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChatContextProvider);
+export default ChatContextProvider;

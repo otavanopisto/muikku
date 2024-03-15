@@ -1,6 +1,8 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useReadLocalStorage } from "usehooks-ts";
-import MApi from "~/api/api";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
 import { useWindowContext } from "~/context/window-context";
 import { ChatActivity, ChatMessage } from "~/generated/client";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
@@ -11,10 +13,12 @@ const chatApi = MApi.getChatApi();
  * Custom hook for chat activity
  * @param activeDiscussionIdentifier active identifier
  * @param currentUserIdentifier current user identifier
+ * @param displayNotification display notification
  */
 function useChatActivity(
   activeDiscussionIdentifier: string,
-  currentUserIdentifier: string
+  currentUserIdentifier: string,
+  displayNotification: DisplayNotificationTriggerType
 ) {
   const websocket = useChatWebsocketContext();
 
@@ -29,10 +33,42 @@ function useChatActivity(
 
   const minimized = useReadLocalStorage<boolean>("chat-minimized");
 
+  const { t } = useTranslation("chat");
+
   // Initial fetch
   React.useEffect(() => {
+    /**
+     * Fetches chat activity
+     */
+    const fetchChatActivity = async () => {
+      try {
+        const activity = await chatApi.getChatActivity();
+
+        const userActivities = activity.filter((activity) =>
+          activity.targetIdentifier.startsWith("user-")
+        );
+
+        const roomActivities = activity.filter((activity) =>
+          activity.targetIdentifier.startsWith("room-")
+        );
+
+        setChatUsersActivities(userActivities);
+        setChatRoomsActivities(roomActivities);
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification(
+          t("notifications.loadError", {
+            context: "activity",
+          }),
+          "error"
+        );
+      }
+    };
+
     fetchChatActivity();
-  }, []);
+  }, [displayNotification, t]);
 
   React.useEffect(() => {
     /**
@@ -169,24 +205,6 @@ function useChatActivity(
   ]);
 
   /**
-   * Fetches chat activity
-   */
-  const fetchChatActivity = async () => {
-    const activity = await chatApi.getChatActivity();
-
-    const userActivities = activity.filter((activity) =>
-      activity.targetIdentifier.startsWith("user-")
-    );
-
-    const roomActivities = activity.filter((activity) =>
-      activity.targetIdentifier.startsWith("room-")
-    );
-
-    setChatUsersActivities(userActivities);
-    setChatRoomsActivities(roomActivities);
-  };
-
-  /**
    * Marks unread messages as read
    * @param targetIdentifier target identifier
    */
@@ -212,45 +230,59 @@ function useChatActivity(
         return;
       }
 
-      await chatApi.markAsRead({
-        identifier: targetIdentifier,
-      });
-
-      // Otherwise mark the messages as read for the target identifier
-      // and update correct activity list (room or user)
-      if (targetIdentifier.startsWith("room-")) {
-        setChatRoomsActivities((prev) => {
-          const index = prev.findIndex(
-            (activity) => activity.targetIdentifier === targetIdentifier
-          );
-
-          if (index !== -1) {
-            const updatedList = [...prev];
-            updatedList[index].unreadMessages = 0;
-
-            return updatedList;
-          }
-
-          return prev;
+      try {
+        await chatApi.markAsRead({
+          identifier: targetIdentifier,
         });
-      } else {
-        setChatUsersActivities((prev) => {
-          const index = prev.findIndex(
-            (activity) => activity.targetIdentifier === targetIdentifier
-          );
 
-          if (index !== -1) {
-            const updatedList = [...prev];
-            updatedList[index].unreadMessages = 0;
+        // Otherwise mark the messages as read for the target identifier
+        // and update correct activity list (room or user)
+        if (targetIdentifier.startsWith("room-")) {
+          setChatRoomsActivities((prev) => {
+            const index = prev.findIndex(
+              (activity) => activity.targetIdentifier === targetIdentifier
+            );
 
-            return updatedList;
-          }
+            if (index !== -1) {
+              const updatedList = [...prev];
+              updatedList[index].unreadMessages = 0;
 
-          return prev;
-        });
+              return updatedList;
+            }
+
+            return prev;
+          });
+        } else {
+          setChatUsersActivities((prev) => {
+            const index = prev.findIndex(
+              (activity) => activity.targetIdentifier === targetIdentifier
+            );
+
+            if (index !== -1) {
+              const updatedList = [...prev];
+              updatedList[index].unreadMessages = 0;
+
+              return updatedList;
+            }
+
+            return prev;
+          });
+        }
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        displayNotification(t("notifications.markAsReadError"), "error");
       }
     },
-    [browserIsVisibleAndFocused, chatRoomsActivities, chatUsersActivities]
+    [
+      browserIsVisibleAndFocused,
+      chatRoomsActivities,
+      chatUsersActivities,
+      displayNotification,
+      t,
+    ]
   );
 
   // Activities as key (user id) value pair

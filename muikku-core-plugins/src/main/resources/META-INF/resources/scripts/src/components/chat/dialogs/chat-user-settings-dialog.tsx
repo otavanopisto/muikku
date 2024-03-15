@@ -6,15 +6,12 @@ import { ChatSettingVisibilityOption } from "../chat-helpers";
 import Select from "react-select";
 import { useChatContext } from "../context/chat-context";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
-import { StateType } from "~/reducers";
-import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { displayNotification } from "~/actions/base/notifications";
-import { connect } from "react-redux";
 import Button from "~/components/general/button";
 import ChatDialog from "./chat-dialog";
 import { ChatUserVisibilityEnum } from "~/generated/client";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 const chatApi = MApi.getChatApi();
 
@@ -24,21 +21,22 @@ const chatApi = MApi.getChatApi();
 interface ChatUserSettingDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
- * NewChatRoomDialog
+ * ChatUserSettingsDialog
  * @param props props
  */
 function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
-  const { currentUser } = useChatContext();
+  const { currentUser, displayNotification } = useChatContext();
   const [disabled, setDisabled] = React.useState<boolean>(false);
   const [currentNickValue, setCurrentNickValue] = React.useState(
     currentUser.nick
   );
   const [currentSelectValue, setCurrentSelectValue] =
     React.useState<ChatUserVisibilityEnum>(currentUser.visibility);
+
+  const { t } = useTranslation("chat");
 
   React.useEffect(() => {
     unstable_batchedUpdates(() => {
@@ -57,32 +55,46 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
       setDisabled(true);
 
       try {
-        await chatApi.updateChatSettings({
+        const updatedData = await chatApi.updateChatSettings({
           updateChatSettingsRequest: {
             ...currentUser,
             nick: currentNickValue.trim(),
             visibility: currentSelectValue,
           },
         });
-        setDisabled(false);
+
+        unstable_batchedUpdates(() => {
+          setCurrentNickValue(updatedData.nick);
+          setDisabled(false);
+        });
+
         callback();
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
         } else if (isResponseError(err)) {
           if (err.response.status === 400) {
-            props.displayNotification("Anna puuttuva nimimerkki", "error");
+            displayNotification(
+              t("notifications.400", {
+                context: "settings",
+              }),
+              "error"
+            );
           }
 
           if (err.response.status === 409) {
-            props.displayNotification(
-              "Valittu nimimerkki on jo käytössä, valitse toinen",
+            displayNotification(
+              t("notifications.409", {
+                context: "settings",
+              }),
               "error"
             );
           }
         } else {
-          props.displayNotification(
-            "Virhe chatin asetuksia päivittäessä",
+          displayNotification(
+            t("notifications.updateError", {
+              context: "settings",
+            }),
             "error"
           );
         }
@@ -211,24 +223,4 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
   );
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {};
-}
-
-/**
- * mapDispatchToProps
- */
-function mapDispatchToProps() {
-  return {
-    displayNotification,
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ChatUserSettingsDialog);
+export default ChatUserSettingsDialog;

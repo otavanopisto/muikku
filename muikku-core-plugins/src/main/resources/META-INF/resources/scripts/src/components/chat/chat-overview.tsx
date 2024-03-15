@@ -148,7 +148,7 @@ interface ChatOverviewHeaderProps {
 function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   const { onTabChange, activeTab } = props;
 
-  const { isMobileWidth, canManagePublicRooms } = useChatContext();
+  const { isMobileWidth, chatPermissions } = useChatContext();
 
   /**
    * Handles tab click
@@ -236,7 +236,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
       )}
 
       <div className="chat__overview-panel-header-actions">
-        {canManagePublicRooms && (
+        {chatPermissions.canManagePublicRooms && (
           <div className="chat__overview-panel-header-action">
             <ChatRoomNewDialog>
               <IconButton
@@ -429,7 +429,7 @@ function ChatOverviewRoomsList() {
     roomFilters,
     openDiscussion,
     openDeleteRoomDialog,
-    canManagePublicRooms,
+    chatPermissions,
   } = useChatContext();
 
   const filteredAndSortedRooms = React.useMemo(() => {
@@ -483,7 +483,7 @@ function ChatOverviewRoomsList() {
       >
         <OverviewListItemContent>{room.name}</OverviewListItemContent>
 
-        {canManagePublicRooms && room.type === "PUBLIC" && (
+        {chatPermissions.canManagePublicRooms && room.type === "PUBLIC" && (
           <OverviewListItemActions>
             <ChatRoomEditAndInfoDialog room={room} defaults="edit">
               <IconButton icon="pencil" buttonModifiers={["chat"]} />

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import { ChatMessage, ChatUser } from "~/generated/client";
 import Websocket from "~/util/websocket";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 const chatApi = MApi.getChatApi();
 
@@ -45,6 +46,10 @@ export class ChatDiscussionInstance {
    */
   private websocket: Websocket;
   /**
+   * displayNotification
+   */
+  private displayNotification: DisplayNotificationTriggerType;
+  /**
    * Initializing
    */
   private initializing = true;
@@ -81,15 +86,18 @@ export class ChatDiscussionInstance {
    * @param targetIdentifier targetIdentifier
    * @param currentUserIdentifier currentUserIdentifier
    * @param websocket websocket
+   * @param displayNotification displayNotification
    */
   constructor(
     targetIdentifier: string,
     currentUserIdentifier: string,
-    websocket: Websocket
+    websocket: Websocket,
+    displayNotification: DisplayNotificationTriggerType
   ) {
     this._targetIdentifier = targetIdentifier;
     this._currentUserIdentifier = currentUserIdentifier;
     this.websocket = websocket;
+    this.displayNotification = displayNotification;
 
     this.getInitialMessages = this.getInitialMessages.bind(this);
     this.loadMoreMessages = this.loadMoreMessages.bind(this);
@@ -180,14 +188,25 @@ export class ChatDiscussionInstance {
    * @returns messages
    */
   private async getInitialMessages() {
-    this.messages = await chatApi.getChatMessagesByTarget({
-      targetIdentifier: this._targetIdentifier,
-      count: 35,
-    });
+    try {
+      this.messages = await chatApi.getChatMessagesByTarget({
+        targetIdentifier: this._targetIdentifier,
+        count: 35,
+      });
 
-    this.initializing = false;
+      this.initializing = false;
 
-    this.triggerChangeListeners();
+      this.triggerChangeListeners();
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      this.displayNotification(
+        "Keskustelun viestien lataus epäonnistui",
+        "error"
+      );
+    }
   }
 
   /**
@@ -369,43 +388,62 @@ export class ChatDiscussionInstance {
       return;
     }
 
-    this.loadingMoreChatMsgs = true;
+    try {
+      this.loadingMoreChatMsgs = true;
 
-    const olderMsgs = await chatApi.getChatMessagesByTarget({
-      targetIdentifier: this.targetIdentifier,
-      count: 10,
-      earlierThan: this.messages[0].sentDateTime,
-    });
+      const olderMsgs = await chatApi.getChatMessagesByTarget({
+        targetIdentifier: this.targetIdentifier,
+        count: 10,
+        earlierThan: this.messages[0].sentDateTime,
+      });
 
-    if (olderMsgs.length === 0) {
-      this.canLoadMore = false;
-      this.loadingMoreChatMsgs = false;
-    } else {
-      this.messages = [...olderMsgs, ...this.messages];
-      this.loadingMoreChatMsgs = false;
+      if (olderMsgs.length === 0) {
+        this.canLoadMore = false;
+        this.loadingMoreChatMsgs = false;
+      } else {
+        this.messages = [...olderMsgs, ...this.messages];
+        this.loadingMoreChatMsgs = false;
+      }
+
+      this.triggerChangeListeners();
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      this.displayNotification(
+        "Vanhempien viestien lataus epäonnistui",
+        "error"
+      );
     }
-
-    this.triggerChangeListeners();
   }
 
   /**
    * Posts a message to the selected chat and mark it as read straight
    */
   async postMessage() {
-    await chatApi.createChatMessage({
-      targetIdentifier: this.targetIdentifier,
-      createChatMessageRequest: {
-        message: this.newMessage,
-      },
-    });
+    try {
+      await chatApi.createChatMessage({
+        targetIdentifier: this.targetIdentifier,
+        createChatMessageRequest: {
+          message: this.newMessage,
+        },
+      });
 
-    await chatApi.markAsRead({
-      identifier: this.targetIdentifier,
-    });
+      await chatApi.markAsRead({
+        identifier: this.targetIdentifier,
+      });
 
-    this.newMessage = "";
+      this.newMessage = "";
 
-    this.triggerChangeListeners();
+      this.triggerChangeListeners();
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      this.displayNotification("Viestin lähettäminen epäonnistui", "error");
+    }
   }
 
   /**
