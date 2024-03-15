@@ -1,7 +1,8 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import MApi from "~/api/api";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
 import {
   ChatRoom,
   CreateChatRoomRequest,
@@ -14,8 +15,9 @@ const chatApi = MApi.getChatApi();
 
 /**
  * Custom hook to handle loading rooms from rest api.
+ * @param displayNotification displayNotification
  */
-function useRooms() {
+function useRooms(displayNotification: DisplayNotificationTriggerType) {
   const websocket = useChatWebsocketContext();
 
   const [rooms, setRooms] = React.useState<ChatRoom[]>([]);
@@ -134,11 +136,18 @@ function useRooms() {
    */
   const createNewRoom = React.useCallback(
     async (newRoom: CreateChatRoomRequest) => {
-      await chatApi.createChatRoom({
-        createChatRoomRequest: newRoom,
-      });
+      try {
+        await chatApi.createChatRoom({
+          createChatRoomRequest: newRoom,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification("Huoneen luonti epäonnistui", "error");
+      }
     },
-    []
+    [displayNotification]
   );
 
   /**
@@ -148,12 +157,19 @@ function useRooms() {
    */
   const updateRoom = React.useCallback(
     async (identifier: string, updatedRoom: UpdateChatRoomRequest) => {
-      await chatApi.updateChatRoom({
-        identifier: identifier,
-        updateChatRoomRequest: updatedRoom,
-      });
+      try {
+        await chatApi.updateChatRoom({
+          identifier: identifier,
+          updateChatRoomRequest: updatedRoom,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification("Huoneen päivitys epäonnistui", "error");
+      }
     },
-    []
+    [displayNotification]
   );
 
   /**

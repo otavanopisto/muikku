@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
-import MApi from "~/api/api";
-// eslint-disable-next-line camelcase
+import MApi, { isMApiError } from "~/api/api";
 import { ChatMessage } from "~/generated/client";
 import { useChatContext } from "../context/chat-context";
 
@@ -33,7 +32,7 @@ interface UseMessageProps {
 function useMessage(props: UseMessageProps) {
   const { msg, onEditClick } = props;
 
-  const { currentUser, canModerate } = useChatContext();
+  const { currentUser, canModerate, displayNotification } = useChatContext();
 
   const [editMode, setEditMode] = React.useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] =
@@ -46,12 +45,20 @@ function useMessage(props: UseMessageProps) {
    * Delete message
    */
   const deleteMessage = React.useCallback(async () => {
-    await chatApi.deleteChatMessage({
-      messageId: msg.id,
-    });
+    try {
+      await chatApi.deleteChatMessage({
+        messageId: msg.id,
+      });
 
-    setShowDeleteDialog(false);
-  }, [msg]);
+      setShowDeleteDialog(false);
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      displayNotification("Viestin poisto epäonnistui", "error");
+    }
+  }, [displayNotification, msg.id]);
 
   /**
    * Close delete dialog
@@ -75,15 +82,23 @@ function useMessage(props: UseMessageProps) {
    * Save edited message
    */
   const saveEditedMessage = React.useCallback(async () => {
-    await chatApi.updateChatMessage({
-      messageId: msg.id,
-      updateChatMessageRequest: {
-        message: editedMessage,
-      },
-    });
+    try {
+      await chatApi.updateChatMessage({
+        messageId: msg.id,
+        updateChatMessageRequest: {
+          message: editedMessage,
+        },
+      });
 
-    toggleEditMode(false);
-  }, [editedMessage, msg.id, toggleEditMode]);
+      toggleEditMode(false);
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      displayNotification("Viestin muokkaus epäonnistui", "error");
+    }
+  }, [displayNotification, editedMessage, msg.id, toggleEditMode]);
 
   /**
    * Handles edited message change

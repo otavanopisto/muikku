@@ -22,14 +22,19 @@ import { useChatWebsocketContext } from "../context/chat-websocket-context";
 import useChatActivity from "./useChatActivity";
 import { breakpoints } from "~/util/breakpoints";
 import { useLocalStorage } from "usehooks-ts";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 export type UseChat = ReturnType<typeof useChat>;
 
 /**
  * Custom hook for chat that groups all chat related functionality
  * @param currentUser currentUser
+ * @param displayNotification displayNotification
  */
-function useChat(currentUser: ChatUser) {
+function useChat(
+  currentUser: ChatUser,
+  displayNotification: DisplayNotificationTriggerType
+) {
   const websocket = useChatWebsocketContext();
 
   const {
@@ -43,7 +48,7 @@ function useChat(currentUser: ChatUser) {
     blockUser,
     closePrivateDiscussion,
     unblockUser,
-  } = useChatUsers({ currentUser });
+  } = useChatUsers({ currentUser, displayNotification });
   const {
     roomFilters,
     rooms,
@@ -52,7 +57,7 @@ function useChat(currentUser: ChatUser) {
     updateRoom,
     deleteRoom,
     updateRoomFilters,
-  } = useRooms();
+  } = useRooms(displayNotification);
 
   const chatViews = useViews({
     views: chatControllerViews,
@@ -68,7 +73,11 @@ function useChat(currentUser: ChatUser) {
     chatActivityByUserObject,
     chatActivityByRoomObject,
     markMsgsAsRead,
-  } = useChatActivity(activeDiscussionIdentifier, currentUser.identifier);
+  } = useChatActivity(
+    activeDiscussionIdentifier,
+    currentUser.identifier,
+    displayNotification
+  );
 
   // Discussion instances
   const [discussionInstances, setMessagesInstances] = React.useState<
@@ -183,7 +192,8 @@ function useChat(currentUser: ChatUser) {
         const newDiscussionInstance = new ChatDiscussionInstance(
           identifier,
           currentUser.identifier,
-          websocket
+          websocket,
+          displayNotification
         );
 
         const updatedInstanceList = [
@@ -197,7 +207,13 @@ function useChat(currentUser: ChatUser) {
       setActiveDiscussionIdentifier(identifier);
       chatViews.goTo("discussion");
     },
-    [discussionInstances, chatViews, currentUser.identifier, websocket]
+    [
+      discussionInstances,
+      chatViews,
+      currentUser.identifier,
+      websocket,
+      displayNotification,
+    ]
   );
 
   /**

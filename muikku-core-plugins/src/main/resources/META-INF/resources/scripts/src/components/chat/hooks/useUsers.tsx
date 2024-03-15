@@ -1,7 +1,8 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import MApi from "~/api/api";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import MApi, { isMApiError } from "~/api/api";
 import {
   ChatMessage,
   ChatUser,
@@ -21,6 +22,7 @@ interface UseUsersProps {
    * current chat user
    */
   currentUser: ChatUser;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -28,7 +30,7 @@ interface UseUsersProps {
  * @param props props
  */
 function useUsers(props: UseUsersProps) {
-  const { currentUser } = props;
+  const { currentUser, displayNotification } = props;
 
   const websocket = useChatWebsocketContext();
 
@@ -54,19 +56,87 @@ function useUsers(props: UseUsersProps) {
 
   // When current user visibility changes we need to fetch all users again
   React.useEffect(() => {
+    /**
+     * Fetch users
+     */
+    const fetchAllUsers = async () => {
+      try {
+        const users = await chatApi.getChatUsers({
+          onlyOnline: false,
+        });
+
+        setUsers(users);
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification("Käyttäjien haku epäonnistui", "error");
+      }
+    };
+
     if (currentUser.visibility !== "NONE") {
       fetchAllUsers();
     }
-  }, [currentUser.visibility]);
+  }, [currentUser.visibility, displayNotification]);
 
   React.useEffect(() => {
+    /**
+     * Fetch users that have active discussions with current user
+     */
+    const fetchUsersWithDiscussions = async () => {
+      try {
+        const chatUsers = await chatApi.getPrivateDiscussions();
+
+        chatUsers.reverse();
+
+        setBookmarkedUsers(chatUsers);
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification("Keskustelujen haku epäonnistui", "error");
+      }
+    };
+
+    /**
+     * Fetch blocked users
+     */
+    const fetchBlockedUsers = async () => {
+      try {
+        const blockedUsers = await chatApi.getBlocklist();
+
+        setBlockedUsers(blockedUsers);
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification("Estettyjen käyttäjien haku epäonnistui", "error");
+      }
+    };
+
+    /**
+     * Fetch my counselors
+     */
+    const fetchMyCounselors = async () => {
+      try {
+        const counselors = await meApi.getGuidanceCounselors();
+
+        setMyCounselors(counselors);
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification("Ohjaajien haku epäonnistui", "error");
+      }
+    };
+
     fetchUsersWithDiscussions();
     fetchBlockedUsers();
 
     if (currentUser.type === "STUDENT") {
       fetchMyCounselors();
     }
-  }, [currentUser.type]);
+  }, [currentUser.type, displayNotification]);
 
   React.useEffect(() => {
     /**
@@ -285,114 +355,106 @@ function useUsers(props: UseUsersProps) {
   }, [currentUser.type, websocket]);
 
   /**
-   * Fetch users
-   */
-  const fetchAllUsers = async () => {
-    const users = await chatApi.getChatUsers({
-      onlyOnline: false,
-    });
-
-    setUsers(users);
-  };
-
-  /**
-   * Fetch users that have active discussions with current user
-   */
-  const fetchUsersWithDiscussions = async () => {
-    const chatUsers = await chatApi.getPrivateDiscussions();
-
-    chatUsers.reverse();
-
-    setBookmarkedUsers(chatUsers);
-  };
-
-  /**
-   * Fetch my counselors
-   */
-  const fetchMyCounselors = async () => {
-    const counselors = await meApi.getGuidanceCounselors();
-
-    setMyCounselors(counselors);
-  };
-
-  /**
-   * Fetch blocked users
-   */
-  const fetchBlockedUsers = async () => {
-    const blockedUsers = await chatApi.getBlocklist();
-
-    setBlockedUsers(blockedUsers);
-  };
-
-  /**
    * Blocks user and removes it from bookmarked users
    * @param user target chat user
    * @param type type of block. SOFT only hides and HARD also prevents user from sending messages.
    */
-  const blockUser = React.useCallback(async (user: ChatUser) => {
-    await chatApi.blockUser({
-      identifier: user.identifier,
-    });
+  const blockUser = React.useCallback(
+    async (user: ChatUser) => {
+      try {
+        await chatApi.blockUser({
+          identifier: user.identifier,
+        });
 
-    unstable_batchedUpdates(() => {
-      setBlockedUsers((prev) => [...prev, user]);
-      setBookmarkedUsers((prev) => {
-        const index = prev.findIndex((u) => u.id === user.id);
+        unstable_batchedUpdates(() => {
+          setBlockedUsers((prev) => [...prev, user]);
+          setBookmarkedUsers((prev) => {
+            const index = prev.findIndex((u) => u.id === user.id);
 
-        if (index !== -1) {
-          const updatedUsers = [...prev];
-          updatedUsers.splice(index, 1);
-          return updatedUsers;
+            if (index !== -1) {
+              const updatedUsers = [...prev];
+              updatedUsers.splice(index, 1);
+              return updatedUsers;
+            }
+
+            return prev;
+          });
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
         }
 
-        return prev;
-      });
-    });
-  }, []);
+        displayNotification("Käyttäjän estäminen epäonnistui", "error");
+      }
+    },
+    [displayNotification]
+  );
 
   /**
    * Unblocks user
    * @param user user
    */
-  const unblockUser = React.useCallback(async (user: ChatUser) => {
-    await chatApi.unblockUser({
-      identifier: user.identifier,
-    });
+  const unblockUser = React.useCallback(
+    async (user: ChatUser) => {
+      try {
+        await chatApi.unblockUser({
+          identifier: user.identifier,
+        });
 
-    setBlockedUsers((prev) => {
-      const index = prev.findIndex((u) => u.id === user.id);
+        setBlockedUsers((prev) => {
+          const index = prev.findIndex((u) => u.id === user.id);
 
-      if (index !== -1) {
-        const updatedUsers = [...prev];
-        updatedUsers.splice(index, 1);
-        return updatedUsers;
+          if (index !== -1) {
+            const updatedUsers = [...prev];
+            updatedUsers.splice(index, 1);
+            return updatedUsers;
+          }
+
+          return prev;
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        displayNotification("Käyttäjän estäminen epäonnistui", "error");
       }
-
-      return prev;
-    });
-  }, []);
+    },
+    [displayNotification]
+  );
 
   /**
    * Close private discussion and remove it from bookmarked users
    * @param user user
    */
-  const closePrivateDiscussion = React.useCallback(async (user: ChatUser) => {
-    await chatApi.closeConversation({
-      identifier: user.identifier,
-    });
+  const closePrivateDiscussion = React.useCallback(
+    async (user: ChatUser) => {
+      try {
+        await chatApi.closeConversation({
+          identifier: user.identifier,
+        });
 
-    setBookmarkedUsers((prev) => {
-      const index = prev.findIndex((u) => u.id === user.id);
+        setBookmarkedUsers((prev) => {
+          const index = prev.findIndex((u) => u.id === user.id);
 
-      if (index !== -1) {
-        const updatedUsers = [...prev];
-        updatedUsers.splice(index, 1);
-        return updatedUsers;
+          if (index !== -1) {
+            const updatedUsers = [...prev];
+            updatedUsers.splice(index, 1);
+            return updatedUsers;
+          }
+
+          return prev;
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification("Keskustelun sulkeminen epäonnistui", "error");
       }
-
-      return prev;
-    });
-  }, []);
+    },
+    [displayNotification]
+  );
 
   /**
    * Update user filters

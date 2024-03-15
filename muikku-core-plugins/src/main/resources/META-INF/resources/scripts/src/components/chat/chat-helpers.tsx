@@ -16,6 +16,13 @@ import ChatOverview from "./chat-overview";
 export type ActiveDiscussion = ChatRoom | ChatUser | null;
 
 /**
+ * ChatPermissions
+ */
+export interface ChatPermissions {
+  canManagePublicRooms: boolean;
+}
+
+/**
  * ChatUserFilter
  */
 export type ChatUserFilter = "online" | "offline" | "students" | "staff";

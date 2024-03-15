@@ -11,20 +11,40 @@ import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-di
 import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
 import ChatUnreadMsgCounter from "./chat-unread-msg-counter";
 import { ChatUserInfoProvider } from "./context/chat-user-info-context";
+import { connect, Dispatch } from "react-redux";
+import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import { StateType } from "~/reducers";
+import { ChatPermissions } from "./chat-helpers";
+
+/**
+ * ChatProps
+ */
+interface ChatProps {
+  chatPermissions: ChatPermissions;
+  displayNotification: DisplayNotificationTriggerType;
+}
 
 /**
  * Chat component. Renders or not depending on chat settings
+ * @param props props
  * @returns JSX.Element
  */
-const Chat = () => {
-  const { currentUser, chatEnabled } = useChatSettings();
+const Chat = (props: ChatProps) => {
+  const { currentUser, chatEnabled } = useChatSettings(
+    props.displayNotification
+  );
 
   if (!chatEnabled || !currentUser) {
     return null;
   }
 
   return (
-    <ChatContextProvider currentUser={currentUser}>
+    <ChatContextProvider {...props} currentUser={currentUser}>
       <ChatUserInfoProvider>
         <ChatContent />
       </ChatUserInfoProvider>
@@ -89,4 +109,29 @@ const ChatContent = () => {
   );
 };
 
-export default Chat;
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    chatPermissions: {
+      canManagePublicRooms: state.status.permissions.CHAT_MANAGE_PUBLIC_ROOMS,
+    } as ChatPermissions,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    {
+      displayNotification,
+    },
+    dispatch
+  );
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
