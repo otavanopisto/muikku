@@ -477,12 +477,14 @@ public class ChatController {
       modified = true;
     }
     else if (chatUser != null && (visibility != chatUser.getVisibility() || !StringUtils.equals(chatUser.getNick(), nick))) {
+      boolean nickChange = !StringUtils.equals(chatUser.getNick(), nick);
+      boolean visibilityChange = visibility != chatUser.getVisibility(); 
       chatUser = chatUserDAO.update(chatUser, visibility, nick);
       // Chat is on but visibility or nick has changed
-      if (visibility != chatUser.getVisibility()) {
+      if (visibilityChange) {
         handleVisibilityChange(userEntity.getId(), visibility);
       }
-      if (!StringUtils.equals(chatUser.getNick(), nick)) {
+      if (nickChange) {
         handleNickChange(userEntity.getId(), nick);
       }
       modified = true;
