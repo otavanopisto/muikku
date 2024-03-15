@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import MApi, { isMApiError } from "~/api/api";
 import { ChatMessage } from "~/generated/client";
 import { useChatContext } from "../context/chat-context";
@@ -41,6 +42,8 @@ function useMessage(props: UseMessageProps) {
   const [editedMessage, setEditedMessage] = React.useState<string>(msg.message);
   const myMsg = msg.sourceUserEntityId === currentUser.id;
 
+  const { t } = useTranslation("chat");
+
   /**
    * Delete message
    */
@@ -56,9 +59,15 @@ function useMessage(props: UseMessageProps) {
         throw err;
       }
 
-      displayNotification("Viestin poisto epäonnistui", "error");
+      //displayNotification("Viestin poisto epäonnistui", "error");
+      displayNotification(
+        t("notifications.deleteError", {
+          context: "message",
+        }),
+        "error"
+      );
     }
-  }, [displayNotification, msg.id]);
+  }, [displayNotification, msg.id, t]);
 
   /**
    * Close delete dialog
@@ -96,9 +105,15 @@ function useMessage(props: UseMessageProps) {
         throw err;
       }
 
-      displayNotification("Viestin muokkaus epäonnistui", "error");
+      //displayNotification("Viestin muokkaus epäonnistui", "error");
+      displayNotification(
+        t("notifications.updateError", {
+          context: "message",
+        }),
+        "error"
+      );
     }
-  }, [displayNotification, editedMessage, msg.id, toggleEditMode]);
+  }, [displayNotification, editedMessage, msg.id, t, toggleEditMode]);
 
   /**
    * Handles edited message change

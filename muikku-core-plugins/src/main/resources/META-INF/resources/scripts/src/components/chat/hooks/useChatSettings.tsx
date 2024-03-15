@@ -1,6 +1,7 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import { ChatUser, ChatUserVisibilityEnum } from "~/generated/client";
@@ -23,6 +24,8 @@ function useChatSettings(displayNotification: DisplayNotificationTriggerType) {
 
   const componentMounted = React.useRef(true);
 
+  const { t } = useTranslation("chat");
+
   React.useEffect(() => {
     /**
      * Fetch chat settings
@@ -43,13 +46,19 @@ function useChatSettings(displayNotification: DisplayNotificationTriggerType) {
           throw err;
         }
 
-        displayNotification("Chat asetusten hakeminen epäonnistui", "error");
+        displayNotification(
+          t("notifications.loadError", {
+            context: "settings",
+          }),
+          "error"
+        );
+
         setLoadingChatSettings(false);
       }
     };
 
     fetchChatSettings();
-  }, [displayNotification]);
+  }, [displayNotification, t]);
 
   React.useEffect(() => {
     /**

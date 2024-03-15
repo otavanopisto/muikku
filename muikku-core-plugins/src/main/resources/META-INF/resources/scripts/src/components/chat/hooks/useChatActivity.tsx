@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useReadLocalStorage } from "usehooks-ts";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
@@ -32,6 +33,8 @@ function useChatActivity(
 
   const minimized = useReadLocalStorage<boolean>("chat-minimized");
 
+  const { t } = useTranslation("chat");
+
   // Initial fetch
   React.useEffect(() => {
     /**
@@ -55,12 +58,17 @@ function useChatActivity(
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Virhe chatin aktiviteettia haettaessa", "error");
+        displayNotification(
+          t("notifications.loadError", {
+            context: "activity",
+          }),
+          "error"
+        );
       }
     };
 
     fetchChatActivity();
-  }, [displayNotification]);
+  }, [displayNotification, t]);
 
   React.useEffect(() => {
     /**
@@ -264,10 +272,8 @@ function useChatActivity(
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification(
-          "Virhe lukemattomien viestien merkitsemisessä",
-          "error"
-        );
+
+        displayNotification(t("notifications.markAsReadError"), "error");
       }
     },
     [
@@ -275,6 +281,7 @@ function useChatActivity(
       chatRoomsActivities,
       chatUsersActivities,
       displayNotification,
+      t,
     ]
   );
 

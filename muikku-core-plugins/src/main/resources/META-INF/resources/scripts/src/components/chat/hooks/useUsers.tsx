@@ -1,6 +1,7 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import {
@@ -54,6 +55,8 @@ function useUsers(props: UseUsersProps) {
 
   usersRef.current = users;
 
+  const { t } = useTranslation("chat");
+
   // When current user visibility changes we need to fetch all users again
   React.useEffect(() => {
     /**
@@ -70,14 +73,19 @@ function useUsers(props: UseUsersProps) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Käyttäjien haku epäonnistui", "error");
+        displayNotification(
+          t("notifications.loadError", {
+            context: "users",
+          }),
+          "error"
+        );
       }
     };
 
     if (currentUser.visibility !== "NONE") {
       fetchAllUsers();
     }
-  }, [currentUser.visibility, displayNotification]);
+  }, [currentUser.visibility, displayNotification, t]);
 
   React.useEffect(() => {
     /**
@@ -94,7 +102,12 @@ function useUsers(props: UseUsersProps) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Keskustelujen haku epäonnistui", "error");
+        displayNotification(
+          t("notifications.loadError", {
+            context: "discussions",
+          }),
+          "error"
+        );
       }
     };
 
@@ -110,7 +123,12 @@ function useUsers(props: UseUsersProps) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Estettyjen käyttäjien haku epäonnistui", "error");
+        displayNotification(
+          t("notifications.loadError", {
+            context: "blockedUsers",
+          }),
+          "error"
+        );
       }
     };
 
@@ -126,7 +144,12 @@ function useUsers(props: UseUsersProps) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Ohjaajien haku epäonnistui", "error");
+        displayNotification(
+          t("notifications.loadError", {
+            context: "counselors",
+          }),
+          "error"
+        );
       }
     };
 
@@ -136,7 +159,7 @@ function useUsers(props: UseUsersProps) {
     if (currentUser.type === "STUDENT") {
       fetchMyCounselors();
     }
-  }, [currentUser.type, displayNotification]);
+  }, [currentUser.type, displayNotification, t]);
 
   React.useEffect(() => {
     /**
@@ -385,10 +408,10 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
 
-        displayNotification("Käyttäjän estäminen epäonnistui", "error");
+        displayNotification(t("notifications.blockUserError"), "error");
       }
     },
-    [displayNotification]
+    [displayNotification, t]
   );
 
   /**
@@ -418,10 +441,10 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
 
-        displayNotification("Käyttäjän estäminen epäonnistui", "error");
+        displayNotification(t("notifications.unblockUserError"), "error");
       }
     },
-    [displayNotification]
+    [displayNotification, t]
   );
 
   /**
@@ -450,10 +473,10 @@ function useUsers(props: UseUsersProps) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Keskustelun sulkeminen epäonnistui", "error");
+        displayNotification(t("notifications.closeDiscussionError"), "error");
       }
     },
-    [displayNotification]
+    [displayNotification, t]
   );
 
   /**

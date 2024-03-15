@@ -23,7 +23,7 @@ import {
 /**
  * ChatSettingsProps
  */
-interface ChatSettingsProps extends WithTranslation<["common"]> {
+interface ChatSettingsProps extends WithTranslation<["common", "chat"]> {
   profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
@@ -119,7 +119,9 @@ class ChatSettings extends React.Component<
       });
 
       this.props.displayNotification(
-        "Asetukset päivitetty onnistuneesti",
+        this.props.t("notifications.updateSuccess", {
+          context: "settings",
+        }),
         "success"
       );
     } catch (err) {
@@ -127,18 +129,27 @@ class ChatSettings extends React.Component<
         throw err;
       } else if (isResponseError(err)) {
         if (err.response.status === 400) {
-          this.props.displayNotification("Anna puuttuva nimimerkki", "error");
+          this.props.displayNotification(
+            this.props.t("notifications.400", {
+              context: "settings",
+            }),
+            "error"
+          );
         }
 
         if (err.response.status === 409) {
           this.props.displayNotification(
-            "Valittu nimimerkki on jo käytössä, valitse toinen",
+            this.props.t("notifications.409", {
+              context: "settings",
+            }),
             "error"
           );
         }
       } else {
         this.props.displayNotification(
-          "Virhe chatin asetuksia päivittäessä",
+          this.props.t("notifications.updateError", {
+            context: "settings",
+          }),
           "error"
         );
       }
@@ -276,6 +287,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["profile"])(
+export default withTranslation(["profile", "chat"])(
   connect(mapStateToProps, mapDispatchToProps)(ChatSettings)
 );

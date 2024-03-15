@@ -11,6 +11,7 @@ import ChatDialog from "./chat-dialog";
 import { ChatUserVisibilityEnum } from "~/generated/client";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { useTranslation } from "react-i18next";
 
 const chatApi = MApi.getChatApi();
 
@@ -34,6 +35,8 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
   );
   const [currentSelectValue, setCurrentSelectValue] =
     React.useState<ChatUserVisibilityEnum>(currentUser.visibility);
+
+  const { t } = useTranslation("chat");
 
   React.useEffect(() => {
     unstable_batchedUpdates(() => {
@@ -71,17 +74,29 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
           throw err;
         } else if (isResponseError(err)) {
           if (err.response.status === 400) {
-            displayNotification("Anna puuttuva nimimerkki", "error");
+            displayNotification(
+              t("notifications.400", {
+                context: "settings",
+              }),
+              "error"
+            );
           }
 
           if (err.response.status === 409) {
             displayNotification(
-              "Valittu nimimerkki on jo käytössä, valitse toinen",
+              t("notifications.409", {
+                context: "settings",
+              }),
               "error"
             );
           }
         } else {
-          displayNotification("Virhe chatin asetuksia päivittäessä", "error");
+          displayNotification(
+            t("notifications.updateError", {
+              context: "settings",
+            }),
+            "error"
+          );
         }
 
         unstable_batchedUpdates(() => {

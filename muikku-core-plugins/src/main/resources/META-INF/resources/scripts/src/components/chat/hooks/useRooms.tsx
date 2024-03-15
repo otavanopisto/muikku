@@ -1,6 +1,7 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import {
@@ -30,9 +31,39 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
 
   const componentMounted = React.useRef(true);
 
+  const { t } = useTranslation("chat");
+
   React.useEffect(() => {
+    /**
+     * Fetch rooms
+     */
+    const fetchRooms = async () => {
+      try {
+        setLoadingRooms(true);
+
+        const rooms = await chatApi.getChatRooms();
+
+        unstable_batchedUpdates(() => {
+          setRooms(rooms);
+          setLoadingRooms(false);
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification(
+          t("notifications.loadError", {
+            context: "rooms",
+          }),
+          "error"
+        );
+
+        setLoadingRooms(false);
+      }
+    };
+
     fetchRooms();
-  }, []);
+  }, [displayNotification, t]);
 
   React.useEffect(() => {
     /**
@@ -117,20 +148,6 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
   }, [websocket]);
 
   /**
-   * Fetch rooms
-   */
-  const fetchRooms = async () => {
-    setLoadingRooms(true);
-
-    const rooms = await chatApi.getChatRooms();
-
-    unstable_batchedUpdates(() => {
-      setRooms(rooms);
-      setLoadingRooms(false);
-    });
-  };
-
-  /**
    * Create new room
    * @param newRoom newRoom
    */
@@ -144,10 +161,15 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Huoneen luonti epäonnistui", "error");
+        displayNotification(
+          t("notifications.postError", {
+            context: "room",
+          }),
+          "error"
+        );
       }
     },
-    [displayNotification]
+    [displayNotification, t]
   );
 
   /**
@@ -166,21 +188,41 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification("Huoneen päivitys epäonnistui", "error");
+        displayNotification(
+          t("notifications.updateError", {
+            context: "room",
+          }),
+          "error"
+        );
       }
     },
-    [displayNotification]
+    [displayNotification, t]
   );
 
   /**
    * Delete room
    * @param identifier identifier
    */
-  const deleteRoom = React.useCallback(async (identifier: string) => {
-    await chatApi.deleteChatRoom({
-      identifier: identifier,
-    });
-  }, []);
+  const deleteRoom = React.useCallback(
+    async (identifier: string) => {
+      try {
+        await chatApi.deleteChatRoom({
+          identifier: identifier,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        displayNotification(
+          t("notifications.deleteError", {
+            context: "room",
+          }),
+          "error"
+        );
+      }
+    },
+    [displayNotification, t]
+  );
 
   /**
    * Update user filters
