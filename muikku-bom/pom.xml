@@ -44,7 +44,7 @@
 
     <!-- Guava -->
 
-    <google-guava.version>31.1-jre</google-guava.version>
+    <google-guava.version>33.1.0-jre</google-guava.version>
 
     <!-- Tests -->
     <cdi-unit.version>3.1.0</cdi-unit.version>

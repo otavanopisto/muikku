@@ -18,7 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import com.rometools.modules.mediarss.MediaEntryModule;
 import com.rometools.modules.mediarss.MediaModule;
@@ -48,7 +48,7 @@ public class FeedSynchronizer {
       return html;
     }
     Document doc = Jsoup.parse(html.replace("\u00a0"," ")); // non-breaking spaces
-    doc = new Cleaner(Whitelist.basic()).clean(doc);
+    doc = new Cleaner(Safelist.basic()).clean(doc);
     doc.select("a[target]").attr("rel", "noopener noreferer");
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
