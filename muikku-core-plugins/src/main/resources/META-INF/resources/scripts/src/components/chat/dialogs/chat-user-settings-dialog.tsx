@@ -145,11 +145,13 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
       </DialogRow>
       <DialogRow>
         <div className="form-element">
-          <label className="chat__label" htmlFor="chatVisibility">
-            Näkyvyys
+          <label className="chat__label" htmlFor="selectVisibility">
+            {t("labels.selectVisibility", {
+              ns: "chat",
+            })}
           </label>
           <Select<ChatSettingVisibilityOption>
-            id="chatVisibility"
+            id="selectVisibility"
             className="react-select-override react-select-override--chat"
             classNamePrefix="react-select-override"
             isDisabled={disabled}
