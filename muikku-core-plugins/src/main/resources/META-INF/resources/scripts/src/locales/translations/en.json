@@ -2188,16 +2188,16 @@
       "visibilityFilterStaff": "Henkilökunnalle"
     },
     "content": {
-      "blockUserMsg": "Haluatko varmasti estää käyttäjän {{name}}? Tämä estää käyttäjää lähettämästä sinulle uusia viestejä.",
+      "blockUserMsg": "Haluatko varmasti estää käyttäjän <b>{{name}}</b>? Tämä estää käyttäjää lähettämästä sinulle uusia viestejä.",
       "deleteMsgMsg": "Olet poistamassa viestiä:",
-      "deleteRoomMsg": "Oeltko varma että haluat poistaa huoneen: {{name}}? Kaikki huoneen viestit poistuvat myös.",
+      "deleteRoomMsg": "Oeltko varma että haluat poistaa huoneen: <b>{{name}}</b>? Kaikki huoneen viestit poistuvat myös.",
       "emptySearchMsg_blockedUsers": "Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty",
       "emptySearchMsg_rooms": "Haulla ei löytynyt huoneita tai huoneita ei ole",
       "emptySearchMsg_users": "Haulla ei löytynyt käyttäjiä tai käyttäjiä ei ole",
       "emptySearchMsg": "Haulla ei löytynyt osumia",
       "msgDeleted": "Poistettu {{date}}",
       "msgEdited": "Muokattu {{date}}",
-      "unblockUserMsg": "Olet poistamassa estoa käyttäjältä {{name}}. Poiston jälkeen käyttäjä näkee statuksesi ja hän voi lähettää sinulle viestejä."
+      "unblockUserMsg": "Olet poistamassa estoa käyttäjältä <b>{{name}}</b>. Poiston jälkeen käyttäjä näkee statuksesi ja hän voi lähettää sinulle viestejä."
     },
     "notifications": {
       "400_settings": "Anna puuttuva nimimerkki",

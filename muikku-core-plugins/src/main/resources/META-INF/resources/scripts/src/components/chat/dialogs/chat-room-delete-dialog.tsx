@@ -58,10 +58,14 @@ function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
     return (
       <div>
         <DialogRow>
-          {t("content.deleteRoomMsg", {
-            name: <strong>{roomToBeDeleted.name}</strong>,
-            ns: "chat",
-          })}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: t("content.deleteRoomMsg", {
+                name: roomToBeDeleted.name,
+                ns: "chat",
+              }),
+            }}
+          />
         </DialogRow>
       </div>
     );

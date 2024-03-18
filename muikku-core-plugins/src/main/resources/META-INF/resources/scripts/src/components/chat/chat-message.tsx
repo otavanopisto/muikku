@@ -159,7 +159,10 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
     // If message nick exists, use it, else use a generated hash that indicates that the
     // user has closed the chat for good
     const nick =
-      msg.nick || `Poistunut#${generateHash(`user-${msg.sourceUserEntityId}`)}`;
+      msg.nick ||
+      `${t("labels.gone", {
+        ns: "chat",
+      })}#${generateHash(`user-${msg.sourceUserEntityId}`)}`;
 
     const chatMessageContent = editMode ? (
       <React.Fragment key="editable">
@@ -183,7 +186,6 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
               value={editedMessage}
               onChange={handleTextareaChange}
               onKeyDown={handleEnterKeyDown}
-              autoFocus
             />
           </div>
 
@@ -191,9 +193,8 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
             <Button buttonModifiers={["chat"]} onClick={handleCancelEdit}>
               {t("actions.cancel")}
             </Button>
-            <span>tai</span>
+            <span>{t("content.or")}</span>
             <Button buttonModifiers={["chat"]} onClick={handleSave}>
-              Tallenna
               {t("actions.save")}
             </Button>
           </div>

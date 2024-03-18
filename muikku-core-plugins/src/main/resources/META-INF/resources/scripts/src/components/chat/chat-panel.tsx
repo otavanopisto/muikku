@@ -128,6 +128,20 @@ function ChatPrivatePanel(props: ChatPrivatePanelProps) {
   };
 
   /**
+   * Handles submit message.
+   * @param e e
+   */
+  const handleSubmitMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await postMessage();
+
+    // When current user send a message, scroll to bottom
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollToBottom();
+    }
+  };
+
+  /**
    * Handles editor change.
    * @param e e
    */
@@ -232,26 +246,27 @@ function ChatPrivatePanel(props: ChatPrivatePanelProps) {
         </MessagesContainer>
       </div>
 
-      <div className="chat__discussion-panel-footer" ref={footerRef}>
-        <div className="chat__discussion-editor-container">
-          <TextareaAutosize
-            className="chat__new-message"
-            value={newMessage}
-            onChange={handleEditorChange}
-            onKeyDown={handleEnterKeyDown}
-            maxRows={5}
+      <form onSubmit={handleSubmitMessage}>
+        <div className="chat__discussion-panel-footer" ref={footerRef}>
+          <div className="chat__discussion-editor-container">
+            <TextareaAutosize
+              className="chat__new-message"
+              value={newMessage}
+              onChange={handleEditorChange}
+              onKeyDown={handleEnterKeyDown}
+              maxRows={5}
+              disabled={isBlocked || targetUser.presence === "DISABLED"}
+            />
+          </div>
+          <button
+            className="chat__submit"
+            type="submit"
             disabled={isBlocked || targetUser.presence === "DISABLED"}
-          />
+          >
+            <span className="icon-arrow-right"></span>
+          </button>
         </div>
-        <button
-          className="chat__submit"
-          type="submit"
-          onClick={postMessage}
-          disabled={isBlocked || targetUser.presence === "DISABLED"}
-        >
-          <span className="icon-arrow-right"></span>
-        </button>
-      </div>
+      </form>
     </div>
   );
 }
@@ -345,6 +360,20 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
   };
 
   /**
+   * Handles submit message.
+   * @param e e
+   */
+  const handleSubmitMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await postMessage();
+
+    // When current user send a message, scroll to bottom
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollToBottom();
+    }
+  };
+
+  /**
    * Handles editor change.
    * @param e e
    */
@@ -431,7 +460,7 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
           ))}
         </MessagesContainer>
       </div>
-      <form onSubmit={postMessage}>
+      <form onSubmit={handleSubmitMessage}>
         <div className="chat__discussion-panel-footer" ref={footerRef}>
           <div className="chat__discussion-editor-container">
             <TextareaAutosize
