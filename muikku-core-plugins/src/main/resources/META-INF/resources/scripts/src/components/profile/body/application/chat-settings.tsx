@@ -202,11 +202,13 @@ class ChatSettings extends React.Component<
               <div className="application-sub-panel__item  application-sub-panel__item--profile">
                 <div className="form__row">
                   <div className="form-element">
-                    <label htmlFor="chatVisibility">
-                      {this.props.t("labels.chatVisibility", { ns: "profile" })}
+                    <label htmlFor="chatSelectVisibility">
+                      {this.props.t("labels.chatSelectVisibility", {
+                        ns: "profile",
+                      })}
                     </label>
                     <Select<ChatSettingVisibilityOption>
-                      id="chatVisibility"
+                      id="chatSelectVisibility"
                       className="react-select-override"
                       classNamePrefix="react-select-override"
                       isDisabled={this.state.locked}
