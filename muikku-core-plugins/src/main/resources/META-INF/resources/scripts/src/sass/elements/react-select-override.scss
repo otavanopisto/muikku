@@ -196,6 +196,11 @@
     font-weight: 600;
   }
 
+  .react-select-override__input-container {
+    color: $color-default;
+    font-size: 1rem;
+  }
+
   .react-select-override__indicator {
     color: $color-default;
     padding: 0 8px 0 4px;
