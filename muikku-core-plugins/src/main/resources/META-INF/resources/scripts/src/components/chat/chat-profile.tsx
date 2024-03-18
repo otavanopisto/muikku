@@ -78,12 +78,11 @@ function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
           {t("labels.present", { ns: "chat" })}
         </div>
       </div>
-
-      <ChatUserSettingsDialog>
-        <div className="chat__button-wrapper">
+      <div className="chat__button-wrapper">
+        <ChatUserSettingsDialog>
           <IconButton buttonModifiers={["chat"]} icon="cog" />
-        </div>
-      </ChatUserSettingsDialog>
+        </ChatUserSettingsDialog>
+      </div>
     </div>
   );
 }

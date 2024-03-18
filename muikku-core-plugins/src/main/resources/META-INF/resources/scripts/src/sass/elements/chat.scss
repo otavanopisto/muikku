@@ -100,14 +100,17 @@
   width: 100%;
 }
 
-// Toggle for expanding/collapsing panels
+// Generic wrapper for every button in chat
 .chat__button-wrapper {
   align-items: center;
   display: flex;
   height: 1.625rem;
   justify-content: center;
-  margin: 5px;
   width: 1.625rem;
+}
+
+.chat__button-wrapper--header {
+  margin: 5px;
 }
 
 // Wrapper for rooms panel's show/hide button
@@ -138,10 +141,9 @@
 // Button for closing active discussion from users panel
 .chat__button-wrapper--close-discussion {
   display: none;
-  margin: -13px 0 0;
   position: absolute;
   right: 5px;
-  top: 50%;
+  top: calc(50% - 13px);
 }
 
 // Generic style for active chat item, includes tabs, rooms, options and users elements

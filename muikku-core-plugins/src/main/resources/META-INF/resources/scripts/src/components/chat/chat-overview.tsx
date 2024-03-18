@@ -227,7 +227,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
 
       <div className="chat__overview-panel-header-actions">
         {chatPermissions.canManagePublicRooms && (
-          <div className="chat__overview-panel-header-action">
+          <div className="chat__button-wrapper">
             <ChatRoomNewDialog>
               <IconButton
                 icon="plus"

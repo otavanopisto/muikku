@@ -1125,7 +1125,7 @@ function ChatWindow(props: ChatWindowProps) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="chat__button-wrapper"
+                className="chat__button-wrapper chat__button-wrapper--header"
               >
                 {detached ? (
                   <IconButton
@@ -1146,7 +1146,7 @@ function ChatWindow(props: ChatWindowProps) {
             )}
           </AnimatePresence>
 
-          <div className="chat__button-wrapper">
+          <div className="chat__button-wrapper chat__button-wrapper--header">
             {fullScreen ? (
               <IconButton
                 buttonModifiers={["chat"]}
@@ -1164,7 +1164,7 @@ function ChatWindow(props: ChatWindowProps) {
             )}
           </div>
 
-          <div className="chat__button-wrapper">
+          <div className="chat__button-wrapper chat__button-wrapper--header">
             <IconButton
               buttonModifiers={["chat"]}
               icon="cross"
