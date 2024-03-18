@@ -77,24 +77,38 @@ public class HopsController {
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
-  
   public boolean isHopsAvailable(String studentIdentifier) {
     if (sessionController.isLoggedIn()) {
       
       // Hops is always available for admins
       
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      if (userSchoolDataIdentifier != null && (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER))) {
+      if (sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
         return true;
       }
+      
       SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
       
       if (sessionController.getLoggedUser().equals(schoolDataIdentifier)) {
         return true;
       }
       
-      return userSchoolDataController.amICounselor(schoolDataIdentifier);
+      if (userSchoolDataController.amICounselor(schoolDataIdentifier)) {
+        return true;
+      }
+      
+      /*
+       * If logged user is TEACHER and given identifier belongs to a STUDENT
+       * we'll allow the access if logged user is a teacher on a workspace where
+       * the student is.
+       */
+      if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
+        UserSchoolDataIdentifier studentUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
+        if (studentUserSchoolDataIdentifier != null && studentUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+          return workspaceUserEntityController.haveSharedWorkspaces(sessionController.getLoggedUserEntity(), studentUserSchoolDataIdentifier.getUserEntity());
+        }
+      }
     }
+    
     return false;
   }
   

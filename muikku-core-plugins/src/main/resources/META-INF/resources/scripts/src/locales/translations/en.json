@@ -240,6 +240,7 @@
       "alternateNavigation": "Navigation for user profile and language selection of Muikku",
       "chooseRulersColor": "Choose the background color of reading ruler",
       "clickThroughRuler": "Allow clicking through the reading ruler",
+      "closeMaterial": "Close assignment content",
       "closeRuler": "Close the reading ruler",
       "closeRulersToolbar": "Close the reading ruler's toolbar",
       "currentPage": "Current page is",
@@ -250,6 +251,7 @@
       "invertRulersColors": "Reverses the colors of the reading ruler",
       "localeMenu": "Language selection menu of Muikku",
       "mainNavigation": "Main navigation of Muikku",
+      "openMaterial": "Open assignment content",
       "openRulersToolbar": "Open the toolbar of reading ruler",
       "pinRuler": "Pin the reading ruler to the screen",
       "profileMenu": "User profile menu of Muikku",
@@ -346,7 +348,7 @@
       "lastEvaluationPassed": "Latest nonpassing grade: {{value}}",
       "lastJournalEntry": "Latest entry: {{value}}",
       "lastSubmittedAssignment": "Latest assignment submission: {{value}}",
-      "notInWorkspaces": "Student is not in any courses",
+      "notInWorkspaces": "The student has not completed any courses yet",
       "numberOfAssignments": "{{value}} assignments",
       "numberOfExercises": "{{value}} exercises",
       "numberOfJournalEntries": "{{value}} entries",
@@ -725,10 +727,10 @@
       "empty": "$t(common:content.empty)",
       "empty_messages": "No messages",
       "empty_announcements": "No announcements",
+      "empty_workspaceAnnouncements": "Course has no announcements.",
       "empty_contactLog": "No contact events",
       "empty_discussions": "No ongoing discussions",
       "empty_subscriptions": "No subscribed discussions",
-      "empty_workspaceAnnouncements": "Course has no announcements.",
       "notFound": "Given announcement wasn't found",
       "removed": "Message deleted",
       "noneSelected_announcements": "No announcements selected",
@@ -826,6 +828,7 @@
       "archiveError": "Archiving failed",
       "archiveSuccess": "Archiving succeeded",
       "availableError": "The announcement is not available or it does not exist",
+      "automaticlyEmptyTrash": "Messages that have been in the trash for 30 days are automatically deleted",
       "createError": "$t(common:notifications.createError)",
       "createError_announcement": "Creating the announcement failed. Please try again.",
       "createError_contactLog": "Creating the contact log failed. Please try again.",
@@ -1696,6 +1699,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_entry": "Updating the entry failed",
       "updateError_comment": "Updating the comment failed: {{error}}"
+    },
+    "wcag": {
+      "closeContent": "Close the journal entry content",
+      "closeComments": "Close the journal entry comments",
+      "showContent": "Show the journal entry content",
+      "showComments": "Show the journal entry comments"
     }
   },
   "files": {
@@ -1862,6 +1871,12 @@
       "updateError_evaluation": "Updating the evaluation failed: {{error}}",
       "updateError_pricing": "Updating the course pricing information failed: {{error}}",
       "updateError_sorting": "Updating the sorting information failed: {{error}}"
+    },
+    "wcag": {
+      "evaluationAssessmentFailed": "Failed assessment",
+      "evaluationAssessmentPassed": "Passed assessment",
+      "evaluationAssessmentIncomplete": "Incomplete assessment",
+      "evaluationAssessmentUnassessed": "Unassessed assessment"
     }
   },
   "calendar": {
@@ -2050,6 +2065,7 @@
       "limitedAudioMaterial": "Ääniaineistoltaan rajoitettu koe",
       "matriculationPrePlan": "Ennakkosuunnitelma ylioppilaskirjoituksiin",
       "matriculationPrePlan_else": "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide",
+      "needForSupport": "Tuen tarve",
       "opinionOfSupport": "Näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_school": "Oppilaitoksen näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_student": "Opiskelijan näkemys tuen vaikuttavuudesta",
