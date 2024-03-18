@@ -131,7 +131,9 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
       <DialogRow>
         <div className="form-element">
           <label className="chat__label" htmlFor="chatNickName">
-            Nimimerkki
+            {t("labels.nick", {
+              ns: "chat",
+            })}
           </label>
           <input
             id="chatNickName"
