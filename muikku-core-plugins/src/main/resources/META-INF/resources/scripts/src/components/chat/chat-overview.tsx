@@ -249,6 +249,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
 function ChatOverviewUsersList() {
   const {
     dashboardUsers,
+    dashboardBlockedUsers,
     currentUser,
     openDiscussion,
     openBlockUserDialog,
@@ -293,28 +294,38 @@ function ChatOverviewUsersList() {
       return null;
     }
 
-    return dashboardUsers.map((user) => (
-      <OverviewListItem
-        key={user.id}
-        onOpenClick={handleOpenDiscussion(user.identifier)}
-      >
-        <OverviewListItemContent>
-          <ChatProfile
-            user={user}
-            primaryInfo={user.nick}
-            secondaryInfo={currentUser.type === "STAFF" && user.name}
-            chatActivity={chatActivityByUserObject[user.id]}
-          />
-        </OverviewListItemContent>
-        <OverviewListItemActions>
-          <IconButton
-            icon="blocked"
-            buttonModifiers={["chat-block"]}
-            onClick={handleBlockClick(user)}
-          />
-        </OverviewListItemActions>
-      </OverviewListItem>
-    ));
+    return dashboardUsers.map((user) => {
+      const isBlocked =
+        dashboardBlockedUsers &&
+        dashboardBlockedUsers.find(
+          (blockedUser) => blockedUser.identifier === user.identifier
+        ) !== undefined;
+
+      return (
+        <OverviewListItem
+          key={user.id}
+          onOpenClick={handleOpenDiscussion(user.identifier)}
+        >
+          <OverviewListItemContent>
+            <ChatProfile
+              user={user}
+              primaryInfo={user.nick}
+              secondaryInfo={currentUser.type === "STAFF" && user.name}
+              chatActivity={chatActivityByUserObject[user.id]}
+            />
+          </OverviewListItemContent>
+          <OverviewListItemActions>
+            {!isBlocked && user.type === "STUDENT" && (
+              <IconButton
+                icon="blocked"
+                buttonModifiers={["chat-block"]}
+                onClick={handleBlockClick(user)}
+              />
+            )}
+          </OverviewListItemActions>
+        </OverviewListItem>
+      );
+    });
   };
 
   return (
