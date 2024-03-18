@@ -289,6 +289,8 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
     // It also has a summary component of what the correct answers were meant to be
     let correctAnswersummaryComponent = null;
 
+    const tooltipId = "selectFieldTooltip-" + uuidv4();
+
     // So we only care about this logic if we didn't get the answer right and we are asking for show the right thing
     // Note that a state of UNKNOWN also goes through here, but not a state of PASS
     if (this.props.displayCorrectAnswers) {
@@ -315,7 +317,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
             {this.props.content.explanation ? (
               <span className="material-page__field-explanation-wrapper">
                 <Dropdown
-                  tooltipId={"selectFieldTooltip-" + uuidv4()}
+                  tooltipId={tooltipId}
                   modifier="material-page-field-explanation"
                   content={
                     <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
@@ -324,7 +326,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
                   <span
                     className="material-page__field-explanation-button icon-question"
                     tabIndex={0}
-                    aria-describedby={"selectFieldTooltip-" + uuidv4()}
+                    aria-describedby={tooltipId}
                     role="button"
                   />
                 </Dropdown>
