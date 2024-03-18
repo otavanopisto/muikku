@@ -291,12 +291,18 @@ class MultiSelectField extends React.Component<
             {this.props.content.explanation ? (
               <span className="material-page__field-explanation-wrapper">
                 <Dropdown
+                  tooltipId={"multiSelectFieldTooltip-" + uuidv4()}
                   modifier="material-page-field-explanation"
                   content={
                     <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
                   }
                 >
-                  <span className="material-page__field-explanation-button icon-question" />
+                  <span
+                    className="material-page__field-explanation-button icon-question"
+                    tabIndex={0}
+                    aria-describedby={"multiSelectFieldTooltip-" + uuidv4()}
+                    role="button"
+                  />
                 </Dropdown>
               </span>
             ) : null}

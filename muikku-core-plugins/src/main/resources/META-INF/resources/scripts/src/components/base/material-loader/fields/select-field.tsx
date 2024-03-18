@@ -315,12 +315,18 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
             {this.props.content.explanation ? (
               <span className="material-page__field-explanation-wrapper">
                 <Dropdown
+                  tooltipId={"selectFieldTooltip-" + uuidv4()}
                   modifier="material-page-field-explanation"
                   content={
                     <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
                   }
                 >
-                  <span className="material-page__field-explanation-button icon-question" />
+                  <span
+                    className="material-page__field-explanation-button icon-question"
+                    tabIndex={0}
+                    aria-describedby={"selectFieldTooltip-" + uuidv4()}
+                    role="button"
+                  />
                 </Dropdown>
               </span>
             ) : null}
