@@ -45,10 +45,14 @@ function ChatUnblockDiscussionDialog() {
     return (
       <div>
         <DialogRow>
-          {t("content.unblockUserMsg", {
-            name: <strong>{userToBeUnblocked.nick}</strong>,
-            ns: "chat",
-          })}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: t("content.unblockUserMsg", {
+                name: userToBeUnblocked.nick,
+                ns: "chat",
+              }),
+            }}
+          />
         </DialogRow>
       </div>
     );

@@ -547,7 +547,9 @@ function useUsers(props: UseUsersProps) {
      */
     const mapUser = (user: ChatUser) => {
       if (user.nick === null) {
-        user.nick = `Poistunut#${generateHash(user.identifier)}`;
+        user.nick = `${i18n.t("labels.gone", {
+          ns: "chat",
+        })}#${generateHash(user.identifier)}`;
       }
       return user;
     };

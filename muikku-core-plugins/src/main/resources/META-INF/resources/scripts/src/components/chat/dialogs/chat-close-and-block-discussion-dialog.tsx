@@ -45,10 +45,14 @@ function ChatCloseAndBlockDiscussionDialog() {
     return (
       <div>
         <DialogRow>
-          {t("content.blockUserMsg", {
-            name: <strong>{userToBeBlocked.nick}</strong>,
-            ns: "chat",
-          })}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: t("content.blockUserMsg", {
+                name: userToBeBlocked.nick,
+                ns: "chat",
+              }),
+            }}
+          />
         </DialogRow>
       </div>
     );
