@@ -1,10 +1,10 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { useReadLocalStorage } from "usehooks-ts";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import { useWindowContext } from "~/context/window-context";
 import { ChatActivity, ChatMessage } from "~/generated/client";
+import i18n from "~/locales/i18n";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -33,8 +33,6 @@ function useChatActivity(
 
   const minimized = useReadLocalStorage<boolean>("chat-minimized");
 
-  const { t } = useTranslation("chat");
-
   // Initial fetch
   React.useEffect(() => {
     /**
@@ -59,8 +57,9 @@ function useChatActivity(
           throw err;
         }
         displayNotification(
-          t("notifications.loadError", {
+          i18n.t("notifications.loadError", {
             context: "activity",
+            ns: "chat",
           }),
           "error"
         );
@@ -68,7 +67,7 @@ function useChatActivity(
     };
 
     fetchChatActivity();
-  }, [displayNotification, t]);
+  }, [displayNotification]);
 
   React.useEffect(() => {
     /**
@@ -273,7 +272,12 @@ function useChatActivity(
           throw err;
         }
 
-        displayNotification(t("notifications.markAsReadError"), "error");
+        displayNotification(
+          i18n.t("notifications.markAsReadError", {
+            ns: "chat",
+          }),
+          "error"
+        );
       }
     },
     [
@@ -281,7 +285,6 @@ function useChatActivity(
       chatRoomsActivities,
       chatUsersActivities,
       displayNotification,
-      t,
     ]
   );
 

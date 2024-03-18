@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { ChatActivity, ChatUser } from "~/generated/client";
 import { IconButton } from "../general/button";
 import ChatProfileAvatar from "./chat-profile-avatar";
@@ -57,6 +58,8 @@ interface ChatProfileWithSettingsProps {}
 function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
   const { currentUser } = useChatContext();
 
+  const { t } = useTranslation(["chat", "common"]);
+
   if (!currentUser) {
     return null;
   }
@@ -71,7 +74,9 @@ function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
       />
       <div className="chat__profile-info-container">
         <div className="chat__profile-info-primary">{currentUser.nick}</div>
-        <div className="chat__profile-info-secondary">Paikalla</div>
+        <div className="chat__profile-info-secondary">
+          {t("labels.present", { ns: "chat" })}
+        </div>
       </div>
 
       <ChatUserSettingsDialog>

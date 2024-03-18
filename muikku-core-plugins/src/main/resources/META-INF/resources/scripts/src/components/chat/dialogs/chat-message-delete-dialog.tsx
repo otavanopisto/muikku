@@ -8,6 +8,7 @@ import { localize } from "~/locales/i18n";
 import ChatProfileAvatar from "../chat-profile-avatar";
 import { parseLines } from "../chat-helpers";
 import ChatDialog from "./chat-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatDeleteRoomDialogProps
@@ -40,6 +41,8 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
 
   const [disabled, setDisabled] = React.useState<boolean>(false);
 
+  const { t } = useTranslation(["chat", "common"]);
+
   /**
    * Handles save click
    * @param callback callback
@@ -68,7 +71,11 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
     return (
       <div>
         <DialogRow>
-          <strong>Olet poistamassa viestiä:</strong>
+          <strong>
+            {t("labels.deletingMsg", {
+              ns: "chat",
+            })}
+          </strong>
         </DialogRow>
         <DialogRow>
           <div className="chat__message chat__message--deleting">
@@ -83,14 +90,17 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
                   {message.nick}
                 </span>
                 <span className="chat__message-meta-timestamp">
-                  {localize.formatDaily(message.sentDateTime)}
+                  {localize.formatDaily(message.sentDateTime, "LT")}
                 </span>
               </div>
               <div className="chat__message-body">
                 {parseLines(message.message)}
                 {message.editedDateTime && (
                   <div className="chat__message-edited-info">
-                    (Muokattu {localize.formatDaily(message.editedDateTime)})
+                    {t("content.msgEdited", {
+                      date: localize.formatDaily(message.editedDateTime, "LT"),
+                      ns: "chat",
+                    })}
                   </div>
                 )}
               </div>
@@ -112,14 +122,14 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
         onClick={handleDeleteClick(closeDialog)}
         disabled={disabled}
       >
-        Poista
+        {t("actions.remove")}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={closeDialog}
         disabled={disabled}
       >
-        Peruuta
+        {t("actions.cancel")}
       </Button>
     </div>
   );
@@ -130,7 +140,7 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
       onClose={onClose}
       localElementId="chat__body"
       disableScroll={true}
-      title="Viestin poisto"
+      title={t("labels.deletingMsg", { ns: "chat" })}
       content={content}
       footer={footer}
       modifier={["chat", "local"]}

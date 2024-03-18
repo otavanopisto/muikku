@@ -23,6 +23,7 @@ import {
   fetchUserInfo,
   useChatUserInfoContext,
 } from "./context/chat-user-info-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatMessageProps
@@ -73,6 +74,8 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
     // User specific info is only avalable for staff members and when msg
     // is not sent by the current user
     const userInfoAvailable = currentUser.type === "STAFF" && !myMsg;
+
+    const { t } = useTranslation(["chat", "common"]);
 
     // If prop editModeActive has changed to false and components internal
     // state editMode is still true, toggle edit mode off
@@ -186,11 +189,12 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
 
           <div className="chat__message-footer">
             <Button buttonModifiers={["chat"]} onClick={handleCancelEdit}>
-              Peruuta
+              {t("actions.cancel")}
             </Button>
             <span>tai</span>
             <Button buttonModifiers={["chat"]} onClick={handleSave}>
               Tallenna
+              {t("actions.save")}
             </Button>
           </div>
         </div>
@@ -219,13 +223,21 @@ const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
           </div>
           <div className="chat__message-body">
             {archived ? (
-              <i>Poistettu {localize.formatDaily(msg.editedDateTime, "LT")} </i>
+              <i>
+                {t("content.msgDeleted", {
+                  date: localize.formatDaily(msg.editedDateTime, "LT"),
+                  ns: "chat",
+                })}
+              </i>
             ) : (
               parseLines(msg.message)
             )}
             {!archived && editedDateTime && (
               <div className="chat__message-edited-info">
-                (Muokattu {localize.formatDaily(editedDateTime, "LT")})
+                {t("content.msgEdited", {
+                  date: localize.formatDaily(editedDateTime, "LT"),
+                  ns: "chat",
+                })}
               </div>
             )}
           </div>
@@ -414,11 +426,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
 
     // If the drawer is dragged more than 50% of its height
     // close the drawer or else animate it back to its original position
-    if (
-      point.y >=
-      actionsPanelRef.current.offsetHeight / 2 /* ||
-      Math.abs(swipe) > swipeConfidenceThreshold */
-    ) {
+    if (point.y >= actionsPanelRef.current.offsetHeight / 2) {
       onClose && onClose();
     } else {
       animateOpen();

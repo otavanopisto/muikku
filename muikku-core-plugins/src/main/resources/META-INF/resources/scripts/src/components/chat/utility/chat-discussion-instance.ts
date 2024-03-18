@@ -3,6 +3,7 @@ import MApi, { isMApiError } from "~/api/api";
 import { ChatMessage, ChatUser } from "~/generated/client";
 import Websocket from "~/util/websocket";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import i18n from "~/locales/i18n";
 
 const chatApi = MApi.getChatApi();
 
@@ -203,7 +204,10 @@ export class ChatDiscussionInstance {
       }
 
       this.displayNotification(
-        "Keskustelun viestien lataus epäonnistui",
+        i18n.t("notifications.loadError", {
+          context: "discussionMessages",
+          ns: "chat",
+        }),
         "error"
       );
     }
@@ -412,7 +416,10 @@ export class ChatDiscussionInstance {
       }
 
       this.displayNotification(
-        "Vanhempien viestien lataus epäonnistui",
+        i18n.t("notifications.loadError", {
+          context: "discussionMessages",
+          ns: "chat",
+        }),
         "error"
       );
     }
@@ -442,7 +449,13 @@ export class ChatDiscussionInstance {
         throw err;
       }
 
-      this.displayNotification("Viestin lähettäminen epäonnistui", "error");
+      this.displayNotification(
+        i18n.t("notifications.postError", {
+          context: "message",
+          ns: "chat",
+        }),
+        "error"
+      );
     }
   }
 

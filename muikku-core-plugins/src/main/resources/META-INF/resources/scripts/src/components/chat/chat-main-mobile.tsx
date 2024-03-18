@@ -20,6 +20,7 @@ import { PrivateRoomList, PublicRoomsList } from "./chat-rooms";
 import { ChatMyProfileWithSettings } from "./chat-profile";
 import Button, { IconButton } from "../general/button";
 import { useChatContext } from "./context/chat-context";
+import { useTranslation } from "react-i18next";
 
 const PANEL_LEFT_MAX_WIDTH = 250;
 const PANEL_RIGHT_MAX_WIDTH = 200;
@@ -39,6 +40,8 @@ function ChatMainMobile(props: ChatMainMobileProps) {
   const [panelLeftOpen, setPanelLeftOpen] = React.useState(false);
   const [panelRightOpen, setPanelRightOpen] = React.useState(false);
 
+  const { t } = useTranslation(["chat", "common"]);
+
   return (
     <div className="chat-mobile">
       <ChatSidePanel
@@ -50,12 +53,22 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       >
         <div className="chat__rooms-container chat__rooms-container--mobile">
           <div className="chat__rooms chat__rooms--public" role="menu">
-            <div className="chat__rooms-category-title">Julkiset huoneet</div>
+            <div className="chat__rooms-category-title">
+              {t("labels.rooms", {
+                context: "public",
+                ns: "chat",
+              })}
+            </div>
             <PublicRoomsList onItemClick={() => setPanelLeftOpen(false)} />
           </div>
 
           <div className="chat__rooms chat__rooms--private" role="menu">
-            <div className="chat__rooms-category-title">Kurssien huoneet</div>
+            <div className="chat__rooms-category-title">
+              {t("labels.rooms", {
+                context: "workspace",
+                ns: "chat",
+              })}
+            </div>
             <PrivateRoomList onItemClick={() => setPanelLeftOpen(false)} />
           </div>
         </div>
@@ -79,7 +92,11 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             onItemClick={() => setPanelRightOpen(false)}
           />
           <div className="chat__users chat__users--others" role="menu">
-            <div className="chat__users-category-title">Keskustelut</div>
+            <div className="chat__users-category-title">
+              {t("labels.discussions", {
+                ns: "chat",
+              })}
+            </div>
             <ChatMyActiveDiscussions
               onItemClick={() => setPanelRightOpen(false)}
             />
@@ -94,8 +111,16 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           icon="stack"
           onClick={() => setPanelLeftOpen((prev) => !prev)}
         />
-        <Button onClick={openOverview}>Dashboard</Button>
-        <Button onClick={toggleControlBox}>Sulje</Button>
+        <Button onClick={openOverview}>
+          {t("labels.dashboard", {
+            ns: "chat",
+          })}
+        </Button>
+        <Button onClick={toggleControlBox}>
+          {t("actions.close", {
+            ns: "common",
+          })}
+        </Button>
         <IconButton
           buttonModifiers={["chat", "chat-mobile-footer"]}
           icon="bubbles"

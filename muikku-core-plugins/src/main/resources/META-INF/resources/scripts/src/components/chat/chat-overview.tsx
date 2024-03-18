@@ -15,6 +15,7 @@ import {
 import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
 import Select from "react-select";
 import { OptionDefault } from "../general/react-select/types";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatOverview
@@ -150,6 +151,8 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
 
   const { isMobileWidth, chatPermissions } = useChatContext();
 
+  const { t } = useTranslation("chat");
+
   /**
    * Handles tab click
    */
@@ -173,21 +176,23 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   const options: OptionDefault<ChatDashBoardTab>[] = [
     {
       value: "users",
-      label: "Ihmiset",
+      label: t("labels.people"),
     },
     {
       value: "blocked",
-      label: "Estetyt",
+      label: t("labels.blocked"),
     },
     {
       value: "rooms",
-      label: "Huoneet",
+      label: t("labels.rooms"),
     },
   ];
 
   return (
     <div className="chat__overview-panel-header">
-      <div className="chat__overview-panel-header-title">Dashboard</div>
+      <div className="chat__overview-panel-header-title">
+        {t("labels.dashboard")}
+      </div>
       {isMobileWidth ? (
         <Select
           className="react-select-override react-select-override--chat-mobile"
@@ -205,33 +210,18 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
         />
       ) : (
         <div className="chat__tabs" role="menu">
-          <div
-            role="menuitem"
-            className={`chat__tab ${
-              activeTab === "users" ? "chat__active-item" : ""
-            }`}
-            onClick={() => handleTabClick("users")}
-          >
-            Ihmiset
-          </div>
-          <div
-            role="menuitem"
-            className={`chat__tab ${
-              activeTab === "blocked" ? "chat__active-item" : ""
-            }`}
-            onClick={() => handleTabClick("blocked")}
-          >
-            Estetyt
-          </div>
-          <div
-            role="menuitem"
-            className={`chat__tab ${
-              activeTab === "rooms" ? "chat__active-item" : ""
-            }`}
-            onClick={() => handleTabClick("rooms")}
-          >
-            Huoneet
-          </div>
+          {options.map((o) => (
+            <div
+              key={o.value}
+              role="menuitem"
+              className={`chat__tab ${
+                activeTab === o.value ? "chat__active-item" : ""
+              }`}
+              onClick={() => handleTabClick(o.value)}
+            >
+              {o.label}
+            </div>
+          ))}
         </div>
       )}
 
@@ -264,6 +254,8 @@ function ChatOverviewUsersList() {
     openBlockUserDialog,
     chatActivityByUserObject,
   } = useChatContext();
+
+  const { t } = useTranslation("chat");
 
   /**
    * Handles open discussion
@@ -298,7 +290,7 @@ function ChatOverviewUsersList() {
    */
   const renderContent = () => {
     if (dashboardUsers.length === 0) {
-      return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
+      return null;
     }
 
     return dashboardUsers.map((user) => (
@@ -328,7 +320,9 @@ function ChatOverviewUsersList() {
   return (
     <OverviewList
       className="chat__overview-panel-items-container"
-      emptyMsg="Haulla ei löytyny käyttäjä"
+      emptyMsg={t("content.emptySearchMsg", {
+        context: "users",
+      })}
       classNameModifiers={["users"]}
     >
       {renderContent()}
@@ -347,6 +341,8 @@ function ChatOverviewBlockedList() {
     openDiscussion,
     openCancelUnblockDialog,
   } = useChatContext();
+
+  const { t } = useTranslation(["chat"]);
 
   /**
    * Handles open discussion
@@ -381,7 +377,7 @@ function ChatOverviewBlockedList() {
    */
   const renderContent = () => {
     if (dashboardBlockedUsers.length === 0) {
-      return <div style={{ textAlign: "center" }}>Ei käyttäjiä</div>;
+      return null;
     }
 
     return dashboardBlockedUsers.map((user) => (
@@ -411,7 +407,10 @@ function ChatOverviewBlockedList() {
   return (
     <OverviewList
       className="chat__overview-panel-items-container"
-      emptyMsg="Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty"
+      emptyMsg={t("content.emptySearchMsg", {
+        context: "blockedUsers",
+        ns: "chat",
+      })}
       classNameModifiers={["blocked"]}
     >
       {renderContent()}
@@ -431,6 +430,8 @@ function ChatOverviewRoomsList() {
     openDeleteRoomDialog,
     chatPermissions,
   } = useChatContext();
+
+  const { t } = useTranslation("chat");
 
   const filteredAndSortedRooms = React.useMemo(() => {
     if (!roomFilters) {
@@ -473,7 +474,7 @@ function ChatOverviewRoomsList() {
    */
   const renderContent = () => {
     if (filteredAndSortedRooms.length === 0) {
-      return <div style={{ textAlign: "center" }}>Ei huoneita</div>;
+      return null;
     }
 
     return filteredAndSortedRooms.map((room) => (
@@ -503,7 +504,9 @@ function ChatOverviewRoomsList() {
   return (
     <OverviewList
       className="chat__overview-panel-items-container"
-      emptyMsg="Haulla ei löytyny huoneita"
+      emptyMsg={t("content.emptySearchMsg", {
+        context: "rooms",
+      })}
       classNameModifiers={["rooms"]}
     >
       {renderContent()}
@@ -538,6 +541,10 @@ function OverviewList(props: OverviewListProps) {
     classNameModifiers.forEach((modifier) => {
       cName += ` ${props.className}--${modifier}`;
     });
+  }
+  // if children length is 0, return empty message
+  if (React.Children.count(children) === 0) {
+    return <div className={cName}>{props.emptyMsg}</div>;
   }
 
   return <div className={cName}>{children}</div>;
@@ -615,6 +622,8 @@ interface OverviewUserFiltersProps {
 export function OverviewUserFilters(props: OverviewUserFiltersProps) {
   const { currentFilters, onFiltersChange } = props;
 
+  const { t } = useTranslation("chat");
+
   /**
    * Handles user filter change
    */
@@ -643,7 +652,9 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
     <>
       <div className="dropdown__container-item">
         <div className="filter-category">
-          <div className="filter-category__label">Suodatusasetukset</div>
+          <div className="filter-category__label">
+            {t("labels.filterSettings")}
+          </div>
         </div>
       </div>
       <div className="dropdown__container-item">
@@ -656,7 +667,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-offline-filter" className="filter-item__label">
-            Ei paikalla
+            {t("labels.absent")}
           </label>
         </div>
       </div>
@@ -670,7 +681,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-online-filter" className="filter-item__label">
-            Paikalla
+            {t("labels.present")}
           </label>
         </div>
       </div>
@@ -684,7 +695,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-staff-filter" className="filter-item__label">
-            Henkilökunta
+            {t("labels.staff")}
           </label>
         </div>
       </div>
@@ -698,7 +709,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-students-filter" className="filter-item__label">
-            Opiskelijat
+            {t("labels.students")}
           </label>
         </div>
       </div>
@@ -721,6 +732,8 @@ interface OverviewRoomFiltersProps {
  */
 export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
   const { currentFilters, onFiltersChange } = props;
+
+  const { t } = useTranslation("chat");
 
   /**
    * Handles user filter change
@@ -763,7 +776,9 @@ export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="private-room-filter" className="filter-item__label">
-            Työtila -huone
+            {t("labels.room", {
+              context: "workspace",
+            })}
           </label>
         </div>
       </div>
@@ -777,7 +792,9 @@ export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="public-room-filter" className="filter-item__label">
-            Julkinen huone
+            {t("labels.room", {
+              context: "public",
+            })}
           </label>
         </div>
       </div>

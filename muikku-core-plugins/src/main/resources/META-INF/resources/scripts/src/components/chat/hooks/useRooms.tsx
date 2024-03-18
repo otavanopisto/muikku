@@ -1,7 +1,6 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import {
@@ -9,6 +8,7 @@ import {
   CreateChatRoomRequest,
   UpdateChatRoomRequest,
 } from "~/generated/client";
+import i18n from "~/locales/i18n";
 import { ChatRoomFilters } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
@@ -31,8 +31,6 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
 
   const componentMounted = React.useRef(true);
 
-  const { t } = useTranslation("chat");
-
   React.useEffect(() => {
     /**
      * Fetch rooms
@@ -52,7 +50,7 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
           throw err;
         }
         displayNotification(
-          t("notifications.loadError", {
+          i18n.t("notifications.loadError", {
             context: "rooms",
           }),
           "error"
@@ -63,7 +61,7 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
     };
 
     fetchRooms();
-  }, [displayNotification, t]);
+  }, [displayNotification]);
 
   React.useEffect(() => {
     /**
@@ -162,14 +160,15 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
           throw err;
         }
         displayNotification(
-          t("notifications.postError", {
+          i18n.t("notifications.postError", {
             context: "room",
+            ns: "chat",
           }),
           "error"
         );
       }
     },
-    [displayNotification, t]
+    [displayNotification]
   );
 
   /**
@@ -189,14 +188,15 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
           throw err;
         }
         displayNotification(
-          t("notifications.updateError", {
+          i18n.t("notifications.updateError", {
             context: "room",
+            ns: "chat",
           }),
           "error"
         );
       }
     },
-    [displayNotification, t]
+    [displayNotification]
   );
 
   /**
@@ -214,14 +214,15 @@ function useRooms(displayNotification: DisplayNotificationTriggerType) {
           throw err;
         }
         displayNotification(
-          t("notifications.deleteError", {
+          i18n.t("notifications.deleteError", {
             context: "room",
+            ns: "chat",
           }),
           "error"
         );
       }
     },
-    [displayNotification, t]
+    [displayNotification]
   );
 
   /**

@@ -5,6 +5,7 @@ import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
 import ChatDialog from "./chat-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * NewChatRoomDialogProps
@@ -21,6 +22,8 @@ interface ChatRoomNewDialogProps {
 function ChatRoomNewDialog(props: ChatRoomNewDialogProps) {
   const { newChatRoom, updateNewRoomEditor, saveNewRoom } = useChatContext();
   const [disabled, setDisabled] = React.useState<boolean>(false);
+
+  const { t } = useTranslation(["chat", "common"]);
 
   /**
    * Handles save click
@@ -62,7 +65,7 @@ function ChatRoomNewDialog(props: ChatRoomNewDialogProps) {
       <DialogRow>
         <div className="form-element">
           <label className="chat__label" htmlFor="newRoomName">
-            Nimi
+            {t("labels.name")}
           </label>
           <input
             id="newRoomName"
@@ -76,7 +79,7 @@ function ChatRoomNewDialog(props: ChatRoomNewDialogProps) {
       <DialogRow>
         <div className="form-element">
           <label className="chat__label" htmlFor="newRoowDescription">
-            Kuvaus
+            {t("labels.description")}
           </label>
           <textarea
             id="newRoowDescription"
@@ -100,14 +103,14 @@ function ChatRoomNewDialog(props: ChatRoomNewDialogProps) {
         onClick={handleSaveClick(closeDialog)}
         disabled={disabled}
       >
-        Tallenna
+        {t("actions.save")}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={closeDialog}
         disabled={disabled}
       >
-        Peruuta
+        {t("actions.cancel")}
       </Button>
     </div>
   );
@@ -116,7 +119,7 @@ function ChatRoomNewDialog(props: ChatRoomNewDialogProps) {
     <ChatDialog
       localElementId="chat__body"
       disableScroll={true}
-      title="Luo uusi huone"
+      title={t("labels.createNewRoom", { ns: "chat" })}
       content={content}
       footer={footer}
       modifier={["chat", "local"]}

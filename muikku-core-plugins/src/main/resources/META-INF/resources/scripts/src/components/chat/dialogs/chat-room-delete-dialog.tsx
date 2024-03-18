@@ -5,6 +5,7 @@ import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
 import ChatDialog from "./chat-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatDeleteRoomDialogProps
@@ -21,6 +22,8 @@ interface ChatRoomDeleteDialogProps {
 function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
   const { deleteCustomRoom, closeDeleteRoomDialog, roomToBeDeleted } =
     useChatContext();
+
+  const { t } = useTranslation(["chat", "common"]);
 
   /**
    * Handles save click
@@ -55,9 +58,10 @@ function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
     return (
       <div>
         <DialogRow>
-          Oletko varma että haluat poistaa huoneen:{" "}
-          <strong>{roomToBeDeleted.name}</strong>? Kaikki huoneen viestit
-          poistuvat myös.
+          {t("content.deleteRoomMsg", {
+            name: <strong>{roomToBeDeleted.name}</strong>,
+            ns: "chat",
+          })}
         </DialogRow>
       </div>
     );
@@ -73,13 +77,13 @@ function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
         buttonModifiers={["standard-ok", "fatal"]}
         onClick={handleDeleteClick(closeDialog)}
       >
-        Poista
+        {t("actions.remove")}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={handleCloseClick}
       >
-        Peruuta
+        {t("actions.cancel")}
       </Button>
     </div>
   );
@@ -89,7 +93,7 @@ function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
       isOpen={!!roomToBeDeleted}
       localElementId="chat__body"
       disableScroll={true}
-      title="Huoneen poisto"
+      title={t("labels.deletingRoom", { ns: "chat" })}
       content={content}
       footer={footer}
       modifier={["chat", "local"]}

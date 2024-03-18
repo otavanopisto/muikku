@@ -1,7 +1,6 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import {
@@ -9,6 +8,7 @@ import {
   ChatUser,
   GuidanceCouncelorContact,
 } from "~/generated/client";
+import i18n from "~/locales/i18n";
 import { ChatUserFilters, generateHash } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
@@ -55,8 +55,6 @@ function useUsers(props: UseUsersProps) {
 
   usersRef.current = users;
 
-  const { t } = useTranslation("chat");
-
   // When current user visibility changes we need to fetch all users again
   React.useEffect(() => {
     /**
@@ -74,7 +72,7 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
         displayNotification(
-          t("notifications.loadError", {
+          i18n.t("notifications.loadError", {
             context: "users",
           }),
           "error"
@@ -85,7 +83,7 @@ function useUsers(props: UseUsersProps) {
     if (currentUser.visibility !== "NONE") {
       fetchAllUsers();
     }
-  }, [currentUser.visibility, displayNotification, t]);
+  }, [currentUser.visibility, displayNotification]);
 
   React.useEffect(() => {
     /**
@@ -103,7 +101,7 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
         displayNotification(
-          t("notifications.loadError", {
+          i18n.t("notifications.loadError", {
             context: "discussions",
           }),
           "error"
@@ -124,7 +122,7 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
         displayNotification(
-          t("notifications.loadError", {
+          i18n.t("notifications.loadError", {
             context: "blockedUsers",
           }),
           "error"
@@ -145,7 +143,7 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
         displayNotification(
-          t("notifications.loadError", {
+          i18n.t("notifications.loadError", {
             context: "counselors",
           }),
           "error"
@@ -159,7 +157,7 @@ function useUsers(props: UseUsersProps) {
     if (currentUser.type === "STUDENT") {
       fetchMyCounselors();
     }
-  }, [currentUser.type, displayNotification, t]);
+  }, [currentUser.type, displayNotification]);
 
   React.useEffect(() => {
     /**
@@ -408,10 +406,15 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
 
-        displayNotification(t("notifications.blockUserError"), "error");
+        displayNotification(
+          i18n.t("notifications.blockUserError", {
+            ns: "chat",
+          }),
+          "error"
+        );
       }
     },
-    [displayNotification, t]
+    [displayNotification]
   );
 
   /**
@@ -441,10 +444,15 @@ function useUsers(props: UseUsersProps) {
           throw err;
         }
 
-        displayNotification(t("notifications.unblockUserError"), "error");
+        displayNotification(
+          i18n.t("notifications.unblockUserError", {
+            ns: "chat",
+          }),
+          "error"
+        );
       }
     },
-    [displayNotification, t]
+    [displayNotification]
   );
 
   /**
@@ -473,10 +481,15 @@ function useUsers(props: UseUsersProps) {
         if (!isMApiError(err)) {
           throw err;
         }
-        displayNotification(t("notifications.closeDiscussionError"), "error");
+        displayNotification(
+          i18n.t("notifications.closeDiscussionError", {
+            ns: "chat",
+          }),
+          "error"
+        );
       }
     },
-    [displayNotification, t]
+    [displayNotification]
   );
 
   /**

@@ -1,10 +1,10 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import { ChatUser, ChatUserVisibilityEnum } from "~/generated/client";
+import i18n from "~/locales/i18n";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
@@ -23,8 +23,6 @@ function useChatSettings(displayNotification: DisplayNotificationTriggerType) {
   const [loadingChatSettings, setLoadingChatSettings] = React.useState(false);
 
   const componentMounted = React.useRef(true);
-
-  const { t } = useTranslation("chat");
 
   React.useEffect(() => {
     /**
@@ -47,7 +45,7 @@ function useChatSettings(displayNotification: DisplayNotificationTriggerType) {
         }
 
         displayNotification(
-          t("notifications.loadError", {
+          i18n.t("notifications.loadError", {
             context: "settings",
           }),
           "error"
@@ -58,7 +56,7 @@ function useChatSettings(displayNotification: DisplayNotificationTriggerType) {
     };
 
     fetchChatSettings();
-  }, [displayNotification, t]);
+  }, [displayNotification]);
 
   React.useEffect(() => {
     /**

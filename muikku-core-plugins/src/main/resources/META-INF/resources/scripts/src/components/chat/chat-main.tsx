@@ -12,6 +12,7 @@ import {
   ChatMyActiveDiscussions,
   ChatMyCounselorsDiscussions,
 } from "./chat-my-discussions";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatMainProps
@@ -35,6 +36,8 @@ function ChatMain(props: ChatMainProps) {
   );
 
   const isInitialized = React.useRef(false);
+
+  const { t } = useTranslation(["chat", "common"]);
 
   React.useEffect(() => {
     if (!isInitialized.current) return;
@@ -90,12 +93,22 @@ function ChatMain(props: ChatMainProps) {
         <div className="chat__rooms-container">
           <OverviewButton />
           <div className="chat__rooms chat__rooms--public" role="menu">
-            <div className="chat__rooms-category-title">Julkiset huoneet</div>
+            <div className="chat__rooms-category-title">
+              {t("labels.rooms", {
+                context: "public",
+                ns: "chat",
+              })}
+            </div>
             <PublicRoomsList />
           </div>
 
           <div className="chat__rooms chat__rooms--private" role="menu">
-            <div className="chat__rooms-category-title">Kurssien huoneet</div>
+            <div className="chat__rooms-category-title">
+              {t("labels.rooms", {
+                context: "workspace",
+                ns: "chat",
+              })}
+            </div>
             <PrivateRoomList />
           </div>
         </div>
@@ -125,7 +138,11 @@ function ChatMain(props: ChatMainProps) {
         <div className="chat__users-container">
           <ChatMyCounselorsDiscussions />
           <div className="chat__users chat__users--others" role="menu">
-            <div className="chat__users-category-title">Keskustelut</div>
+            <div className="chat__users-category-title">
+              {t("labels.discussions", {
+                ns: "chat",
+              })}
+            </div>
             <ChatMyActiveDiscussions />
           </div>
         </div>
@@ -150,6 +167,8 @@ function OverviewButton(props: OwerviewButtonProps) {
   const { onClick } = props;
   const { openOverview, chatViews } = useChatContext();
 
+  const { t } = useTranslation(["chat", "common"]);
+
   /**
    * handleButtonClick
    */
@@ -173,7 +192,9 @@ function OverviewButton(props: OwerviewButtonProps) {
         <div className={className}>
           <div className="chat__option-name-container">
             <div className="chat__option-name" onClick={handleButtonClick}>
-              Dashboard
+              {t("labels.dashboard", {
+                ns: "chat",
+              })}
             </div>
           </div>
         </div>

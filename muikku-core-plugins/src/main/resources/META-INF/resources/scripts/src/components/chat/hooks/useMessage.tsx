@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 /* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import MApi, { isMApiError } from "~/api/api";
 import { ChatMessage } from "~/generated/client";
+import i18n from "~/locales/i18n";
 import { useChatContext } from "../context/chat-context";
 
 /**
@@ -42,8 +42,6 @@ function useMessage(props: UseMessageProps) {
   const [editedMessage, setEditedMessage] = React.useState<string>(msg.message);
   const myMsg = msg.sourceUserEntityId === currentUser.id;
 
-  const { t } = useTranslation("chat");
-
   /**
    * Delete message
    */
@@ -61,13 +59,14 @@ function useMessage(props: UseMessageProps) {
 
       //displayNotification("Viestin poisto epäonnistui", "error");
       displayNotification(
-        t("notifications.deleteError", {
+        i18n.t("notifications.deleteError", {
           context: "message",
+          ns: "chat",
         }),
         "error"
       );
     }
-  }, [displayNotification, msg.id, t]);
+  }, [displayNotification, msg.id]);
 
   /**
    * Close delete dialog
@@ -107,13 +106,14 @@ function useMessage(props: UseMessageProps) {
 
       //displayNotification("Viestin muokkaus epäonnistui", "error");
       displayNotification(
-        t("notifications.updateError", {
+        i18n.t("notifications.updateError", {
           context: "message",
+          ns: "chat",
         }),
         "error"
       );
     }
-  }, [displayNotification, editedMessage, msg.id, t, toggleEditMode]);
+  }, [displayNotification, editedMessage, msg.id, toggleEditMode]);
 
   /**
    * Handles edited message change
@@ -152,13 +152,13 @@ function useMessage(props: UseMessageProps) {
     const defaultActions: MessageAction[] = [
       {
         icon: "pencil",
-        text: "Muokkaa",
+        text: i18n.t("labels.edit", { ns: "common" }),
         onClick: handleEditClick,
         modifiers: ["info"],
       },
       {
         icon: "trash",
-        text: "Poista",
+        text: i18n.t("labels.remove", { ns: "common" }),
         onClick: handleDeleteClick,
         modifiers: ["fatal"],
       },

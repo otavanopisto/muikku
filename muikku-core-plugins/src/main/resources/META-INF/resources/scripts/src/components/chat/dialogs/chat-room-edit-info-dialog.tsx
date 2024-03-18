@@ -8,6 +8,7 @@ import Button from "~/components/general/button";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import ChatDialog from "./chat-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * NewChatRoomDialogProps
@@ -37,6 +38,8 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
   const [roomEdit, setRoomEdit] = React.useState<ChatRoom>(room);
   const [editing, setEditing] = React.useState<boolean>(defaults === "edit");
   const [disabled, setDisabled] = React.useState<boolean>(false);
+
+  const { t } = useTranslation(["chat", "common"]);
 
   /**
    * Handles name change
@@ -133,7 +136,7 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
         <DialogRow>
           <div className="form-element">
             <label className="chat__label" htmlFor="editRoomName">
-              Nimi
+              {t("labels.name")}
             </label>
             <input
               id="editRoomName"
@@ -147,7 +150,7 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
         <DialogRow>
           <div className="form-element">
             <label className="chat__label" htmlFor="editRoowDescription">
-              Kuvaus
+              {t("labels.description")}
             </label>
             <textarea
               id="editRoowDescription"
@@ -185,14 +188,14 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
               onClick={handleSaveClick(closeDialog)}
               disabled={disabled}
             >
-              Tallenna
+              {t("actions.save")}
             </Button>
             <Button
               buttonModifiers={["standard-cancel", "cancel"]}
               onClick={handlesCancelEditClick(closeDialog)}
               disabled={disabled}
             >
-              Peruuta
+              {t("actions.cancel")}
             </Button>
           </>
         ) : (
@@ -201,13 +204,13 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
               buttonModifiers={["standard-ok", "info"]}
               onClick={handleEditClick}
             >
-              Muokkaa
+              {t("actions.edit")}
             </Button>
             <Button
               onClick={handleDeleteClick(closeDialog)}
               buttonModifiers={["standard-ok", "fatal"]}
             >
-              Poista
+              {t("actions.remove")}
             </Button>
           </>
         )}
@@ -219,7 +222,11 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
     <ChatDialog
       localElementId="chat__body"
       disableScroll={true}
-      title={editing ? "Muokkaa huoneen tietoja" : "Huoneen tiedot"}
+      title={
+        editing
+          ? t("labels.editRoomDetails", { ns: "chat" })
+          : t("labels.roomDetails", { ns: "chat" })
+      }
       content={content}
       footer={footer}
       modifier={["chat", "local"]}

@@ -5,6 +5,7 @@ import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
 import ChatDialog from "./chat-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatDeleteRoomDialog
@@ -17,6 +18,8 @@ function ChatCloseAndBlockDiscussionDialog() {
   } = useChatContext();
 
   const [disabled, setDisabled] = React.useState<boolean>(false);
+
+  const { t } = useTranslation(["chat", "common"]);
 
   /**
    * Handles block user click
@@ -42,9 +45,10 @@ function ChatCloseAndBlockDiscussionDialog() {
     return (
       <div>
         <DialogRow>
-          Haluatko varmasti estää käyttäjän{" "}
-          <strong>{userToBeBlocked.nick}</strong>. Tämä estää käyttäjää
-          lähettämästä sinulle uusia viestejä.
+          {t("content.blockUserMsg", {
+            name: <strong>{userToBeBlocked.nick}</strong>,
+            ns: "chat",
+          })}
         </DialogRow>
       </div>
     );
@@ -61,14 +65,14 @@ function ChatCloseAndBlockDiscussionDialog() {
         onClick={handleBlockUserClick(closeDialog)}
         disabled={disabled}
       >
-        Estä käyttäjä
+        {t("actions.blockUser", { ns: "chat" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={closeDialog}
         disabled={disabled}
       >
-        Peruuta
+        {t("actions.cancel")}
       </Button>
     </div>
   );
@@ -79,7 +83,7 @@ function ChatCloseAndBlockDiscussionDialog() {
       onClose={closeBlockUserDialog}
       localElementId="chat__body"
       disableScroll={true}
-      title="Käyttäjän estäminen"
+      title={t("labels.blockingUser", { ns: "chat" })}
       content={content}
       footer={footer}
       modifier={["chat", "local"]}

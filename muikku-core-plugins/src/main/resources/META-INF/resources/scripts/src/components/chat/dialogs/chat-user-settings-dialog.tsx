@@ -2,7 +2,7 @@ import { DialogRow } from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { ChatSettingVisibilityOption } from "../chat-helpers";
+import { ChatSettingVisibilityOption, selectOptions } from "../chat-helpers";
 import Select from "react-select";
 import { useChatContext } from "../context/chat-context";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
@@ -36,7 +36,7 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
   const [currentSelectValue, setCurrentSelectValue] =
     React.useState<ChatUserVisibilityEnum>(currentUser.visibility);
 
-  const { t } = useTranslation("chat");
+  const { t } = useTranslation(["chat", "common"]);
 
   React.useEffect(() => {
     unstable_batchedUpdates(() => {
@@ -122,21 +122,6 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
     setCurrentSelectValue(selectedOption.value);
   };
 
-  const selectOptions: ChatSettingVisibilityOption[] = [
-    {
-      label: "Kaikille",
-      value: "ALL",
-    },
-    {
-      label: "Henkilökunnalle",
-      value: "STAFF",
-    },
-    {
-      label: "Ei kenellekkään",
-      value: "NONE",
-    },
-  ];
-
   /**
    * content
    * @param closeDialog closeDialog
@@ -197,14 +182,18 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
         onClick={handleSaveClick(closeDialog)}
         disabled={disabled}
       >
-        Tallenna
+        {t("actions.save", {
+          ns: "common",
+        })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={closeDialog}
         disabled={disabled}
       >
-        Peruuta
+        {t("actions.cancel", {
+          ns: "common",
+        })}
       </Button>
     </div>
   );
@@ -213,7 +202,9 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
     <ChatDialog
       localElementId="chat__body"
       disableScroll={true}
-      title="Chatin asetukset"
+      title={t("labels.chatSettings", {
+        ns: "chat",
+      })}
       content={content}
       footer={footer}
       modifier={["chat", "local"]}

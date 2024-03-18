@@ -5,6 +5,7 @@ import "~/sass/elements/wizard.scss";
 import { useChatContext } from "../context/chat-context";
 import Button from "~/components/general/button";
 import ChatDialog from "./chat-dialog";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatUnblockDiscussionDialog
@@ -17,6 +18,8 @@ function ChatUnblockDiscussionDialog() {
   } = useChatContext();
 
   const [disabled, setDisabled] = React.useState<boolean>(false);
+
+  const { t } = useTranslation(["chat", "common"]);
 
   /**
    * Handles close and block user click
@@ -42,9 +45,10 @@ function ChatUnblockDiscussionDialog() {
     return (
       <div>
         <DialogRow>
-          Olet poistamassa estoa käyttäjän{" "}
-          <strong>{userToBeUnblocked.nick}</strong> kanssa. Poiston jälkeen
-          käyttäjä näkee statuksesi ja hän voi lähettää sinulle viestejä.
+          {t("content.unblockUserMsg", {
+            name: <strong>{userToBeUnblocked.nick}</strong>,
+            ns: "chat",
+          })}
         </DialogRow>
       </div>
     );
@@ -61,14 +65,14 @@ function ChatUnblockDiscussionDialog() {
         onClick={handleUnblockClick(closeDialog)}
         disabled={disabled}
       >
-        Poista esto
+        {t("actions.unblock", { ns: "chat" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={closeDialog}
         disabled={disabled}
       >
-        Peruuta
+        {t("actions.cancel", { ns: "common" })}
       </Button>
     </div>
   );
@@ -79,7 +83,7 @@ function ChatUnblockDiscussionDialog() {
       onClose={closeCancelUnblockDialog}
       localElementId="chat__body"
       disableScroll={true}
-      title="Käyttäjän eston poistaminen"
+      title={t("labels.unblockUser", { ns: "chat" })}
       content={content}
       footer={footer}
       modifier={["chat", "local"]}

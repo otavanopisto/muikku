@@ -7,6 +7,7 @@ import {
   instanceOfChatUser,
   ChatUserVisibilityEnum,
 } from "~/generated/client";
+import i18n from "~/locales/i18n";
 import { OptionDefault } from "../general/react-select/types";
 import { ChatView } from "./animated-views";
 import AnimatedView from "./animated-views/animated-view";
@@ -50,15 +51,21 @@ export type ChatSettingVisibilityOption = OptionDefault<ChatUserVisibilityEnum>;
 
 export const selectOptions: ChatSettingVisibilityOption[] = [
   {
-    label: "Kaikille",
+    label: i18n.t("labels.visibilityFilterAll", {
+      ns: "chat",
+    }),
     value: "ALL",
   },
   {
-    label: "Henkilökunnalle",
+    label: i18n.t("labels.visibilityFilterStaff", {
+      ns: "chat",
+    }),
     value: "STAFF",
   },
   {
-    label: "Ei kenellekkään",
+    label: i18n.t("labels.visibilityFilterNone", {
+      ns: "chat",
+    }),
     value: "NONE",
   },
 ];

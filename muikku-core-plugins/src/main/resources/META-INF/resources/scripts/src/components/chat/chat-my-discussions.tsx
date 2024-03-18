@@ -3,6 +3,7 @@ import { ChatActivity, ChatUser } from "~/generated/client";
 import { useChatContext } from "./context/chat-context";
 import { IconButton } from "../general/button";
 import { ChatProfile } from "./chat-profile";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatMyCounselorsDiscussionsProps
@@ -26,6 +27,8 @@ function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
     chatActivityByUserObject,
   } = useChatContext();
 
+  const { t } = useTranslation("chat");
+
   /**
    * handleOpenClick
    * @param targetIdentifier targetIdentifier
@@ -41,7 +44,7 @@ function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
 
   return (
     <div className="chat__users chat__users--guidance-councelors" role="menu">
-      <div className="chat__users-category-title">Ohjaajat</div>
+      <div className="chat__users-category-title">{t("labels.councelors")}</div>
       {myDiscussionsCouncelors.map((user) => (
         <ChatMyActiveDiscussion
           key={user.id}
