@@ -2158,7 +2158,6 @@
       "unblock": "Poista esto"
     },
     "labels": {
-      "absent": "Ei paikalla",
       "blocked": "Estetyt",
       "blockedUsers": "Estetyt käyttäjät",
       "blockingUser": "Käyttäjän estäminen",
@@ -2174,7 +2173,6 @@
       "gone": "Poistunut",
       "nick": "Nimimerkki",
       "people": "Käyttäjät",
-      "present": "Paikalla",
       "room_public": "Julkinen huone",
       "room_workspace": "Kurssihuone",
       "room": "Huone",
@@ -2182,21 +2180,27 @@
       "rooms_public": "Julkiset huoneet",
       "rooms_workspace": "Kurssien huoneet",
       "rooms": "Huoneet",
-      "selectVisibility": "Valitse näkyvyys",
+      "selectVisibility": "Valitse kuka näkee sinut chatissä",
       "staff": "Henkilökunta",
       "students": "Opiskelijat",
       "unblockUser": "Käyttäjän eston poistaminen",
-      "visibilityFilterAll": "Kaikkille käyttäjille",
-      "visibilityFilterNone": "Chat ei käytössä",
-      "visibilityFilterStaff": "Henkilökunnalle"
+      "visibilityFilterAll": "Kaikki käyttäjät",
+      "visibilityFilterNone": "Ei kukaan eli chat on pois päältä",
+      "visibilityFilterStaff": "Henkilökunta"
+    },
+    "status": {
+      "away": "Ei Paikalla",
+      "online": "Paikalla",
+      "offline": "Poissa",
+      "dnd": "Älä häiritse"
     },
     "content": {
       "blockUserMsg": "Haluatko varmasti estää käyttäjän <b>{{name}}</b>? Tämä estää käyttäjää lähettämästä sinulle uusia viestejä.",
       "deleteMsgMsg": "Olet poistamassa viestiä:",
       "deleteRoomMsg": "Oeltko varma että haluat poistaa huoneen: <b>{{name}}</b>? Kaikki huoneen viestit poistuvat myös.",
-      "emptySearchMsg_blockedUsers": "Haulla ei löytyny käyttäjiä tai käyttäjiä ei ole estetty",
-      "emptySearchMsg_rooms": "Haulla ei löytynyt huoneita tai huoneita ei ole",
-      "emptySearchMsg_users": "Haulla ei löytynyt käyttäjiä tai käyttäjiä ei ole",
+      "emptySearchMsg_blockedUsers": "Estettyjä käyttäjiä ei löytynyt.",
+      "emptySearchMsg_rooms": "Huoneita ei löytynyt.",
+      "emptySearchMsg_users": "Käyttäjiä ei löytynyt.",
       "emptySearchMsg": "Haulla ei löytynyt osumia",
       "msgDeleted": "Poistettu {{date}}",
       "msgEdited": "Muokattu {{date}}",

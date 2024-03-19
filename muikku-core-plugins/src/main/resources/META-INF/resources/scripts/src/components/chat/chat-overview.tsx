@@ -684,7 +684,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-offline-filter" className="filter-item__label">
-            {t("labels.absent")}
+            {t("status.away")}
           </label>
         </div>
       </div>
@@ -698,7 +698,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-online-filter" className="filter-item__label">
-            {t("labels.present")}
+            {t("status.online")}
           </label>
         </div>
       </div>
