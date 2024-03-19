@@ -40,6 +40,7 @@ const Chat = (props: ChatProps) => {
 
   const { currentUser, chatEnabled } = useChatSettings(displayNotification);
 
+  // If chat is not available or enabled, or current user is not known, return null
   if (!chatAvailable || !chatEnabled || !currentUser) {
     return null;
   }
