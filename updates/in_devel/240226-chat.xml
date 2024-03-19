@@ -5,6 +5,8 @@
   <sql>drop table WorkspaceChatSettings;</sql>
   <sql>delete from PluginSetting where key_id in (select id from PluginSettingKey where plugin='chat');</sql>
   <sql>delete from PluginSettingKey where plugin='chat';</sql>
+  <sql>insert into PluginSettingKey (plugin, name) values ('chat', 'enabled');</sql>
+  <sql>insert into PluginSetting (value, key_id) values ('true', (select id from PluginSettingKey where plugin='chat' and name='enabled'));</sql>
 
   <sql>create table ChatMessage (
          id bigint not null auto_increment,

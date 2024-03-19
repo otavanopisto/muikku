@@ -1066,12 +1066,16 @@
   background: darken($color-chat-panel-background, 5%);
   border: 5px solid darken($color-chat-panel-background, 5%);
   border-radius: $chat-border-radius;
-  font-size: 0.8125rem;
+  font-size: 1rem;
   height: 1rem;
   line-height: 1.25rem;
   padding: 0;
   resize: none;
   width: 100%;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 0.8125rem;
+  }
 }
 
 .chat__submit {

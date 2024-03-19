@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
@@ -69,6 +70,9 @@ public class ChatController {
 
   @Inject
   private UserProfilePictureController userProfilePictureController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
 
   @Inject
   private ChatMessageDAO chatMessageDAO;
@@ -87,30 +91,40 @@ public class ChatController {
     users = new ConcurrentHashMap<>();
     sessionUsers = new ConcurrentHashMap<>();
     userSessions = new ConcurrentHashMap<>();
+
+    // Chat enabled flag
+    
+    enabled = Boolean.TRUE.equals(pluginSettingsController.getPluginSetting("chat", "enabled"));
     
     // Cache all chat users
     
-    List<ChatUser> chatUsers = chatUserDAO.listAll();
-    for (ChatUser chatUser : chatUsers) {
-      users.put(chatUser.getUserEntityId(), toRestModel(chatUser));
+    if (enabled) {
+      List<ChatUser> chatUsers = chatUserDAO.listAll();
+      for (ChatUser chatUser : chatUsers) {
+        users.put(chatUser.getUserEntityId(), toRestModel(chatUser));
+      }
     }
   }
   
   public void processSessionCreated(UserEntity userEntity, String sessionId) {
-    ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
-    if (chatUser != null) {
-      handleUserEnter(userEntity, chatUser.getVisibility(), chatUser.getNick(), sessionId);
+    if (enabled) {
+      ChatUser chatUser = chatUserDAO.findByUserEntityId(userEntity.getId());
+      if (chatUser != null) {
+        handleUserEnter(userEntity, chatUser.getVisibility(), chatUser.getNick(), sessionId);
+      }
     }
   }
 
   public void processSessionDestroyed(String sessionId) {
-    Long userEntityId = sessionUsers.get(sessionId);
-    if (userEntityId != null) {
-      Set<String> sessionIds = userSessions.get(userEntityId);
-      if (sessionIds != null) {
-        sessionIds.remove(sessionId);
-        if (sessionIds.isEmpty()) {
-          handleUserLeave(userEntityId, ChatLeaveType.OFFLINE);
+    if (enabled) {
+      Long userEntityId = sessionUsers.get(sessionId);
+      if (userEntityId != null) {
+        Set<String> sessionIds = userSessions.get(userEntityId);
+        if (sessionIds != null) {
+          sessionIds.remove(sessionId);
+          if (sessionIds.isEmpty()) {
+            handleUserLeave(userEntityId, ChatLeaveType.OFFLINE);
+          }
         }
       }
     }
@@ -357,6 +371,9 @@ public class ChatController {
   }
   
   public boolean isChatEnabled(UserEntity userEntity) {
+    if (!enabled) {
+      return false;
+    }
     return userEntity == null ? false : chatUserDAO.findByUserEntityId(userEntity.getId()) != null;
   }
   
@@ -780,5 +797,7 @@ public class ChatController {
   private ConcurrentHashMap<Long, Set<String>> userSessions;
   
   private ObjectMapper mapper;
+  
+  private boolean enabled;
 
 }
