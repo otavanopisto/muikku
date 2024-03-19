@@ -15769,11 +15769,8 @@ components:
         chat:
           type: object
           required:
-            - isActive
             - isAvailable
           properties:
-            isActive:
-              type: boolean
             isAvailable:
               type: boolean
         environmentForum:

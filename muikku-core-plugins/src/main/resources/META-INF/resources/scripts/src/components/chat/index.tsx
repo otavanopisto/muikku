@@ -25,6 +25,7 @@ import { ChatPermissions } from "./chat-helpers";
  * ChatProps
  */
 interface ChatProps {
+  chatAvailable: boolean;
   chatPermissions: ChatPermissions;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -35,11 +36,11 @@ interface ChatProps {
  * @returns JSX.Element
  */
 const Chat = (props: ChatProps) => {
-  const { currentUser, chatEnabled } = useChatSettings(
-    props.displayNotification
-  );
+  const { chatAvailable, displayNotification } = props;
 
-  if (!chatEnabled || !currentUser) {
+  const { currentUser, chatEnabled } = useChatSettings(displayNotification);
+
+  if (!chatAvailable || !chatEnabled || !currentUser) {
     return null;
   }
 
@@ -115,6 +116,7 @@ const ChatContent = () => {
  */
 function mapStateToProps(state: StateType) {
   return {
+    chatAvailable: state.status.services.chat.isAvailable,
     chatPermissions: {
       canManagePublicRooms: state.status.permissions.CHAT_MANAGE_PUBLIC_ROOMS,
     } as ChatPermissions,

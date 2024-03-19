@@ -11,6 +11,7 @@ import { ChatPermissions } from "../chat-helpers";
  * ChatPrivateContextType
  */
 export interface ChatContextValue extends UseChat {
+  chatAvailable: boolean;
   chatPermissions: ChatPermissions;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -23,6 +24,7 @@ const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 interface ChatContextProviderProps {
   children: React.ReactNode;
   currentUser: ChatUser;
+  chatAvailable: boolean;
   chatPermissions: ChatPermissions;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -32,13 +34,24 @@ interface ChatContextProviderProps {
  * @param props props
  */
 function ChatContextProvider(props: ChatContextProviderProps) {
-  const { children, currentUser, chatPermissions, displayNotification } = props;
+  const {
+    children,
+    currentUser,
+    chatAvailable,
+    chatPermissions,
+    displayNotification,
+  } = props;
 
   const useChatValue = useChat(currentUser, displayNotification);
 
   return (
     <ChatContext.Provider
-      value={{ ...useChatValue, chatPermissions, displayNotification }}
+      value={{
+        ...useChatValue,
+        chatAvailable,
+        chatPermissions,
+        displayNotification,
+      }}
     >
       {children}
     </ChatContext.Provider>
