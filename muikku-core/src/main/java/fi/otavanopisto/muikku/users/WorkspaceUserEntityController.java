@@ -405,4 +405,14 @@ public class WorkspaceUserEntityController {
     return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier;
   }
 
+  /**
+   * Returns true if user1 and user2 have any shared workspaces.
+   * @param user1 User 1
+   * @param user2 User 2
+   * @return true if user1 and user2 have any shared workspaces
+   */
+  public boolean haveSharedWorkspaces(UserEntity user1, UserEntity user2) {
+    return workspaceUserEntityDAO.haveSharedWorkspaces(user1, user2);
+  }
+
 }

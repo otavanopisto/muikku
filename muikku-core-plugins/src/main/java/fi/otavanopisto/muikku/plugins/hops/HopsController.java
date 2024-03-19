@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
@@ -33,6 +34,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class HopsController {
@@ -76,14 +78,15 @@ public class HopsController {
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   public boolean isHopsAvailable(String studentIdentifierStr) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
-    if (studentIdentifier == null) {
-      return false;
-    }
-
     if (sessionController.isLoggedIn()) {
+      SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+      if (studentIdentifier == null) {
+        return false;
+      }
       
       // Hops is always available for admins
       if (sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
@@ -94,8 +97,23 @@ public class HopsController {
         return true;
       }
       
-      return userSchoolDataController.amICounselor(studentIdentifier);
+      if (userSchoolDataController.amICounselor(studentIdentifier)) {
+        return true;
+      }
+      
+      /*
+       * If logged user is TEACHER and given identifier belongs to a STUDENT
+       * we'll allow the access if logged user is a teacher on a workspace where
+       * the student is.
+       */
+      if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
+        UserSchoolDataIdentifier studentUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+        if (studentUserSchoolDataIdentifier != null && studentUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+          return workspaceUserEntityController.haveSharedWorkspaces(sessionController.getLoggedUserEntity(), studentUserSchoolDataIdentifier.getUserEntity());
+        }
+      }
     }
+    
     return false;
   }
   
