@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
@@ -37,6 +38,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
@@ -558,4 +560,21 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).listStudentSpecEdTeachers(studentIdentifier, includeGuidanceCouncelors, onlyMessageReceivers);
   }
 
+  public StudentCard getStudentCard(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+ 
+    return getUserBridge(schoolDataSource).getStudentCard(studentIdentifier.getIdentifier());
+  }
+  
+  public BridgeResponse<StudentCard> updateActive(SchoolDataIdentifier studentIdentifier, StudentCardRESTModel payload, Boolean active) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+ 
+    return getUserBridge(schoolDataSource).updateActive(studentIdentifier.getIdentifier(), payload, active);
+  }
 }

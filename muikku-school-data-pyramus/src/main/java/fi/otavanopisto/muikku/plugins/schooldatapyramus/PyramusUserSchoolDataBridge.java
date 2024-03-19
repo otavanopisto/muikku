@@ -49,6 +49,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -63,6 +64,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
@@ -1684,4 +1686,28 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return relation == null ? null : entityFactory.createEntity(relation);
   }
 
+  @Override
+  public StudentCard getStudentCard(String studentIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      return null;
+    }
+    fi.otavanopisto.pyramus.rest.model.StudentCard studentCard = pyramusClient.get(
+        String.format("/students/students/%d/studentCard", studentId),
+        fi.otavanopisto.pyramus.rest.model.StudentCard.class);
+    return studentCard == null ? null : entityFactory.createEntity(studentCard);
+  }
+
+  @Override
+  public BridgeResponse<StudentCard> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active) {
+    // Convert user identifier (PYRAMUS-STAFF-123) to Pyramus user id (123)
+
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      return null;
+    }
+    
+    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard/%d",studentId, payload.getId()), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentCard.class);
+
+  }
 }
