@@ -94,7 +94,7 @@ public class ChatController {
 
     // Chat enabled flag
     
-    enabled = Boolean.TRUE.equals(pluginSettingsController.getPluginSetting("chat", "enabled"));
+    enabled = StringUtils.equals(Boolean.TRUE.toString(), pluginSettingsController.getPluginSetting("chat", "enabled"));
     
     // Cache all chat users
     
