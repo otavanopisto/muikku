@@ -555,7 +555,13 @@ function OverviewList(props: OverviewListProps) {
   }
   // if children length is 0, return empty message
   if (React.Children.count(children) === 0) {
-    return <div className={cName}>{props.emptyMsg}</div>;
+    return (
+      <div className={cName}>
+        <div className="empty empty--chat">
+          <span>{props.emptyMsg}</span>
+        </div>
+      </div>
+    );
   }
 
   return <div className={cName}>{children}</div>;
