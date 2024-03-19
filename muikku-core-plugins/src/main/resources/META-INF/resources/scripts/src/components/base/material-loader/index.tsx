@@ -58,7 +58,7 @@ const STATES = [
     "button-class": "muikku-submit-exercise",
 
     //This is what by default appears on the button
-    "button-text": "actions.send",
+    "button-text": "actions.send_exercise",
 
     //Buttons are not disabled
     "button-disabled": false,
@@ -77,7 +77,7 @@ const STATES = [
     "checks-answers": true,
     "displays-hide-show-answers-on-request-button-if-allowed": true,
     "button-class": "muikku-submit-exercise",
-    "button-text": "actions.sent",
+    "button-text": "actions.cancel_exercise",
     "button-disabled": false,
     "success-state": "ANSWERED",
     //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
@@ -101,7 +101,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-assignment",
-    "button-text": "actions.send",
+    "button-text": "actions.send_assignment",
     //Represents a message that will be shown once the state changes to the success state
     "success-text": "notifications.assignmentSubmitted",
     "button-disabled": false,
