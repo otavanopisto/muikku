@@ -19,7 +19,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
@@ -131,7 +131,7 @@ public class CommunicatorController {
   private String clean(String html) {
     Document doc = Jsoup.parseBodyFragment(html);
     doc = new Cleaner(
-            Whitelist.relaxed()
+            Safelist.relaxed()
               .addTags("s")
               .addAttributes("a", "target")
               .addAttributes("img", "width", "height", "style")

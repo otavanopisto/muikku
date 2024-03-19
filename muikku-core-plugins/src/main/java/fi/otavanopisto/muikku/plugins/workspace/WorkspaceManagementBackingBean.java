@@ -15,7 +15,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
@@ -56,7 +55,7 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
       return NavigationRules.NOT_FOUND;
     }
     
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE, workspaceEntity)) {
+    if (!workspaceController.canIManageWorkspace(workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
     }
     

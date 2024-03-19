@@ -151,7 +151,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
               : this.props.modifier;
           return (
             <FocusTrap
-              active={this.state.visible}
+              active={false}
               focusTrapOptions={{ allowOutsideClick: true }}
             >
               <div

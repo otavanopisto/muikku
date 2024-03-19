@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -485,7 +485,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
           return Response.status(Status.BAD_REQUEST).build();
       }
       
-      Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
+      Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Safelist.relaxed().addAttributes("a", "target")));
       message.outputSettings().escapeMode(EscapeMode.xhtml);
       message.select("a[target]").attr("rel", "noopener noreferer");
       ForumThread thread = forumController.createForumThread(
