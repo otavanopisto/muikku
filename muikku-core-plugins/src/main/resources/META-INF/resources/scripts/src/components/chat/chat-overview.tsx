@@ -684,7 +684,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-offline-filter" className="filter-item__label">
-            {t("status.away")}
+            {t("status.offline")}
           </label>
         </div>
       </div>
