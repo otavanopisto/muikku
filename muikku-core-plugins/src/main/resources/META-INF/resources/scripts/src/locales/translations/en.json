@@ -2195,7 +2195,7 @@
       "dnd": "Do Not Disturb"
     },
     "content": {
-      "blockUserMsg": "Are you sure you want to block the user <b>{{name}}</b>? This will prevent the user for sending new messages to you.",
+      "blockUserMsg": "Are you sure you want to block the user <b>{{name}}</b>? Blocking the user will prevent the user from sending messages to you.",
       "deleteMsgMsg": "Deleting message:",
       "deleteRoomMsg": "Are you sure you want to delete the chat room <b>{{name}}</b>? All chat room messages will be deleted also.",
       "emptySearchMsg_blockedUsers": "No bloked users found.",
@@ -2204,7 +2204,7 @@
       "emptySearchMsg": "Search did not return any results.",
       "msgDeleted": "Deleted {{date}}",
       "msgEdited": "Edited {{date}}",
-      "unblockUserMsg": "You are unblocking a user <b>{{name}}</b>. After unblocking the user he/she can see your chat presense and can send you messages."
+      "unblockUserMsg": "Are you sure you want to unblock the user <b>{{name}}</b>? Unblocking the user allowes him/her to see your chat presense and send you messages."
     },
     "notifications": {
       "400_settings": "Nickname is missing, please enter a nickname for the chat",
