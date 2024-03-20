@@ -2185,7 +2185,7 @@
       "students": "Students",
       "unblockUser": "Unblock user",
       "visibilityFilterAll": "Everyone",
-      "visibilityFilterNone": "No one a.k.a chat is disabled",
+      "visibilityFilterNone": "No one (chat is disabled)",
       "visibilityFilterStaff": "Staff only"
     },
     "status": {

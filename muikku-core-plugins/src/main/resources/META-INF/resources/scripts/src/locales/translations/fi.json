@@ -2185,7 +2185,7 @@
       "students": "Opiskelijat",
       "unblockUser": "Käyttäjän eston poistaminen",
       "visibilityFilterAll": "Kaikki käyttäjät",
-      "visibilityFilterNone": "Ei kukaan eli chat on pois päältä",
+      "visibilityFilterNone": "Ei kukaan (chat on pois päältä)",
       "visibilityFilterStaff": "Henkilökunta"
     },
     "status": {
