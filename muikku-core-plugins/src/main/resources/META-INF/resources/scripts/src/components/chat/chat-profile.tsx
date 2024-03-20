@@ -75,7 +75,7 @@ function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
       <div className="chat__profile-info-container">
         <div className="chat__profile-info-primary">{currentUser.nick}</div>
         <div className="chat__profile-info-secondary">
-          {t("labels.present", { ns: "chat" })}
+          {t("status.online", { ns: "chat" })}
         </div>
       </div>
       <div className="chat__button-wrapper">

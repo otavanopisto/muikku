@@ -2169,7 +2169,7 @@
       "deletingRoom": "Huoneen poisto",
       "discussions": "Keskustelut",
       "editRoomDetails": "Muokkaa huoneen tietoja",
-      "filterSettings": "Suodatusasetukset",
+      "filterSettings": "Suodattimet",
       "gone": "Poistunut",
       "nick": "Nimimerkki",
       "people": "Käyttäjät",
@@ -2189,9 +2189,9 @@
       "visibilityFilterStaff": "Henkilökunta"
     },
     "status": {
-      "away": "Ei Paikalla",
+      "away": "Poissa",
       "online": "Paikalla",
-      "offline": "Poissa",
+      "offline": "Ei Paikalla",
       "dnd": "Älä häiritse"
     },
     "content": {

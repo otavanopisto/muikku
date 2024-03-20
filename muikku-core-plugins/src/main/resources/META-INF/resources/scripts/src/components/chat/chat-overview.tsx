@@ -684,7 +684,7 @@ export function OverviewUserFilters(props: OverviewUserFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="user-offline-filter" className="filter-item__label">
-            {t("status.away")}
+            {t("status.offline")}
           </label>
         </div>
       </div>
@@ -780,7 +780,11 @@ export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
     <>
       <div className="dropdown__container-item">
         <div className="filter-category">
-          <div className="filter-category__label">Suodatusasetukset</div>
+          <div className="filter-category__label">
+            {t("labels.filterSettings", {
+              ns: "chat",
+            })}
+          </div>
         </div>
       </div>
       <div className="dropdown__container-item">
@@ -795,6 +799,7 @@ export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
           <label htmlFor="private-room-filter" className="filter-item__label">
             {t("labels.room", {
               context: "workspace",
+              ns: "chat",
             })}
           </label>
         </div>
@@ -811,6 +816,7 @@ export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
           <label htmlFor="public-room-filter" className="filter-item__label">
             {t("labels.room", {
               context: "public",
+              ns: "chat",
             })}
           </label>
         </div>

@@ -2185,7 +2185,7 @@
       "students": "Students",
       "unblockUser": "Unblock user",
       "visibilityFilterAll": "Everyone",
-      "visibilityFilterNone": "No one a.k.a chat is disable",
+      "visibilityFilterNone": "No one a.k.a chat is disabled",
       "visibilityFilterStaff": "Staff only"
     },
     "status": {
@@ -2210,8 +2210,8 @@
       "400_settings": "Nickname is missing, please enter a nickname for the chat",
       "409_settings": "Entered nickname is already in use, please select another nickname.",
       "loadError": "Failed to load the chat.",
-      "loadError_activity": "Chat activities failed to load.",
-      "loadError_settings": "Chat settings failed to load.",
+      "loadError_activity": "Failed to load chat activities.",
+      "loadError_settings": "Failed to load chat settings.",
       "loadError_rooms": "Failed to load chat rooms.",
       "loadError_users": "Failed to load chat users.",
       "loadError_discussions": "Failed to load chat discussions.",
