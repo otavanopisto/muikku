@@ -19,8 +19,8 @@ import {
   UpdateCurrentWorkspaceImagesB64TriggerType,
 } from "~/actions/workspaces";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Slider = require("react-rangeslider").default;
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 import "~/sass/elements/rangeslider.scss";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -180,7 +180,6 @@ class UploadImageDialog extends React.Component<
           <div className="dialog__slider">
             <Slider
               value={this.state.scale}
-              orientation="horizontal"
               max={200}
               min={100}
               onChange={this.onChangeScale}

@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
-import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/image-editor.scss";
@@ -14,8 +13,8 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { bindActionCreators } from "redux";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Slider = require("react-rangeslider").default;
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 import "~/sass/elements/rangeslider.scss";
 import {
   uploadProfileImage,
@@ -165,7 +164,6 @@ class UploadImageDialog extends React.Component<
           <div className="dialog__slider">
             <Slider
               value={this.state.scale}
-              orientation="horizontal"
               max={200}
               min={100}
               onChange={this.onChangeScale}
