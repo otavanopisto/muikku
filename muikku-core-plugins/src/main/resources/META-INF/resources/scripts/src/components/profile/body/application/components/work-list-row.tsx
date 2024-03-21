@@ -249,7 +249,9 @@ class WorkListRow extends React.Component<
           {localize.date(this.props.item.entryDate)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
-          {this.props.item.price}
+          {(
+            Math.round((this.props.item.price + Number.EPSILON) * 100) / 100
+          ).toFixed(2)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
           {this.props.item.factor}

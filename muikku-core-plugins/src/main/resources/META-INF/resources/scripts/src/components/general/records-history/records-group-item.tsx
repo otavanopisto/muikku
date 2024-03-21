@@ -7,13 +7,14 @@ import {
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
-import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
+import WorkspaceAssignmentsAndDiaryDialog from "~/components/general/records-history/dialogs/workspace-assignments-and-diaries";
 import { localize } from "~/locales/i18n";
 import { WorkspaceAssessmentState } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import RecordsAssessmentIndicator from "./records-assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import { RecordWorkspaceActivityByLine } from "./types";
+import { useRecordsInfoContext } from "./context/records-info-context";
 
 /**
  * RecordsGroupItemProps
@@ -30,6 +31,8 @@ interface RecordsGroupItemProps {
  */
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { credit, isCombinationWorkspace } = props;
+
+  const { identifier, userEntityId } = useRecordsInfoContext();
 
   const { t } = useTranslation([
     "studies",
@@ -319,8 +322,9 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         <div className="application-list__header-secondary">
           <span>
             <WorkspaceAssignmentsAndDiaryDialog
-              workspaceId={credit.activity.id}
               credit={credit.activity}
+              userIdentifier={identifier}
+              userEntityId={userEntityId}
             >
               <Button buttonModifiers={["info", "assignments-and-exercises"]}>
                 {t("actions.assignments", {

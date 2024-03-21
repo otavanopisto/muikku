@@ -15,7 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Cleaner;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
@@ -118,7 +118,7 @@ public class ForumController {
   
   private String clean(String html) {
     Document doc = Jsoup.parse(html);
-    doc = new Cleaner(Whitelist.relaxed()
+    doc = new Cleaner(Safelist.relaxed()
       .addTags("s")
       .addAttributes("a", "target")
       .addAttributes("img", "width", "height", "style")
