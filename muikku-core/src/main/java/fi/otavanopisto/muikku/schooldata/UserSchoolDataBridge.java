@@ -356,6 +356,6 @@ public interface UserSchoolDataBridge {
 
   public StudentCard getStudentCard(String studentIdentifier);
   
-  public BridgeResponse<StudentCard> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active);
+  public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active);
 
 }

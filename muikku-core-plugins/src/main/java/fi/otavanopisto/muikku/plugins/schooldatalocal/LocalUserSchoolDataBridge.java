@@ -719,7 +719,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<StudentCard> updateActive(String studentIdentifier, StudentCardRESTModel payload,
+  public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload,
       Boolean active) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }

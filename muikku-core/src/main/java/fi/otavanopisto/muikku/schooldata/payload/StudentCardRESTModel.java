@@ -4,6 +4,10 @@ import java.util.Date;
 
 public class StudentCardRESTModel {
   
+  public StudentCardRESTModel() {
+    
+  }
+  
   public String getFirstName() {
     return firstName;
   }

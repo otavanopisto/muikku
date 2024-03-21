@@ -569,7 +569,7 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).getStudentCard(studentIdentifier.getIdentifier());
   }
   
-  public BridgeResponse<StudentCard> updateActive(SchoolDataIdentifier studentIdentifier, StudentCardRESTModel payload, Boolean active) {
+  public BridgeResponse<StudentCardRESTModel> updateActive(SchoolDataIdentifier studentIdentifier, StudentCardRESTModel payload, Boolean active) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));

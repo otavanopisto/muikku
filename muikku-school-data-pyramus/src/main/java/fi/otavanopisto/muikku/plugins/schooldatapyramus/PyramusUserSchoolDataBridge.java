@@ -1699,15 +1699,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<StudentCard> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active) {
-    // Convert user identifier (PYRAMUS-STAFF-123) to Pyramus user id (123)
+  public BridgeResponse<fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active) {
 
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (studentId == null) {
       return null;
     }
     
-    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard/%d",studentId, payload.getId()), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentCard.class);
-
+    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard/%d",studentId, payload.getId()), Entity.entity(active, MediaType.APPLICATION_JSON), StudentCardRESTModel.class);
   }
 }

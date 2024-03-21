@@ -17,7 +17,7 @@ public class StudentCardController {
     return userSchoolDataController.getStudentCard(studentIdentifier);
   }
 
-  public BridgeResponse<StudentCard> updateActive(SchoolDataIdentifier studentIdentifier, StudentCardRESTModel studentCard, Boolean active) {
+  public BridgeResponse<StudentCardRESTModel> updateActive(SchoolDataIdentifier studentIdentifier, StudentCardRESTModel studentCard, Boolean active) {
     return userSchoolDataController.updateActive(studentIdentifier, studentCard, active);
   }
 }

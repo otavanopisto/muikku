@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -21,6 +21,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -38,46 +39,54 @@ public class StudentCardRESTService extends PluginRESTService {
 
   @Inject 
   private StudentCardController studentCardController;
+  
+  @Inject
+  private UserEntityController userEntityController;
+  
   @PUT
-  @Path ("/studentCard/{CARDID}/active")
+  @Path ("/student/{STUDENTIDENTIFIER}/studentCard/{CARDID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateStudentCardActivity(@PathParam ("CARDID") Long noteId, StudentCardRESTModel payload) {
+  public Response updateStudentCardActivity(@PathParam ("STUDENTIDENTIFIER") String studentIdentifier, @PathParam ("CARDID") Long cardId, @QueryParam ("active") Boolean active) {
     
-    SchoolDataIdentifier schoolDataIdentifier = sessionController.getLoggedUser();
-
-    // Payload validation
-    
-    StudentCard studentCard = studentCardController.getStudentCard(schoolDataIdentifier);
-    
-    if (studentCard == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Student card for student %s not found", schoolDataIdentifier)).build();
-    }
+    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(studentIdentifier);
     
     // Access
     
-    if (payload != null && payload.getUserEntityId() != null) {
-      if (payload.getUserEntityId() != sessionController.getLoggedUserEntity().getId()) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
+    if (sdi != null && !sessionController.getLoggedUser().equals(sdi) && !sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Find student card
+    
+    StudentCard studentCard = studentCardController.getStudentCard(sdi);
+    
+    if (studentCard == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Student card for student %s not found", sdi)).build();
+    }
+    
+    if (!studentCard.getId().equals(cardId)) {
+      return Response.status(Status.BAD_REQUEST).build();
     }
     
     // Update
     
-    if (studentCard.getUserEntityId() != sessionController.getLoggedUserEntity().getId() && payload.getId() != studentCard.getId()) {
-      return Response.status(Status.FORBIDDEN).build();
-    } 
-    
-    if (studentCard.getActive() == payload.getActive()) {
+    // Return if active is already same value as in payload
+    if (studentCard.getActive().equals(active) || active == null) {
       return Response.status(Status.OK).build();
     }
     
-    BridgeResponse<StudentCard> response = studentCardController.updateActive(sessionController.getLoggedUser(), payload, payload.getActive());
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
+    
+    StudentCardRESTModel restModel = new StudentCardRESTModel();
+    
+    restModel.setUserEntityId(userEntity.getId());
+    restModel.setId(cardId);
+    BridgeResponse<StudentCardRESTModel> response = studentCardController.updateActive(sdi, restModel, active);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     } else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build(); 
     }
-   
   }
   
   @GET
@@ -94,8 +103,8 @@ public class StudentCardRESTService extends PluginRESTService {
     }
     
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-    
-    if (schoolDataIdentifier != sessionController.getLoggedUser() || !sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+
+    if (!SchoolDataIdentifier.fromId(studentIdentifier).equals(sessionController.getLoggedUser()) && !sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
