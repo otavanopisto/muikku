@@ -6,6 +6,7 @@ import {
   useStudyProgressStaticDataContext,
 } from "./context";
 import SignUpBehalfStudentDialog from "./dialogs/sign-up-behalf-student";
+import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import ProgressList from "./progress-list";
 import ProgressTable from "./progress-table";
 
@@ -122,9 +123,24 @@ const StudyProgress = (props: StudyProgressProps) => {
       </div>
 
       <SignUpBehalfStudentDialog
+        isOpen={signUpDialog && studyProgressStatic.user === "supervisor"}
         studentEntityId={signUpDialog && signUpDialog.studentEntityId}
         workspaceSuggestion={signUpDialog && signUpDialog.suggestion}
         onClose={closeSignUpBehalfDialog}
+      />
+
+      <WorkspaceSignup
+        isOpen={signUpDialog && studyProgressStatic.user === "student"}
+        workspaceSignUpDetails={
+          signUpDialog && {
+            id: signUpDialog.suggestion.id,
+            name: signUpDialog.suggestion.name,
+            nameExtension: signUpDialog.suggestion.nameExtension,
+            urlName: signUpDialog.suggestion.urlName,
+          }
+        }
+        onClose={closeSignUpBehalfDialog}
+        redirectOnSuccess={false}
       />
     </>
   );

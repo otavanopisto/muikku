@@ -47,7 +47,7 @@ interface StudyProgressUpdaterContext {
   updateSupervisorOptionalSuggestion: (
     params: UpdateSupervisorOptionalSuggestionParams
   ) => Promise<void>;
-  openSignUpBehalfDialog: (
+  openSignUpDialog: (
     studentEntityId: number,
     suggestion: WorkspaceSuggestion
   ) => void;
@@ -193,7 +193,7 @@ const StudyProgressContextProvider = (
    * @param studentEntityId studentEntityId
    * @param workspaceId workspaceId
    */
-  const openSignUpBehalfDialog = React.useCallback(
+  const openSignUpDialog = React.useCallback(
     (studentEntityId: number, suggestion: WorkspaceSuggestion) => {
       setStudyProgress((oStudyProgress) => ({
         ...oStudyProgress,
@@ -777,7 +777,7 @@ const StudyProgressContextProvider = (
             updateStudentChoice,
             updateSuggestionForNext,
             updateSupervisorOptionalSuggestion,
-            openSignUpBehalfDialog,
+            openSignUpDialog,
             closeSignUpBehalfDialog,
           }}
         >

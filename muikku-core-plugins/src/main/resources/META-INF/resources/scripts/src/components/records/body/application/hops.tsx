@@ -101,7 +101,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         studentId={this.props.status.userSchoolDataIdentifier}
         phase={parseInt(this.props.hops.hopsPhase)}
         disabled={false}
-        superVisorModifies={false}
+        editMode
       />
     );
   };

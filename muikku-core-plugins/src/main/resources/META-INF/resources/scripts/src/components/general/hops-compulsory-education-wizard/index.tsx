@@ -74,7 +74,7 @@ export interface HopsBaseProps {
    */
   phase?: number;
   disabled: boolean;
-  superVisorModifies: boolean;
+  editMode: boolean;
   studentId: string;
 }
 
@@ -548,7 +548,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
    */
   handleStepChange = (steps: object[]) => (step: number) => {
     if (step === steps.length - 1) {
-      if (this.props.superVisorModifies) {
+      if (this.props.editMode) {
         this.setState({
           addHopsUpdateDetailsDialogOpen: true,
         });
@@ -582,7 +582,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             status={status}
             loadingHistoryEvents={this.state.loadingHistoryEvents}
             allHistoryEventLoaded={this.state.allHistoryEventsLoaded}
-            superVisorModifies={this.props.superVisorModifies}
+            editMode={this.props.editMode}
             onHistoryEventClick={this.handleEditHistoryEventClick}
             onLoadMOreHistoryEventsClick={this.loadMoreHistoryEvents}
           />
@@ -616,7 +616,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
             studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
             studyTimeEnd={this.state.basicInfo.studyTimeEnd}
             followUp={this.state.hopsFollowUp}
-            superVisorModifies={this.props.superVisorModifies}
+            editMode={this.props.editMode}
             studyPeriodPlan={this.state.hopsCompulsory.studyPeriodPlan}
             onStudyPeriodPlanChange={this.handleStudyPeriodPlanChange}
           />
@@ -644,7 +644,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
               status={status}
               loadingHistoryEvents={this.state.loadingHistoryEvents}
               allHistoryEventLoaded={this.state.allHistoryEventsLoaded}
-              superVisorModifies={this.props.superVisorModifies}
+              editMode={this.props.editMode}
               onHistoryEventClick={this.handleEditHistoryEventClick}
               onLoadMOreHistoryEventsClick={this.loadMoreHistoryEvents}
             />
@@ -678,7 +678,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
               studentsUserEntityId={this.state.basicInfo.studentUserEntityId}
               studyTimeEnd={this.state.basicInfo.studyTimeEnd}
               followUp={this.state.hopsFollowUp}
-              superVisorModifies={this.props.superVisorModifies}
+              editMode={this.props.editMode}
               studyPeriodPlan={this.state.hopsCompulsory.studyPeriodPlan}
               onStudyPeriodPlanChange={this.handleStudyPeriodPlanChange}
             />

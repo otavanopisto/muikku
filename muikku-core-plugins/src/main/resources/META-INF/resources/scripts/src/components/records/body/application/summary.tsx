@@ -30,6 +30,8 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgrammeAndCurriculum } from "~/components/general/carousel/hooks/use-course-carousel";
+import StudyProgressContextProvider from "~/components/general/study-progress/context";
+import StudyProgress from "~/components/general/study-progress";
 
 /**
  * SummaryProps
@@ -262,70 +264,11 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>
       );
 
-      const studyStatus =
-        this.props.hops.value.goalMatriculationExam === "yes" ? (
-          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {t("labels.workspacesDone", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("labels.completedWorkspaces", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">
-              {this.props.summary.data.eligibilityStatus}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("content.completedWorkspaces", {
-                ns: "studies",
-                context: "matriculation",
-              })}
-            </div>
-          </div>
-        ) : (
-          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {t("labels.workspacesDone", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("labels.completedWorkspaces", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">
-              {this.props.summary.data.coursesDone}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("content.completedWorkspaces", {
-                ns: "studies",
-                context: "lastMonth",
-              })}
-            </div>
-          </div>
-        );
-
       return (
         <section>
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
-              {carouselMatrixByStudyProgrammeAndCurriculum(
-                this.props.status.profile.studyProgrammeName,
-                this.props.status.profile.curriculumName
-              ) !== null && (
-                <div className="application-sub-panel">
-                  <div className="application-sub-panel__header">
-                    {t("labels.coursesForYou", { ns: "studies" })}
-                  </div>
-                  <CourseCarousel
-                    studentId={this.props.status.userSchoolDataIdentifier}
-                    studentUserEntityId={this.props.status.userId}
-                    studyProgrammeName={
-                      this.props.status.profile.studyProgrammeName
-                    }
-                    curriculumName={this.props.status.profile.curriculumName}
-                    displayNotification={this.props.displayNotification}
-                  />
-                </div>
-              )}
-
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
                   {t("labels.tasks", { ns: "tasks" })}
@@ -352,45 +295,64 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   studentId={this.props.status.userId}
                 />
               </div>
+
               <div className="application-sub-panel">
-                <div className="application-sub-panel__header">
-                  {t("labels.studyEvents", { ns: "studies" })}
+                <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
+                  {t("labels.studyProgress", {
+                    ns: "studies",
+                  })}
+                  {/* <Instructions
+                    modifier="instructions"
+                    alignSelfVertically="top"
+                    openByHover={false}
+                    closeOnClick={true}
+                    closeOnOutsideClick={true}
+                    persistent
+                    content={
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: t("content.instructions", { ns: "tasks" }),
+                        }}
+                      />
+                    }
+                  /> */}
                 </div>
-                <div className="application-sub-panel__body application-sub-panel__body--studies-summary-cards">
-                  {studyStatus}
-                  <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-activity">
-                    <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-activity">
-                      {t("labels.activity", { ns: "studies" })}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("labels.logins", { ns: "studies" })}
-                    </div>
-                    <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-activity">
-                      {this.props.summary.data.activity}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("content.logins", { ns: "studies" })}
-                    </div>
-                  </div>
-                  <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-returned">
-                    <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-returned">
-                      {t("labels.assignments", {
-                        ns: "materials",
-                        context: "returned",
-                      })}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("labels.returnedAssignments", { ns: "studies" })}
-                    </div>
-                    <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-returned">
-                      {this.props.summary.data.returnedExercises}
-                    </div>
-                    <div className="application-sub-panel__card-body">
-                      {t("content.returnedEvaluables", { ns: "studies" })}
-                    </div>
-                  </div>
-                </div>
+                <StudyProgressContextProvider
+                  user="student"
+                  useCase="state-of-studies"
+                  studentId={this.props.status.userSchoolDataIdentifier}
+                  studentUserEntityId={this.props.status.userId}
+                  dataToLoad={["studentActivity"]}
+                >
+                  <StudyProgress
+                    curriculumName={this.props.status.profile.curriculumName}
+                    studyProgrammeName={
+                      this.props.status.profile.studyProgrammeName
+                    }
+                    editMode={false}
+                  />
+                </StudyProgressContextProvider>
               </div>
+
+              {carouselMatrixByStudyProgrammeAndCurriculum(
+                this.props.status.profile.studyProgrammeName,
+                this.props.status.profile.curriculumName
+              ) !== null && (
+                <div className="application-sub-panel">
+                  <div className="application-sub-panel__header">
+                    {t("labels.coursesForYou", { ns: "studies" })}
+                  </div>
+                  <CourseCarousel
+                    studentId={this.props.status.userSchoolDataIdentifier}
+                    studentUserEntityId={this.props.status.userId}
+                    studyProgrammeName={
+                      this.props.status.profile.studyProgrammeName
+                    }
+                    curriculumName={this.props.status.profile.curriculumName}
+                    displayNotification={this.props.displayNotification}
+                  />
+                </div>
+              )}
 
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header">

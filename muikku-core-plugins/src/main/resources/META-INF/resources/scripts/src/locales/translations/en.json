@@ -471,6 +471,7 @@
       "summary": "Study summary",
       "studyInfo": "Study information",
       "studyEvents": "Study events",
+      "studyProgress": "Study progress",
       "transferCredits": "Transfer credits",
       "workspacesDone": "Courses done"
     },
@@ -2112,7 +2113,8 @@
     },
     "content": {
       "noSubjectTable": "Subject table not found with given student's curriculum",
-      "noSuggestionAvailable": "No courses available. Check courses and their prerequisites"
+      "noSuggestionAvailable": "No courses available",
+      "noSuggestionAvailable_staff": "No courses available. Check courses and their prerequisites"
     },
     "labels": {
       "colorDescriptions": "Color descriptions",

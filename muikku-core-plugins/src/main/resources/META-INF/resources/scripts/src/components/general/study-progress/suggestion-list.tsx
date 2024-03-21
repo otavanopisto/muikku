@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
  * SuggestionListProps
  */
 interface HopsSuggestionListProps {
+  user: "supervisor" | "student";
   studentId: string;
   studentsUserEntityId: number;
   course: Course;
@@ -28,7 +29,7 @@ interface HopsSuggestionListProps {
    * Must be passed as a prop because portal is used
    */
   updateSuggestionNext?: (params: UpdateSuggestionParams) => void;
-  openSignUpBehalfDialog: (
+  openSignUpDialog: (
     studentEntityId: number,
     suggestion: WorkspaceSuggestion
   ) => void;
@@ -66,10 +67,10 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
    * @param studentEntityId studentEntityId
    * @param suggestion suggestion
    */
-  const handleOpenSignUpBehalfDialog =
+  const handleOpenSignDialog =
     (studentEntityId: number, suggestion: WorkspaceSuggestion) =>
     (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-      props.openSignUpBehalfDialog(studentEntityId, suggestion);
+      props.openSignUpDialog(studentEntityId, suggestion);
     };
 
   /**
@@ -117,7 +118,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
               {name}
             </div>
 
-            {suggestion.canSignup && (
+            {props.user === "supervisor" && suggestion.canSignup && (
               <Button
                 buttonModifiers={[
                   "guider-hops-studytool",
@@ -137,25 +138,46 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
               </Button>
             )}
 
-            <Button
-              buttonModifiers={[
-                "guider-hops-studytool",
-                "guider-hops-studytool-next",
-              ]}
-              onClick={handleOpenSignUpBehalfDialog(
-                props.studentsUserEntityId,
-                suggestion
-              )}
-            >
-              {t("actions.signupStudentToWorkspace")}
-            </Button>
+            {props.user === "student" && suggestion.canSignup && (
+              <Button
+                buttonModifiers={[
+                  "guider-hops-studytool",
+                  "guider-hops-studytool-next",
+                ]}
+                href={`/workspace/${suggestion.urlName}`}
+                openInNewTab="_blank"
+              >
+                {t("actions.checkOut", { ns: "workspace" })}
+              </Button>
+            )}
+
+            {suggestion.canSignup && (
+              <Button
+                buttonModifiers={[
+                  "guider-hops-studytool",
+                  "guider-hops-studytool-next",
+                ]}
+                onClick={handleOpenSignDialog(
+                  props.studentsUserEntityId,
+                  suggestion
+                )}
+              >
+                {props.user === "supervisor"
+                  ? t("actions.signupStudentToWorkspace")
+                  : t("actions.signUp", { ns: "workspace" })}
+              </Button>
+            )}
           </div>
         );
       })
     ) : (
       <div className="hops-container__study-tool-dropdow-suggestion-subsection">
         <div className="hops-container__study-tool-dropdow-title">
-          {t("content.noSuggestionAvailable")}
+          {props.user === "supervisor"
+            ? t("content.noSuggestionAvailable", {
+                context: "staff",
+              })
+            : t("content.noSuggestionAvailable")}
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TextField } from "./text-field";
-import { HopsUser, NEEDED_STUDIES_IN_TOTAL } from ".";
+import { NEEDED_STUDIES_IN_TOTAL } from ".";
 import StudyToolCalculationInfoBox from "./study-tool-calculation-info-box";
 import {
   LANGUAGE_SUBJECTS,
@@ -18,7 +18,6 @@ import StudyToolOptionalStudiesInfoBox from "./study-tool-optional-studiess-info
 import { useStudentStudyHour } from "./hooks/useStudentStudyHours";
 import { AnyActionType } from "~/actions";
 import Dropdown from "../dropdown";
-import { HopsUsePlace } from "./index";
 import { localize } from "~/locales/i18n";
 import { useFollowUp } from "./context/follow-up-context";
 import { useStudyProgressContextState } from "../study-progress/context";
@@ -35,13 +34,10 @@ const ProgressBarLine = require("react-progress-bar.js").Line;
  * StudyToolProps
  */
 interface HopsPlanningToolProps {
-  user: HopsUser;
-  usePlace: HopsUsePlace;
   /**
    * Identifier of student
    */
   studentId: string;
-  studentsUserEntityId: number;
   /**
    * If all functionalities are disabled
    * in read mode
@@ -56,7 +52,7 @@ interface HopsPlanningToolProps {
    * Whether supervisor is modifying student hops
    * some of functionalities changes based on that
    */
-  superVisorModifies: boolean;
+  editMode: boolean;
   studyTimeEnd: string | null;
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
@@ -819,7 +815,7 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
         <StudyProgress
           studyProgrammeName="Nettiperuskoulu"
           curriculumName="OPS 2018"
-          editMode={props.superVisorModifies}
+          editMode={props.editMode}
         />
       </div>
     </>

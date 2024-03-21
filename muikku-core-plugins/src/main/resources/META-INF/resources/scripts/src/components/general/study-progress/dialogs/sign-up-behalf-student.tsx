@@ -21,6 +21,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * SaveExtraDetailsDialogProps
  */
 interface SignUpBehalfOfStudentDialogProps extends WithTranslation {
+  isOpen: boolean;
   /**
    * Entity id of the student.
    */
@@ -204,7 +205,7 @@ class SignUpBehalfOfStudentDialog extends React.Component<
       <Dialog
         modifier="workspace-signup-dialog"
         title={this.props.t("labels.signUpStudent", { ns: "studyMatrix" })}
-        isOpen={true}
+        isOpen={this.props.isOpen}
         disableScroll={true}
         content={content}
         footer={footer}

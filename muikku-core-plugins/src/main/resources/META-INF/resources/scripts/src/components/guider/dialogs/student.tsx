@@ -254,7 +254,7 @@ class StudentDialog extends React.Component<
                   usePlace="guider"
                   disabled={false}
                   studentId={this.props.guider.currentStudent.basic.id}
-                  superVisorModifies
+                  editMode
                 />
               ) : (
                 <CompulsoryEducationHopsWizard
@@ -262,7 +262,7 @@ class StudentDialog extends React.Component<
                   usePlace="guider"
                   disabled={true}
                   studentId={this.props.guider.currentStudent.basic.id}
-                  superVisorModifies={false}
+                  editMode={false}
                 />
               )}
             </>

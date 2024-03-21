@@ -229,76 +229,83 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
           modifiers.push("INPROGRESS");
         }
 
-        /**
-         * Button is shown only if modifying user is supervisor
-         */
-        const showSuggestAndAddToHopsButtons =
-          editMode &&
-          studyProgressStatic.user === "supervisor" &&
-          studyProgressStatic.useCase === "hops-planning";
-
-        /**
-         * WorkspaceSuggestion list is shown only if not disabled, for supervisor only
-         * and there can be made selections
-         */
-        const showSuggestionList =
-          editMode &&
-          studyProgressStatic.user === "supervisor" &&
-          canBeSelected;
-
         const courseDropdownName =
           sSubject.subjectCode + course.courseNumber + " - " + course.name;
 
-        return (
-          <Td
-            key={`${sSubject.subjectCode}-${course.courseNumber}`}
-            modifiers={modifiers}
-            onClick={
-              !course.mandatory && studyProgressStatic.user === "student"
-                ? handleToggleChoiceClick({
-                    studentId: studyProgressStatic.studentId,
-                    courseNumber: course.courseNumber,
-                    subject: sSubject.subjectCode,
-                  })
-                : undefined
+        const suggestionList = (
+          <SuggestionList
+            user={studyProgressStatic.user}
+            studentId={studyProgressStatic.studentId}
+            studentsUserEntityId={studyProgressStatic.studentUserEntityId}
+            suggestedActivityCourses={courseSuggestions}
+            subjectCode={sSubject.subjectCode}
+            course={course}
+            updateSuggestionNext={studyProgressUpdater.updateSuggestionForNext}
+            openSignUpDialog={studyProgressUpdater.openSignUpDialog}
+            onCloseSignUpBehalfDialog={
+              studyProgressUpdater.closeSignUpBehalfDialog
             }
-          >
-            <Dropdown
-              openByHover={studyProgressStatic.user !== "supervisor"}
-              content={
-                <div className="hops-container__study-tool-dropdown-container">
-                  <div className="hops-container__study-tool-dropdow-title">
-                    {course.mandatory
-                      ? `${courseDropdownName}`
-                      : `${courseDropdownName}*`}
-                  </div>
-                  {course.mandatory ? (
-                    <>
-                      {showSuggestionList && (
-                        <SuggestionList
-                          studentId={studyProgressStatic.studentId}
-                          studentsUserEntityId={
-                            studyProgressStatic.studentUserEntityId
-                          }
-                          suggestedActivityCourses={courseSuggestions}
-                          subjectCode={sSubject.subjectCode}
-                          course={course}
-                          updateSuggestionNext={
-                            studyProgressUpdater.updateSuggestionForNext
-                          }
-                          openSignUpBehalfDialog={
-                            studyProgressUpdater.openSignUpBehalfDialog
-                          }
-                          onCloseSignUpBehalfDialog={
-                            studyProgressUpdater.closeSignUpBehalfDialog
-                          }
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <>
+          />
+        );
+
+        switch (studyProgressStatic.useCase) {
+          case "hops-planning": {
+            // Condition to show suggestion list in hops-planning
+            const showSuggestionList =
+              editMode &&
+              canBeSelected &&
+              studyProgressStatic.user === "supervisor";
+
+            if (course.mandatory) {
+              return (
+                <Td
+                  key={`${sSubject.subjectCode}-${course.courseNumber}`}
+                  modifiers={modifiers}
+                >
+                  <Dropdown
+                    content={
+                      <div className="hops-container__study-tool-dropdown-container">
+                        <div className="hops-container__study-tool-dropdow-title">
+                          {course.mandatory
+                            ? `${courseDropdownName}`
+                            : `${courseDropdownName}*`}
+                        </div>
+                        {showSuggestionList && suggestionList}
+                      </div>
+                    }
+                  >
+                    <span
+                      tabIndex={0}
+                      className="table__data-content-wrapper table__data-content-wrapper--course"
+                    >
+                      {course.courseNumber}
+                    </span>
+                  </Dropdown>
+                </Td>
+              );
+            }
+
+            // Button visibility conditions
+            const showSuggestOptional =
+              editMode && studyProgressStatic.user === "supervisor";
+            const showToggleChoice = editMode;
+
+            return (
+              <Td
+                key={`${sSubject.subjectCode}-${course.courseNumber}`}
+                modifiers={modifiers}
+              >
+                <Dropdown
+                  content={
+                    <div className="hops-container__study-tool-dropdown-container">
+                      <div className="hops-container__study-tool-dropdow-title">
+                        {course.mandatory
+                          ? `${courseDropdownName}`
+                          : `${courseDropdownName}*`}
+                      </div>
+
                       <div className="hops-container__study-tool-button-container">
-                        {showSuggestAndAddToHopsButtons && (
+                        {showSuggestOptional && (
                           <Button
                             buttonModifiers={[
                               "guider-hops-studytool",
@@ -316,7 +323,7 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                           </Button>
                         )}
 
-                        {showSuggestAndAddToHopsButtons && (
+                        {showToggleChoice && (
                           <Button
                             onClick={handleToggleChoiceClick({
                               studentId: studyProgressStatic.studentId,
@@ -332,42 +339,86 @@ const ProgressTable: React.FC<HopsCourseTableProps> = (props) => {
                         )}
                       </div>
 
-                      {showSuggestionList && (
-                        <SuggestionList
-                          studentId={studyProgressStatic.studentId}
-                          studentsUserEntityId={
-                            studyProgressStatic.studentUserEntityId
-                          }
-                          suggestedActivityCourses={courseSuggestions}
-                          subjectCode={sSubject.subjectCode}
-                          course={course}
-                          updateSuggestionNext={
-                            studyProgressUpdater.updateSuggestionForNext
-                          }
-                          openSignUpBehalfDialog={
-                            studyProgressUpdater.openSignUpBehalfDialog
-                          }
-                          onCloseSignUpBehalfDialog={
-                            studyProgressUpdater.closeSignUpBehalfDialog
-                          }
-                        />
-                      )}
-                    </>
-                  )}
-                </div>
-              }
-            >
-              <span
-                tabIndex={0}
-                className="table__data-content-wrapper table__data-content-wrapper--course"
+                      {showSuggestionList && suggestionList}
+                    </div>
+                  }
+                >
+                  <span
+                    tabIndex={0}
+                    className="table__data-content-wrapper table__data-content-wrapper--course"
+                  >
+                    {`${course.courseNumber}*`}
+                  </span>
+                </Dropdown>
+              </Td>
+            );
+          }
+
+          case "state-of-studies": {
+            // Condition to show suggestion list in state-of-studies
+            const showSuggestionList = canBeSelected;
+
+            if (course.mandatory) {
+              return (
+                <Td
+                  key={`${sSubject.subjectCode}-${course.courseNumber}`}
+                  modifiers={modifiers}
+                >
+                  <Dropdown
+                    content={
+                      <div className="hops-container__study-tool-dropdown-container">
+                        <div className="hops-container__study-tool-dropdow-title">
+                          {course.mandatory
+                            ? `${courseDropdownName}`
+                            : `${courseDropdownName}*`}
+                        </div>
+                        {canBeSelected && suggestionList}
+                      </div>
+                    }
+                  >
+                    <span
+                      tabIndex={0}
+                      className="table__data-content-wrapper table__data-content-wrapper--course"
+                    >
+                      {course.courseNumber}
+                    </span>
+                  </Dropdown>
+                </Td>
+              );
+            }
+
+            return (
+              <Td
+                key={`${sSubject.subjectCode}-${course.courseNumber}`}
+                modifiers={modifiers}
               >
-                {course.mandatory
-                  ? course.courseNumber
-                  : `${course.courseNumber}*`}
-              </span>
-            </Dropdown>
-          </Td>
-        );
+                <Dropdown
+                  content={
+                    <div className="hops-container__study-tool-dropdown-container">
+                      <div className="hops-container__study-tool-dropdow-title">
+                        {course.mandatory
+                          ? `${courseDropdownName}`
+                          : `${courseDropdownName}*`}
+                      </div>
+
+                      {showSuggestionList && suggestionList}
+                    </div>
+                  }
+                >
+                  <span
+                    tabIndex={0}
+                    className="table__data-content-wrapper table__data-content-wrapper--course"
+                  >
+                    {`${course.courseNumber}*`}
+                  </span>
+                </Dropdown>
+              </Td>
+            );
+          }
+
+          default:
+            return null;
+        }
       });
 
     return (

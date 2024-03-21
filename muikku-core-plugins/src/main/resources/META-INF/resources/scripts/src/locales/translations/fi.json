@@ -471,6 +471,7 @@
       "summary": "Opintojen yhteenveto",
       "studyInfo": "Opintojen tiedot",
       "studyEvents": "Opintotapahtumat",
+      "studyProgress": "Opintojen edistyminen",
       "transferCredits": "Hyväksiluvut",
       "workspacesDone": "Kurssisuoritukset"
     },
@@ -2112,7 +2113,8 @@
     },
     "content": {
       "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
-      "noSuggestionAvailable": "Ei kursseja. Tarkista kurssitarjonta!"
+      "noSuggestionAvailable": "Ei kursseja saatavilla.",
+      "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista kurssitarjonta!"
     },
     "labels": {
       "colorDescriptions": "Värien kuvaukset",

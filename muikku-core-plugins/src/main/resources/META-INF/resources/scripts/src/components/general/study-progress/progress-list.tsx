@@ -190,140 +190,135 @@ const ProgressList: React.FC<HopsCourseListProps> = (props) => {
         listItemIndicatormodifiers.push("INPROGRESS");
       }
 
-      /**
-       * Button is shown only if modifying user is supervisor
-       */
-      const showSuggestAndAddToHopsButtons =
-        editMode &&
-        studyProgressStatic.user === "supervisor" &&
-        studyProgressStatic.useCase === "hops-planning";
-
-      /**
-       * WorkspaceSuggestion list is shown only if not disabled, for supervisor only
-       * and there can be made selections
-       */
-      const showSuggestionList =
-        editMode && studyProgressStatic.user === "supervisor" && canBeSelected;
-
-      return (
-        <ListItem
-          key={`${sSubject.subjectCode}-${course.courseNumber}`}
-          modifiers={listItemModifiers}
-        >
-          <ListItemIndicator
-            modifiers={listItemIndicatormodifiers}
-            onClick={
-              !course.mandatory && studyProgressStatic.user === "student"
-                ? handleToggleChoiceClick({
-                    studentId: studyProgressStatic.studentId,
-                    courseNumber: course.courseNumber,
-                    subject: sSubject.subjectCode,
-                  })
-                : undefined
-            }
-          >
-            <Dropdown
-              openByHover={studyProgressStatic.user !== "supervisor"}
-              content={
-                <div className="hops-container__study-tool-dropdown-container">
-                  <div className="hops-container__study-tool-dropdow-title">
-                    {course.mandatory ? course.name : `${course.name}*`}
-                  </div>
-                  {course.mandatory ? (
-                    <>
-                      {showSuggestionList && (
-                        <SuggestionList
-                          studentId={studyProgressStatic.studentId}
-                          studentsUserEntityId={
-                            studyProgressStatic.studentUserEntityId
-                          }
-                          suggestedActivityCourses={courseSuggestions}
-                          subjectCode={sSubject.subjectCode}
-                          course={course}
-                          updateSuggestionNext={
-                            studyProgressUpdater.updateSuggestionForNext
-                          }
-                          openSignUpBehalfDialog={
-                            studyProgressUpdater.openSignUpBehalfDialog
-                          }
-                          onCloseSignUpBehalfDialog={
-                            studyProgressUpdater.closeSignUpBehalfDialog
-                          }
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <div className="hops-container__study-tool-button-container">
-                        {showSuggestAndAddToHopsButtons &&
-                          studyProgressStatic.useCase === "hops-planning" && (
-                            <Button
-                              buttonModifiers={[
-                                "guider-hops-studytool",
-                                "guider-hops-studytool-suggested",
-                              ]}
-                              onClick={handleToggleSuggestOptional({
-                                courseNumber: course.courseNumber,
-                                subject: sSubject.subjectCode,
-                                studentId: studyProgressStatic.studentId,
-                              })}
-                            >
-                              {suggestedBySupervisor
-                                ? t("actions.suggested")
-                                : t("actions.suggestOptional")}
-                            </Button>
-                          )}
-
-                        {showSuggestAndAddToHopsButtons && (
-                          <Button
-                            onClick={handleToggleChoiceClick({
-                              studentId: studyProgressStatic.studentId,
-                              courseNumber: course.courseNumber,
-                              subject: sSubject.subjectCode,
-                            })}
-                            buttonModifiers={["guider-hops-studytool"]}
-                          >
-                            {selectedByStudent
-                              ? t("actions.cancelSelection")
-                              : t("actions.selectOptionalToHops")}
-                          </Button>
-                        )}
-                      </div>
-
-                      {showSuggestionList && (
-                        <SuggestionList
-                          studentId={studyProgressStatic.studentId}
-                          studentsUserEntityId={
-                            studyProgressStatic.studentUserEntityId
-                          }
-                          suggestedActivityCourses={courseSuggestions}
-                          subjectCode={sSubject.subjectCode}
-                          course={course}
-                          updateSuggestionNext={
-                            studyProgressUpdater.updateSuggestionForNext
-                          }
-                          openSignUpBehalfDialog={
-                            studyProgressUpdater.openSignUpBehalfDialog
-                          }
-                          onCloseSignUpBehalfDialog={
-                            studyProgressUpdater.closeSignUpBehalfDialog
-                          }
-                        />
-                      )}
-                    </>
-                  )}
-                </div>
-              }
-            >
-              <span tabIndex={0} className="list__indicator-data-wapper">
-                {course.mandatory
-                  ? course.courseNumber
-                  : `${course.courseNumber}*`}
-              </span>
-            </Dropdown>
-          </ListItemIndicator>
-        </ListItem>
+      const suggestionList = (
+        <SuggestionList
+          user={studyProgressStatic.user}
+          studentId={studyProgressStatic.studentId}
+          studentsUserEntityId={studyProgressStatic.studentUserEntityId}
+          suggestedActivityCourses={courseSuggestions}
+          subjectCode={sSubject.subjectCode}
+          course={course}
+          updateSuggestionNext={studyProgressUpdater.updateSuggestionForNext}
+          openSignUpDialog={studyProgressUpdater.openSignUpDialog}
+          onCloseSignUpBehalfDialog={
+            studyProgressUpdater.closeSignUpBehalfDialog
+          }
+        />
       );
+
+      switch (studyProgressStatic.useCase) {
+        case "hops-planning": {
+          const showSuggestionList =
+            editMode &&
+            canBeSelected &&
+            studyProgressStatic.user === "supervisor";
+
+          // Button visibility conditions
+          const showSuggestOptional =
+            editMode && studyProgressStatic.user === "supervisor";
+          const showToggleChoice = editMode;
+
+          return (
+            <ListItem
+              key={`${sSubject.subjectCode}-${course.courseNumber}`}
+              modifiers={listItemModifiers}
+            >
+              <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                <Dropdown
+                  content={
+                    <div className="hops-container__study-tool-dropdown-container">
+                      <div className="hops-container__study-tool-dropdow-title">
+                        {course.mandatory ? course.name : `${course.name}*`}
+                      </div>
+                      {course.mandatory ? (
+                        <>{showSuggestionList && suggestionList}</>
+                      ) : (
+                        <>
+                          <div className="hops-container__study-tool-button-container">
+                            {showSuggestOptional && (
+                              <Button
+                                buttonModifiers={[
+                                  "guider-hops-studytool",
+                                  "guider-hops-studytool-suggested",
+                                ]}
+                                onClick={handleToggleSuggestOptional({
+                                  courseNumber: course.courseNumber,
+                                  subject: sSubject.subjectCode,
+                                  studentId: studyProgressStatic.studentId,
+                                })}
+                              >
+                                {suggestedBySupervisor
+                                  ? t("actions.suggested")
+                                  : t("actions.suggestOptional")}
+                              </Button>
+                            )}
+
+                            {showToggleChoice && (
+                              <Button
+                                onClick={handleToggleChoiceClick({
+                                  studentId: studyProgressStatic.studentId,
+                                  courseNumber: course.courseNumber,
+                                  subject: sSubject.subjectCode,
+                                })}
+                                buttonModifiers={["guider-hops-studytool"]}
+                              >
+                                {selectedByStudent
+                                  ? t("actions.cancelSelection")
+                                  : t("actions.selectOptionalToHops")}
+                              </Button>
+                            )}
+                          </div>
+
+                          {showSuggestionList && suggestionList}
+                        </>
+                      )}
+                    </div>
+                  }
+                >
+                  <span tabIndex={0} className="list__indicator-data-wapper">
+                    {course.mandatory
+                      ? course.courseNumber
+                      : `${course.courseNumber}*`}
+                  </span>
+                </Dropdown>
+              </ListItemIndicator>
+            </ListItem>
+          );
+        }
+
+        case "state-of-studies": {
+          const showSuggestionList = canBeSelected;
+
+          return (
+            <ListItem
+              key={`${sSubject.subjectCode}-${course.courseNumber}`}
+              modifiers={listItemModifiers}
+            >
+              <ListItemIndicator modifiers={listItemIndicatormodifiers}>
+                <Dropdown
+                  content={
+                    <div className="hops-container__study-tool-dropdown-container">
+                      <div className="hops-container__study-tool-dropdow-title">
+                        {course.mandatory ? course.name : `${course.name}*`}
+                      </div>
+                      {showSuggestionList && suggestionList}
+                    </div>
+                  }
+                >
+                  <span tabIndex={0} className="list__indicator-data-wapper">
+                    {course.mandatory
+                      ? course.courseNumber
+                      : `${course.courseNumber}*`}
+                  </span>
+                </Dropdown>
+              </ListItemIndicator>
+            </ListItem>
+          );
+        }
+
+        default:
+          return null;
+      }
     });
 
     return (

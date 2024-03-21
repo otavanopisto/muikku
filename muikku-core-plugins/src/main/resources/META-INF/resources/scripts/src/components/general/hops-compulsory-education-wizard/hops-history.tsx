@@ -13,7 +13,7 @@ interface HopsHistoryProps {
   hopsUpdates: HopsHistoryEntry[];
   loggedUserId: number;
   loading: boolean;
-  superVisorModifies: boolean;
+  editable: boolean;
   onHistoryEventClick: (eventId: number) => void;
   status: StatusType;
 }
@@ -27,9 +27,7 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
     {props.hopsUpdates.map((item, i) => (
       <HopsHistoryEvent
         key={i}
-        showEdit={
-          props.superVisorModifies && item.modifierId === props.loggedUserId
-        }
+        showEdit={props.editable && item.modifierId === props.loggedUserId}
         hopsUpdate={item}
         onHistoryEventClick={props.onHistoryEventClick}
         status={props.status}

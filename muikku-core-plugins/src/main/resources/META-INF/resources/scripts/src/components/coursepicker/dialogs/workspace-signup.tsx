@@ -32,6 +32,7 @@ interface WorkspaceSignupDialogProps extends WithTranslation {
   workspaceSignUpDetails?: WorkspaceSignUpDetails;
   currentWorkspace: WorkspaceDataType;
   signupIntoWorkspace: SignupIntoWorkspaceTriggerType;
+  redirectOnSuccess?: boolean;
 }
 
 /**
@@ -102,6 +103,7 @@ class WorkspaceSignupDialog extends React.Component<
         this.setState({ locked: false });
       },
       message: this.state.message,
+      redirectOnSuccess: this.props.redirectOnSuccess,
     });
   }
 
@@ -112,6 +114,10 @@ class WorkspaceSignupDialog extends React.Component<
   render() {
     const workspaceSignUpDetails =
       this.props.workspaceSignUpDetails || this.props.currentWorkspace;
+
+    if (!workspaceSignUpDetails) {
+      return null;
+    }
 
     const hasFees = this.props.status.hasFees;
 
@@ -191,6 +197,7 @@ class WorkspaceSignupDialog extends React.Component<
         footer={footer}
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
+        closeOnOverlayClick={false}
       >
         {this.props.children}
       </Dialog>

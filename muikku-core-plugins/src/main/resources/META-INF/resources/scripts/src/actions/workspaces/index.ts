@@ -1049,6 +1049,7 @@ export interface SignupIntoWorkspaceTriggerType {
     fail: () => void;
     workspace: WorkspaceSignUpDetails;
     message: string;
+    redirectOnSuccess?: boolean;
   }): AnyActionType;
 }
 
@@ -1296,6 +1297,14 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
  */
 const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
   function signupIntoWorkspace(data) {
+    const {
+      workspace,
+      message,
+      success,
+      fail,
+      redirectOnSuccess = true,
+    } = data;
+
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -1304,16 +1313,19 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
 
       try {
         await coursepickerApi.workspaceSignUp({
-          workspaceId: data.workspace.id,
+          workspaceId: workspace.id,
           workspaceSignUpRequest: {
-            message: data.message,
+            message: message,
           },
         });
 
-        window.location.href = `${getState().status.contextPath}/workspace/${
-          data.workspace.urlName
-        }`;
-        data.success();
+        if (redirectOnSuccess) {
+          window.location.href = `${getState().status.contextPath}/workspace/${
+            data.workspace.urlName
+          }`;
+        }
+
+        success();
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -1328,7 +1340,7 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
             "error"
           )
         );
-        data.fail();
+        fail();
       }
     };
   };

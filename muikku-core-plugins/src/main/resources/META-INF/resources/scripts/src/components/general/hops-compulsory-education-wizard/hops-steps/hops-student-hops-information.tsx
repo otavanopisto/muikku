@@ -130,7 +130,9 @@ class HopsStudentHopsInformation extends React.Component<
                     hopsUpdates={this.props.basicInformation.updates}
                     loggedUserId={this.props.loggedUserId}
                     loading={this.props.loadingHistoryEvents}
-                    superVisorModifies={this.props.superVisorModifies}
+                    editable={
+                      this.props.user === "supervisor" && this.props.editMode
+                    }
                     onHistoryEventClick={this.props.onHistoryEventClick}
                     status={this.props.status}
                   />

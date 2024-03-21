@@ -24,7 +24,7 @@ interface HopsStudiesPlanningProps extends HopsBaseProps {
   studentId: string;
   studentsUserEntityId: number;
   studyTimeEnd: string | null;
-  superVisorModifies: boolean;
+  editMode: boolean;
   studyPeriodPlan?: HopsStudyPeriodPlan;
   onStudyPeriodPlanChange: (studyPeriodPlan: HopsStudyPeriodPlan) => void;
   websocketState: WebsocketStateType;
@@ -138,13 +138,10 @@ class HopsStudiesPlanning extends React.Component<
                   voit käyttää opiskelemiseen, kannattaa asiaa pohtia uudelleen.
                 </div>
                 <HopsPlanningTool
-                  user={this.props.user}
-                  usePlace={this.props.usePlace}
                   studentId={this.props.studentId}
-                  studentsUserEntityId={this.props.studentsUserEntityId}
                   disabled={this.props.disabled}
                   studyTimeEnd={this.props.studyTimeEnd}
-                  superVisorModifies={this.props.superVisorModifies}
+                  editMode={this.props.editMode}
                   showIndicators={true}
                 />
               </div>
