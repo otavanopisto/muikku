@@ -13,6 +13,12 @@ import i18n from "~/locales/i18n";
 export interface UpdateHopsTriggerType {
   (callback?: () => void, userId?: string): AnyActionType;
 }
+/**
+ * GetHopsPhaseTriggerType
+ */
+export interface SetHopsPhaseTriggerType {
+  (userEntityId: number): AnyActionType;
+}
 
 /**
  * SetHopsToTriggerType
@@ -32,6 +38,34 @@ export type UPDATE_HOPS_STATUS = SpecificActionType<
 >;
 
 export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
+
+/**
+ *
+ * @param userEntityId
+ * @returns a thunk function
+ */
+const setHopsPhase: SetHopsPhaseTriggerType = function setHopsPhase(
+  userEntityId: number
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
+  ) => {
+    if (getState().hops.hopsPhase) {
+      return;
+    }
+    const userApi = MApi.getUserApi();
+    const properties = await userApi.getUserProperties({
+      userEntityId: userEntityId,
+      properties: "hopsPhase",
+    });
+
+    dispatch({
+      type: "SET_HOPS_PHASE",
+      payload: properties[0].value,
+    });
+  };
+};
 
 /**
  * updateHops
@@ -63,8 +97,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
         payload: <HOPSStatusType>"LOADING",
       });
 
-      // If userIdentifier is provided, this is not your own HOPS.
-      // so no need for the hopsPhase (?)
+      // If userIdentifier is provided, this is not your own HOPS and this will be done elsewhere at better time
       if (!userIdentifier) {
         const properties = await userApi.getUserProperties({
           userEntityId: getState().status.userId,
@@ -157,4 +190,4 @@ const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
 };
 
 export default { updateHops, setHopsTo };
-export { updateHops, setHopsTo };
+export { updateHops, setHopsPhase, setHopsTo };

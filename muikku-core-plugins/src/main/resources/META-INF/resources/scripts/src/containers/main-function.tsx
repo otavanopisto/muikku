@@ -84,7 +84,7 @@ import {
   setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import { updateHops } from "~/actions/main-function/hops";
+import { updateHops, setHopsPhase } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
 import {
   updateYO,
