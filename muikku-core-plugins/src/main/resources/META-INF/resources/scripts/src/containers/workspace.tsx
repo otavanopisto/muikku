@@ -1205,10 +1205,6 @@ export default class Workspace extends React.Component<
            */
           success: (workspace) => {
             this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action
-            );
-
-            this.props.store.dispatch(
               loadEvaluationAssessmentRequestsFromServer(true) as Action
             );
             this.props.store.dispatch(
