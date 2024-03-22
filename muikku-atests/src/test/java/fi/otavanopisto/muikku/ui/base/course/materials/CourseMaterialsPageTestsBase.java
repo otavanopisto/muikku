@@ -324,7 +324,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForNotVisible(".material-page__field-answer-synchronizer");
         waitAndClick(".button--muikku-submit-exercise");
         waitUntilContentChanged(".button--muikku-submit-exercise", "Palauta tehtävä");
-        assertTextIgnoreCase(".button--muikku-submit-exercise", "Tehtävä palautettu");
+        assertTextIgnoreCase(".button--muikku-submit-exercise", "Peruuta tehtävän palautus");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
         waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
@@ -389,7 +389,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForNotVisible(".material-page__field-answer-synchronizer");
           waitAndClick(".button--muikku-submit-exercise");
           waitUntilContentChanged(".button--muikku-submit-exercise", "Palauta tehtävä");
-          assertTextIgnoreCase(".button--muikku-submit-exercise", "Tehtävä palautettu");
+          assertTextIgnoreCase(".button--muikku-submit-exercise", "Peruuta tehtävän palautus");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
           waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
