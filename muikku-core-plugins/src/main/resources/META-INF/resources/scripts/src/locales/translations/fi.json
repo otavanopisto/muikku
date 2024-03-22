@@ -2157,8 +2157,18 @@
   },
   "chat": {
     "actions": {
+      "addRoom": "Lisää uusi huone",
       "blockUser": "Estä käyttäjä",
-      "unblock": "Poista esto"
+      "chatSettings": "Chatin asetukset",
+      "deleteRoom": "Poista huone",
+      "editRoom": "Muokkaa huonetta",
+      "deleteMessage": "Poista viesti",
+      "editMessage": "Muokkaa viestiä",
+      "minMaxPanel": "Pienennä/Suurenna paneeli",
+      "unBlockUser": "Poista esto",
+      "fullscreenMode": "Kokoruutu tila",
+      "detachWindow": "Irroita ikkuna",
+      "attachWindow": "Kiinnitä ikkuna"
     },
     "labels": {
       "blocked": "Estetyt",
@@ -2176,13 +2186,10 @@
       "gone": "Poistunut",
       "nick": "Nimimerkki",
       "people": "Käyttäjät",
-      "room_public": "Julkinen huone",
-      "room_workspace": "Kurssihuone",
-      "room": "Huone",
       "roomDetails": "Huoneen tiedot",
+      "rooms": "Huoneet",
       "rooms_public": "Julkiset huoneet",
       "rooms_workspace": "Kurssien huoneet",
-      "rooms": "Huoneet",
       "selectVisibility": "Valitse, kuka näkee sinut chatissa",
       "staff": "Henkilökunta",
       "students": "Opiskelijat",

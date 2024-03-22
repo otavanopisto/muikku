@@ -310,12 +310,13 @@ function DesktopMessageActions(props: DesktopMessageActionsProps) {
   return (
     <div className="chat__message-actions">
       {mainActions.map((action, index) => (
-        <IconButton
-          key={index}
-          icon={action.icon}
-          buttonModifiers={["chat"]}
-          onClick={action.onClick}
-        />
+        <div key={index} className="chat__button-wrapper">
+          <IconButton
+            icon={action.icon}
+            buttonModifiers={["chat"]}
+            onClick={action.onClick}
+          />
+        </div>
       ))}
     </div>
   );

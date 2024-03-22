@@ -213,13 +213,15 @@ function ChatPrivatePanel(props: ChatPrivatePanelProps) {
         <div className="chat__discussion-panel-header-title">{title}</div>
         <div className="chat__discussion-panel-header-actions">
           {!isBlocked && props.targetUser.type === "STUDENT" && (
-            <IconButton
-              icon="blocked"
-              buttonModifiers={[
-                `${isMobileWidth ? "chat-invert" : "chat-block"}`,
-              ]}
-              onClick={handleOpenBlockUserDialog}
-            />
+            <div className="chat__button-wrapper">
+              <IconButton
+                icon="blocked"
+                buttonModifiers={[
+                  `${isMobileWidth ? "chat-invert" : "chat-block"}`,
+                ]}
+                onClick={handleOpenBlockUserDialog}
+              />
+            </div>
           )}
         </div>
       </div>

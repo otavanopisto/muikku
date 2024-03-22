@@ -106,26 +106,34 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       </ChatSidePanel>
 
       <div className="chat-mobile__footer">
-        <IconButton
-          buttonModifiers={["chat", "chat-mobile-footer"]}
-          icon="stack"
-          onClick={() => setPanelLeftOpen((prev) => !prev)}
-        />
-        <Button onClick={openOverview}>
-          {t("labels.dashboard", {
-            ns: "chat",
-          })}
-        </Button>
-        <Button onClick={toggleControlBox}>
-          {t("actions.close", {
-            ns: "common",
-          })}
-        </Button>
-        <IconButton
-          buttonModifiers={["chat", "chat-mobile-footer"]}
-          icon="bubbles"
-          onClick={() => setPanelRightOpen((prev) => !prev)}
-        />
+        <div className="chat__button-wrapper">
+          <IconButton
+            buttonModifiers={["chat", "chat-mobile-footer"]}
+            icon="stack"
+            onClick={() => setPanelLeftOpen((prev) => !prev)}
+          />
+        </div>
+        <div className="chat__button-wrapper">
+          <Button onClick={openOverview}>
+            {t("labels.dashboard", {
+              ns: "chat",
+            })}
+          </Button>
+        </div>
+        <div className="chat__button-wrapper">
+          <Button onClick={toggleControlBox}>
+            {t("actions.close", {
+              ns: "common",
+            })}
+          </Button>
+        </div>
+        <div className="chat__button-wrapper">
+          <IconButton
+            buttonModifiers={["chat", "chat-mobile-footer"]}
+            icon="bubbles"
+            onClick={() => setPanelRightOpen((prev) => !prev)}
+          />
+        </div>
       </div>
     </div>
   );

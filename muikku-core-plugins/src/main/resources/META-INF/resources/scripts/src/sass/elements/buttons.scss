@@ -844,34 +844,11 @@
 }
 
 .button-icon--chat-invert {
-  background: transparent;
-  border-radius: 100%;
   color: $color-default;
-  font-size: 0.875rem;
-  height: 1.625rem;
-  padding: 5px;
-  width: 1.625rem;
-
-  &:hover,
-  &.hover,
-  &:active,
-  &.active {
-    background: transparent;
-  }
 }
 
 .button-icon--chat-block {
-  background: transparent;
-  border-radius: 100%;
   color: $color-fatal;
-  font-size: 0.875rem;
-  height: 1.625rem;
-  padding: 5px;
-  width: 1.625rem;
-
-  &:hover {
-    background: transparent;
-  }
 }
 
 .button-pill {

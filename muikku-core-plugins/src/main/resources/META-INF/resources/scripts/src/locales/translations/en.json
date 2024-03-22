@@ -2157,8 +2157,18 @@
   },
   "chat": {
     "actions": {
-      "blockUser": "Block user",
-      "unblock": "Unblock user"
+      "addRoom": "Add New Room",
+      "blockUser": "Block User",
+      "chatSettings": "Chat Settings",
+      "deleteRoom": "Delete Room",
+      "editRoom": "EDit Room",
+      "deleteMessage": "Delete Message",
+      "editMessage": "Edit Message",
+      "minMaxPanel": "Minimize/Maximize Panel",
+      "unBlockUser": "Unblock User",
+      "fullscreenMode": "Fullscreen Mode",
+      "detachWindow": "Detach Window",
+      "attachWindow": "Attach Window"
     },
     "labels": {
       "blocked": "Blocked",
@@ -2176,13 +2186,10 @@
       "gone": "Removed",
       "nick": "Nickname",
       "people": "Users",
-      "room_public": "Public chat room",
-      "room_workspace": "Course chat room",
-      "room": "Chat room",
       "roomDetails": "Chat room details",
+      "rooms": "Chat rooms",
       "rooms_public": "Public chat rooms",
       "rooms_workspace": "Course chat rooms",
-      "rooms": "Chat rooms",
       "selectVisibility": "Select who can see your chat presence",
       "staff": "Staff",
       "students": "Students",

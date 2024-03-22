@@ -124,7 +124,9 @@ function ChatOverview() {
             onChange={handleSearchChange}
           />
           <Dropdown modifier="chat" content={filterContent}>
-            <IconButton buttonModifiers={["chat"]} icon="filter" />
+            <div className="chat__button-wrapper">
+              <IconButton buttonModifiers={["chat"]} icon="filter" />
+            </div>
           </Dropdown>
         </div>
         {content}
@@ -231,7 +233,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
             <ChatRoomNewDialog>
               <IconButton
                 icon="plus"
-                buttonModifiers={[`${isMobileWidth ? "chat-invert" : "chat"}`]}
+                buttonModifiers={["chat", `${isMobileWidth && "chat-invert"}`]}
                 iconPosition="left"
               />
             </ChatRoomNewDialog>
@@ -316,11 +318,13 @@ function ChatOverviewUsersList() {
           </OverviewListItemContent>
           <OverviewListItemActions>
             {!isBlocked && user.type === "STUDENT" && (
-              <IconButton
-                icon="blocked"
-                buttonModifiers={["chat-block"]}
-                onClick={handleBlockClick(user)}
-              />
+              <div className="chat__button-wrapper">
+                <IconButton
+                  icon="blocked"
+                  buttonModifiers={["chat", "chat-block"]}
+                  onClick={handleBlockClick(user)}
+                />
+              </div>
             )}
           </OverviewListItemActions>
         </OverviewListItem>
@@ -405,11 +409,13 @@ function ChatOverviewBlockedList() {
         </OverviewListItemContent>
 
         <OverviewListItemActions>
-          <IconButton
-            icon="blocked"
-            buttonModifiers={["chat"]}
-            onClick={handleOpenUnblockDialog(user)}
-          />
+          <div className="chat__button-wrapper">
+            <IconButton
+              icon="blocked"
+              buttonModifiers={["chat"]}
+              onClick={handleOpenUnblockDialog(user)}
+            />
+          </div>
         </OverviewListItemActions>
       </OverviewListItem>
     ));
@@ -497,15 +503,18 @@ function ChatOverviewRoomsList() {
 
         {chatPermissions.canManagePublicRooms && room.type === "PUBLIC" && (
           <OverviewListItemActions>
-            <ChatRoomEditAndInfoDialog room={room} defaults="edit">
-              <IconButton icon="pencil" buttonModifiers={["chat"]} />
-            </ChatRoomEditAndInfoDialog>
-
-            <IconButton
-              icon="trash"
-              buttonModifiers={["chat"]}
-              onClick={handleDeleteRoom(room)}
-            />
+            <div className="chat__button-wrapper">
+              <ChatRoomEditAndInfoDialog room={room} defaults="edit">
+                <IconButton icon="pencil" buttonModifiers={["chat"]} />
+              </ChatRoomEditAndInfoDialog>
+            </div>
+            <div className="chat__button-wrapper">
+              <IconButton
+                icon="trash"
+                buttonModifiers={["chat"]}
+                onClick={handleDeleteRoom(room)}
+              />
+            </div>
           </OverviewListItemActions>
         )}
       </OverviewListItem>
@@ -797,7 +806,7 @@ export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="private-room-filter" className="filter-item__label">
-            {t("labels.room", {
+            {t("labels.rooms", {
               context: "workspace",
               ns: "chat",
             })}
@@ -814,7 +823,7 @@ export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
             onChange={handleFilterChange}
           />
           <label htmlFor="public-room-filter" className="filter-item__label">
-            {t("labels.room", {
+            {t("labels.rooms", {
               context: "public",
               ns: "chat",
             })}
