@@ -1339,6 +1339,7 @@
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
     },
     "wcag": {
+      "connectFieldTermSelected": "Termi valittu",
       "organizerTermSelected": "Termi valittu",
       "organizerTermInUse": "Termi on jo käytössä",
       "organizerTermInUseAndSelected": "Valittu termi on jo käytössä",

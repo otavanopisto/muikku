@@ -423,29 +423,40 @@ class OrganizerField extends React.Component<
    * handleKeyUp
    * @param id id
    */
-  handleDraggableKeyUp = (id: string) => (e: React.KeyboardEvent) => {
-    if (e.key !== "Enter") return;
-    this.selectItemId(id);
+  handleDraggableKeyDown = (id: string) => (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.selectItemId(id);
+    }
   };
 
   /**
-   * handleDroppableKeyUp
+   * handleDroppableKeyDown
    * @param box box
    */
-  handleDroppableKeyUp = (box: CategoryType) => (e: React.KeyboardEvent) => {
-    if (e.key !== "Enter") return;
-    this.selectBox(box);
+  handleDroppableKeyDown = (box: CategoryType) => (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+      e.preventDefault();
+      this.selectBox(box);
+    }
   };
 
   /**
-   * handleOrganizedFieldKeyUp
+   * handleOrganizedFieldKeyDown
    * @param categoryId categoryId
    * @param termId termId
    */
-  handleOrganizedFieldKeyUp =
+  handleOrganizedFieldKeyDown =
     (categoryId: string, termId: string) => (e: React.KeyboardEvent) => {
-      if (e.key !== "Enter") return;
-      this.deleteTermFromBox(categoryId, termId);
+      if (e.key === "Enter" || e.key === " ") {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.deleteTermFromBox(categoryId, termId);
+      }
     };
 
   /**
@@ -635,8 +646,7 @@ class OrganizerField extends React.Component<
                   return (
                     <Draggable
                       tabIndex={0}
-                      role="button"
-                      as="span"
+                      as="button"
                       parentContainerSelector=".material-page__organizerfield"
                       className={className}
                       interactionGroup={this.props.content.name}
@@ -645,7 +655,7 @@ class OrganizerField extends React.Component<
                       onDropInto={this.onDropDraggableItem.bind(this, id)}
                       onDrag={this.selectItemId.bind(this, id)}
                       onClick={this.selectItemId.bind(this, id)}
-                      onKeyUp={this.handleDraggableKeyUp(id)}
+                      onKeyDown={this.handleDraggableKeyDown(id)}
                       aria-label={ariaLabel}
                     >
                       <span className="material-page__organizerfield-term-icon icon-move"></span>
@@ -705,10 +715,10 @@ class OrganizerField extends React.Component<
                 return (
                   <Droppable
                     tabIndex={0}
-                    as="span"
+                    as="div"
                     interactionGroup={this.props.content.name}
                     onClick={this.selectBox.bind(this, category)}
-                    onKeyUp={this.handleDroppableKeyUp(category)}
+                    onKeyDown={this.handleDroppableKeyDown(category)}
                     className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
                     key={category.id}
                     interactionData={category.id}
@@ -757,7 +767,7 @@ class OrganizerField extends React.Component<
                                   category.id,
                                   termId
                                 )}
-                                onKeyUp={this.handleOrganizedFieldKeyUp(
+                                onKeyDown={this.handleOrganizedFieldKeyDown(
                                   category.id,
                                   termId
                                 )}

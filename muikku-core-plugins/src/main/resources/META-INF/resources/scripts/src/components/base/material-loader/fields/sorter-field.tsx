@@ -287,12 +287,15 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   }
 
   /**
-   * handleKeyUp
+   * handleKeyDown
    * @param item item
    */
-  handleKeyUp = (item: SorterFieldItemType) => (e: React.KeyboardEvent) => {
-    if (e.key !== "Enter") return;
-    this.selectItem(item);
+  handleKeyDown = (item: SorterFieldItemType) => (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+      e.preventDefault();
+      this.selectItem(item);
+    }
   };
 
   /**
@@ -513,8 +516,12 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                   onClick={this.selectItem.bind(this, item)}
                   onDrag={this.selectItem.bind(this, item)}
                   onDropInto={this.cancelSelectedItem}
-                  onKeyUp={this.handleKeyUp(item)}
+                  onKeyDown={this.handleKeyDown(item)}
                   aria-label={ariaLabel}
+                  aria-pressed={
+                    this.state.selectedItem &&
+                    this.state.selectedItem.id === item.id
+                  }
                 >
                   <span className="material-page__sorterfield-item-icon icon-move"></span>
                   <span className="material-page__sorterfield-item-label">
