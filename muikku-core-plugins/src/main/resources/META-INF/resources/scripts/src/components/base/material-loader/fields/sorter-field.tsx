@@ -77,6 +77,8 @@ interface SorterFieldState {
  * SorterField
  */
 class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
+  itemRefs: HTMLSpanElement[];
+
   /**
    * constructor
    * @param props props
@@ -128,6 +130,8 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
     this.selectItem = this.selectItem.bind(this);
     this.cancelSelectedItem = this.cancelSelectedItem.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+
+    this.itemRefs = [];
   }
 
   /**
@@ -200,7 +204,12 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
       {
         items,
       },
-      this.checkAnswers
+      () => {
+        this.checkAnswers();
+        if (document.activeElement) {
+          this.focusIndex(items.findIndex((i) => i.id === itemB.id));
+        }
+      }
     );
   }
 
@@ -291,10 +300,64 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
    * @param item item
    */
   handleKeyDown = (item: SorterFieldItemType) => (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
+    if (
+      e.key === "ArrowUp" ||
+      e.key === "ArrowDown" ||
+      e.key === "ArrowLeft" ||
+      e.key === "ArrowRight" ||
+      e.key === "Enter" ||
+      e.key === " " ||
+      e.key === "Escape"
+    ) {
       e.stopPropagation();
       e.preventDefault();
-      this.selectItem(item);
+    }
+
+    const itemIndex = this.state.items.indexOf(item);
+
+    switch (e.key) {
+      case "Enter":
+      case " ":
+        this.selectItem(item);
+        break;
+
+      case "ArrowUp":
+        this.props.content.orientation === "vertical" &&
+          this.focusIndex(itemIndex - 1);
+
+        break;
+      case "ArrowDown":
+        this.props.content.orientation === "vertical" &&
+          this.focusIndex(itemIndex + 1);
+        break;
+
+      case "ArrowLeft":
+        this.props.content.orientation === "horizontal" &&
+          this.focusIndex(itemIndex - 1);
+        break;
+
+      case "ArrowRight":
+        this.props.content.orientation === "horizontal" &&
+          this.focusIndex(itemIndex + 1);
+        break;
+
+      case "Escape":
+        this.cancelSelectedItem();
+        break;
+      default:
+        return;
+    }
+  };
+
+  /**
+   * focusIndex
+   * @param n n
+   */
+  focusIndex = (n: number) => {
+    const element = this.itemRefs[n];
+
+    if (element) {
+      element.focus();
     }
   };
 
@@ -494,12 +557,19 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                   ? this.props.t("wcag.sorterTermSelected", { ns: "materials" })
                   : "";
 
+              /**
+               * callBackRef
+               * @param ref ref
+               */
+              const callBackRef = (ref: HTMLSpanElement) => {
+                this.itemRefs[index] = ref;
+              };
+
               // The draggable version, note how on interaction we swap
               // the parent component is a class name always make sure to have the right class name not to overflow
               // the interaction data is the item itself so the argument would be that
               return (
                 <Draggable
-                  tabIndex={0}
                   denyWidth={this.props.content.orientation === "horizontal"}
                   as="span"
                   parentContainerSelector=".material-page__sorterfield"
@@ -516,16 +586,21 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                   onClick={this.selectItem.bind(this, item)}
                   onDrag={this.selectItem.bind(this, item)}
                   onDropInto={this.cancelSelectedItem}
-                  onKeyDown={this.handleKeyDown(item)}
-                  aria-label={ariaLabel}
-                  aria-pressed={
-                    this.state.selectedItem &&
-                    this.state.selectedItem.id === item.id
-                  }
                 >
-                  <span className="material-page__sorterfield-item-icon icon-move"></span>
-                  <span className="material-page__sorterfield-item-label">
-                    <StrMathJAX>{text}</StrMathJAX>
+                  <span
+                    tabIndex={0}
+                    ref={callBackRef}
+                    onKeyDown={this.handleKeyDown(item)}
+                    aria-label={ariaLabel}
+                    aria-pressed={
+                      this.state.selectedItem &&
+                      this.state.selectedItem.id === item.id
+                    }
+                  >
+                    <span className="material-page__sorterfield-item-icon icon-move"></span>
+                    <span className="material-page__sorterfield-item-label">
+                      <StrMathJAX>{text}</StrMathJAX>
+                    </span>
                   </span>
                 </Draggable>
               );
