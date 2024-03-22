@@ -414,6 +414,10 @@
       font-size: 1rem;
     }
   }
+
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
 }
 
 .dialog__icon-container {
