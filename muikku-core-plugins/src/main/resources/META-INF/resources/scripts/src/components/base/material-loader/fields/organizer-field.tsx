@@ -386,9 +386,15 @@ class OrganizerField extends React.Component<
    * @param id id
    */
   selectItemId(id: string) {
-    this.setState({
-      selectedItemId: id,
-    });
+    if (this.state.selectedItemId === id) {
+      this.setState({
+        selectedItemId: null,
+      });
+    } else {
+      this.setState({
+        selectedItemId: id,
+      });
+    }
   }
 
   /**
@@ -412,6 +418,46 @@ class OrganizerField extends React.Component<
       selectedItemId: null,
     });
   }
+
+  /**
+   * handleKeyUp
+   * @param id id
+   */
+  handleDraggableKeyDown = (id: string) => (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.selectItemId(id);
+    }
+  };
+
+  /**
+   * handleDroppableKeyDown
+   * @param box box
+   */
+  handleDroppableKeyDown = (box: CategoryType) => (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+      e.preventDefault();
+      this.selectBox(box);
+    }
+  };
+
+  /**
+   * handleOrganizedFieldKeyDown
+   * @param categoryId categoryId
+   * @param termId termId
+   */
+  handleOrganizedFieldKeyDown =
+    (categoryId: string, termId: string) => (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.deleteTermFromBox(categoryId, termId);
+      }
+    };
 
   /**
    * preventPropagation
@@ -558,10 +604,34 @@ class OrganizerField extends React.Component<
                       ? "material-page__organizerfield-term--selected"
                       : ""
                   }`;
+
+                  let ariaLabel = "";
+
+                  if (this.state.selectedItemId === id) {
+                    ariaLabel = this.props.t("wcag.organizerTermSelected", {
+                      ns: "materials",
+                    });
+                  }
+
+                  if (this.state.useList.indexOf(id) !== -1) {
+                    ariaLabel = this.props.t("wcag.organizerTermInUse", {
+                      ns: "materials",
+                    });
+
+                    if (this.state.selectedItemId === id) {
+                      ariaLabel = this.props.t(
+                        "wcag.organizerTermInUseAndSelected",
+                        {
+                          ns: "materials",
+                        }
+                      );
+                    }
+                  }
+
                   if (this.props.readOnly) {
                     // if readOnly we just return a non draggable thingy
                     return (
-                      <span className={className} key={id}>
+                      <span tabIndex={0} className={className} key={id}>
                         <span className="material-page__organizerfield-term-icon icon-move"></span>
                         <span className="material-page__organizerfield-term-label">
                           <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
@@ -575,7 +645,8 @@ class OrganizerField extends React.Component<
                   // calls the on drop into function using its own termId binding and the argument will be the data of the droppables
                   return (
                     <Draggable
-                      as="span"
+                      tabIndex={0}
+                      as="button"
                       parentContainerSelector=".material-page__organizerfield"
                       className={className}
                       interactionGroup={this.props.content.name}
@@ -584,6 +655,8 @@ class OrganizerField extends React.Component<
                       onDropInto={this.onDropDraggableItem.bind(this, id)}
                       onDrag={this.selectItemId.bind(this, id)}
                       onClick={this.selectItemId.bind(this, id)}
+                      onKeyDown={this.handleDraggableKeyDown(id)}
+                      aria-label={ariaLabel}
                     >
                       <span className="material-page__organizerfield-term-icon icon-move"></span>
                       <span className="material-page__organizerfield-term-label">
@@ -641,12 +714,18 @@ class OrganizerField extends React.Component<
 
                 return (
                   <Droppable
-                    as="span"
+                    tabIndex={0}
+                    as="div"
                     interactionGroup={this.props.content.name}
                     onClick={this.selectBox.bind(this, category)}
+                    onKeyDown={this.handleDroppableKeyDown(category)}
                     className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
                     key={category.id}
                     interactionData={category.id}
+                    aria-label={this.props.t("wcag.organizerCategoryName", {
+                      ns: "materials",
+                      name: category.name,
+                    })}
                   >
                     <span className="material-page__organizerfield-category-title">
                       {category.name}
@@ -669,6 +748,7 @@ class OrganizerField extends React.Component<
 
                         return (
                           <span
+                            tabIndex={0}
                             onClick={this.preventPropagation}
                             key={termId}
                             className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}
@@ -680,15 +760,28 @@ class OrganizerField extends React.Component<
                             </span>
                             {!this.props.readOnly ? (
                               <span
+                                tabIndex={0}
+                                role="button"
                                 onClick={this.deleteTermFromBox.bind(
                                   this,
                                   category.id,
                                   termId
                                 )}
+                                onKeyDown={this.handleOrganizedFieldKeyDown(
+                                  category.id,
+                                  termId
+                                )}
                                 className="material-page__organizerfield-term-icon icon-cross"
-                              ></span>
+                                aria-label={this.props.t(
+                                  "wcag.organiserTermRemove",
+                                  {
+                                    ns: "materials",
+                                    name: category.name,
+                                  }
+                                )}
+                              />
                             ) : (
-                              <span className="material-page__organizerfield-term-icon icon-cross"></span>
+                              <span className="material-page__organizerfield-term-icon icon-cross" />
                             )}
                           </span>
                         );

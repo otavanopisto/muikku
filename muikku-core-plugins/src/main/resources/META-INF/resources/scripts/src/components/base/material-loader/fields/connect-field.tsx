@@ -80,6 +80,7 @@ class ConnectField extends React.Component<
   ConnectFieldProps,
   ConnectFieldState
 > {
+  itemRefs: HTMLSpanElement[];
   /**
    * constructor
    * @param props props
@@ -164,11 +165,13 @@ class ConnectField extends React.Component<
     this.cancelPreviousPick = this.cancelPreviousPick.bind(this);
     this.triggerChange = this.triggerChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+
+    this.itemRefs = [];
   }
 
   /**
    * onFieldSavedStateChange
-   * @param savedState
+   * @param savedState savedState
    */
   onFieldSavedStateChange(savedState: FieldStateStatus) {
     this.setState({
@@ -178,9 +181,8 @@ class ConnectField extends React.Component<
 
   /**
    * shouldComponentUpdate
-   * @param nextProps
-   * @param nextState
-   * @returns
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
   shouldComponentUpdate(
     nextProps: ConnectFieldProps,
@@ -201,7 +203,6 @@ class ConnectField extends React.Component<
 
   /**
    * triggerChange
-   * @returns
    */
   triggerChange() {
     // whenever we get a change, check for rightness
@@ -232,7 +233,6 @@ class ConnectField extends React.Component<
 
   /**
    * checkAnswers
-   * @returns
    */
   checkAnswers() {
     // if we are not allowed to check for rightness then return
@@ -317,8 +317,8 @@ class ConnectField extends React.Component<
 
   /**
    * componentDidUpdate
-   * @param prevProps
-   * @param prevState
+   * @param prevProps prevProps
+   * @param prevState prevState
    */
   componentDidUpdate(
     prevProps: ConnectFieldProps,
@@ -329,10 +329,9 @@ class ConnectField extends React.Component<
 
   /**
    * swapField
-   * @param executeTriggerChangeFunction
-   * @param fielda
-   * @param fieldb
-   * @returns
+   * @param executeTriggerChangeFunction executeTriggerChangeFunction
+   * @param fielda fielda
+   * @param fieldb fieldb
    */
   swapField(
     executeTriggerChangeFunction: boolean,
@@ -362,10 +361,9 @@ class ConnectField extends React.Component<
 
   /**
    * swapCounterpart
-   * @param executeTriggerChangeFunction
-   * @param fielda
-   * @param fieldb
-   * @returns fieldType
+   * @param executeTriggerChangeFunction executeTriggerChangeFunction
+   * @param fielda fielda
+   * @param fieldb fieldb
    */
   swapCounterpart(
     executeTriggerChangeFunction: boolean,
@@ -386,17 +384,26 @@ class ConnectField extends React.Component<
           return f;
         }),
       },
-      executeTriggerChangeFunction ? this.triggerChange : null
+      () => {
+        if (executeTriggerChangeFunction) {
+          this.triggerChange();
+        }
+
+        if (document.activeElement) {
+          this.focusIndex(
+            this.state.counterparts.findIndex((f) => f.name === fielda.name)
+          );
+        }
+      }
     );
   }
 
   /**
    * pickField
-   * @param executeTriggerChangeFunction
-   * @param field
-   * @param isCounterpart
-   * @param index
-   * @returns
+   * @param executeTriggerChangeFunction executeTriggerChangeFunction
+   * @param field field
+   * @param isCounterpart isCounterpart
+   * @param index index
    */
   // ok so this is about picking a field, whether it is counterpart or not, and the index it is in
   // I could've found the index it is in, by searching, but I am lazy
@@ -526,8 +533,59 @@ class ConnectField extends React.Component<
   }
 
   /**
+   * Handle key up
+   * @param field field
+   */
+  handleKeyDown = (field: FieldType) => (e: React.KeyboardEvent) => {
+    if (
+      e.key === "ArrowUp" ||
+      e.key === "ArrowDown" ||
+      e.key === "Enter" ||
+      e.key === " " ||
+      e.key === "Escape"
+    ) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
+    const fieldIndex = this.state.counterparts.indexOf(field);
+
+    switch (e.key) {
+      case "Enter":
+      case " ":
+        this.pickField(true, field, true, fieldIndex);
+        break;
+
+      case "ArrowUp":
+        this.focusIndex(fieldIndex - 1);
+
+        break;
+      case "ArrowDown":
+        this.focusIndex(fieldIndex + 1);
+        break;
+
+      case "Escape":
+        this.cancelPreviousPick();
+        break;
+      default:
+        return;
+    }
+  };
+
+  /**
+   * focusIndex
+   * @param n n
+   */
+  focusIndex = (n: number) => {
+    const element = this.itemRefs[n];
+
+    if (element) {
+      element.focus();
+    }
+  };
+
+  /**
    * render
-   * @returns
    */
   render() {
     if (this.props.invisible) {
@@ -623,11 +681,11 @@ class ConnectField extends React.Component<
                 return (
                   <span
                     key={field.name}
-                    onClick={
-                      this.props.readOnly
-                        ? null
-                        : this.pickField.bind(this, true, field, false, index)
-                    }
+                    // onClick={
+                    //   this.props.readOnly
+                    //     ? null
+                    //     : this.pickField.bind(this, true, field, false, index)
+                    // }
                   >
                     <span
                       className={`material-page__connectfield-term ${
@@ -722,6 +780,22 @@ class ConnectField extends React.Component<
                   );
                 }
 
+                const ariaLabel =
+                  this.state.selectedField &&
+                  this.state.selectedField.name === field.name
+                    ? this.props.t("wcag.connectFieldTermSelected", {
+                        ns: "materials",
+                      })
+                    : "";
+
+                /**
+                 * callBackRef
+                 * @param ref ref
+                 */
+                const callBackRef = (ref: HTMLSpanElement) => {
+                  this.itemRefs[index] = ref;
+                };
+
                 // ok so the counterpart is draggable
                 // the interaction data is the field, index, and whether is counterpart
                 // note how the inline function onDropInto handles this data
@@ -761,7 +835,17 @@ class ConnectField extends React.Component<
                     className={className}
                     key={field.name}
                   >
-                    <span className="material-page__connectfield-counterpart-data-container">
+                    <span
+                      ref={callBackRef}
+                      className="material-page__connectfield-counterpart-data-container"
+                      tabIndex={0}
+                      onKeyDown={this.handleKeyDown(field)}
+                      aria-label={ariaLabel}
+                      aria-pressed={
+                        this.state.selectedField &&
+                        this.state.selectedField.name === field.name
+                      }
+                    >
                       <span className="material-page__connectfield-counterpart-icon icon-move"></span>
                       <span className="material-page__connectfield-counterpart-label">
                         <StrMathJAX>{field.text}</StrMathJAX>

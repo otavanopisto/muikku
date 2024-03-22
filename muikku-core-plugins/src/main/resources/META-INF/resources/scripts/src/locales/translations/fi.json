@@ -1340,6 +1340,15 @@
       "updateError_page": "Materiaalisivun päivitys epäonnistui",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
+    },
+    "wcag": {
+      "connectFieldTermSelected": "Termi valittu",
+      "organizerTermSelected": "Termi valittu",
+      "organizerTermInUse": "Termi on jo käytössä",
+      "organizerTermInUseAndSelected": "Valittu termi on jo käytössä",
+      "organiserTermRemove": "Poista termi kategoriasta {{name}}",
+      "organizerCategoryName": "Kategoria {{name}}",
+      "sorterTermSelected": "Termi valittu"
     }
   },
   "notebook": {
