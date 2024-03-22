@@ -51,8 +51,10 @@ public class StudentCardRESTService extends PluginRESTService {
     SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(studentIdentifier);
     
     // Access
-    
-    if (sdi != null && !sessionController.getLoggedUser().equals(sdi) && !sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (sdi != null && !sessionController.getLoggedUser().equals(sdi)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -66,6 +68,11 @@ public class StudentCardRESTService extends PluginRESTService {
     
     if (!studentCard.getId().equals(cardId)) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Active flag is editable only if card type is not null
+    if (studentCard.getType() == null) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     // Update
@@ -104,7 +111,7 @@ public class StudentCardRESTService extends PluginRESTService {
     
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
 
-    if (!SchoolDataIdentifier.fromId(studentIdentifier).equals(sessionController.getLoggedUser()) && !sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+    if (!SchoolDataIdentifier.fromId(studentIdentifier).equals(sessionController.getLoggedUser()) && !sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
