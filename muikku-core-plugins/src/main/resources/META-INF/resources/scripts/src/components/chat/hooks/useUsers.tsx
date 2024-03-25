@@ -1,6 +1,7 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import {
@@ -50,6 +51,8 @@ function useUsers(props: UseUsersProps) {
   const [blockedUsers, setBlockedUsers] = React.useState<ChatUser[]>([]);
 
   const usersRef = React.useRef<ChatUser[]>([]);
+
+  const { t } = useTranslation("chat");
 
   const componentMounted = React.useRef(true);
 
@@ -547,7 +550,7 @@ function useUsers(props: UseUsersProps) {
      */
     const mapUser = (user: ChatUser) => {
       if (user.nick === null) {
-        user.nick = `${i18n.t("labels.gone", {
+        user.nick = `${t("labels.gone", {
           ns: "chat",
         })}#${generateHash(user.identifier)}`;
       }
@@ -574,7 +577,7 @@ function useUsers(props: UseUsersProps) {
     return allUsers
       .map(mapUser)
       .reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
-  }, [users, bookmarkedUsers]);
+  }, [users, bookmarkedUsers, t]);
 
   return {
     blockedUsersIds,

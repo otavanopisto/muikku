@@ -10,6 +10,8 @@ import { useChatContext } from "./context/chat-context";
 import TextareaAutosize from "react-textarea-autosize";
 import { useWindowContext } from "~/context/window-context";
 import { useIntersectionObserver } from "usehooks-ts";
+import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * ChatPanelProps
@@ -70,6 +72,8 @@ function ChatPrivatePanel(props: ChatPrivatePanelProps) {
   const [msgToEdited, setMsgToEdited] = React.useState<ChatMessage | null>(
     null
   );
+
+  const { t } = useTranslation("chat");
 
   // Resize observer to track footer height and adjust content bottom
   React.useEffect(() => {
@@ -214,13 +218,19 @@ function ChatPrivatePanel(props: ChatPrivatePanelProps) {
         <div className="chat__discussion-panel-header-actions">
           {!isBlocked && props.targetUser.type === "STUDENT" && (
             <div className="chat__button-wrapper">
-              <IconButton
-                icon="blocked"
-                buttonModifiers={[
-                  `${isMobileWidth ? "chat-invert" : "chat-block"}`,
-                ]}
-                onClick={handleOpenBlockUserDialog}
-              />
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={<p>{t("actions.blockUser", { ns: "chat" })}</p>}
+              >
+                <IconButton
+                  icon="blocked"
+                  buttonModifiers={[
+                    `${isMobileWidth ? "chat-invert" : "chat-block"}`,
+                  ]}
+                  onClick={handleOpenBlockUserDialog}
+                />
+              </Dropdown>
             </div>
           )}
         </div>

@@ -4,7 +4,7 @@ import ChatRoomNewDialog from "./dialogs/chat-room-new-dialog";
 import { useChatContext } from "./context/chat-context";
 import { ChatRoom, ChatUser } from "~/generated/client";
 import { ChatProfile } from "./chat-profile";
-import Dropdown from "../general/dropdown";
+import Dropdown from "~/components/general/dropdown";
 import {
   ChatDashBoardTab,
   ChatRoomFilter,
@@ -231,11 +231,20 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
         {chatPermissions.canManagePublicRooms && (
           <div className="chat__button-wrapper">
             <ChatRoomNewDialog>
-              <IconButton
-                icon="plus"
-                buttonModifiers={["chat", `${isMobileWidth && "chat-invert"}`]}
-                iconPosition="left"
-              />
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={<p>{t("actions.addRoom", { ns: "chat" })}</p>}
+              >
+                <IconButton
+                  icon="plus"
+                  buttonModifiers={[
+                    "chat",
+                    `${isMobileWidth && "chat-invert"}`,
+                  ]}
+                  iconPosition="left"
+                />
+              </Dropdown>
             </ChatRoomNewDialog>
           </div>
         )}
@@ -319,11 +328,17 @@ function ChatOverviewUsersList() {
           <OverviewListItemActions>
             {!isBlocked && user.type === "STUDENT" && (
               <div className="chat__button-wrapper">
-                <IconButton
-                  icon="blocked"
-                  buttonModifiers={["chat", "chat-block"]}
-                  onClick={handleBlockClick(user)}
-                />
+                <Dropdown
+                  alignSelfVertically="top"
+                  openByHover
+                  content={<p>{t("actions.blockUser", { ns: "chat" })}</p>}
+                >
+                  <IconButton
+                    icon="blocked"
+                    buttonModifiers={["chat", "chat-block"]}
+                    onClick={handleBlockClick(user)}
+                  />
+                </Dropdown>
               </div>
             )}
           </OverviewListItemActions>
@@ -410,11 +425,17 @@ function ChatOverviewBlockedList() {
 
         <OverviewListItemActions>
           <div className="chat__button-wrapper">
-            <IconButton
-              icon="blocked"
-              buttonModifiers={["chat"]}
-              onClick={handleOpenUnblockDialog(user)}
-            />
+            <Dropdown
+              alignSelfVertically="top"
+              openByHover
+              content={<p>{t("actions.unBlockUser", { ns: "chat" })}</p>}
+            >
+              <IconButton
+                icon="blocked"
+                buttonModifiers={["chat"]}
+                onClick={handleOpenUnblockDialog(user)}
+              />
+            </Dropdown>
           </div>
         </OverviewListItemActions>
       </OverviewListItem>
@@ -505,15 +526,27 @@ function ChatOverviewRoomsList() {
           <OverviewListItemActions>
             <div className="chat__button-wrapper">
               <ChatRoomEditAndInfoDialog room={room} defaults="edit">
-                <IconButton icon="pencil" buttonModifiers={["chat"]} />
+                <Dropdown
+                  alignSelfVertically="top"
+                  openByHover
+                  content={<p>{t("actions.editRoom", { ns: "chat" })}</p>}
+                >
+                  <IconButton icon="pencil" buttonModifiers={["chat"]} />
+                </Dropdown>
               </ChatRoomEditAndInfoDialog>
             </div>
             <div className="chat__button-wrapper">
-              <IconButton
-                icon="trash"
-                buttonModifiers={["chat"]}
-                onClick={handleDeleteRoom(room)}
-              />
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={<p>{t("actions.deleteRoom", { ns: "chat" })}</p>}
+              >
+                <IconButton
+                  icon="trash"
+                  buttonModifiers={["chat"]}
+                  onClick={handleDeleteRoom(room)}
+                />
+              </Dropdown>
             </div>
           </OverviewListItemActions>
         )}

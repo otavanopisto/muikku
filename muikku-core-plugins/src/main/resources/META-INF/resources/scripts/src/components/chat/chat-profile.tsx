@@ -6,6 +6,7 @@ import ChatProfileAvatar from "./chat-profile-avatar";
 import ChatUnreadMsgCounter from "./chat-unread-msg-counter";
 import { useChatContext } from "./context/chat-context";
 import ChatUserSettingsDialog from "./dialogs/chat-user-settings-dialog";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * ChatMeProps
@@ -80,7 +81,13 @@ function ChatMyProfileWithSettings(props: ChatProfileWithSettingsProps) {
       </div>
       <div className="chat__button-wrapper">
         <ChatUserSettingsDialog>
-          <IconButton buttonModifiers={["chat"]} icon="cog" />
+          <Dropdown
+            alignSelfVertically="top"
+            openByHover
+            content={<p>{t("actions.chatSettings", { ns: "chat" })}</p>}
+          >
+            <IconButton buttonModifiers={["chat"]} icon="cog" />
+          </Dropdown>
         </ChatUserSettingsDialog>
       </div>
     </div>

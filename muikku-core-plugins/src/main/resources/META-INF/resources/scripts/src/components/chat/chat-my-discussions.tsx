@@ -4,6 +4,7 @@ import { useChatContext } from "./context/chat-context";
 import { IconButton } from "../general/button";
 import { ChatProfile } from "./chat-profile";
 import { useTranslation } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * ChatMyCounselorsDiscussionsProps
@@ -136,6 +137,8 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
     onOpenClick,
   } = props;
 
+  const { t } = useTranslation("chat");
+
   /**
    * Handles open click
    */
@@ -175,11 +178,17 @@ function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
 
       {onRemoveClick && (
         <div className="chat__button-wrapper chat__button-wrapper--close-discussion">
-          <IconButton
-            icon="cross"
-            buttonModifiers={["chat"]}
-            onClick={handleRemoveClick}
-          />
+          <Dropdown
+            alignSelfVertically="top"
+            openByHover
+            content={<p>{t("actions.closeDiscussion", { ns: "chat" })}</p>}
+          >
+            <IconButton
+              icon="cross"
+              buttonModifiers={["chat"]}
+              onClick={handleRemoveClick}
+            />
+          </Dropdown>
         </div>
       )}
     </div>
