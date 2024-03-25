@@ -370,7 +370,7 @@ class DependantApplication extends React.Component<
       ) : (
         <CompulsoryEducationHopsWizard
           user="supervisor"
-          usePlace="guider"
+          usePlace="guardian"
           disabled={true}
           studentId={selectedDependantIdentifier}
           superVisorModifies={false}

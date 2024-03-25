@@ -52,7 +52,7 @@ export const NEEDED_STUDIES_IN_TOTAL = 46;
  */
 export type HopsUser = "supervisor" | "student";
 
-export type HopsUsePlace = "guider" | "studies";
+export type HopsUsePlace = "guider" | "studies" | "guardian";
 
 /**
  * HopsSteps
