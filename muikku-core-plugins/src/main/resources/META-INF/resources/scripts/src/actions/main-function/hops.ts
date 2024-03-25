@@ -41,7 +41,7 @@ export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
 
 /**
  *
- * @param userEntityId
+ * @param userEntityId numeric user id
  * @returns a thunk function
  */
 const setHopsPhase: SetHopsPhaseTriggerType = function setHopsPhase(
@@ -80,12 +80,13 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const state = getState();
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const userApi = MApi.getUserApi();
 
     const studentIdentifier = userIdentifier
       ? userIdentifier
-      : getState().status.userSchoolDataIdentifier;
+      : state.status.userSchoolDataIdentifier;
 
     try {
       if (getState().hops.status !== "WAIT") {
@@ -97,10 +98,11 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
         payload: <HOPSStatusType>"LOADING",
       });
 
-      // If userIdentifier is provided, this is not your own HOPS and this will be done elsewhere at better time
+      // If userIdentifier is provided,
+      // this is not your own HOPS and this will be done elsewhere at a better time
       if (!userIdentifier) {
         const properties = await userApi.getUserProperties({
-          userEntityId: getState().status.userId,
+          userEntityId: state.status.userId,
           properties: "hopsPhase",
         });
 

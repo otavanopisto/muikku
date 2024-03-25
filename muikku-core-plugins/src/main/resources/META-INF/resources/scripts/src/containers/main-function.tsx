@@ -301,7 +301,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
-
       // Summary needs counselors
       this.props.store.dispatch(
         loadContactGroup("counselors", userId) as Action
@@ -342,14 +341,6 @@ export default class MainFunction extends React.Component<
         setLocationToInfoInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
-    }
-    if (userId) {
-      // If students records are viewed by someone else,
-      // we need to know if they have access to pedagogy form.
-      // This is loaded under the guider state
-      this.props.store.dispatch(
-        loadStudentPedagogyFormAccess(userId) as Action
-      );
     }
     // Hops needs to be loaded for correct tabs to be seen
     this.props.store.dispatch(updateHops(null, userId) as Action);
@@ -1021,10 +1012,6 @@ export default class MainFunction extends React.Component<
 
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
-        // this.props.store.dispatch(loadStudentHOPSAccess(identifier) as Action);
-        this.props.store.dispatch(
-          loadStudentPedagogyFormAccess(identifier) as Action
-        );
         if (tab) {
           this.loadRecordsData(tab, identifier);
         } else {

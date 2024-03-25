@@ -23,6 +23,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
+import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/general/pedagogical-support-form";
 import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
 import MApi from "~/api/api";
@@ -37,6 +38,10 @@ import {
   clearDependantState,
   clearDependantTriggerType,
 } from "~/actions/main-function/dependants";
+import {
+  setHopsPhase,
+  SetHopsPhaseTriggerType,
+} from "~/actions/main-function/hops";
 import { AnyActionType } from "~/actions";
 
 /**
@@ -61,6 +66,7 @@ interface DependantApplicationProps extends WithTranslation {
   records: RecordsType;
   guider: GuiderState;
   dependants: DependantsState;
+  setHopsPhase: SetHopsPhaseTriggerType;
   clearDependantState: clearDependantTriggerType;
 }
 
@@ -69,8 +75,6 @@ interface DependantApplicationProps extends WithTranslation {
  */
 interface DependantApplicationState {
   activeTab: StudiesTab;
-  selectedDependantStudyProgramme: string;
-  selectedDependant: string;
   loading: boolean;
   pedagogyFormState?: PedagogyFormState;
 }
@@ -92,13 +96,18 @@ class DependantApplication extends React.Component<
     this.state = {
       loading: false,
       activeTab: "SUMMARY",
-      selectedDependant: "",
-      selectedDependantStudyProgramme: "",
     };
   }
 
   /**
+   * getCurrentDependantIdentifier
+   * @returns a string identifier from hash
+   */
+  getCurrentDependantIdentifier = () =>
+    window.location.hash.replace("#", "").split("/")[0];
+  /**
    * loadPedagogyFormState
+   * @param identifier identifier
    */
   loadPedagogyFormState = async (identifier: string) => {
     const pedagogyApi = MApi.getPedagogyApi();
@@ -114,8 +123,9 @@ class DependantApplication extends React.Component<
    * @returns whether section with given hash should be visible or not
    */
   isVisible(id: string) {
+    const currentDependant = this.getCurrentDependantIdentifier();
     const selectUserStudyProgramme = this.props.dependants.list.find(
-      (dependant) => dependant.identifier === this.state.selectedDependant
+      (dependant) => dependant.identifier === currentDependant
     )?.studyProgrammeName;
     switch (id) {
       case "HOPS":
@@ -134,7 +144,10 @@ class DependantApplication extends React.Component<
         );
       case "PEDAGOGY_FORM":
         return (
-          (this.props.guider.currentStudent.pedagogyFormAvailable &&
+          (UPPERSECONDARY_PEDAGOGYFORM.includes(
+            this.getDependantStudyProgramme(currentDependant)
+          ) &&
+            this.props.guider.currentStudent.pedagogyFormAvailable &&
             this.props.guider.currentStudent.pedagogyFormAvailable.accessible &&
             this.state?.pedagogyFormState === "PENDING") ||
           this.state?.pedagogyFormState === "APPROVED"
@@ -144,6 +157,11 @@ class DependantApplication extends React.Component<
     return true;
   }
 
+  /**
+   * getDependantStudyProgramme
+   * @param dependantId string user identifier
+   * @returns the study programme name of the dependant
+   */
   getDependantStudyProgramme = (dependantId: string) => {
     const dependant = this.props.dependants.list.find(
       (dependant) => dependant.identifier === dependantId
@@ -180,36 +198,85 @@ class DependantApplication extends React.Component<
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
     this.props.clearDependantState();
+
+    // After clearing the state,
+    // we reset everything for the newly selected user
     const state = await this.loadPedagogyFormState(option.value);
+    const dependantUserEntityId = this.props.dependants.list.find(
+      (dependant) => dependant.identifier === option.value
+    )?.userEntityId;
+    if (dependantUserEntityId) {
+      this.props.setHopsPhase(dependantUserEntityId);
+    }
     this.setState({
       activeTab: "SUMMARY",
-      selectedDependant: option.value,
       pedagogyFormState: state,
     });
   };
+  /**
+   * componentDidUpdate
+   */
+  async componentDidUpdate() {
+    if (!window.location.hash && this.props.dependants.state === "READY") {
+      // Dependants are loaded, but there's none selected, we pick the first one
+
+      const selectedDependant = this.props.dependants.list[0].identifier;
+      window.location.hash = selectedDependant;
+
+      const dependantUserEntityId = this.props.dependants.list.find(
+        (dependant) => dependant.identifier === selectedDependant
+      ).userEntityId;
+
+      // we want the hops phase to be set for the newly set selected dependant
+      if (dependantUserEntityId) {
+        this.props.setHopsPhase(dependantUserEntityId);
+      }
+      // Then we need the pedagoy form state, even if it's not available as of yet
+      // It will be set in the component state for the users who have it available and it
+      // cannot be removed from the state, only overridden
+      const state = await this.loadPedagogyFormState(selectedDependant);
+      this.setState({
+        pedagogyFormState: state,
+      });
+    }
+
+    if (window.location.hash) {
+      const currentDependant = this.getCurrentDependantIdentifier();
+
+      // If there's no hopsPhase set and the user has a phased HOPS
+      if (
+        !this.props.hops.hopsPhase &&
+        COMPULSORY_HOPS_VISIBLITY.includes(
+          this.getDependantStudyProgramme(currentDependant)
+        )
+      ) {
+        const dependantUserEntityId = this.props.dependants.list.find(
+          (dependant) => dependant.identifier === currentDependant
+        )?.userEntityId;
+
+        if (dependantUserEntityId) {
+          this.props.setHopsPhase(dependantUserEntityId);
+        }
+      }
+    }
+  }
 
   /**
    * componentDidMount
    */
   async componentDidMount() {
-    this.setState({ loading: true });
-    let selectedDependant = "";
-
-    if (!window.location.hash) {
-      const dependant = this.props.dependants.list[0];
-      window.location.hash = dependant.identifier;
-      selectedDependant = dependant.identifier;
-    } else {
-      selectedDependant = window.location.hash.replace("#", "").split("/")?.[0];
-    }
-    const state = await this.loadPedagogyFormState(selectedDependant);
     const tab = window.location.hash.replace("#", "").split("/")?.[1];
-    this.setState({
-      loading: false,
-      pedagogyFormState: state,
-      selectedDependant,
-    });
 
+    if (window.location.hash) {
+      // If we have a hash, we do this here.
+      // Otherwise the sorting out of the hash and loading this form
+      // will be done in the componendDidUpdate state
+      const currentDependant = this.getCurrentDependantIdentifier();
+      const state = await this.loadPedagogyFormState(currentDependant);
+      this.setState({
+        pedagogyFormState: state,
+      });
+    }
     /**
      * If page is refreshed, we need to check hash which
      * tab was opened and set that at the start to state as
@@ -257,11 +324,10 @@ class DependantApplication extends React.Component<
    */
   render() {
     const { t } = this.props;
-
     const title = t("labels.dependant", {
       count: this.props.dependants ? this.props.dependants.list.length : 0,
     });
-
+    const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
     const dependants = this.props.dependants
       ? this.props.dependants.list.map((student) => ({
           label: getName(student, true),
@@ -270,7 +336,7 @@ class DependantApplication extends React.Component<
       : [];
 
     const selectedDependant = dependants.find(
-      (dependant) => dependant.value === this.state.selectedDependant
+      (dependant) => dependant.value === selectedDependantIdentifier
     );
 
     const dependantSelect =
@@ -280,6 +346,9 @@ class DependantApplication extends React.Component<
           classNamePrefix="react-select-override"
           onChange={this.handleDependantSelectChange}
           options={dependants}
+          isOptionDisabled={(option) =>
+            option.value === selectedDependantIdentifier
+          }
           value={selectedDependant}
           isSearchable={false}
         ></Select>
@@ -288,15 +357,25 @@ class DependantApplication extends React.Component<
       );
 
     const hopsComponent = COMPULSORY_HOPS_VISIBLITY.includes(
-      this.getDependantStudyProgramme(this.state.selectedDependant)
+      this.getDependantStudyProgramme(selectedDependantIdentifier)
     ) ? (
-      <CompulsoryEducationHopsWizard
-        user="supervisor"
-        usePlace="guider"
-        disabled={true}
-        studentId={this.state.selectedDependant}
-        superVisorModifies={false}
-      />
+      !this.props.hops.hopsPhase || this.props.hops.hopsPhase === "0" ? (
+        <div className="empty">
+          <span>
+            {this.props.t("content.hopsNotActivatedByCounselor", {
+              ns: "hops",
+            })}
+          </span>
+        </div>
+      ) : (
+        <CompulsoryEducationHopsWizard
+          user="supervisor"
+          usePlace="guider"
+          disabled={true}
+          studentId={selectedDependantIdentifier}
+          superVisorModifies={false}
+        />
+      )
     ) : (
       <Hops />
     );
@@ -359,7 +438,7 @@ class DependantApplication extends React.Component<
           <ApplicationPanelBody modifier="tabs">
             <UpperSecondaryPedagogicalSupportWizardForm
               userRole="STUDENT_PARENT"
-              studentId={this.state.selectedDependant}
+              studentId={selectedDependantIdentifier}
             />
           </ApplicationPanelBody>
         ),
@@ -373,7 +452,7 @@ class DependantApplication extends React.Component<
     /**
      * Just because we need to have all tabs ready first before rendering Application panel
      */
-    const ready = this.props.hops.status === "READY" || !this.state.loading;
+    const ready = this.props.hops.status === "READY";
 
     return (
       <>
@@ -409,7 +488,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ clearDependantState }, dispatch);
+  return bindActionCreators({ clearDependantState, setHopsPhase }, dispatch);
 }
 
 export default withTranslation(["studies", "common"])(

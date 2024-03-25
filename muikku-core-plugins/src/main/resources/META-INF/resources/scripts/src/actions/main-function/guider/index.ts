@@ -546,16 +546,20 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
 /**
  * loadStudentPedagogyFormAccess thunk action creator
  * @param id student muikku identifier
+ * @param forceLoad should the load be forced
  * @returns a thunk functions to load student pedagogy form access
  */
 const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
-  function loadPedagogyFormAccess(id) {
+  function loadPedagogyFormAccess(id, forceLoad) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       // if the access is loaded, do not load again
-      if (getState().guider.currentStudent.pedagogyFormState === "READY") {
+      if (
+        getState().guider.currentStudent.pedagogyFormState === "READY" &&
+        !forceLoad
+      ) {
         return;
       }
 
