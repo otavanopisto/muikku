@@ -53,8 +53,6 @@ function useMessage(props: UseMessageProps) {
       await chatApi.deleteChatMessage({
         messageId: msg.id,
       });
-
-      setShowDeleteDialog(false);
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;

@@ -33,7 +33,7 @@ interface ChatRoomEditAndInfoDialogProps {
 function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
   const { room, defaults } = props;
 
-  const { saveEditedRoom, canModerate, deleteCustomRoom } = useChatContext();
+  const { saveEditedRoom, chatPermissions } = useChatContext();
 
   const [roomEdit, setRoomEdit] = React.useState<ChatRoom>(room);
   const [editing, setEditing] = React.useState<boolean>(defaults === "edit");
@@ -58,17 +58,6 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
   ) => {
     setRoomEdit({ ...roomEdit, description: e.target.value });
   };
-
-  /**
-   * Handles delete click
-   * @param callback callback
-   */
-  const handleDeleteClick =
-    (callback: () => void) =>
-    async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      await deleteCustomRoom(room.identifier);
-      callback();
-    };
 
   /**
    * handleEditClick
@@ -175,7 +164,7 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
    * @param closeDialog closeDialog
    */
   const footer = (closeDialog: () => void) => {
-    if (!canModerate) {
+    if (!chatPermissions.canManagePublicRooms) {
       return null;
     }
 
@@ -205,12 +194,6 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
               onClick={handleEditClick}
             >
               {t("actions.edit")}
-            </Button>
-            <Button
-              onClick={handleDeleteClick(closeDialog)}
-              buttonModifiers={["standard-ok", "fatal"]}
-            >
-              {t("actions.remove")}
             </Button>
           </>
         )}

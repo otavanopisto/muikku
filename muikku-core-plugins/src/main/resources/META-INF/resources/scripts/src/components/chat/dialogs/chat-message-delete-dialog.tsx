@@ -45,21 +45,30 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
 
   /**
    * Handles save click
-   * @param callback callback
+   * @param closeDialog closeDialog
    */
   const handleDeleteClick =
-    (callback: () => void) =>
+    (closeDialog: () => void) =>
     async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
 
       try {
         await onDelete();
         setDisabled(false);
-        callback();
+        closeDialog();
       } catch (err) {
         setDisabled(false);
       }
     };
+
+  /**
+   * Handles dialog close with delay
+   */
+  const handleDialogClose = () => {
+    setTimeout(() => {
+      onClose();
+    }, 200);
+  };
 
   /**
    * content
@@ -137,7 +146,7 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
   return (
     <ChatDialog
       isOpen={open}
-      onClose={onClose}
+      onClose={handleDialogClose}
       localElementId="chat__body"
       disableScroll={true}
       title={t("labels.deletingMsg", { ns: "chat" })}
