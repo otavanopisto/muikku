@@ -164,7 +164,7 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
    * @param closeDialog closeDialog
    */
   const footer = (closeDialog: () => void) => {
-    if (!chatPermissions.canManagePublicRooms) {
+    if (!chatPermissions.canManagePublicRooms || room.type === "WORKSPACE") {
       return null;
     }
 
