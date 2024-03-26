@@ -5,11 +5,12 @@ public class PedagogyFormAccessRestModel {
   public PedagogyFormAccessRestModel() {
   }
 
-  public PedagogyFormAccessRestModel(boolean isAccessible, boolean isSpecEdTeacher, boolean isGuidanceCounselor, boolean isCourseTeacher) {
+  public PedagogyFormAccessRestModel(boolean isAccessible, boolean isSpecEdTeacher, boolean isGuidanceCounselor, boolean isCourseTeacher, boolean studentParent) {
     this.isAccessible = isAccessible;
     this.isSpecEdTeacher = isSpecEdTeacher;
     this.isGuidanceCounselor = isGuidanceCounselor;
     this.isCourseTeacher = isCourseTeacher;
+    this.studentParent = studentParent;
   }
 
   public boolean isAccessible() {
@@ -44,9 +45,18 @@ public class PedagogyFormAccessRestModel {
     this.isCourseTeacher = isCourseTeacher;
   }
 
+  public boolean isStudentParent() {
+    return studentParent;
+  }
+
+  public void setStudentParent(boolean studentParent) {
+    this.studentParent = studentParent;
+  }
+
   private boolean isAccessible;
   private boolean isSpecEdTeacher;
   private boolean isGuidanceCounselor;
   private boolean isCourseTeacher;
+  private boolean studentParent;
 
 }

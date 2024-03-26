@@ -53,8 +53,10 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -77,6 +79,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Inject
   @LocalSession
   private SessionController sessionController;
+  
+  @Inject
+  private UserController userController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -276,6 +281,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     
     UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
     SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    Set<SchoolDataIdentifier> announcementsForUser = Set.of(loggedUser);
     UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(loggedUser);
     OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
     if (organizationEntity == null) {
@@ -289,10 +295,24 @@ public class AnnouncerRESTService extends PluginRESTService {
             sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS) ? 
                 AnnouncementEnvironmentRestriction.PUBLICANDGROUP : AnnouncementEnvironmentRestriction.PUBLIC;
 
+    if (schoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+      /*
+       * Guardian cannot list with onlyMine - there's no sensible situation for that.
+       * They always only list the announcements of their dependants.
+       */
+      
+      if (onlyMine) {
+        return Response.status(Status.BAD_REQUEST).entity("Guardian cannot have own announcements.").build();
+      }
+      List<GuardiansDependent> guardiansDependents = userController.listGuardiansDependents(loggedUser);
+      announcementsForUser = guardiansDependents == null ? Collections.emptySet() :
+        guardiansDependents.stream().map(GuardiansDependent::getUserIdentifier).collect(Collectors.toSet());
+    }
+    
     if (workspaceEntityId == null) {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
-      announcements = announcementController.listAnnouncements(loggedUser, organizationEntity,
+      announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
           includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
     }
     else {

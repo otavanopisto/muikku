@@ -5,10 +5,11 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 
 public class PyramusStudentGuidanceRelation implements StudentGuidanceRelation {
 
-  public PyramusStudentGuidanceRelation(boolean isSpecEdTeacher, boolean isGuidanceCounselor, boolean isCourseTeacher) {
+  public PyramusStudentGuidanceRelation(boolean isSpecEdTeacher, boolean isGuidanceCounselor, boolean isCourseTeacher, boolean isStudentParent) {
     this.isSpecEdTeacher = isSpecEdTeacher;
     this.isGuidanceCounselor = isGuidanceCounselor;
     this.isCourseTeacher = isCourseTeacher;
+    this.isStudentParent = isStudentParent;
   }
 
   @Override
@@ -31,8 +32,13 @@ public class PyramusStudentGuidanceRelation implements StudentGuidanceRelation {
     return isCourseTeacher;
   }
 
+  @Override
+  public boolean isStudentParent() {
+    return isStudentParent;
+  }
+
   private boolean isSpecEdTeacher;
   private boolean isGuidanceCounselor;
   private boolean isCourseTeacher;
-
+  private boolean isStudentParent;
 }

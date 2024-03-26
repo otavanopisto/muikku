@@ -800,7 +800,7 @@ class OrganizationEditUsergroup extends React.Component<
                   : 0
               }
               identifier={"userGroup" + this.props.usergroup.id + "Staff"}
-              allTabTitle={t("labels.groupCouncelors", { ns: "users" })}
+              allTabTitle={t("labels.groupCounselors", { ns: "users" })}
               removeTabTitle={t("labels.counselorsToRemove", { ns: "users" })}
               onEmptyTitle={t("content.notFound", { ns: "users" })}
               searchValue={
@@ -898,7 +898,7 @@ class OrganizationEditUsergroup extends React.Component<
                   <div>
                     {t("content.noneSelected", {
                       ns: "users",
-                      context: "councelors",
+                      context: "counselors",
                     })}
                   </div>
                 )}
@@ -962,7 +962,7 @@ class OrganizationEditUsergroup extends React.Component<
                   <div>
                     {t("content.noneSelected", {
                       ns: "users",
-                      context: "councelors",
+                      context: "counselors",
                     })}
                   </div>
                 )}

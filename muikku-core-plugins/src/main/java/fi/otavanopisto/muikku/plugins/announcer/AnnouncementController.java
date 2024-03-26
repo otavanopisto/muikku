@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.announcer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -81,11 +82,11 @@ public class AnnouncementController {
     return announcement;
   }
   
-  public List<Announcement> listAnnouncements(SchoolDataIdentifier userIdentifier, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
+  public List<Announcement> listAnnouncements(Collection<SchoolDataIdentifier> userIdentifiers, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
       AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived) {
-    List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier) : Collections.emptyList();
-    List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userIdentifier) : Collections.emptyList();
-    
+    List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserIdentifiers(userIdentifiers) : Collections.emptyList();
+    List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifiers(userIdentifiers) : Collections.emptyList();
+
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         organizationEntity,
         userGroupEntities,

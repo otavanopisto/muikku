@@ -41,7 +41,14 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
    * @returns whether section with given hash should be visible or not
    */
   isVisible(hash: string) {
+    const isOnlyStudentParent =
+      this.props.status.roles.includes("STUDENT_PARENT") &&
+      this.props.status.roles.length === 1;
     switch (hash) {
+      case "contact":
+        return !isOnlyStudentParent;
+      case "vacation":
+        return !isOnlyStudentParent;
       case "chat":
         return this.props.status.permissions.CHAT_AVAILABLE;
       case "work":

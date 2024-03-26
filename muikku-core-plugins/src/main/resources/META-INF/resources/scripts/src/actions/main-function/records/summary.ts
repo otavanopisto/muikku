@@ -23,13 +23,16 @@ export type UPDATE_STUDIES_SUMMARY_STATUS = SpecificActionType<
  * UpdateSummaryTriggerType
  */
 export interface UpdateSummaryTriggerType {
-  (): AnyActionType;
+  (studentId?: string): AnyActionType;
 }
 
 /**
  * UpdateSummaryTriggerType
+ * @param studentId student pyramus id
  */
-const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
+const updateSummary: UpdateSummaryTriggerType = function updateSummary(
+  studentId
+) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
@@ -40,17 +43,26 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
     const workspaceApi = MApi.getWorkspaceApi();
     const activitylogsApi = MApi.getActivitylogsApi();
-
+    const state = getState();
     try {
+      // Get user id
+      const pyramusId = studentId
+        ? studentId
+        : state.status.userSchoolDataIdentifier;
+
+      // If the pyramusId is a staffId, don't update summary
+      if (
+        !pyramusId.toLowerCase().includes("student-") ||
+        state.summary.status === "READY"
+      ) {
+        return null;
+      }
+
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
         payload: <SummaryStatusType>"LOADING",
       });
 
-      // Get user id
-      const pyramusId = getState().status.userSchoolDataIdentifier;
-
-      // We need completed courses from Eligibility
       const eligibility = await recordsApi.getStudentMatriculationEligibility({
         studentIdentifier: pyramusId,
       });

@@ -22,6 +22,8 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
@@ -557,5 +559,23 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listStudentSpecEdTeachers(studentIdentifier, includeGuidanceCouncelors, onlyMessageReceivers);
   }
+  
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(guardianUserIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", guardianUserIdentifier.getDataSource()));
+    }
 
+    return getUserBridge(schoolDataSource).listGuardiansDependents(guardianUserIdentifier);
+  }
+  
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(guardianUserIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", guardianUserIdentifier.getDataSource()));
+    }
+
+    return getUserBridge(schoolDataSource).listGuardiansDependentsWorkspaces(guardianUserIdentifier, studentIdentifier);
+  }
+  
 }

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import Link from "../../general/link";
+import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
 import { Panel } from "~/components/general/panel";
 import { localize } from "~/locales/i18n";

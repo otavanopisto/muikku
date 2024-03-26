@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -119,21 +118,24 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
     Set<Long> userGroupFilters = null;
     Set<Long> workspaceFilters = null;
     Set<EnvironmentRoleArchetype> roleArchetypeFilter = new HashSet<>();
-    
-    if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-      // Stuff students can seach for
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.MANAGER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.TEACHER);
+
+    // Common roles searchable by all users
+    roleArchetypeFilter.addAll(Set.of(
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.TEACHER
+    ));
+
+    if (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.STUDENT)) {
+      // Additional roles searchable by students
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
-    } else if (userSchoolDataIdentifier.isStaff()) {
-      // Default for other roles
-      
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.ADMINISTRATOR);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.MANAGER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
-      roleArchetypeFilter.add(EnvironmentRoleArchetype.TEACHER);
+    } 
+    else if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+      // Additional roles searchable by guardians (none)
+    }
+    else if (userSchoolDataIdentifier.isStaff()) {
+      // Additional roles searchable by staff
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDY_GUIDER);
       roleArchetypeFilter.add(EnvironmentRoleArchetype.STUDENT);
       
@@ -289,16 +291,4 @@ public class CommunicatorRecipientsRESTService extends PluginRESTService {
     }
   }
   
-  private Date getDateResult(Object value) {
-    Date date = null;
-    if (value instanceof Long) {
-      date = new Date((Long) value);
-    }
-    else if (value instanceof Double) {
-      // seconds to ms
-      date = new Date(((Double) value).longValue() * 1000);
-    }
-    return date;
-  }
-
 }

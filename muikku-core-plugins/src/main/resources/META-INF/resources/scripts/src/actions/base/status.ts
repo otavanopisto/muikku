@@ -4,7 +4,6 @@ import MApi from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { WorkspaceBasicInfo } from "~/generated/client";
-import { localize } from "~/locales/i18n";
 import { Role } from "~/generated/client";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
@@ -99,6 +98,7 @@ async function loadWhoAMI(
         FORUM_UPDATEENVIRONMENTFORUM: whoAmI.permissions.includes(
           "FORUM_UPDATEENVIRONMENTFORUM"
         ),
+        GUARDIAN_VIEW: whoAmI.permissions.includes("GUARDIAN_VIEW"),
         GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes(
@@ -142,8 +142,6 @@ async function loadWhoAMI(
       },
     },
   });
-
-  localize.language = whoAmI.locale;
 
   dispatch({
     type: "LOCALE_UPDATE",

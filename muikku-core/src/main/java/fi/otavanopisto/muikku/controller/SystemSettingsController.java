@@ -4,10 +4,12 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.dao.base.SystemSettingDAO;
 import fi.otavanopisto.muikku.model.base.SystemSetting;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public class SystemSettingsController {
 
@@ -38,6 +40,27 @@ public class SystemSettingsController {
 
   }
 
+  /**
+   * Returns true if given organizationIdentifier points to an organization that
+   * is the default organization.
+   * 
+   * @param organizationIdentifier
+   * @return true, if the given organization is default organization, 
+   *         false is given organization identifier is null or if default organization is not set
+   */
+  public boolean isDefaultOrganization(SchoolDataIdentifier organizationIdentifier) {
+    if (organizationIdentifier == null) {
+      return false;
+    }
+    
+    String defaultOrganizationIdentifier = getSetting("defaultOrganization");
+    if (StringUtils.isBlank(defaultOrganizationIdentifier)) {
+      return false;
+    }
+    
+    return StringUtils.equals(defaultOrganizationIdentifier, organizationIdentifier.toId());
+  }
+  
   public long getUploadFileSizeLimit() {
     String uploadFileSizeLimitString = getSetting("uploadFileSizeLimit");
     if (uploadFileSizeLimitString == null) {

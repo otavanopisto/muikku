@@ -562,7 +562,7 @@ class OrganizationNewUserGroup extends React.Component<
                   <div>
                     {t("content.noneSelected", {
                       ns: "users",
-                      context: "councelors",
+                      context: "counselors",
                     })}
                   </div>
                 )}

@@ -9,6 +9,7 @@ interface PedagogyContextValue extends UsePedagogyType {
     | "STUDENT"
     | "COURSE_TEACHER"
     | "GUIDANCE_COUNSELOR"
+    | "STUDENT_PARENT"
     | "SPECIAL_ED_TEACHER";
 }
 

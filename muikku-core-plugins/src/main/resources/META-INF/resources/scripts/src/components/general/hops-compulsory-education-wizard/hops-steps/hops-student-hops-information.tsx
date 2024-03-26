@@ -103,7 +103,7 @@ class HopsStudentHopsInformation extends React.Component<
               <div className="hops-container__row">
                 <div className="hops__form-element-container">
                   <TextField
-                    id="guidanceCouncelor"
+                    id="guidanceCouselor"
                     label="Ohjaaja:"
                     type="text"
                     placeholder="Ohjaaja"

@@ -116,7 +116,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
 
         <ImplementedActionsList>
           {implementedActions}
-          {userRole !== "STUDENT" && (
+          {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
             <AddNewActionsBox
               onClick={handleAddNewSupportAction}
               disabled={!editIsActive}

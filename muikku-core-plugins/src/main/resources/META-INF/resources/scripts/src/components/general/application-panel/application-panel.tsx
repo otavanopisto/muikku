@@ -16,6 +16,7 @@ import "~/sass/elements/loaders.scss";
 interface ApplicationPanelProps {
   modifier?: string;
   title?: React.ReactElement<any> | string;
+  panelOptions?: JSX.Element;
   icon?: React.ReactElement<any> | string;
   panelTabs?: Array<Tab>;
   onTabChange?: (id: string, hash?: string | Tab) => any;
@@ -67,36 +68,45 @@ export default class ApplicationPanel extends React.Component<
           }`}
         >
           {this.props.title ? (
-            <h1
-              className={`application-panel__header   ${
-                this.props.modifier
-                  ? "application-panel__header--" + this.props.modifier
-                  : ""
-              }`}
-            >
-              <span
-                className={`application-panel__header-title ${
+            <div className="application-panel__header">
+              <div
+                className={`application-panel__header   ${
                   this.props.modifier
-                    ? "application-panel__header-title--" + this.props.modifier
+                    ? "application-panel__header--" + this.props.modifier
                     : ""
                 }`}
               >
-                {this.props.title}
-              </span>
-              {this.props.icon ? (
                 <span
-                  className={`application-panel__header-actions ${
+                  className={`application-panel__header-title ${
                     this.props.modifier
-                      ? "application-panele__header-actions--" +
+                      ? "application-panel__header-title--" +
                         this.props.modifier
                       : ""
                   }`}
                 >
-                  {this.props.icon}
+                  {this.props.title}
+                  {this.props.panelOptions ? (
+                    <div className="application-panel__header-options">
+                      {this.props.panelOptions}
+                    </div>
+                  ) : null}
                 </span>
-              ) : null}
-            </h1>
+                {this.props.icon ? (
+                  <span
+                    className={`application-panel__header-actions ${
+                      this.props.modifier
+                        ? "application-panele__header-actions--" +
+                          this.props.modifier
+                        : ""
+                    }`}
+                  >
+                    {this.props.icon}
+                  </span>
+                ) : null}
+              </div>
+            </div>
           ) : null}
+
           {this.props.panelTabs ? (
             <Tabs
               modifier="application-panel"

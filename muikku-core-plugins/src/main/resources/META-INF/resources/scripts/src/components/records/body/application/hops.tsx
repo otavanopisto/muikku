@@ -86,7 +86,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return (
         <div className="empty">
           <span>
-            {this.props.t("content.hopsNotActivatedByCouncelor", {
+            {this.props.t("content.hopsNotActivatedByCounselor", {
               ns: "hops",
             })}
           </span>

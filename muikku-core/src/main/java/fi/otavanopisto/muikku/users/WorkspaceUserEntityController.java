@@ -1,8 +1,11 @@
 package fi.otavanopisto.muikku.users;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -184,6 +187,25 @@ public class WorkspaceUserEntityController {
       logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
       return Collections.emptyList();
     }
+  }
+  
+  public List<WorkspaceUserEntity> listActiveWorkspaceUserEntitiesByUserIdentifiers(Collection<SchoolDataIdentifier> userIdentifiers) {
+    Set<UserSchoolDataIdentifier> userSchoolDataIdentifiers = new HashSet<>();
+    
+    for (SchoolDataIdentifier userIdentifier : userIdentifiers) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+          findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+      if (userSchoolDataIdentifier == null) {
+        logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
+        return Collections.emptyList();
+      }
+
+      if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.getId().equals(userSchoolDataIdentifier.getId()))) {
+        userSchoolDataIdentifiers.add(userSchoolDataIdentifier);
+      }
+    }
+
+    return workspaceUserEntityDAO.listByUserSchoolDataIdentifiersAndActiveAndArchived(userSchoolDataIdentifiers, Boolean.TRUE, Boolean.FALSE);
   }
   
   public List<WorkspaceUserEntity> listInactiveWorkspaceUserEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {

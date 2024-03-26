@@ -6,6 +6,7 @@ const useRoles = [
   "COURSE_TEACHER",
   "GUIDANCE_COUNSELOR",
   "SPECIAL_ED_TEACHER",
+  "STUDENT_PARENT",
 ] as const;
 
 // For the PedagogyForm JSON

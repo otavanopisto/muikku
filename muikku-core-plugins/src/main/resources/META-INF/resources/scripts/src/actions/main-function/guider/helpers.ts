@@ -34,7 +34,6 @@ export async function loadStudentsHelper(
   });
 
   const guiderApi = MApi.getGuiderApi();
-
   const state = getState();
   const guider: GuiderState = state.guider;
   const flagOwnerIdentifier: string = state.status.userSchoolDataIdentifier;

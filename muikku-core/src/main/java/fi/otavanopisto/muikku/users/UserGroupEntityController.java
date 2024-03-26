@@ -1,7 +1,10 @@
 package fi.otavanopisto.muikku.users;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -142,10 +145,6 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
   }
 
-  public List<UserGroupUserEntity> listUserGroupStaffMembers(UserGroupEntity userGroupEntity) {
-    return userGroupUserEntityDAO.listUserGroupStaffMembers(userGroupEntity, Archived.UNARCHIVED);
-  }
-
   public List<UserGroupEntity> listUserGroupsByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     if (userSchoolDataIdentifier == null) {
@@ -156,6 +155,28 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.listByUserIdentifierExcludeArchived(userSchoolDataIdentifier);
   }
   
+  public List<UserGroupEntity> listUserGroupsByUserIdentifiers(Collection<SchoolDataIdentifier> userIdentifiers) {
+    Set<UserSchoolDataIdentifier> userSchoolDataIdentifiers = new HashSet<>();
+    
+    for (SchoolDataIdentifier userIdentifier : userIdentifiers) {
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+      if (userSchoolDataIdentifier == null) {
+        logger.severe(String.format("Could not find userSchoolDataIdentifier by userIdentifer %s", userIdentifier));
+        return Collections.emptyList();
+      }
+      
+      if (!userSchoolDataIdentifiers.stream().anyMatch(usdi -> usdi.getId().equals(userSchoolDataIdentifier.getId()))) {
+        userSchoolDataIdentifiers.add(userSchoolDataIdentifier);
+      }
+    }
+
+    return userGroupEntityDAO.listByUserIdentifiersExcludeArchived(userSchoolDataIdentifiers);
+  }
+  
+  public List<UserGroupUserEntity> listUserGroupStaffMembers(UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.listUserGroupStaffMembers(userGroupEntity, Archived.UNARCHIVED);
+  }
+
   public List<UserGroupEntity> listAllUserGroupEntities() {
     return userGroupEntityDAO.listAll();
   }
