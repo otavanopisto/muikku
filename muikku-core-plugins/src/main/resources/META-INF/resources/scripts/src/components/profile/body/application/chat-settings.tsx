@@ -13,7 +13,7 @@ import {
   ChatSettingVisibilityOption,
   selectOptions,
 } from "../../../chat/chat-helpers";
-import { ChatUser } from "~/generated/client";
+import { ChatUser, ChatUserVisibilityEnum } from "~/generated/client";
 import { bindActionCreators } from "redux";
 import {
   displayNotification,
@@ -34,7 +34,7 @@ interface ChatSettingsProps extends WithTranslation<["common", "chat"]> {
  */
 interface ChatSettingState {
   chatUserSettings: ChatUser;
-  chatVisiblity: ChatSettingVisibilityOption;
+  chatVisiblity: ChatUserVisibilityEnum;
   chatNick: string;
   locked: boolean;
 }
@@ -59,7 +59,7 @@ class ChatSettings extends React.Component<
 
     this.state = {
       chatUserSettings: null,
-      chatVisiblity: selectOptions[0],
+      chatVisiblity: "NONE",
       chatNick: "",
       locked: false,
     };
@@ -70,13 +70,9 @@ class ChatSettings extends React.Component<
    */
   componentDidMount = () => {
     if (this.props.status.chatSettings) {
-      const selectedOptions = selectOptions.find(
-        (option) => option.value === this.props.status.chatSettings.visibility
-      );
-
       this.setState({
         locked: false,
-        chatVisiblity: selectedOptions || selectOptions[0],
+        chatVisiblity: this.props.status.chatSettings.visibility || "NONE",
         chatNick: this.props.status.chatSettings.nick || "",
       });
     }
@@ -88,13 +84,9 @@ class ChatSettings extends React.Component<
    */
   componentDidUpdate = (prevProps: ChatSettingsProps) => {
     if (prevProps.status.chatSettings !== this.props.status.chatSettings) {
-      const selectedOptions = selectOptions.find(
-        (option) => option.value === this.props.status.chatSettings.visibility
-      );
-
       this.setState({
         locked: false,
-        chatVisiblity: selectedOptions || selectOptions[0],
+        chatVisiblity: this.props.status.chatSettings.visibility || "NONE",
         chatNick: this.props.status.chatSettings.nick || "",
       });
     }
@@ -114,7 +106,7 @@ class ChatSettings extends React.Component<
         updateChatSettingsRequest: {
           ...chatUserSettings,
           nick: chatNick.trim(),
-          visibility: chatVisiblity.value,
+          visibility: chatVisiblity,
         },
       });
 
@@ -168,7 +160,7 @@ class ChatSettings extends React.Component<
     actionMeta: ActionMeta<ChatSettingVisibilityOption>
   ) {
     this.setState({
-      chatVisiblity: newValue,
+      chatVisiblity: newValue.value,
     });
   }
 
@@ -191,6 +183,12 @@ class ChatSettings extends React.Component<
       return null;
     }
 
+    const options = selectOptions(this.props.t);
+
+    const selectedOption = options.find(
+      (option) => option.value === this.state.chatVisiblity
+    );
+
     return (
       <section>
         <form className="form">
@@ -212,9 +210,9 @@ class ChatSettings extends React.Component<
                       className="react-select-override"
                       classNamePrefix="react-select-override"
                       isDisabled={this.state.locked}
-                      value={this.state.chatVisiblity}
+                      value={selectedOption}
                       onChange={this.onChatVisibilityChange}
-                      options={selectOptions}
+                      options={options}
                       styles={{
                         // eslint-disable-next-line jsdoc/require-jsdoc
                         container: (baseStyles, state) => ({

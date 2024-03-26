@@ -122,6 +122,12 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
     setCurrentSelectValue(selectedOption.value);
   };
 
+  const selectValues = selectOptions(t);
+
+  const selectedValue = selectValues.find(
+    (option) => option.value === currentSelectValue
+  );
+
   /**
    * content
    * @param closeDialog closeDialog
@@ -157,11 +163,9 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
             className="react-select-override react-select-override--chat"
             classNamePrefix="react-select-override"
             isDisabled={disabled}
-            value={selectOptions.find(
-              (option) => option.value === currentSelectValue
-            )}
+            value={selectedValue}
+            options={selectValues}
             onChange={handleSelectChange}
-            options={selectOptions}
             styles={{
               // eslint-disable-next-line jsdoc/require-jsdoc
               container: (baseStyles, state) => ({
