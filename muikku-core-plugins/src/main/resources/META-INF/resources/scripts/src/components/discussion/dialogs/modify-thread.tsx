@@ -75,10 +75,10 @@ class ModifyThread extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ModifyThreadProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ModifyThreadProps) {
     if (nextProps.thread.id !== this.props.thread.id) {
       this.setState(
         this.getRecoverStoredState(

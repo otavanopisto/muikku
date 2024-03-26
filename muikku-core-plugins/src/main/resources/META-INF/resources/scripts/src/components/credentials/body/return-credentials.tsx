@@ -56,9 +56,9 @@ class ReturnCredentials extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    */
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     this.setState({
       username: this.props.credentials.credentials.username,
     });

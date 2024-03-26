@@ -38,11 +38,11 @@ class Synchronizer extends React.PureComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: SynchronizerProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: SynchronizerProps) {
     if (nextProps.synced && !this.props.synced && !nextProps.syncError) {
       this.setState({
         displaySyncedMessage: true,

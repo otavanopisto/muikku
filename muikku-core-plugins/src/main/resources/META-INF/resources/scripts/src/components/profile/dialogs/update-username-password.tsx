@@ -68,7 +68,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
     };
   }
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase

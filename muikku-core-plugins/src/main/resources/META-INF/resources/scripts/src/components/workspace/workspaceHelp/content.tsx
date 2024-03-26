@@ -112,11 +112,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: ContentProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
     this.setState({
       materials: nextProps.materials,
     });

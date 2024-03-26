@@ -121,7 +121,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   UNSAFE_componentWillReceiveProps(nextProps: HelpMaterialsProps) {
