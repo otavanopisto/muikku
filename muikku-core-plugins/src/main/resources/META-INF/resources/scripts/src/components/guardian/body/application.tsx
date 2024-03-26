@@ -39,6 +39,10 @@ import {
   clearDependantTriggerType,
 } from "~/actions/main-function/dependants";
 import {
+  loadStudentPedagogyFormAccess,
+  LoadStudentAccessTriggerType,
+} from "~/actions/main-function/guider";
+import {
   setHopsPhase,
   SetHopsPhaseTriggerType,
 } from "~/actions/main-function/hops";
@@ -66,6 +70,7 @@ interface DependantApplicationProps extends WithTranslation {
   records: RecordsType;
   guider: GuiderState;
   dependants: DependantsState;
+  loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType;
   setHopsPhase: SetHopsPhaseTriggerType;
   clearDependantState: clearDependantTriggerType;
 }
@@ -144,13 +149,15 @@ class DependantApplication extends React.Component<
         );
       case "PEDAGOGY_FORM":
         return (
-          (UPPERSECONDARY_PEDAGOGYFORM.includes(
+          UPPERSECONDARY_PEDAGOGYFORM.includes(
             this.getDependantStudyProgramme(currentDependant)
           ) &&
-            this.props.guider.currentStudent.pedagogyFormAvailable &&
-            this.props.guider.currentStudent.pedagogyFormAvailable.accessible &&
-            this.state?.pedagogyFormState === "PENDING") ||
-          this.state?.pedagogyFormState === "APPROVED"
+          this.props.guider.currentStudent.pedagogyFormAvailable &&
+          this.props.guider.currentStudent.pedagogyFormAvailable.accessible &&
+          this.props.guider.currentStudent.pedagogyFormAvailable
+            .studentParent &&
+          (this.state?.pedagogyFormState === "PENDING" ||
+            this.state?.pedagogyFormState === "APPROVED")
         );
     }
 
@@ -201,6 +208,7 @@ class DependantApplication extends React.Component<
 
     // After clearing the state,
     // we reset everything for the newly selected user
+    this.props.loadStudentPedagogyFormAccess(option.value, true);
     const state = await this.loadPedagogyFormState(option.value);
     const dependantUserEntityId = this.props.dependants.list.find(
       (dependant) => dependant.identifier === option.value
@@ -231,6 +239,8 @@ class DependantApplication extends React.Component<
       if (dependantUserEntityId) {
         this.props.setHopsPhase(dependantUserEntityId);
       }
+
+      this.props.loadStudentPedagogyFormAccess(selectedDependant);
       // Then we need the pedagoy form state, even if it's not available as of yet
       // It will be set in the component state for the users who have it available and it
       // cannot be removed from the state, only overridden
@@ -272,6 +282,7 @@ class DependantApplication extends React.Component<
       // Otherwise the sorting out of the hash and loading this form
       // will be done in the componendDidUpdate state
       const currentDependant = this.getCurrentDependantIdentifier();
+      this.props.loadStudentPedagogyFormAccess(currentDependant);
       const state = await this.loadPedagogyFormState(currentDependant);
       this.setState({
         pedagogyFormState: state,
@@ -488,7 +499,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ clearDependantState, setHopsPhase }, dispatch);
+  return bindActionCreators(
+    { clearDependantState, setHopsPhase, loadStudentPedagogyFormAccess },
+    dispatch
+  );
 }
 
 export default withTranslation(["studies", "common"])(

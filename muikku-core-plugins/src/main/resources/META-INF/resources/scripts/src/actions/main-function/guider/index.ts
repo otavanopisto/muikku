@@ -189,6 +189,13 @@ export interface LoadMoreStudentsTriggerType {
 export interface LoadStudentTriggerType {
   (id: string, forceLoad?: boolean): AnyActionType;
 }
+
+/**
+ * LoadStudentAccessTriggerType action creator type
+ */
+export interface LoadStudentAccessTriggerType {
+  (id: string, forceLoad?: boolean): AnyActionType;
+}
 /**
  * action creator type
  */
@@ -549,8 +556,8 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
  * @param forceLoad should the load be forced
  * @returns a thunk functions to load student pedagogy form access
  */
-const loadStudentPedagogyFormAccess: LoadStudentTriggerType =
-  function loadPedagogyFormAccess(id, forceLoad) {
+const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
+  function loadStudentPedagogyFormAccess(id, forceLoad) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
