@@ -16,7 +16,7 @@ import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
-import { suitabilityMap } from "~/@shared/suitability";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 import { Curriculum } from "~/generated/client";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -108,6 +108,8 @@ class Course extends React.Component<CourseProps, CourseState> {
       this.props.workspace.mandatority &&
       this.props.workspace.educationTypeName
     ) {
+      const suitabilityMap = suitabilityMapHelper(this.props.t);
+
       /**
        * Create map property from education type name and OPS name that was passed
        * Strings are changes to lowercase form and any empty spaces are removed
@@ -120,7 +122,7 @@ class Course extends React.Component<CourseProps, CourseState> {
        * Check if our map contains data with just created education string
        * Otherwise just return null. There might not be all included values by every OPS created...
        */
-      if (!suitabilityMap.has(education)) {
+      if (!suitabilityMap[education]) {
         return null;
       }
 
@@ -128,7 +130,7 @@ class Course extends React.Component<CourseProps, CourseState> {
        * Then get correct local string from map by suitability enum value
        */
       const localString =
-        suitabilityMap.get(education)[this.props.workspace.mandatority];
+        suitabilityMap[education][this.props.workspace.mandatority];
 
       return ` (${localString})`;
     }
