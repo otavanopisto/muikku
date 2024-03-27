@@ -128,7 +128,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
 
             return (
               <RecordsGroupItem
-                key={`credit-item-${i}`}
+                key={`credit-item-${credit.activity.id}`}
                 credit={credit}
                 isCombinationWorkspace={isCombinationWorkspace}
               />

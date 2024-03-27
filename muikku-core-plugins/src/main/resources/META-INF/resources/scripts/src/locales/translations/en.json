@@ -494,8 +494,8 @@
     "wcag": {
       "excersiseActivity": "Harjoitustehtäviä tehty {{percent}}%",
       "evaluableActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
-      "openEvaluation": "Avaa arviointi",
-      "closeEvaluation": "Sulje arviointi"
+      "expandRecordInfo": "Expand workspace record info",
+      "shrinkRecordInfo": "Shrink workspace record info"
     }
   },
   "hops": {

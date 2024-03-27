@@ -313,13 +313,8 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const animateOpen = showE ? "auto" : 0;
 
   return (
-    <ApplicationListItem
-      key={credit.activity.id}
-      className="course course--studies"
-      tabIndex={-1}
-    >
+    <ApplicationListItem className="course course--studies" tabIndex={-1}>
       <ApplicationListItemHeader
-        key={credit.activity.id}
         modifiers={
           isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
         }
@@ -329,10 +324,10 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         role="button"
         aria-label={
           showE
-            ? t("wcag.closeEvaluation", {
+            ? t("wcag.shrinkRecordInfo", {
                 ns: "studies",
               })
-            : t("wcag.openEvaluation", {
+            : t("wcag.expandRecordInfo", {
                 ns: "studies",
               })
         }
