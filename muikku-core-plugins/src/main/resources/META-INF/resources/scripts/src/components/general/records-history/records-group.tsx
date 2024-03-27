@@ -38,6 +38,28 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
     );
   };
 
+  /**
+   * handleWorkspaceSortDirectionKeyUp
+   * @param e e
+   */
+  const handleWorkspaceSortDirectionKeyUp = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      setWorkspaceSortDirection((oldValue) =>
+        oldValue === "asc" ? "desc" : "asc"
+      );
+    }
+  };
+
+  /**
+   * handlePreventDefault
+   * @param e e
+   */
+  const handlePreventDefault = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+    }
+  };
+
   const sortedCredits = recordGroup.credits.sort((a, b) => {
     const aString = a.activity.name.toLowerCase();
     const bString = b.activity.name.toLowerCase();
@@ -83,7 +105,10 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   return (
     <ApplicationList>
       <div
+        tabIndex={0}
         onClick={handleWorkspaceSortDirectionClick}
+        onKeyUp={handleWorkspaceSortDirectionKeyUp}
+        onKeyDown={handlePreventDefault}
         className="application-list__header-container application-list__header-container--sorter"
       >
         <h3 className="application-list__header application-list__header--sorter">

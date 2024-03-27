@@ -40,7 +40,10 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             </span>
           }
         >
-          <div className="activity-badge__item activity-badge__item--assignment">
+          <div
+            tabIndex={0}
+            className="activity-badge__item activity-badge__item--assignment"
+          >
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
@@ -68,7 +71,10 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             </span>
           }
         >
-          <div className="activity-badge__item activity-badge__item--exercise">
+          <div
+            tabIndex={0}
+            className="activity-badge__item activity-badge__item--exercise"
+          >
             <div
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +

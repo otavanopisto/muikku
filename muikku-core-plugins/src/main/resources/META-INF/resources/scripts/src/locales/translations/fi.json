@@ -490,6 +490,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_matriculationEligibility": "Osallistumisoikeuden lataus aineelle {{subject}} epäonnistui",
       "updateError_summary": "Yhteenvedon tietojen lataus epäonnistui. Yritä ladata sivu uudelleen."
+    },
+    "wcag": {
+      "excersiseActivity": "Harjoitustehtäviä tehty {{percent}}%",
+      "evaluableActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
+      "openEvaluation": "Avaa arviointi",
+      "closeEvaluation": "Sulje arviointi"
     }
   },
   "hops": {
