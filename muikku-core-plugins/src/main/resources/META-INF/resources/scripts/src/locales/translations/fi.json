@@ -495,7 +495,7 @@
       "excersiseActivity": "Harjoitustehtäviä tehty {{percent}}%",
       "evaluableActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
       "expandRecordInfo": "Laajenna työtilan suoritustiedot",
-      "shrinkRecordInfo": "Pienennä työtilan suoritustiedot"
+      "collapseRecordInfo": "Pienennä työtilan suoritustiedot"
     }
   },
   "hops": {

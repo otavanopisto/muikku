@@ -324,7 +324,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         role="button"
         aria-label={
           showE
-            ? t("wcag.shrinkRecordInfo", {
+            ? t("wcag.collapseRecordInfo", {
                 ns: "studies",
               })
             : t("wcag.expandRecordInfo", {
