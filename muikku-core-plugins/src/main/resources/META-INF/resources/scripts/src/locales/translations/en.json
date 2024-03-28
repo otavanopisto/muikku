@@ -1634,9 +1634,13 @@
     },
     "wcag": {
       "announcementSelect": "Select announcement",
+      "collapseWorkspaceInfo": "Collapse course {{workspaceName}} info",
+      "continueWorkspace": "Continue course {{workspaceName}}",
       "editingMasterSwitch": "Master switch for editing",
+      "expandWorkspaceInfo": "Expand course {{workspaceName}} info",
       "journalSelect": "Select journal",
       "materialLicense": "Material license",
+      "signUpWorkspace": "Signup to course {{workspaceName}}",
       "workspaceDescription": "Course description",
       "workspaceImage": "Image of the course front page",
       "workspaceLicense": "Course license"
