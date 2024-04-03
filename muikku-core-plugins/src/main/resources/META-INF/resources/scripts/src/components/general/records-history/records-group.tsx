@@ -39,24 +39,15 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   };
 
   /**
-   * handleWorkspaceSortDirectionKeyUp
+   * handleWorkspaceSortDirectionKeyDown
    * @param e e
    */
-  const handleWorkspaceSortDirectionKeyUp = (e: React.KeyboardEvent) => {
+  const handleWorkspaceSortDirectionKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
       setWorkspaceSortDirection((oldValue) =>
         oldValue === "asc" ? "desc" : "asc"
       );
-    }
-  };
-
-  /**
-   * handlePreventDefault
-   * @param e e
-   */
-  const handlePreventDefault = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
     }
   };
 
@@ -107,8 +98,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
       <div
         tabIndex={0}
         onClick={handleWorkspaceSortDirectionClick}
-        onKeyUp={handleWorkspaceSortDirectionKeyUp}
-        onKeyDown={handlePreventDefault}
+        onKeyDown={handleWorkspaceSortDirectionKeyDown}
         className="application-list__header-container application-list__header-container--sorter"
       >
         <h3 className="application-list__header application-list__header--sorter">

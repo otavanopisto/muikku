@@ -292,21 +292,12 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * handleMaterialKeyUp
    * @param e e
    */
-  const handleShowEvaluationKeyUp = (
+  const handleShowEvaluationKeyDown = (
     e: React.KeyboardEvent<HTMLDivElement>
   ) => {
     if (e.key === "Enter" || e.key === " ") {
-      setShowE((showE) => !showE);
-    }
-  };
-
-  /**
-   * handlePreventDefault
-   * @param e e
-   */
-  const handlePreventDefault = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
+      setShowE((showE) => !showE);
     }
   };
 
@@ -319,8 +310,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
         }
         onClick={handleShowEvaluationClick}
-        onKeyUp={handleShowEvaluationKeyUp}
-        onKeyDown={handlePreventDefault}
+        onKeyDown={handleShowEvaluationKeyDown}
         role="button"
         aria-label={
           showE
