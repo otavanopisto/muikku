@@ -42,6 +42,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
     super(props);
     this.openMenu = this.openMenu.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
+    this.handleOpenMenuKeyDown = this.handleOpenMenuKeyDown.bind(this);
     this.state = {
       isMenuOpen: false,
     };
@@ -63,6 +64,17 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
     this.setState({
       isMenuOpen: false,
     });
+  }
+
+  /**
+   * handleKeyDown
+   * @param e e
+   */
+  handleOpenMenuKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.openMenu();
+    }
   }
 
   /**
@@ -106,15 +118,19 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             >
               <li
                 className={`navbar__item navbar__item--menu-button`}
-                role="none"
+                role="menuitem"
               >
                 <span
+                  tabIndex={0}
                   className={`link link--icon link--full ${
                     this.props.modifier ? "link--" + this.props.modifier : ""
                   }`}
                   onClick={this.openMenu}
-                  role="menuitem"
-                  aria-hidden="true"
+                  onKeyDown={this.handleOpenMenuKeyDown}
+                  role="button"
+                  aria-label={this.props.i18n.t("wcag.openMainNavigation")}
+                  aria-haspopup="menu"
+                  aria-expanded={this.state.isMenuOpen}
                 >
                   <span className="link__icon icon-navicon"></span>
                 </span>
