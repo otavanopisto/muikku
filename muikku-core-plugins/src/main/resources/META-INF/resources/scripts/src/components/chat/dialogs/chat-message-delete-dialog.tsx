@@ -6,7 +6,7 @@ import { ChatMessage } from "~/generated/client";
 import Button from "~/components/general/button";
 import { localize } from "~/locales/i18n";
 import ChatProfileAvatar from "../chat-profile-avatar";
-import { parseLines } from "../chat-helpers";
+import { generateHash, parseLines } from "../chat-helpers";
 import ChatDialog from "./chat-dialog";
 import { useTranslation } from "react-i18next";
 
@@ -45,21 +45,30 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
 
   /**
    * Handles save click
-   * @param callback callback
+   * @param closeDialog closeDialog
    */
   const handleDeleteClick =
-    (callback: () => void) =>
+    (closeDialog: () => void) =>
     async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
 
       try {
         await onDelete();
         setDisabled(false);
-        callback();
+        closeDialog();
       } catch (err) {
         setDisabled(false);
       }
     };
+
+  /**
+   * Handles dialog close with delay
+   */
+  const handleDialogClose = () => {
+    setTimeout(() => {
+      onClose();
+    }, 200);
+  };
 
   /**
    * content
@@ -67,6 +76,14 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
    */
   const content = (closeDialog: () => void) => {
     if (!message.message) return null;
+
+    // If message nick exists, use it, else use a generated hash that indicates that the
+    // user has closed the chat for good
+    const nick =
+      message.nick ||
+      `${t("labels.gone", {
+        ns: "chat",
+      })}#${generateHash(`user-${message.sourceUserEntityId}`)}`;
 
     return (
       <div>
@@ -81,14 +98,12 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
           <div className="chat__message chat__message--deleting">
             <ChatProfileAvatar
               id={message.sourceUserEntityId}
-              nick={message.nick}
+              nick={nick}
               hasImage={message.hasImage}
             />
             <div className="chat__message-content-container">
               <div className="chat__message-meta">
-                <span className={`chat__message-meta-sender`}>
-                  {message.nick}
-                </span>
+                <span className={`chat__message-meta-sender`}>{nick}</span>
                 <span className="chat__message-meta-timestamp">
                   {localize.formatDaily(message.sentDateTime, "LT")}
                 </span>
@@ -137,7 +152,7 @@ function ChatDeleteMessageDialog(props: ChatDeleteMessageDialogProps) {
   return (
     <ChatDialog
       isOpen={open}
-      onClose={onClose}
+      onClose={handleDialogClose}
       localElementId="chat__body"
       disableScroll={true}
       title={t("labels.deletingMsg", { ns: "chat" })}

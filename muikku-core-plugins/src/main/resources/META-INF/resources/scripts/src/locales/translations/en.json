@@ -2160,6 +2160,7 @@
       "addRoom": "Add New Room",
       "blockUser": "Block User",
       "chatSettings": "Chat Settings",
+      "closeDiscussion": "Close discussion",
       "deleteRoom": "Delete Room",
       "editRoom": "Edit Room",
       "deleteMessage": "Delete Message",
@@ -2167,6 +2168,7 @@
       "minMaxPanel": "Minimize/Maximize Panel",
       "unBlockUser": "Unblock User",
       "fullscreenMode": "Fullscreen Mode",
+      "exitFullscreenMode": "Exit Fullscreen Mode",
       "detachWindow": "Detach Window",
       "attachWindow": "Attach Window"
     },

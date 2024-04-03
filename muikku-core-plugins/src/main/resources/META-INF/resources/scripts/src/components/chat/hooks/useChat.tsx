@@ -251,10 +251,7 @@ function useChat(
       if (activeDiscussionIdentifier === targetUser.identifier) {
         unstable_batchedUpdates(() => {
           setActiveDiscussionIdentifier(null);
-          setUserToBeBlocked(null);
         });
-      } else {
-        setUserToBeBlocked(null);
       }
 
       chatViews.goTo("overview");
@@ -269,7 +266,6 @@ function useChat(
   const unblockDiscussionWithUser = React.useCallback(
     async (currentUser: ChatUser) => {
       await unblockUser(currentUser);
-      setUserToBeUnblocked(null);
     },
     [unblockUser]
   );

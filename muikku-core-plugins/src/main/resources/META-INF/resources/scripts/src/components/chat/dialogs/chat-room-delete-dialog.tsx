@@ -23,27 +23,30 @@ function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
   const { deleteCustomRoom, closeDeleteRoomDialog, roomToBeDeleted } =
     useChatContext();
 
+  const [disabled, setDisabled] = React.useState<boolean>(false);
+
   const { t } = useTranslation(["chat", "common"]);
 
   /**
    * Handles save click
-   * @param callback callback
+   * @param closeDialog closeDialog
    */
   const handleDeleteClick =
-    (callback: () => void) =>
+    (closeDialog: () => void) =>
     async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      setDisabled(true);
       await deleteCustomRoom(roomToBeDeleted.identifier);
-      callback();
+      setDisabled(false);
+      closeDialog();
     };
 
   /**
-   * handleCloseClick
-   * @param e e
+   * Handles dialog close with delay
    */
-  const handleCloseClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    closeDeleteRoomDialog();
+  const handleDialogClose = () => {
+    setTimeout(() => {
+      closeDeleteRoomDialog();
+    }, 200);
   };
 
   /**
@@ -80,12 +83,14 @@ function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
       <Button
         buttonModifiers={["standard-ok", "fatal"]}
         onClick={handleDeleteClick(closeDialog)}
+        disabled={disabled}
       >
         {t("actions.remove")}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
-        onClick={handleCloseClick}
+        onClick={closeDialog}
+        disabled={disabled}
       >
         {t("actions.cancel")}
       </Button>
@@ -100,6 +105,7 @@ function ChatDeleteRoomDialog(props: ChatRoomDeleteDialogProps) {
       title={t("labels.deletingRoom", { ns: "chat" })}
       content={content}
       footer={footer}
+      onClose={handleDialogClose}
       modifier={["chat", "local"]}
     >
       {props.children}

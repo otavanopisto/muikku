@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import MApi, { isMApiError } from "~/api/api";
 import { ChatMessage } from "~/generated/client";
 import i18n from "~/locales/i18n";
@@ -42,6 +43,8 @@ function useMessage(props: UseMessageProps) {
   const [editedMessage, setEditedMessage] = React.useState<string>(msg.message);
   const myMsg = msg.sourceUserEntityId === currentUser.id;
 
+  const { t } = useTranslation(["chat"]);
+
   /**
    * Delete message
    */
@@ -50,14 +53,11 @@ function useMessage(props: UseMessageProps) {
       await chatApi.deleteChatMessage({
         messageId: msg.id,
       });
-
-      setShowDeleteDialog(false);
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
       }
 
-      //displayNotification("Viestin poisto epäonnistui", "error");
       displayNotification(
         i18n.t("notifications.deleteError", {
           context: "message",
@@ -152,13 +152,13 @@ function useMessage(props: UseMessageProps) {
     const defaultActions: MessageAction[] = [
       {
         icon: "pencil",
-        text: i18n.t("labels.edit", { ns: "common" }),
+        text: t("labels.edit", { ns: "common" }),
         onClick: handleEditClick,
         modifiers: ["info"],
       },
       {
         icon: "trash",
-        text: i18n.t("labels.remove", { ns: "common" }),
+        text: t("labels.remove", { ns: "common" }),
         onClick: handleDeleteClick,
         modifiers: ["fatal"],
       },
@@ -182,7 +182,7 @@ function useMessage(props: UseMessageProps) {
 
     // default is no actions
     return [];
-  }, [canModerate, handleDeleteClick, handleEditClick, msg.archived, myMsg]);
+  }, [canModerate, handleDeleteClick, handleEditClick, msg.archived, myMsg, t]);
 
   const secondaryModerationActions = React.useMemo(() => {
     const defaultActions: MessageAction[] = [];

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion, Variants } from "framer-motion";
+import { TFunction } from "i18next";
 import * as React from "react";
 import {
   ChatRoom,
@@ -7,7 +8,6 @@ import {
   instanceOfChatUser,
   ChatUserVisibilityEnum,
 } from "~/generated/client";
-import i18n from "~/locales/i18n";
 import { OptionDefault } from "../general/react-select/types";
 import { ChatView } from "./animated-views";
 import AnimatedView from "./animated-views/animated-view";
@@ -49,21 +49,25 @@ export type ChatDashBoardTab = "users" | "rooms" | "blocked";
 
 export type ChatSettingVisibilityOption = OptionDefault<ChatUserVisibilityEnum>;
 
-export const selectOptions: ChatSettingVisibilityOption[] = [
+/**
+ * selectOptions
+ * @param t t
+ */
+export const selectOptions = (t: TFunction): ChatSettingVisibilityOption[] => [
   {
-    label: i18n.t("labels.visibilityFilterAll", {
+    label: t("labels.visibilityFilterAll", {
       ns: "chat",
     }),
     value: "ALL",
   },
   {
-    label: i18n.t("labels.visibilityFilterStaff", {
+    label: t("labels.visibilityFilterStaff", {
       ns: "chat",
     }),
     value: "STAFF",
   },
   {
-    label: i18n.t("labels.visibilityFilterNone", {
+    label: t("labels.visibilityFilterNone", {
       ns: "chat",
     }),
     value: "NONE",

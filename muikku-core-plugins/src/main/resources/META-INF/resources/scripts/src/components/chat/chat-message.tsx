@@ -24,6 +24,7 @@ import {
   useChatUserInfoContext,
 } from "./context/chat-user-info-context";
 import { useTranslation } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * ChatMessageProps
@@ -311,11 +312,17 @@ function DesktopMessageActions(props: DesktopMessageActionsProps) {
     <div className="chat__message-actions">
       {mainActions.map((action, index) => (
         <div key={index} className="chat__button-wrapper">
-          <IconButton
-            icon={action.icon}
-            buttonModifiers={["chat"]}
-            onClick={action.onClick}
-          />
+          <Dropdown
+            alignSelfVertically="top"
+            openByHover
+            content={<p>{action.text}</p>}
+          >
+            <IconButton
+              icon={action.icon}
+              buttonModifiers={["chat"]}
+              onClick={action.onClick}
+            />
+          </Dropdown>
         </div>
       ))}
     </div>

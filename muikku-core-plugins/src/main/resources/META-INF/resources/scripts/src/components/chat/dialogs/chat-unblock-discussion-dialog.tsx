@@ -23,15 +23,25 @@ function ChatUnblockDiscussionDialog() {
 
   /**
    * Handles close and block user click
-   * @param callback callback
+   * @param closeDialog closeDialog
    */
   const handleUnblockClick =
-    (callback: () => void) =>
+    (closeDialog: () => void) =>
     async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
       await unblockDiscussionWithUser(userToBeUnblocked);
       setDisabled(false);
+      closeDialog();
     };
+
+  /**
+   * Handles dialog close with delay
+   */
+  const handleDialogClose = () => {
+    setTimeout(() => {
+      closeCancelUnblockDialog();
+    }, 200);
+  };
 
   /**
    * content
@@ -69,7 +79,7 @@ function ChatUnblockDiscussionDialog() {
         onClick={handleUnblockClick(closeDialog)}
         disabled={disabled}
       >
-        {t("actions.unblock", { ns: "chat" })}
+        {t("actions.unBlockUser", { ns: "chat" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
@@ -84,7 +94,7 @@ function ChatUnblockDiscussionDialog() {
   return (
     <ChatDialog
       isOpen={!!userToBeUnblocked}
-      onClose={closeCancelUnblockDialog}
+      onClose={handleDialogClose}
       localElementId="chat__body"
       disableScroll={true}
       title={t("labels.unblockUser", { ns: "chat" })}

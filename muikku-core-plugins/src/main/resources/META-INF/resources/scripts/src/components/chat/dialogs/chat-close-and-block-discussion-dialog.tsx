@@ -23,15 +23,25 @@ function ChatCloseAndBlockDiscussionDialog() {
 
   /**
    * Handles block user click
-   * @param callback callback
+   * @param closeDialog closeDialog
    */
   const handleBlockUserClick =
-    (callback: () => void) =>
+    (closeDialog: () => void) =>
     async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       setDisabled(true);
       await closeAndBlockDiscussionWithUser(userToBeBlocked);
       setDisabled(false);
+      closeDialog();
     };
+
+  /**
+   * Handles dialog close with delay
+   */
+  const handleDialogClose = () => {
+    setTimeout(() => {
+      closeBlockUserDialog();
+    }, 200);
+  };
 
   /**
    * content
@@ -84,7 +94,7 @@ function ChatCloseAndBlockDiscussionDialog() {
   return (
     <ChatDialog
       isOpen={!!userToBeBlocked}
-      onClose={closeBlockUserDialog}
+      onClose={handleDialogClose}
       localElementId="chat__body"
       disableScroll={true}
       title={t("labels.blockingUser", { ns: "chat" })}

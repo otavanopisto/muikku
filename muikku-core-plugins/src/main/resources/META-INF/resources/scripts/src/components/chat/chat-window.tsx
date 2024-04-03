@@ -10,6 +10,8 @@ import { useChatContext } from "./context/chat-context";
 import { ChatWindowBreakpointsContextProvider } from "./context/chat-window-breakpoints-context";
 import { useChatWindowContext } from "./context/chat-window-context";
 import { ResizerHandle } from "./chat-helpers";
+import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 const WINDOW_MIN_WIDTH = 500;
 const WINDOW_MIN_HEIGHT = 500;
@@ -63,6 +65,8 @@ function ChatWindow(props: ChatWindowProps) {
   const refTopR = React.useRef<HTMLDivElement>(null);
   const refBottomL = React.useRef<HTMLDivElement>(null);
   const refBottomR = React.useRef<HTMLDivElement>(null);
+
+  const { t } = useTranslation(["chat"]);
 
   const componentInitialized = React.useRef(false);
 
@@ -1128,19 +1132,31 @@ function ChatWindow(props: ChatWindowProps) {
                 className="chat__button-wrapper chat__button-wrapper--header"
               >
                 {detached ? (
-                  <IconButton
-                    buttonModifiers={["chat"]}
-                    icon="arrow-down-right"
-                    onClick={toggleDetached}
-                    onPointerDownCapture={(e) => e.stopPropagation()}
-                  />
+                  <Dropdown
+                    alignSelfVertically="top"
+                    openByHover
+                    content={<p>{t("actions.attachWindow", { ns: "chat" })}</p>}
+                  >
+                    <IconButton
+                      buttonModifiers={["chat"]}
+                      icon="arrow-down-right"
+                      onClick={toggleDetached}
+                      onPointerDownCapture={(e) => e.stopPropagation()}
+                    />
+                  </Dropdown>
                 ) : (
-                  <IconButton
-                    buttonModifiers={["chat"]}
-                    icon="arrow-up-left"
-                    onClick={toggleDetached}
-                    onPointerDownCapture={(e) => e.stopPropagation()}
-                  />
+                  <Dropdown
+                    alignSelfVertically="top"
+                    openByHover
+                    content={<p>{t("actions.detachWindow", { ns: "chat" })}</p>}
+                  >
+                    <IconButton
+                      buttonModifiers={["chat"]}
+                      icon="arrow-up-left"
+                      onClick={toggleDetached}
+                      onPointerDownCapture={(e) => e.stopPropagation()}
+                    />
+                  </Dropdown>
                 )}
               </motion.div>
             )}
@@ -1148,29 +1164,49 @@ function ChatWindow(props: ChatWindowProps) {
 
           <div className="chat__button-wrapper chat__button-wrapper--header">
             {fullScreen ? (
-              <IconButton
-                buttonModifiers={["chat"]}
-                icon="fullscreen-exit"
-                onClick={handleFullScreenClick}
-                onPointerDownCapture={(e) => e.stopPropagation()}
-              />
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <p>{t("actions.exitFullscreenMode", { ns: "chat" })}</p>
+                }
+              >
+                <IconButton
+                  buttonModifiers={["chat"]}
+                  icon="fullscreen-exit"
+                  onClick={handleFullScreenClick}
+                  onPointerDownCapture={(e) => e.stopPropagation()}
+                />
+              </Dropdown>
             ) : (
-              <IconButton
-                buttonModifiers={["chat"]}
-                icon="fullscreen"
-                onClick={handleFullScreenClick}
-                onPointerDownCapture={(e) => e.stopPropagation()}
-              />
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={<p>{t("actions.fullscreenMode", { ns: "chat" })}</p>}
+              >
+                <IconButton
+                  buttonModifiers={["chat"]}
+                  icon="fullscreen"
+                  onClick={handleFullScreenClick}
+                  onPointerDownCapture={(e) => e.stopPropagation()}
+                />
+              </Dropdown>
             )}
           </div>
 
           <div className="chat__button-wrapper chat__button-wrapper--header">
-            <IconButton
-              buttonModifiers={["chat"]}
-              icon="cross"
-              onClick={handleCloseWindow}
-              onPointerDownCapture={(e) => e.stopPropagation()}
-            />
+            <Dropdown
+              alignSelfVertically="top"
+              openByHover
+              content={<p>{t("actions.close")}</p>}
+            >
+              <IconButton
+                buttonModifiers={["chat"]}
+                icon="cross"
+                onClick={handleCloseWindow}
+                onPointerDownCapture={(e) => e.stopPropagation()}
+              />
+            </Dropdown>
           </div>
         </header>
         <main id="chat__body" className="chat__body">
