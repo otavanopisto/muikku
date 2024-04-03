@@ -64,6 +64,7 @@ class DDiscussionThreads extends React.Component<
     super(props);
 
     this.getToThread = this.getToThread.bind(this);
+    this.handleThreadKeyDown = this.handleThreadKeyDown.bind(this);
   }
 
   /**
@@ -137,6 +138,21 @@ class DDiscussionThreads extends React.Component<
   }
 
   /**
+   * handleThreadKeyDown
+   * @param thread thread
+   * @param e e
+   */
+  handleThreadKeyDown(
+    thread: DiscussionThread,
+    e: React.KeyboardEvent<HTMLDivElement>
+  ) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.getToThread(thread);
+    }
+  }
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -200,6 +216,7 @@ class DDiscussionThreads extends React.Component<
               avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
                 ns: "messaging",
               })}
+              avatarAriaHidden={true}
             />
           );
         }
@@ -207,6 +224,7 @@ class DDiscussionThreads extends React.Component<
           <DiscussionThreadComponent
             key={thread.id}
             onClick={this.getToThread.bind(this, thread)}
+            onKeyDown={this.handleThreadKeyDown.bind(this, thread)}
             avatar={avatar}
           >
             <DiscussionThreadHeader>
