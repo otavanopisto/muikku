@@ -20,8 +20,9 @@ body {
   background-color: $color-default-body;
   overflow-y: auto;
 
-  &.using-mouse :focus {
-    outline: none;
+  :focus-visible {
+    outline: $color-outline solid 2px;
+    outline-offset: -2px;
   }
 }
 

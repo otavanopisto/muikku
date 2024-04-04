@@ -5,6 +5,7 @@ import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import "~/sass/elements/navbar.scss";
 import { WithTranslation, withTranslation } from "react-i18next";
+import Link from "~/components/general/link";
 
 /**
  * NavbarProps
@@ -118,22 +119,22 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
             >
               <li
                 className={`navbar__item navbar__item--menu-button`}
-                role="menuitem"
+                role="none"
               >
-                <span
+                <Link
                   tabIndex={0}
                   className={`link link--icon link--full ${
                     this.props.modifier ? "link--" + this.props.modifier : ""
                   }`}
                   onClick={this.openMenu}
                   onKeyDown={this.handleOpenMenuKeyDown}
-                  role="button"
+                  role="menuitem"
                   aria-label={this.props.i18n.t("wcag.openMainNavigation")}
                   aria-haspopup="menu"
                   aria-expanded={this.state.isMenuOpen}
                 >
                   <span className="link__icon icon-navicon"></span>
-                </span>
+                </Link>
               </li>
               {this.props.navbarItems
                 .map((item, index) => {
