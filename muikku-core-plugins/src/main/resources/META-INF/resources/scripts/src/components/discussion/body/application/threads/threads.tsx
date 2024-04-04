@@ -30,7 +30,7 @@ export class DiscussionThreads extends React.Component<
 interface DiscussionThreadProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick: (event: React.MouseEvent<HTMLDivElement>) => any;
-  onKeyDown: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   avatar: JSX.Element;
 }
 

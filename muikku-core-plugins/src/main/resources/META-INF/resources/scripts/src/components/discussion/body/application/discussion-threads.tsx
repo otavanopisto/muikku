@@ -118,6 +118,31 @@ class DDiscussionThreads extends React.Component<
     };
 
   /**
+   * handleSubscribeOrUnsubscribeKeyDown
+   * @param thread thread
+   * @param isSubscribed isSubscribed
+   */
+  handleSubscribeOrUnsubscribeKeyDown =
+    (thread: DiscussionThread, isSubscribed: boolean) =>
+    (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.stopPropagation();
+        e.preventDefault();
+        if (isSubscribed) {
+          this.props.unsubscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        } else {
+          this.props.subscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        }
+      }
+    };
+
+  /**
    * getToThread
    * @param thread thread
    */
@@ -243,41 +268,39 @@ class DDiscussionThreads extends React.Component<
               </div>
 
               <div className="application-list__item-header-aside">
-                {isSubscribed ? (
-                  <Dropdown
-                    openByHover
-                    modifier="discussion-tooltip"
-                    content={this.props.i18n.t("labels.unsubscribe", {
-                      ns: "messaging",
-                    })}
-                  >
-                    <IconButton
-                      icon="bookmark-full"
-                      onClick={this.handleSubscribeOrUnsubscribeClick(
-                        thread,
-                        true
-                      )}
-                      buttonModifiers={["discussion-action-active"]}
-                    />
-                  </Dropdown>
-                ) : (
-                  <Dropdown
-                    openByHover
-                    modifier="discussion-tooltip"
-                    content={this.props.i18n.t("labels.subscribe", {
-                      ns: "messaging",
-                    })}
-                  >
-                    <IconButton
-                      icon="bookmark-empty"
-                      onClick={this.handleSubscribeOrUnsubscribeClick(
-                        thread,
-                        false
-                      )}
-                      buttonModifiers={["discussion-action"]}
-                    />
-                  </Dropdown>
-                )}
+                <Dropdown
+                  openByHover
+                  modifier="discussion-tooltip"
+                  content={
+                    isSubscribed
+                      ? this.props.i18n.t("labels.unsubscribe", {
+                          ns: "messaging",
+                        })
+                      : this.props.i18n.t("labels.subscribe", {
+                          ns: "messaging",
+                        })
+                  }
+                >
+                  <IconButton
+                    as="div"
+                    role="button"
+                    aria-pressed={isSubscribed}
+                    icon={isSubscribed ? "bookmark-full" : "bookmark-empty"}
+                    onClick={this.handleSubscribeOrUnsubscribeClick(
+                      thread,
+                      isSubscribed
+                    )}
+                    onKeyDown={this.handleSubscribeOrUnsubscribeKeyDown(
+                      thread,
+                      isSubscribed
+                    )}
+                    buttonModifiers={
+                      isSubscribed
+                        ? ["discussion-action-active"]
+                        : ["discussion-action"]
+                    }
+                  />
+                </Dropdown>
               </div>
             </DiscussionThreadHeader>
             {thread.sticky ? (
