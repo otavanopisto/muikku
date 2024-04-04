@@ -3,8 +3,11 @@ import { loadLocale } from "~/actions/base/locales";
 import App from "~/containers/index.frontpage";
 import reducer from "~/reducers/index.frontpage";
 import runApp from "../run";
+import tabOrMouse from "~/util/tab-or-mouse";
 
 runApp(reducer, App, async (store) => {
+  tabOrMouse();
+
   // For user that are not logged in, we need to load the locale
   // data
   store.dispatch(<Action>loadLocale());

@@ -20,9 +20,15 @@ body {
   background-color: $color-default-body;
   overflow-y: auto;
 
+  // Custom focus borders when using keyboard
   :focus-visible {
     outline: $color-outline solid 2px;
     outline-offset: -2px;
+  }
+
+  // Remove the custom bvorders when using mouse
+  &.using-mouse :focus-visible {
+    outline: none;
   }
 }
 
