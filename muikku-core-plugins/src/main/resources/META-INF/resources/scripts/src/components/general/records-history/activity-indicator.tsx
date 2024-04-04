@@ -45,7 +45,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             className="activity-badge__item activity-badge__item--assignment"
           >
             <div
-              aria-label={t("wcag.evaluableActivity", {
+              aria-label={t("wcag.evaluableDonePercent", {
                 ns: "studies",
                 percent: Math.round(
                   (credit.exercisesAnswered / credit.exercisesTotal) * 100
@@ -82,7 +82,7 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             className="activity-badge__item activity-badge__item--exercise"
           >
             <div
-              aria-label={t("wcag.excersiseActivity", {
+              aria-label={t("wcag.excersiseDonePercent", {
                 ns: "studies",
                 percent: Math.round(
                   (credit.exercisesAnswered / credit.exercisesTotal) * 100

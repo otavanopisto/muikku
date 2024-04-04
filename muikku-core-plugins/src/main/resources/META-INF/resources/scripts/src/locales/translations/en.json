@@ -492,10 +492,10 @@
       "updateError_summary": "Loading the summary information failed. Please try refreshing the page."
     },
     "wcag": {
-      "excersiseActivity": "Harjoitustehtäviä tehty {{percent}}%",
-      "evaluableActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
-      "expandRecordInfo": "Expand workspace record info",
-      "collapseRecordInfo": "Collapse workspace record info"
+      "collapseRecordInfo": "Collapse workspace record info",
+      "evaluableDonePercent": "Assignments done {{percent}}%",
+      "excersiseDonePercent": "Excersises done {{percent}}%",
+      "expandRecordInfo": "Expand workspace record info"
     }
   },
   "hops": {

@@ -492,10 +492,10 @@
       "updateError_summary": "Yhteenvedon tietojen lataus epäonnistui. Yritä ladata sivu uudelleen."
     },
     "wcag": {
-      "excersiseActivity": "Harjoitustehtäviä tehty {{percent}}%",
-      "evaluableActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
-      "expandRecordInfo": "Laajenna työtilan suoritustiedot",
-      "collapseRecordInfo": "Pienennä työtilan suoritustiedot"
+      "collapseRecordInfo": "Pienennä työtilan suoritustiedot",
+      "evaluableDonePercent": "Arvioitavia tehtäviä tehty {{percent}}%",
+      "excersiseDonePercent": "Harjoitustehtäviä tehty {{percent}}%",
+      "expandRecordInfo": "Laajenna työtilan suoritustiedot"
     }
   },
   "hops": {
