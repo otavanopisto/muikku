@@ -12,6 +12,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -72,7 +74,7 @@ public class StudentCardRESTService extends PluginRESTService {
     
     // Active flag is editable only if card type is not null
     if (studentCard.getType() == null) {
-      return Response.status(Status.FORBIDDEN).build();
+      return Response.status(Status.BAD_REQUEST).entity(String.format("The type of student card %s has not been set", studentCard.getId())).build();
     }
     
     // Update
@@ -98,20 +100,20 @@ public class StudentCardRESTService extends PluginRESTService {
   
   @GET
   @Path("/studentCard/{STUDENTIDENTIFIER}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getStudentCard(@PathParam ("STUDENTIDENTIFIER") String studentIdentifier) {
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
     
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing student identifier").build();
+    if(StringUtils.isEmpty(studentIdentifier)) {
+    return Response.status(Status.BAD_REQUEST).entity("Missing student identifier").build();
     }
     
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
 
-    if (!SchoolDataIdentifier.fromId(studentIdentifier).equals(sessionController.getLoggedUser()) && !sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+    if (schoolDataIdentifier.equals(sessionController.getLoggedUser()) && !sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
