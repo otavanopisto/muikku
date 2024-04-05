@@ -661,7 +661,7 @@ class ConnectField extends React.Component<
           <span
             className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >
-            <span className="material-page__connectfield-terms-container">
+            <ol className="material-page__connectfield-terms-container">
               {this.state.fields.map((field, index) => {
                 // the item answer
                 const itemAnswer =
@@ -679,41 +679,33 @@ class ConnectField extends React.Component<
                 // the fields cannot be dragged and they remain in order
                 // they are simple things
                 return (
-                  <span
+                  <li
                     key={field.name}
-                    // onClick={
-                    //   this.props.readOnly
-                    //     ? null
-                    //     : this.pickField.bind(this, true, field, false, index)
-                    // }
-                  >
-                    <span
-                      className={`material-page__connectfield-term ${
-                        this.state.selectedField &&
-                        this.state.selectedField.name === field.name
-                          ? "material-page__connectfield-term--selected"
-                          : ""
-                      } ${
-                        this.state.editedIds.has(field.name) && !itemAnswer
-                          ? "material-page__connectfield-term--edited"
-                          : ""
-                      }
+                    className={`material-page__connectfield-term ${
+                      this.state.selectedField &&
+                      this.state.selectedField.name === field.name
+                        ? "material-page__connectfield-term--selected"
+                        : ""
+                    } ${
+                      this.state.editedIds.has(field.name) && !itemAnswer
+                        ? "material-page__connectfield-term--edited"
+                        : ""
+                    }
                 ${itemStateAfterCheck}`}
-                    >
-                      <span className="material-page__connectfield-term-data-container">
-                        <span className="material-page__connectfield-term-number">
-                          {index + 1}
-                        </span>
-                        <span className="material-page__connectfield-term-label">
-                          <StrMathJAX>{field.text}</StrMathJAX>
-                        </span>
+                  >
+                    <span className="material-page__connectfield-term-data-container">
+                      <span className="material-page__connectfield-term-number">
+                        {index + 1}
+                      </span>
+                      <span className="material-page__connectfield-term-label">
+                        <StrMathJAX>{field.text}</StrMathJAX>
                       </span>
                     </span>
-                  </span>
+                  </li>
                 );
               })}
-            </span>
-            <span className="material-page__connectfield-counterparts-container">
+            </ol>
+            <ol className="material-page__connectfield-counterparts-container">
               {this.state.counterparts.map((field, index) => {
                 if (!this.props.content) {
                   return null;
@@ -746,14 +738,14 @@ class ConnectField extends React.Component<
                 // if readonly we just add the classname in there
                 if (this.props.readOnly) {
                   return (
-                    <span className={className} key={field.name}>
+                    <li className={className} key={field.name}>
                       <span className="material-page__connectfield-counterpart-data-container">
                         <span className="material-page__connectfield-counterpart-icon icon-move"></span>
                         <span className="material-page__connectfield-counterpart-label">
                           <StrMathJAX>{field.text}</StrMathJAX>
                         </span>
                       </span>
-                    </span>
+                    </li>
                   );
                 }
 
@@ -807,7 +799,7 @@ class ConnectField extends React.Component<
                 // the parent container selector is the field on its own
                 return (
                   <Draggable
-                    as="span"
+                    as="li"
                     interactionData={{ field, index, isCounterpart: true }}
                     interactionGroup={
                       this.props.content.name + "-counterparts-container"
@@ -855,7 +847,7 @@ class ConnectField extends React.Component<
                   </Draggable>
                 );
               })}
-            </span>
+            </ol>
           </span>
         </span>
       </>

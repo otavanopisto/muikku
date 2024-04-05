@@ -1469,6 +1469,20 @@
   @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
+
+  // We need to override these styles here as .rich-text element has rules for <ol> and <li> elements
+  // These rules are quite specific so they won't be overridden by accident
+  ol.material-page__connectfield-terms-container,
+  ol.material-page__connectfield-counterparts-container {
+    margin: 0;
+    padding: 0;
+  }
+
+  li.material-page__connectfield-term,
+  li.material-page__connectfield-counterpart {
+    display: flex;
+    list-style-type: none;
+  }
 }
 
 .material-page__connectfield-terms-container {
