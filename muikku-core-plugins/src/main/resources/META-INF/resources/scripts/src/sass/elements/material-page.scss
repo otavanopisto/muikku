@@ -1508,6 +1508,10 @@
   position: relative;
   user-select: text;
 
+  &.material-page__connectfield-term--disabled {
+    opacity: 50%;
+  }
+
   &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
     background: $color-default;
     border-color: $color-correct-answer;
