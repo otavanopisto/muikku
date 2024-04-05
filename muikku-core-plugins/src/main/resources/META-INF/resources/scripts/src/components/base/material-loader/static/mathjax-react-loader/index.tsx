@@ -4,6 +4,11 @@ import { MathJaxCollector } from "./mathjax-collector";
 
 const baseConfig = {
   showMathMenu: true,
+  menuSettings: {
+    collapsible: true,
+    autocollapse: false,
+    explorer: true,
+  },
   tex2jax: {
     inlineMath: [["\\(", "\\)"]],
   },

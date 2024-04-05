@@ -160,6 +160,19 @@ public class WorkspaceUserEntityController {
     }
   }
 
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserIdentifierIncludeArchived(SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
+        findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
+    
+    if (userSchoolDataIdentifier != null) {
+      return workspaceUserEntityDAO.listByUserSchoolDataIdentifier(userSchoolDataIdentifier);
+    }
+    else {
+      logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
+      return Collections.emptyList();
+    }
+  }
+
   public List<WorkspaceUserEntity> listActiveWorkspaceUserEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
         findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
@@ -333,6 +346,18 @@ public class WorkspaceUserEntityController {
     return result;
   }
 
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUserIdentifierIncludeArchived(SchoolDataIdentifier userIdentifier) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserIdentifierIncludeArchived(userIdentifier);
+
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    
+    return result;
+  }
+
   public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     List<WorkspaceEntity> result = new ArrayList<>();
     List<WorkspaceUserEntity> workspaceUserEntities = listActiveWorkspaceUserEntitiesByUserIdentifier(userIdentifier);
@@ -356,6 +381,16 @@ public class WorkspaceUserEntityController {
         userEntity.getDefaultSchoolDataSource(),
         userEntity.getDefaultIdentifier());
     return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier;
+  }
+
+  /**
+   * Returns true if user1 and user2 have any shared workspaces.
+   * @param user1 User 1
+   * @param user2 User 2
+   * @return true if user1 and user2 have any shared workspaces
+   */
+  public boolean haveSharedWorkspaces(UserEntity user1, UserEntity user2) {
+    return workspaceUserEntityDAO.haveSharedWorkspaces(user1, user2);
   }
 
 }

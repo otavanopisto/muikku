@@ -240,6 +240,7 @@
       "alternateNavigation": "Muikun käyttäjäprofiilin ja kielivalinnan navigaatio",
       "chooseRulersColor": "Valitse lukiviivaimen taustaväri",
       "clickThroughRuler": "Lukiviivaimen läpiklikkaus",
+      "closeMaterial": "Sulje tehtäväsisältö",
       "closeRuler": "Sulje lukiviivain",
       "closeRulersToolbar": "Sulje lukiviivaimen työkalut",
       "currentPage": "Olet sivulla",
@@ -250,6 +251,7 @@
       "invertRulersColors": "Käännä lukiviivaimen värit",
       "localeMenu": "Muikun käyttöliittymän kielivalikko",
       "mainNavigation": "Muikun päänavigaatio",
+      "openMaterial": "Avaa tehtäväsisältö",
       "openRulersToolbar": "Avaa lukiviivaimen työkalut",
       "pinRuler": "Kiinnitä lukiviivain",
       "profileMenu": "Muikun käyttäjäprofiilin valikko",
@@ -346,7 +348,7 @@
       "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
       "lastJournalEntry": "viimeisin merkintä: {{value}}",
       "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
-      "notInWorkspaces": "Opiskelija ei ole millään kurssilla",
+      "notInWorkspaces": "Opiskelija ei ole suorittanut vielä yhtään kurssia",
       "numberOfAssignments": "{{value}} arvioitavaa tehtävää",
       "numberOfExercises": "{{value}} harjoitustehtävää",
       "numberOfJournalEntries": "{{value}} oppimispäiväkirjamerkintää",
@@ -826,6 +828,7 @@
       "archiveError": "Arkistointi epäonnistui",
       "archiveSuccess": "Arkistointi onnistui",
       "availableError": "Tätä tiedotetta ei ole saatavilla tai sitä ei ole olemassa.",
+      "automaticlyEmptyTrash": "Roskakorissa 30 päivää olleet viestit poistuvat automaattisesti",
       "createError": "$t(common:notifications.createError)",
       "createError_announcement": "Tiedotteen luonti epäonnistui. Yritä uudelleen.",
       "createError_contactLog": "Yhteydenoton luonti epäonnistui. Yritä uudelleen.",
@@ -1152,11 +1155,14 @@
       "add_formula": "Lisää kaava",
       "cancel": "$t(common:actions.cancel)",
       "cancel_assignment": "Peruuta tehtävän palautus",
+      "cancel_exercise": "Peruuta tehtävän palautus",
       "evaluated": "Tehtävä on jo arvioitu",
       "hide": "Piilota oikeat vastaukset",
       "notSignedUpWarning": "tästä",
       "save": "Tallenna muutokset",
-      "send": "Palauta tehtävä",
+      "send": "Palauta",
+      "send_assignment": "Palauta tehtävä",
+      "send_exercise": "Palauta tehtävä",
       "sent": "Tehtävä palautettu",
       "show": "Näytä oikeat vastaukset",
       "start": "Aloita äänitys",
@@ -1174,8 +1180,8 @@
       "empty_audio": "Ei äänitiedostoja",
       "empty_materials": "Kurssilla ei ole materiaaleja",
       "hiddenButAnswered": "Piilotettu tehtävä",
-      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on poistettu. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee vastauksesi ja voi sen arvioida.",
-      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on poistettu. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee vastauksesi.",
+      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on poistettu käytöstä. Olet kuitenkin ehtinyt vastata tähän tehtävään, joten opettaja näkee vastauksesi ja voi arvioida sen.",
+      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on poistettu käytöstä. Olet kuitenkin ehtinyt vastata tähän tehtävään, joten opettaja näkee vastauksesi.",
       "interimEvaluationDisclaimer": "Välipalautetta ei voi pyytää, kun kurssista on olemassa aktiivinen arviointipyyntö. Peruuta arviointipyyntö tai odota, että pyyntö on käsitelty.",
       "noRecordings": "Ei äänityksiä",
       "materialLinked": "Materiaali on linkitetty ja käytössä {{materialCount}} kurssilla. Huomaathan, että jos muokkaat materiaalia, se muuttuu myös muilla kursseilla, joilla materiaali on käytössä.",
@@ -1696,6 +1702,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_entry": "Oppimispäiväkirjamerkinnän muokkaus epäonnistui",
       "updateError_comment": "Oppimispäiväkirjamerkinnän kommentin muokkaus epäonnistui: {{error}}"
+    },
+    "wcag": {
+      "closeContent": "Sulje päiväkirjamerkinnän sisältö",
+      "closeComments": "Sulje päiväkirjamerkinnän kommentit",
+      "showContent": "Näytä päiväkirjamerkinnän sisältö",
+      "showComments": "Näytä päiväkirjamerkinnän kommentit"
     }
   },
   "files": {
@@ -1862,6 +1874,12 @@
       "updateError_evaluation": "Virhe arvioinnin päivittämisessä: {{error}}",
       "updateError_pricing": "Virhe kurssin maksutietojen päivittämisessä: {{error}}",
       "updateError_sorting": "Virhe lajittelutietojen päivittämisessä: {{error}}"
+    },
+    "wcag": {
+      "evaluationAssessmentFailed": "Hylätty arviointi",
+      "evaluationAssessmentPassed": "Hyväksytty arviointi",
+      "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
+      "evaluationAssessmentUnassessed": "Arvioimaton"
     }
   },
   "calendar": {
@@ -2050,6 +2068,7 @@
       "limitedAudioMaterial": "Ääniaineistoltaan rajoitettu koe",
       "matriculationPrePlan": "Ennakkosuunnitelma ylioppilaskirjoituksiin",
       "matriculationPrePlan_else": "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide",
+      "needForSupport": "Tuen tarve",
       "opinionOfSupport": "Näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_school": "Oppilaitoksen näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_student": "Opiskelijan näkemys tuen vaikuttavuudesta",
