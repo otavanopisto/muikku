@@ -18,6 +18,13 @@
   }
 }
 
+@mixin form-focus {
+  &:focus {
+    outline: $color-outline solid 2px;
+    outline-offset: -2px;
+  }
+}
+
 @mixin text {
   color: $color-text-default;
   font-family: $system-font-family;
