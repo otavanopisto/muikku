@@ -191,6 +191,17 @@ class Course extends React.Component<CourseProps, CourseState> {
   };
 
   /**
+   * handleCourseKeyDown
+   * @param e e
+   */
+  handleCourseKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.toggleExpanded();
+    }
+  };
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -199,11 +210,28 @@ class Course extends React.Component<CourseProps, CourseState> {
 
     return (
       <ApplicationListItem
+        tabIndex={-1}
         className={`course ${this.state.expanded ? "course--open" : ""}`}
       >
         <ApplicationListItemHeader
+          tabIndex={0}
+          role="button"
           className="application-list__item-header--course"
           onClick={this.toggleExpanded}
+          onKeyDown={this.handleCourseKeyDown}
+          aria-label={
+            this.state.expanded
+              ? this.props.t("wcag.expandWorkspaceInfo", {
+                  ns: "workspace",
+                  workspaceName: this.props.workspace.name,
+                })
+              : this.props.t("wcag.collapseWorkspaceInfo", {
+                  ns: "workspace",
+                  workspaceName: this.props.workspace.name,
+                })
+          }
+          aria-expanded={this.state.expanded}
+          aria-controls={"workspace" + this.props.workspace.id}
         >
           <span
             className={`application-list__header-icon icon-books ${
@@ -230,14 +258,17 @@ class Course extends React.Component<CourseProps, CourseState> {
           </span>
         </ApplicationListItemHeader>
         {!this.state.loading && this.state.expanded ? (
-          <div>
+          <div id={"workspace" + this.props.workspace.id}>
             <ApplicationListItemBody
               content={this.props.workspace.description}
               className="application-list__item-body--course"
             />
             <ApplicationListItemFooter className="application-list__item-footer--course">
               <Button
-                aria-label={this.props.workspace.name}
+                aria-label={this.props.t("wcag.continueWorkspace", {
+                  ns: "workspace",
+                  workspaceName: this.props.workspace.name,
+                })}
                 buttonModifiers={[
                   "primary-function-content ",
                   "coursepicker-course-action",
@@ -259,7 +290,10 @@ class Course extends React.Component<CourseProps, CourseState> {
                   }}
                 >
                   <Button
-                    aria-label={this.props.workspace.name}
+                    aria-label={this.props.t("wcag.signUpWorkspace", {
+                      ns: "workspace",
+                      workspaceName: this.props.workspace.name,
+                    })}
                     buttonModifiers={[
                       "primary-function-content",
                       "coursepicker-course-action",

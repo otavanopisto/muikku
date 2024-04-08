@@ -635,6 +635,8 @@
     margin: 4px;
     max-width: calc(100% - 8px);
     padding: 4px 6px;
+
+    @include form-focus;
   }
 
   &.correct-answer input {
@@ -693,6 +695,8 @@
   &.incorrect-answer {
     border-color: $color-incorrect-answer;
   }
+
+  @include form-focus;
 }
 
 .material-page__selectfield-item-container {
