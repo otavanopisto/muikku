@@ -636,6 +636,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                   onDropInto={this.cancelSelectedItem}
                 >
                   <span
+                    role="button"
                     tabIndex={0}
                     ref={callBackRef}
                     onKeyDown={this.handleKeyDown(item)}
