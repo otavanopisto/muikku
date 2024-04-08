@@ -1632,6 +1632,11 @@
     &.material-page__connectfield-counterpart--selected {
       background: $taskfield-border-color;
       border-color: $taskfield-border-color;
+
+      &:focus {
+        background: $taskfield-border-color;
+        border-color: $taskfield-border-color;
+      }
     }
 
     .material-page__connectfield-counterpart-number {
