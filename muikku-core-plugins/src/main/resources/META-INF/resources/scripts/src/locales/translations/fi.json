@@ -1637,9 +1637,13 @@
     },
     "wcag": {
       "announcementSelect": "Aseta tiedote valituksi",
+      "collapseWorkspaceInfo": "Pienennä kurssin {{workspaceName}} tiedot",
+      "continueWorkspace": "Jatka kurssia {{workspaceName}}",
       "editingMasterSwitch": "Editointitilan valitsin",
+      "expandWorkspaceInfo": "Laajenna kurssin {{workspaceName}} tiedot",
       "journalSelect": "Valitse oppimispäiväkirja",
       "materialLicense": "Materiaalin lisenssi",
+      "signUpWorkspace": "Ilmoittaudu kurssille {{workspaceName}}",
       "workspaceDescription": "Kurssin kuvaus",
       "workspaceImage": "Kurssin kuva",
       "workspaceLicense": "Kurssin lisenssi"
