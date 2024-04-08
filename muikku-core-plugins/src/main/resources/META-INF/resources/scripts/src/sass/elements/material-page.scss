@@ -1751,7 +1751,8 @@
   position: relative;
   width: 100%;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background: $color-default;
     border: 2px solid $taskfield-border-color;
     height: auto;
