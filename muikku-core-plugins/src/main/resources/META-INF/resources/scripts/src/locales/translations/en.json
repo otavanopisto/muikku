@@ -1339,7 +1339,6 @@
       "updateError_compositeReplies": "Updating the answer failed"
     },
     "wcag": {
-      "connectFieldTermSelected": "Term selected",
       "organizerTermSelected": "Term selected",
       "organizerTermInUse": "Term in use",
       "organizerTermInUseAndSelected": "Term selected and in use",

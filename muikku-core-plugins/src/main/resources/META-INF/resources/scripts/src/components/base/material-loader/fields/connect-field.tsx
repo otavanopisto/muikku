@@ -80,7 +80,10 @@ class ConnectField extends React.Component<
   ConnectFieldProps,
   ConnectFieldState
 > {
-  itemRefs: HTMLSpanElement[];
+  termRefs: HTMLLIElement[];
+  counterpartRefs: HTMLSpanElement[];
+  focusIndexRef: number;
+
   /**
    * constructor
    * @param props props
@@ -159,14 +162,15 @@ class ConnectField extends React.Component<
       fieldSavedState: null,
     };
 
-    this.swapField = this.swapField.bind(this);
     this.swapCounterpart = this.swapCounterpart.bind(this);
     this.pickField = this.pickField.bind(this);
     this.cancelPreviousPick = this.cancelPreviousPick.bind(this);
     this.triggerChange = this.triggerChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
 
-    this.itemRefs = [];
+    this.termRefs = [];
+    this.counterpartRefs = [];
+    this.focusIndexRef = 0;
   }
 
   /**
@@ -325,39 +329,29 @@ class ConnectField extends React.Component<
     prevState: ConnectFieldState
   ) {
     this.checkAnswers();
+    this.isTermsFocusable();
   }
 
   /**
-   * swapField
-   * @param executeTriggerChangeFunction executeTriggerChangeFunction
-   * @param fielda fielda
-   * @param fieldb fieldb
+   * Checks if terms are focusable
    */
-  swapField(
-    executeTriggerChangeFunction: boolean,
-    fielda: FieldType,
-    fieldb: FieldType
-  ) {
-    // if the same then it's pointless
-    if (fielda.name === fieldb.name) {
+  isTermsFocusable = () => {
+    if (!this.state.selectedField) {
       return;
     }
 
-    // basically just swapping the fields from the state
-    this.setState(
-      {
-        fields: this.state.fields.map((f) => {
-          if (f.name === fielda.name) {
-            return fieldb;
-          } else if (f.name === fieldb.name) {
-            return fielda;
-          }
-          return f;
-        }),
-      },
-      executeTriggerChangeFunction ? this.triggerChange : null
+    const selectedTermIndex = this.state.fields.findIndex(
+      (field) => field.name === this.state.selectedField.name
     );
-  }
+
+    if (selectedTermIndex !== -1) {
+      this.termRefs.forEach((term, index) => {
+        if (index !== selectedTermIndex) {
+          term.setAttribute("tabindex", "-1");
+        }
+      });
+    }
+  };
 
   /**
    * swapCounterpart
@@ -390,8 +384,9 @@ class ConnectField extends React.Component<
         }
 
         if (document.activeElement) {
-          this.focusIndex(
-            this.state.counterparts.findIndex((f) => f.name === fielda.name)
+          this.focusTo(
+            this.state.counterparts.findIndex((f) => f.name === fielda.name),
+            true
           );
         }
       }
@@ -456,24 +451,6 @@ class ConnectField extends React.Component<
         editedIds.add(opposite.name);
         // we also add the field that we moved to the new place
         editedIds.add(this.state.selectedField.name);
-
-        // Otherwise if we are doing a field field swap
-      } else if (!this.state.selectedIsCounterpart && !isCounterpart) {
-        // we do basically the same as before but in the opposite way
-        this.swapField(
-          executeTriggerChangeFunction,
-          this.state.selectedField,
-          field
-        );
-
-        const diametricOpposite =
-          this.state.counterparts[this.state.selectedIndex];
-        editedIds.delete(diametricOpposite.name);
-        editedIds.delete(field.name);
-
-        const opposite = this.state.counterparts[index];
-        editedIds.add(opposite.name);
-        editedIds.add(this.state.selectedField.name);
       } else {
         // otherwise in the most complicated way
         // we need the counterpart
@@ -533,54 +510,191 @@ class ConnectField extends React.Component<
   }
 
   /**
+   * Handles focus and blur events
+   * @param index index
+   * @param counterpart counterpart
+   */
+  handleFocusBlur =
+    (index: number, counterpart: boolean) =>
+    (e: React.FocusEvent<HTMLElement, Element>) => {
+      if (counterpart) {
+        this.counterpartRefs[index].setAttribute("tabindex", "-1");
+      } else {
+        this.termRefs[index].setAttribute("tabindex", "-1");
+      }
+    };
+
+  /**
    * Handle key up
    * @param field field
+   * @param counterpart counterpart
    */
-  handleKeyDown = (field: FieldType) => (e: React.KeyboardEvent) => {
-    if (
-      e.key === "ArrowUp" ||
-      e.key === "ArrowDown" ||
-      e.key === "Enter" ||
-      e.key === " " ||
-      e.key === "Escape"
-    ) {
-      e.stopPropagation();
-      e.preventDefault();
+  handleKeyDown =
+    (field: FieldType, counterpart: boolean) => (e: React.KeyboardEvent) => {
+      if (
+        e.key === "ArrowUp" ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight" ||
+        e.key === "Enter" ||
+        e.key === " " ||
+        e.key === "Escape"
+      ) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      // Enter, Space and Escape handling
+      if (e.key === "Enter" || e.key === " ") {
+        const fieldIndex = counterpart
+          ? this.state.counterparts.indexOf(field)
+          : this.state.fields.indexOf(field);
+
+        this.pickField(true, field, counterpart, fieldIndex);
+      } else if (e.key === "Escape") {
+        this.cancelPreviousPick();
+      }
+
+      // Arrow keys handling Up and Down to move focus
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        const operation = e.key === "ArrowUp" ? "decrement" : "increment";
+
+        // Handle focus change for counterparts
+        if (counterpart) {
+          this.counterpartFocusChange(operation);
+        } else {
+          // Handle focus change for terms
+          // Only if there is not selected term
+          // or selected term is not in the list of fields
+          if (
+            this.state.selectedField === null ||
+            (this.state.selectedField &&
+              this.state.fields.findIndex(
+                (field) => field.name === this.state.selectedField.name
+              ) === -1)
+          ) {
+            this.termFocusChange(operation);
+          }
+        }
+      }
+
+      // Arrow keys handling Left and Right to move focus
+      // switches focus between terms and counterparts
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        this.switchFocus(counterpart);
+      }
+    };
+
+  /**
+   * Change focus between terms
+   * @param operation operation
+   */
+  termFocusChange = (operation: "increment" | "decrement") => {
+    if (operation === "increment") {
+      this.focusIndexRef++;
+    } else {
+      this.focusIndexRef--;
     }
 
-    const fieldIndex = this.state.counterparts.indexOf(field);
+    if (this.focusIndexRef > this.termRefs.length - 1) {
+      this.focusIndexRef = 0;
+    } else if (this.focusIndexRef < 0) {
+      this.focusIndexRef = this.termRefs.length - 1;
+    }
 
-    switch (e.key) {
-      case "Enter":
-      case " ":
-        this.pickField(true, field, true, fieldIndex);
-        break;
+    this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+    this.termRefs[this.focusIndexRef].focus();
+  };
 
-      case "ArrowUp":
-        this.focusIndex(fieldIndex - 1);
+  /**
+   * Change focus between counterparts
+   * @param operation operation
+   */
+  counterpartFocusChange = (operation: "increment" | "decrement") => {
+    if (operation === "increment") {
+      this.focusIndexRef++;
+    } else {
+      this.focusIndexRef--;
+    }
 
-        break;
-      case "ArrowDown":
-        this.focusIndex(fieldIndex + 1);
-        break;
+    if (this.focusIndexRef > this.counterpartRefs.length - 1) {
+      this.focusIndexRef = 0;
+    } else if (this.focusIndexRef < 0) {
+      this.focusIndexRef = this.counterpartRefs.length - 1;
+    }
 
-      case "Escape":
-        this.cancelPreviousPick();
-        break;
-      default:
-        return;
+    this.counterpartRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+    this.counterpartRefs[this.focusIndexRef].focus();
+  };
+
+  /**
+   * Switch focus between terms and counterparts
+   * @param counterpart counterpart
+   */
+  switchFocus = (counterpart: boolean) => {
+    if (counterpart) {
+      // When switching focus to terms, check if there is a selected term
+      // If there is, set focus to it
+      if (this.state.selectedField) {
+        const selectedTermIndex = this.state.fields.findIndex(
+          (field) => field.name === this.state.selectedField.name
+        );
+
+        if (selectedTermIndex !== -1) {
+          this.focusIndexRef = selectedTermIndex;
+        }
+      }
+
+      this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+      this.termRefs[this.focusIndexRef].focus();
+    } else {
+      this.counterpartRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+      this.counterpartRefs[this.focusIndexRef].focus();
     }
   };
 
   /**
-   * focusIndex
-   * @param n n
+   * Focus to specific element
+   * @param i i
+   * @param counterpart counterpart
    */
-  focusIndex = (n: number) => {
-    const element = this.itemRefs[n];
+  focusTo = (i: number, counterpart: boolean) => {
+    const element = counterpart ? this.counterpartRefs[i] : this.termRefs[i];
 
+    // Set tabindex to 0 and focus the element
     if (element) {
+      element.setAttribute("tabindex", "0");
       element.focus();
+    }
+  };
+
+  /**
+   * Set focus to the ordered list first element
+   * @param counterpart counterpart
+   */
+  orderedListKeyDown = (counterpart: boolean) => (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+
+      this.focusIndexRef = 0;
+
+      if (counterpart) {
+        this.counterpartRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+        this.counterpartRefs[this.focusIndexRef].focus();
+      } else {
+        if (this.state.selectedField) {
+          const selectedFieldIndex = this.state.fields.findIndex(
+            (field) => field.name === this.state.selectedField.name
+          );
+
+          if (selectedFieldIndex !== -1) {
+            this.focusIndexRef = selectedFieldIndex;
+          }
+        }
+
+        this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+        this.termRefs[this.focusIndexRef].focus();
+      }
     }
   };
 
@@ -661,7 +775,11 @@ class ConnectField extends React.Component<
           <span
             className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >
-            <ol className="material-page__connectfield-terms-container">
+            <ol
+              className="material-page__connectfield-terms-container"
+              tabIndex={0}
+              onKeyDown={this.orderedListKeyDown(false)}
+            >
               {this.state.fields.map((field, index) => {
                 // the item answer
                 const itemAnswer =
@@ -675,23 +793,69 @@ class ConnectField extends React.Component<
                       ? "incorrect-answer"
                       : "correct-answer"
                     : "";
+
+                const notSelectable =
+                  this.props.readOnly ||
+                  (this.state.selectedField &&
+                    this.state.selectedField.name !== field.name &&
+                    !this.state.selectedIsCounterpart);
+
+                const modifiers = [];
+
+                if (
+                  this.state.selectedField &&
+                  this.state.selectedField.name === field.name
+                ) {
+                  modifiers.push("selected");
+                }
+
+                if (
+                  this.state.editedIds.has(field.name) &&
+                  !itemAnswer &&
+                  !notSelectable
+                ) {
+                  modifiers.push("edited");
+                }
+
+                if (notSelectable) {
+                  modifiers.push("disabled");
+                }
+
+                /**
+                 * callBackRef
+                 * @param ref ref
+                 */
+                const callBackRef = (ref: HTMLLIElement) => {
+                  this.termRefs[index] = ref;
+                };
+
                 // so now we get the fields here
                 // the fields cannot be dragged and they remain in order
                 // they are simple things
                 return (
                   <li
                     key={field.name}
-                    className={`material-page__connectfield-term ${
+                    role="button"
+                    ref={callBackRef}
+                    onClick={
+                      this.props.readOnly || notSelectable
+                        ? null
+                        : this.pickField.bind(this, true, field, false, index)
+                    }
+                    onKeyDown={
+                      this.props.readOnly || notSelectable
+                        ? null
+                        : this.handleKeyDown(field, false)
+                    }
+                    onBlur={this.handleFocusBlur(index, false)}
+                    aria-label={field.text}
+                    aria-pressed={
                       this.state.selectedField &&
                       this.state.selectedField.name === field.name
-                        ? "material-page__connectfield-term--selected"
-                        : ""
-                    } ${
-                      this.state.editedIds.has(field.name) && !itemAnswer
-                        ? "material-page__connectfield-term--edited"
-                        : ""
                     }
-                ${itemStateAfterCheck}`}
+                    className={`material-page__connectfield-term ${modifiers
+                      .map((m) => `material-page__connectfield-term--${m}`)
+                      .join(" ")} ${itemStateAfterCheck}`}
                   >
                     <span className="material-page__connectfield-term-data-container">
                       <span className="material-page__connectfield-term-number">
@@ -705,7 +869,11 @@ class ConnectField extends React.Component<
                 );
               })}
             </ol>
-            <ol className="material-page__connectfield-counterparts-container">
+            <ol
+              className="material-page__connectfield-counterparts-container"
+              tabIndex={0}
+              onKeyDown={this.orderedListKeyDown(true)}
+            >
               {this.state.counterparts.map((field, index) => {
                 if (!this.props.content) {
                   return null;
@@ -724,16 +892,36 @@ class ConnectField extends React.Component<
                     : "";
 
                 // the basic class name
-                const className = `material-page__connectfield-counterpart ${
+                let className = `material-page__connectfield-counterpart`;
+
+                const modifiers = [];
+
+                // Add selected modifier if the field is selected
+                if (
                   this.state.selectedField &&
                   this.state.selectedField.name === field.name
-                    ? "material-page__connectfield-counterpart--selected"
-                    : ""
-                } ${
-                  this.state.editedIds.has(field.name) && !itemAnswer
-                    ? "material-page__connectfield-counterpart--edited"
-                    : ""
-                } ${itemStateAfterCheck}`;
+                ) {
+                  modifiers.push("selected");
+                }
+
+                // Add edited modifier if the field has been edited
+                if (
+                  this.state.editedIds.has(field.name) &&
+                  !itemAnswer &&
+                  !this.props.readOnly
+                ) {
+                  modifiers.push("edited");
+                }
+
+                // Map modifiers to class
+                if (modifiers.length > 0) {
+                  className += ` ${modifiers
+                    .map((m) => `material-page__connectfield-counterpart--${m}`)
+                    .join(" ")}`;
+                }
+
+                // Add state after check to class
+                className += ` ${itemStateAfterCheck}`;
 
                 // if readonly we just add the classname in there
                 if (this.props.readOnly) {
@@ -772,20 +960,12 @@ class ConnectField extends React.Component<
                   );
                 }
 
-                const ariaLabel =
-                  this.state.selectedField &&
-                  this.state.selectedField.name === field.name
-                    ? this.props.t("wcag.connectFieldTermSelected", {
-                        ns: "materials",
-                      })
-                    : "";
-
                 /**
                  * callBackRef
                  * @param ref ref
                  */
                 const callBackRef = (ref: HTMLSpanElement) => {
-                  this.itemRefs[index] = ref;
+                  this.counterpartRefs[index] = ref;
                 };
 
                 // ok so the counterpart is draggable
@@ -799,6 +979,7 @@ class ConnectField extends React.Component<
                 // the parent container selector is the field on its own
                 return (
                   <Draggable
+                    key={field.name}
                     as="li"
                     interactionData={{ field, index, isCounterpart: true }}
                     interactionGroup={
@@ -825,14 +1006,14 @@ class ConnectField extends React.Component<
                       )
                     }
                     className={className}
-                    key={field.name}
                   >
                     <span
+                      role="button"
                       ref={callBackRef}
                       className="material-page__connectfield-counterpart-data-container"
-                      tabIndex={0}
-                      onKeyDown={this.handleKeyDown(field)}
-                      aria-label={ariaLabel}
+                      onKeyDown={this.handleKeyDown(field, true)}
+                      onBlur={this.handleFocusBlur(index, true)}
+                      aria-label={field.text}
                       aria-pressed={
                         this.state.selectedField &&
                         this.state.selectedField.name === field.name
