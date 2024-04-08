@@ -1519,6 +1519,11 @@
     &.material-page__connectfield-term--selected {
       background: $taskfield-border-color;
       border-color: $taskfield-border-color;
+
+      &:focus {
+        background: $taskfield-border-color;
+        border-color: $taskfield-border-color;
+      }
     }
 
     .material-page__connectfield-term-number {
@@ -1537,6 +1542,11 @@
     &.material-page__connectfield-term--selected {
       background: $taskfield-border-color;
       border-color: $taskfield-border-color;
+
+      &:focus {
+        background: $taskfield-border-color;
+        border-color: $taskfield-border-color;
+      }
     }
 
     .material-page__connectfield-term-number {
@@ -1655,6 +1665,11 @@
     &.material-page__connectfield-counterpart--selected {
       background: $taskfield-border-color;
       border-color: $taskfield-border-color;
+
+      &:focus {
+        background: $taskfield-border-color;
+        border-color: $taskfield-border-color;
+      }
     }
 
     .material-page__connectfield-counterpart-number {
@@ -1741,7 +1756,9 @@
 .material-page__connectfield-term--selected,
 .material-page__connectfield-counterpart--selected {
   .material-page__connectfield-term-data-container:hover,
-  .material-page__connectfield-counterpart-data-container:hover {
+  .material-page__connectfield-counterpart-data-container:hover,
+  .material-page__connectfield-term-data-container:focus,
+  .material-page__connectfield-counterpart-data-container:focus {
     background: $taskfield-border-color;
   }
 }
