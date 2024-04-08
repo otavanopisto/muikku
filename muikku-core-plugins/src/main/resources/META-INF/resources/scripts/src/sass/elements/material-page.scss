@@ -1540,11 +1540,11 @@
     border-color: $color-incorrect-answer;
 
     &.material-page__connectfield-term--selected {
-      background: $taskfield-border-color;
+      background: $taskfield-selected-background-color;
       border-color: $taskfield-border-color;
 
       &:focus {
-        background: $taskfield-border-color;
+        background: $taskfield-selected-background-color;
         border-color: $taskfield-border-color;
       }
     }
@@ -1604,7 +1604,7 @@
 // as edited and selected modifiers can be present at the same time and we need to show visually if
 // edited item is selected
 .material-page__connectfield-term--selected {
-  background: $taskfield-border-color;
+  background: $taskfield-selected-background-color;
   color: $color-default;
 
   .material-page__connectfield-term-icon {
@@ -1640,11 +1640,11 @@
     border-color: $color-correct-answer;
 
     &.material-page__connectfield-counterpart--selected {
-      background: $taskfield-border-color;
+      background: $taskfield-selected-background-color;
       border-color: $taskfield-border-color;
 
       &:focus {
-        background: $taskfield-border-color;
+        background: $taskfield-selected-background-color;
         border-color: $taskfield-border-color;
       }
     }
@@ -1663,11 +1663,11 @@
     border-color: $color-incorrect-answer;
 
     &.material-page__connectfield-counterpart--selected {
-      background: $taskfield-border-color;
+      background: $taskfield-selected-background-color;
       border-color: $taskfield-border-color;
 
       &:focus {
-        background: $taskfield-border-color;
+        background: $taskfield-selected-background-color;
         border-color: $taskfield-border-color;
       }
     }
@@ -1735,7 +1735,7 @@
 // as edited and selected modifiers can be present at the same time and we need to show visually if
 // edited item is selected
 .material-page__connectfield-counterpart--selected {
-  background: $taskfield-border-color;
+  background: $taskfield-selected-background-color;
   color: $color-default;
 
   .material-page__connectfield-counterpart-icon {
@@ -1759,7 +1759,7 @@
   .material-page__connectfield-counterpart-data-container:hover,
   .material-page__connectfield-term-data-container:focus,
   .material-page__connectfield-counterpart-data-container:focus {
-    background: $taskfield-border-color;
+    background: $taskfield-selected-background-color;
   }
 }
 
