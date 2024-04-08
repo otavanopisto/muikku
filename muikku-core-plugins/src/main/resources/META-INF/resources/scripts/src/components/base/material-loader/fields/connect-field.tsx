@@ -510,6 +510,40 @@ class ConnectField extends React.Component<
   }
 
   /**
+   * Set focus to the ordered list first element
+   * @param counterpart counterpart
+   */
+  handleOrderedListKeyDown =
+    (counterpart: boolean) => (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+
+        this.focusIndexRef = 0;
+
+        if (counterpart) {
+          this.counterpartRefs[this.focusIndexRef].setAttribute(
+            "tabindex",
+            "0"
+          );
+          this.counterpartRefs[this.focusIndexRef].focus();
+        } else {
+          if (this.state.selectedField) {
+            const selectedFieldIndex = this.state.fields.findIndex(
+              (field) => field.name === this.state.selectedField.name
+            );
+
+            if (selectedFieldIndex !== -1) {
+              this.focusIndexRef = selectedFieldIndex;
+            }
+          }
+
+          this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+          this.termRefs[this.focusIndexRef].focus();
+        }
+      }
+    };
+
+  /**
    * Handles focus and blur events
    * @param index index
    * @param counterpart counterpart
@@ -544,44 +578,73 @@ class ConnectField extends React.Component<
         e.preventDefault();
       }
 
-      // Enter, Space and Escape handling
-      if (e.key === "Enter" || e.key === " ") {
-        const fieldIndex = counterpart
-          ? this.state.counterparts.indexOf(field)
-          : this.state.fields.indexOf(field);
+      switch (e.key) {
+        // Enter, Space
+        case "Enter":
+        case " ":
+          {
+            const fieldIndex = counterpart
+              ? this.state.counterparts.indexOf(field)
+              : this.state.fields.indexOf(field);
 
-        this.pickField(true, field, counterpart, fieldIndex);
-      } else if (e.key === "Escape") {
-        this.cancelPreviousPick();
-      }
-
-      // Arrow keys handling Up and Down to move focus
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        const operation = e.key === "ArrowUp" ? "decrement" : "increment";
-
-        // Handle focus change for counterparts
-        if (counterpart) {
-          this.counterpartFocusChange(operation);
-        } else {
-          // Handle focus change for terms
-          // Only if there is not selected term
-          // or selected term is not in the list of fields
-          if (
-            this.state.selectedField === null ||
-            (this.state.selectedField &&
-              this.state.fields.findIndex(
-                (field) => field.name === this.state.selectedField.name
-              ) === -1)
-          ) {
-            this.termFocusChange(operation);
+            this.pickField(true, field, counterpart, fieldIndex);
           }
-        }
-      }
+          return;
 
-      // Arrow keys handling Left and Right to move focus
-      // switches focus between terms and counterparts
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-        this.switchFocus(counterpart);
+        // Escape
+        case "Escape":
+          this.cancelPreviousPick();
+          return;
+
+        // Arrow keys handling Up and Down to move focus
+        case "ArrowUp":
+        case "ArrowDown":
+          {
+            const operation = e.key === "ArrowUp" ? "decrement" : "increment";
+
+            // Handle focus change for counterparts
+            if (counterpart) {
+              this.counterpartFocusChange(operation);
+            } else {
+              // Handle focus change for terms
+              // Only if there is not selected term
+              // or selected term is not in the list of fields
+              if (
+                this.state.selectedField === null ||
+                (this.state.selectedField &&
+                  this.state.fields.findIndex(
+                    (field) => field.name === this.state.selectedField.name
+                  ) === -1)
+              ) {
+                this.termFocusChange(operation);
+              }
+            }
+          }
+          return;
+
+        // Arrow keys handling Left and Right to move focus
+        // switches focus between terms and counterparts
+        case "ArrowLeft":
+        case "ArrowRight":
+          {
+            // When switching focus to terms, check if there is a selected term
+            // If there is, set focus to it
+            if (this.state.selectedField) {
+              const selectedTermIndex = this.state.fields.findIndex(
+                (field) => field.name === this.state.selectedField.name
+              );
+
+              if (selectedTermIndex !== -1) {
+                this.focusIndexRef = selectedTermIndex;
+              }
+            }
+
+            this.switchFocus(counterpart);
+          }
+          return;
+
+        default:
+          return;
       }
     };
 
@@ -633,18 +696,6 @@ class ConnectField extends React.Component<
    */
   switchFocus = (counterpart: boolean) => {
     if (counterpart) {
-      // When switching focus to terms, check if there is a selected term
-      // If there is, set focus to it
-      if (this.state.selectedField) {
-        const selectedTermIndex = this.state.fields.findIndex(
-          (field) => field.name === this.state.selectedField.name
-        );
-
-        if (selectedTermIndex !== -1) {
-          this.focusIndexRef = selectedTermIndex;
-        }
-      }
-
       this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
       this.termRefs[this.focusIndexRef].focus();
     } else {
@@ -665,36 +716,6 @@ class ConnectField extends React.Component<
     if (element) {
       element.setAttribute("tabindex", "0");
       element.focus();
-    }
-  };
-
-  /**
-   * Set focus to the ordered list first element
-   * @param counterpart counterpart
-   */
-  orderedListKeyDown = (counterpart: boolean) => (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-
-      this.focusIndexRef = 0;
-
-      if (counterpart) {
-        this.counterpartRefs[this.focusIndexRef].setAttribute("tabindex", "0");
-        this.counterpartRefs[this.focusIndexRef].focus();
-      } else {
-        if (this.state.selectedField) {
-          const selectedFieldIndex = this.state.fields.findIndex(
-            (field) => field.name === this.state.selectedField.name
-          );
-
-          if (selectedFieldIndex !== -1) {
-            this.focusIndexRef = selectedFieldIndex;
-          }
-        }
-
-        this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
-        this.termRefs[this.focusIndexRef].focus();
-      }
     }
   };
 
@@ -778,7 +799,7 @@ class ConnectField extends React.Component<
             <ol
               className="material-page__connectfield-terms-container"
               tabIndex={0}
-              onKeyDown={this.orderedListKeyDown(false)}
+              onKeyDown={this.handleOrderedListKeyDown(false)}
             >
               {this.state.fields.map((field, index) => {
                 // the item answer
@@ -872,7 +893,7 @@ class ConnectField extends React.Component<
             <ol
               className="material-page__connectfield-counterparts-container"
               tabIndex={0}
-              onKeyDown={this.orderedListKeyDown(true)}
+              onKeyDown={this.handleOrderedListKeyDown(true)}
             >
               {this.state.counterparts.map((field, index) => {
                 if (!this.props.content) {

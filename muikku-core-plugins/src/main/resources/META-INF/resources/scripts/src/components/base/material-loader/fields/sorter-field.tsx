@@ -78,6 +78,7 @@ interface SorterFieldState {
  */
 class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   itemRefs: HTMLSpanElement[];
+  focusIndexRef: number;
 
   /**
    * constructor
@@ -132,6 +133,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
 
     this.itemRefs = [];
+    this.focusIndexRef = 0;
   }
 
   /**
@@ -207,7 +209,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
       () => {
         this.checkAnswers();
         if (document.activeElement) {
-          this.focusIndex(items.findIndex((i) => i.id === itemB.id));
+          this.focusTo(items.findIndex((i) => i.id === itemB.id));
         }
       }
     );
@@ -296,7 +298,30 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   }
 
   /**
-   * handleKeyDown
+   * Set focus to the ordered list first element
+   * @param e event
+   */
+  handleOrderedListKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+
+      this.focusIndexRef = 0;
+
+      this.itemRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+      this.itemRefs[this.focusIndexRef].focus();
+    }
+  };
+
+  /**
+   * Handles focus and blur events
+   * @param index index
+   */
+  handleFocusBlur = (index: number) => (e: React.FocusEvent) => {
+    this.itemRefs[index].setAttribute("tabindex", "-1");
+  };
+
+  /**
+   * Handles key down events
    * @param item item
    */
   handleKeyDown = (item: SorterFieldItemType) => (e: React.KeyboardEvent) => {
@@ -313,50 +338,71 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
       e.preventDefault();
     }
 
-    const itemIndex = this.state.items.indexOf(item);
-
     switch (e.key) {
       case "Enter":
       case " ":
         this.selectItem(item);
-        break;
+        return;
 
       case "ArrowUp":
         this.props.content.orientation === "vertical" &&
-          this.focusIndex(itemIndex - 1);
+          this.termFocusChange("decrement");
+        return;
 
-        break;
       case "ArrowDown":
         this.props.content.orientation === "vertical" &&
-          this.focusIndex(itemIndex + 1);
-        break;
+          this.termFocusChange("increment");
+        return;
 
       case "ArrowLeft":
         this.props.content.orientation === "horizontal" &&
-          this.focusIndex(itemIndex - 1);
-        break;
+          this.termFocusChange("decrement");
+        return;
 
       case "ArrowRight":
         this.props.content.orientation === "horizontal" &&
-          this.focusIndex(itemIndex + 1);
-        break;
+          this.termFocusChange("increment");
+        return;
 
       case "Escape":
         this.cancelSelectedItem();
-        break;
+        return;
+
       default:
         return;
     }
   };
 
   /**
-   * focusIndex
+   * Change the focus of the term
+   * @param operation operation
+   */
+  termFocusChange = (operation: "increment" | "decrement") => {
+    if (operation === "increment") {
+      this.focusIndexRef++;
+    } else {
+      this.focusIndexRef--;
+    }
+
+    if (this.focusIndexRef > this.itemRefs.length - 1) {
+      this.focusIndexRef = 0;
+    } else if (this.focusIndexRef < 0) {
+      this.focusIndexRef = this.itemRefs.length - 1;
+    }
+
+    this.itemRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+    this.itemRefs[this.focusIndexRef].focus();
+  };
+
+  /**
+   * Focus to the specific term
    * @param n n
    */
-  focusIndex = (n: number) => {
+  focusTo = (n: number) => {
     const element = this.itemRefs[n];
 
     if (element) {
+      element.setAttribute("tabindex", "0");
       element.focus();
     }
   };
@@ -511,7 +557,9 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               }
             />
           </span>
-          <span
+          <ol
+            tabIndex={0}
+            onKeyDown={this.handleOrderedListKeyDown}
             className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >
             {this.state.items.map((item, index) => {
@@ -539,7 +587,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               if (this.props.readOnly) {
                 // readonly component
                 return (
-                  <span
+                  <li
                     className={`material-page__sorterfield-item ${itemStateAfterCheck}`}
                     key={item.id}
                   >
@@ -547,7 +595,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                     <span className="material-page__sorterfield-item-label">
                       <StrMathJAX>{text}</StrMathJAX>
                     </span>
-                  </span>
+                  </li>
                 );
               }
 
@@ -571,7 +619,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               return (
                 <Draggable
                   denyWidth={this.props.content.orientation === "horizontal"}
-                  as="span"
+                  as="li"
                   parentContainerSelector=".material-page__sorterfield"
                   className={`material-page__sorterfield-item ${
                     this.state.selectedItem &&
@@ -591,6 +639,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                     tabIndex={0}
                     ref={callBackRef}
                     onKeyDown={this.handleKeyDown(item)}
+                    onBlur={this.handleFocusBlur(index)}
                     aria-label={ariaLabel}
                     aria-pressed={
                       this.state.selectedItem &&
@@ -605,7 +654,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                 </Draggable>
               );
             })}
-          </span>
+          </ol>
           {correctAnswersummaryComponent}
         </span>
       </>

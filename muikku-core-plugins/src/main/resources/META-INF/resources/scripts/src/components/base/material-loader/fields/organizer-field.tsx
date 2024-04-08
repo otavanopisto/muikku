@@ -11,14 +11,6 @@ import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
- * FieldType
- */
-/* interface FieldType {
-  name: string;
-  text: string;
-} */
-
-/**
  * TermType
  */
 interface TermType {
