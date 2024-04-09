@@ -45,6 +45,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       this.props.status.roles.includes("STUDENT_PARENT") &&
       this.props.status.roles.length === 1;
     switch (hash) {
+      case "security":
+        return !isOnlyStudentParent;
       case "contact":
         return !isOnlyStudentParent;
       case "vacation":
