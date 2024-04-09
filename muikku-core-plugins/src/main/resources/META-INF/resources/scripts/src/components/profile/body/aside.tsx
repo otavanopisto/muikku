@@ -52,7 +52,9 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       case "vacation":
         return !isOnlyStudentParent;
       case "chat":
-        return this.props.status.permissions.CHAT_AVAILABLE;
+        return (
+          this.props.status.permissions.CHAT_AVAILABLE && !isOnlyStudentParent
+        );
       case "work":
         return (
           !this.props.status.isStudent &&
