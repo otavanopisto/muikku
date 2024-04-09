@@ -43,23 +43,25 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
   return (
     <div className="dependant">
       <div className="dependant__details-container">
-        <Avatar
-          hasImage={dependant.hasImage}
-          firstName={dependant.firstName}
-          id={dependant.userEntityId}
-        />
         <div className="dependant__details">
           <div className="dependant__header">
-            <h2 className="dependant__header-title">
-              {getName(dependant, true)}
-            </h2>
-            <span className="dependant__header-aside">
-              {"(" + dependant.studyProgrammeName + ")"}
-            </span>
+            <Avatar
+              hasImage={dependant.hasImage}
+              firstName={dependant.firstName}
+              id={dependant.userEntityId}
+            />
+            <div className="dependant__header-text-container">
+              <h2 className="dependant__header-title">
+                {getName(dependant, true)}
+              </h2>
+              <span className="dependant__header-aside">
+                {dependant.studyProgrammeName}
+              </span>
+            </div>
           </div>
           <div className="dependant__contact-info-container">
             {dependant.email && (
-              <span className="dependant__info-item">
+              <span className="dependant__info-item dependant__info-item--email">
                 <span className="dependant__info-item-icon icon-envelope" />
                 {dependant.email}
               </span>
