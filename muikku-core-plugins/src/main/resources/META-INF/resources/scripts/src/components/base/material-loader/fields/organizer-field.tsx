@@ -1157,6 +1157,14 @@ class OrganizerField extends React.Component<
                                     termIndex
                                   )}
                                   className="material-page__organizerfield-term-data-container"
+                                  aria-label={this.props.t(
+                                    "wcag.organiserTermRemove",
+                                    {
+                                      ns: "materials",
+                                      termName: this.state.terms[termId],
+                                      categoryName: category.name,
+                                    }
+                                  )}
                                 >
                                   <span className="material-page__organizerfield-term-label">
                                     <StrMathJAX>
@@ -1176,7 +1184,8 @@ class OrganizerField extends React.Component<
                                         "wcag.organiserTermRemove",
                                         {
                                           ns: "materials",
-                                          name: category.name,
+                                          termName: this.state.terms[termId],
+                                          categoryName: category.name,
                                         }
                                       )}
                                     />
