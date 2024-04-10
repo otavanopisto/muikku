@@ -493,8 +493,8 @@
     },
     "wcag": {
       "collapseRecordInfo": "Pienennä työtilan suoritustiedot",
-      "evaluableDonePercent": "Arvioitavia tehtäviä tehty {{percent}}%",
-      "excersiseDonePercent": "Harjoitustehtäviä tehty {{percent}}%",
+      "assignmentsActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
+      "exercisesActivity": "Harjoitustehtäviä tehty {{percent}}%",
       "expandRecordInfo": "Laajenna työtilan suoritustiedot"
     }
   },

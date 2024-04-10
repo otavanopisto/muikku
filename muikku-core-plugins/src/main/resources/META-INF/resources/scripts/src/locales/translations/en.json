@@ -493,8 +493,8 @@
     },
     "wcag": {
       "collapseRecordInfo": "Collapse workspace record info",
-      "evaluableDonePercent": "Assignments done {{percent}}%",
-      "excersiseDonePercent": "Excersises done {{percent}}%",
+      "assignmentsActivity": "Assignments done {{percent}}%",
+      "exercisesActivity": "Excersises done {{percent}}%",
       "expandRecordInfo": "Expand workspace record info"
     }
   },
