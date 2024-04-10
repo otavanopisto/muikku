@@ -515,7 +515,7 @@ class ConnectField extends React.Component<
    */
   handleOrderedListKeyDown =
     (counterpart: boolean) => (e: React.KeyboardEvent) => {
-      if (e.key === "ArrowDown") {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
         e.preventDefault();
 
         this.focusIndexRef = 0;
