@@ -45,9 +45,7 @@
   flex-shrink: 1;
   display: flex;
   justify-content: flex-start;
-  @include breakpoint($breakpoint-mobile-xl) {
-    padding: 0 20px;
-  }
+
 }
 
 .dependant__header {
@@ -104,7 +102,9 @@
     word-break: normal;
   }
 }
-
+.dependant__workspaces-container h3 {
+  padding: 20px 0;
+}
 .dependant__info-item--email {
   word-break: break-all;
   @include breakpoint($breakpoint-desktop) {
