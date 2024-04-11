@@ -81,7 +81,7 @@ class ConnectField extends React.Component<
   ConnectFieldProps,
   ConnectFieldState
 > {
-  termRefs: HTMLLIElement[];
+  termRefs: HTMLSpanElement[];
   counterpartRefs: HTMLSpanElement[];
   focusIndexRef: number;
 
@@ -579,6 +579,65 @@ class ConnectField extends React.Component<
         e.preventDefault();
       }
 
+      /**
+       * Change focus between counterparts
+       * @param operation operation
+       */
+      const counterpartFocusChange = (operation: "increment" | "decrement") => {
+        if (operation === "increment") {
+          this.focusIndexRef++;
+        } else {
+          this.focusIndexRef--;
+        }
+
+        if (this.focusIndexRef > this.counterpartRefs.length - 1) {
+          this.focusIndexRef = 0;
+        } else if (this.focusIndexRef < 0) {
+          this.focusIndexRef = this.counterpartRefs.length - 1;
+        }
+
+        this.counterpartRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+        this.counterpartRefs[this.focusIndexRef].focus();
+      };
+
+      /**
+       * Change focus between terms
+       * @param operation operation
+       */
+      const termFocusChange = (operation: "increment" | "decrement") => {
+        if (operation === "increment") {
+          this.focusIndexRef++;
+        } else {
+          this.focusIndexRef--;
+        }
+
+        if (this.focusIndexRef > this.termRefs.length - 1) {
+          this.focusIndexRef = 0;
+        } else if (this.focusIndexRef < 0) {
+          this.focusIndexRef = this.termRefs.length - 1;
+        }
+
+        this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+        this.termRefs[this.focusIndexRef].focus();
+      };
+
+      /**
+       * Switch focus between terms and counterparts
+       * @param counterpart counterpart
+       */
+      const switchFocus = (counterpart: boolean) => {
+        if (counterpart) {
+          this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+          this.termRefs[this.focusIndexRef].focus();
+        } else {
+          this.counterpartRefs[this.focusIndexRef].setAttribute(
+            "tabindex",
+            "0"
+          );
+          this.counterpartRefs[this.focusIndexRef].focus();
+        }
+      };
+
       switch (e.key) {
         // Enter, Space
         case "Enter":
@@ -605,7 +664,7 @@ class ConnectField extends React.Component<
 
             // Handle focus change for counterparts
             if (counterpart) {
-              this.counterpartFocusChange(operation);
+              counterpartFocusChange(operation);
             } else {
               // Handle focus change for terms
               // Only if there is not selected term
@@ -617,7 +676,7 @@ class ConnectField extends React.Component<
                     (field) => field.name === this.state.selectedField.name
                   ) === -1)
               ) {
-                this.termFocusChange(operation);
+                termFocusChange(operation);
               }
             }
           }
@@ -640,7 +699,7 @@ class ConnectField extends React.Component<
               }
             }
 
-            this.switchFocus(counterpart);
+            switchFocus(counterpart);
           }
           return;
 
@@ -648,62 +707,6 @@ class ConnectField extends React.Component<
           return;
       }
     };
-
-  /**
-   * Change focus between terms
-   * @param operation operation
-   */
-  termFocusChange = (operation: "increment" | "decrement") => {
-    if (operation === "increment") {
-      this.focusIndexRef++;
-    } else {
-      this.focusIndexRef--;
-    }
-
-    if (this.focusIndexRef > this.termRefs.length - 1) {
-      this.focusIndexRef = 0;
-    } else if (this.focusIndexRef < 0) {
-      this.focusIndexRef = this.termRefs.length - 1;
-    }
-
-    this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
-    this.termRefs[this.focusIndexRef].focus();
-  };
-
-  /**
-   * Change focus between counterparts
-   * @param operation operation
-   */
-  counterpartFocusChange = (operation: "increment" | "decrement") => {
-    if (operation === "increment") {
-      this.focusIndexRef++;
-    } else {
-      this.focusIndexRef--;
-    }
-
-    if (this.focusIndexRef > this.counterpartRefs.length - 1) {
-      this.focusIndexRef = 0;
-    } else if (this.focusIndexRef < 0) {
-      this.focusIndexRef = this.counterpartRefs.length - 1;
-    }
-
-    this.counterpartRefs[this.focusIndexRef].setAttribute("tabindex", "0");
-    this.counterpartRefs[this.focusIndexRef].focus();
-  };
-
-  /**
-   * Switch focus between terms and counterparts
-   * @param counterpart counterpart
-   */
-  switchFocus = (counterpart: boolean) => {
-    if (counterpart) {
-      this.termRefs[this.focusIndexRef].setAttribute("tabindex", "0");
-      this.termRefs[this.focusIndexRef].focus();
-    } else {
-      this.counterpartRefs[this.focusIndexRef].setAttribute("tabindex", "0");
-      this.counterpartRefs[this.focusIndexRef].focus();
-    }
-  };
 
   /**
    * Focus to specific element
@@ -847,7 +850,7 @@ class ConnectField extends React.Component<
                  * callBackRef
                  * @param ref ref
                  */
-                const callBackRef = (ref: HTMLLIElement) => {
+                const callBackRef = (ref: HTMLSpanElement) => {
                   this.termRefs[index] = ref;
                 };
 
@@ -857,29 +860,31 @@ class ConnectField extends React.Component<
                 return (
                   <li
                     key={field.name}
-                    role="button"
-                    ref={callBackRef}
                     onClick={
                       this.props.readOnly || notSelectable
                         ? null
                         : this.pickField.bind(this, true, field, false, index)
                     }
-                    onKeyDown={
-                      this.props.readOnly || notSelectable
-                        ? null
-                        : this.handleKeyDown(field, false)
-                    }
-                    onBlur={this.handleFocusBlur(index, false)}
-                    aria-label={field.text}
-                    aria-pressed={
-                      this.state.selectedField &&
-                      this.state.selectedField.name === field.name
-                    }
                     className={`connectfield__term ${modifiers
                       .map((m) => `connectfield__term--${m}`)
                       .join(" ")} ${itemStateAfterCheck}`}
                   >
-                    <span className="connectfield__term-data-container">
+                    <span
+                      role="button"
+                      ref={callBackRef}
+                      onKeyDown={
+                        this.props.readOnly || notSelectable
+                          ? null
+                          : this.handleKeyDown(field, false)
+                      }
+                      onBlur={this.handleFocusBlur(index, false)}
+                      aria-label={field.text}
+                      aria-pressed={
+                        this.state.selectedField &&
+                        this.state.selectedField.name === field.name
+                      }
+                      className="connectfield__term-data-container"
+                    >
                       <span className="connectfield__term-number">
                         {index + 1}
                       </span>
