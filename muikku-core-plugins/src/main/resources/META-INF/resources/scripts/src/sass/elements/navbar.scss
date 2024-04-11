@@ -94,7 +94,8 @@
   line-height: $navbar-mobile-height;
   list-style-type: none;
   margin: 0;
-  overflow: hidden;
+
+  // overflow: hidden;
   padding: 0;
   position: relative;
   white-space: nowrap;
@@ -175,27 +176,27 @@
 .navbar--main-function {
   background-color: $color-environment-navbar-background;
 
-  .navbar__item--menu-button .link {
-    color: $color-environment-navbar-item-menu-button;
-  }
+  // .navbar__item--menu-button .link {
+  //   color: $color-environment-navbar-item-menu-button;
+  // }
 }
 
 // NAVBAR IN WORKSPACES
 .navbar--workspace {
   background-color: $color-workspace-navbar-background;
 
-  .navbar__item--menu-button .link {
-    color: $color-environment-navbar-item-menu-button;
-  }
+  // .navbar__item--menu-button .link {
+  //   color: $color-environment-navbar-item-menu-button;
+  // }
 }
 
 // NAVBAR EDITMODE IN WORKSPACES
 .navbar--workspace-edit-mode {
   background-color: $color-workspace-edit-mode-navbar-background;
 
-  .navbar__item--menu-button .link {
-    color: $color-environment-navbar-item-menu-button;
-  }
+  // .navbar__item--menu-button .link {
+  //   color: $color-environment-navbar-item-menu-button;
+  // }
 }
 
 // NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE

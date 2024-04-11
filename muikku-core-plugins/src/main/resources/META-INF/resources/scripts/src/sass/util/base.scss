@@ -20,7 +20,14 @@ body {
   background-color: $color-default-body;
   overflow-y: auto;
 
-  &.using-mouse :focus {
+  // Custom focus borders for every interactive element when using keyboard
+  :focus-visible {
+    outline: $color-outline solid 2px;
+    outline-offset: -2px;
+  }
+
+  // Removing focus borders from every interactive elements which does not have focus defined when using mouse
+  &.using-mouse :focus-visible:not(:focus) {
     outline: none;
   }
 }
