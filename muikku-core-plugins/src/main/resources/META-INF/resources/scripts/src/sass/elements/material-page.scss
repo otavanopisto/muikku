@@ -363,11 +363,7 @@
   .material-page__sorterfield-item,
   .material-page__organizerfield-category,
   .material-page__organizerfield-category-title,
-  .material-page__organizerfield-term,
-  .material-page__connectfield-term,
-  .material-page__connectfield-term-number,
-  .material-page__connectfield-counterpart,
-  .material-page__connectfield-counterpart-number {
+  .material-page__organizerfield-term {
     border-color: $color-disabled-taskfield-border;
     cursor: text;
   }
@@ -382,17 +378,11 @@
   }
 
   .material-page__organizerfield-term-icon,
-  .material-page__sorterfield-item-icon,
-  .material-page__connectfield-counterpart-icon {
+  .material-page__sorterfield-item-icon {
     color: $color-disabled-taskfield-icon;
     cursor: default;
     transform: none;
     transition: none;
-  }
-
-  .material-page__connectfield-term-data-container:hover,
-  .material-page__connectfield-counterpart-data-container:hover {
-    border: 2px solid $color-disabled-taskfield-border;
   }
 }
 
@@ -1191,56 +1181,83 @@
 }
 
 // Sorter field
+// We use nesting here as ol/ul/li html elements are defined alreayd in rich-text.scss so we get more specific selectors here
+// Also added tag names to selector helps to identify what the elements are
 .material-page__sorterfield-wrapper {
   display: inline-block;
   position: relative;
   vertical-align: middle;
-}
 
-.material-page__sorterfield {
-  display: flex;
+  ol.material-page__sorterfield {
+    display: flex;
 
-  &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
+    &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
 
-    .material-page__sorterfield-item {
-      border-color: $color-correct-answer;
+      .material-page__sorterfield-item {
+        border-color: $color-correct-answer;
+      }
     }
   }
-}
 
-.material-page__sorterfield--vertical {
-  align-items: flex-start;
-  border-left: 1px solid lighten($taskfield-border-color, 10%);
-  flex-flow: column nowrap;
-  padding: 0 0 0 5px;
-}
-
-.material-page__sorterfield--horizontal {
-  align-items: center;
-  border-bottom: 1px solid lighten($taskfield-border-color, 10%);
-  display: inline-flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  padding: 0 0 5px;
-}
-
-.material-page__sorterfield-item {
-  @include taskfield-text;
-  @include taskfield-defaults;
-
-  align-items: center;
-  cursor: grab;
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 4px;
-  user-select: text;
-
-  &.correct-answer {
-    border-color: $color-correct-answer;
+  ol.material-page__sorterfield--vertical {
+    align-items: flex-start;
+    border-left: 1px solid lighten($taskfield-border-color, 10%);
+    flex-flow: column nowrap;
+    margin: 0;
+    padding: 0 0 0 5px;
   }
 
-  &.incorrect-answer {
-    border-color: $color-incorrect-answer;
+  ol.material-page__sorterfield--horizontal {
+    align-items: center;
+    border-bottom: 1px solid lighten($taskfield-border-color, 10%);
+    display: inline-flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0 0 5px;
+  }
+
+  .material-page__sorterfield-data-container {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    height: 2rem;
+    position: relative;
+    width: 100%;
+  }
+
+  li.material-page__sorterfield-item {
+    @include taskfield-text;
+    @include taskfield-defaults;
+
+    align-items: center;
+    cursor: grab;
+    display: flex;
+    flex-flow: row nowrap;
+    height: 2rem;
+    list-style-type: none;
+    margin: 4px;
+    user-select: text;
+
+    &.correct-answer {
+      border-color: $color-correct-answer;
+    }
+
+    &.incorrect-answer {
+      border-color: $color-incorrect-answer;
+    }
+
+    &:focus {
+      height: auto;
+      left: -2px;
+      min-height: 2rem;
+      padding: 5px 0;
+      position: absolute;
+      top: -2px;
+      width: calc(100% + 4px);
+      z-index: 99;
+    }
   }
 }
 
@@ -1457,369 +1474,6 @@
   display: block;
   min-height: 100px;
   padding: 5px;
-}
-
-// Connectfield
-.material-page__connectfield-wrapper {
-  display: block;
-  position: relative;
-}
-
-.material-page__connectfield {
-  align-items: flex-start;
-  display: flex;
-  flex-flow: row wrap;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
-  }
-
-  // We need to override these styles here as .rich-text element has rules for <ol> and <li> elements
-  // These rules are quite specific so they won't be overridden by accident
-  ol.material-page__connectfield-terms-container,
-  ol.material-page__connectfield-counterparts-container {
-    margin: 0;
-    padding: 0;
-  }
-
-  li.material-page__connectfield-term,
-  li.material-page__connectfield-counterpart {
-    display: flex;
-    list-style-type: none;
-  }
-}
-
-.material-page__connectfield-terms-container {
-  flex-basis: 50%;
-  flex-grow: 0;
-  flex-shrink: 1;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
-  }
-}
-
-.material-page__connectfield-term {
-  @include taskfield-text;
-  @include taskfield-defaults;
-
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-flow: row nowrap;
-  height: 2.5rem;
-  margin: 8px 4px;
-  position: relative;
-  user-select: text;
-
-  &.material-page__connectfield-term--disabled {
-    opacity: 50%;
-  }
-
-  &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
-    background: $color-default;
-    border-color: $color-correct-answer;
-
-    &.material-page__connectfield-term--selected {
-      background: $taskfield-border-color;
-      border-color: $taskfield-border-color;
-
-      &:focus {
-        background: $taskfield-border-color;
-        border-color: $taskfield-border-color;
-      }
-    }
-
-    .material-page__connectfield-term-number {
-      border-color: $color-correct-answer;
-    }
-
-    .material-page__connectfield-term-data-container:hover { // We need to place this rule here so in case of long text in term on hover event we don't render wrong colored border if answer is correct
-      border: 2px solid $color-correct-answer;
-    }
-  }
-
-  &.incorrect-answer {
-    background: $color-default;
-    border-color: $color-incorrect-answer;
-
-    &.material-page__connectfield-term--selected {
-      background: $taskfield-selected-background-color;
-      border-color: $taskfield-border-color;
-
-      &:focus {
-        background: $taskfield-selected-background-color;
-        border-color: $taskfield-border-color;
-      }
-    }
-
-    .material-page__connectfield-term-number {
-      border-color: $color-incorrect-answer;
-    }
-
-    .material-page__connectfield-term-data-container:hover { // We need to place this rule here so in case of long text in term on hover event we don't render wrong colored border if answer is incorrect
-      border: 2px solid $color-incorrect-answer;
-    }
-  }
-}
-
-.material-page__connectfield-term-number {
-  @include text;
-
-  align-items: center;
-  background: $color-default;
-  border: 1px solid $taskfield-border-color;
-  border-radius: 100%;
-  display: inline-flex;
-  height: 1.25rem;
-  justify-content: center;
-  margin: 0 0 0 -0.625rem;
-  width: 1.25rem;
-
-  @include breakpoint($breakpoint-pad) {
-    height: 1.5rem;
-    margin: 0 0 0 -0.75rem;
-    width: 1.5rem;
-  }
-}
-
-.material-page__connectfield-term-label {
-  display: block;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 0;
-  line-height: 1; // This prevents text misalignment in mobile views
-  overflow: hidden;
-  padding: 6px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100px;
-
-  @include breakpoint($breakpoint-pad) {
-    line-height: 1.25rem;
-  }
-}
-
-.material-page__connectfield-term--edited {
-  background: lighten($taskfield-border-color, 25%);
-}
-
-// Selected needs to be defined after edited unless we want to create more complex scss inception
-// as edited and selected modifiers can be present at the same time and we need to show visually if
-// edited item is selected
-.material-page__connectfield-term--selected {
-  background: $taskfield-selected-background-color;
-  color: $color-default;
-
-  .material-page__connectfield-term-icon {
-    color: $color-default;
-  }
-}
-
-.material-page__connectfield-counterparts-container {
-  flex-basis: 50%;
-  flex-grow: 0;
-  flex-shrink: 1;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
-  }
-}
-
-.material-page__connectfield-counterpart {
-  @include taskfield-text;
-  @include taskfield-defaults;
-
-  align-items: center;
-  cursor: grab;
-  display: flex;
-  flex-flow: row nowrap;
-  height: 2.5rem;
-  margin: 8px 4px;
-  position: relative;
-  user-select: text;
-
-  &.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
-    background: $color-default;
-    border-color: $color-correct-answer;
-
-    &.material-page__connectfield-counterpart--selected {
-      background: $taskfield-selected-background-color;
-      border-color: $taskfield-border-color;
-
-      &:focus {
-        background: $taskfield-selected-background-color;
-        border-color: $taskfield-border-color;
-      }
-    }
-
-    .material-page__connectfield-counterpart-number {
-      border-color: $color-correct-answer;
-    }
-
-    .material-page__connectfield-counterpart-data-container:hover { // We need to place this rule here so in case of long text in counterpart on hover event we don't render wrong colored border if answer is correct
-      border: 2px solid $color-correct-answer;
-    }
-  }
-
-  &.incorrect-answer {
-    background: $color-default;
-    border-color: $color-incorrect-answer;
-
-    &.material-page__connectfield-counterpart--selected {
-      background: $taskfield-selected-background-color;
-      border-color: $taskfield-border-color;
-
-      &:focus {
-        background: $taskfield-selected-background-color;
-        border-color: $taskfield-border-color;
-      }
-    }
-
-    .material-page__connectfield-counterpart-number {
-      border-color: $color-incorrect-answer;
-    }
-
-    .material-page__connectfield-counterpart-data-container:hover { // We need to place this rule here so in case of long text in counterpart on hover event we don't render wrong colored border if answer is incorrect
-      border: 2px solid $color-incorrect-answer;
-    }
-  }
-}
-
-.material-page__connectfield-counterpart-number {
-  @include text;
-
-  align-items: center;
-  background: $color-default;
-  border: 1px solid $taskfield-border-color;
-  border-radius: 100%;
-  display: flex;
-  height: 1.25rem;
-  justify-content: center;
-  margin: 0 -0.625rem 0 0;
-  width: 1.25rem;
-
-  @include breakpoint($breakpoint-pad) {
-    height: 1.5rem;
-    margin: 0 -0.75rem 0 0;
-    width: 1.5rem;
-  }
-}
-
-.material-page__connectfield-counterpart-icon {
-  color: $taskfield-border-color;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding: 6px;
-}
-
-.material-page__connectfield-counterpart-label {
-  display: block;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 0;
-  line-height: 1; // This prevents text misalignment in mobile views
-  overflow: hidden;
-  padding: 6px 6px 6px 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100px;
-
-  @include breakpoint($breakpoint-pad) {
-    line-height: 1.25rem;
-  }
-}
-
-.material-page__connectfield-counterpart--edited {
-  background: lighten($taskfield-border-color, 25%);
-}
-
-// Selected needs to be defined after edited unless we want to create more complex scss inception
-// as edited and selected modifiers can be present at the same time and we need to show visually if
-// edited item is selected
-.material-page__connectfield-counterpart--selected {
-  background: $taskfield-selected-background-color;
-  color: $color-default;
-
-  .material-page__connectfield-counterpart-icon {
-    color: $color-default;
-  }
-}
-
-// Hover effect rules for terms and counterparts when textual content
-// is larger than what can be fitted in 1 row
-.material-page__connectfield-term--edited,
-.material-page__connectfield-counterpart--edited {
-  .material-page__connectfield-term-data-container:hover,
-  .material-page__connectfield-counterpart-data-container:hover {
-    background: lighten($taskfield-border-color, 25%);
-  }
-}
-
-.material-page__connectfield-term--selected,
-.material-page__connectfield-counterpart--selected {
-  .material-page__connectfield-term-data-container:hover,
-  .material-page__connectfield-counterpart-data-container:hover,
-  .material-page__connectfield-term-data-container:focus,
-  .material-page__connectfield-counterpart-data-container:focus {
-    background: $taskfield-selected-background-color;
-  }
-}
-
-.material-page__connectfield-term-data-container,
-.material-page__connectfield-counterpart-data-container {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-flow: row nowrap;
-  height: 2.5rem;
-  position: relative;
-  width: 100%;
-
-  &:hover,
-  &:focus {
-    background: $color-default;
-    border: 2px solid $taskfield-border-color;
-    height: auto;
-    left: -2px;
-    min-height: 2.5rem;
-    padding: 5px 0;
-    position: absolute;
-    top: -2px;
-    width: calc(100% + 4px);
-    z-index: 99;
-
-    .material-page__connectfield-term-number,
-    .material-page__connectfield-counterpart-number {
-      align-self: flex-start;
-      margin-top: 3px;
-
-      @include breakpoint($breakpoint-pad) {
-        margin-top: 4px;
-      }
-    }
-
-    .material-page__connectfield-counterpart-icon {
-      align-self: flex-start;
-      padding: 6px;
-
-      @include breakpoint($breakpoint-pad) {
-        padding: 8px 6px 6px;
-      }
-    }
-
-    .material-page__connectfield-term-label,
-    .material-page__connectfield-counterpart-label {
-      overflow: auto;
-      text-overflow: initial;
-      white-space: normal;
-    }
-
-    @include breakpoint($breakpoint-pad) {
-      padding: 2px 0;
-    }
-  }
 }
 
 // Math field (Digabi editor wrapper)

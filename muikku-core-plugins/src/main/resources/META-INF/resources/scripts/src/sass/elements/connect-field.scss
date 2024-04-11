@@ -1,0 +1,430 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// Connectfield wrapper
+.connectfield-wrapper {
+  display: block;
+  position: relative;
+}
+
+.connectfield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+// Connectfield component
+.connectfield {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+
+  // We need to override these styles here as .rich-text element has rules for <ol> and <li> elements
+  // These rules are quite specific so they won't be overridden by accident
+  ol.connectfield__terms-container,
+  ol.connectfield__counterparts-container {
+    margin: 0;
+    padding: 0;
+  }
+
+  li.connectfield__term,
+  li.connectfield__counterpart {
+    display: flex;
+    list-style-type: none;
+  }
+}
+
+// Disabled state for connectfield
+.connectfield--disabled {
+  .connectfield__term,
+  .connectfield__term-number,
+  .connectfield__counterpart,
+  .connectfield__counterpart-number {
+    border-color: $color-disabled-taskfield-border;
+  }
+
+  .connectfield__term-data-container,
+  .connectfield__counterpart-data-container {
+    cursor: not-allowed;
+
+    &:hover {
+      border: 2px solid $color-disabled-taskfield-border;
+    }
+  }
+
+  .connectfield__counterpart-icon {
+    color: $color-disabled-taskfield-icon;
+    cursor: default;
+    transform: none;
+    transition: none;
+  }
+}
+
+// Container for terms
+.connectfield__terms-container {
+  flex-basis: 50%;
+  flex-grow: 0;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
+// Single term
+.connectfield__term {
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2.5rem;
+  margin: 8px 4px;
+  position: relative;
+  user-select: text;
+}
+
+.connectfield__term--disabled {
+  opacity: 50%;
+
+  .connectfield__term-data-container {
+    cursor: not-allowed;
+  }
+}
+
+// Edited state of the term
+.connectfield__term.connectfield__term--edited {
+  background: lighten($taskfield-border-color, 25%);
+}
+
+// Selected needs to be defined after edited unless we want to create more complex scss inception
+// as edited and selected modifiers can be present at the same time and we need to show visually if
+// edited item is selected
+.connectfield__term.connectfield__term--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+  color: $color-default;
+
+  .connectfield__term-icon {
+    color: $color-default;
+  }
+
+  .connectfield__term-number {
+    border-color: $taskfield-selected-background-color;
+  }
+}
+
+// Correctanswer state for terms
+.connectfield__term.correct-answer { // Unfortunate class inception here as we want to separate selected element visually after taskfield has been checked for answers
+  background: $color-default;
+  border-color: $color-correct-answer;
+
+  .connectfield__term-number {
+    border-color: $color-correct-answer;
+  }
+
+  .connectfield__term-data-container:hover { // We need to place this rule here so in case of long text in term on hover event we don't render wrong colored border if answer is correct
+    border: 2px solid $color-correct-answer;
+  }
+}
+
+// Correctanswer and Selected state for terms
+.connectfield__term.correct-answer.connectfield__term--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+
+  .connectfield__term-number {
+    border-color: $taskfield-selected-background-color;
+  }
+}
+
+// Incorrectanswer state for terms
+.connectfield__term.incorrect-answer {
+  background: $color-default;
+  border-color: $color-incorrect-answer;
+
+  .connectfield__term-number {
+    border-color: $color-incorrect-answer;
+  }
+
+  .connectfield__term-data-container:hover { // We need to place this rule here so in case of long text in term on hover event we don't render wrong colored border if answer is incorrect
+    border: 2px solid $color-incorrect-answer;
+  }
+}
+
+// Incorrectanswer and Selected state for terms
+.connectfield__term.incorrect-answer.connectfield__term--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+
+  .connectfield__term-number {
+    border-color: $taskfield-selected-background-color;
+  }
+}
+
+// Term's number indicating row index+1
+.connectfield__term-number {
+  @include text;
+
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 100%;
+  display: inline-flex;
+  height: 1.25rem;
+  justify-content: center;
+  margin: 0 0 0 -0.625rem;
+  width: 1.25rem;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 1.5rem;
+    margin: 0 0 0 -0.75rem;
+    width: 1.5rem;
+  }
+}
+
+// Term's text
+.connectfield__term-label {
+  display: block;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  overflow: hidden;
+  padding: 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.25rem;
+  }
+}
+
+// Counterparts container
+.connectfield__counterparts-container {
+  flex-basis: 50%;
+  flex-grow: 0;
+  flex-shrink: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
+// Single counterpart
+.connectfield__counterpart {
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  align-items: center;
+  cursor: grab;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2.5rem;
+  margin: 8px 4px;
+  position: relative;
+  user-select: text;
+}
+
+// Edited state of the counterpart
+.connectfield__counterpart.connectfield__counterpart--edited {
+  background: lighten($taskfield-border-color, 25%);
+}
+
+// Selected needs to be defined after edited unless we want to create more complex scss inception
+// as edited and selected modifiers can be present at the same time and we need to show visually if
+// edited item is selected
+.connectfield__counterpart.connectfield__counterpart--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+  color: $color-default;
+
+  .connectfield__counterpart-icon {
+    color: $color-default;
+  }
+
+  .connectfield__counterpart-number {
+    border-color: $taskfield-selected-background-color;
+  }
+}
+
+// Correctanswer state for counterpart
+.connectfield__counterpart.correct-answer {
+  background: $color-default;
+  border-color: $color-correct-answer;
+
+  .connectfield__counterpart-number {
+    border-color: $color-correct-answer;
+  }
+
+  .connectfield__counterpart-data-container:hover { // We need to place this rule here so in case of long text in counterpart on hover event we don't render wrong colored border if answer is correct
+    border: 2px solid $color-correct-answer;
+  }
+}
+
+// Correctanswer and Selected state for counterpart
+.connectfield__counterpart.correct-answer.connectfield__counterpart--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+
+  .connectfield__counterpart-number {
+    border-color: $taskfield-selected-background-color;
+  }
+}
+
+// Incorrectanswer state for counterpart
+.connectfield__counterpart.incorrect-answer {
+  background: $color-default;
+  border-color: $color-incorrect-answer;
+
+  .connectfield__counterpart-number {
+    border-color: $color-incorrect-answer;
+  }
+
+  .connectfield__counterpart-data-container:hover { // We need to place this rule here so in case of long text in counterpart on hover event we don't render wrong colored border if answer is incorrect
+    border: 2px solid $color-incorrect-answer;
+  }
+}
+
+// Incorrectanswer and selected state for counterpart
+.connectfield__counterpart.incorrect-answer.connectfield__counterpart--selected {
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+
+  .connectfield__counterpart-number {
+    border-color: $color-incorrect-answer;
+  }
+}
+
+// Counterpart's number indicating the row index+1
+.connectfield__counterpart-number {
+  @include text;
+
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $taskfield-border-color;
+  border-radius: 100%;
+  display: flex;
+  height: 1.25rem;
+  justify-content: center;
+  margin: 0 -0.625rem 0 0;
+  position: relative;
+  width: 1.25rem;
+  z-index: 2;
+
+  @include breakpoint($breakpoint-pad) {
+    height: 1.5rem;
+    margin: 0 -0.75rem 0 0;
+    width: 1.5rem;
+  }
+}
+
+// Counterpart's dragging icon
+.connectfield__counterpart-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+// Counterpart's text
+.connectfield__counterpart-label {
+  display: block;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
+  line-height: 1; // This prevents text misalignment in mobile views
+  overflow: hidden;
+  padding: 6px 6px 6px 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.25rem;
+  }
+}
+
+// Hover effect rules for terms and counterparts when state is Edited
+.connectfield__term--edited .connectfield__term-data-container,
+.connectfield__counterpart--edited .connectfield__counterpart-data-container {
+  &:hover {
+    background: lighten($taskfield-border-color, 25%);
+  }
+}
+
+// Hover effect rules for terms and counterparts when state is Selected
+.connectfield__term--selected .connectfield__term-data-container,
+.connectfield__counterpart--selected .connectfield__counterpart-data-container {
+  &:hover,
+  &:focus {
+    background: $taskfield-selected-background-color;
+    border-color: $taskfield-selected-background-color;
+  }
+}
+
+// Styles for specific case where term and counterpart item has more than 1 row of text which is displayed on hover and focus
+.connectfield__term-data-container,
+.connectfield__counterpart-data-container {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 2.5rem;
+  position: relative;
+  width: 100%;
+
+  &:hover,
+  &:focus {
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    height: auto;
+    left: -2px;
+    min-height: 2.5rem;
+    padding: 5px 0;
+    position: absolute;
+    top: -2px;
+    width: calc(100% + 4px);
+    z-index: 99;
+
+    .connectfield__term-number,
+    .connectfield__counterpart-number {
+      align-self: flex-start;
+      margin-top: 3px;
+
+      @include breakpoint($breakpoint-pad) {
+        margin-top: 4px;
+      }
+    }
+
+    .connectfield__counterpart-icon {
+      align-self: flex-start;
+      padding: 6px;
+
+      @include breakpoint($breakpoint-pad) {
+        padding: 8px 6px 6px;
+      }
+    }
+
+    .connectfield__term-label,
+    .connectfield__counterpart-label {
+      overflow: auto;
+      text-overflow: initial;
+      white-space: normal;
+    }
+
+    @include breakpoint($breakpoint-pad) {
+      padding: 2px 0;
+    }
+  }
+}

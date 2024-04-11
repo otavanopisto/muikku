@@ -9,6 +9,7 @@ import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import "~/sass/elements/connect-field.scss";
 
 /**
  * FieldType
@@ -725,14 +726,11 @@ class ConnectField extends React.Component<
   render() {
     if (this.props.invisible) {
       return (
-        <span className="material-page__connectfield-wrapper">
-          <span className="material-page__connectfield">
-            <span className="material-page__connectfield-terms-container">
+        <span className="connectfield__wrapper">
+          <span className="connectfield">
+            <span className="connectfield__terms-container">
               {this.state.fields.map((field, index) => (
-                <span
-                  key={index}
-                  className="material-page__connectfield-term"
-                />
+                <span key={index} className="connectfield__term" />
               ))}
             </span>
           </span>
@@ -749,7 +747,7 @@ class ConnectField extends React.Component<
 
     // if elements is disabled
     const elementDisabledStateClassName = this.props.readOnly
-      ? "material-page__taskfield-disabled"
+      ? "connectfield--disabled"
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
@@ -766,14 +764,14 @@ class ConnectField extends React.Component<
         />
 
         <span
-          className={`material-page__connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`connectfield__wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <span className="material-page__taskfield-header">
+          <span className="connectfield-header">
             <span></span>
             <Instructions
               modifier="instructions"
@@ -794,10 +792,10 @@ class ConnectField extends React.Component<
             />
           </span>
           <span
-            className={`material-page__connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+            className={`connectfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >
             <ol
-              className="material-page__connectfield-terms-container"
+              className="connectfield__terms-container"
               tabIndex={0}
               onKeyDown={this.handleOrderedListKeyDown(false)}
             >
@@ -823,6 +821,7 @@ class ConnectField extends React.Component<
 
                 const modifiers = [];
 
+                // Add selected modifier if the field is selected
                 if (
                   this.state.selectedField &&
                   this.state.selectedField.name === field.name
@@ -830,6 +829,7 @@ class ConnectField extends React.Component<
                   modifiers.push("selected");
                 }
 
+                // Add edited modifier if the field has been edited
                 if (
                   this.state.editedIds.has(field.name) &&
                   !itemAnswer &&
@@ -838,6 +838,7 @@ class ConnectField extends React.Component<
                   modifiers.push("edited");
                 }
 
+                // Add disabled modifier if the field is disabled
                 if (notSelectable) {
                   modifiers.push("disabled");
                 }
@@ -874,15 +875,15 @@ class ConnectField extends React.Component<
                       this.state.selectedField &&
                       this.state.selectedField.name === field.name
                     }
-                    className={`material-page__connectfield-term ${modifiers
-                      .map((m) => `material-page__connectfield-term--${m}`)
+                    className={`connectfield__term ${modifiers
+                      .map((m) => `connectfield__term--${m}`)
                       .join(" ")} ${itemStateAfterCheck}`}
                   >
-                    <span className="material-page__connectfield-term-data-container">
-                      <span className="material-page__connectfield-term-number">
+                    <span className="connectfield__term-data-container">
+                      <span className="connectfield__term-number">
                         {index + 1}
                       </span>
-                      <span className="material-page__connectfield-term-label">
+                      <span className="connectfield__term-label">
                         <StrMathJAX>{field.text}</StrMathJAX>
                       </span>
                     </span>
@@ -891,7 +892,7 @@ class ConnectField extends React.Component<
               })}
             </ol>
             <ol
-              className="material-page__connectfield-counterparts-container"
+              className="connectfield__counterparts-container"
               tabIndex={0}
               onKeyDown={this.handleOrderedListKeyDown(true)}
             >
@@ -904,6 +905,7 @@ class ConnectField extends React.Component<
                   this.props.checkAnswers &&
                   this.state.answerState &&
                   this.state.answerState[index];
+
                 // the classname state if necessary
                 const itemStateAfterCheck =
                   itemAnswer && this.props.displayCorrectAnswers
@@ -912,8 +914,14 @@ class ConnectField extends React.Component<
                       : "correct-answer"
                     : "";
 
+                const notSelectable =
+                  this.props.readOnly ||
+                  (this.state.selectedField &&
+                    this.state.selectedField.name !== field.name &&
+                    !this.state.selectedIsCounterpart);
+
                 // the basic class name
-                let className = `material-page__connectfield-counterpart`;
+                let className = `connectfield__counterpart`;
 
                 const modifiers = [];
 
@@ -937,7 +945,7 @@ class ConnectField extends React.Component<
                 // Map modifiers to class
                 if (modifiers.length > 0) {
                   className += ` ${modifiers
-                    .map((m) => `material-page__connectfield-counterpart--${m}`)
+                    .map((m) => `connectfield__counterpart--${m}`)
                     .join(" ")}`;
                 }
 
@@ -948,9 +956,9 @@ class ConnectField extends React.Component<
                 if (this.props.readOnly) {
                   return (
                     <li className={className} key={field.name}>
-                      <span className="material-page__connectfield-counterpart-data-container">
-                        <span className="material-page__connectfield-counterpart-icon icon-move"></span>
-                        <span className="material-page__connectfield-counterpart-label">
+                      <span className="connectfield__counterpart-data-container">
+                        <span className="connectfield__counterpart-icon icon-move"></span>
+                        <span className="connectfield__counterpart-label">
                           <StrMathJAX>{field.text}</StrMathJAX>
                         </span>
                       </span>
@@ -967,7 +975,7 @@ class ConnectField extends React.Component<
                 ) {
                   // this is just a component giving an overview, of which number was meant to be the right answer
                   itemCorrectAnswerComponent = (
-                    <span className="material-page__connectfield-counterpart-number">
+                    <span className="connectfield__counterpart-number">
                       {this.state.fields.findIndex(
                         (f) =>
                           f.name ===
@@ -1017,7 +1025,7 @@ class ConnectField extends React.Component<
                       true,
                       index
                     )}
-                    parentContainerSelector=".material-page__connectfield"
+                    parentContainerSelector=".connectfield"
                     onDropInto={(data) =>
                       this.pickField(
                         true,
@@ -1031,7 +1039,7 @@ class ConnectField extends React.Component<
                     <span
                       role="button"
                       ref={callBackRef}
-                      className="material-page__connectfield-counterpart-data-container"
+                      className="connectfield__counterpart-data-container"
                       onKeyDown={this.handleKeyDown(field, true)}
                       onBlur={this.handleFocusBlur(index, true)}
                       aria-label={field.text}
@@ -1040,8 +1048,8 @@ class ConnectField extends React.Component<
                         this.state.selectedField.name === field.name
                       }
                     >
-                      <span className="material-page__connectfield-counterpart-icon icon-move"></span>
-                      <span className="material-page__connectfield-counterpart-label">
+                      <span className="connectfield__counterpart-icon icon-move"></span>
+                      <span className="connectfield__counterpart-label">
                         <StrMathJAX>{field.text}</StrMathJAX>
                       </span>
                       {itemCorrectAnswerComponent}

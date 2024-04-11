@@ -472,12 +472,17 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           text = text.charAt(0).toUpperCase() + text.slice(1);
         }
         return (
-          <span className="material-page__sorterfield-item" key={i.id}>
-            <span className="material-page__sorterfield-item-icon icon-move"></span>
-            <span className="material-page__sorterfield-item-label">
-              <StrMathJAX invisible={true}>{text}</StrMathJAX>
+          <li className="material-page__sorterfield-item" key={i.id}>
+            <span className="material-page__sorterfield-data-container">
+              <span
+                className="material-page__sorterfield-item-icon icon-move"
+                role="presentation"
+              ></span>
+              <span className="material-page__sorterfield-item-label">
+                <StrMathJAX invisible={true}>{text}</StrMathJAX>
+              </span>
             </span>
-          </span>
+          </li>
         );
       });
       return (
@@ -591,9 +596,11 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                     className={`material-page__sorterfield-item ${itemStateAfterCheck}`}
                     key={item.id}
                   >
-                    <span className="material-page__sorterfield-item-icon icon-move"></span>
-                    <span className="material-page__sorterfield-item-label">
-                      <StrMathJAX>{text}</StrMathJAX>
+                    <span className="material-page__sorterfield-data-container">
+                      <span className="material-page__sorterfield-item-icon icon-move"></span>
+                      <span className="material-page__sorterfield-item-label">
+                        <StrMathJAX>{text}</StrMathJAX>
+                      </span>
                     </span>
                   </li>
                 );
@@ -637,6 +644,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                 >
                   <span
                     role="button"
+                    className="material-page__sorterfield-data-container"
                     tabIndex={0}
                     ref={callBackRef}
                     onKeyDown={this.handleKeyDown(item)}
@@ -647,7 +655,10 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                       this.state.selectedItem.id === item.id
                     }
                   >
-                    <span className="material-page__sorterfield-item-icon icon-move"></span>
+                    <span
+                      className="material-page__sorterfield-item-icon icon-move"
+                      role="presentation"
+                    ></span>
                     <span className="material-page__sorterfield-item-label">
                       <StrMathJAX>{text}</StrMathJAX>
                     </span>
