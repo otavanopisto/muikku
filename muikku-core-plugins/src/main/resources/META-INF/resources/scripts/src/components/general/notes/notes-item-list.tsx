@@ -58,7 +58,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   );
 
   /**
-   * handleListKeyDown
+   * Handles list key down
    * @param e e
    */
   const handleListKeyDown = (e: React.KeyboardEvent) => {
@@ -75,7 +75,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   };
 
   /**
-   * handleListItemFocus
+   * Handles list item focus
    * @param index index
    */
   const handleListItemFocus =
@@ -86,7 +86,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
     };
 
   /**
-   * handleListItemKeyDown
+   * Handles list item key down
    * @param e e
    */
   const handleListItemKeyDown = (e: React.KeyboardEvent) => {
@@ -94,6 +94,10 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
       e.preventDefault();
     }
 
+    // Handle arrow left and right
+    // Note that tabIndex is not changed here, because inner element already
+    // has some other elements that are focusable by default, it would make
+    // focus changing to be unpredictable
     switch (e.key) {
       case "ArrowLeft":
         itemFocusIndexRef.current--;

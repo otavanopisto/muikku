@@ -397,9 +397,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       /**
        * Renders item
        * @param item item
-       * @param item.id item.id
-       * @param item.text item.text
-       * @param item.onClick item.onClick
        * @param onClose onClose
        */
       const renderItem = (item: DropdownItem, onClose: () => void) => (
