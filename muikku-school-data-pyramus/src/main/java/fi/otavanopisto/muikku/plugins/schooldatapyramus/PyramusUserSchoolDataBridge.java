@@ -1706,6 +1706,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return null;
     }
     
-    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard/%d",studentId, payload.getId()), Entity.entity(active, MediaType.APPLICATION_JSON), StudentCardRESTModel.class);
+    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard", studentId), Entity.entity(active, MediaType.APPLICATION_JSON), StudentCardRESTModel.class);
   }
 }
