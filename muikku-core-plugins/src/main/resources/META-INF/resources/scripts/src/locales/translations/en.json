@@ -970,6 +970,16 @@
       "updateSuccess": "Updating the task succeeded",
       "updateSuccess_state": "Updating the task sate succeeded",
       "ratingError": "Rating the task failed. Please try again. {{error}}"
+    },
+    "wcag": {
+      "archive": "Archive task",
+      "archiveUndo": "Undo archiving",
+      "createNewNote": "Create a new task",
+      "editNote": "Edit task",
+      "markAsImportant": "Mark task as important",
+      "markAsNotImportant": "Mark task as not important",
+      "prioritySorter": "Priority sorter {{priorityName}}",
+      "showDetails": "Show task details"
     }
   },
   "users": {

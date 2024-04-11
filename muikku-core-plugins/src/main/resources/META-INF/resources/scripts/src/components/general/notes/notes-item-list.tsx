@@ -49,20 +49,89 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
     onNotesItemSaveUpdateClick,
   } = props;
 
+  const itemRefs = React.useRef<HTMLDivElement[]>([]);
+  const itemFocusIndexRef = React.useRef<number>(0);
+
   const filteredNotesItemList = React.useMemo(
     () => sortNotesItemsBy(notesItems, filters, userId),
     [notesItems, filters, userId]
   );
 
+  /**
+   * handleListKeyDown
+   * @param e e
+   */
+  const handleListKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      itemFocusIndexRef.current = 0;
+
+      itemRefs.current[itemFocusIndexRef.current]?.setAttribute(
+        "tabindex",
+        "0"
+      );
+      itemRefs.current[itemFocusIndexRef.current]?.focus();
+    }
+  };
+
+  /**
+   * handleListItemFocus
+   * @param index index
+   */
+  const handleListItemFocus =
+    (index: number) => (e: React.FocusEvent<HTMLDivElement, Element>) => {
+      if (itemFocusIndexRef.current !== index) {
+        itemFocusIndexRef.current = index;
+      }
+    };
+
+  /**
+   * handleListItemKeyDown
+   * @param e e
+   */
+  const handleListItemKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      e.preventDefault();
+    }
+
+    switch (e.key) {
+      case "ArrowLeft":
+        itemFocusIndexRef.current--;
+
+        if (itemFocusIndexRef.current < 0) {
+          itemFocusIndexRef.current = filteredNotesItemList.length - 1;
+        }
+
+        itemRefs.current[itemFocusIndexRef.current]?.focus();
+        return;
+
+      case "ArrowRight":
+        itemFocusIndexRef.current++;
+
+        if (itemFocusIndexRef.current > filteredNotesItemList.length - 1) {
+          itemFocusIndexRef.current = 0;
+        }
+
+        itemRefs.current[itemFocusIndexRef.current]?.focus();
+        return;
+
+      default:
+        return;
+    }
+  };
+
   return (
-    <div className="notes__content">
+    <div tabIndex={0} onKeyDown={handleListKeyDown} className="notes__content">
       <NotesItemListWithoutAnimation isLoadingList={isLoadingList}>
-        {filteredNotesItemList.map((j) => (
+        {filteredNotesItemList.map((j, i) => (
           <NotesListItem
             key={j.id}
-            ref={React.createRef()}
+            tabIndex={0}
+            ref={(ref) => (itemRefs.current[i] = ref)}
             notesItem={j}
             archived={j.isArchived}
+            onFocus={handleListItemFocus(i)}
+            onKeyDown={handleListItemKeyDown}
             loggedUserIsCreator={j.creator === userId}
             loggedUserIsOwner={j.owner === userId}
             onPinNotesItemClick={onPinNotesItemClick}
