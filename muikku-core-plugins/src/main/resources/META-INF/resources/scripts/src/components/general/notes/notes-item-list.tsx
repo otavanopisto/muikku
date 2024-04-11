@@ -62,7 +62,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
    * @param e e
    */
   const handleListKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       itemFocusIndexRef.current = 0;
 
