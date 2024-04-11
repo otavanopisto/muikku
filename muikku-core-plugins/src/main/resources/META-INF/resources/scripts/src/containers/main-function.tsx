@@ -56,7 +56,6 @@ import {
   updateLabelFilters,
   updateWorkspaceFilters,
   updateUserGroupFilters,
-  loadStudentPedagogyFormAccess,
 } from "~/actions/main-function/guider";
 import { GuiderActiveFiltersType } from "~/reducers/main-function/guider";
 import { loadStudents, loadStudent } from "~/actions/main-function/guider";
@@ -84,7 +83,7 @@ import {
   setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import { updateHops, setHopsPhase } from "~/actions/main-function/hops";
+import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
 import {
   updateYO,

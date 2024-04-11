@@ -50,7 +50,7 @@ export const NEEDED_STUDIES_IN_TOTAL = 46;
  * and depending of that there is different amount
  * functionalities in study tool for example
  */
-export type HopsUser = "supervisor" | "student";
+export type HopsUser = "supervisor" | "student" | "guardian";
 
 export type HopsUsePlace = "guider" | "studies" | "guardian";
 

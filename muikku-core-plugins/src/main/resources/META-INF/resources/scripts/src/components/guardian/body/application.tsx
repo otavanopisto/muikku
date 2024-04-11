@@ -298,7 +298,6 @@ class DependantApplication extends React.Component<
         this.setState({
           activeTab: "SUMMARY",
         });
-
         break;
       case "records":
         this.setState({
@@ -380,10 +379,11 @@ class DependantApplication extends React.Component<
         </div>
       ) : (
         <CompulsoryEducationHopsWizard
-          user="supervisor"
+          user="guardian"
           usePlace="guardian"
           disabled={true}
           studentId={selectedDependantIdentifier}
+          phase={parseInt(this.props.hops.hopsPhase)}
           superVisorModifies={false}
         />
       )

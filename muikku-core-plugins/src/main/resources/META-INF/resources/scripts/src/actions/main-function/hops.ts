@@ -51,9 +51,6 @@ const setHopsPhase: SetHopsPhaseTriggerType = function setHopsPhase(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    if (getState().hops.hopsPhase) {
-      return;
-    }
     const userApi = MApi.getUserApi();
     const properties = await userApi.getUserProperties({
       userEntityId: userEntityId,
@@ -87,7 +84,6 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
     const studentIdentifier = userIdentifier
       ? userIdentifier
       : state.status.userSchoolDataIdentifier;
-
     try {
       if (getState().hops.status !== "WAIT") {
         callback && callback();
