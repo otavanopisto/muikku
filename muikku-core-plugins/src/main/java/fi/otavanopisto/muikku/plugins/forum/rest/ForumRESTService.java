@@ -33,7 +33,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import fi.otavanopisto.muikku.model.forum.LockForumThread;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -530,7 +530,7 @@ public class ForumRESTService extends PluginRESTService {
           return Response.status(Status.BAD_REQUEST).build();
       }
       
-      Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addTags("s")
+      Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Safelist.relaxed().addTags("s")
               .addAttributes("a", "target")
               .addAttributes("img", "width", "height", "style")
               .addAttributes("i", "class")

@@ -30,6 +30,10 @@
       border-color: $color-form-element-border;
     }
 
+    &.react-select-override__control--is-focused {
+      border-color: $color-outline;
+    }
+
     // We nest this so react-select-override block's modifier definitions does not need to duplicate this disabled style
     &.react-select-override__control--is-disabled {
       border-color: lighten($color-disabled, 20%);

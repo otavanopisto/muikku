@@ -4,7 +4,7 @@
 
   <groupId>fi.otavanopisto.muikku</groupId>
   <artifactId>bom</artifactId>
-  <version>1.1.229-SNAPSHOT</version>
+  <version>1.1.230-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku BOM</name>
 
@@ -33,7 +33,7 @@
 
     <!-- Muikku -->
 
-    <muikku.version>1.1.229-SNAPSHOT</muikku.version>
+    <muikku.version>1.1.230-SNAPSHOT</muikku.version>
 
     <!-- Webapp-permission -->
 
@@ -44,7 +44,7 @@
 
     <!-- Guava -->
 
-    <google-guava.version>31.1-jre</google-guava.version>
+    <google-guava.version>33.1.0-jre</google-guava.version>
 
     <!-- Tests -->
     <cdi-unit.version>3.1.0</cdi-unit.version>
