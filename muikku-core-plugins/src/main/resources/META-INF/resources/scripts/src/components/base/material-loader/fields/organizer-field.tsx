@@ -70,6 +70,10 @@ type OrganizerFieldanswerStateMissingTermsType = {
   [categoryId: string]: Array<string>;
 };
 
+type OrganizerDroppableRefType = {
+  [termId: string]: HTMLLIElement[];
+};
+
 /**
  * OrganizerFieldState
  */
@@ -108,6 +112,17 @@ class OrganizerField extends React.Component<
   OrganizerFieldProps,
   OrganizerFieldState
 > {
+  termListRef: HTMLUListElement;
+  categoryListRef: HTMLUListElement;
+
+  termRefs: HTMLSpanElement[];
+  categoriesRefs: HTMLSpanElement[];
+  categoryListRefs: OrganizerDroppableRefType;
+
+  termFocusIndexRef: number;
+  categoryListFocusIndexRef: number;
+  categoryTermFocusIndexRef: number;
+
   /**
    * constructor
    * @param props props
@@ -167,6 +182,23 @@ class OrganizerField extends React.Component<
     this.selectBox = this.selectBox.bind(this);
     this.preventPropagation = this.preventPropagation.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+
+    this.termRefs = [];
+    this.categoriesRefs = [];
+
+    // Initialize the droppable list refs with reduced category id as key and empty array as value
+    this.categoryListRefs =
+      props.content.categories.reduce<OrganizerDroppableRefType>(
+        (acc, category) => {
+          acc[category.id] = [];
+          return acc;
+        },
+        {}
+      );
+
+    this.termFocusIndexRef = 0;
+    this.categoryListFocusIndexRef = 0;
+    this.categoryTermFocusIndexRef = 0;
   }
 
   /**
@@ -412,42 +444,360 @@ class OrganizerField extends React.Component<
   }
 
   /**
-   * handleKeyUp
+   * Handles term blur. Removes tabindex from the term element when it loses focus
+   * @param index index
+   */
+  handleTermBlur =
+    (index: number) => (e: React.FocusEvent<HTMLSpanElement, Element>) => {
+      this.termRefs[index].setAttribute("tabindex", "-1");
+    };
+
+  /**
+   * Handles category list blur. Removes tabindex from the category element when it loses focus
+   * @param index index
+   */
+  handleCategoryListBlur =
+    (index: number) => (e: React.FocusEvent<HTMLSpanElement, Element>) => {
+      this.categoriesRefs[index].setAttribute("tabindex", "-1");
+    };
+
+  /**
+   * Handle category term blur. Removes tabindex from the category term element when it loses focus
+   * @param categoryId categoryId
+   * @param termIndex index
+   */
+  handleCategoryTermBlur =
+    (categoryId: string, termIndex: number) =>
+    (e: React.FocusEvent<HTMLSpanElement, Element>) => {
+      this.categoryListRefs[categoryId][termIndex].setAttribute(
+        "tabindex",
+        "-1"
+      );
+    };
+
+  /**
+   * Handles key down event for term list. Changes focus to the first term in the list
+   * @param e event
+   */
+  handleTermListKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.termFocusIndexRef = 0;
+
+      this.termRefs[this.termFocusIndexRef].setAttribute("tabindex", "0");
+      this.termRefs[this.termFocusIndexRef].focus();
+    }
+  };
+
+  /**
+   * Handle key down event for category list. Changes focus to the first term of the category in the list
+   * @param e e
+   */
+  handleCategoriesListKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.categoryListFocusIndexRef = 0;
+
+      this.categoriesRefs[this.categoryListFocusIndexRef].setAttribute(
+        "tabindex",
+        "0"
+      );
+      this.categoriesRefs[this.categoryListFocusIndexRef].focus();
+    }
+  };
+
+  /**
+   * handleTermKeyDown
    * @param id id
    */
-  handleDraggableKeyDown = (id: string) => (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
+  handleTermKeyDown = (id: string) => (e: React.KeyboardEvent) => {
+    if (
+      e.key === "ArrowUp" ||
+      e.key === "ArrowDown" ||
+      e.key === "ArrowLeft" ||
+      e.key === "ArrowRight" ||
+      e.key === "Enter" ||
+      e.key === " " ||
+      e.key === "Escape"
+    ) {
       e.stopPropagation();
       e.preventDefault();
+    }
 
-      this.selectItemId(id);
+    /**
+     * Focus to root
+     */
+    const focusToRoot = () => {
+      this.termListRef.focus();
+    };
+
+    /**
+     * Term focus change
+     * @param operation operation
+     */
+    const termFocusChange = (operation: "decrement" | "increment") => {
+      // Increment or decrement the term focus index depending on the operation direction
+      if (operation === "increment") {
+        this.termFocusIndexRef++;
+      } else {
+        this.termFocusIndexRef--;
+      }
+
+      // Reset the focus index if it goes out of bounds either way
+      if (this.termFocusIndexRef > this.termRefs.length - 1) {
+        this.termFocusIndexRef = 0;
+      } else if (this.termFocusIndexRef < 0) {
+        this.termFocusIndexRef = this.termRefs.length - 1;
+      }
+
+      this.termRefs[this.termFocusIndexRef].setAttribute("tabindex", "0");
+      this.termRefs[this.termFocusIndexRef].focus();
+    };
+
+    switch (e.key) {
+      case "ArrowUp":
+        focusToRoot();
+        return;
+
+      case "ArrowLeft":
+      case "ArrowRight":
+        termFocusChange(e.key === "ArrowLeft" ? "decrement" : "increment");
+        return;
+
+      case "Enter":
+      case " ":
+        this.selectItemId(id);
+        return;
+
+      case "Escape":
+        this.cancelSelectedItemId();
+        return;
+
+      default:
+        return;
     }
   };
 
   /**
-   * handleDroppableKeyDown
-   * @param box box
+   * Handles key down event for category list
+   * @param category category
    */
-  handleDroppableKeyDown = (box: CategoryType) => (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.stopPropagation();
-      e.preventDefault();
-      this.selectBox(box);
-    }
-  };
+  handleCategoryListKeyDown =
+    (category: CategoryType) => (e: React.KeyboardEvent) => {
+      if (
+        e.key === "ArrowUp" ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight" ||
+        e.key === "Enter" ||
+        e.key === " "
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      /**
+       * Focus to root category list
+       */
+      const focusToRoot = () => {
+        this.categoryListRef.focus();
+      };
+
+      /**
+       * Focus to list
+       */
+      const focusToList = () => {
+        this.categoryTermFocusIndexRef = 0;
+
+        this.categoryListRefs[category.id][
+          this.categoryTermFocusIndexRef
+        ].setAttribute("tabindex", "0");
+        this.categoryListRefs[category.id][
+          this.categoryTermFocusIndexRef
+        ].focus();
+      };
+
+      /**
+       * Term selection
+       */
+      const termSelection = () => {
+        this.termFocusIndexRef = 0;
+
+        this.termRefs[this.termFocusIndexRef].setAttribute("tabindex", "0");
+        this.termRefs[this.termFocusIndexRef].focus();
+
+        this.selectBox(category);
+      };
+
+      /**
+       * Category focus change
+       * @param operation operation
+       */
+      const categoryFocusChange = (operation: "decrement" | "increment") => {
+        // Increment or decrement the category focus index depending on the operation direction
+        if (operation === "increment") {
+          this.categoryListFocusIndexRef++;
+        } else {
+          this.categoryListFocusIndexRef--;
+        }
+
+        // Reset the focus index if it goes out of bounds either way
+        if (this.categoryListFocusIndexRef > this.categoriesRefs.length - 1) {
+          this.categoryListFocusIndexRef = 0;
+        } else if (this.categoryListFocusIndexRef < 0) {
+          this.categoryListFocusIndexRef = this.categoriesRefs.length - 1;
+        }
+
+        this.categoriesRefs[this.categoryListFocusIndexRef].setAttribute(
+          "tabindex",
+          "0"
+        );
+        this.categoriesRefs[this.categoryListFocusIndexRef].focus();
+      };
+
+      switch (e.key) {
+        case "ArrowUp":
+          focusToRoot();
+          return;
+        case "ArrowDown":
+          focusToList();
+          return;
+        case "ArrowLeft":
+        case "ArrowRight":
+          categoryFocusChange(
+            e.key === "ArrowLeft" ? "decrement" : "increment"
+          );
+          return;
+        case "Enter":
+        case " ":
+          termSelection();
+          return;
+
+        default:
+          return;
+      }
+    };
 
   /**
-   * handleOrganizedFieldKeyDown
+   * Handles key down event for category term
    * @param categoryId categoryId
    * @param termId termId
+   * @param termIndex termIndex
    */
-  handleOrganizedFieldKeyDown =
-    (categoryId: string, termId: string) => (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
+  handleCategoryTermKeyDown =
+    (categoryId: string, termId: string, termIndex: number) =>
+    (e: React.KeyboardEvent) => {
+      if (
+        e.key === "ArrowUp" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight" ||
+        e.key === "Enter" ||
+        e.key === " " ||
+        e.key === "Escape"
+      ) {
         e.stopPropagation();
         e.preventDefault();
+      }
 
+      /**
+       * Category focus
+       */
+      const categoryFocus = () => {
+        this.categoriesRefs[this.categoryListFocusIndexRef].setAttribute(
+          "tabindex",
+          "0"
+        );
+        this.categoriesRefs[this.categoryListFocusIndexRef].focus();
+      };
+
+      /**
+       * Term focus change
+       * @param operation operation
+       */
+      const termFocusChange = (operation: "decrement" | "increment") => {
+        // Increment or decrement the category term focus index depending on the operation direction
+        if (operation === "increment") {
+          this.categoryTermFocusIndexRef++;
+        } else {
+          this.categoryTermFocusIndexRef--;
+        }
+
+        // Reset the focus index if it goes out of bounds either way
+        if (
+          this.categoryTermFocusIndexRef >
+          this.categoryListRefs[categoryId].length - 1
+        ) {
+          this.categoryTermFocusIndexRef = 0;
+        } else if (this.categoryTermFocusIndexRef < 0) {
+          this.categoryTermFocusIndexRef =
+            this.categoryListRefs[categoryId].length - 1;
+        }
+
+        this.categoryListRefs[categoryId][
+          this.categoryTermFocusIndexRef
+        ].setAttribute("tabindex", "0");
+        this.categoryListRefs[categoryId][
+          this.categoryTermFocusIndexRef
+        ].focus();
+      };
+
+      /**
+       * Term delete
+       */
+      const termDelete = () => {
+        // If length of the category is 1, we need to change focus on the category itself
+        if (this.categoryListRefs[categoryId].length === 1) {
+          this.categoriesRefs[this.categoryListFocusIndexRef].setAttribute(
+            "tabindex",
+            "0"
+          );
+          this.categoriesRefs[this.categoryListFocusIndexRef].focus();
+        } else {
+          // If deleting the first term in the category, we need to change focus on the next term
+          if (termIndex === 0) {
+            this.categoryTermFocusIndexRef++;
+            this.categoryListRefs[categoryId][
+              this.categoryTermFocusIndexRef
+            ].setAttribute("tabindex", "0");
+            this.categoryListRefs[categoryId][
+              this.categoryTermFocusIndexRef
+            ].focus();
+          }
+
+          // If there are more than one terms in the category, we need to change focus on the previous term
+          else if (termIndex === this.categoryListRefs[categoryId].length - 1) {
+            this.categoryTermFocusIndexRef--;
+            this.categoryListRefs[categoryId][
+              this.categoryTermFocusIndexRef
+            ].setAttribute("tabindex", "0");
+            this.categoryListRefs[categoryId][
+              this.categoryTermFocusIndexRef
+            ].focus();
+          }
+        }
+
+        // Delete the term from the category list
+        this.categoryListRefs[categoryId].splice(termIndex, 1);
         this.deleteTermFromBox(categoryId, termId);
+      };
+
+      switch (e.key) {
+        case "ArrowUp":
+          categoryFocus();
+          return;
+
+        case "ArrowLeft":
+        case "ArrowRight":
+          termFocusChange(e.key === "ArrowLeft" ? "decrement" : "increment");
+          return;
+
+        case "Enter":
+        case " ":
+          termDelete();
+          return;
+
+        default:
+          break;
       }
     };
 
@@ -584,8 +934,13 @@ class OrganizerField extends React.Component<
               <span className="material-page__organizerfield-terms-title">
                 {this.props.content.termTitle}
               </span>
-              <span className="material-page__organizerfield-terms-container">
-                {this.state.order.map((id) => {
+              <ul
+                ref={(ref) => (this.termListRef = ref)}
+                tabIndex={0}
+                onKeyDown={this.handleTermListKeyDown}
+                className="material-page__organizerfield-terms-container"
+              >
+                {this.state.order.map((id, i) => {
                   // add the term in use class if in the uselist
                   const className = `material-page__organizerfield-term ${
                     this.state.useList.indexOf(id) !== -1
@@ -623,22 +978,30 @@ class OrganizerField extends React.Component<
                   if (this.props.readOnly) {
                     // if readOnly we just return a non draggable thingy
                     return (
-                      <span tabIndex={0} className={className} key={id}>
+                      <li tabIndex={0} className={className} key={id}>
                         <span className="material-page__organizerfield-term-icon icon-move"></span>
                         <span className="material-page__organizerfield-term-label">
                           <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
                         </span>
-                      </span>
+                      </li>
                     );
                   }
+
+                  /**
+                   * callbackRef
+                   * @param ref ref
+                   */
+                  const callbackRef = (ref: HTMLSpanElement) => {
+                    this.termRefs[i] = ref;
+                  };
+
                   // Otherwise we run a draggable, where the field itself is the parent container
                   // the interaction group is only for this field, and it will clone the draggable instead of removing the entire thing
                   // on move, it has no interaction data so draggables won't interact with each other, and when it's dropped it
                   // calls the on drop into function using its own termId binding and the argument will be the data of the droppables
                   return (
                     <Draggable
-                      tabIndex={0}
-                      as="button"
+                      as="li"
                       parentContainerSelector=".material-page__organizerfield"
                       className={className}
                       interactionGroup={this.props.content.name}
@@ -647,20 +1010,32 @@ class OrganizerField extends React.Component<
                       onDropInto={this.onDropDraggableItem.bind(this, id)}
                       onDrag={this.selectItemId.bind(this, id)}
                       onClick={this.selectItemId.bind(this, id)}
-                      onKeyDown={this.handleDraggableKeyDown(id)}
                       aria-label={ariaLabel}
                     >
-                      <span className="material-page__organizerfield-term-icon icon-move"></span>
-                      <span className="material-page__organizerfield-term-label">
-                        <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
+                      <span
+                        ref={callbackRef}
+                        role="button"
+                        onKeyDown={this.handleTermKeyDown(id)}
+                        onBlur={this.handleTermBlur(i)}
+                        className="material-page__organizerfield-term-data-container"
+                      >
+                        <span className="material-page__organizerfield-term-icon icon-move"></span>
+                        <span className="material-page__organizerfield-term-label">
+                          <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
+                        </span>
                       </span>
                     </Draggable>
                   );
                 })}
-              </span>
+              </ul>
             </span>
-            <span className="material-page__organizerfield-categories">
-              {this.props.content.categories.map((category) => {
+            <ul
+              ref={(ref) => (this.categoryListRef = ref)}
+              tabIndex={0}
+              onKeyDown={this.handleCategoriesListKeyDown}
+              className="material-page__organizerfield-categories"
+            >
+              {this.props.content.categories.map((category, categoryIndex) => {
                 // we make a category class name for if the answer state is there, only worth it if the whole thing is not right
                 // if the whole thing is right then every category is right
                 const fieldCategoryStateAfterCheck =
@@ -704,13 +1079,19 @@ class OrganizerField extends React.Component<
                     );
                 }
 
+                /**
+                 * callbackRef
+                 * @param ref ref
+                 */
+                const callbackRef = (ref: HTMLSpanElement) => {
+                  this.categoriesRefs[categoryIndex] = ref;
+                };
+
                 return (
                   <Droppable
-                    tabIndex={0}
-                    as="div"
+                    as="li"
                     interactionGroup={this.props.content.name}
                     onClick={this.selectBox.bind(this, category)}
-                    onKeyDown={this.handleDroppableKeyDown(category)}
                     className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
                     key={category.id}
                     interactionData={category.id}
@@ -719,71 +1100,110 @@ class OrganizerField extends React.Component<
                       name: category.name,
                     })}
                   >
-                    <span className="material-page__organizerfield-category-title">
-                      {category.name}
-                    </span>
-                    <span className="material-page__organizerfield-category-terms-container">
-                      {this.state.boxes[category.id].map((termId) => {
-                        // showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
-                        // otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
-                        const itemStateAfterCheck =
-                          this.props.displayCorrectAnswers &&
-                          this.props.checkAnswers &&
-                          !answerIsCheckedAndItisCorrect &&
-                          this.state.answerState &&
-                          this.state.answerState[category.id]
-                            ? this.state.answerState[category.id][termId] ===
-                              "FAIL"
-                              ? "incorrect-answer"
-                              : "correct-answer"
-                            : "";
+                    <span
+                      ref={callbackRef}
+                      role="button"
+                      className="material-page__organizerfield-category-container"
+                      onKeyDown={this.handleCategoryListKeyDown(category)}
+                      onBlur={this.handleCategoryListBlur(categoryIndex)}
+                    >
+                      <span className="material-page__organizerfield-category-title">
+                        {category.name}
+                      </span>
+                      <ul className="material-page__organizerfield-category-terms-container">
+                        {this.state.boxes[category.id].map(
+                          (termId, termIndex) => {
+                            // showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
+                            // otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
+                            const itemStateAfterCheck =
+                              this.props.displayCorrectAnswers &&
+                              this.props.checkAnswers &&
+                              !answerIsCheckedAndItisCorrect &&
+                              this.state.answerState &&
+                              this.state.answerState[category.id]
+                                ? this.state.answerState[category.id][
+                                    termId
+                                  ] === "FAIL"
+                                  ? "incorrect-answer"
+                                  : "correct-answer"
+                                : "";
 
-                        return (
-                          <span
-                            tabIndex={0}
-                            onClick={this.preventPropagation}
-                            key={termId}
-                            className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}
-                          >
-                            <span className="material-page__organizerfield-term-label">
-                              <StrMathJAX>
-                                {this.state.terms[termId]}
-                              </StrMathJAX>
-                            </span>
-                            {!this.props.readOnly ? (
-                              <span
-                                tabIndex={0}
-                                role="button"
-                                onClick={this.deleteTermFromBox.bind(
-                                  this,
-                                  category.id,
-                                  termId
-                                )}
-                                onKeyDown={this.handleOrganizedFieldKeyDown(
-                                  category.id,
-                                  termId
-                                )}
-                                className="material-page__organizerfield-term-icon icon-cross"
-                                aria-label={this.props.t(
-                                  "wcag.organiserTermRemove",
-                                  {
-                                    ns: "materials",
-                                    name: category.name,
-                                  }
-                                )}
-                              />
-                            ) : (
-                              <span className="material-page__organizerfield-term-icon icon-cross" />
-                            )}
-                          </span>
-                        );
-                      })}
-                      {itemCorrectAnswerMissingTerms}
+                            /**
+                             * callbackRef
+                             * @param ref ref
+                             */
+                            const callbackRef = (ref: HTMLLIElement) => {
+                              if (ref) {
+                                this.categoryListRefs[category.id][termIndex] =
+                                  ref;
+                              }
+                            };
+
+                            return (
+                              <li
+                                key={termId}
+                                onClick={this.preventPropagation}
+                                className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}
+                              >
+                                <span
+                                  ref={callbackRef}
+                                  onKeyDown={this.handleCategoryTermKeyDown(
+                                    category.id,
+                                    termId,
+                                    termIndex
+                                  )}
+                                  onBlur={this.handleCategoryTermBlur(
+                                    category.id,
+                                    termIndex
+                                  )}
+                                  className="material-page__organizerfield-term-data-container"
+                                  aria-label={this.props.t(
+                                    "wcag.organiserTermRemove",
+                                    {
+                                      ns: "materials",
+                                      termName: this.state.terms[termId],
+                                      categoryName: category.name,
+                                    }
+                                  )}
+                                >
+                                  <span className="material-page__organizerfield-term-label">
+                                    <StrMathJAX>
+                                      {this.state.terms[termId]}
+                                    </StrMathJAX>
+                                  </span>
+                                  {!this.props.readOnly ? (
+                                    <span
+                                      role="button"
+                                      onClick={this.deleteTermFromBox.bind(
+                                        this,
+                                        category.id,
+                                        termId
+                                      )}
+                                      className="material-page__organizerfield-term-icon icon-cross"
+                                      aria-label={this.props.t(
+                                        "wcag.organiserTermRemove",
+                                        {
+                                          ns: "materials",
+                                          termName: this.state.terms[termId],
+                                          categoryName: category.name,
+                                        }
+                                      )}
+                                    />
+                                  ) : (
+                                    <span className="material-page__organizerfield-term-icon icon-cross" />
+                                  )}
+                                </span>
+                              </li>
+                            );
+                          }
+                        )}
+                        {itemCorrectAnswerMissingTerms}
+                      </ul>
                     </span>
                   </Droppable>
                 );
               })}
-            </span>
+            </ul>
           </span>
         </span>
       </>

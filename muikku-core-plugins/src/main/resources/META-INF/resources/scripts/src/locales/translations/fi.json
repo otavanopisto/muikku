@@ -1348,7 +1348,7 @@
       "organizerTermSelected": "Termi valittu",
       "organizerTermInUse": "Termi on jo käytössä",
       "organizerTermInUseAndSelected": "Valittu termi on jo käytössä",
-      "organiserTermRemove": "Poista termi kategoriasta {{name}}",
+      "organiserTermRemove": "Poista termi {{termName}} kategoriasta {{categoryName}}",
       "organizerCategoryName": "Kategoria {{name}}",
       "sorterTermSelected": "Termi valittu"
     }
