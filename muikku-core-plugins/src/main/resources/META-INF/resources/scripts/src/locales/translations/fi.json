@@ -1273,6 +1273,8 @@
       "license": "Materiaalin käyttöoikeus",
       "licenseLink": "URL-osoite lisenssiin tai lisenssiteksti",
       "materials": "Materiaalit",
+      "maxWordCount": "Sanarajoitus: {{amount}}",
+      "maxCharacterCount": "Merkkirajoitus: {{amount}}",
       "metaData": "Tiedot",
       "newPage": "Nimetön",
       "noLicense": "Ei määritetty",

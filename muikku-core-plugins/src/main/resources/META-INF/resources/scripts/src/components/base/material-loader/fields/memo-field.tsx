@@ -28,6 +28,8 @@ interface MemoFieldProps extends WithTranslation {
     rows: string;
     name: string;
     richedit: boolean;
+    maxChars: string;
+    maxWords: string;
   };
   usedAs: UsedAs;
   readOnly?: boolean;
@@ -386,6 +388,22 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           />
           {field}
           <span className="material-page__counter-wrapper">
+            <span className="material-page__word-count-container">
+              <span className="material-page__word-count-title">
+                {t("labels.maxWordCount", {
+                  ns: "materials",
+                  amount: this.props.content.maxWords,
+                })}
+              </span>
+            </span>
+            <span className="material-page__character-count-container">
+              <span className="material-page__character-count-title">
+                {t("labels.maxCharacterCount", {
+                  ns: "materials",
+                  amount: this.props.content.maxChars,
+                })}
+              </span>
+            </span>
             <span className="material-page__word-count-container">
               <span className="material-page__word-count-title">
                 {t("labels.wordCount", { ns: "materials" })}
