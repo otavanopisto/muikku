@@ -817,10 +817,9 @@ class ConnectField extends React.Component<
                     : "";
 
                 const notSelectable =
-                  this.props.readOnly ||
-                  (this.state.selectedField &&
-                    this.state.selectedField.name !== field.name &&
-                    !this.state.selectedIsCounterpart);
+                  this.state.selectedField &&
+                  this.state.selectedField.name !== field.name &&
+                  !this.state.selectedIsCounterpart;
 
                 const modifiers = [];
 

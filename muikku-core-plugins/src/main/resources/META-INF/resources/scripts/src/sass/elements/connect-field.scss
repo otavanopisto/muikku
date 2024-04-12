@@ -40,29 +40,30 @@
   }
 }
 
-// Disabled state for connectfield
+// Disabled state for connectfield, this happens when user is not logged in or has active evaluation request
 .connectfield--disabled {
+  cursor: not-allowed;
+
   .connectfield__term,
+  .connectfield__counterpart {
+    border-color: $color-disabled-taskfield-border;
+    cursor: not-allowed;
+  }
+
   .connectfield__term-number,
-  .connectfield__counterpart,
   .connectfield__counterpart-number {
     border-color: $color-disabled-taskfield-border;
   }
 
   .connectfield__term-data-container,
   .connectfield__counterpart-data-container {
-    cursor: not-allowed;
-
     &:hover {
-      border: 2px solid $color-disabled-taskfield-border;
+      border-color: $color-disabled-taskfield-border;
     }
   }
 
   .connectfield__counterpart-icon {
     color: $color-disabled-taskfield-icon;
-    cursor: default;
-    transform: none;
-    transition: none;
   }
 }
 
@@ -71,10 +72,6 @@
   flex-basis: 50%;
   flex-grow: 0;
   flex-shrink: 1;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: 50%;
-  }
 }
 
 // Single term
@@ -92,11 +89,22 @@
   user-select: text;
 }
 
-.connectfield__term--disabled {
-  opacity: 50%;
+// Disabled state of the term
+.connectfield__term.connectfield__term--disabled,
+.connectfield__term.correct-answer.connectfield__term--disabled,
+.connectfield__term.incorrect-answer.connectfield__term--disabled {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
 
+  .connectfield__term-number {
+    border-color: $color-disabled-taskfield-border;
+  }
+
+  // Because of hover expand effect of multirow term we need to override the border color of this element also
   .connectfield__term-data-container {
-    cursor: not-allowed;
+    &:hover {
+      border-color: $color-disabled-taskfield-border;
+    }
   }
 }
 
@@ -105,10 +113,9 @@
   background: lighten($taskfield-border-color, 25%);
 }
 
-// Selected needs to be defined after edited unless we want to create more complex scss inception
-// as edited and selected modifiers can be present at the same time and we need to show visually if
-// edited item is selected
-.connectfield__term.connectfield__term--selected {
+// Selected state of the term (Selected and Edited state can be active at once)
+.connectfield__term.connectfield__term--selected,
+.connectfield__term.connectfield__term--edited.connectfield__term--selected {
   background: $taskfield-selected-background-color;
   border-color: $taskfield-selected-background-color;
   color: $color-default;
@@ -141,6 +148,12 @@
   background: $taskfield-selected-background-color;
   border-color: $taskfield-selected-background-color;
 
+  .connectfield__term-data-container {
+    &:hover {
+      border-color: $taskfield-selected-background-color;
+    }
+  }
+
   .connectfield__term-number {
     border-color: $taskfield-selected-background-color;
   }
@@ -165,6 +178,12 @@
   background: $taskfield-selected-background-color;
   border-color: $taskfield-selected-background-color;
 
+  .connectfield__term-data-container {
+    &:hover {
+      border-color: $taskfield-selected-background-color;
+    }
+  }
+
   .connectfield__term-number {
     border-color: $taskfield-selected-background-color;
   }
@@ -176,13 +195,15 @@
 
   align-items: center;
   background: $color-default;
-  border: 1px solid $taskfield-border-color;
+  border: 2px solid $taskfield-border-color;
   border-radius: 100%;
   display: inline-flex;
   height: 1.25rem;
   justify-content: center;
   margin: 0 0 0 -0.625rem;
+  position: relative;
   width: 1.25rem;
+  z-index: 2;
 
   @include breakpoint($breakpoint-pad) {
     height: 1.5rem;
@@ -279,6 +300,12 @@
   .connectfield__counterpart-number {
     border-color: $taskfield-selected-background-color;
   }
+
+  .connectfield__counterpart-data-container {
+    &:hover {
+      border-color: $taskfield-selected-background-color;
+    }
+  }
 }
 
 // Incorrectanswer state for counterpart
@@ -301,7 +328,13 @@
   border-color: $taskfield-selected-background-color;
 
   .connectfield__counterpart-number {
-    border-color: $color-incorrect-answer;
+    border-color: $taskfield-selected-background-color;
+  }
+
+  .connectfield__counterpart-data-container {
+    &:hover {
+      border-color: $taskfield-selected-background-color;
+    }
   }
 }
 
@@ -311,7 +344,7 @@
 
   align-items: center;
   background: $color-default;
-  border: 1px solid $taskfield-border-color;
+  border: 2px solid $taskfield-border-color;
   border-radius: 100%;
   display: flex;
   height: 1.25rem;
@@ -377,7 +410,6 @@
 .connectfield__term-data-container,
 .connectfield__counterpart-data-container {
   align-items: center;
-  cursor: pointer;
   display: flex;
   flex-flow: row nowrap;
   height: 2.5rem;
