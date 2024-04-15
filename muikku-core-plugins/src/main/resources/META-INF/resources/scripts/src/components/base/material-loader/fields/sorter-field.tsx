@@ -15,7 +15,7 @@ import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
-
+import "~/sass/elements/sorter-field.scss";
 /**
  * SorterFieldItemType
  */
@@ -472,13 +472,13 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           text = text.charAt(0).toUpperCase() + text.slice(1);
         }
         return (
-          <li className="material-page__sorterfield-item" key={i.id}>
-            <span className="material-page__sorterfield-data-container">
+          <li className="sorterfield__item" key={i.id}>
+            <span className="sorterfield__data-container">
               <span
-                className="material-page__sorterfield-item-icon icon-move"
+                className="sorterfield__item-icon icon-move"
                 role="presentation"
               ></span>
-              <span className="material-page__sorterfield-item-label">
+              <span className="sorterfield__item-label">
                 <StrMathJAX invisible={true}>{text}</StrMathJAX>
               </span>
             </span>
@@ -493,13 +493,8 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               context: "sorter",
             })}
           />
-          <span
-            ref="base"
-            className="material-page__sorterfield-wrapper rs_skip_always"
-          >
-            <span
-              className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}
-            >
+          <span ref="base" className="sorterfield-wrapper rs_skip_always">
+            <span className={`sorterfield sorterfield--${elementClassName}`}>
               {filler}
             </span>
             {correctAnswersummaryComponent}
@@ -520,7 +515,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
 
     // if elements is disabled
     const elementDisabledStateClassName = this.props.readOnly
-      ? "material-page__taskfield-disabled"
+      ? "sorterfield--disabled"
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
@@ -537,14 +532,14 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           })}
         />
         <span
-          className={`material-page__sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <span className="material-page__taskfield-header">
+          <span className="sorterfield-header">
             <span></span>
             <Instructions
               modifier="instructions"
@@ -565,7 +560,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           <ol
             tabIndex={0}
             onKeyDown={this.handleOrderedListKeyDown}
-            className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+            className={`sorterfield sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >
             {this.state.items.map((item, index) => {
               // We get the text
@@ -593,12 +588,12 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                 // readonly component
                 return (
                   <li
-                    className={`material-page__sorterfield-item ${itemStateAfterCheck}`}
+                    className={`sorterfield__item ${itemStateAfterCheck}`}
                     key={item.id}
                   >
-                    <span className="material-page__sorterfield-data-container">
-                      <span className="material-page__sorterfield-item-icon icon-move"></span>
-                      <span className="material-page__sorterfield-item-label">
+                    <span className="sorterfield__data-container">
+                      <span className="sorterfield__item-icon icon-move"></span>
+                      <span className="sorterfield__item-label">
                         <StrMathJAX>{text}</StrMathJAX>
                       </span>
                     </span>
@@ -627,11 +622,11 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                 <Draggable
                   denyWidth={this.props.content.orientation === "horizontal"}
                   as="li"
-                  parentContainerSelector=".material-page__sorterfield"
-                  className={`material-page__sorterfield-item ${
+                  parentContainerSelector=".sorterfield"
+                  className={`sorterfield__item ${
                     this.state.selectedItem &&
                     this.state.selectedItem.id === item.id
-                      ? "material-page__sorterfield-item--selected"
+                      ? "sorterfield__item--selected"
                       : ""
                   } ${itemStateAfterCheck} rs_skip_always`}
                   key={item.id}
@@ -644,7 +639,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                 >
                   <span
                     role="button"
-                    className="material-page__sorterfield-data-container"
+                    className="sorterfield__data-container"
                     tabIndex={0}
                     ref={callBackRef}
                     onKeyDown={this.handleKeyDown(item)}
@@ -656,10 +651,10 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                     }
                   >
                     <span
-                      className="material-page__sorterfield-item-icon icon-move"
+                      className="sorterfield__item-icon icon-move"
                       role="presentation"
                     ></span>
-                    <span className="material-page__sorterfield-item-label">
+                    <span className="sorterfield__item-label">
                       <StrMathJAX>{text}</StrMathJAX>
                     </span>
                   </span>

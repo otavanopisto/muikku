@@ -360,7 +360,6 @@
 
 // DISABLED CUSTOM TASK FIELDS
 .material-page__taskfield-disabled {
-  .material-page__sorterfield-item,
   .material-page__organizerfield-category,
   .material-page__organizerfield-category-title,
   .material-page__organizerfield-term {
@@ -368,17 +367,12 @@
     cursor: text;
   }
 
-  &.material-page__sorterfield {
-    border-color: $color-disabled-taskfield-border;
-  }
-
   .material-page__organizerfield-term--in-use,
   .material-page__organizerfield-term--no-dragging {
     background: $color-disabled-taskfield-background;
   }
 
-  .material-page__organizerfield-term-icon,
-  .material-page__sorterfield-item-icon {
+  .material-page__organizerfield-term-icon {
     color: $color-disabled-taskfield-icon;
     cursor: default;
     transform: none;
@@ -1177,121 +1171,6 @@
     @include breakpoint($breakpoint-pad) {
       margin: 5px 0;
     }
-  }
-}
-
-// Sorter field
-// We use nesting here as ol/ul/li html elements are defined alreayd in rich-text.scss so we get more specific selectors here
-// Also added tag names to selector helps to identify what the elements are
-.material-page__sorterfield-wrapper {
-  display: inline-block;
-  position: relative;
-  vertical-align: middle;
-
-  ol.material-page__sorterfield {
-    display: flex;
-
-    &.correct-answer { // If the whole taskfield is correct we then mark taskfield items as correct
-
-      .material-page__sorterfield-item {
-        border-color: $color-correct-answer;
-      }
-    }
-  }
-
-  ol.material-page__sorterfield--vertical {
-    align-items: flex-start;
-    border-left: 1px solid lighten($taskfield-border-color, 10%);
-    flex-flow: column nowrap;
-    margin: 0;
-    padding: 0 0 0 5px;
-  }
-
-  ol.material-page__sorterfield--horizontal {
-    align-items: center;
-    border-bottom: 1px solid lighten($taskfield-border-color, 10%);
-    display: inline-flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-    margin: 0;
-    padding: 0 0 5px;
-  }
-
-  .material-page__sorterfield-data-container {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    flex-flow: row nowrap;
-    height: 2rem;
-    position: relative;
-    width: 100%;
-  }
-
-  li.material-page__sorterfield-item {
-    @include taskfield-text;
-    @include taskfield-defaults;
-
-    align-items: center;
-    cursor: grab;
-    display: flex;
-    flex-flow: row nowrap;
-    height: 2rem;
-    list-style-type: none;
-    margin: 4px;
-    user-select: text;
-
-    &.correct-answer {
-      border-color: $color-correct-answer;
-    }
-
-    &.incorrect-answer {
-      border-color: $color-incorrect-answer;
-    }
-
-    &:focus {
-      height: auto;
-      left: -2px;
-      min-height: 2rem;
-      padding: 5px 0;
-      position: absolute;
-      top: -2px;
-      width: calc(100% + 4px);
-      z-index: 99;
-    }
-  }
-}
-
-.material-page__sorterfield-item--selected {
-  background: $taskfield-border-color;
-  color: $color-default;
-
-  .material-page__sorterfield-item-icon {
-    background: transparent;
-    color: $color-default;
-  }
-}
-
-.material-page__sorterfield-item-icon {
-  color: $taskfield-border-color;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding: 6px;
-}
-
-.material-page__sorterfield-item-label {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  line-height: 1; // This prevents text misalignment in mobile views
-  max-width: calc(100% - 25px);
-  overflow-wrap: initial;
-  padding: 6px 6px 6px 0;
-
-  @include breakpoint($breakpoint-pad) {
-    line-height: 1.25rem;
-    max-width: calc(100% - 27px); // Width of the drang handle
-    padding: 4px 6px 4px 0;
   }
 }
 

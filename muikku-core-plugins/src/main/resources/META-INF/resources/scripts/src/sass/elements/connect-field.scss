@@ -143,8 +143,9 @@
   }
 }
 
-// Correctanswer and Selected state for terms
-.connectfield__term.correct-answer.connectfield__term--selected {
+// Correctanswer/Incorrectanswer and Selected state for terms
+.connectfield__term.correct-answer.connectfield__term--selected,
+.connectfield__term.incorrect-answer.connectfield__term--selected {
   background: $taskfield-selected-background-color;
   border-color: $taskfield-selected-background-color;
 
@@ -174,20 +175,6 @@
 }
 
 // Incorrectanswer and Selected state for terms
-.connectfield__term.incorrect-answer.connectfield__term--selected {
-  background: $taskfield-selected-background-color;
-  border-color: $taskfield-selected-background-color;
-
-  .connectfield__term-data-container {
-    &:hover {
-      border-color: $taskfield-selected-background-color;
-    }
-  }
-
-  .connectfield__term-number {
-    border-color: $taskfield-selected-background-color;
-  }
-}
 
 // Term's number indicating row index+1
 .connectfield__term-number {
@@ -388,15 +375,17 @@
   }
 }
 
-// Hover effect rules for terms and counterparts when state is Edited
+// Hover and focus effect rules for terms and counterparts when state is Edited
 .connectfield__term--edited .connectfield__term-data-container,
 .connectfield__counterpart--edited .connectfield__counterpart-data-container {
-  &:hover {
+  &:hover,
+  &:focus {
     background: lighten($taskfield-border-color, 25%);
+    border-color: $taskfield-border-color;
   }
 }
 
-// Hover effect rules for terms and counterparts when state is Selected
+// Hover and focus effect rules for terms and counterparts when state is Selected
 .connectfield__term--selected .connectfield__term-data-container,
 .connectfield__counterpart--selected .connectfield__counterpart-data-container {
   &:hover,
