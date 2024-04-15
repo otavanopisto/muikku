@@ -8,14 +8,16 @@
   display: inline-block;
   position: relative;
   vertical-align: middle;
-}
 
-ol.sorterfield {
-  display: flex;
-
-  li.sorterfield__item {
-    display: flex;
+  // Nesting here prevents rich-text.scss rules from overriding sorterfields styleing
+  ol.sorterfield {
     list-style-type: none;
+    margin: 0;
+
+    li.sorterfield__item {
+      display: flex;
+      list-style-type: none;
+    }
   }
 }
 
@@ -36,8 +38,8 @@ ol.sorterfield {
 .sorterfield.sorterfield--vertical {
   align-items: flex-start;
   border-left: 1px solid lighten($taskfield-border-color, 10%);
+  display: flex;
   flex-flow: column nowrap;
-  margin: 0;
   padding: 0 0 0 5px;
 }
 
@@ -48,7 +50,6 @@ ol.sorterfield {
   display: inline-flex;
   flex-flow: row wrap;
   justify-content: flex-start;
-  margin: 0;
   padding: 0 0 5px;
 }
 
