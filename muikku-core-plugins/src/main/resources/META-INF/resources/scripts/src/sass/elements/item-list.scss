@@ -54,6 +54,11 @@
   cursor: default;
 }
 
+.item-list__item--dependant-workspaces  {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 .item-list__item--teacher {
   cursor: auto;
 }
@@ -120,6 +125,16 @@
 
 .item-list__item--unread .item-list__text-body {
   font-weight: 600;
+}
+
+.item-list__item-title {
+  display: flex;
+  flex-grow: 1;
+}
+
+.item-list__item-aside-title {
+  display: flex;
+  flex-grow: 0;
 }
 
 .item-list__item-content {

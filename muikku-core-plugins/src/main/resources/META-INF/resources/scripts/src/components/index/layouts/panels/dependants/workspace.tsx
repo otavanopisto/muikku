@@ -20,13 +20,15 @@ const DependantWorkspace: React.FC<DependantWorkspaceProps> = (props) => {
   const { t } = useTranslation("studies");
   return (
     <div className="item-list__item item-list__item--dependant-workspaces">
-      <span className="item-list__icon item-list__icon--dependant-workspaces icon-books"></span>
-      <span className="item-list__text-body">
-        {`${workspace.name} ${
-          workspace.nameExtension ? "(" + workspace.nameExtension + ")" : ""
-        }`}
+      <span className="item-list__item-title">
+        <span className="item-list__icon item-list__icon--dependant-workspaces icon-books"></span>
+        <span className="item-list__text-body">
+          {`${workspace.name} ${
+            workspace.nameExtension ? "(" + workspace.nameExtension + ")" : ""
+          }`}
+        </span>
       </span>
-      <span>
+      <span className="item-list__item-aside-title">
         <span className="item-list__text-title">
           {t("labels.enrollmentDate")}
         </span>
