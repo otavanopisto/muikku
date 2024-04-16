@@ -15,7 +15,7 @@ import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
-import "~/sass/elements/sorter-field.scss";
+import "~/sass/elements/sorterfield.scss";
 /**
  * SorterFieldItemType
  */

@@ -339,9 +339,7 @@
 // DISABLED & READONLY FORM FIELDS
 .material-page__textfield input[readonly],
 .material-page__mathfield.material-page__mathfield--readonly,
-.material-page__selectfield[disabled],
-.material-page__memofield[readonly],
-.material-page__ckeditor-replacement.material-page__ckeditor-replacement--readonly {
+.material-page__selectfield[disabled] {
   border-color: $color-disabled-taskfield-border;
   cursor: text;
 }
@@ -399,45 +397,6 @@
 
 .material-page__correct-answers-label {
   padding: 0 10px 0 0;
-}
-
-// WORD AND CHARACTER COUNTER
-.material-page__counter-wrapper {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  font-size: 85%;
-  height: 2rem;
-  justify-content: flex-end;
-}
-
-.material-page__word-count-container,
-.material-page__character-count-container {
-  align-items: center;
-  background: lighten($taskfield-border-color, 30%);
-  border-bottom-left-radius: 2px;
-  display: flex;
-  flex-basis: auto;
-  flex-flow: row nowrap;
-  flex-grow: 0;
-  flex-shrink: 0;
-  padding: 2px 6px;
-}
-
-.material-page__word-count-title,
-.material-page__character-count-title {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: 0 4px;
-}
-
-.material-page__word-count,
-.material-page__character-count {
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-weight: 400;
 }
 
 // FIELD'S EXAMPLES
@@ -827,7 +786,6 @@
 }
 
 // Memo field
-.material-page__memofield-wrapper,
 .material-page__journalfield-wrapper,
 .material-page__interim-evaluation-wrapper {
   display: block;
@@ -886,54 +844,6 @@
   .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
     border: 2px solid $color-interim-evaluation;
   }
-}
-
-.material-page__memofield {
-  @include taskfield-text;
-  @include taskfield-defaults;
-
-  line-height: 1.25rem;
-  margin: 4px 0 0;
-  max-width: 100%;
-  min-width: 100%;
-  padding: 4px 8px;
-  width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    line-height: 1.75rem;
-  }
-}
-
-.material-page__memofield--evaluation { // This is for memofield replacement style in evaluation views
-  background: $color-evaluation-readonly-taskfield-background;
-  border: 0;
-  border-radius: 2px;
-  padding: 15px 20px;
-}
-
-.material-page__ckeditor-replacement { // This is for ckeditor replacement div
-  @include taskfield-text;
-  @include taskfield-defaults;
-
-  display: block;
-  line-height: 1.25rem;
-  margin: 4px 0 0;
-  max-width: 100%;
-  min-height: 2.25rem;
-  min-width: 100%;
-  padding: 5px 20px;
-  width: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    line-height: 1.75rem;
-    min-height: 2.75rem;
-  }
-}
-
-.material-page__ckeditor-replacement--evaluation { // This is for ckeditor replacement div in evaluation views
-  background: $color-evaluation-readonly-taskfield-background;
-  border: 0;
-  border-radius: 2px;
 }
 
 // File field

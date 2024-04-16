@@ -9,7 +9,7 @@ import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
-import "~/sass/elements/connect-field.scss";
+import "~/sass/elements/connectfield.scss";
 
 /**
  * FieldType
