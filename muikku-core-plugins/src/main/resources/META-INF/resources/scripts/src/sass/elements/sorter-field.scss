@@ -13,11 +13,35 @@
   ol.sorterfield {
     list-style-type: none;
     margin: 0;
+  }
 
-    li.sorterfield__item {
-      display: flex;
-      list-style-type: none;
-    }
+  li.sorterfield__item {
+    display: flex;
+    list-style-type: none;
+  }
+}
+
+.sorterfield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+// Disabled state for sorterfield
+.sorterfield.sorterfield--disabled {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+
+  .sorterfield__item {
+    border-color: $color-disabled-taskfield-border;
+  }
+
+  .sorterfield__data-container {
+    cursor: not-allowed;
+  }
+
+  .sorterfield__item-icon {
+    color: $color-disabled-taskfield-icon;
   }
 }
 
@@ -26,12 +50,6 @@
   .sorterfield__item {
     border-color: $color-correct-answer;
   }
-}
-
-.sorterfield-header {
-  display: inline-flex;
-  justify-content: space-between;
-  width: 100%;
 }
 
 // Sorter field set to vertical mode
@@ -78,7 +96,6 @@
 
   align-items: center;
   cursor: grab;
-  display: flex;
   flex-flow: row nowrap;
   height: 2rem;
   list-style-type: none;
@@ -105,24 +122,6 @@
 // Incorrectanswer state for item
 .sorterfield__item.incorrect-answer {
   border-color: $color-incorrect-answer;
-}
-
-// Disabled state for item
-.sorterfield.sorterfield--disabled {
-  border-color: $color-disabled-taskfield-border;
-  cursor: not-allowed;
-
-  .sorterfield__item {
-    border-color: $color-disabled-taskfield-border;
-  }
-
-  .sorterfield__data-container {
-    cursor: not-allowed;
-  }
-
-  .sorterfield__item-icon {
-    color: $color-disabled-taskfield-icon;
-  }
 }
 
 // Selected state of item

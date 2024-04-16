@@ -9,6 +9,7 @@ import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import "~/sass/elements/organizer-field.scss";
 
 /**
  * TermType
@@ -828,20 +829,17 @@ class OrganizerField extends React.Component<
               context: "organizer",
             })}
           />
-          <span className="material-page__organizerfield-wrapper rs_skip_always">
-            <span className="material-page__organizerfield">
-              <span className="material-page__organizerfield-terms">
-                <span className="material-page__organizerfield-terms-title">
+          <span className="organizerfield-wrapper rs_skip_always">
+            <span className="organizerfield">
+              <span className="organizerfield__terms">
+                <span className="organizerfield__terms-title">
                   {this.props.content.termTitle}
                 </span>
-                <span className="material-page__organizerfield-terms-container">
+                <span className="organizerfield__terms-container">
                   {this.state.order.map((id) => (
-                    <span
-                      className="material-page__organizerfield-term"
-                      key={id}
-                    >
-                      <span className="material-page__organizerfield-term-icon icon-move"></span>
-                      <span className="material-page__organizerfield-term-label">
+                    <span className="organizerfield__term" key={id}>
+                      <span className="organizerfield__term-icon icon-move"></span>
+                      <span className="organizerfield__term-label">
                         <StrMathJAX invisible={true}>
                           {this.state.terms[id]}
                         </StrMathJAX>
@@ -850,16 +848,13 @@ class OrganizerField extends React.Component<
                   ))}
                 </span>
               </span>
-              <span className="material-page__organizerfield-categories">
+              <span className="organizerfield__categories">
                 {this.props.content.categories.map((category) => (
-                  <span
-                    className="material-page__organizerfield-category"
-                    key={category.id}
-                  >
-                    <span className="material-page__organizerfield-category-title">
+                  <span className="organizerfield__category" key={category.id}>
+                    <span className="organizerfield__category-title">
                       {category.name}
                     </span>
-                    <span className="material-page__organizerfield-category-terms-container" />
+                    <span className="organizerfield__category-terms-container" />
                   </span>
                 ))}
               </span>
@@ -883,7 +878,7 @@ class OrganizerField extends React.Component<
 
     // if elements is disabled
     const elementDisabledStateClassName = this.props.readOnly
-      ? "material-page__taskfield-disabled"
+      ? "organizerfield-disabled"
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
@@ -900,7 +895,7 @@ class OrganizerField extends React.Component<
           })}
         />
         <span
-          className={`material-page__organizerfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`organizerfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
@@ -928,27 +923,27 @@ class OrganizerField extends React.Component<
             />
           </span>
           <span
-            className={`material-page__organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+            className={`organizerfield ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >
-            <span className="material-page__organizerfield-terms">
-              <span className="material-page__organizerfield-terms-title">
+            <span className="organizerfield__terms">
+              <span className="organizerfield__terms-title">
                 {this.props.content.termTitle}
               </span>
               <ul
                 ref={(ref) => (this.termListRef = ref)}
                 tabIndex={0}
                 onKeyDown={this.handleTermListKeyDown}
-                className="material-page__organizerfield-terms-container"
+                className="organizerfield__terms-container"
               >
                 {this.state.order.map((id, i) => {
                   // add the term in use class if in the uselist
-                  const className = `material-page__organizerfield-term ${
+                  const className = `organizerfield__term ${
                     this.state.useList.indexOf(id) !== -1
-                      ? "material-page__organizerfield-term--in-use"
+                      ? "organizerfield__term--in-use"
                       : ""
                   } ${
                     this.state.selectedItemId === id
-                      ? "material-page__organizerfield-term--selected"
+                      ? "organizerfield__term--selected"
                       : ""
                   }`;
 
@@ -979,8 +974,8 @@ class OrganizerField extends React.Component<
                     // if readOnly we just return a non draggable thingy
                     return (
                       <li tabIndex={0} className={className} key={id}>
-                        <span className="material-page__organizerfield-term-icon icon-move"></span>
-                        <span className="material-page__organizerfield-term-label">
+                        <span className="organizerfield__term-icon icon-move"></span>
+                        <span className="organizerfield__term-label">
                           <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
                         </span>
                       </li>
@@ -1017,10 +1012,10 @@ class OrganizerField extends React.Component<
                         role="button"
                         onKeyDown={this.handleTermKeyDown(id)}
                         onBlur={this.handleTermBlur(i)}
-                        className="material-page__organizerfield-term-data-container"
+                        className="organizerfield__term-data-container"
                       >
-                        <span className="material-page__organizerfield-term-icon icon-move"></span>
-                        <span className="material-page__organizerfield-term-label">
+                        <span className="organizerfield__term-icon icon-move"></span>
+                        <span className="organizerfield__term-label">
                           <StrMathJAX>{this.state.terms[id]}</StrMathJAX>
                         </span>
                       </span>
@@ -1033,7 +1028,7 @@ class OrganizerField extends React.Component<
               ref={(ref) => (this.categoryListRef = ref)}
               tabIndex={0}
               onKeyDown={this.handleCategoriesListKeyDown}
-              className="material-page__organizerfield-categories"
+              className="organizerfield__categories"
             >
               {this.props.content.categories.map((category, categoryIndex) => {
                 // we make a category class name for if the answer state is there, only worth it if the whole thing is not right
@@ -1069,7 +1064,7 @@ class OrganizerField extends React.Component<
                       (missingTermId) => (
                         <span
                           key={missingTermId}
-                          className="material-page__organizerfield-term material-page__organizerfield-term--missing"
+                          className="organizerfield__term organizerfield__term--missing"
                         >
                           <StrMathJAX>
                             {this.state.terms[missingTermId]}
@@ -1092,7 +1087,7 @@ class OrganizerField extends React.Component<
                     as="li"
                     interactionGroup={this.props.content.name}
                     onClick={this.selectBox.bind(this, category)}
-                    className={`material-page__organizerfield-category ${fieldCategoryStateAfterCheck}`}
+                    className={`organizerfield__category ${fieldCategoryStateAfterCheck}`}
                     key={category.id}
                     interactionData={category.id}
                     aria-label={this.props.t("wcag.organizerCategoryName", {
@@ -1103,14 +1098,14 @@ class OrganizerField extends React.Component<
                     <span
                       ref={callbackRef}
                       role="button"
-                      className="material-page__organizerfield-category-container"
+                      className="organizerfield__category-container"
                       onKeyDown={this.handleCategoryListKeyDown(category)}
                       onBlur={this.handleCategoryListBlur(categoryIndex)}
                     >
-                      <span className="material-page__organizerfield-category-title">
+                      <span className="organizerfield__category-title">
                         {category.name}
                       </span>
-                      <ul className="material-page__organizerfield-category-terms-container">
+                      <ul className="organizerfield__category-terms-container">
                         {this.state.boxes[category.id].map(
                           (termId, termIndex) => {
                             // showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
@@ -1143,7 +1138,7 @@ class OrganizerField extends React.Component<
                               <li
                                 key={termId}
                                 onClick={this.preventPropagation}
-                                className={`material-page__organizerfield-term material-page__organizerfield-term--no-dragging ${itemStateAfterCheck}`}
+                                className={`organizerfield__term organizerfield__term--no-dragging ${itemStateAfterCheck}`}
                               >
                                 <span
                                   ref={callbackRef}
@@ -1156,7 +1151,7 @@ class OrganizerField extends React.Component<
                                     category.id,
                                     termIndex
                                   )}
-                                  className="material-page__organizerfield-term-data-container"
+                                  className="organizerfield__term-data-container"
                                   aria-label={this.props.t(
                                     "wcag.organiserTermRemove",
                                     {
@@ -1166,7 +1161,7 @@ class OrganizerField extends React.Component<
                                     }
                                   )}
                                 >
-                                  <span className="material-page__organizerfield-term-label">
+                                  <span className="organizerfield__term-label">
                                     <StrMathJAX>
                                       {this.state.terms[termId]}
                                     </StrMathJAX>
@@ -1179,7 +1174,7 @@ class OrganizerField extends React.Component<
                                         category.id,
                                         termId
                                       )}
-                                      className="material-page__organizerfield-term-icon icon-cross"
+                                      className="organizerfield__term-icon icon-cross"
                                       aria-label={this.props.t(
                                         "wcag.organiserTermRemove",
                                         {
@@ -1190,7 +1185,7 @@ class OrganizerField extends React.Component<
                                       )}
                                     />
                                   ) : (
-                                    <span className="material-page__organizerfield-term-icon icon-cross" />
+                                    <span className="organizerfield__term-icon icon-cross" />
                                   )}
                                 </span>
                               </li>
