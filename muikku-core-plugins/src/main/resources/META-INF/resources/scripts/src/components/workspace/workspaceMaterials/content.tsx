@@ -992,6 +992,7 @@ class ContentComponent extends SessionStateComponent<
                   const pageElement = (
                     <TocElement
                       modifier={modifier}
+                      tabIndex={-1}
                       ref={this.handleCallbackTocElementRef(
                         `s-${node.workspaceMaterialId}`,
                         subNodeIndex

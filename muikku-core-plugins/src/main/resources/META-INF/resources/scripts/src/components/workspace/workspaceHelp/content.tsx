@@ -601,6 +601,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     const pageElement = (
                       <TocElement
                         modifier={modifier}
+                        tabIndex={-1}
                         ref={this.handleCallbackTocElementRef(
                           `s-${node.workspaceMaterialId}`,
                           subNodeIndex
