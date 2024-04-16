@@ -490,6 +490,7 @@
       "loadError_studies": "Suoritusten lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_counselors": "Ohjaajien lataus epäonnistui",
       "loadError_matriculation": "Yo-tietojen lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_matriculationSubjects": "Yo-aineiden lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_statistics": "Tilastojen lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_userAndWorkspace": "Käyttäjän ja kurssin lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_workspaces": "Kurssien lataus epäonnistui. Yritä ladata sivu uudelleen",
