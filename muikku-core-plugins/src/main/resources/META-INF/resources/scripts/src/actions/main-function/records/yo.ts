@@ -59,6 +59,7 @@ export interface UpdateMatriculationSubjectEligibilityTriggerType {
 
 /**
  * updateMatriculationSubjectEligibility
+ * @param studentId muikku student identifier
  */
 const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibilityTriggerType =
   function updateMatriculationSubjectEligibility(studentId) {
@@ -186,14 +187,6 @@ const updateYO: updateYOTriggerType = function updateYO(studentId) {
         return;
       }
 
-      if (!studentId) {
-        const matriculationExamData = await matriculationApi.getExams();
-        dispatch({
-          type: "UPDATE_STUDIES_YO",
-          payload: matriculationExamData,
-        });
-      }
-
       dispatch({
         type: "UPDATE_STUDIES_YO",
         payload: [],
@@ -203,6 +196,16 @@ const updateYO: updateYOTriggerType = function updateYO(studentId) {
         type: "UPDATE_STUDIES_YO_STATUS",
         payload: "LOADING",
       });
+
+      //If the studentId is not provided, this is called for you, not someone else.
+      // So we go ahead and call exams for you.
+      if (!studentId) {
+        const matriculationExamData = await matriculationApi.getExams();
+        dispatch({
+          type: "UPDATE_STUDIES_YO",
+          payload: matriculationExamData,
+        });
+      }
 
       const subjects = await recordsApi.getMatriculationSubjects();
 

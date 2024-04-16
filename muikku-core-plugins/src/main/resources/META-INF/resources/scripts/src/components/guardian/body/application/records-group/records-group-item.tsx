@@ -6,12 +6,10 @@ import {
   ApplicationListItemContentContainer,
   ApplicationListItemHeader,
 } from "~/components/general/application-list";
-import Button from "~/components/general/button";
-import WorkspaceAssignmentsAndDiaryDialog from "~/components/records/dialogs/workspace-assignments-and-diaries";
 import { localize } from "~/locales/i18n";
-import ActivityIndicator from "../records-indicators/activity-indicator";
-import AssessmentRequestIndicator from "../records-indicators/assessment-request-indicator";
-import RecordsAssessmentIndicator from "../records-indicators/records-assessment-indicator";
+import ActivityIndicator from "~/components/general/records-history/activity-indicator";
+import AssessmentRequestIndicator from "~/components/general/records-history/assessment-request-indicator";
+import RecordsAssessmentIndicator from "~/components/general/records-history/records-assessment-indicator";
 import { WorkspaceAssessmentState } from "~/generated/client";
 import { RecordWorkspaceActivityByLine } from "~/components/general/records-history/types";
 

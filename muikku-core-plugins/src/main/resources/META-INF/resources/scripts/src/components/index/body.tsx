@@ -14,7 +14,6 @@ import {
 } from "react-i18next";
 import StudentComponent from "./layouts/student";
 import StaffComponent from "./layouts/staff";
-// import GuardianComponent from "./layouts/guardian";
 
 /**
  * IndexBodyProps

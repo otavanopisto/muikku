@@ -9,7 +9,7 @@ import { Dependant } from "~/reducers/main-function/dependants";
 /**
  * StudentsPanelProps
  */
-interface StudentsPanelProps {
+interface DependantsPanelProps {
   dependants: Dependant[];
 }
 
@@ -18,7 +18,7 @@ interface StudentsPanelProps {
  * @param props StudentsPanelProps
  * @returns  JSX.element
  */
-const StudentsPanel: React.FC<StudentsPanelProps> = (props) => {
+const DependantsPanel: React.FC<DependantsPanelProps> = (props) => {
   const { dependants } = props;
   const { t } = useTranslation(["frontPage", "common"]);
 
@@ -56,4 +56,4 @@ function mapStateToProps(state: StateType) {
   };
 }
 
-export default connect(mapStateToProps)(StudentsPanel);
+export default connect(mapStateToProps)(DependantsPanel);

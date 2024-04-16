@@ -50,11 +50,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
         ? studentId
         : state.status.userSchoolDataIdentifier;
 
-      // If the pyramusId is a staffId, don't update summary
-      if (
-        !pyramusId.toLowerCase().includes("student-") ||
-        state.summary.status === "READY"
-      ) {
+      if (state.summary.status === "READY") {
         return null;
       }
 

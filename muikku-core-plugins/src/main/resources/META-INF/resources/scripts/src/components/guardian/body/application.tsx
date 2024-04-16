@@ -47,7 +47,6 @@ import {
   SetHopsPhaseTriggerType,
 } from "~/actions/main-function/hops";
 import { AnyActionType } from "~/actions";
-
 /**
  * StudiesTab
  */
@@ -102,6 +101,13 @@ class DependantApplication extends React.Component<
       loading: false,
       activeTab: "SUMMARY",
     };
+    this.getCurrentDependantIdentifier =
+      this.getCurrentDependantIdentifier.bind(this);
+    this.loadPedagogyFormState = this.loadPedagogyFormState.bind(this);
+    this.isVisible = this.isVisible.bind(this);
+    this.onTabChange = this.onTabChange.bind(this);
+    this.handleDependantSelectChange =
+      this.handleDependantSelectChange.bind(this);
   }
 
   /**
@@ -124,15 +130,15 @@ class DependantApplication extends React.Component<
   /**
    * Returns whether section with given hash should be visible or not
    *
-   * @param id section id
+   * @param tab tab
    * @returns whether section with given hash should be visible or not
    */
-  isVisible(id: string) {
-    const currentDependant = this.getCurrentDependantIdentifier();
+  isVisible(tab: Tab) {
+    const currentDependantIdentifier = this.getCurrentDependantIdentifier();
     const selectUserStudyProgramme = this.props.dependants.list.find(
-      (dependant) => dependant.identifier === currentDependant
+      (dependant) => dependant.identifier === currentDependantIdentifier
     )?.studyProgrammeName;
-    switch (id) {
+    switch (tab.id) {
       case "HOPS":
         return (
           COMPULSORY_HOPS_VISIBLITY.includes(selectUserStudyProgramme) ||
@@ -150,7 +156,7 @@ class DependantApplication extends React.Component<
       case "PEDAGOGY_FORM":
         return (
           UPPERSECONDARY_PEDAGOGYFORM.includes(
-            this.getDependantStudyProgramme(currentDependant)
+            this.getDependantStudyProgramme(currentDependantIdentifier)
           ) &&
           this.props.guider.currentStudent.pedagogyFormAvailable &&
           this.props.guider.currentStudent.pedagogyFormAvailable.accessible &&
@@ -228,40 +234,41 @@ class DependantApplication extends React.Component<
     if (!window.location.hash && this.props.dependants.state === "READY") {
       // Dependants are loaded, but there's none selected, we pick the first one
 
-      const selectedDependant = this.props.dependants.list[0].identifier;
-      window.location.hash = selectedDependant;
+      const selectedDependantIdentifier =
+        this.props.dependants.list[0].identifier;
+      window.location.hash = selectedDependantIdentifier;
 
-      const dependantUserEntityId = this.props.dependants.list.find(
-        (dependant) => dependant.identifier === selectedDependant
-      ).userEntityId;
+      const dependantUserEntityId = this.props.dependants.list[0].userEntityId;
 
       // we want the hops phase to be set for the newly set selected dependant
       if (dependantUserEntityId) {
         this.props.setHopsPhase(dependantUserEntityId);
       }
 
-      this.props.loadStudentPedagogyFormAccess(selectedDependant);
+      this.props.loadStudentPedagogyFormAccess(selectedDependantIdentifier);
       // Then we need the pedagoy form state, even if it's not available as of yet
       // It will be set in the component state for the users who have it available and it
       // cannot be removed from the state, only overridden
-      const state = await this.loadPedagogyFormState(selectedDependant);
+      const state = await this.loadPedagogyFormState(
+        selectedDependantIdentifier
+      );
       this.setState({
         pedagogyFormState: state,
       });
     }
 
     if (window.location.hash) {
-      const currentDependant = this.getCurrentDependantIdentifier();
+      const currentDependantIdentifier = this.getCurrentDependantIdentifier();
 
       // If there's no hopsPhase set and the user has a phased HOPS
       if (
         !this.props.hops.hopsPhase &&
         COMPULSORY_HOPS_VISIBLITY.includes(
-          this.getDependantStudyProgramme(currentDependant)
+          this.getDependantStudyProgramme(currentDependantIdentifier)
         )
       ) {
         const dependantUserEntityId = this.props.dependants.list.find(
-          (dependant) => dependant.identifier === currentDependant
+          (dependant) => dependant.identifier === currentDependantIdentifier
         )?.userEntityId;
 
         if (dependantUserEntityId) {
@@ -281,9 +288,11 @@ class DependantApplication extends React.Component<
       // If we have a hash, we do this here.
       // Otherwise the sorting out of the hash and loading this form
       // will be done in the componendDidUpdate state
-      const currentDependant = this.getCurrentDependantIdentifier();
-      this.props.loadStudentPedagogyFormAccess(currentDependant);
-      const state = await this.loadPedagogyFormState(currentDependant);
+      const currentDependantIdentifier = this.getCurrentDependantIdentifier();
+      this.props.loadStudentPedagogyFormAccess(currentDependantIdentifier);
+      const state = await this.loadPedagogyFormState(
+        currentDependantIdentifier
+      );
       this.setState({
         pedagogyFormState: state,
       });
@@ -397,10 +406,6 @@ class DependantApplication extends React.Component<
         name: t("labels.summary", { ns: "studies" }),
         hash: "summary",
         type: "summary",
-        /**
-         * component
-         * @returns JSX.Element
-         */
         component: (
           <ApplicationPanelBody modifier="tabs">
             <Summary />
@@ -456,9 +461,7 @@ class DependantApplication extends React.Component<
       },
     ];
 
-    panelTabs = panelTabs
-      .filter((pTab) => this.isVisible(pTab.id))
-      .map((item) => item);
+    panelTabs = panelTabs.filter(this.isVisible);
 
     /**
      * Just because we need to have all tabs ready first before rendering Application panel

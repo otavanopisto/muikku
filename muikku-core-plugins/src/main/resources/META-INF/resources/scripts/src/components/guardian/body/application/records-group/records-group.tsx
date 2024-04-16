@@ -5,7 +5,7 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 import RecordsGroupItem from "./records-group-item";
-import TransferedCreditIndicator from "../records-indicators/transfered-credit-indicator";
+import TransferedCreditIndicator from "~/components/general/records-history/transfered-credit-indicator";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/label.scss";
 

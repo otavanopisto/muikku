@@ -1005,10 +1005,6 @@ export default class MainFunction extends React.Component<
         titleActions.updateTitle(i18n.t("labels.dependant", { count: 0 }))
       );
 
-      // this.props.store.dispatch(
-      //   loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
-      // );
-
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
         if (tab) {
