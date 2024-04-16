@@ -797,7 +797,7 @@ class WorkspaceMaterials extends React.Component<
           className="content-panel__chapter"
           id={`sectionId${section.workspaceMaterialId}`}
         >
-          <div
+          <a
             id={"s-" + section.workspaceMaterialId}
             style={{
               transform: "translateY(" + -this.state.defaultOffset + "px)",
