@@ -494,7 +494,7 @@
     "wcag": {
       "collapseRecordInfo": "Collapse workspace record info",
       "assignmentsActivity": "Assignments done {{percent}}%",
-      "exercisesActivity": "Excersises done {{percent}}%",
+      "exercisesActivity": "Exercises done {{percent}}%",
       "expandRecordInfo": "Expand workspace record info"
     }
   },
