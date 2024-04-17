@@ -60,12 +60,12 @@ export const dependants: Reducer<DependantsState> = (
   action: ActionType
 ) => {
   switch (action.type) {
-    case "UPDATE_DEPENDANTS":
+    case "DEPENDANTS_UPDATE":
       return {
         ...state,
         list: action.payload,
       };
-    case "UPDATE_DEPENDANT_WORKSPACES": {
+    case "DEPENDANT_WORKSPACES_UPDATE": {
       const updatedDependants = state.list.map((dependant) => {
         if (dependant.identifier === action.payload.id) {
           return {
@@ -80,12 +80,12 @@ export const dependants: Reducer<DependantsState> = (
         list: updatedDependants,
       };
     }
-    case "UPDATE_DEPENDANTS_STATUS":
+    case "DEPENDANTS_STATUS_UPDATE":
       return {
         ...state,
         state: action.payload,
       };
-    case "UPDATE_DEPENDANT_WORKSPACES_STATUS": {
+    case "DEPENDANT_WORKSPACES_STATUS_UPDATE": {
       const updatedDependants = state.list.map((dependant) => {
         if (dependant.identifier === action.payload.id) {
           return {

@@ -16,22 +16,20 @@ import { LoadingState } from "~/@types/shared";
 import { HOPSStatusType } from "~/reducers/main-function/hops";
 import { MatriculationSubjectEligibilityStatusType } from "~/reducers/main-function/records/yo";
 
-export type UPDATE_DEPENDANTS = SpecificActionType<
-  "UPDATE_DEPENDANTS",
+export type DEPENDANTS_UPDATE = SpecificActionType<
+  "DEPENDANTS_UPDATE",
   Dependant[]
 >;
-export type UPDATE_DEPENDANT_WORKSPACES = SpecificActionType<
-  "UPDATE_DEPENDANT_WORKSPACES",
-  DependantWokspacePayloadType
->;
-
-export type UPDATE_DEPENDANTS_STATUS = SpecificActionType<
-  "UPDATE_DEPENDANTS_STATUS",
+export type DEPENDANTS_STATUS_UPDATE = SpecificActionType<
+  "DEPENDANTS_STATUS_UPDATE",
   UserStatusType
 >;
-
-export type UPDATE_DEPENDANT_WORKSPACES_STATUS = SpecificActionType<
-  "UPDATE_DEPENDANT_WORKSPACES_STATUS",
+export type DEPENDANT_WORKSPACES_UPDATE = SpecificActionType<
+  "DEPENDANT_WORKSPACES_UPDATE",
+  DependantWokspacePayloadType
+>;
+export type DEPENDANT_WORKSPACES_STATUS_UPDATE = SpecificActionType<
+  "DEPENDANT_WORKSPACES_STATUS_UPDATE",
   DependantWokspaceStatePayloadType
 >;
 
@@ -109,7 +107,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
 
     try {
       dispatch({
-        type: "UPDATE_DEPENDANTS_STATUS",
+        type: "DEPENDANTS_STATUS_UPDATE",
         payload: <UserStatusType>"LOADING",
       });
 
@@ -123,12 +121,12 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
       );
 
       dispatch({
-        type: "UPDATE_DEPENDANTS",
+        type: "DEPENDANTS_UPDATE",
         payload: payload,
       });
 
       dispatch({
-        type: "UPDATE_DEPENDANTS_STATUS",
+        type: "DEPENDANTS_STATUS_UPDATE",
         payload: <UserStatusType>"READY",
       });
     } catch (err) {
@@ -145,7 +143,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
         )
       );
       dispatch({
-        type: "UPDATE_DEPENDANTS_STATUS",
+        type: "DEPENDANTS_STATUS_UPDATE",
         payload: <UserStatusType>"ERROR",
       });
     }
@@ -171,7 +169,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
       const meApi = MApi.getMeApi();
       try {
         dispatch({
-          type: "UPDATE_DEPENDANT_WORKSPACES_STATUS",
+          type: "DEPENDANT_WORKSPACES_STATUS_UPDATE",
           payload: {
             id: dependantId,
             state: "LOADING",
@@ -186,11 +184,11 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
         };
 
         dispatch({
-          type: "UPDATE_DEPENDANT_WORKSPACES",
+          type: "DEPENDANT_WORKSPACES_UPDATE",
           payload: payload,
         });
         dispatch({
-          type: "UPDATE_DEPENDANT_WORKSPACES_STATUS",
+          type: "DEPENDANT_WORKSPACES_STATUS_UPDATE",
           payload: {
             id: dependantId,
             state: "READY",
@@ -210,7 +208,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
           )
         );
         dispatch({
-          type: "UPDATE_DEPENDANT_WORKSPACES_STATUS",
+          type: "DEPENDANT_WORKSPACES_STATUS_UPDATE",
           payload: {
             id: dependantId,
             state: "ERROR",

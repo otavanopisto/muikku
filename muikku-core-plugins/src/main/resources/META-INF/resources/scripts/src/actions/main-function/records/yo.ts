@@ -167,9 +167,9 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 
 /**
  * updateYO
- * @param studentId muikku student identifier
+ * @param identifier muikku student identifier
  */
-const updateYO: updateYOTriggerType = function updateYO(studentId) {
+const updateYO: updateYOTriggerType = function updateYO(identifier) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
@@ -178,8 +178,8 @@ const updateYO: updateYOTriggerType = function updateYO(studentId) {
     const recordsApi = MApi.getRecordsApi();
     const matriculationApi = MApi.getMatriculationApi();
 
-    const studentIdentifier = studentId
-      ? studentId
+    const studentIdentifier = identifier
+      ? identifier
       : state.status.userSchoolDataIdentifier;
 
     try {
@@ -199,7 +199,7 @@ const updateYO: updateYOTriggerType = function updateYO(studentId) {
 
       //If the studentId is not provided, this is called for you, not someone else.
       // So we go ahead and call exams for you.
-      if (!studentId) {
+      if (!identifier) {
         const matriculationExamData = await matriculationApi.getExams();
         dispatch({
           type: "UPDATE_STUDIES_YO",

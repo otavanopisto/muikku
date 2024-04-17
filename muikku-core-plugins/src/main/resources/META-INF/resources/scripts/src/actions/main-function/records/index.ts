@@ -134,24 +134,24 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         //OK let me try to explain this :<
         // we have an identifier given, we work out the user id from that
 
-        let idFromIdentifier = getState().dependants.list.find(
+        let dependantIdentifier = getState().dependants.list.find(
           (dependant) => dependant.identifier === userIdentifier
         )?.identifier;
 
         // if the dependants aren't loaded yet, we load them here, because we must have the id
 
-        if (userIdentifier && !idFromIdentifier) {
+        if (userIdentifier && !dependantIdentifier) {
           const dependants = await meApi.getGuardiansDependents();
 
-          idFromIdentifier = dependants.find(
+          dependantIdentifier = dependants.find(
             (dependant) => dependant.identifier === userIdentifier
           )?.identifier;
         }
 
         //We get the current used id this user is supposedly a student
 
-        const studentIdentifier: string = idFromIdentifier
-          ? idFromIdentifier
+        const studentIdentifier: string = dependantIdentifier
+          ? dependantIdentifier
           : getState().status.userSchoolDataIdentifier;
 
         //we get the users that represent that studentIdentifier
