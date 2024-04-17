@@ -902,7 +902,7 @@ class OrganizerField extends React.Component<
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <span className="material-page__taskfield-header">
+          <span className="organizerfield-header">
             <span></span>
             <Instructions
               modifier="instructions"

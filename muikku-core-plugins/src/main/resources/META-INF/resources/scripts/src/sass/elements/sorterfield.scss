@@ -45,6 +45,10 @@
   }
 }
 
+.sorterfield.sorterfield--horizontal.sorterfield--disabled {
+  border-color: $color-disabled-taskfield-border;
+}
+
 // If the whole taskfield is correct we then mark taskfield items as correct
 .sorterfield.correct-answer {
   .sorterfield__item {

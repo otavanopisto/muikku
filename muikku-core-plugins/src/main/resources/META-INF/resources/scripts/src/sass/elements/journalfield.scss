@@ -1,0 +1,70 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.journalfield-wrapper {
+  display: block;
+  padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
+  position: relative;
+
+  .material-page__field-answer-synchronizer {
+    left: 0;
+  }
+
+  // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
+  // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
+
+  /* stylelint-disable selector-class-pattern */
+  .cke_editable.cke_wysiwyg_div {
+    padding: 0 8px;
+  }
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    background: $color-default;
+    border: 2px solid $color-journal-page;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  .cke_wysiwyg_div {
+    min-height: 150px;
+  }
+  /* stylelint-enable selector-class-pattern */
+}
+
+.journalfield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.journalfield__ckeditor-replacement { // This is for ckeditor replacement div
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  display: block;
+  line-height: 1.25rem;
+  margin: 4px 0 0;
+  max-width: 100%;
+  min-height: 2.25rem;
+  min-width: 100%;
+  padding: 5px 20px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+.journalfield[readonly],
+.journalfield[readonly].journalfield--evaluation,
+.journalfield__ckeditor-replacement.journalfield__ckeditor-replacement--readonly,
+.journalfield__ckeditor-replacement.journalfield__ckeditor-replacement--evaluation.journalfield__ckeditor-replacement--readonly {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+}

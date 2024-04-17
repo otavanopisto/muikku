@@ -72,7 +72,7 @@
   .organizerfield__category-title,
   .organizerfield__term {
     border-color: $color-disabled-taskfield-border;
-    cursor: text;
+    cursor: not-allowed;
   }
 
   .organizerfield__term--in-use,
@@ -158,6 +158,7 @@
 
 .organizerfield__term--missing {
   cursor: default;
+  font-style: italic;
   line-height: 1; // This prevents text misalignment in mobile views
   opacity: 60%;
   padding: 4px 6px;

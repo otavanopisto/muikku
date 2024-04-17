@@ -1,0 +1,206 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.audiofield-wrapper {
+  display: block;
+  position: relative;
+}
+
+.audiofield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  display: block;
+  margin: 4px 0 0;
+  position: relative;
+  width: 100%;
+}
+
+.audiofield--disabled {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+
+  .material-page__audiofield-files-container,
+  .file-uploader__items-container {
+    border: 0;
+  }
+}
+
+.audiofield__files-container {
+  border-top: 3px dotted lighten($taskfield-border-color, 20%);
+  display: block;
+}
+
+.audiofield__files-container--empty {
+  border: 0;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.audiofield__file-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 28px;
+  margin: 10px 5px;
+  padding: 0 5px;
+
+  // These links needs to be nested here as rich-text css rules overrides them if not
+  .audiofield__remove-file-button {
+    background: transparent;
+    color: $color-fatal;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+  }
+
+  .audiofield__download-file-button {
+    background: transparent;
+    color: $color-info;
+    cursor: pointer;
+    font-size: 1.0625rem;
+    height: auto;
+    margin: 0 0 0 10px;
+    padding: 5px;
+    text-decoration: none;
+    width: auto;
+
+    .external-link-indicator {
+      display: none;
+    }
+  }
+}
+
+.audiofield__file-container--uploading,
+.audiofield__file-container--recording {
+  height: 40px;
+}
+
+.audiofield__file {
+  @include text;
+
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  height: 1.75rem;
+  max-width: calc(100% - 74px);
+}
+
+.audiofield__file--recording,
+.audiofield__file--uploading {
+  height: auto;
+}
+
+.audiofield__file-record-progressbar,
+.audiofield__file-upload-progressbar {
+  @include text;
+
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+  height: auto;
+}
+
+.audiofield__file-record-percentage,
+.audiofield__file-upload-percentage {
+  line-height: 1;
+  margin: 0 0 5px;
+}
+
+.audiofield__controls {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 20px;
+  }
+
+  .audiofield__start-record-button,
+  .audiofield__stop-record-button {
+    @include prefix(transition, moz ms o webkit, background 0.15s);
+
+    align-items: center;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    flex-basis: auto;
+    flex-flow: row nowrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 10px;
+    padding: 6px 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  // We set the record/stop buttons colors here
+  .audiofield__start-record-button {
+    border: 1px solid $color-recording;
+    color: $color-recording;
+
+    &:hover {
+      background: $color-recording;
+      border: 1px solid $color-recording;
+      color: $color-default;
+
+      .audiofield__start-record-label {
+        color: $color-default;
+      }
+    }
+  }
+
+  .audiofield__stop-record-button {
+    border: 1px solid $color-default-contrast;
+    color: $color-default-contrast;
+
+    &:hover {
+      background: $color-default-contrast;
+      border: 1px solid $color-default-contrast;
+      color: $color-default;
+
+      .audiofield__stop-record-label {
+        color: $color-default;
+      }
+    }
+  }
+
+  .audiofield__start-record-label,
+  .audiofield__stop-record-label {
+    @include text;
+
+    padding: 0 0 0 4px;
+  }
+
+  // We set the resord/stop labels colors here
+  .audiofield__start-record-label {
+    color: $color-recording;
+  }
+
+  .audiofield__stop-record-label {
+    color: $color-default-contrast;
+  }
+
+  .audiofield__description {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 1;
+    margin: 10px 0 0;
+
+    @include breakpoint($breakpoint-pad) {
+      margin: 5px 0;
+    }
+  }
+}
