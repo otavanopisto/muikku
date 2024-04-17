@@ -251,7 +251,7 @@ class JournalField extends React.Component<
         field = (
           <>
             <span className="journalfield-header">
-              <span className="material-page__taskfield-title">
+              <span className="journalfield-header__title">
                 {t("labels.diaryEntry", { ns: "materials" })}
               </span>
               <Instructions
