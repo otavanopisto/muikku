@@ -197,7 +197,7 @@ const updateYO: updateYOTriggerType = function updateYO(userIdentifier) {
         payload: "LOADING",
       });
 
-      //If the studentId is not provided, this is called for you, not someone else.
+      //If the studentIdentifier is not provided, this is called for you, not someone else.
       // So we go ahead and call exams for you.
       if (!userIdentifier) {
         const matriculationExamData = await matriculationApi.getExams();
