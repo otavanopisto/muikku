@@ -482,6 +482,7 @@
       "loadError_studies": "Loading records failed. Please try refreshing the page.",
       "loadError_counselors": "Loading counselors failed. Please try refreshing the page.",
       "loadError_matriculation": "Loading the matriculation examination information failed. Please try again.",
+      "loadError_matriculationSubjects": "Loading the matriculation subjects failed. Please try refreshing the page.",
       "loadError_statistics": "Loading the statistics information failed. Please try again.",
       "loadError_userAndWorkspace": "User and course loading failed. Please try refreshing the page.",
       "loadError_workspaces": "Loading the courses failed. Please try refreshing the page.",
