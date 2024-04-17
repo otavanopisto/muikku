@@ -215,7 +215,7 @@ const updateYO: updateYOTriggerType = function updateYO(userIdentifier) {
       });
 
       const eligibility = await recordsApi.getStudentMatriculationEligibility({
-        studentIdentifier: studentIdentifier,
+        studentIdentifier,
       });
 
       dispatch({

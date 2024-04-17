@@ -552,12 +552,12 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
 
 /**
  * loadStudentPedagogyFormAccess thunk action creator
- * @param id student muikku identifier
+ * @param identifier student muikku identifier
  * @param forceLoad should the load be forced
  * @returns a thunk functions to load student pedagogy form access
  */
 const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
-  function loadStudentPedagogyFormAccess(id, forceLoad) {
+  function loadStudentPedagogyFormAccess(identifier, forceLoad) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -582,7 +582,7 @@ const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
       try {
         pedagogyApi
           .getPedagogyFormAccess({
-            studentIdentifier: id,
+            studentIdentifier: identifier,
           })
           .then((pedagogyFormAvaibility) => {
             dispatch({
