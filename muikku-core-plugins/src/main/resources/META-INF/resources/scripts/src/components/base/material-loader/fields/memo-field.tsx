@@ -200,9 +200,19 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @param e e
    */
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    let newValue = e.target.value;
+
+    if (
+      characterCount(e.target.value) > parseInt(this.props.content.maxChars) ||
+      wordCount(e.target.value) > parseInt(this.props.content.maxWords)
+    ) {
+      newValue = this.state.value;
+      const textarea = e.target;
+      textarea.selectionStart = textarea.selectionEnd = this.state.value.length;
+    }
     // and update the count
     this.setState({
-      value: e.target.value,
+      value: newValue,
       words: wordCount(e.target.value),
       characters: characterCount(e.target.value),
     });
@@ -215,11 +225,26 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   /**
    * onCKEditorChange - this one is for a ckeditor change
    * @param value value
+   * @param instance editor instance for manipulation
    */
-  onCKEditorChange(value: string) {
+  onCKEditorChange(value: string, instance: any) {
     // we need the raw text
     const rawText = $(value).text();
     // and update the state
+
+    // If there's a restriction to the amount of characters or words, we need to check if the user has exceeded the limit
+    // if (
+    //   characterCount(rawText) > parseInt(this.props.content.maxChars) ||
+    //   wordCount(rawText) > parseInt(this.props.content.maxWords)
+    // ) {
+    //   // If the user has exceeded the limit, we need to revert the changes
+    //   value = this.state.value;
+    //   //Then we set the cursor at the end of the content
+    //   const range = instance.createRange();
+    //   range.moveToElementEditEnd(range.root);
+    //   instance.getSelection().selectRanges([range]);
+    // }
+
     this.setState({
       value,
       words: wordCount(rawText),
@@ -270,6 +295,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         unloadedField = !this.props.content.richedit ? (
           <textarea
             readOnly
+            maxLength={parseInt(this.props.content.maxChars)}
             className="material-page__memofield"
             rows={parseInt(this.props.content.rows)}
           />
@@ -282,6 +308,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       } else {
         unloadedField = (
           <textarea
+            maxLength={parseInt(this.props.content.maxChars)}
             className="material-page__memofield"
             rows={parseInt(this.props.content.rows)}
           />
@@ -340,6 +367,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           <CKEditor
             configuration={ckEditorConfig}
             onChange={this.onCKEditorChange}
+            maxChars={parseInt(this.props.content.maxChars)}
+            maxWords={parseInt(this.props.content.maxWords)}
           >
             {this.state.value}
           </CKEditor>

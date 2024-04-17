@@ -8,6 +8,7 @@ import equals = require("deep-equal");
 import * as React from "react";
 import getCKEDITOR, { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { v4 as uuidv4 } from "uuid";
+import { max } from "moment";
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -52,15 +53,34 @@ const PLUGINS = {
 const pluginsLoaded: any = {};
 
 /**
+ * CKEditorEventInfo class definition
+ */
+interface CKEditorEventInfo {
+  data: {
+    dataValue: string;
+  };
+  /**
+   * cancel method
+   */
+  cancel(): void;
+  /**
+   * stop method
+   */
+  stop(): void;
+}
+
+/**
  * CKEditorProps
  */
 interface CKEditorProps {
   configuration?: any;
   ancestorHeight?: number;
-  onChange: (arg: string) => any;
+  onChange: (arg: string, instance: any) => any;
   onDrop?: () => any;
   children?: string;
   autofocus?: boolean;
+  maxChars?: number;
+  maxWords?: number;
   editorTitle?: string;
 }
 
@@ -259,7 +279,7 @@ export default class CKEditor extends React.Component<
     const data = instance.getData();
     if (data !== this.currentData) {
       this.currentData = data;
-      props.onChange(data);
+      props.onChange(data, instance);
     }
   }
 
@@ -324,6 +344,31 @@ export default class CKEditor extends React.Component<
       });
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
+
+      if (props.maxChars || props.maxWords) {
+        instance.on("paste", function (event: CKEditorEventInfo) {
+          // Get the pasted data
+          let pastedData = event.data.dataValue;
+
+          const words = pastedData.trim().split(/\s+/);
+
+          // If the pasted data exceeds the limit, trim it
+          if (pastedData.length > props.maxChars) {
+            pastedData = pastedData.substring(0, props.maxChars);
+
+            // Update the event data with the trimmed pasted data
+            event.data.dataValue = pastedData;
+          }
+
+          // If the number of words exceeds the limit, trim it
+          if (words.length > props.maxWords) {
+            pastedData = words.slice(0, props.maxWords).join(" ");
+
+            // Update the event data with the trimmed pasted data
+            event.data.dataValue = pastedData;
+          }
+        });
+      }
 
       // Height can be given from the ancestor or from instance container.
       // Instance container is "unstable" and changes according to the content it seems, so for example
