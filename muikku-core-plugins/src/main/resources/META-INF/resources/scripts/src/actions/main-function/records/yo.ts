@@ -48,21 +48,21 @@ export type UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS = SpecificActionType<
  * updateYOTriggerType
  */
 export interface updateYOTriggerType {
-  (studentId?: string): AnyActionType;
+  (userIdentifier?: string): AnyActionType;
 }
 /**
  * UpdateMatriculationSubjectEligibilityTriggerType
  */
 export interface UpdateMatriculationSubjectEligibilityTriggerType {
-  (studentId?: string): AnyActionType;
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
  * updateMatriculationSubjectEligibility
- * @param studentId muikku student identifier
+ * @param userIdentifier muikku student identifier
  */
 const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibilityTriggerType =
-  function updateMatriculationSubjectEligibility(studentId) {
+  function updateMatriculationSubjectEligibility(userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -82,8 +82,8 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
         const selectedHOPSSubjects =
           state.hops.value.studentMatriculationSubjects;
 
-        const studentIdentifier = studentId
-          ? studentId
+        const studentIdentifier = userIdentifier
+          ? userIdentifier
           : state.status.userSchoolDataIdentifier;
 
         const subjects = await recordsApi.getMatriculationSubjects();
@@ -167,9 +167,9 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 
 /**
  * updateYO
- * @param identifier muikku student identifier
+ * @param userIdentifier muikku student userIdentifier
  */
-const updateYO: updateYOTriggerType = function updateYO(identifier) {
+const updateYO: updateYOTriggerType = function updateYO(userIdentifier) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
@@ -178,8 +178,8 @@ const updateYO: updateYOTriggerType = function updateYO(identifier) {
     const recordsApi = MApi.getRecordsApi();
     const matriculationApi = MApi.getMatriculationApi();
 
-    const studentIdentifier = identifier
-      ? identifier
+    const studentIdentifier = userIdentifier
+      ? userIdentifier
       : state.status.userSchoolDataIdentifier;
 
     try {
@@ -199,7 +199,7 @@ const updateYO: updateYOTriggerType = function updateYO(identifier) {
 
       //If the studentId is not provided, this is called for you, not someone else.
       // So we go ahead and call exams for you.
-      if (!identifier) {
+      if (!userIdentifier) {
         const matriculationExamData = await matriculationApi.getExams();
         dispatch({
           type: "UPDATE_STUDIES_YO",
