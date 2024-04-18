@@ -17,7 +17,7 @@ import ContentPanel, {
   ContentPanelItem,
 } from "~/components/general/content-panel";
 import HelpMaterial from "./help-material-page";
-import { ButtonPill } from "~/components/general/button";
+import { ButtonPill, IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
@@ -667,14 +667,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             let contentToRead = [
               ...this.props.materials
                 .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
-                .map((section) => `sectionId${section.workspaceMaterialId}`),
+                .map((section) => `s-${section.workspaceMaterialId}`),
             ];
 
             if (pageI !== 0) {
               contentToRead = [
                 ...section.children
                   .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
-                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                  .map((page) => `p-${page.workspaceMaterialId}`),
                 ...contentToRead,
               ];
             }
@@ -694,7 +694,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           const material =
             !this.props.workspace || (!isEditable && node.hidden) ? null : (
               <ContentPanelItem
-                id={`pageId${node.workspaceMaterialId}`}
+                id={`p-${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
               >
@@ -712,6 +712,11 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   workspace={this.props.workspace}
                   isViewRestricted={false}
                   readspeakerComponent={readSpeakerComponent}
+                  anchorItem={
+                    <BackToToc
+                      tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                    />
+                  }
                 />
               </ContentPanelItem>
             );
@@ -728,7 +733,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
-          id={`sectionId${section.workspaceMaterialId}`}
+          id={`s-${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -780,6 +785,13 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               lang={section.titleLanguage || this.props.workspace.language}
             >
               {section.title}
+              <BackToToc
+                tocElementId={
+                  this.props.status.loggedIn
+                    ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                    : `tocTopic-${section.workspaceMaterialId}`
+                }
+              />
             </div>
           </h2>
 
@@ -859,3 +871,31 @@ const componentWithTranslation = withTranslation(
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
 })(componentWithTranslation);
+
+/**
+ * BackToTocProps
+ */
+interface BackToTocProps {
+  tocElementId: string;
+}
+
+/**
+ * BackToToc
+ * @param props props
+ */
+const BackToToc = (props: BackToTocProps) => {
+  /**
+   * handleLinkClick
+   */
+  const handleLinkClick = () => {
+    const tocElement = document.getElementById(props.tocElementId);
+
+    if (tocElement) {
+      tocElement.focus();
+    }
+  };
+
+  return (
+    <IconButton icon="bubbles" onClick={handleLinkClick} className="link" />
+  );
+};

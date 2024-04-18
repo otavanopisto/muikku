@@ -46,7 +46,7 @@ interface TocTopicProps {
   /**
    * Topic id is combination of workspace material folder id + something user related
    */
-  topicId: number | string;
+  topicId: string;
   /**
    * If some of topic's children is active, topic is active
    */
@@ -80,7 +80,7 @@ export type TocTopicRef = {
 const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
   (props, outerRef) => {
     const [height, setHeight] = useLocalStorage<number | string>(
-      `tocTopic-${props.topicId}`,
+      props.topicId,
       "auto"
     );
 
@@ -98,7 +98,7 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
       }
     };
 
-    // Way to expose toggleHeight to parent component
+    // Way to expose toggleHeight and refs to parent component
     React.useImperativeHandle(outerRef, () => ({
       // eslint-disable-next-line jsdoc/require-jsdoc
       toggleOpen: (type) => {
@@ -151,6 +151,7 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
       >
         {props.name ? (
           <a
+            id={props.topicId}
             ref={titleContainerRef}
             href={props.hash ? "#" + props.hash : null}
             className={`toc__section-title-container ${
@@ -232,6 +233,18 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
       ...anchorProps
     } = props;
 
+    /**
+     * Handles link click
+     * @param e e
+     */
+    const handleLinkClick = (e: React.MouseEvent) => {
+      const pageElement = document.getElementById(hash as string);
+
+      if (pageElement) {
+        pageElement.focus();
+      }
+    };
+
     return (
       <a
         {...anchorProps}
@@ -242,6 +255,7 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
           modifier ? "toc__item--" + modifier : ""
         }`}
         href={hash ? "#" + hash : null}
+        onClick={handleLinkClick}
       >
         <span className="toc__text-body">{children}</span>
         {iconAfter ? (

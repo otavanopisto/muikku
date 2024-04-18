@@ -482,6 +482,17 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
     };
 
   /**
+   * Handle focus event on toc element
+   * @param elementIndex elementIndex
+   */
+  handleTocElementFocus = (elementIndex: number) => (e: React.FocusEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.tocElementFocusIndexRef = elementIndex;
+  };
+
+  /**
    * render
    */
   render() {
@@ -534,7 +545,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           const topic = (
             <TocTopic
               ref={this.handleCallbackTocTopicRef(nodeIndex)}
-              topicId={node.workspaceMaterialId}
+              topicId={
+                this.props.status.loggedIn
+                  ? `tocTopic-${node.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${node.workspaceMaterialId}`
+              }
               isActive={this.isSectionActive(node)}
               name={node.title}
               isHidden={node.hidden}
@@ -600,6 +615,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
                     const pageElement = (
                       <TocElement
+                        id={`tocElement-${subnode.workspaceMaterialId}`}
                         modifier={modifier}
                         tabIndex={-1}
                         ref={this.handleCallbackTocElementRef(
@@ -627,6 +643,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                           `s-${node.workspaceMaterialId}`,
                           subNodeIndex
                         )}
+                        onFocus={this.handleTocElementFocus(subNodeIndex)}
                         lang={
                           subnode.titleLanguage ||
                           node.titleLanguage ||

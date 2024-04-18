@@ -628,6 +628,17 @@ class ContentComponent extends SessionStateComponent<
     };
 
   /**
+   * Handle focus event on toc element
+   * @param elementIndex elementIndex
+   */
+  handleTocElementFocus = (elementIndex: number) => (e: React.FocusEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.tocElementFocusIndexRef = elementIndex;
+  };
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -850,8 +861,8 @@ class ContentComponent extends SessionStateComponent<
               isActive={this.isSectionActive(node)}
               topicId={
                 this.props.status.loggedIn
-                  ? `${node.workspaceMaterialId}_${this.props.status.userId}`
-                  : node.workspaceMaterialId
+                  ? `tocTopic-${node.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${node.workspaceMaterialId}`
               }
               name={node.title}
               isHidden={node.hidden}
@@ -991,6 +1002,7 @@ class ContentComponent extends SessionStateComponent<
 
                   const pageElement = (
                     <TocElement
+                      id={`tocElement-${subnode.workspaceMaterialId}`}
                       modifier={modifier}
                       tabIndex={-1}
                       ref={this.handleCallbackTocElementRef(
@@ -1017,6 +1029,7 @@ class ContentComponent extends SessionStateComponent<
                         `s-${node.workspaceMaterialId}`,
                         subNodeIndex
                       )}
+                      onFocus={this.handleTocElementFocus(subNodeIndex)}
                       lang={
                         subnode.titleLanguage ||
                         node.titleLanguage ||
