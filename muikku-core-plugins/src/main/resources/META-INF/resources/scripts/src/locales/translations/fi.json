@@ -1343,6 +1343,21 @@
       "updateError_page": "Materiaalisivun päivitys epäonnistui",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
+    },
+    "wcag": {
+      "focusToToc": "Siirry tämän hetkistä sisältöä vastaavaan sisällysluettelon kohtaan painamalla Enteriä",
+      "tocTopicAllExpand": "Laajenna kaikki osiot sisällysluettelossa",
+      "tocTopicAllCollapse": "Kutista kaikki osiot sisällysluettelossa",
+      "tocTopicExpand": "Laajenna osion sisältö oikealla nuolella",
+      "tocTopicCollapse": "Kutista osion sisältö vasemmalla nuolella",
+      "tocPageMaterialStatus": "Sisällön tila",
+      "tocPageMaterialStatus_done": "Sisältö on tilassa valmis",
+      "tocPageMaterialStatus_submitted": "Sisältö on tilassa palautettu",
+      "tocPageMaterialStatus_withdrawn": "Sisältö on tilassa peruutettu",
+      "tocPageMaterialStatus_incomplete": "Sisältö on tilassa kesken",
+      "tocPageMaterialStatus_failed": "Sisältö on tilassa hylätty",
+      "tocPageMaterialStatus_passed": "Sisältö on tilassa hyväksytty",
+      "tocPageMaterialStatus_restricted": "Sisältö on rajoitettu"
     }
   },
   "notebook": {

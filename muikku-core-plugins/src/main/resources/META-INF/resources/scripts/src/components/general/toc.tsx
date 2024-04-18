@@ -6,6 +6,7 @@
 
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
+import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "usehooks-ts";
 import "~/sass/elements/toc.scss";
 
@@ -86,6 +87,8 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
 
     const titleContainerRef = React.useRef<HTMLAnchorElement>(null);
 
+    const { t } = useTranslation(["materials"]);
+
     /**
      * Toggles open state
      * @param type "open" | "handle"
@@ -148,6 +151,7 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
             : ""
         }`}
         lang={props.language}
+        aria-expanded={height !== 0}
       >
         {props.name ? (
           <a
@@ -159,10 +163,17 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
             }`}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={handleTitleKeyDown}
+            aria-controls={`topic-elements-${props.topicId}`}
+            aria-label={
+              height === 0
+                ? t("wcag.tocTopicExpand", { ns: "materials" })
+                : t("wcag.tocTopicCollapse", { ns: "materials" })
+            }
           >
             <span
               className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
               onClick={handleToggleHeightClick}
+              aria-controls={`topic-elements-${props.topicId}`}
             />
             <div className="toc__section-title">
               <span className="toc__text-body">{props.name}</span>
@@ -176,7 +187,12 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
             ) : null}
           </a>
         ) : null}
-        <AnimateHeight duration={200} height={height} easing="ease-in">
+        <AnimateHeight
+          id={`topic-elements-${props.topicId}`}
+          duration={200}
+          height={height}
+          easing="ease-in"
+        >
           {/**TODO: Styling */}
           <div>{props.children}</div>
         </AnimateHeight>
@@ -256,6 +272,7 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
         }`}
         href={hash ? "#" + hash : null}
         onClick={handleLinkClick}
+        aria-current={isActive}
       >
         <span className="toc__text-body">{children}</span>
         {iconAfter ? (

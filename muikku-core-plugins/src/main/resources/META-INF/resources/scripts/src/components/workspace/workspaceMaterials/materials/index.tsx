@@ -37,7 +37,11 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
-import { withTranslation, WithTranslation } from "react-i18next";
+import {
+  useTranslation,
+  withTranslation,
+  WithTranslation,
+} from "react-i18next";
 import ReadSpeakerReader from "~/components/general/readspeaker";
 import {
   displayNotification,
@@ -954,6 +958,8 @@ interface BackToTocProps {
  * @param props props
  */
 const BackToToc = (props: BackToTocProps) => {
+  const { t } = useTranslation(["materials"]);
+
   /**
    * handleLinkClick
    */
@@ -966,6 +972,11 @@ const BackToToc = (props: BackToTocProps) => {
   };
 
   return (
-    <IconButton icon="bubbles" onClick={handleLinkClick} className="link" />
+    <IconButton
+      icon="bubbles"
+      onClick={handleLinkClick}
+      className="link"
+      aria-label={t("wcag.focusToToc", { ns: "materials" })}
+    />
   );
 };

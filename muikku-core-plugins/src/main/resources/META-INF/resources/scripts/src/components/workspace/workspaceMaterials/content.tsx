@@ -659,7 +659,9 @@ class ContentComponent extends SessionStateComponent<
             <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}>
               <IconButton
                 icon="arrow-down"
-                aria-label={t("actions.openAll")}
+                aria-label={t("wcag.tocTopicAllExpand", {
+                  ns: "materials",
+                })}
                 buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsClick("open")}
                 onKeyDown={this.handleToggleAllSectionKeyDown("open")}
@@ -668,7 +670,9 @@ class ContentComponent extends SessionStateComponent<
             <Dropdown openByHover content={<p>{t("actions.closeAll")}</p>}>
               <IconButton
                 icon="arrow-up"
-                aria-label={t("actions.closeAll")}
+                aria-label={t("wcag.tocTopicAllCollapse", {
+                  ns: "materials",
+                })}
                 buttonModifiers={["toc-action"]}
                 onClick={this.handleToggleAllSectionsClick("close")}
                 onKeyDown={this.handleToggleAllSectionKeyDown("close")}
@@ -908,6 +912,7 @@ class ContentComponent extends SessionStateComponent<
                   let icon: string | null = null;
                   let iconTitle: string | null = null;
                   let className: string | null = null;
+                  let ariaLabel: string | null = null;
 
                   const compositeReplies =
                     this.props.materialReplies &&
@@ -933,12 +938,20 @@ class ContentComponent extends SessionStateComponent<
                           context: "done",
                           ns: "materials",
                         });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "done",
+                          ns: "materials",
+                        });
                         break;
                       case "SUBMITTED":
                         icon = "check";
                         className = "toc__item--submitted";
                         iconTitle = t("labels.assignment", {
                           context: "returned",
+                          ns: "materials",
+                        });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "submitted",
                           ns: "materials",
                         });
                         break;
@@ -949,8 +962,10 @@ class ContentComponent extends SessionStateComponent<
                           context: "cancelled",
                           ns: "materials",
                         });
-                        break;
-
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "withdrawn",
+                          ns: "materials",
+                        });
                         break;
                       case "INCOMPLETE":
                         icon = "check";
@@ -959,7 +974,10 @@ class ContentComponent extends SessionStateComponent<
                           context: "incomplete",
                           ns: "materials",
                         });
-                        break;
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "incomplete",
+                          ns: "materials",
+                        });
                         break;
                       case "FAILED":
                         icon = "thumb-down";
@@ -969,6 +987,10 @@ class ContentComponent extends SessionStateComponent<
                           ns: "materials",
                         });
                         iconTitle = "Tittel";
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "failed",
+                          ns: "materials",
+                        });
                         break;
                       case "PASSED":
                         icon = "thumb-up";
@@ -977,8 +999,11 @@ class ContentComponent extends SessionStateComponent<
                           context: "passed",
                           ns: "materials",
                         });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "passed",
+                          ns: "materials",
+                        });
                         break;
-
                       case "UNANSWERED":
                       default:
                         break;
@@ -1035,6 +1060,7 @@ class ContentComponent extends SessionStateComponent<
                         node.titleLanguage ||
                         this.props.workspace.language
                       }
+                      aria-label={ariaLabel}
                     >
                       {subnode.title}
                     </TocElement>
