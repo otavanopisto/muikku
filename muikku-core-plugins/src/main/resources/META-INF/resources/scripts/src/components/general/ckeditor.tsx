@@ -9,6 +9,7 @@ import * as React from "react";
 import getCKEDITOR, { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { v4 as uuidv4 } from "uuid";
 import { max } from "moment";
+import $ from "~/lib/jquery";
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -349,19 +350,40 @@ export default class CKEditor extends React.Component<
         instance.on("paste", function (event: CKEditorEventInfo) {
           // Get the pasted data
           let pastedData = event.data.dataValue;
-
+          // Remove all the html tags from it if there are any
+          pastedData = pastedData.replace(/<[^>]*>/g, "");
+          let trimmed = false;
           const words = pastedData.trim().split(/\s+/);
+          const characters = pastedData
+            .trim()
+            .replace(/(\s|\r\n|\r|\n)+/g, "")
+            .split("").length;
 
           // If the pasted data exceeds the limit, trim it
-          if (pastedData.length > props.maxChars) {
-            pastedData = pastedData.substring(0, props.maxChars);
+          if (characters > props.maxChars) {
+            let count = 0;
+            let newData = "";
+
+            for (const char of pastedData) {
+              if (count < props.maxChars) {
+                newData += char;
+
+                if (char !== " ") {
+                  count++;
+                }
+              } else {
+                break;
+              }
+            }
+            pastedData = newData;
 
             // Update the event data with the trimmed pasted data
             event.data.dataValue = pastedData;
+            trimmed = true;
           }
 
           // If the number of words exceeds the limit, trim it
-          if (words.length > props.maxWords) {
+          if (!trimmed && words.length > props.maxWords) {
             pastedData = words.slice(0, props.maxWords).join(" ");
 
             // Update the event data with the trimmed pasted data

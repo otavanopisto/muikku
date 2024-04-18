@@ -110,6 +110,11 @@ const ckEditorConfig = {
  * @returns number of characters
  */
 function characterCount(rawText: string) {
+  const text = rawText
+    .trim()
+    .replace(/(\s|\r\n|\r|\n)+/g, "")
+    .split("").length;
+
   return rawText === ""
     ? 0
     : rawText
