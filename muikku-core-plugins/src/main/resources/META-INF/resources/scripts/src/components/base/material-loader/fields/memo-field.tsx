@@ -238,23 +238,27 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // and update the state
 
     // If there's a restriction to the amount of characters or words, we need to check if the user has exceeded the limit
-    // if (
-    //   characterCount(rawText) > parseInt(this.props.content.maxChars) ||
-    //   wordCount(rawText) > parseInt(this.props.content.maxWords)
-    // ) {
-    //   // If the user has exceeded the limit, we need to revert the changes
-    //   value = this.state.value;
-    //   //Then we set the cursor at the end of the content
-    //   const range = instance.createRange();
-    //   range.moveToElementEditEnd(range.root);
-    //   instance.getSelection().selectRanges([range]);
-    // }
+    if (
+      characterCount(rawText) > parseInt(this.props.content.maxChars) ||
+      wordCount(rawText) > parseInt(this.props.content.maxWords)
+    ) {
+      // If the user has exceeded the limit, we need to revert the changes
+      //Then we set the cursor at the end of the content
+      value = this.state.value;
+    }
 
-    this.setState({
-      value,
-      words: wordCount(rawText),
-      characters: characterCount(rawText),
-    });
+    this.setState(
+      {
+        value,
+        words: wordCount(rawText),
+        characters: characterCount(rawText),
+      },
+      () => {
+        const range = instance.createRange();
+        range.moveToElementEditEnd(range.root);
+        instance.getSelection().selectRanges([range]);
+      }
+    );
 
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, value);
