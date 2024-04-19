@@ -18,7 +18,7 @@ public class WebSocketSessionInfo {
   }
   
   public boolean expired() {
-    return System.currentTimeMillis() - lastAccess > 240000; // four minutes
+    return System.currentTimeMillis() - lastAccess > 180000; // three minutes
   }
 
   public Session getSession() {
