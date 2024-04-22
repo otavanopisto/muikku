@@ -139,7 +139,8 @@
 // as edited and selected modifiers can be present at the same time and we need to show visually if
 // edited item is selected
 .organizerfield__term--selected { // Single draggable term in SELEDTED state
-  background: $taskfield-border-color;
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
   color: $color-default;
 
   .organizerfield__term-icon {
