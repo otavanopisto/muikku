@@ -8112,32 +8112,32 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-    put:
-      operationId: updateWorkspace
-      summary: Update and returns workspace
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceId
-          in: path
-          description: Workspace entity id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
-      responses:
-        "200":
-          description: Workspace updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Workspace"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
+#    put:
+#      operationId: updateWorkspace
+#      summary: Update and returns workspace
+#      tags:
+#        - Workspace
+#      parameters:
+#        - name: workspaceId
+#          in: path
+#          description: Workspace entity id
+#          required: true
+#          schema:
+#            type: integer
+#            format: int64
+#      requestBody:
+#        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
+#      responses:
+#        "200":
+#          description: Workspace updated successfully
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/Workspace"
+#        "400":
+#          description: Invalid request was sent to the server
+#        "500":
+#          description: Internal server error
     delete:
       operationId: deleteWorkspace
       summary: Deletes workspace
@@ -8160,6 +8160,58 @@ paths:
       responses:
         "204":
           description: Workspace deleted successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/settings:
+    get:
+      operationId: getWorkspaceSettings
+      summary: Returns workspace settings by id. Note returned item is typed as any.
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSettings"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateWorkspaceSettings
+      summary: Updates and returns workspace settings
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSettings"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11148,6 +11200,7 @@ components:
           schema:
             type: object
             properties:
+            # TODO the message here is not used anymore
               message:
                 type: string
 
@@ -11462,7 +11515,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AnyValue"
+            $ref: "#/components/schemas/WorkspaceSettings"
 
     WorkspaceCreateRequestBody:
       required: true
@@ -16442,6 +16495,113 @@ components:
         showCredits:
           description: Should the credits be shown. Currently only OPS 2021 student will have this as true
           type: boolean
+
+    WorkspaceSettings:
+      type: object
+      description: Workspace Settings object
+      required:
+        - id
+        - name
+        - description
+        - published
+        - hasCustomImage
+        - materialDefaultLicense
+        - urlName
+        - curriculumIdentifiers
+        - organizationEntityId
+        - language
+      properties:
+        id:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        name:
+          description: The name of the workspace
+          type: string
+        nameExtension:
+          description: The name extension of the workspace
+          type: string
+          nullable: true
+        description:
+          description: The description of the workspace
+          type: string
+        published:
+          description: If the workspace is published
+          type: boolean
+        subjectIdentifier:
+          description: The identifier of the subject
+          type: string
+        materialDefaultLicense:
+          description: The default license of the workspace
+          type: string
+        hasCustomImage:
+          description: If the workspace has a custom image
+          type: boolean
+        curriculumIdentifiers:
+          description: The identifiers of the curriculums
+          type: array
+          items:
+            type: string
+        organizationEntityId:
+          description: The id of the organization
+          type: integer
+          format: int64
+        urlName:
+          description: The url name of the workspace
+          type: string
+        language:
+          description: Main language of the workspace
+          $ref: "#/components/schemas/Language"
+        mandatority:
+          description: Mandatority value of the workspace
+          allOf:
+            - $ref: "#/components/schemas/WorkspaceMandatority"
+          nullable: true
+        access:
+          description: Access level of the workspace
+          $ref: "#/components/schemas/WorkspaceAccess"
+        defaultSignupMessage:
+          description: Default sign up greeting of the workspace 
+          $ref: "#/components/schemas/WorkspaceDefaultSignupMessage"
+        groupSignupMessages:
+          description: Group bound sign up greeting messages of the workspace
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceSignupMessage"
+          
+    WorkspaceDefaultSignupMessage:
+      type: object
+      description: Default Workspace sign up message, a message that is sent to student when they sign up to a workspace
+      required:
+        - enabled
+        - caption
+        - content
+      properties:
+        enabled:
+          type: boolean
+        caption:
+          type: string
+        content:
+          type: string
+
+    WorkspaceSignupMessage:
+      type: object
+      description: Workspace sign up message for a specific group, a message that is sent to student when they sign up to a workspace
+      required:
+        - userGroupId
+        - enabled
+        - caption
+        - content
+      properties:
+        userGroupId:
+          type: integer
+          format: int64
+        enabled:
+          type: boolean
+        caption:
+          type: string
+        content:
+          type: string
 
     ErrorModel:
       type: object

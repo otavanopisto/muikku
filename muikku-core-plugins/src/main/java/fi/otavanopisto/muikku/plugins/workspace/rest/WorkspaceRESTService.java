@@ -72,10 +72,12 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -134,8 +136,10 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntry
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupMessageRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
@@ -147,6 +151,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -167,6 +172,7 @@ import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -203,6 +209,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
+  
+  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
@@ -223,6 +232,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private UserEmailEntityController userEmailEntityController;
 
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
   @Inject
   private UserEntityFileController userEntityFileController;
 
@@ -1071,10 +1083,158 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
   }
 
-  @PUT
-  @Path("/workspaces/{WORKSPACEENTITYID}")
+//  @PUT
+//  @Path("/workspaces/{WORKSPACEENTITYID}")
+//  @RESTPermit (handling = Handling.INLINE)
+//  @Deprecated
+//  public Response updateWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace payload) {
+//    if (!sessionController.isLoggedIn()) {
+//      return Response.status(Status.UNAUTHORIZED).build();
+//    }
+//
+//    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+//    if (workspaceEntity == null) {
+//      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+//    }
+//
+//    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
+//      return Response.status(Status.FORBIDDEN).build();
+//    }
+//
+//    if ((payload.getArchived() != null) && payload.getArchived()) {
+//      return Response.status(Status.NOT_IMPLEMENTED).entity("Archiving workspaces is currently unimplemented").build();
+//    }
+//
+//    Workspace workspace = null;
+//    try {
+//      workspace = workspaceController.findWorkspace(workspaceEntity);
+//      if (workspace == null) {
+//        return Response.status(Status.NOT_FOUND).entity(String.format("Could not find a workspace for WorkspaceEntity #%d", workspaceEntityId)).build();
+//      }
+//    } catch (Exception e) {
+//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
+//    }
+//
+//    if (payload.getNumVisits() != null) {
+//      if (workspaceVisitController.getNumVisits(workspaceEntity) != payload.getNumVisits().longValue()) {
+//        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating number of visit via this endpoint is currently unimplemented").build();
+//      }
+//    }
+//
+//    if (payload.getLastVisit() != null) {
+//      if (workspaceVisitController.getLastVisit(workspaceEntity).equals(payload.getLastVisit())) {
+//        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating last visit via this endpoint is currently unimplemented").build();
+//      }
+//    }
+//
+//    if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
+//      workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
+//    }
+//    
+//    if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
+//      workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
+//    }
+//
+//    workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+//    workspaceEntity = workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
+//
+//    // Reindex the workspace so that Elasticsearch can react to publish and visibility
+//
+//    workspaceIndexer.indexWorkspace(workspaceEntity);
+//
+//    if ((payload.getDescription() != null) || (payload.getName() != null)) {
+//      try {
+//        if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
+//            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) ||
+//            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
+//          workspace.setName(payload.getName());
+//          workspace.setNameExtension(payload.getNameExtension());
+//          workspace.setDescription(payload.getDescription());
+//          workspace = workspaceController.updateWorkspace(workspace);
+//        }
+//      }
+//      catch (Exception e) {
+//        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
+//      }
+//    }
+//
+//    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+//
+//    return Response.ok(createRestModel(
+//        workspaceEntity,
+//        workspace,
+//        educationTypeMapping
+//    )).build();
+//  }
+
+  @GET
+  @Path("/workspaces/{ID}/settings")
   @RESTPermitUnimplemented
-  public Response updateWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace payload) {
+  public Response getWorkspaceSettings(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    Workspace workspace = null;
+
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      workspace = workspaceController.findWorkspace(workspaceEntity);
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
+        ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
+    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
+
+    WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+    WorkspaceSignupMessageRestModel defaultSignupMessageRestModel = defaultSignupMessage == null ? null
+        : new WorkspaceSignupMessageRestModel(null, defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent());
+
+    List<WorkspaceSignupMessage> groupBoundSignupMessages = workspaceSignupMessageController.listGroupBoundSignupMessages(workspaceEntity);
+    List<WorkspaceSignupMessageRestModel> groupSignupMessageRestModels = groupBoundSignupMessages.stream()
+      .map(signupMessage ->
+        new WorkspaceSignupMessageRestModel(
+            signupMessage.getSignupGroupEntity() != null ? signupMessage.getSignupGroupEntity().getId() : null,
+            signupMessage.isEnabled(),
+            signupMessage.getCaption(),
+            signupMessage.getContent()
+        )
+      )
+      .collect(Collectors.toList());
+    
+    WorkspaceSettingsRestModel settings = new WorkspaceSettingsRestModel(
+        workspaceEntity.getId(),
+        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getPublished(),
+        workspaceEntity.getLanguage(),
+        workspace.getName(),
+        workspace.getNameExtension(),
+        workspace.getDescription(),
+        workspaceEntity.getDefaultMaterialLicense(),
+        mandatority,
+        convertWorkspaceCurriculumIds(workspace),
+        hasCustomImage,
+        defaultSignupMessageRestModel,
+        groupSignupMessageRestModels
+    );
+    
+    return Response.ok(settings).build();
+  }
+
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}/settings")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response updateWorkspaceSettings(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSettingsRestModel payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -1084,12 +1244,26 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
     }
 
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
+    if (payload.getDefaultSignupMessage() != null) {
+      // Make sure the basic properties are defined
+      
+      if (StringUtils.isAnyBlank(payload.getDefaultSignupMessage().getCaption(), payload.getDefaultSignupMessage().getContent())) {
+        return Response.status(Status.BAD_REQUEST).entity("Default Greeting message is missing caption or content.").build();
+      }
     }
 
-    if ((payload.getArchived() != null) && payload.getArchived()) {
-      return Response.status(Status.NOT_IMPLEMENTED).entity("Archiving workspaces is currently unimplemented").build();
+    if (payload.getGroupSignupMessages() != null) {
+      // Make sure the basic properties are defined
+      
+      for (WorkspaceSignupMessageRestModel groupMessage : payload.getGroupSignupMessages()) {
+        if (groupMessage.getUserGroupId() == null || StringUtils.isAnyBlank(groupMessage.getCaption(), groupMessage.getContent())) {
+          return Response.status(Status.BAD_REQUEST).entity("Default Greeting message is missing caption or content.").build();
+        }
+      }
+    }
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     Workspace workspace = null;
@@ -1100,18 +1274,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     } catch (Exception e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
-    }
-
-    if (payload.getNumVisits() != null) {
-      if (workspaceVisitController.getNumVisits(workspaceEntity) != payload.getNumVisits().longValue()) {
-        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating number of visit via this endpoint is currently unimplemented").build();
-      }
-    }
-
-    if (payload.getLastVisit() != null) {
-      if (workspaceVisitController.getLastVisit(workspaceEntity).equals(payload.getLastVisit())) {
-        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating last visit via this endpoint is currently unimplemented").build();
-      }
     }
 
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
@@ -1125,6 +1287,45 @@ public class WorkspaceRESTService extends PluginRESTService {
     workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
     workspaceEntity = workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
 
+    if (payload.getDefaultSignupMessage() != null) {
+      WorkspaceSignupMessage studentSignupGreetingMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+      if (studentSignupGreetingMessage == null) {
+        workspaceSignupMessageController.createWorkspaceSignupMessage(
+            workspaceEntity, 
+            null, 
+            payload.getDefaultSignupMessage().isEnabled(),
+            payload.getDefaultSignupMessage().getCaption(),
+            payload.getDefaultSignupMessage().getContent());
+      } else {
+        workspaceSignupMessageController.updateWorkspaceSignupMessage(
+            studentSignupGreetingMessage, 
+            payload.getDefaultSignupMessage().isEnabled(),
+            payload.getDefaultSignupMessage().getCaption(),
+            payload.getDefaultSignupMessage().getContent());
+      }
+    }
+
+    if (payload.getGroupSignupMessages() != null) {
+      for (WorkspaceSignupMessageRestModel groupSignupMessageRestModel : payload.getGroupSignupMessages()) {
+        UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(groupSignupMessageRestModel.getUserGroupId());
+        WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
+        if (groupSignupMessage == null) {
+          workspaceSignupMessageController.createWorkspaceSignupMessage(
+              workspaceEntity, 
+              userGroupEntity, 
+              groupSignupMessageRestModel.isEnabled(),
+              groupSignupMessageRestModel.getCaption(),
+              groupSignupMessageRestModel.getContent());
+        } else {
+          workspaceSignupMessageController.updateWorkspaceSignupMessage(
+              groupSignupMessage, 
+              groupSignupMessageRestModel.isEnabled(),
+              groupSignupMessageRestModel.getCaption(),
+              groupSignupMessageRestModel.getContent());
+        }
+      }
+    }
+    
     // Reindex the workspace so that Elasticsearch can react to publish and visibility
 
     workspaceIndexer.indexWorkspace(workspaceEntity);
@@ -1146,12 +1347,45 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
+        ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
+    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
+    
+    WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+    WorkspaceSignupMessageRestModel defaultSignupMessageRestModel = defaultSignupMessage == null ? null
+        : new WorkspaceSignupMessageRestModel(null, defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent());
 
-    return Response.ok(createRestModel(
-        workspaceEntity,
-        workspace,
-        educationTypeMapping
-    )).build();
+    List<WorkspaceSignupMessage> groupBoundSignupMessages = workspaceSignupMessageController.listGroupBoundSignupMessages(workspaceEntity);
+    List<WorkspaceSignupMessageRestModel> groupSignupMessageRestModels = groupBoundSignupMessages.stream()
+      .map(signupMessage ->
+        new WorkspaceSignupMessageRestModel(
+            signupMessage.getSignupGroupEntity() != null ? signupMessage.getSignupGroupEntity().getId() : null,
+            signupMessage.isEnabled(),
+            signupMessage.getCaption(),
+            signupMessage.getContent()
+        )
+      )
+      .collect(Collectors.toList());
+
+    WorkspaceSettingsRestModel settings = new WorkspaceSettingsRestModel(
+        workspaceEntity.getId(),
+        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getPublished(),
+        workspaceEntity.getLanguage(),
+        workspace.getName(),
+        workspace.getNameExtension(),
+        workspace.getDescription(),
+        workspaceEntity.getDefaultMaterialLicense(),
+        mandatority,
+        convertWorkspaceCurriculumIds(workspace),
+        hasCustomImage,
+        defaultSignupMessageRestModel,
+        groupSignupMessageRestModels
+    );
+    
+    return Response.ok(settings).build();
   }
 
   /**
