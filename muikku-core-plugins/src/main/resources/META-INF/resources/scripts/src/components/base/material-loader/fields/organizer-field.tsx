@@ -997,7 +997,7 @@ class OrganizerField extends React.Component<
                   return (
                     <Draggable
                       as="li"
-                      parentContainerSelector=".material-page__organizerfield"
+                      parentContainerSelector=".organizerfield"
                       className={className}
                       interactionGroup={this.props.content.name}
                       clone

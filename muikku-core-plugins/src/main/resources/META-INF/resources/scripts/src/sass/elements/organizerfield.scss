@@ -24,19 +24,30 @@
 
   ul.organizerfield__categories {
     display: flex;
+    flex-flow: row wrap;
     list-style-type: none;
     margin: 5px 0 0;
     padding: 0;
   }
 
   li.organizerfield__category {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     list-style-type: none;
     margin: 4px;
+    max-width: 100%;
+
+    @include breakpoint($breakpoint-pad) {
+      flex-basis: calc(50% - 8px);
+      max-width: calc(50% - 8px);
+    }
   }
 
   ul.organizerfield__category-terms-container {
     align-items: flex-start;
     display: flex;
+    flex-flow: row wrap;
     list-style-type: none;
     margin: 0;
     min-height: 100px;
@@ -184,10 +195,11 @@
 
 .organizerfield__term-label {
   flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   line-height: 1; // This prevents text misalignment in mobile views
   padding: 6px 6px 6px 0;
+  user-select: none;
 
   @include breakpoint($breakpoint-pad) {
     line-height: 1.25rem;
