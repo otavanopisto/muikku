@@ -547,13 +547,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @POST
   @Path("/workspaces/{ID}/signup")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceUser(@PathParam("ID") Long workspaceEntityId, 
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
