@@ -56,7 +56,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
 
     const contactsLoaded = getState().contacts[groupName].state === "READY";
     const isActiveUser = getState().status.isActiveUser;
-    const pyramusUser = userIdentifier
+    const studentIdentifier = userIdentifier
       ? userIdentifier
       : getState().status.userSchoolDataIdentifier;
     if (contactsLoaded || !isActiveUser) {
@@ -70,7 +70,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
       });
 
       const data = await userApi.getGuidanceCounselors({
-        studentIdentifier: pyramusUser,
+        studentIdentifier,
         properties:
           "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
       });

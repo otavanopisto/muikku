@@ -55,7 +55,7 @@ export interface clearDependantTriggerType {
  * LoadDependantWorkspacesTriggerType
  */
 export interface LoadDependantWorkspacesTriggerType {
-  (dependantId: string): AnyActionType;
+  (dependantIdentifier: string): AnyActionType;
 }
 
 /**
@@ -152,16 +152,16 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
 
 /**
  * loadDependantWorkspaces thunk function
- * @param dependantId dependantId
+ * @param dependantIdentifier dependantId
  */
 const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
-  function loadDependantWorkspaces(dependantId: string) {
+  function loadDependantWorkspaces(dependantIdentifier: string) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const dependant = getState().dependants.list.find(
-        (dependant) => dependant.identifier === dependantId
+        (dependant) => dependant.identifier === dependantIdentifier
       );
       if (dependant.worspacesStatus !== "WAITING") {
         return;
@@ -171,16 +171,16 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
         dispatch({
           type: "DEPENDANT_WORKSPACES_STATUS_UPDATE",
           payload: {
-            id: dependantId,
+            identifier: dependantIdentifier,
             state: "LOADING",
           },
         });
         const workspaces = await meApi.getGuardiansDependentsActiveWorkspaces({
-          studentIdentifier: dependantId,
+          studentIdentifier: dependantIdentifier,
         });
         const payload: DependantWokspacePayloadType = {
           workspaces,
-          id: dependantId,
+          identifier: dependantIdentifier,
         };
 
         dispatch({
@@ -190,7 +190,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
         dispatch({
           type: "DEPENDANT_WORKSPACES_STATUS_UPDATE",
           payload: {
-            id: dependantId,
+            identifier: dependantIdentifier,
             state: "READY",
           },
         });
@@ -210,7 +210,7 @@ const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
         dispatch({
           type: "DEPENDANT_WORKSPACES_STATUS_UPDATE",
           payload: {
-            id: dependantId,
+            identifier: dependantIdentifier,
             state: "ERROR",
           },
         });

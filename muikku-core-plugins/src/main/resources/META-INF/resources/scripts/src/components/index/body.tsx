@@ -7,18 +7,14 @@ import { StatusType } from "~/reducers/base/status";
 
 import CheckContactInfoDialog from "~/components/base/check-contact-info-dialog";
 import "~/sass/elements/wcag.scss";
-import {
-  useTranslation,
-  withTranslation,
-  WithTranslation,
-} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import StudentComponent from "./layouts/student";
 import StaffComponent from "./layouts/staff";
 
 /**
  * IndexBodyProps
  */
-interface IndexBodyProps extends WithTranslation {
+interface IndexBodyProps {
   status: StatusType;
 }
 
@@ -62,6 +58,4 @@ function mapDispatchToProps() {
   return {};
 }
 
-export default withTranslation(["frontPage"])(
-  connect(mapStateToProps, mapDispatchToProps)(IndexBody)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(IndexBody);

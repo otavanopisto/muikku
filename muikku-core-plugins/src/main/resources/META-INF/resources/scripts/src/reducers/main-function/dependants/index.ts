@@ -20,7 +20,7 @@ export interface Dependant extends UserGuardiansDependant {
  */
 export interface DependantWokspacePayloadType {
   workspaces: UserGuardiansDependantWorkspace[];
-  id: string;
+  identifier: string;
 }
 
 /**
@@ -28,7 +28,7 @@ export interface DependantWokspacePayloadType {
  */
 export interface DependantWokspaceStatePayloadType {
   state: LoadingState;
-  id: string;
+  identifier: string;
 }
 
 /**
@@ -67,7 +67,7 @@ export const dependants: Reducer<DependantsState> = (
       };
     case "DEPENDANT_WORKSPACES_UPDATE": {
       const updatedDependants = state.list.map((dependant) => {
-        if (dependant.identifier === action.payload.id) {
+        if (dependant.identifier === action.payload.identifier) {
           return {
             ...dependant,
             workspaces: action.payload.workspaces,
@@ -87,7 +87,7 @@ export const dependants: Reducer<DependantsState> = (
       };
     case "DEPENDANT_WORKSPACES_STATUS_UPDATE": {
       const updatedDependants = state.list.map((dependant) => {
-        if (dependant.identifier === action.payload.id) {
+        if (dependant.identifier === action.payload.identifier) {
           return {
             ...dependant,
             worspacesStatus: action.payload.state,
