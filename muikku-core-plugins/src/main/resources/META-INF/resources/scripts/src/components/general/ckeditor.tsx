@@ -8,8 +8,6 @@ import equals = require("deep-equal");
 import * as React from "react";
 import getCKEDITOR, { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { v4 as uuidv4 } from "uuid";
-import { max } from "moment";
-import $ from "~/lib/jquery";
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -77,6 +75,7 @@ interface CKEditorProps {
   configuration?: any;
   ancestorHeight?: number;
   onChange: (arg: string, instance: any) => any;
+  onPaste?: (isPasting: boolean) => void;
   onDrop?: () => any;
   children?: string;
   autofocus?: boolean;
@@ -239,7 +238,6 @@ export default class CKEditor extends React.Component<
       this.timeoutProps = nextProps;
       return;
     }
-
     const configObj = {
       ...extraConfig(nextProps),
       ...(nextProps.configuration || {}),
@@ -367,7 +365,6 @@ export default class CKEditor extends React.Component<
             for (const char of pastedData) {
               if (count < props.maxChars) {
                 newData += char;
-
                 if (char !== " ") {
                   count++;
                 }
@@ -383,12 +380,13 @@ export default class CKEditor extends React.Component<
           }
 
           // If the number of words exceeds the limit, trim it
-          if (!trimmed && words.length > props.maxWords) {
+          if (words.length > props.maxWords) {
             pastedData = words.slice(0, props.maxWords).join(" ");
 
             // Update the event data with the trimmed pasted data
             event.data.dataValue = pastedData;
           }
+          props.onPaste(true);
         });
       }
 

@@ -460,6 +460,9 @@
   flex-grow: 0;
   flex-shrink: 0;
   padding: 2px 6px;
+  &.LIMIT-REACHED {
+    background: $color-incorrect-answer;
+  }
 }
 
 .material-page__word-count-title,
