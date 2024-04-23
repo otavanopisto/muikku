@@ -176,10 +176,9 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         return <></>;
     }
   }
-
-  switch (data.state) {
-    case "PENDING":
-      if (userRole === "STUDENT") {
+  if (userRole === "STUDENT") {
+    switch (data.state) {
+      case "PENDING":
         return (
           <div className="pedagogy-form__toolbar">
             <ApprovalDialog
@@ -196,9 +195,10 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
             </ApprovalDialog>
           </div>
         );
+
+      default:
+        return <></>;
     }
-    default:
-      return <></>;
   }
 };
 
