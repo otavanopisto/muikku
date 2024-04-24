@@ -263,11 +263,12 @@
 
   @include breakpoint($breakpoint-pad) {
     @include no-scrollbars;
+
     display: flex;
     flex-basis: 220px;
     flex-grow: 0;
     flex-shrink: 0;
-    height: calc( 100vh - 153px ); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
+    height: calc(100vh - 153px); // 100 View-port height - top offset which is 134px + <main> 10px padding-bottom + 1px for border + 8px margin-bottom
     margin: 0 0 8px;
     overflow: auto;
     overscroll-behavior: contain;
@@ -329,7 +330,7 @@
 .application-panel__mobile-current-folder-title {
   display: inline-block;
   font-size: 1rem;
-  max-width: calc( 100% - 44px); // 44px is sum of folders icon and label edit icon widths
+  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
