@@ -13,6 +13,7 @@
   flex-shrink: 1;
   min-width: 0;
 }
+
 .panel-group--dependants {
   order: 1;
 
@@ -22,8 +23,8 @@
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 66.66%;
-    flex-grow: 1;
     flex-flow: row wrap;
+    flex-grow: 1;
   }
 }
 

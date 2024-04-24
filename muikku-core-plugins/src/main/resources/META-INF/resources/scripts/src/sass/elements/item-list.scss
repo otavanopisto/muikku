@@ -50,11 +50,11 @@
 
 .item-list__item--continue-studies,
 .item-list__item--next-studies,
-.item-list__item--dependant-workspaces  {
+.item-list__item--dependant-workspaces {
   cursor: default;
 }
 
-.item-list__item--dependant-workspaces  {
+.item-list__item--dependant-workspaces {
   flex-wrap: wrap;
   justify-content: space-between;
 }
@@ -270,6 +270,7 @@
     font-size: $text-desktop-font-size;
   }
 }
+
 .item-list__text-body--date {
   font-weight: 600;
 }
