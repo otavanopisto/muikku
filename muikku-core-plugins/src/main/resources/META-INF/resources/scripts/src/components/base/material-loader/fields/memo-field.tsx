@@ -332,7 +332,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const rawText = $(value).text();
 
     if (this.state.isPasting) {
-      const content = this.trimPastedContent(rawText);
+      const content = this.trimPastedContent(value);
 
       this.setState(
         {
@@ -348,6 +348,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           instance.getSelection().selectRanges([range]);
         }
       );
+
+      this.props.onChange &&
+        this.props.onChange(this, this.props.content.name, value);
       return;
     }
 
@@ -359,12 +362,17 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       // If the user has exceeded the limit, we need to revert the changes
       //Then we set the cursor at the end of the content
 
-      value = this.state.value;
+      const isBeingDeleted =
+        getCharacters(value).length < getCharacters(this.state.value).length;
 
-      this.props.displayNotification(
-        "Written content exceeds the word limit",
-        "error"
-      );
+      if (!isBeingDeleted) {
+        value = this.state.value;
+
+        this.props.displayNotification(
+          "Written content exceeds the word limit",
+          "error"
+        );
+      }
     }
 
     this.setState(
