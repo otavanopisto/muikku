@@ -793,6 +793,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    
     WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
     if (workspaceBasicInfo == null) {
       return Response.status(Status.NOT_FOUND).build();

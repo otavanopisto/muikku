@@ -1346,6 +1346,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
     assertNotNull(workspace);
     assertNotNull(workspace.getId());
+    assertNotNull(workspace.getUrlName());
     
     return workspace;
   }

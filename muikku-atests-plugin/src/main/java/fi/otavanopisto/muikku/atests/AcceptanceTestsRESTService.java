@@ -404,6 +404,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
+    workspaceIndexer.indexWorkspace(workspaceEntity);
+    
     return Response.ok(createRestEntity(workspaceEntity, payload.getName())).build();
   }
   
