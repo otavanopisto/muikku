@@ -361,8 +361,8 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Grade cache
     
-    Map<String, GradingScale> gradingScales = new HashMap<>();
-    Map<String, GradingScaleItem> gradingScaleItems = new HashMap<>();
+    Map<SchoolDataIdentifier, GradingScale> gradingScaleCache = new HashMap<>();
+    Map<SchoolDataIdentifier, GradingScaleItem> gradingScaleItemCache = new HashMap<>();
     
     // Assessments
     
@@ -378,16 +378,16 @@ public class EvaluationRESTService extends PluginRESTService {
       // More data from Pyramus (urgh)
       
       SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
-      GradingScale gradingScale = gradingScales.get(gradingScaleIdentifier.toId());
+      GradingScale gradingScale = gradingScaleCache.get(gradingScaleIdentifier);
       if (gradingScale == null) {
         gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
-        gradingScales.put(gradingScaleIdentifier.toId(), gradingScale);
+        gradingScaleCache.put(gradingScaleIdentifier, gradingScale);
       }
       SchoolDataIdentifier gradeIdentifier = workspaceAssessment.getGradeIdentifier();
-      GradingScaleItem gradingScaleItem = gradingScaleItems.get(gradeIdentifier.toId());
+      GradingScaleItem gradingScaleItem = gradingScaleItemCache.get(gradeIdentifier);
       if (gradingScaleItem == null) {
         gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
-        gradingScaleItems.put(gradeIdentifier.toId(), gradingScaleItem);
+        gradingScaleItemCache.put(gradeIdentifier, gradingScaleItem);
       }
       SchoolDataIdentifier workspaceSubjectIdentifier = workspaceAssessment.getWorkspaceSubjectIdentifier();
       
