@@ -55,7 +55,9 @@ public class CourseMetaController {
       if (schoolDataBridge != null) {
         subject = schoolDataBridge.findSubjectByCode(code);
         subjectCodeCache.put(code, subject);
-        subjectIdentifierCache.put(subject.schoolDataIdentifier(), subject);
+        if (subject != null) {
+          subjectIdentifierCache.put(subject.schoolDataIdentifier(), subject);
+        }
       }
     }
     return subjectCodeCache.get(code);
