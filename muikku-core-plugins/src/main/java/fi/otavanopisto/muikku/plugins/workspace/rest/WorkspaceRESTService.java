@@ -789,17 +789,24 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{URLNAME}/basicInfo")
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
-    if (workspaceBasicInfo == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
 
-    return Response.ok(workspaceBasicInfo).build();
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      
+      WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
+      if (workspaceBasicInfo == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+  
+      return Response.ok(workspaceBasicInfo).build();
+    }
+    finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   @GET
