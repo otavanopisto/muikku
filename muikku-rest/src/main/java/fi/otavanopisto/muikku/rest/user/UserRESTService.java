@@ -1392,7 +1392,7 @@ public class UserRESTService extends AbstractRESTService {
           // #3111: Workspace staff members should be limited to teachers only. A better implementation would support specified workspace roles
           
           if (workspaceEntity != null) {
-            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
             if (workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
               continue;
             }

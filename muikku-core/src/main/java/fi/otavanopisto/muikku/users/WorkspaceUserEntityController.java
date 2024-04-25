@@ -199,18 +199,6 @@ public class WorkspaceUserEntityController {
     }
   }
   
-  @Deprecated
-  public List<WorkspaceUserEntity> listActiveWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = toUserSchoolDataIdentifier(userEntity);
-    return workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndActiveAndArchived(userSchoolDataIdentifier, Boolean.TRUE, Boolean.FALSE);
-  }
-
-  @Deprecated
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = toUserSchoolDataIdentifier(userEntity);
-    return workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndArchived(userSchoolDataIdentifier, Boolean.FALSE);
-  }
-
   public WorkspaceUserEntity archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     return workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
   }
@@ -284,12 +272,6 @@ public class WorkspaceUserEntityController {
       return null;
     }
     return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndActiveAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.TRUE, Boolean.FALSE);
-  }
-
-  @Deprecated
-  public WorkspaceUserEntity findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = toUserSchoolDataIdentifier(userEntity);
-    return findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userSchoolDataIdentifier);
   }
 
   /**
@@ -373,14 +355,6 @@ public class WorkspaceUserEntityController {
   
   private SchoolDataIdentifier toSchoolDataIdentifier(UserEntity userEntity) {
     return userEntity.defaultSchoolDataIdentifier();
-  }
-
-  @Deprecated
-  private UserSchoolDataIdentifier toUserSchoolDataIdentifier(UserEntity userEntity) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
-        userEntity.getDefaultSchoolDataSource(),
-        userEntity.getDefaultIdentifier());
-    return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier;
   }
 
   /**
