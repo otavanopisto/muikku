@@ -7,15 +7,14 @@
   padding: 5px 5px 15px;
 
   &:not(:last-child) {
-    margin: 0 0 20px;
     border-bottom: 1px solid $color-panel-border-color;
+    margin: 0 0 20px;
   }
 
   &:last-child {
     padding: 5px;
   }
 }
-
 
 .dependant__accordion-button {
   background: $color-default;
@@ -39,13 +38,12 @@
 
 .dependant__details {
   align-items: flex-start;
+  display: flex;
   flex-basis: 100%;
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
-  display: flex;
   justify-content: flex-start;
-
 }
 
 .dependant__header {
@@ -53,6 +51,7 @@
   display: flex;
   padding: 5px 0;
   width: 100%;
+
   @include breakpoint($breakpoint-pad) {
     flex-wrap: nowrap;
   }
@@ -62,8 +61,8 @@
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  margin-left: 1rem;
   justify-content: space-between;
+  margin-left: 1rem;
   width: 100%;
 }
 
@@ -74,6 +73,7 @@
 
 .dependant__header-aside {
   text-transform: uppercase;
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
   }
@@ -94,19 +94,23 @@
   border-radius: 15px;
   display: flex;
   flex-flow: row nowrap;
-  word-break: break-all;
   justify-content: center;
   margin: 0 5px 5px 0;
   padding: 5px 10px;
+  word-break: break-all;
+
   @include breakpoint($breakpoint-mobile-xl) {
     word-break: normal;
   }
 }
+
 .dependant__workspaces-container h3 {
   padding: 20px 0;
 }
+
 .dependant__info-item--email {
   word-break: break-all;
+
   @include breakpoint($breakpoint-desktop) {
     word-break: normal;
   }

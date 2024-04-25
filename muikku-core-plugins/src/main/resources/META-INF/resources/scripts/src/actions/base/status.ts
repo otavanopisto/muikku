@@ -4,6 +4,7 @@ import MApi from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { WorkspaceBasicInfo } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 import { Role } from "~/generated/client";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
@@ -142,6 +143,8 @@ async function loadWhoAMI(
       },
     },
   });
+
+  localize.language = whoAmI.locale;
 
   dispatch({
     type: "LOCALE_UPDATE",
