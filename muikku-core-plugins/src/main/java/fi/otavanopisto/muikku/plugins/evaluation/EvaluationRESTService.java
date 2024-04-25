@@ -376,7 +376,7 @@ public class EvaluationRESTService extends PluginRESTService {
       UserEntityName assessorName = userEntityController.getName(workspaceAssessment.getAssessingUserIdentifier(), true);
       
       // More data from Pyramus (urgh)
-      
+
       SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
       GradingScale gradingScale = gradingScaleCache.get(gradingScaleIdentifier);
       if (gradingScale == null) {
@@ -403,7 +403,7 @@ public class EvaluationRESTService extends PluginRESTService {
       event.setGradeIdentifier(String.format("PYRAMUS-%s@PYRAMUS-%s", gradingScale.getIdentifier(), gradingScaleItem.getIdentifier()));
       event.setIdentifier(workspaceAssessment.getIdentifier().toId());
       event.setText(workspaceAssessment.getVerbalAssessment());
-      // subsequent workspace assessments are always considered improved grades (#6213: if passing)
+      // Subsequent workspace assessments are always considered improved grades (#6213: if passing)
       if (gradingScaleItem.isPassingGrade() && seenWorkspaceSubjects.contains(workspaceAssessment.getWorkspaceSubjectIdentifier())) {
         event.setType(RestEvaluationEventType.EVALUATION_IMPROVED);
       }
