@@ -1092,89 +1092,145 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
   }
 
-//  @PUT
-//  @Path("/workspaces/{WORKSPACEENTITYID}")
-//  @RESTPermit (handling = Handling.INLINE)
-//  @Deprecated
-//  public Response updateWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace payload) {
-//    if (!sessionController.isLoggedIn()) {
-//      return Response.status(Status.UNAUTHORIZED).build();
-//    }
-//
-//    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-//    if (workspaceEntity == null) {
-//      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
-//    }
-//
-//    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
-//      return Response.status(Status.FORBIDDEN).build();
-//    }
-//
-//    if ((payload.getArchived() != null) && payload.getArchived()) {
-//      return Response.status(Status.NOT_IMPLEMENTED).entity("Archiving workspaces is currently unimplemented").build();
-//    }
-//
-//    Workspace workspace = null;
-//    try {
-//      workspace = workspaceController.findWorkspace(workspaceEntity);
-//      if (workspace == null) {
-//        return Response.status(Status.NOT_FOUND).entity(String.format("Could not find a workspace for WorkspaceEntity #%d", workspaceEntityId)).build();
-//      }
-//    } catch (Exception e) {
-//      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
-//    }
-//
-//    if (payload.getNumVisits() != null) {
-//      if (workspaceVisitController.getNumVisits(workspaceEntity) != payload.getNumVisits().longValue()) {
-//        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating number of visit via this endpoint is currently unimplemented").build();
-//      }
-//    }
-//
-//    if (payload.getLastVisit() != null) {
-//      if (workspaceVisitController.getLastVisit(workspaceEntity).equals(payload.getLastVisit())) {
-//        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating last visit via this endpoint is currently unimplemented").build();
-//      }
-//    }
-//
-//    if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
-//      workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
-//    }
-//    
-//    if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
-//      workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
-//    }
-//
-//    workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
-//    workspaceEntity = workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
-//
-//    // Reindex the workspace so that Elasticsearch can react to publish and visibility
-//
-//    workspaceIndexer.indexWorkspace(workspaceEntity);
-//
-//    if ((payload.getDescription() != null) || (payload.getName() != null)) {
-//      try {
-//        if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
-//            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) ||
-//            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
-//          workspace.setName(payload.getName());
-//          workspace.setNameExtension(payload.getNameExtension());
-//          workspace.setDescription(payload.getDescription());
-//          workspace = workspaceController.updateWorkspace(workspace);
-//        }
-//      }
-//      catch (Exception e) {
-//        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
-//      }
-//    }
-//
-//    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-//
-//    return Response.ok(createRestModel(
-//        workspaceEntity,
-//        workspace,
-//        educationTypeMapping
-//    )).build();
-//  }
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response updateWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    if ((payload.getArchived() != null) && payload.getArchived()) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Archiving workspaces is currently unimplemented").build();
+    }
+
+    Workspace workspace = null;
+    try {
+      workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("Could not find a workspace for WorkspaceEntity #%d", workspaceEntityId)).build();
+      }
+    } catch (Exception e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
+    }
+
+    if (payload.getNumVisits() != null) {
+      if (workspaceVisitController.getNumVisits(workspaceEntity) != payload.getNumVisits().longValue()) {
+        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating number of visit via this endpoint is currently unimplemented").build();
+      }
+    }
+
+    if (payload.getLastVisit() != null) {
+      if (workspaceVisitController.getLastVisit(workspaceEntity).equals(payload.getLastVisit())) {
+        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating last visit via this endpoint is currently unimplemented").build();
+      }
+    }
+
+    if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
+      workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
+    }
+    
+    if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
+      workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
+    }
+
+    workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+    workspaceEntity = workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
+
+    // Reindex the workspace so that Elasticsearch can react to publish and visibility
+
+    workspaceIndexer.indexWorkspace(workspaceEntity);
+
+    if ((payload.getDescription() != null) || (payload.getName() != null)) {
+      try {
+        if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
+            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) ||
+            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
+          workspace.setName(payload.getName());
+          workspace.setNameExtension(payload.getNameExtension());
+          workspace.setDescription(payload.getDescription());
+          workspace = workspaceController.updateWorkspace(workspace);
+        }
+      }
+      catch (Exception e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
+      }
+    }
+
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+
+    return Response.ok(createRestModel(
+        workspaceEntity,
+        workspace,
+        educationTypeMapping
+    )).build();
+  }
+
+  @GET
+  @Path("/workspaces/{ID}/signupMessage")
+  @RESTPermitUnimplemented
+  public Response getWorkspaceSignupMessage(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+    WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) : null;
+
+    return Response.ok(restModel).build();
+  }
+
+  @PUT
+  @Path("/workspaces/{ID}/signupMessage")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response updateWorkspaceSettings(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+
+    // Make sure the basic properties are defined
+    
+    if (payload == null || StringUtils.isAnyBlank(payload.getCaption(), payload.getContent())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+    if (defaultSignupMessage == null) {
+      defaultSignupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
+          workspaceEntity, 
+          null, 
+          payload.isEnabled(),
+          payload.getCaption(),
+          payload.getContent());
+    } else {
+      defaultSignupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
+          defaultSignupMessage, 
+          payload.isEnabled(),
+          payload.getCaption(),
+          payload.getContent());
+    }
+    
+    WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) : null;
+
+    return Response.ok(restModel).build();
+  }
 
   @GET
   @Path("/workspaces/{ID}/settings")

@@ -8112,32 +8112,32 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-#    put:
-#      operationId: updateWorkspace
-#      summary: Update and returns workspace
-#      tags:
-#        - Workspace
-#      parameters:
-#        - name: workspaceId
-#          in: path
-#          description: Workspace entity id
-#          required: true
-#          schema:
-#            type: integer
-#            format: int64
-#      requestBody:
-#        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
-#      responses:
-#        "200":
-#          description: Workspace updated successfully
-#          content:
-#            application/json:
-#              schema:
-#                $ref: "#/components/schemas/Workspace"
-#        "400":
-#          description: Invalid request was sent to the server
-#        "500":
-#          description: Internal server error
+    put:
+      operationId: updateWorkspace
+      summary: Update and returns workspace
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workspace"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
     delete:
       operationId: deleteWorkspace
       summary: Deletes workspace
@@ -8168,7 +8168,7 @@ paths:
   /rest/workspace/workspaces/{workspaceId}/settings:
     get:
       operationId: getWorkspaceSettings
-      summary: Returns workspace settings by id. Note returned item is typed as any.
+      summary: Returns workspace settings by id.
       tags:
         - Workspace
       parameters:
@@ -8204,7 +8204,7 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/WorkspaceUpdateRequestBody"
+        $ref: "#/components/requestBodies/WorkspaceSettingsUpdateRequestBody"
       responses:
         "200":
           description: Workspace updated successfully
@@ -8212,6 +8212,58 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/WorkspaceSettings"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/signupMessage:
+    get:
+      operationId: getWorkspaceSignupMessage
+      summary: Returns workspace default signup message by id.
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Workspace signup message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSignupMessage"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateWorkspaceSignupMessage
+      summary: Updates and returns workspace default signup message
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignupMessageUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace signup message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSignupMessage"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11515,8 +11567,22 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/WorkspaceSettings"
+            $ref: "#/components/schemas/AnyValue"
 
+    WorkspaceSettingsUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/WorkspaceSettings"
+            
+    WorkspaceSignupMessageUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/WorkspaceSignupMessage"
+            
     WorkspaceCreateRequestBody:
       required: true
       content:
