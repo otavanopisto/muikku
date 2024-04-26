@@ -277,7 +277,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const maxWords = parseInt(this.props.content.maxWords);
 
     const atCharacterLimit =
-      getCharacters(value).length >= parseInt(this.props.content.maxChars);
+      getCharacters(value).length > parseInt(this.props.content.maxChars);
 
     return (
       // If the character limit is reached, then just stop this madness
@@ -293,9 +293,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @param e e
    */
   onInputPaste(e: React.ClipboardEvent) {
-    e.preventDefault(); // Prevent the default paste action
     let newValue = e.clipboardData.getData("text");
     const textarea = e.target as HTMLTextAreaElement;
+    e.preventDefault(); // Prevent the default paste action
 
     // Get the start and end indices of the selected text
     const selectionStart = textarea.selectionStart;
@@ -345,6 +345,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
       const localeContext = exceedsCharacterLimit ? "character" : "word";
+
+      console.log(
+        "Is not inside last word:" + !this.isInsideLastWord(newValue)
+      );
 
       if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
         this.props.displayNotification(
