@@ -118,6 +118,8 @@ const ckEditorConfig = {
  * @returns characters void of spaces
  */
 function getCharacters(rawText: string) {
+  if (rawText === "") return [];
+
   return rawText
     .trim()
     .replace(/(\s|\r\n|\r|\n)+/g, "")
@@ -130,6 +132,8 @@ function getCharacters(rawText: string) {
  * @returns words
  */
 function getWords(rawText: string) {
+  if (rawText === "") return [];
+
   return rawText.trim().split(/\s+/);
 }
 
@@ -163,11 +167,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       modified: false,
       synced: true,
       syncError: null,
-
       fieldSavedState: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
+    this.onInputPaste = this.onInputPaste.bind(this);
+    this.isInsideLastWord = this.isInsideLastWord.bind(this);
     this.onInputPaste = this.onInputPaste.bind(this);
     this.trimPastedContent = this.trimPastedContent.bind(this);
     this.onCkeditorPaste = this.onCkeditorPaste.bind(this);
@@ -210,6 +215,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
+    // If this is from ckeditor, we need to get the raw text
+    if (this.props.content.richedit) {
+      content = content.replace(/<[^>]*>/g, "");
+    }
+
     const characters = getCharacters(content);
     const words = getWords(content);
     const maxCharacterLimit = parseInt(this.props.content.maxChars);
@@ -238,6 +248,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         }
         content = newData;
       }
+
       // If the number of words exceeds the limit, trim it
       if (words.length >= maxWordLimit) {
         this.props.displayNotification(
@@ -246,23 +257,67 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         );
         content = words.slice(0, maxWordLimit).join(" ");
       }
-      return content;
+
+      // If this is from ckeditor, we add the tags back
+      if (this.props.content.richedit) {
+        return `<p>${content}</p>`;
+      } else {
+        return content;
+      }
     }
   }
+
+  /**
+   * A function tha checks if it is the last word we are writing
+   * @param value
+   * @returns boolean
+   */
+  isInsideLastWord = (value: string) => {
+    const words = getWords(value);
+    const maxWords = parseInt(this.props.content.maxWords);
+
+    const atCharacterLimit =
+      getCharacters(value).length >= parseInt(this.props.content.maxChars);
+
+    return (
+      // If the character limit is reached, then just stop this madness
+      !atCharacterLimit &&
+      // If the last word is not empty, then we are inside the last word
+      words.length === maxWords &&
+      words[words.length - 1].length >= 1
+    );
+  };
 
   /**
    * onInputChange - very simple this one is for only when raw input from the textarea changes
    * @param e e
    */
   onInputPaste(e: React.ClipboardEvent) {
-    const content = this.trimPastedContent(e.clipboardData.getData("text"));
+    e.preventDefault(); // Prevent the default paste action
+    let newValue = e.clipboardData.getData("text");
+    const textarea = e.target as HTMLTextAreaElement;
+
+    // Get the start and end indices of the selected text
+    const selectionStart = textarea.selectionStart;
+    const selectionEnd = textarea.selectionEnd;
+
+    newValue =
+      textarea.value.substring(0, selectionStart) +
+      newValue +
+      textarea.value.substring(selectionEnd);
+
+    newValue = this.trimPastedContent(newValue);
 
     this.setState({
-      value: content,
-      words: getWords(content).length,
-      characters: getCharacters(content).length,
+      value: newValue,
+      words: getWords(newValue).length,
+      characters: getCharacters(newValue).length,
       isPasting: true,
     });
+
+    //we call the on change
+    this.props.onChange &&
+      this.props.onChange(this, this.props.content.name, newValue);
   }
 
   /**
@@ -271,8 +326,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    */
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     let newValue = e.target.value;
+    const maxCharacters = parseInt(this.props.content.maxChars);
+    const maxWords = parseInt(this.props.content.maxWords);
     const isBeingDeleted =
       getCharacters(e.target.value) < getCharacters(this.state.value);
+
     if (this.state.isPasting) {
       this.setState({
         isPasting: false,
@@ -280,16 +338,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       return;
     }
     const exceedsCharacterLimit =
-      getCharacters(e.target.value).length >=
-      parseInt(this.props.content.maxChars);
+      getCharacters(e.target.value).length >= maxCharacters;
 
-    const exceedsWordLimit =
-      getWords(e.target.value).length >= parseInt(this.props.content.maxWords);
+    const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
       const localeContext = exceedsCharacterLimit ? "character" : "word";
 
-      if (!isBeingDeleted) {
+      if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
         this.props.displayNotification(
           "Written content exceeds the " + localeContext + " limit",
           "error"
@@ -304,13 +360,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // and update the count
     this.setState({
       value: newValue,
-      words: getWords(e.target.value).length,
-      characters: getCharacters(e.target.value).length,
+      words: getWords(newValue).length,
+      characters: getCharacters(newValue).length,
     });
 
     //we call the on change
     this.props.onChange &&
-      this.props.onChange(this, this.props.content.name, e.target.value);
+      this.props.onChange(this, this.props.content.name, newValue);
   }
   /**
    * onCkeditorPaste
@@ -350,7 +406,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       );
 
       this.props.onChange &&
-        this.props.onChange(this, this.props.content.name, value);
+        this.props.onChange(this, this.props.content.name, content);
       return;
     }
 

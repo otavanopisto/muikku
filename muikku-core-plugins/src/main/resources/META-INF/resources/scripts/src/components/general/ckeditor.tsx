@@ -346,46 +346,51 @@ export default class CKEditor extends React.Component<
 
       if (props.maxChars || props.maxWords) {
         instance.on("paste", function (event: CKEditorEventInfo) {
-          // Get the pasted data
-          let pastedData = event.data.dataValue;
-          // Remove all the html tags from it if there are any
-          pastedData = pastedData.replace(/<[^>]*>/g, "");
-          let trimmed = false;
-          const words = pastedData.trim().split(/\s+/);
-          const characters = pastedData
-            .trim()
-            .replace(/(\s|\r\n|\r|\n)+/g, "")
-            .split("").length;
+          // // Get the data
+          // const pastedData = event.data.dataValue.replace(/<[^>]*>/g, "");
 
-          // If the pasted data exceeds the limit, trim it
-          if (characters > props.maxChars) {
-            let count = 0;
-            let newData = "";
+          // let data = pastedData;
 
-            for (const char of pastedData) {
-              if (count < props.maxChars) {
-                newData += char;
-                if (char !== " ") {
-                  count++;
-                }
-              } else {
-                break;
-              }
-            }
-            pastedData = newData;
+          //Remove all the html tags from it if there are any
+          // event.data.dataValue = event.data.dataValue.replace(/<[^>]*>/g, "");
 
-            // Update the event data with the trimmed pasted data
-            event.data.dataValue = pastedData;
-            trimmed = true;
-          }
+          // const words = data.trim().split(/\s+/);
+          // const characters = data
+          //   .trim()
+          //   .replace(/(\s|\r\n|\r|\n)+/g, "")
+          //   .split("").length;
 
-          // If the number of words exceeds the limit, trim it
-          if (words.length > props.maxWords) {
-            pastedData = words.slice(0, props.maxWords).join(" ");
+          // // If the pasted data exceeds the limit, trim it
+          // if (characters > props.maxChars) {
+          //   let count = 0;
+          //   let newData = "";
 
-            // Update the event data with the trimmed pasted data
-            event.data.dataValue = pastedData;
-          }
+          //   for (const char of data) {
+          //     if (count < props.maxChars) {
+          //       newData += char;
+          //       if (char !== " ") {
+          //         count++;
+          //       }
+          //     } else {
+          //       break;
+          //     }
+          //   }
+          //   data = newData;
+
+          //   // Update the event data with the trimmed pasted data
+          //   event.data.dataValue = data;
+          // }
+
+          // // If the number of words exceeds the limit, trim it
+          // if (words.length > props.maxWords) {
+          //   data = words.slice(0, props.maxWords).join(" ");
+
+          //   // Update the event data with the trimmed pasted data
+          // event.data.dataValue = data;
+          // }
+
+          // const test = event.data.dataValue;
+
           props.onPaste(true);
         });
       }
