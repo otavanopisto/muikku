@@ -17,13 +17,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.rest.model.WorkspaceSignupUserGroup;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupMessageRestModel;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupUserGroup;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupGroupController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -45,6 +50,9 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceSignupGroupController workspaceSignupGroupController;
+  
+  @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
   
   @Inject
   private UserGroupController userGroupController;
@@ -74,7 +82,12 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
 
       if (userGroup != null) {
         boolean canSignup = workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier());
-        userGroupRestModels.add(new WorkspaceSignupUserGroup(workspaceEntityId, userGroupEntity.getId(), userGroup.getName(), canSignup));
+        
+        WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
+        WorkspaceSignupMessageRestModel signupMessageRestModel = groupSignupMessage != null
+            ? new WorkspaceSignupMessageRestModel(groupSignupMessage.isEnabled(), groupSignupMessage.getCaption(), groupSignupMessage.getContent()) : null;
+        
+        userGroupRestModels.add(new WorkspaceSignupUserGroup(workspaceEntityId, userGroupEntity.getId(), userGroup.getName(), canSignup, signupMessageRestModel));
       }
     }
     
@@ -89,6 +102,10 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
   public Response setWorkspaceSettingsUserGroup(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
       @PathParam("USERGROUPID") Long userGroupEntityId, WorkspaceSignupUserGroup payload) {
     if (!Objects.equals(workspaceEntityId, payload.getWorkspaceEntityId()) || !Objects.equals(userGroupEntityId, payload.getUserGroupEntityId())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    if (payload.getSignupMessage() != null && StringUtils.isAnyBlank(payload.getSignupMessage().getCaption(), payload.getSignupMessage().getContent())) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
@@ -121,6 +138,24 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
       }
     }
 
+    if (payload.getSignupMessage() != null) {
+      WorkspaceSignupMessage signupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
+      if (signupMessage == null) {
+        signupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
+            workspaceEntity, 
+            userGroupEntity, 
+            payload.getSignupMessage().isEnabled(),
+            payload.getSignupMessage().getCaption(),
+            payload.getSignupMessage().getContent());
+      } else {
+        signupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
+            signupMessage, 
+            payload.getSignupMessage().isEnabled(),
+            payload.getSignupMessage().getCaption(),
+            payload.getSignupMessage().getContent());
+      }
+    }
+    
     return Response.noContent().build();
   }
 

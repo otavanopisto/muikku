@@ -16124,6 +16124,9 @@ components:
         canSignup:
           description: If the user can signup
           type: boolean
+        signupMessage:
+          description: Signup message for the group
+          $ref: "#/components/schemas/WorkspaceSignupMessage"
 
     WorkspaceUserEntity:
       type: object
