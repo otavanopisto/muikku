@@ -119,7 +119,7 @@ const ckEditorConfig = {
  */
 function getCharacters(rawText: string) {
   if (rawText === "") return [];
-
+  rawText = String(rawText);
   return rawText
     .trim()
     .replace(/(\s|\r\n|\r|\n)+/g, "")
@@ -133,6 +133,7 @@ function getCharacters(rawText: string) {
  */
 function getWords(rawText: string) {
   if (rawText === "") return [];
+  rawText = String(rawText);
 
   return rawText.trim().split(/\s+/);
 }
@@ -215,6 +216,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
+    content = String(content);
+
     // If this is from ckeditor, we need to get the raw text
     if (this.props.content.richedit) {
       content = content.replace(/<[^>]*>/g, "");
@@ -224,6 +227,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const words = getWords(content);
     const maxCharacterLimit = parseInt(this.props.content.maxChars);
     const maxWordLimit = parseInt(this.props.content.maxWords);
+
     if (
       characters.length >= maxCharacterLimit ||
       words.length >= maxWordLimit
@@ -264,6 +268,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       } else {
         return content;
       }
+    }
+
+    // If this is from ckeditor, we add the tags back
+    if (this.props.content.richedit) {
+      return `<p>${content}</p>`;
+    } else {
+      return content;
     }
   }
 
@@ -345,10 +356,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
       const localeContext = exceedsCharacterLimit ? "character" : "word";
-
-      console.log(
-        "Is not inside last word:" + !this.isInsideLastWord(newValue)
-      );
 
       if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
         this.props.displayNotification(
