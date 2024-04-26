@@ -1053,7 +1053,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceController.updateWorkspace(workspace);
     }
 
-
     String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
     WorkspaceFolder helpFolder = workspaceMaterialController.ensureWorkspaceHelpFolderExists(workspaceEntity);
@@ -1176,14 +1175,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    Workspace workspace = null;
-
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      workspace = workspaceController.findWorkspace(workspaceEntity);
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
 
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -1210,6 +1202,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       )
       .collect(Collectors.toList());
     
+    String workspaceTypeIdentifier = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+    
     WorkspaceSettingsRestModel settings = new WorkspaceSettingsRestModel(
         workspaceEntity.getId(),
         workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
@@ -1220,9 +1214,14 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getName(),
         workspace.getNameExtension(),
         workspace.getDescription(),
+        workspace.getBeginDate(),
+        workspace.getEndDate(),
+        workspace.getSignupStart(),
+        workspace.getSignupEnd(),
         workspaceEntity.getDefaultMaterialLicense(),
         mandatority,
         convertWorkspaceCurriculumIds(workspace),
+        workspaceTypeIdentifier,
         hasCustomImage,
         defaultSignupMessageRestModel,
         groupSignupMessageRestModels
@@ -1242,6 +1241,14 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+
+    SchoolDataIdentifier typeIdentifier = null;
+    if (payload.getWorkspaceTypeIdentifier() != null) {
+      typeIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceTypeIdentifier());
+      if (typeIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid workspaceTypeIdentifier %s", payload.getWorkspaceTypeIdentifier())).build();
+      }
     }
 
     if (payload.getDefaultSignupMessage() != null) {
@@ -1326,18 +1333,24 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    // Reindex the workspace so that Elasticsearch can react to publish and visibility
-
-    workspaceIndexer.indexWorkspace(workspaceEntity);
-
     if ((payload.getDescription() != null) || (payload.getName() != null)) {
       try {
         if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
             (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) ||
-            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension()))) {
+            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension())) ||
+            !isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) ||
+            !isEqualDateTime(workspace.getEndDate(), payload.getEndDate()) ||
+            !isEqualDateTime(workspace.getSignupStart(), payload.getSignupStart()) ||
+            !isEqualDateTime(workspace.getSignupEnd(), payload.getSignupEnd()) ||
+            !Objects.equals(typeIdentifier, workspace.getWorkspaceTypeId())) {
           workspace.setName(payload.getName());
           workspace.setNameExtension(payload.getNameExtension());
           workspace.setDescription(payload.getDescription());
+          workspace.setBeginDate(payload.getBeginDate());
+          workspace.setEndDate(payload.getEndDate());
+          workspace.setSignupStart(payload.getSignupStart());
+          workspace.setSignupEnd(payload.getSignupEnd());
+          workspace.setWorkspaceTypeId(typeIdentifier);
           workspace = workspaceController.updateWorkspace(workspace);
         }
       }
@@ -1346,6 +1359,12 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
 
+    // Reindex the workspace so that Elasticsearch can react to publish and visibility
+
+    workspaceIndexer.indexWorkspace(workspaceEntity);
+
+    // Assemble the response
+    
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
     Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
         ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
@@ -1367,6 +1386,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       )
       .collect(Collectors.toList());
 
+    String workspaceTypeIdentifier = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+    
     WorkspaceSettingsRestModel settings = new WorkspaceSettingsRestModel(
         workspaceEntity.getId(),
         workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
@@ -1377,9 +1398,14 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getName(),
         workspace.getNameExtension(),
         workspace.getDescription(),
+        workspace.getBeginDate(),
+        workspace.getEndDate(),
+        workspace.getSignupStart(),
+        workspace.getSignupEnd(),
         workspaceEntity.getDefaultMaterialLicense(),
         mandatority,
         convertWorkspaceCurriculumIds(workspace),
+        workspaceTypeIdentifier,
         hasCustomImage,
         defaultSignupMessageRestModel,
         groupSignupMessageRestModels

@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Set;
 
@@ -22,12 +23,18 @@ public class WorkspaceSettingsRestModel {
       String name,
       String nameExtension,
       String description,
+      OffsetDateTime beginDate,
+      OffsetDateTime endDate,
+      OffsetDateTime signupStart,
+      OffsetDateTime signupEnd,
       String materialDefaultLicense,
       Mandatority mandatority,
       Set<String> curriculumIdentifiers,
+      String workspaceTypeIdentifier,
       boolean hasCustomImage,
       WorkspaceSignupMessageRestModel defaultSignupMessage,
-      Collection<WorkspaceSignupMessageRestModel> groupSignupMessages) {
+      Collection<WorkspaceSignupMessageRestModel> groupSignupMessages
+      ) {
     super();
     this.id = id;
     this.organizationEntityId = organizationEntityId;
@@ -39,8 +46,13 @@ public class WorkspaceSettingsRestModel {
     this.name = name;
     this.nameExtension = nameExtension;
     this.description = description;
+    this.beginDate = beginDate;
+    this.endDate = endDate;
+    this.signupStart = signupStart;
+    this.signupEnd = signupEnd;
     this.mandatority = mandatority;
     this.curriculumIdentifiers = curriculumIdentifiers;
+    this.workspaceTypeIdentifier = workspaceTypeIdentifier;
     this.hasCustomImage = hasCustomImage;
     this.defaultSignupMessage = defaultSignupMessage;
     this.groupSignupMessages = groupSignupMessages;
@@ -166,8 +178,49 @@ public class WorkspaceSettingsRestModel {
     this.groupSignupMessages = groupSignupMessages;
   }
 
+  public OffsetDateTime getBeginDate() {
+    return beginDate;
+  }
+
+  public void setBeginDate(OffsetDateTime beginDate) {
+    this.beginDate = beginDate;
+  }
+
+  public OffsetDateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(OffsetDateTime endDate) {
+    this.endDate = endDate;
+  }
+
+  public OffsetDateTime getSignupStart() {
+    return signupStart;
+  }
+
+  public void setSignupStart(OffsetDateTime signupStart) {
+    this.signupStart = signupStart;
+  }
+
+  public OffsetDateTime getSignupEnd() {
+    return signupEnd;
+  }
+
+  public void setSignupEnd(OffsetDateTime signupEnd) {
+    this.signupEnd = signupEnd;
+  }
+
+  public String getWorkspaceTypeIdentifier() {
+    return workspaceTypeIdentifier;
+  }
+
+  public void setWorkspaceTypeIdentifier(String workspaceTypeIdentifier) {
+    this.workspaceTypeIdentifier = workspaceTypeIdentifier;
+  }
+
   private Long id;
   private Long organizationEntityId;
+  private String workspaceTypeIdentifier;
   private String urlName;
   private String name;
   private String nameExtension;
@@ -181,4 +234,9 @@ public class WorkspaceSettingsRestModel {
   private WorkspaceLanguage language;
   private WorkspaceSignupMessageRestModel defaultSignupMessage;
   private Collection<WorkspaceSignupMessageRestModel> groupSignupMessages;
+  private OffsetDateTime beginDate;
+  private OffsetDateTime endDate;
+  private OffsetDateTime signupStart;
+  private OffsetDateTime signupEnd;
+  
 }

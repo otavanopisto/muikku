@@ -16525,6 +16525,26 @@ components:
         description:
           description: The description of the workspace
           type: string
+        beginDate:
+          description: The date when the workspace begins
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          description: The date when the workspace ends
+          type: string
+          format: date-time
+          nullable: true
+        signupStart:
+          description: The date when the workspace signup opens
+          type: string
+          format: date-time
+          nullable: true
+        signupEnd:
+          description: The date when the workspace signup closes
+          type: string
+          format: date-time
+          nullable: true
         published:
           description: If the workspace is published
           type: boolean
@@ -16542,6 +16562,9 @@ components:
           type: array
           items:
             type: string
+        workspaceTypeIdentifier:
+          description: The identifier of the workspace type
+          type: string
         organizationEntityId:
           description: The id of the organization
           type: integer
