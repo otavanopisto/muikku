@@ -33,7 +33,7 @@ public class WorkspaceSettingsRestModel {
       String workspaceTypeIdentifier,
       boolean hasCustomImage,
       WorkspaceSignupMessageRestModel defaultSignupMessage,
-      Collection<WorkspaceSignupMessageRestModel> groupSignupMessages
+      Collection<WorkspaceSignupGroupRestModel> signupGroups
       ) {
     super();
     this.id = id;
@@ -55,7 +55,7 @@ public class WorkspaceSettingsRestModel {
     this.workspaceTypeIdentifier = workspaceTypeIdentifier;
     this.hasCustomImage = hasCustomImage;
     this.defaultSignupMessage = defaultSignupMessage;
-    this.groupSignupMessages = groupSignupMessages;
+    this.signupGroups = signupGroups;
   }
 
   public Long getId() {
@@ -170,14 +170,6 @@ public class WorkspaceSettingsRestModel {
     this.defaultSignupMessage = defaultSignupMessage;
   }
 
-  public Collection<WorkspaceSignupMessageRestModel> getGroupSignupMessages() {
-    return groupSignupMessages;
-  }
-
-  public void setGroupSignupMessages(Collection<WorkspaceSignupMessageRestModel> groupSignupMessages) {
-    this.groupSignupMessages = groupSignupMessages;
-  }
-
   public OffsetDateTime getBeginDate() {
     return beginDate;
   }
@@ -218,6 +210,14 @@ public class WorkspaceSettingsRestModel {
     this.workspaceTypeIdentifier = workspaceTypeIdentifier;
   }
 
+  public Collection<WorkspaceSignupGroupRestModel> getSignupGroups() {
+    return signupGroups;
+  }
+
+  public void setSignupGroups(Collection<WorkspaceSignupGroupRestModel> signupGroups) {
+    this.signupGroups = signupGroups;
+  }
+
   private Long id;
   private Long organizationEntityId;
   private String workspaceTypeIdentifier;
@@ -233,7 +233,7 @@ public class WorkspaceSettingsRestModel {
   private boolean hasCustomImage;
   private WorkspaceLanguage language;
   private WorkspaceSignupMessageRestModel defaultSignupMessage;
-  private Collection<WorkspaceSignupMessageRestModel> groupSignupMessages;
+  private Collection<WorkspaceSignupGroupRestModel> signupGroups;
   private OffsetDateTime beginDate;
   private OffsetDateTime endDate;
   private OffsetDateTime signupStart;

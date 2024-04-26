@@ -16585,16 +16585,16 @@ components:
           $ref: "#/components/schemas/WorkspaceAccess"
         defaultSignupMessage:
           description: Default sign up greeting of the workspace 
-          $ref: "#/components/schemas/WorkspaceDefaultSignupMessage"
-        groupSignupMessages:
-          description: Group bound sign up greeting messages of the workspace
+          $ref: "#/components/schemas/WorkspaceSignupMessage"
+        signupGroups:
+          description: Sign up groups and their settings
           type: array
           items:
-            $ref: "#/components/schemas/WorkspaceSignupMessage"
+            $ref: "#/components/schemas/WorkspaceSettingsSignupGroup"
           
-    WorkspaceDefaultSignupMessage:
+    WorkspaceSignupMessage:
       type: object
-      description: Default Workspace sign up message, a message that is sent to student when they sign up to a workspace
+      description: Workspace sign up message, a message that is sent to student when they sign up to a workspace
       required:
         - enabled
         - caption
@@ -16607,24 +16607,28 @@ components:
         content:
           type: string
 
-    WorkspaceSignupMessage:
+    WorkspaceSettingsSignupGroup:
       type: object
-      description: Workspace sign up message for a specific group, a message that is sent to student when they sign up to a workspace
+      description: WorkspaceSignupGroup object
       required:
-        - userGroupId
-        - enabled
-        - caption
-        - content
+        - userGroupEntityId
+        - userGroupName
+        - canSignup
       properties:
-        userGroupId:
+        userGroupEntityId:
+          description: The id of the user group
           type: integer
           format: int64
-        enabled:
+        userGroupName:
+          description: The name of the user group
+          type: string
+        canSignup:
+          description: If the user can signup
           type: boolean
-        caption:
-          type: string
-        content:
-          type: string
+        signupMessage:
+          descrption: Workspace sign up message for members of this group
+          $ref: "#/components/schemas/WorkspaceSignupMessage"
+
 
     ErrorModel:
       type: object
