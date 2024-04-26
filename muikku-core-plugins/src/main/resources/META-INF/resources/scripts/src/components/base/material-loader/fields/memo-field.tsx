@@ -338,10 +338,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       });
       return;
     }
-
-    console.log("characters:" + getCharacters(e.target.value).length);
-    console.log("words:" + getWords(e.target.value).length);
-
     const exceedsCharacterLimit =
       getCharacters(e.target.value).length > maxCharacters;
 
@@ -362,9 +358,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       textarea.selectionStart = textarea.selectionEnd =
         this.state.value.length + 1;
     }
-
-    console.log("new characters:" + getCharacters(newValue).length);
-    console.log("new words:" + getWords(newValue).length);
 
     // and update the count
     this.setState({
