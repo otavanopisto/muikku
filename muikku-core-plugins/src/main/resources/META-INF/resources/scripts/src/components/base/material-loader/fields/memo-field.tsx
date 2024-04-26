@@ -420,7 +420,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       //Then we set the cursor at the end of the content
 
       const isBeingDeleted =
-        getCharacters(value).length < getCharacters(this.state.value).length;
+        getCharacters(rawText).length < getCharacters(this.state.value).length;
 
       if (!isBeingDeleted) {
         value = this.state.value;
