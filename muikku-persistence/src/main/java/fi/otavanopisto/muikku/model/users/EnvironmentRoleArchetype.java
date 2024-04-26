@@ -14,6 +14,8 @@ public enum EnvironmentRoleArchetype {
   
   STUDY_GUIDER,
   
+  STUDENT_PARENT,
+  
   CUSTOM
   
 }

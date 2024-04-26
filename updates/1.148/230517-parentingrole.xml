@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    insert into RoleEntity (name) values ('STUDENT_PARENT');
+  </sql>
+
+  <sql>
+    insert into EnvironmentRoleEntity (id, archetype) select max(id), 'STUDENT_PARENT' from RoleEntity where name = 'STUDENT_PARENT';
+  </sql>
+
+  <sql>
+    insert into RoleSchoolDataIdentifier (identifier, dataSource_id, roleEntity_id) select 'ENV-STUDENT_PARENT', ds.id, re.id from RoleEntity re, SchoolDataSource ds where re.name = 'STUDENT_PARENT' and ds.identifier='PYRAMUS';
+  </sql>
+
+</update> 

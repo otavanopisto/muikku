@@ -667,7 +667,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             mockBuilder
             .addStudent(student)
             .mockStudentCourseStats(student.getId(), 25)
-            .mockMatriculationEligibility(true)
+            .mockMatriculationEligibility(student.getId(), true)
             .mockMatriculationExam(true)
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
