@@ -329,7 +329,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const maxCharacters = parseInt(this.props.content.maxChars);
     const maxWords = parseInt(this.props.content.maxWords);
     const isBeingDeleted =
-      getCharacters(e.target.value) < getCharacters(this.state.value);
+      getCharacters(e.target.value).length <
+      getCharacters(this.state.value).length;
 
     if (this.state.isPasting) {
       this.setState({
@@ -337,8 +338,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       });
       return;
     }
+
+    console.log("characters:" + getCharacters(e.target.value).length);
+    console.log("words:" + getWords(e.target.value).length);
+
     const exceedsCharacterLimit =
-      getCharacters(e.target.value).length >= maxCharacters;
+      getCharacters(e.target.value).length > maxCharacters;
 
     const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
 
@@ -357,6 +362,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       textarea.selectionStart = textarea.selectionEnd =
         this.state.value.length + 1;
     }
+
+    console.log("new characters:" + getCharacters(newValue).length);
+    console.log("new words:" + getWords(newValue).length);
 
     // and update the count
     this.setState({
