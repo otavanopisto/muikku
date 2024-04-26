@@ -54,12 +54,15 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
@@ -171,7 +174,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     // Access
     
-    if (!userSchoolDataIdentifier.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId())) {
+    if (!userSchoolDataIdentifier.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId()) &&
+        !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -287,7 +291,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       Long userEntityId = sessionController.getLoggedUserEntity().getId();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
       if (userEntity == null || !userEntity.getId().equals(userEntityId)) {
-        return Response.status(Status.FORBIDDEN).build();
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
@@ -475,10 +481,29 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/hopseligibility")
-  @RESTPermit(handling=Handling.INLINE, requireLoggedIn = true)
-  public Response retrieveHopsEligibility(){
-    return Response.ok(matriculationSchoolDataController.listEligibilities()).build();
+  @Path("/hopseligibility/{STUDENTIDENTIFIER}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifierString) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierString);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    try {
+      BridgeResponse<MatriculationEligibilities> eligibilities = matriculationSchoolDataController.listEligibilities(studentIdentifier);
+      if (eligibilities.ok()) {
+        return Response.ok(eligibilities.getEntity()).build();
+      }
+      else {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+    } catch (IllegalArgumentException iae) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
   }
 
   @GET
@@ -505,7 +530,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
+    
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM)
+        && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier)
         && !Objects.equals(sessionController.getLoggedUser(), userIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
@@ -551,7 +578,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
     }
 
-    if (!identifier.equals(sessionController.getLoggedUser())) {
+    if (!identifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), identifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -598,10 +625,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/matriculationEligibility")
+  @Path("/students/{STUDENTIDENTIFIER}/matriculationEligibility")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findMatriculationEligibility(@QueryParam ("subjectCode") String subjectCode) {
-    return Response.ok(userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode)).build();
+  public Response findMatriculationEligibility(
+      @PathParam("STUDENTIDENTIFIER") String studentIdentifierParam,
+      @QueryParam ("subjectCode") String subjectCode) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
+
+    return Response.ok(result).build();
   }
 
   @GET

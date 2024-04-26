@@ -49,8 +49,14 @@
 }
 
 .item-list__item--continue-studies,
-.item-list__item--next-studies {
+.item-list__item--next-studies,
+.item-list__item--dependant-workspaces {
   cursor: default;
+}
+
+.item-list__item--dependant-workspaces {
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .item-list__item--teacher {
@@ -121,6 +127,16 @@
   font-weight: 600;
 }
 
+.item-list__item-title {
+  display: flex;
+  flex-grow: 1;
+}
+
+.item-list__item-aside-title {
+  display: flex;
+  flex-grow: 0;
+}
+
 .item-list__item-content {
   padding: 5px;
 }
@@ -166,6 +182,7 @@
 }
 
 .item-list__icon--workspaces,
+.item-list__icon--dependant-workspaces,
 .item-list__icon--next-studies {
   color: $color-index-item-list-item-panel-workspaces-icon;
 }
@@ -236,6 +253,11 @@
 }
 
 // List item texts
+
+.item-list__text-title {
+  line-height: 1.25rem;
+}
+
 .item-list__text-body {
   flex-basis: auto;
   flex-grow: 1;
@@ -247,6 +269,10 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.item-list__text-body--date {
+  font-weight: 600;
 }
 
 .item-list__text-body--multiline {

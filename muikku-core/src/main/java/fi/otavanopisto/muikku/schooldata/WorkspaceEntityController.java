@@ -200,6 +200,13 @@ public class WorkspaceEntityController {
         .collect(Collectors.toList());
   }
   
+  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserIdentifiers(Collection<SchoolDataIdentifier> userIdentifiers) {
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceUserEntitiesByUserIdentifiers(userIdentifiers);
+    return workspaceUserEntities.stream()
+        .map(workspaceUserEntity -> workspaceUserEntity.getWorkspaceEntity())
+        .collect(Collectors.toList());
+  }
+  
   public List<Long> listPublishedWorkspaceEntityIds() {
     return workspaceEntityDAO.listPublishedWorkspaceEntityIds();
   }

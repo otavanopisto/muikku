@@ -152,7 +152,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
     .build();
     login();
     
@@ -783,7 +783,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
     .build();
     login();
