@@ -354,7 +354,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       }
 
       const textarea = e.target;
-      textarea.selectionStart = textarea.selectionEnd = this.state.value.length;
+      textarea.selectionStart = textarea.selectionEnd =
+        this.state.value.length + 1;
     }
 
     // and update the count
