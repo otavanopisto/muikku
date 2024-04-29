@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -94,6 +95,88 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
     userGroupRestModels.sort(Comparator.comparing(WorkspaceSignupUserGroup::getUserGroupName));
     
     return Response.ok(userGroupRestModels).build();
+  }
+
+  @PUT
+  @Path ("/workspaces/{WORKSPACEENTITYID}/signupGroups")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response setWorkspaceSettingsUserGroups(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
+      List<WorkspaceSignupUserGroup> payload) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Payload validation
+
+    List<UserGroupEntity> userGroupEntities = workspaceSignupGroupController.listAvailableWorkspaceSignupGroups();
+    Set<Long> availableUserGroupEntityIds = userGroupEntities.stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
+
+    for (WorkspaceSignupUserGroup signupGroup : payload) {
+      if (!Objects.equals(workspaceEntityId, signupGroup.getWorkspaceEntityId())) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+
+      if (!availableUserGroupEntityIds.contains(signupGroup.getUserGroupEntityId())) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+      
+      if (signupGroup.getSignupMessage() != null && StringUtils.isAnyBlank(signupGroup.getSignupMessage().getCaption(), signupGroup.getSignupMessage().getContent())) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
+
+    // Save the settings
+    
+    Set<SchoolDataIdentifier> workspaceSignupGroups = workspaceController.listWorkspaceSignupGroups(workspaceEntity);
+
+    for (WorkspaceSignupUserGroup signupGroup : payload) {
+      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(signupGroup.getUserGroupEntityId());
+
+      if (userGroupEntity == null) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+      }
+
+      boolean permitted = Boolean.TRUE.equals(signupGroup.getCanSignup());
+      
+      if (permitted) {
+        if (!workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
+          workspaceController.addWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
+        } else {
+          return Response.status(Response.Status.BAD_REQUEST).entity("Signup Group already exists").build();
+        }
+      } else {
+        if (workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
+          workspaceController.removeWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
+        } else {
+          return Response.status(Response.Status.NOT_FOUND).build();
+        }
+      }
+
+      if (signupGroup.getSignupMessage() != null) {
+        WorkspaceSignupMessage signupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
+        if (signupMessage == null) {
+          signupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
+              workspaceEntity, 
+              userGroupEntity, 
+              signupGroup.getSignupMessage().isEnabled(),
+              signupGroup.getSignupMessage().getCaption(),
+              signupGroup.getSignupMessage().getContent());
+        } else {
+          signupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
+              signupMessage, 
+              signupGroup.getSignupMessage().isEnabled(),
+              signupGroup.getSignupMessage().getCaption(),
+              signupGroup.getSignupMessage().getContent());
+        }
+      }
+    }
+    
+    return Response.noContent().build();
   }
 
   @PUT

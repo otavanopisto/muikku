@@ -9053,6 +9053,28 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+    put:
+      operationId: updateWorkspaceSignupGroups
+      summary: Updates a set of workspace signup groups
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignupGroupsUpdateRequestBody"
+      responses:
+        "204":
+          description: Workspace signup groups updated successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   /rest/workspace/workspaces/{workspaceEntityId}/signupGroups/{userGroupId}:
     put:
@@ -9078,12 +9100,8 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceSignupGroupUpdateRequestBody"
       responses:
-        "200":
+        "204":
           description: Workspace signup group updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/WorkspaceSignupGroup"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11609,6 +11627,15 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/WorkspaceSignupGroup"
+
+    WorkspaceSignupGroupsUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/WorkspaceSignupGroup"
 
     WorkspaceFileCreateRequestBody:
       content:
