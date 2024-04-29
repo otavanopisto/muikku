@@ -21,6 +21,6 @@ public interface MatriculationSchoolDataBridge {
 
   public MatriculationExamAttendance createMatriculationExamAttendance();
 
-  public MatriculationEligibilities listEligibilities();
+  public BridgeResponse<MatriculationEligibilities> listEligibilities(SchoolDataIdentifier studentIdentifier);
 
 }

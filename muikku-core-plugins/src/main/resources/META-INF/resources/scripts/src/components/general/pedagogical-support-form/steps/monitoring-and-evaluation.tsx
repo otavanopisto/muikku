@@ -165,7 +165,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
         </legend>
         <OpinionList>
           {schoolOpinionEntries}
-          {userRole !== "STUDENT" && (
+          {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
             <AddNewOpinionBox
               onClick={handleAddNewOpinion("schoolOpinionOfSupport")}
               disabled={!editIsActive}

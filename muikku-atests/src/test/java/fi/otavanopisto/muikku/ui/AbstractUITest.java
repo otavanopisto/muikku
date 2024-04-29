@@ -1342,10 +1342,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     response.then()
       .statusCode(200);
-      
+    
     Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
     assertNotNull(workspace);
     assertNotNull(workspace.getId());
+    assertNotNull(workspace.getUrlName());
+    
+    // TODO There seems to be problems with the cleanup procedure leading to workspaces being 
+    // recycled which leads to other problems, this might just be here for a workaround
+    reindex();
     
     return workspace;
   }
@@ -1365,6 +1370,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
     assertNotNull(workspace);
     assertNotNull(workspace.getId());
+    assertNotNull(workspace.getUrlName());
+    
+    // TODO There seems to be problems with the cleanup procedure leading to workspaces being 
+    // recycled which leads to other problems, this might just be here for a workaround
+    reindex();
     
     return workspace;
   }
