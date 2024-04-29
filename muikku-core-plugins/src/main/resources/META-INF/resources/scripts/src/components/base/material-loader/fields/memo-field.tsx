@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import CKEditor from "~/components/general/ckeditor";
+import CKEditor, { CKEditorEventInfo } from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
@@ -119,6 +119,7 @@ const ckEditorConfig = {
  */
 function getCharacters(rawText: string) {
   if (rawText === "") return [];
+  // force a string just in case
   rawText = String(rawText);
   return rawText
     .trim()
@@ -133,8 +134,8 @@ function getCharacters(rawText: string) {
  */
 function getWords(rawText: string) {
   if (rawText === "") return [];
+  // force a string just in case
   rawText = String(rawText);
-
   return rawText.trim().split(/\s+/);
 }
 
@@ -216,8 +217,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
-    content = String(content);
-
     // If this is from ckeditor, we need to get the raw text
     if (this.props.content.richedit) {
       content = content.replace(/<[^>]*>/g, "");
@@ -381,14 +380,54 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, newValue);
   }
+
   /**
    * onCkeditorPaste
+   * @param event ckeditor event
    * @param isPasting isPasting state
    */
-  onCkeditorPaste(isPasting: boolean) {
-    this.setState({
-      isPasting,
-    });
+  onCkeditorPaste(event: CKEditorEventInfo, isPasting: boolean) {
+    // Prevent the original paste event
+    event.stop();
+
+    // Get the pasted data
+    const pastedData = event.data.dataValue;
+
+    // Get the existing content
+    const existingContent = event.editor.getData();
+
+    // Get the current selection
+    const selection = event.editor.getSelection();
+    const ranges = selection.getRanges();
+    const cursorPosition = ranges[0].startOffset;
+
+    // Combine the existing content and the pasted data
+    const combinedData =
+      existingContent.slice(0, cursorPosition) +
+      pastedData +
+      existingContent.slice(cursorPosition);
+
+    // Trim the combined data
+    const trimmedData = this.trimPastedContent(combinedData);
+
+    // Set the trimmed data as the editor content
+    event.editor.setData(trimmedData);
+
+    // Update the state
+    this.setState(
+      {
+        value: trimmedData,
+        words: getWords(trimmedData).length,
+        isPasting,
+        characters: getCharacters(trimmedData).length,
+      },
+      () => {
+        // This is to set the cursor at the end of the content
+        const range = event.editor.createRange();
+        range.moveToElementEditEnd(range.root);
+        event.editor.getSelection().selectRanges([range]);
+      }
+    );
   }
 
   /**
@@ -401,25 +440,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const rawText = $(value).text();
 
     if (this.state.isPasting) {
-      const content = this.trimPastedContent(value);
-
-      this.setState(
-        {
-          value: content,
-          words: getWords(content).length,
-          characters: getCharacters(content).length,
-          isPasting: false,
-        },
-        () => {
-          // This is to set the cursor at the end of the content
-          const range = instance.createRange();
-          range.moveToElementEditEnd(range.root);
-          instance.getSelection().selectRanges([range]);
-        }
-      );
-
-      this.props.onChange &&
-        this.props.onChange(this, this.props.content.name, content);
+      this.setState({
+        isPasting: false,
+      });
       return;
     }
 
