@@ -241,9 +241,12 @@ public class EvaluationController {
         WorkspaceMaterialEvaluation evaluation = findLatestUnarchivedWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
         for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
           if (evaluation != null && evaluation.getEvaluated().after(assessment.getDate())) {
-            assessment.setText(evaluation.getVerbalAssessment());
-            assessment.setDate(evaluation.getEvaluated());
-            assessment.setState(WorkspaceAssessmentState.INTERIM_EVALUATION);
+            // Interim evaluation may not override a pending evaluation request
+            if (!StringUtils.startsWith(assessment.getState(), WorkspaceAssessmentState.PENDING)) {
+              assessment.setText(evaluation.getVerbalAssessment());
+              assessment.setDate(evaluation.getEvaluated());
+              assessment.setState(WorkspaceAssessmentState.INTERIM_EVALUATION);
+            }
           }
         }
       }

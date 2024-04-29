@@ -11,7 +11,13 @@ import i18n from "~/locales/i18n";
  * UpdateHopsTriggerType
  */
 export interface UpdateHopsTriggerType {
-  (callback?: () => void): AnyActionType;
+  (callback?: () => void, userId?: string): AnyActionType;
+}
+/**
+ * GetHopsPhaseTriggerType
+ */
+export interface SetHopsPhaseTriggerType {
+  (userEntityId: number): AnyActionType;
 }
 
 /**
@@ -34,40 +40,83 @@ export type UPDATE_HOPS_STATUS = SpecificActionType<
 export type SET_HOPS_PHASE = SpecificActionType<"SET_HOPS_PHASE", string>;
 
 /**
- * updateHops
- * @param callback callback
+ *
+ * @param userEntityId numeric user id
+ * @returns a thunk function
  */
-const updateHops: UpdateHopsTriggerType = function updateHops(callback) {
+const setHopsPhase: SetHopsPhaseTriggerType = function setHopsPhase(
+  userEntityId: number
+) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
+    const userApi = MApi.getUserApi();
+    const properties = await userApi.getUserProperties({
+      userEntityId: userEntityId,
+      properties: "hopsPhase",
+    });
+
+    dispatch({
+      type: "SET_HOPS_PHASE",
+      payload: properties[0].value,
+    });
+  };
+};
+
+/**
+ * updateHops
+ * @param callback callback
+ * @param userIdentifier muikku user identifier
+ */
+const updateHops: UpdateHopsTriggerType = function updateHops(
+  callback,
+  userIdentifier
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const userApi = MApi.getUserApi();
 
+    const studentIdentifier = userIdentifier
+      ? userIdentifier
+      : state.status.userSchoolDataIdentifier;
     try {
       if (getState().hops.status !== "WAIT") {
         callback && callback();
-        return null;
+        return;
       }
       dispatch({
         type: "UPDATE_HOPS_STATUS",
         payload: <HOPSStatusType>"LOADING",
       });
 
-      const properties = await userApi.getUserProperties({
-        userEntityId: getState().status.userId,
-        properties: "hopsPhase",
+      // If userIdentifier is provided,
+      // this is not your own HOPS and this will be done elsewhere at a better time
+      if (!userIdentifier) {
+        const properties = await userApi.getUserProperties({
+          userEntityId: state.status.userId,
+          properties: "hopsPhase",
+        });
+
+        dispatch({
+          type: "SET_HOPS_PHASE",
+          payload: properties[0].value,
+        });
+      }
+
+      const hops = userIdentifier
+        ? await hopsUppersecondaryApi.getHopsByUser({
+            userIdentifier,
+          })
+        : await hopsUppersecondaryApi.getHops();
+
+      const hopsEligibility = await hopsUppersecondaryApi.getHopsEligibility({
+        studentIdentifier,
       });
-
-      dispatch({
-        type: "SET_HOPS_PHASE",
-        payload: properties[0].value,
-      });
-
-      const hops = await hopsUppersecondaryApi.getHops();
-
-      const hopsEligibility = await hopsUppersecondaryApi.getHopsEligibility();
 
       dispatch({
         type: "UPDATE_HOPS_ELIGIBILITY",
@@ -139,4 +188,4 @@ const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
 };
 
 export default { updateHops, setHopsTo };
-export { updateHops, setHopsTo };
+export { updateHops, setHopsPhase, setHopsTo };

@@ -296,6 +296,8 @@
   @include breakpoint($breakpoint-pad) {
     height: $input-height-desktop;
   }
+
+  @include form-focus;
 }
 
 .env-dialog__input:disabled {
@@ -362,6 +364,8 @@
     font-size: $text-desktop-font-size;
     height: $select-height-desktop;
   }
+
+  @include form-focus;
 }
 
 .env-dialog__textarea {
@@ -378,6 +382,8 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+
+  @include form-focus;
 }
 
 // "Non-dialog", used within context
