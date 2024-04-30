@@ -182,7 +182,9 @@ public class EvaluationRESTService extends PluginRESTService {
     
     if (!sessionController.getLoggedUserEntity().getId().equals(studentUserEntity.getId())) {
       if (!sessionController.hasWorkspacePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 

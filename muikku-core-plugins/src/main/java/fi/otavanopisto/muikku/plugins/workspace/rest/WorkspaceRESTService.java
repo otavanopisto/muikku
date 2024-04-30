@@ -811,22 +811,18 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{URLNAME}/basicInfo")
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
-      if (workspaceEntity == null) {
-        return Response.status(Status.NOT_FOUND).build();
-      }
-      WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
-      if (workspaceBasicInfo == null) {
-        return Response.status(Status.NOT_FOUND).build();
-      }
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
 
-      return Response.ok(workspaceBasicInfo).build();
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
     }
-    finally {
-      schoolDataBridgeSessionController.endSystemSession();
+    
+    WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
+    if (workspaceBasicInfo == null) {
+      return Response.status(Status.NOT_FOUND).build();
     }
+
+    return Response.ok(workspaceBasicInfo).build();
   }
 
   @GET
@@ -1192,9 +1188,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @PUT
-  @Path("/workspaces/{ID}/signupMessage")
+  @Path("/workspaces/{WORKSPACEENTITYID}/signupMessage")
   @RESTPermit (handling = Handling.INLINE)
-  public Response updateWorkspaceSettings(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
+  public Response updateWorkspaceSignupMessage(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }

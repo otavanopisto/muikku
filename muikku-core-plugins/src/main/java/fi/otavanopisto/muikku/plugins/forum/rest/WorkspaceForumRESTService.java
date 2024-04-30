@@ -51,6 +51,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -79,6 +80,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private UserController userController;
+  
   @Inject
   private UserEntityController userEntityController;
 
@@ -828,7 +832,9 @@ public class WorkspaceForumRESTService extends PluginRESTService {
     
     if (!sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_FINDWORKSPACE_USERSTATISTICS, workspaceEntity)) {
       if (!sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
-        return Response.status(Status.FORBIDDEN).build();
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
     

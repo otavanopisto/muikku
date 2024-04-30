@@ -175,6 +175,16 @@
   flex-flow: column wrap;
 }
 
+.hops-container__history-filter {
+  cursor: pointer;
+  font-weight: 400;
+  margin: 0 5px;
+}
+
+.hops-container__history-filter--active {
+  font-weight: 600;
+}
+
 .hops-container__history-event {
   align-items: flex-start;
   border-bottom: 1px solid $color-default-item-separator-border;
