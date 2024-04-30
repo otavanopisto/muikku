@@ -398,8 +398,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       pastedData +
       existingContent.slice(selectionEndPosition);
 
-    const characterCount = getCharacters(newData).length;
-    const wordCount = getWords(newData).length;
+    let characterCount = getCharacters(newData).length;
+    let wordCount = getWords(newData).length;
 
     if (
       characterCount > parseInt(this.props.content.maxChars) ||
@@ -410,7 +410,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       // Trim the combined data if it exceeds the character or word limit
 
       newData = "<p>" + this.trimPastedContent(newData) + "</p>";
-
+      characterCount = getCharacters(newData).length;
+      wordCount = getWords(newData).length;
       event.editor.setData(newData);
 
       // Update the state
@@ -428,6 +429,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           event.editor.getSelection().selectRanges([range]);
         }
       );
+      this.props.onChange &&
+        this.props.onChange(this, this.props.content.name, newData);
     }
 
     // Set the trimmed data as the editor content
