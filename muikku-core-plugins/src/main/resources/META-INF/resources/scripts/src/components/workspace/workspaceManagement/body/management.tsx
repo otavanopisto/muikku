@@ -828,7 +828,7 @@ class ManagementPanel extends React.Component<
     }
 
     // Set signup message to null if caption or content either is empty
-    // Endpoint does not accept empty values, it must be null
+    // Api does not accept empty values, it must be null
     const realPermissions = this.state.workspacePermissions.map((pr) => ({
       ...pr,
       signupMessage:
@@ -847,13 +847,16 @@ class ManagementPanel extends React.Component<
       );
     }
 
+    // Set signup message to null if caption or content either is empty
+    // Api does not accept empty values, it must be null
+    const realSignupMessage =
+      this.state.workspaceSignupMessage.caption === "" ||
+      this.state.workspaceSignupMessage.content === ""
+        ? null
+        : this.state.workspaceSignupMessage;
+
     // Check if signup message has changed
-    if (
-      !equals(
-        this.props.workspace.signupMessage,
-        this.state.workspaceSignupMessage
-      )
-    ) {
+    if (!equals(this.props.workspace.signupMessage, realSignupMessage)) {
       payload = Object.assign(
         { signupMessage: this.state.workspaceSignupMessage },
         payload

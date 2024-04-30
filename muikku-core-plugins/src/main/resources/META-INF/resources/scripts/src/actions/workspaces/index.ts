@@ -2362,11 +2362,7 @@ const loadCurrentWorkspaceSignupMessage: LoadCurrentWorkspaceSignupMessageTrigge
           payload: {
             original: currentWorkspace,
             update: {
-              signupMessage: signupMessage || {
-                caption: "",
-                content: "",
-                enabled: false,
-              },
+              signupMessage,
             },
           },
         });
