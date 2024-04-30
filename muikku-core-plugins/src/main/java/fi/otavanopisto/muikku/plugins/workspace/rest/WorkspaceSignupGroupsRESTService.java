@@ -115,7 +115,7 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
     // Payload validation
 
     if (payload == null || payload.getWorkspaceSignupGroups() == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Missing payload or groups list").build();
     }
     
     List<UserGroupEntity> userGroupEntities = workspaceSignupGroupController.listAvailableWorkspaceSignupGroups();
@@ -123,15 +123,15 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
 
     for (WorkspaceSignupUserGroup signupGroup : payload.getWorkspaceSignupGroups()) {
       if (!Objects.equals(workspaceEntityId, signupGroup.getWorkspaceEntityId())) {
-        return Response.status(Status.BAD_REQUEST).build();
+        return Response.status(Status.BAD_REQUEST).entity("Workspace id mismatch").build();
       }
 
       if (!availableUserGroupEntityIds.contains(signupGroup.getUserGroupEntityId())) {
-        return Response.status(Status.BAD_REQUEST).build();
+        return Response.status(Status.BAD_REQUEST).entity("User group not available").build();
       }
       
       if (signupGroup.getSignupMessage() != null && StringUtils.isAnyBlank(signupGroup.getSignupMessage().getCaption(), signupGroup.getSignupMessage().getContent())) {
-        return Response.status(Status.BAD_REQUEST).build();
+        return Response.status(Status.BAD_REQUEST).entity("Signup message missing mandatory fields.").build();
       }
     }
 
