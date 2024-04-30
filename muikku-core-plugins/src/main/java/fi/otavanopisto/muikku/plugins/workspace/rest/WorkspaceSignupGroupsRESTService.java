@@ -32,8 +32,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupGroupController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
-import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -62,15 +60,12 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
   @Inject
   private UserGroupEntityController userGroupEntityController;
   
-  @Inject
-  private SessionController sessionController;
-
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/signupGroups")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listWorkspaceSettingsUserGroups(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -108,7 +103,7 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -201,7 +196,7 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 

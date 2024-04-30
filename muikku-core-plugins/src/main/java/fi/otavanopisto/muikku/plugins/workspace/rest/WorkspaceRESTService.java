@@ -1173,11 +1173,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{ID}/signupMessage")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceSignupMessage(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
@@ -1189,15 +1193,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/signupMessage")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceSignupMessage(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     // Make sure the basic properties are defined
@@ -1230,11 +1234,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{ID}/settings")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceSettings(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
@@ -1247,15 +1255,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/settings")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceSettings(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSettingsRestModel payload) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     SchoolDataIdentifier typeIdentifier = null;
