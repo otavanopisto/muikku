@@ -2025,7 +2025,7 @@
   }
 
   &:hover {
-    background: lighten($color-success, 20%);
+    background: lighten($color-success, 45%);
   }
 
   @include breakpoint($breakpoint-pad) {
