@@ -26,6 +26,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupMessageRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupUserGroup;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupUserGroupListRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupGroupController;
@@ -101,7 +102,7 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
   @Path ("/workspaces/{WORKSPACEENTITYID}/signupGroups")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response setWorkspaceSettingsUserGroups(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
-      List<WorkspaceSignupUserGroup> payload) {
+      WorkspaceSignupUserGroupListRestModel payload) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -113,10 +114,14 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
 
     // Payload validation
 
+    if (payload == null || payload.getWorkspaceSignupGroups() == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     List<UserGroupEntity> userGroupEntities = workspaceSignupGroupController.listAvailableWorkspaceSignupGroups();
     Set<Long> availableUserGroupEntityIds = userGroupEntities.stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
 
-    for (WorkspaceSignupUserGroup signupGroup : payload) {
+    for (WorkspaceSignupUserGroup signupGroup : payload.getWorkspaceSignupGroups()) {
       if (!Objects.equals(workspaceEntityId, signupGroup.getWorkspaceEntityId())) {
         return Response.status(Status.BAD_REQUEST).build();
       }
@@ -134,7 +139,7 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
     
     Set<SchoolDataIdentifier> workspaceSignupGroups = workspaceController.listWorkspaceSignupGroups(workspaceEntity);
 
-    for (WorkspaceSignupUserGroup signupGroup : payload) {
+    for (WorkspaceSignupUserGroup signupGroup : payload.getWorkspaceSignupGroups()) {
       UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(signupGroup.getUserGroupEntityId());
 
       if (userGroupEntity == null) {
