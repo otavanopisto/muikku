@@ -377,8 +377,27 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @param isPasting isPasting state
    */
   onCkeditorPaste(event: CKEditorEventInfo) {
+    // This all could be done in the ckeditor side
     // Prevent the original paste event
     let newData = event.data.dataValue;
+
+    const pastedData = event.data.dataValue.replace(/<\/?p>/g, "");
+
+    // Get the existing content
+    const existingContent = event.editor.getData().replace(/<\/?p>/g, "");
+
+    // Get the current selection
+    const selection = event.editor.getSelection();
+    const ranges = selection.getRanges();
+    const cursorPosition = ranges[0].startOffset;
+    const selectionEndPosition = ranges[0].endOffset;
+
+    // Combine the existing content and the pasted data
+    newData =
+      existingContent.slice(0, cursorPosition) +
+      pastedData +
+      existingContent.slice(selectionEndPosition);
+
     const characterCount = getCharacters(newData).length;
     const wordCount = getWords(newData).length;
 
@@ -388,29 +407,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     ) {
       event.stop();
 
-      // Get the pasted data      content = content.replace(/<[^>]*>/g, "");
-      const pastedData = event.data.dataValue.replace(/<\/?p>/g, "");
-
-      // Get the existing content
-      const existingContent = event.editor.getData().replace(/<\/?p>/g, "");
-
-      // Get the current selection
-      const selection = event.editor.getSelection();
-      const ranges = selection.getRanges();
-      const cursorPosition = ranges[0].startOffset;
-      const selectionEndPosition = ranges[0].endOffset;
-
-      // Combine the existing content and the pasted data
-      const combinedData =
-        existingContent.slice(0, cursorPosition) +
-        pastedData +
-        existingContent.slice(selectionEndPosition);
-
-      newData = combinedData;
-
       // Trim the combined data if it exceeds the character or word limit
 
-      newData = "<p>" + this.trimPastedContent(combinedData) + "</p>";
+      newData = "<p>" + this.trimPastedContent(newData) + "</p>";
 
       event.editor.setData(newData);
 
@@ -430,27 +429,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         }
       );
     }
-    // else {
-    //   newData = "<p>" + newData + "</p>";
-
-    //   event.editor.setData(newData);
-
-    //   // Update the state
-    //   this.setState(
-    //     {
-    //       value: newData,
-    //       words: wordCount,
-    //       isPasting: true,
-    //       characters: characterCount,
-    //     },
-    //     () => {
-    //       // This is to set the cursor at the end of the content
-    //       const range = event.editor.createRange();
-    //       range.moveToElementEditEnd(range.root);
-    //       event.editor.getSelection().selectRanges([range]);
-    //     }
-    //   );
-    // }
 
     // Set the trimmed data as the editor content
   }
