@@ -147,18 +147,15 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
       }
 
       boolean permitted = Boolean.TRUE.equals(signupGroup.getCanSignup());
+      boolean exists = workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier());
       
       if (permitted) {
-        if (!workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
+        if (!exists) {
           workspaceController.addWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
-        } else {
-          return Response.status(Response.Status.BAD_REQUEST).entity("Signup Group already exists").build();
         }
       } else {
-        if (workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
+        if (exists) {
           workspaceController.removeWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
-        } else {
-          return Response.status(Response.Status.NOT_FOUND).build();
         }
       }
 
