@@ -1472,7 +1472,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         // #3111: Workspace staff members should be limited to teachers only. A better implementation would support specified workspace roles
 
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
         if (workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
           continue;
         }
@@ -1549,7 +1549,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     User user = userController.findUserByIdentifier(workspaceUser.getUserIdentifier());
     UserEntity userEntity = userEntityController.findUserEntityByUser(user);
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
     if (user == null || workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -2829,7 +2829,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
     return Response.ok(workspaceUserEntity != null).build();
   }
 
