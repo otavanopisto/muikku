@@ -479,8 +479,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     }
     this.setState({
       value,
-      words: getWords(value).length,
-      characters: getCharacters(value).length,
+      words: getWords(rawText).length,
+      characters: getCharacters(rawText).length,
     });
 
     this.props.onChange &&
