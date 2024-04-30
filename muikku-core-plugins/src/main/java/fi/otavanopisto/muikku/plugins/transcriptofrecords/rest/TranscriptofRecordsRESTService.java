@@ -72,8 +72,8 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
@@ -414,14 +414,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @GET
   @Path("/files/{ID}/content")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Produces("*/*")
   public Response getFileContent(@PathParam("ID") Long fileId) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
 
     TranscriptOfRecordsFile file = transcriptOfRecordsFileController.findFileById(fileId);
@@ -489,10 +484,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/hopseligibility/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifierString) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierString);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -517,33 +508,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @GET
   @Path("/hops")
-  @RESTPermit(handling=Handling.INLINE)
+  @RESTPermit(handling=Handling.INLINE, requireLoggedIn = true)
   public Response retrieveHops(){
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-
-    HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
-
+    HopsRESTModel response = createHopsRESTModelForStudent(sessionController.getLoggedUser());
     if (response == null) {
       return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
     }
-
     return Response.ok(response).build();
   }
 
   @GET
   @Path("/hops/{USERIDENTIFIER}")
-  @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveHops(@PathParam("USERIDENTIFIER") String userIdentifierString) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
+  @RESTPermit(handling=Handling.INLINE, requireLoggedIn = true)
+  public Response retrieveHops(@PathParam("USERIDENTIFIER") String userIdentifierString){
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierString);
     if (userIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Malformed identifier").build();
@@ -572,12 +549,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @PUT
   @Consumes("application/json")
   @Path("/hops")
-  @RESTPermit(handling=Handling.INLINE)
+  @RESTPermit(handling=Handling.INLINE, requireLoggedIn = true)
   public Response updateHops(HopsRESTModel model) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     if (userSchoolDataIdentifier == null || !userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
@@ -646,12 +619,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
    */
   @GET
   @Path("/matriculationSubjects")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listMatriculationSubjects() {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
   }
 
@@ -664,10 +633,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
     StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
