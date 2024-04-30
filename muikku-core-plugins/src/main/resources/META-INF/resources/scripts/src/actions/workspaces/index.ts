@@ -457,22 +457,17 @@ export interface UpdateCurrentWorkspaceImagesB64TriggerType {
 }
 
 /**
- * LoadCurrentWorkspaceUserGroupPermissionsTriggerType
+ * LoadCUrrentWorkspaceSignupMessageTriggerType
  */
-export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
+export interface LoadCurrentWorkspaceSignupMessageTriggerType {
   (): AnyActionType;
 }
 
 /**
- * UpdateCurrentWorkspaceUserGroupPermissionTriggerType
+ * LoadCurrentWorkspaceUserGroupPermissionsTriggerType
  */
-export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
-  (data?: {
-    original: WorkspaceSignupGroup;
-    update: WorkspaceSignupGroup;
-    success?: () => void;
-    fail?: () => void;
-  }): AnyActionType;
+export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -541,6 +536,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let isCourseMember: boolean;
         let details: WorkspaceDetails;
         let chatStatus: WorkspaceChatStatus;
+
         const status = state.status;
 
         [
@@ -1364,6 +1360,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["permissions"];
     delete actualOriginal["chatStatus"];
     delete actualOriginal["inactiveStudents"];
+    delete actualOriginal["signupMessage"];
 
     try {
       const newDetails = data.update.details;
@@ -1372,6 +1369,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       const unchangedPermissions: WorkspaceSignupGroup[] = [];
       const currentWorkspace = getState().workspaces.currentWorkspace;
       const newChatStatus = data.update.chatStatus;
+      const newSignupMessage = data.update.signupMessage;
 
       // I left the workspace image out of this, because it never is in the application state anyway
       // These need to be removed from the object for the basic stuff to not fail
@@ -1379,6 +1377,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       delete data.update["permissions"];
       delete data.update["producers"];
       delete data.update["chatStatus"];
+      delete data.update["signupMessage"];
 
       if (data.update) {
         await workspaceApi.updateWorkspace({
@@ -1419,10 +1418,19 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
         data.update.chatStatus = newChatStatus;
       }
 
+      if (newSignupMessage) {
+        await workspaceApi.updateWorkspaceSignupMessage({
+          workspaceId: data.workspace.id,
+          updateWorkspaceSignupMessageRequest: newSignupMessage,
+        });
+
+        data.update.signupMessage = newSignupMessage;
+      }
+
       // Then permissions - if any
       if (newPermissions) {
         // Lets weed out the unchanged permissions for later
-        data.workspace.permissions.map((permission) => {
+        /* data.workspace.permissions.map((permission) => {
           if (
             !newPermissions.find(
               (p) => p.userGroupEntityId === permission.userGroupEntityId
@@ -1443,7 +1451,14 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
               updateWorkspaceSignupGroupRequest: permission,
             });
           })
+        ); */
+
+        console.log(
+          "Permissions that have changed and needs to be updated to server",
+          newPermissions
         );
+
+        //await workspaceApi.updateWorkspacePermissions({})
 
         // Here we have to combine the new permissions with old ones for dispatch, because otherwise there will be missing options in the app state
 
@@ -2347,6 +2362,56 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
   };
 
 /**
+ * loadCurrentWorkspaceSignupMessage
+ */
+const loadCurrentWorkspaceSignupMessage: LoadCurrentWorkspaceSignupMessageTriggerType =
+  function loadCurrentWorkspaceSignupMessage() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
+      try {
+        const currentWorkspace = getState().workspaces.currentWorkspace;
+
+        // Because the signup message is not included in the workspace object, we have to fetch it separately
+        const signupMessage = await workspaceApi.getWorkspaceSignupMessage({
+          workspaceId: currentWorkspace.id,
+        });
+
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: {
+              signupMessage: signupMessage || {
+                caption: "",
+                content: "",
+                enabled: false,
+              },
+            },
+          },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "permissions",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
  * loadCurrentWorkspaceUserGroupPermissions
  */
 const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermissionsTriggerType =
@@ -2360,9 +2425,19 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
       try {
         const currentWorkspace = getState().workspaces.currentWorkspace;
 
-        const permissions = await workspaceApi.getWorkspaceSignupGroups({
+        let permissions = await workspaceApi.getWorkspaceSignupGroups({
           workspaceEntityId: getState().workspaces.currentWorkspace.id,
         });
+
+        // Initialize signup message if it doesn't exist
+        permissions = permissions.map((permission) => ({
+          ...permission,
+          signupMessage: permission.signupMessage || {
+            caption: "",
+            content: "",
+            enabled: false,
+          },
+        }));
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -2450,4 +2525,5 @@ export {
   updateCurrentWorkspaceAssessmentRequest,
   updateCurrentWorkspaceInterimEvaluationRequests,
   setAvailableCurriculums,
+  loadCurrentWorkspaceSignupMessage,
 };

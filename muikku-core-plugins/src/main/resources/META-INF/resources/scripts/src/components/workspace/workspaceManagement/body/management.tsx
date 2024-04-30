@@ -50,10 +50,12 @@ import {
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
+  WorkspaceSignupMessage,
   WorkspaceType,
 } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
 
@@ -92,6 +94,7 @@ interface ManagementPanelState {
   workspacePermissions: Array<WorkspaceSignupGroup>;
   workspaceChatStatus: WorkspaceChatStatus;
   workspaceUsergroupNameFilter: string;
+  workspaceSignupMessage: WorkspaceSignupMessage;
   currentWorkspaceProducerInputValue: string;
   newWorkspaceImageSrc?: string;
   newWorkspaceImageFile?: File;
@@ -139,6 +142,11 @@ class ManagementPanel extends React.Component<
       workspaceHasCustomImage: false,
       workspaceChatStatus: null,
       workspacePermissions: [],
+      workspaceSignupMessage: {
+        caption: "",
+        content: "",
+        enabled: false,
+      },
       workspaceUsergroupNameFilter: "",
       currentWorkspaceProducerInputValue: "",
       isDeleteImageDialogOpen: false,
@@ -173,6 +181,7 @@ class ManagementPanel extends React.Component<
     this.togglePermissionIn = this.togglePermissionIn.bind(this);
     this.updateWorkspaceUsergroupNameFilter =
       this.updateWorkspaceUsergroupNameFilter.bind(this);
+
     this.save = this.save.bind(this);
   }
 
@@ -242,6 +251,14 @@ class ManagementPanel extends React.Component<
       workspaceLanguage: nextProps.workspace
         ? nextProps.workspace.language
         : "fi",
+      workspaceSignupMessage:
+        nextProps.workspace && nextProps.workspace.signupMessage
+          ? nextProps.workspace.signupMessage
+          : {
+              caption: "",
+              content: "",
+              enabled: false,
+            },
     });
   }
 
@@ -542,6 +559,137 @@ class ManagementPanel extends React.Component<
   }
 
   /**
+   * Handles signup group message save
+   * @param e e
+   */
+  handleWorkspaceSignupMessageCaptionChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { value } = e.target;
+    this.setState({
+      workspaceSignupMessage: {
+        ...this.state.workspaceSignupMessage,
+        caption: value,
+      },
+    });
+  };
+
+  /**
+   * Handles signup group message save
+   * @param text text
+   */
+  handleWorkspaceSignupMessageContentChange = (text: string) => {
+    this.setState({
+      workspaceSignupMessage: {
+        ...this.state.workspaceSignupMessage,
+        content: text,
+      },
+    });
+  };
+
+  /**
+   * Handles signup group message toggle
+   * @param e e
+   */
+  handleWorkspaceSignupMessageToggle = (
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>
+  ) => {
+    this.setState({
+      workspaceSignupMessage: {
+        ...this.state.workspaceSignupMessage,
+        enabled: !this.state.workspaceSignupMessage.enabled,
+      },
+    });
+  };
+
+  /**
+   * Handles signup group message save
+   * @param signupGroup signupGroup
+   */
+  handlePermissionSignupGroupMessageContentChange =
+    (signupGroup: WorkspaceSignupGroup) => (text: string) => {
+      const permissions = [...this.state.workspacePermissions];
+
+      const updatedSignupGroupIndex = permissions.findIndex(
+        (permission) =>
+          permission.userGroupEntityId === signupGroup.userGroupEntityId
+      );
+
+      if (updatedSignupGroupIndex === -1) {
+        return;
+      }
+
+      permissions[updatedSignupGroupIndex].signupMessage.content = text;
+
+      // if content is empty, disable the message
+      if (text === "") {
+        permissions[updatedSignupGroupIndex].signupMessage.enabled = false;
+      }
+
+      this.setState({
+        workspacePermissions: permissions,
+      });
+    };
+
+  /**
+   * Handles signup group message save
+   * @param signupGroup signupGroup
+   */
+  handlePermissionSignupGroupMessageCaptionChange =
+    (signupGroup: WorkspaceSignupGroup) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const permissions = [...this.state.workspacePermissions];
+
+      const updatedSignupGroupIndex = permissions.findIndex(
+        (permission) =>
+          permission.userGroupEntityId === signupGroup.userGroupEntityId
+      );
+
+      if (updatedSignupGroupIndex === -1) {
+        return;
+      }
+
+      permissions[updatedSignupGroupIndex].signupMessage.caption =
+        e.target.value;
+
+      // if caption is empty, disable the message
+      if (e.target.value === "") {
+        permissions[updatedSignupGroupIndex].signupMessage.enabled = false;
+      }
+
+      this.setState({
+        workspacePermissions: permissions,
+      });
+    };
+
+  /**
+   * Handles signup group message save
+   * @param signupGroup signupGroup
+   */
+  handlePermissionSignupGroupMessageToggle =
+    (signupGroup: WorkspaceSignupGroup) =>
+    (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => {
+      const permissions = [...this.state.workspacePermissions];
+
+      const updatedSignupGroupIndex = permissions.findIndex(
+        (permission) =>
+          permission.userGroupEntityId === signupGroup.userGroupEntityId
+      );
+
+      if (updatedSignupGroupIndex === -1) {
+        return;
+      }
+
+      // toggle enabled
+      permissions[updatedSignupGroupIndex].signupMessage.enabled =
+        !permissions[updatedSignupGroupIndex].signupMessage.enabled;
+
+      this.setState({
+        workspacePermissions: permissions,
+      });
+    };
+
+  /**
    * saveImage
    * @param croppedB64 croppedB64
    * @param originalB64 originalB64
@@ -675,17 +823,22 @@ class ManagementPanel extends React.Component<
     if (
       !equals(this.props.workspace.permissions, this.state.workspacePermissions)
     ) {
-      const permissionsArray: WorkspaceSignupGroup[] = [];
+      payload = Object.assign(
+        { permissions: this.state.workspacePermissions },
+        payload
+      );
+    }
 
-      this.state.workspacePermissions.forEach((permission) => {
-        const originalPermission = this.props.workspace.permissions.find(
-          (p) => p.userGroupEntityId === permission.userGroupEntityId
-        );
-        if (!equals(originalPermission, permission)) {
-          permissionsArray.push(permission);
-        }
-      });
-      payload = Object.assign({ permissions: permissionsArray }, payload);
+    if (
+      !equals(
+        this.props.workspace.signupMessage,
+        this.state.workspaceSignupMessage
+      )
+    ) {
+      payload = Object.assign(
+        { signupMessage: this.state.workspaceSignupMessage },
+        payload
+      );
     }
 
     this.props.updateWorkspace({
@@ -1212,6 +1365,81 @@ class ManagementPanel extends React.Component<
           ) : null}
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <h2 className="application-sub-panel__header">
+              Työtilan ilmoittautumisviesti
+              <Dropdown
+                openByHover
+                alignSelfVertically="top"
+                content={
+                  <p>
+                    Aktivoi ilmoittautumisviesti. Tämä on mahdollista kun
+                    viestin otsikko ja sisältö on asetettu
+                  </p>
+                }
+              >
+                <span>
+                  <label
+                    htmlFor="enable-workspace-signup-message"
+                    className="visually-hidden"
+                  >
+                    Aktivoi ilmoittautumisviesti
+                  </label>
+                  <input
+                    id="enable-workspace-signup-message"
+                    type="checkbox"
+                    className={`button-pill button-pill--editing-master-switch ${
+                      this.state.workspaceSignupMessage.enabled
+                        ? "button-pill--editing-master-switch-active"
+                        : ""
+                    }`}
+                    checked={this.state.workspaceSignupMessage.enabled}
+                    disabled={
+                      this.state.workspaceSignupMessage.caption === "" ||
+                      this.state.workspaceSignupMessage.content === ""
+                    }
+                    onClick={this.handleWorkspaceSignupMessageToggle}
+                    style={{
+                      transform: "rotate(-90deg)",
+                      background: "#7a7a7a",
+                    }}
+                  />
+                </span>
+              </Dropdown>
+            </h2>
+            <div className="application-sub-panel__body">
+              <div className="form__container">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="message-caption">Viestin otsikko</label>
+                    <input
+                      id="message-caption"
+                      placeholder={`Tervetuloa kurssille ${this.state.workspaceName}`}
+                      className="form-element__input"
+                      value={this.state.workspaceSignupMessage.caption}
+                      onChange={this.handleWorkspaceSignupMessageCaptionChange}
+                      style={{
+                        width: "100%",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form__row">
+                  <div className="form-element">
+                    <label>Viestin sisältö</label>
+                    <CKEditor
+                      editorTitle="Ilmoittautumisviestin sisältö"
+                      ancestorHeight={200}
+                      onChange={this.handleWorkspaceSignupMessageContentChange}
+                    >
+                      {this.state.workspaceSignupMessage.content}
+                    </CKEditor>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="application-sub-panel application-sub-panel--workspace-settings">
+            <h2 className="application-sub-panel__header">
               {t("labels.signUpRights", { ns: "workspace" })}
             </h2>
             <div className="application-sub-panel__body">
@@ -1252,34 +1480,139 @@ class ManagementPanel extends React.Component<
                           this.state.workspaceUsergroupNameFilter
                         )
                       )
-                      .map((permission) => (
-                        <span
-                          className="form-element form-element--checkbox-radiobutton"
-                          key={permission.userGroupEntityId}
-                        >
-                          {PERMISSIONS_TO_EXTRACT.map((pte) => (
-                            <input
-                              id={`usergroup${permission.userGroupEntityId}`}
-                              key={pte}
-                              type="checkbox"
-                              checked={permission.canSignup}
-                              onChange={this.togglePermissionIn.bind(
-                                this,
-                                permission,
-                                pte
-                              )}
-                            />
-                          ))}
-                          <label
-                            htmlFor={`usergroup${permission.userGroupEntityId}`}
+                      .map((permission) => {
+                        const signupGroupEditModifiers: string[] = [];
+                        const signupGroupToggleModifiers: string[] = [];
+
+                        if (permission.signupMessage) {
+                          if (permission.signupMessage.content !== "") {
+                            signupGroupEditModifiers.push("active");
+                          }
+
+                          if (permission.signupMessage.enabled) {
+                            signupGroupToggleModifiers.push("active");
+                          }
+                        }
+
+                        return (
+                          <details
+                            key={permission.userGroupEntityId}
+                            style={{
+                              width: "100%",
+                            }}
                           >
-                            {filterHighlight(
-                              permission.userGroupName,
-                              this.state.workspaceUsergroupNameFilter
-                            )}
-                          </label>
-                        </span>
-                      ))}
+                            <summary
+                              style={{
+                                display: "flex",
+                                marginTop: "5px",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              <span className="form-element form-element--checkbox-radiobutton">
+                                {PERMISSIONS_TO_EXTRACT.map((pte) => (
+                                  <input
+                                    id={`usergroup${permission.userGroupEntityId}`}
+                                    key={pte}
+                                    type="checkbox"
+                                    checked={permission.canSignup}
+                                    onChange={this.togglePermissionIn.bind(
+                                      this,
+                                      permission,
+                                      pte
+                                    )}
+                                  />
+                                ))}
+                                <label
+                                  htmlFor={`usergroup${permission.userGroupEntityId}`}
+                                >
+                                  {filterHighlight(
+                                    permission.userGroupName,
+                                    this.state.workspaceUsergroupNameFilter
+                                  )}
+                                </label>
+                              </span>
+
+                              <Dropdown
+                                openByHover
+                                alignSelfVertically="top"
+                                content={
+                                  <p>
+                                    Aktivoi ryhmäkohtainen ilmoittautumisviesti.
+                                    Tämä on mahdollista kun viestin otsikko ja
+                                    sisältö on asetettu
+                                  </p>
+                                }
+                              >
+                                <span>
+                                  <label
+                                    htmlFor="enable-signup-message"
+                                    className="visually-hidden"
+                                  >
+                                    Aktivoi ilmoittautumisviesti
+                                  </label>
+                                  <input
+                                    id="enable-signup-message"
+                                    type="checkbox"
+                                    className={`button-pill button-pill--editing-master-switch ${
+                                      permission.signupMessage.enabled
+                                        ? "button-pill--editing-master-switch-active"
+                                        : ""
+                                    }`}
+                                    checked={permission.signupMessage.enabled}
+                                    disabled={
+                                      permission.signupMessage.caption === "" ||
+                                      permission.signupMessage.content === ""
+                                    }
+                                    onClick={this.handlePermissionSignupGroupMessageToggle(
+                                      permission
+                                    )}
+                                    style={{
+                                      transform: "rotate(-90deg)",
+                                      background: "#7a7a7a",
+                                    }}
+                                  />
+                                </span>
+                              </Dropdown>
+                            </summary>
+
+                            <div className="form__container">
+                              <div className="form__row">
+                                <div className="form-element">
+                                  <label htmlFor="message-caption">
+                                    Viestin otsikko
+                                  </label>
+                                  <input
+                                    id="message-caption"
+                                    placeholder={`Tervetuloa kurssille ${this.state.workspaceName}`}
+                                    className="form-element__input"
+                                    value={permission.signupMessage.caption}
+                                    onChange={this.handlePermissionSignupGroupMessageCaptionChange(
+                                      permission
+                                    )}
+                                    style={{
+                                      width: "100%",
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="form__row">
+                                <div className="form-element">
+                                  <label>Viestin sisältö</label>
+                                  <CKEditor
+                                    editorTitle="Ilmoittautumisviestin sisältö"
+                                    ancestorHeight={200}
+                                    onChange={this.handlePermissionSignupGroupMessageContentChange(
+                                      permission
+                                    )}
+                                  >
+                                    {permission.signupMessage.content}
+                                  </CKEditor>
+                                </div>
+                              </div>
+                            </div>
+                          </details>
+                        );
+                      })}
                   </div>
                 </fieldset>
               </div>

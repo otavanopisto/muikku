@@ -11252,7 +11252,7 @@ components:
           schema:
             type: object
             properties:
-            # TODO the message here is not used anymore
+              # TODO the message here is not used anymore
               message:
                 type: string
 
@@ -11574,15 +11574,17 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/WorkspaceSettings"
-            
+            allOf:
+              - $ref: "#/components/schemas/WorkspaceSettings"
+
     WorkspaceSignupMessageUpdateRequestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/WorkspaceSignupMessage"
-            
+            allOf:
+              - $ref: "#/components/schemas/WorkspaceSignupMessage"
+
     WorkspaceCreateRequestBody:
       required: true
       content:
@@ -16109,6 +16111,7 @@ components:
         - userGroupEntityId
         - userGroupName
         - canSignup
+        - signupMessage
       properties:
         workspaceEntityId:
           description: The id of the workspace
@@ -16126,6 +16129,7 @@ components:
           type: boolean
         signupMessage:
           description: Signup message for the group
+          nullable: true
           $ref: "#/components/schemas/WorkspaceSignupMessage"
 
     WorkspaceUserEntity:
@@ -16653,14 +16657,14 @@ components:
           description: Access level of the workspace
           $ref: "#/components/schemas/WorkspaceAccess"
         defaultSignupMessage:
-          description: Default sign up greeting of the workspace 
+          description: Default sign up greeting of the workspace
           $ref: "#/components/schemas/WorkspaceSignupMessage"
         signupGroups:
           description: Sign up groups and their settings
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceSettingsSignupGroup"
-          
+
     WorkspaceSignupMessage:
       type: object
       description: Workspace sign up message, a message that is sent to student when they sign up to a workspace
@@ -16697,7 +16701,6 @@ components:
         signupMessage:
           descrption: Workspace sign up message for members of this group
           $ref: "#/components/schemas/WorkspaceSignupMessage"
-
 
     ErrorModel:
       type: object
