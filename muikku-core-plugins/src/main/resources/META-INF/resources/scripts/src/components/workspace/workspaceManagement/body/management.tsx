@@ -1408,9 +1408,9 @@ class ManagementPanel extends React.Component<
                   <input
                     id="enable-workspace-signup-message"
                     type="checkbox"
-                    className={`button-pill button-pill--editing-master-switch ${
+                    className={`button-pill button-pill--autoreply-switch ${
                       this.state.workspaceSignupMessage.enabled
-                        ? "button-pill--editing-master-switch-active"
+                        ? "button-pill--autoreply-switch-active"
                         : ""
                     }`}
                     checked={this.state.workspaceSignupMessage.enabled}
@@ -1419,10 +1419,6 @@ class ManagementPanel extends React.Component<
                       this.state.workspaceSignupMessage.content === ""
                     }
                     onClick={this.handleWorkspaceSignupMessageToggle}
-                    style={{
-                      transform: "rotate(-90deg)",
-                      background: "#7a7a7a",
-                    }}
                   />
                 </span>
               </Dropdown>
@@ -1523,14 +1519,8 @@ class ManagementPanel extends React.Component<
                               width: "100%",
                             }}
                           >
-                            <summary
-                              style={{
-                                display: "flex",
-                                marginTop: "5px",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              <span className="form-element form-element--checkbox-radiobutton">
+                            <summary>
+                              <span className="form-element form-element--checkbox-radiobutton-inside-summary">
                                 {PERMISSIONS_TO_EXTRACT.map((pte) => (
                                   <input
                                     id={`usergroup${permission.userGroupEntityId}`}
@@ -1575,9 +1565,9 @@ class ManagementPanel extends React.Component<
                                   <input
                                     id="enable-signup-message"
                                     type="checkbox"
-                                    className={`button-pill button-pill--editing-master-switch ${
+                                    className={`button-pill button-pill--autoreply-switch ${
                                       permission.signupMessage.enabled
-                                        ? "button-pill--editing-master-switch-active"
+                                        ? "button-pill--autoreply-switch-active"
                                         : ""
                                     }`}
                                     checked={permission.signupMessage.enabled}
@@ -1588,47 +1578,45 @@ class ManagementPanel extends React.Component<
                                     onClick={this.handlePermissionSignupGroupMessageToggle(
                                       permission
                                     )}
-                                    style={{
-                                      transform: "rotate(-90deg)",
-                                      background: "#7a7a7a",
-                                    }}
                                   />
                                 </span>
                               </Dropdown>
                             </summary>
 
-                            <div className="form__container">
-                              <div className="form__row">
-                                <div className="form-element">
-                                  <label htmlFor="message-caption">
-                                    Viestin otsikko
-                                  </label>
-                                  <input
-                                    id="message-caption"
-                                    placeholder={`Tervetuloa kurssille ${this.state.workspaceName}`}
-                                    className="form-element__input"
-                                    value={permission.signupMessage.caption}
-                                    onChange={this.handlePermissionSignupGroupMessageCaptionChange(
-                                      permission
-                                    )}
-                                    style={{
-                                      width: "100%",
-                                    }}
-                                  />
+                            <div className="details__content">
+                              <div className="form__container">
+                                <div className="form__row">
+                                  <div className="form-element">
+                                    <label htmlFor="message-caption">
+                                      Viestin otsikko
+                                    </label>
+                                    <input
+                                      id="message-caption"
+                                      placeholder={`Tervetuloa kurssille ${this.state.workspaceName}`}
+                                      className="form-element__input"
+                                      value={permission.signupMessage.caption}
+                                      onChange={this.handlePermissionSignupGroupMessageCaptionChange(
+                                        permission
+                                      )}
+                                      style={{
+                                        width: "100%",
+                                      }}
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="form__row">
-                                <div className="form-element">
-                                  <label>Viestin sisältö</label>
-                                  <CKEditor
-                                    editorTitle="Ilmoittautumisviestin sisältö"
-                                    ancestorHeight={200}
-                                    onChange={this.handlePermissionSignupGroupMessageContentChange(
-                                      permission
-                                    )}
-                                  >
-                                    {permission.signupMessage.content}
-                                  </CKEditor>
+                                <div className="form__row">
+                                  <div className="form-element">
+                                    <label>Viestin sisältö</label>
+                                    <CKEditor
+                                      editorTitle="Ilmoittautumisviestin sisältö"
+                                      ancestorHeight={200}
+                                      onChange={this.handlePermissionSignupGroupMessageContentChange(
+                                        permission
+                                      )}
+                                    >
+                                      {permission.signupMessage.content}
+                                    </CKEditor>
+                                  </div>
                                 </div>
                               </div>
                             </div>
