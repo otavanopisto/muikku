@@ -1188,9 +1188,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @PUT
-  @Path("/workspaces/{ID}/signupMessage")
+  @Path("/workspaces/{WORKSPACEENTITYID}/signupMessage")
   @RESTPermit (handling = Handling.INLINE)
-  public Response updateWorkspaceSettings(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
+  public Response updateWorkspaceSignupMessage(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
