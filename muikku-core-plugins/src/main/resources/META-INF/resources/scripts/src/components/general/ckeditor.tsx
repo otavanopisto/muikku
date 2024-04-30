@@ -76,7 +76,7 @@ interface CKEditorProps {
   configuration?: any;
   ancestorHeight?: number;
   onChange: (arg: string, instance: any) => any;
-  onPaste?: (event: CKEditorEventInfo, isPasting: boolean) => void;
+  onPaste?: (event: CKEditorEventInfo) => void;
   onDrop?: () => any;
   children?: string;
   autofocus?: boolean;
@@ -392,7 +392,7 @@ export default class CKEditor extends React.Component<
 
           // const test = event.data.dataValue;
 
-          props.onPaste(event, true);
+          props.onPaste(event);
         });
       }
 
