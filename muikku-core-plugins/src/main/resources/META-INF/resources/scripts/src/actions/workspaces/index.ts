@@ -31,7 +31,6 @@ import {
   WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
-  WorkspaceSignupGroup,
   Curriculum,
   WorkspaceStudent,
   UserStaffSearchResult,
@@ -1330,7 +1329,8 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
   };
 
 /**
- * updateWorkspace
+ * Updates the assignment state of a workspace material.
+
  * @param data data
  */
 const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
@@ -1342,6 +1342,10 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
   ) => {
     const chatApi = MApi.getChatApi();
     const workspaceApi = MApi.getWorkspaceApi();
+
+    // Note there is a lot of logic related to managing workspace object in this function,
+    // mostly because how WorkspaceDataType interface was created, so its not one to one with
+    // api endpoints etc...
 
     const actualOriginal: WorkspaceDataType = { ...data.workspace };
     delete actualOriginal["activity"];
@@ -1366,7 +1370,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       const newDetails = data.update.details;
       const newPermissions = data.update.permissions;
       const appliedProducers = data.update.producers;
-      const unchangedPermissions: WorkspaceSignupGroup[] = [];
       const currentWorkspace = getState().workspaces.currentWorkspace;
       const newChatStatus = data.update.chatStatus;
       const newSignupMessage = data.update.signupMessage;
@@ -1379,6 +1382,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       delete data.update["chatStatus"];
       delete data.update["signupMessage"];
 
+      // First update the workspace
       if (data.update) {
         await workspaceApi.updateWorkspace({
           workspaceId: data.workspace.id,
@@ -1418,6 +1422,7 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
         data.update.chatStatus = newChatStatus;
       }
 
+      // Then signup message - if any
       if (newSignupMessage) {
         await workspaceApi.updateWorkspaceSignupMessage({
           workspaceId: data.workspace.id,
@@ -1429,42 +1434,14 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
 
       // Then permissions - if any
       if (newPermissions) {
-        // Lets weed out the unchanged permissions for later
-        /* data.workspace.permissions.map((permission) => {
-          if (
-            !newPermissions.find(
-              (p) => p.userGroupEntityId === permission.userGroupEntityId
-            )
-          ) {
-            unchangedPermissions.push(permission);
-          }
+        await workspaceApi.updateWorkspaceSignupGroups({
+          workspaceEntityId: currentWorkspace.id,
+          updateWorkspaceSignupGroupsRequest: {
+            workspaceSignupGroups: newPermissions,
+          },
         });
-        await Promise.all(
-          newPermissions.map((permission) => {
-            const originalPermission = currentWorkspace.permissions.find(
-              (p) => p.userGroupEntityId === permission.userGroupEntityId
-            );
 
-            workspaceApi.updateWorkspaceSignupGroup({
-              workspaceEntityId: currentWorkspace.id,
-              userGroupId: originalPermission.userGroupEntityId,
-              updateWorkspaceSignupGroupRequest: permission,
-            });
-          })
-        ); */
-
-        console.log(
-          "Permissions that have changed and needs to be updated to server",
-          newPermissions
-        );
-
-        //await workspaceApi.updateWorkspacePermissions({})
-
-        // Here we have to combine the new permissions with old ones for dispatch, because otherwise there will be missing options in the app state
-
-        // TODO: this mixes up the order of the checkboxes, maybe reload them or sort them here.
-
-        data.update.permissions = unchangedPermissions.concat(newPermissions);
+        data.update.permissions = newPermissions;
       }
 
       // Then producers
@@ -2425,19 +2402,9 @@ const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPer
       try {
         const currentWorkspace = getState().workspaces.currentWorkspace;
 
-        let permissions = await workspaceApi.getWorkspaceSignupGroups({
+        const permissions = await workspaceApi.getWorkspaceSignupGroups({
           workspaceEntityId: getState().workspaces.currentWorkspace.id,
         });
-
-        // Initialize signup message if it doesn't exist
-        permissions = permissions.map((permission) => ({
-          ...permission,
-          signupMessage: permission.signupMessage || {
-            caption: "",
-            content: "",
-            enabled: false,
-          },
-        }));
 
         dispatch({
           type: "UPDATE_WORKSPACE",

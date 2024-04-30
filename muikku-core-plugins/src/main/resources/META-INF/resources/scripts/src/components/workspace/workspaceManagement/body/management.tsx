@@ -246,7 +246,14 @@ class ManagementPanel extends React.Component<
         : null,
       workspacePermissions:
         nextProps.workspace && nextProps.workspace.permissions
-          ? nextProps.workspace.permissions
+          ? nextProps.workspace.permissions.map((pr) => ({
+              ...pr,
+              signupMessage: pr.signupMessage || {
+                caption: "",
+                content: "",
+                enabled: false,
+              },
+            }))
           : [],
       workspaceLanguage: nextProps.workspace
         ? nextProps.workspace.language
@@ -820,15 +827,27 @@ class ManagementPanel extends React.Component<
       payload = Object.assign({ details: workspaceDetails }, payload);
     }
 
-    if (
-      !equals(this.props.workspace.permissions, this.state.workspacePermissions)
-    ) {
+    // Set signup message to null if caption or content either is empty
+    // Endpoint does not accept empty values, it must be null
+    const realPermissions = this.state.workspacePermissions.map((pr) => ({
+      ...pr,
+      signupMessage:
+        pr.signupMessage.caption === "" || pr.signupMessage.content === ""
+          ? null
+          : pr.signupMessage,
+    }));
+
+    // Check if permissions have changed
+    if (!equals(this.props.workspace.permissions, realPermissions)) {
       payload = Object.assign(
-        { permissions: this.state.workspacePermissions },
+        {
+          permissions: realPermissions,
+        },
         payload
       );
     }
 
+    // Check if signup message has changed
     if (
       !equals(
         this.props.workspace.signupMessage,
