@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
@@ -9,15 +10,24 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Safelist;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceSignupMessageDAO;
+import fi.otavanopisto.muikku.mail.MailType;
+import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -25,7 +35,13 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 public class WorkspaceSignupMessageController { 
 
   @Inject
+  private Mailer mailer;
+
+  @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -39,7 +55,7 @@ public class WorkspaceSignupMessageController {
 
   public WorkspaceSignupMessage createWorkspaceSignupMessage(WorkspaceEntity workspaceEntity, 
       UserGroupEntity signupGroupEntity, boolean enabled, String caption, String content) {
-    return workspaceEntityMessageDAO.create(workspaceEntity, signupGroupEntity, enabled, caption, content);
+    return workspaceEntityMessageDAO.create(workspaceEntity, signupGroupEntity, enabled, clean(caption), clean(content));
   }
   
   /**
@@ -60,7 +76,7 @@ public class WorkspaceSignupMessageController {
     if (CollectionUtils.isNotEmpty(userGroupEntities)) {
       /*
        * List the group bound signup messages that match any of the user groups the user is member of.
-       * If we find
+       * If we find any, return the first one - there's no priorities to pick "a better one"
       */
       List<WorkspaceSignupMessage> groupBoundSignupMessages = workspaceEntityMessageDAO.listEnabledGroupBoundSignupMessagesBy(workspaceEntity, userGroupEntities);
       
@@ -77,12 +93,12 @@ public class WorkspaceSignupMessageController {
   /**
    * Sends an applicable workspace signup message to given student signing up to given workspace.
    * 
-   * @param userIdentifier
-   * @param workspaceEntity
+   * @param studentUserSchoolDataIdentifier student's UserSchoolDataIdentifier
+   * @param workspaceEntity Workspace
    * @return true if the signup message was sent, false otherwise
    */
-  public boolean sendApplicableSignupMessage(UserSchoolDataIdentifier userSchoolDataIdentifier, WorkspaceEntity workspaceEntity) {
-    WorkspaceSignupMessage workspaceSignupMessage = getApplicableSignupMessage(userSchoolDataIdentifier.schoolDataIdentifier(), workspaceEntity);
+  public boolean sendApplicableSignupMessage(UserSchoolDataIdentifier studentUserSchoolDataIdentifier, WorkspaceEntity workspaceEntity) {
+    WorkspaceSignupMessage workspaceSignupMessage = getApplicableSignupMessage(studentUserSchoolDataIdentifier.schoolDataIdentifier(), workspaceEntity);
 
     if (workspaceSignupMessage != null && workspaceSignupMessage.isEnabled()) {
       String messageCategory = "message";
@@ -94,7 +110,7 @@ public class WorkspaceSignupMessageController {
       List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
       UserEntity messageSender = CollectionUtils.isNotEmpty(workspaceTeachers)
           ? workspaceTeachers.get(0).getUserSchoolDataIdentifier().getUserEntity()
-          : userSchoolDataIdentifier.getUserEntity();
+          : studentUserSchoolDataIdentifier.getUserEntity();
       
       for (MessagingWidget messagingWidget : messagingWidgets) {
         messagingWidget.postMessage(
@@ -102,11 +118,24 @@ public class WorkspaceSignupMessageController {
             messageCategory, 
             workspaceSignupMessage.getCaption(),
             workspaceSignupMessage.getContent(),
-            Arrays.asList(userSchoolDataIdentifier.getUserEntity())
+            Arrays.asList(studentUserSchoolDataIdentifier.getUserEntity())
         );
       }
       
-      // Send email TODO
+      // Send email
+      
+      List<String> studentAddresses = userEmailEntityController.getUserEmailAddresses(studentUserSchoolDataIdentifier).stream()
+          .map(UserEmailEntity::getAddress)
+          .collect(Collectors.toList());
+      
+      if (CollectionUtils.isNotEmpty(studentAddresses)) {
+        mailer.sendMail(
+            MailType.HTML, 
+            studentAddresses, 
+            workspaceSignupMessage.getCaption(), 
+            workspaceSignupMessage.getContent()
+        );
+      }
       
       return true;
     }
@@ -128,7 +157,21 @@ public class WorkspaceSignupMessageController {
   
   public WorkspaceSignupMessage updateWorkspaceSignupMessage(WorkspaceSignupMessage workspaceEntityMessage, 
       boolean enabled, String caption, String content) {
-    return workspaceEntityMessageDAO.update(workspaceEntityMessage, enabled, caption, content);
+    return workspaceEntityMessageDAO.update(workspaceEntityMessage, enabled, clean(caption), clean(content));
   }
   
+  private String clean(String html) {
+    Document doc = Jsoup.parseBodyFragment(html);
+    doc = new Cleaner(
+            Safelist.relaxed()
+              .addTags("s")
+              .addAttributes("a", "target")
+              .addAttributes("img", "width", "height", "style")
+              .addAttributes("i", "class")
+              .addAttributes("span", "style")
+    ).clean(doc);
+    doc.outputSettings().escapeMode(EscapeMode.xhtml);
+    return doc.body().html();
+  }
+
 }
