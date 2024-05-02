@@ -401,8 +401,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     let characterCount = getCharacters(newData).length;
     let wordCount = getWords(newData).length;
     const limitreached =
-      characterCount > parseInt(this.props.content.maxChars) ||
-      wordCount > parseInt(this.props.content.maxWords);
+      characterCount >= parseInt(this.props.content.maxChars) ||
+      wordCount >= parseInt(this.props.content.maxWords);
 
     // If the limit is reached and the cursor is at the same position, stop the event
     // This is to prevent the user from pasting content that exceeds the limit and a possible bug in cke4
