@@ -389,22 +389,31 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // Get the current selection
     const selection = event.editor.getSelection();
     const ranges = selection.getRanges();
-    const cursorPosition = ranges[0].startOffset;
-    const selectionEndPosition = ranges[0].endOffset;
+    const cursorStartPosition = ranges[0].startOffset;
+    const cursorEndPosition = ranges[0].endOffset;
 
     // Combine the existing content and the pasted data
     newData =
-      existingContent.slice(0, cursorPosition) +
+      existingContent.slice(0, cursorStartPosition) +
       pastedData +
-      existingContent.slice(selectionEndPosition);
+      existingContent.slice(cursorEndPosition);
 
     let characterCount = getCharacters(newData).length;
     let wordCount = getWords(newData).length;
-
-    if (
+    const limitreached =
       characterCount > parseInt(this.props.content.maxChars) ||
-      wordCount > parseInt(this.props.content.maxWords)
-    ) {
+      wordCount > parseInt(this.props.content.maxWords);
+
+    // If the limit is reached and the cursor is at the same position, stop the event
+    // This is to prevent the user from pasting content that exceeds the limit and a possible bug in cke4
+    // that gives false cursor position when pasting content
+    if (limitreached && cursorEndPosition === cursorStartPosition) {
+      this.props.displayNotification("Content exceeds the limit", "error");
+      event.stop();
+      return;
+    }
+
+    if (limitreached) {
       event.stop();
 
       // Trim the combined data if it exceeds the character or word limit
@@ -412,23 +421,23 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       newData = "<p>" + this.trimPastedContent(newData) + "</p>";
       characterCount = getCharacters(newData).length;
       wordCount = getWords(newData).length;
-      event.editor.setData(newData);
 
-      // Update the state
-      this.setState(
-        {
-          value: newData,
-          words: wordCount,
-          isPasting: true,
-          characters: characterCount,
-        },
-        () => {
-          // This is to set the cursor at the end of the content
+      event.editor.setData(newData, {
+        callback: () => {
           const range = event.editor.createRange();
           range.moveToElementEditEnd(range.root);
           event.editor.getSelection().selectRanges([range]);
-        }
-      );
+        },
+      });
+
+      // Update the state
+      this.setState({
+        value: newData,
+        words: wordCount,
+        isPasting: true,
+        characters: characterCount,
+      });
+
       this.props.onChange &&
         this.props.onChange(this, this.props.content.name, newData);
     }
@@ -443,7 +452,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    */
   onCKEditorChange(value: string, instance: any) {
     // we need the raw text and raw value
-    const rawText = $(value).text();
+    let rawText = $(value).text();
     const rawValue = $(this.state.value).text();
 
     const maxCharacters = parseInt(this.props.content.maxChars);
@@ -469,8 +478,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         getCharacters(rawText).length < getCharacters(rawValue).length;
 
       if (!isBeingDeleted && !this.isInsideLastWord(rawText)) {
+        // over the limit, not being deleted and outside the last word, reset to state value
         value = this.state.value;
-
+        // reset the word and character counters too
+        rawText = rawValue;
         this.props.displayNotification(
           "Written content exceeds the word limit",
           "error"
@@ -485,6 +496,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, value);
+
+    const range = instance.createRange();
+    range.moveToElementEditEnd(range.root);
+    instance.getSelection().selectRanges([range]);
   }
 
   /**
