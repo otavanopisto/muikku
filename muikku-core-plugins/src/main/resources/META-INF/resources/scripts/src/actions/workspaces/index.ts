@@ -1043,7 +1043,6 @@ export interface SignupIntoWorkspaceTriggerType {
     success: () => void;
     fail: () => void;
     workspace: WorkspaceSignUpDetails;
-    message: string;
   }): AnyActionType;
 }
 
@@ -1300,9 +1299,6 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
       try {
         await coursepickerApi.workspaceSignUp({
           workspaceId: data.workspace.id,
-          workspaceSignUpRequest: {
-            message: data.message,
-          },
         });
 
         window.location.href = `${getState().status.contextPath}/workspace/${
