@@ -480,26 +480,40 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       if (!isBeingDeleted && !this.isInsideLastWord(rawText)) {
         // over the limit, not being deleted and outside the last word, reset to state value
         value = this.state.value;
-        // reset the word and character counters too
-        rawText = rawValue;
+
+        // no point in setting state or saving anything, we return the original value
+
+        instance.setData(value, {
+          callback: () => {
+            const range = instance.createRange();
+            range.moveToElementEditEnd(range.root);
+            instance.getSelection().selectRanges([range]);
+          },
+        });
         this.props.displayNotification(
           "Written content exceeds the word limit",
           "error"
         );
       }
+      // We save if there's a change
+      else if (value !== this.state.value) {
+        this.setState({
+          value,
+          words: getWords(rawText).length,
+          characters: getCharacters(rawText).length,
+        });
+        this.props.onChange &&
+          this.props.onChange(this, this.props.content.name, value);
+      }
+    } else {
+      this.setState({
+        value,
+        words: getWords(rawText).length,
+        characters: getCharacters(rawText).length,
+      });
+      this.props.onChange &&
+        this.props.onChange(this, this.props.content.name, value);
     }
-    this.setState({
-      value,
-      words: getWords(rawText).length,
-      characters: getCharacters(rawText).length,
-    });
-
-    this.props.onChange &&
-      this.props.onChange(this, this.props.content.name, value);
-
-    const range = instance.createRange();
-    range.moveToElementEditEnd(range.root);
-    instance.getSelection().selectRanges([range]);
   }
 
   /**
