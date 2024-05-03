@@ -420,6 +420,15 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       (wordLimitReachedAtState || characterLimitReachedAtState) &&
       cursorEndPosition === cursorStartPosition
     ) {
+      const localeContext = wordLimitReachedAtState ? "words" : "characters";
+
+      this.props.displayNotification(
+        this.props.t("notifications.contentLimitReached", {
+          ns: "materials",
+          context: localeContext,
+        }),
+        "info"
+      );
       event.stop();
       return;
     }
@@ -434,7 +443,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       event.stop();
 
       // TODO NAMING
-      const localeContext = wordLimitReached ? "words" : "characters";
 
       newData = "<p>" + this.trimPastedContent(newData) + "</p>";
       characterCount = getCharacters(newData).length;
