@@ -295,9 +295,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   onInputPaste(e: React.ClipboardEvent) {
     let newValue = e.clipboardData.getData("text");
     const textarea = e.target as HTMLTextAreaElement;
-    e.preventDefault(); // Prevent the default paste action
-
-    // Get the start and end indices of the selected text
     const selectionStart = textarea.selectionStart;
     const selectionEnd = textarea.selectionEnd;
 
@@ -306,18 +303,25 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       newValue +
       textarea.value.substring(selectionEnd);
 
-    newValue = this.trimPastedContent(newValue);
+    if (
+      getCharacters(newValue).length > parseInt(this.props.content.maxChars) ||
+      getWords(newValue).length > parseInt(this.props.content.maxWords)
+    ) {
+      e.preventDefault(); // Prevent the default paste action
 
-    this.setState({
-      value: newValue,
-      words: getWords(newValue).length,
-      characters: getCharacters(newValue).length,
-      isPasting: true,
-    });
+      newValue = this.trimPastedContent(newValue);
 
-    //we call the on change
-    this.props.onChange &&
-      this.props.onChange(this, this.props.content.name, newValue);
+      this.setState({
+        value: newValue,
+        words: getWords(newValue).length,
+        characters: getCharacters(newValue).length,
+        isPasting: true,
+      });
+
+      //we call the on change
+      this.props.onChange &&
+        this.props.onChange(this, this.props.content.name, newValue);
+    }
   }
 
   /**
@@ -400,6 +404,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
     let characterCount = getCharacters(newData).length;
     let wordCount = getWords(newData).length;
+
     const limitReachedAtState =
       this.state.characters >= parseInt(this.props.content.maxChars) ||
       this.state.words >= parseInt(this.props.content.maxWords);
