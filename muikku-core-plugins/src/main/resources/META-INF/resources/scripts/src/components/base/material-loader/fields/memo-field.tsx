@@ -23,6 +23,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { locale } from "moment";
 
 /**
  * MemoFieldProps
@@ -226,7 +227,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   trimPastedContent(content: string): string {
     // any content should be parsed from tags before this
     const characters = getCharacters(content);
-    const words = getWords(content);
+    let words = getWords(content);
     const maxCharacterLimit = parseInt(this.props.content.maxChars);
     const maxWordLimit = parseInt(this.props.content.maxWords);
 
@@ -237,9 +238,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       // If the pasted data exceeds the limit, trim it
       if (characters.length >= maxCharacterLimit) {
         this.props.displayNotification(
-          "Pasted content exceeds the character limit",
-          "error"
+          this.props.t("notifications.contentLimitReached", {
+            ns: "materials",
+            context: "characters",
+          }),
+          "info"
         );
+
         let count = 0;
         let newData = "";
         for (const char of content) {
@@ -253,14 +258,19 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           }
         }
         content = newData;
+        words = getWords(newData);
       }
 
       // If the number of words exceeds the limit, trim it
       if (words.length >= maxWordLimit) {
         this.props.displayNotification(
-          "Pasted content exceeds the word limit",
-          "error"
+          this.props.t("notifications.contentLimitReached", {
+            ns: "materials",
+            context: "words",
+          }),
+          "info"
         );
+
         content = words.slice(0, maxWordLimit).join(" ");
       }
       return content;
@@ -312,23 +322,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     if (exceedsCharacterLimit || exceedsWordLimit) {
       e.preventDefault(); // Prevent the default paste action
 
-      const localeContext = exceedsCharacterLimit ? "character" : "word";
-
       newValue = this.trimPastedContent(newValue);
-
-      this.props.displayNotification(
-        "Content exceeds the " + localeContext + " limit",
-        "error"
-      );
 
       this.setState({
         value: newValue,
         words: getWords(newValue).length,
         characters: getCharacters(newValue).length,
-        isPasting: true,
       });
 
-      //we call the on change
       this.props.onChange &&
         this.props.onChange(this, this.props.content.name, newValue);
     }
@@ -346,12 +347,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       getCharacters(e.target.value).length <
       getCharacters(this.state.value).length;
 
-    if (this.state.isPasting) {
-      this.setState({
-        isPasting: false,
-      });
-      return;
-    }
     const exceedsCharacterLimit =
       getCharacters(e.target.value).length > maxCharacters;
 
@@ -362,8 +357,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
       if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
         this.props.displayNotification(
-          "Content exceeds the " + localeContext + " limit",
-          "error"
+          this.props.t("notifications.contentLimitReached", {
+            ns: "materials",
+            context: localeContext,
+          }),
+          "info"
         );
         newValue = this.state.value;
       }
@@ -428,11 +426,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       (wordLimitReachedAtState || characterLimitReachedAtState) &&
       cursorEndPosition === cursorStartPosition
     ) {
-      const localeContext = wordLimitReachedAtState ? "word" : "character";
-      this.props.displayNotification(
-        "Content exceeds the" + localeContext + "limit",
-        "error"
-      );
       event.stop();
       return;
     }
@@ -446,7 +439,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     if (characterLimitReached || wordLimitReached) {
       event.stop();
 
-      // Trim the combined data if it exceeds the character or word limit
+      // TODO NAMING
+      const localeContext = wordLimitReached ? "words" : "characters";
 
       newData = "<p>" + this.trimPastedContent(newData) + "</p>";
       characterCount = getCharacters(newData).length;
@@ -459,6 +453,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           event.editor.getSelection().selectRanges([range]);
         },
       });
+
+      // TODO: TEST IF THE SETDATA SHOULD EXIST OR BE AFTER THIS
 
       // Update the state
       this.setState({
@@ -504,6 +500,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       // If the user has exceeded the limit, we need to revert the changes
       //Then we set the cursor at the end of the content
 
+      const localeContext = exceedsWordLimit ? "words" : "characters";
+
       const isBeingDeleted =
         getCharacters(rawText).length < getCharacters(rawValue).length;
 
@@ -521,8 +519,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           },
         });
         this.props.displayNotification(
-          "Written content exceeds the word limit",
-          "error"
+          this.props.t("notifications.contentLimitReached", {
+            ns: "materials",
+            context: localeContext,
+          }),
+          "info"
         );
       }
       // We save if there's a change
