@@ -303,13 +303,23 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       newValue +
       textarea.value.substring(selectionEnd);
 
-    if (
-      getCharacters(newValue).length > parseInt(this.props.content.maxChars) ||
-      getWords(newValue).length > parseInt(this.props.content.maxWords)
-    ) {
+    const exceedsCharacterLimit =
+      getCharacters(newValue).length > parseInt(this.props.content.maxChars);
+
+    const exceedsWordLimit =
+      getWords(newValue).length >= parseInt(this.props.content.maxWords);
+
+    if (exceedsCharacterLimit || exceedsWordLimit) {
       e.preventDefault(); // Prevent the default paste action
 
+      const localeContext = exceedsCharacterLimit ? "character" : "word";
+
       newValue = this.trimPastedContent(newValue);
+
+      this.props.displayNotification(
+        "Content exceeds the " + localeContext + " limit",
+        "error"
+      );
 
       this.setState({
         value: newValue,
@@ -352,7 +362,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
       if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
         this.props.displayNotification(
-          "Written content exceeds the " + localeContext + " limit",
+          "Content exceeds the " + localeContext + " limit",
           "error"
         );
         newValue = this.state.value;
@@ -405,25 +415,35 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     let characterCount = getCharacters(newData).length;
     let wordCount = getWords(newData).length;
 
-    const limitReachedAtState =
-      this.state.characters >= parseInt(this.props.content.maxChars) ||
+    const characterLimitReachedAtState =
+      this.state.characters >= parseInt(this.props.content.maxChars);
+
+    const wordLimitReachedAtState =
       this.state.words >= parseInt(this.props.content.maxWords);
 
     // If we already are at some limit and the cursor is at the same position, stop the event
     // This is to prevent the user from pasting content that exceeds the limit and a possible bug in cke4
     // that gives false cursor position when pasting content
-    if (limitReachedAtState && cursorEndPosition === cursorStartPosition) {
-      this.props.displayNotification("Content exceeds the limit", "error");
+    if (
+      (wordLimitReachedAtState || characterLimitReachedAtState) &&
+      cursorEndPosition === cursorStartPosition
+    ) {
+      const localeContext = wordLimitReachedAtState ? "word" : "character";
+      this.props.displayNotification(
+        "Content exceeds the" + localeContext + "limit",
+        "error"
+      );
       event.stop();
       return;
     }
+    const characterLimitReached =
+      characterCount >= parseInt(this.props.content.maxChars);
+
+    const wordLimitReached = wordCount >= parseInt(this.props.content.maxWords);
 
     // If the new data is over the limit
 
-    if (
-      getCharacters(newData).length >= parseInt(this.props.content.maxChars) ||
-      getWords(newData).length >= parseInt(this.props.content.maxWords)
-    ) {
+    if (characterLimitReached || wordLimitReached) {
       event.stop();
 
       // Trim the combined data if it exceeds the character or word limit
