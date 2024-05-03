@@ -383,14 +383,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @param isPasting isPasting state
    */
   onCkeditorPaste(event: CKEditorEventInfo) {
-    // This all could be done in the ckeditor side
     // Prevent the original paste event
     let newData = event.data.dataValue;
+    // const pastedData = event.data.dataValue.replace(/<\/?p>/g, "");
 
-    const pastedData = event.data.dataValue.replace(/<\/?p>/g, "");
-
+    const pastedData = event.data.dataValue.replace(/<[^>]*>/g, "");
     // Get the existing content
-    const existingContent = event.editor.getData().replace(/<\/?p>/g, "");
+    // const existingContent = event.editor.getData().replace(/<\/?p>/g, "");
+    const existingContent = event.editor.getData().replace(/<[^>]*>/g, "");
 
     // Get the current selection
     const selection = event.editor.getSelection();
@@ -726,7 +726,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                 {t("labels.wordCount", { ns: "materials" })}
               </span>
               <span className="material-page__word-count">
-                {this.state.words} / {this.props.content.maxWords}
+                {this.state.words}{" "}
+                {this.props.content.maxWords &&
+                  ` / ${this.props.content.maxWords}`}
               </span>
             </span>
             <span
@@ -740,7 +742,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
                 {t("labels.characterCount", { ns: "materials" })}
               </span>
               <span className="material-page__character-count">
-                {this.state.characters} / {this.props.content.maxChars}
+                {this.state.characters}{" "}
+                {this.props.content.maxChars &&
+                  ` / ${this.props.content.maxChars}`}
               </span>
             </span>
           </span>
