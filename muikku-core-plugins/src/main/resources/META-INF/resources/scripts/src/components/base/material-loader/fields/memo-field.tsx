@@ -230,6 +230,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     let words = getWords(content);
     const maxCharacterLimit = parseInt(this.props.content.maxChars);
     const maxWordLimit = parseInt(this.props.content.maxWords);
+    let localeContext = "";
 
     if (
       characters.length >= maxCharacterLimit ||
@@ -237,14 +238,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     ) {
       // If the pasted data exceeds the limit, trim it
       if (characters.length >= maxCharacterLimit) {
-        this.props.displayNotification(
-          this.props.t("notifications.contentLimitReached", {
-            ns: "materials",
-            context: "characters",
-          }),
-          "info"
-        );
-
         let count = 0;
         let newData = "";
         for (const char of content) {
@@ -259,20 +252,21 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         }
         content = newData;
         words = getWords(newData);
+        localeContext = "characters";
       }
 
       // If the number of words exceeds the limit, trim it
       if (words.length >= maxWordLimit) {
-        this.props.displayNotification(
-          this.props.t("notifications.contentLimitReached", {
-            ns: "materials",
-            context: "words",
-          }),
-          "info"
-        );
-
         content = words.slice(0, maxWordLimit).join(" ");
+        localeContext = "words";
       }
+      this.props.displayNotification(
+        this.props.t("notifications.contentLimitReached", {
+          ns: "materials",
+          context: localeContext,
+        }),
+        "info"
+      );
       return content;
     }
   }
@@ -353,7 +347,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
-      const localeContext = exceedsCharacterLimit ? "character" : "word";
+      const localeContext = exceedsCharacterLimit ? "characters" : "words";
 
       if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
         this.props.displayNotification(
