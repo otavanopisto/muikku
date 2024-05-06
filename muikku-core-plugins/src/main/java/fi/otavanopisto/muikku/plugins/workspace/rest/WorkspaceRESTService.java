@@ -1186,7 +1186,8 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
     WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
-        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) : null;
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) 
+        : new WorkspaceSignupMessageRestModel(false, "", "");
 
     return Response.ok(restModel).build();
   }
