@@ -11337,10 +11337,6 @@ components:
         application/json:
           schema:
             type: object
-            properties:
-              # TODO the message here is not used anymore
-              message:
-                type: string
 
     WorkspaceStudentUpdateRequestBody:
       required: true

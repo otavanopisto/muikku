@@ -1448,6 +1448,7 @@
       "requestEvaluation": "Send an evaluation request to your teacher. The teacher is automatically notified.",
       "selectTemplate": "Select a template from which to create the course from.",
       "signUp": "Sign up to {{name}} {{nameExtension}}",
+      "signUpInformation": "<p>After clicking the \"Sign up\" button, you will be directed to the front page of the course. You can start studying immediately.</p><p>You can find the teacher's information on the front page of the course. If you have any questions or concerns regarding the course, you can send a message to the teacher via Muikku.</p>",
       "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?"
     },
     "labels": {
@@ -1522,7 +1523,6 @@
       "mandatory": "Mandatory",
       "materialCopyType": "Material copy type",
       "materials": "Course materials",
-      "message": "Message to the course teacher",
       "myWorkspaces": "My courses",
       "name": "Course name",
       "name_copySummary": "Name: {{workspaceName}}",

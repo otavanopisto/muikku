@@ -1448,6 +1448,7 @@
       "requestEvaluation": "Pyydä kurssin arviointia opettajalta. Opettaja saa automaattisen tiedon arviointipyynnöstäsi.",
       "selectTemplate": "Valitse kurssipohja, jonka pohjalta kurssi luodaan. Jos haluamasi kurssipohja ei näy listassa, voit käyttää hakua löytääksesi sen.",
       "signUp": "Ilmoittaudu kurssille {{name}} {{nameExtension}}",
+      "signUpInformation": "<p>Ilmoittaudu-painikkeen klikkaamisen jälkeen päädyt kurssin etusivulle ja voit aloittaa opiskelun heti.</p><p>Kurssin opettajan tiedot löydät kurssin etusivulta. Voit lähettää opettajalle Muikku-viestin, jos sinulla on asiaa tai kysyttävää kurssin opiskeluun liittyen.</p>",
       "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun opiskelijan {{studentName}}?"
     },
     "labels": {
@@ -1522,7 +1523,6 @@
       "mandatory": "Pakollinen",
       "materialCopyType": "Materiaalien kopiointitapa",
       "materials": "Kurssin materiaalit",
-      "message": "Viesti kurssin opettajalle",
       "myWorkspaces": "Omat kurssit",
       "name": "Kurssin nimi",
       "name_copySummary": "Nimi: {{workspaceName}}",
