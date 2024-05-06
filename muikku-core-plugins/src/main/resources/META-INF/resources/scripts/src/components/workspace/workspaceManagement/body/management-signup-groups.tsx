@@ -168,7 +168,7 @@ interface ManagementSignupGroupItem {
 const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
   const { workspaceSignupGroup } = props;
 
-  //const { t } = useTranslation(["workspace"]);
+  const { t } = useTranslation(["workspace"]);
 
   /**
    * Handles toggle
@@ -265,14 +265,17 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
           alignSelfVertically="top"
           content={
             <p>
-              Aktivoi ryhmäkohtainen ilmoittautumisviesti. Tämä on mahdollista
-              kun viestin otsikko ja sisältö on asetettu
+              {t("content.workspaceSignupGroupMessageInfo", {
+                ns: "workspace",
+              })}
             </p>
           }
         >
           <span>
             <label htmlFor="enable-signup-message" className="visually-hidden">
-              Aktivoi ilmoittautumisviesti
+              {t("labels.activateSignupMessage", {
+                ns: "workspace",
+              })}
             </label>
             <input
               id="enable-signup-message"
@@ -299,7 +302,11 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
         <div className="form__container">
           <div className="form__row">
             <div className="form-element">
-              <label htmlFor="message-caption">Viestin otsikko</label>
+              <label htmlFor="message-caption">
+                {t("labels.workspaceSignupMessageTitle", {
+                  ns: "workspace",
+                })}
+              </label>
               <input
                 id="message-caption"
                 placeholder={`Tervetuloa kurssille ${props.workspaceName}`}
@@ -316,9 +323,15 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
           </div>
           <div className="form__row">
             <div className="form-element">
-              <label>Viestin sisältö</label>
+              <label>
+                {t("labels.workspaceSignupMessageContent", {
+                  ns: "workspace",
+                })}
+              </label>
               <CKEditor
-                editorTitle="Ilmoittautumisviestin sisältö"
+                editorTitle={t("labels.workspaceSignupMessageContent", {
+                  ns: "workspace",
+                })}
                 ancestorHeight={200}
                 onChange={handleWorkspaceSignupGroupContentChange(
                   workspaceSignupGroup

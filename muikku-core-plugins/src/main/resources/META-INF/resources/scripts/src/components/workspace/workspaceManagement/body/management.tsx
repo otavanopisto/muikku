@@ -583,8 +583,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     [workspacePermissions]
   );
 
-  const memoizedName = React.useMemo(() => workspaceName, [workspaceName]);
-
   const memoizedWorkspaceSignupMessage = React.useMemo(
     () => workspaceSignupMessage,
     [workspaceSignupMessage]

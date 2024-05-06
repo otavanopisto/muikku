@@ -1,5 +1,5 @@
 import * as React from "react";
-//import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import CKEditor from "~/components/general/ckeditor";
 import Dropdown from "~/components/general/dropdown";
 import { WorkspaceSignupMessage } from "~/generated/client";
@@ -20,7 +20,7 @@ interface ManagementSignupMessageProps {
 const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
   const { workspaceSignupMessage, workspaceName, onChange } = props;
 
-  //const { t } = useTranslation(["workspace"]);
+  const { t } = useTranslation(["workspace"]);
 
   /**
    * Handles signup group message save
@@ -76,14 +76,17 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
   return (
     <>
       <h2 className="application-sub-panel__header">
-        Työtilan ilmoittautumisviesti
+        {t("labels.workspaceSignupMessage", {
+          ns: "workspace",
+        })}
         <Dropdown
           openByHover
           alignSelfVertically="top"
           content={
             <p>
-              Aktivoi ilmoittautumisviesti. Tämä on mahdollista kun viestin
-              otsikko ja sisältö on asetettu
+              {t("content.workspaceSignupMessageInfo", {
+                ns: "workspace",
+              })}
             </p>
           }
         >
@@ -92,7 +95,9 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
               htmlFor="enable-workspace-signup-message"
               className="visually-hidden"
             >
-              Aktivoi ilmoittautumisviesti
+              {t("labels.activateSignupMessage", {
+                ns: "workspace",
+              })}
             </label>
             <input
               id="enable-workspace-signup-message"
@@ -116,7 +121,11 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
         <div className="form__container">
           <div className="form__row">
             <div className="form-element">
-              <label htmlFor="message-caption">Viestin otsikko</label>
+              <label htmlFor="message-caption">
+                {t("labels.workspaceSignupMessageTitle", {
+                  ns: "workspace",
+                })}
+              </label>
               <input
                 id="message-caption"
                 placeholder={`Tervetuloa kurssille ${workspaceName}`}
@@ -131,9 +140,15 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
           </div>
           <div className="form__row">
             <div className="form-element">
-              <label>Viestin sisältö</label>
+              <label>
+                {t("labels.workspaceSignupMessageContent", {
+                  ns: "workspace",
+                })}
+              </label>
               <CKEditor
-                editorTitle="Ilmoittautumisviestin sisältö"
+                editorTitle={t("labels.workspaceSignupMessageContent", {
+                  ns: "workspace",
+                })}
                 ancestorHeight={200}
                 onChange={handleWorkspaceSignupMessageContentChange}
               >
