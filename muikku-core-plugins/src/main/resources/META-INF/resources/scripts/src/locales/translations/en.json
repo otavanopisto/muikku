@@ -1449,13 +1449,16 @@
       "selectTemplate": "Select a template from which to create the course from.",
       "signUp": "Sign up to {{name}} {{nameExtension}}",
       "signUpInformation": "<p>After clicking the \"Sign up\" button, you will be directed to the front page of the course. You can start studying immediately.</p><p>You can find the teacher's information on the front page of the course. If you have any questions or concerns regarding the course, you can send a message to the teacher via Muikku.</p>",
-      "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?"
+      "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?",
+      "workspaceSignupMessageInfo": "Activate the course sign-up message. This is possible when the message title and content are set.",
+      "workspaceSignupGroupMessageInfo": "Activate the course sign-up message. This is possible when the message title and content are set."
     },
     "labels": {
       "access": "Access",
       "access_anyone": "Anyone",
       "access_loggedInUsers": "Logged in users",
       "access_membersOnly": "Members only",
+      "activateSignupMessage": "Activate the course sign-up message",
       "addingDetails": "Adding details to the course",
       "additionalInfo": "Additional information",
       "away": "Away",
@@ -1591,7 +1594,10 @@
       "workspaceLength": "{{length}} {{symbol}}",
       "workspaceCopying": "Course copying",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
-      "workspaceTypeSelect": "Type select"
+      "workspaceTypeSelect": "Type select",
+      "workspaceSignupMessage": "Course sign up message",
+      "workspaceSignupMessageTitle": "Message title",
+      "workspaceSignupMessageContent": "Message content"
     },
     "notifications": {
       "cancelError": "Canceling failed",

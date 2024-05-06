@@ -2358,7 +2358,10 @@ const loadCurrentWorkspaceSignupMessage: LoadCurrentWorkspaceSignupMessageTrigge
           payload: {
             original: currentWorkspace,
             update: {
-              signupMessage,
+              signupMessage:
+                signupMessage.caption === "" || signupMessage.content === ""
+                  ? null
+                  : signupMessage,
             },
           },
         });
