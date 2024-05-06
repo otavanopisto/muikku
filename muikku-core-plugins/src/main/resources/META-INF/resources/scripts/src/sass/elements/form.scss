@@ -103,6 +103,8 @@ legend {
 .form__fieldset {
   border: 0;
   margin: 0;
+  max-width: 100%;
+  min-width: 0;
   padding: 0;
 }
 
@@ -203,6 +205,15 @@ legend {
 
 .form-element--user-group-name {
   width: 100%;
+}
+
+.form-element--sign-up-message {
+  max-width: 100%;
+  width: 100%;
+
+  .form-element__input {
+    width: 100%;
+  }
 }
 
 // Application-list item selector
