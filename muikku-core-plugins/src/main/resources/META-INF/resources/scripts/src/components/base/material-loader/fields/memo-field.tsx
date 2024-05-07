@@ -335,14 +335,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       }
     }
 
-    // and update the count
     this.setState({
       value: newValue,
       words: getWords(newValue).length,
       characters: getCharacters(newValue).length,
     });
 
-    //we call the on change
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, newValue);
   }
