@@ -5,7 +5,7 @@
  */
 
 import * as React from "react";
-import CKEditor, { CKEditorEventInfo } from "~/components/general/ckeditor";
+import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
@@ -23,8 +23,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { locale } from "moment";
-
 /**
  * MemoFieldProps
  */
@@ -382,96 +380,110 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @param event ckeditor event
    * @param isPasting isPasting state
    */
-  onCkeditorPaste(event: CKEditorEventInfo) {
-    // Prevent the original paste event
-    let newData = event.data.dataValue;
-    // const pastedData = event.data.dataValue.replace(/<\/?p>/g, "");
-
-    const pastedData = event.data.dataValue.replace(/<[^>]*>/g, "");
-    // Get the existing content
-    // const existingContent = event.editor.getData().replace(/<\/?p>/g, "");
-    const existingContent = event.editor.getData().replace(/<[^>]*>/g, "");
-
-    // Get the current selection
-    const selection = event.editor.getSelection();
-    const ranges = selection.getRanges();
-    const cursorStartPosition = ranges[0].startOffset;
-    const cursorEndPosition = ranges[0].endOffset;
-
-    // Combine the existing content and the pasted data
-    newData =
-      existingContent.slice(0, cursorStartPosition) +
-      pastedData +
-      existingContent.slice(cursorEndPosition);
-
-    let characterCount = getCharacters(newData).length;
-    let wordCount = getWords(newData).length;
-
-    const characterLimitReachedAtState =
-      this.state.characters >= parseInt(this.props.content.maxChars);
-
-    const wordLimitReachedAtState =
-      this.state.words >= parseInt(this.props.content.maxWords);
-
-    // If we already are at some limit and the cursor is at the same position, stop the event
-    // This is to prevent the user from pasting content that exceeds the limit and a possible bug in cke4
-    // that gives false cursor position when pasting content
-    if (
-      (wordLimitReachedAtState || characterLimitReachedAtState) &&
-      cursorEndPosition === cursorStartPosition
-    ) {
-      const localeContext = wordLimitReachedAtState ? "words" : "characters";
-
-      this.props.displayNotification(
-        this.props.t("notifications.contentLimitReached", {
-          ns: "materials",
-          context: localeContext,
-        }),
-        "info"
-      );
-      event.stop();
-      return;
-    }
-    const characterLimitReached =
-      characterCount >= parseInt(this.props.content.maxChars);
-
-    const wordLimitReached = wordCount >= parseInt(this.props.content.maxWords);
-
-    // If the new data is over the limit
-
-    if (characterLimitReached || wordLimitReached) {
-      event.stop();
-
-      // TODO NAMING
-
-      newData = "<p>" + this.trimPastedContent(newData) + "</p>";
-      characterCount = getCharacters(newData).length;
-      wordCount = getWords(newData).length;
-
-      event.editor.setData(newData, {
-        callback: () => {
-          const range = event.editor.createRange();
-          range.moveToElementEditEnd(range.root);
-          event.editor.getSelection().selectRanges([range]);
-        },
-      });
-
-      // TODO: TEST IF THE SETDATA SHOULD EXIST OR BE AFTER THIS
-
-      // Update the state
-      this.setState({
-        value: newData,
-        words: wordCount,
-        isPasting: true,
-        characters: characterCount,
-      });
-
-      this.props.onChange &&
-        this.props.onChange(this, this.props.content.name, newData);
-    }
-
-    // Set the trimmed data as the editor content
+  onCkeditorPaste() {
+    this.setState({
+      isPasting: true,
+    });
   }
+  // /**
+  //  * onCkeditorPaste
+  //  * @param event ckeditor event
+  //  * @param isPasting isPasting state
+  //  */
+  // onCkeditorPaste(event: CKEditorEventInfo) {
+  //   // Get the pasted data
+  //   let newData = event.data.dataValue;
+  //   // const pastedData = event.data.dataValue.replace(/<\/?p>/g, "");
+
+  //   const pastedData = event.data.dataValue.replace(/<[^>]*>/g, "");
+  //   // Get the existing content
+  //   // const existingContent = event.editor.getData().replace(/<\/?p>/g, "");
+  //   const existingContent = event.editor.getData().replace(/<[^>]*>/g, "");
+
+  //   // Get the current selection
+  //   const selection = event.editor.getSelection();
+  //   const ranges = selection.getRanges();
+  //   const cursorStartPosition = ranges[0].startOffset;
+  //   const cursorEndPosition = ranges[0].endOffset;
+
+  //   // Combine the existing content and the pasted data
+  //   newData =
+  //     existingContent.slice(0, cursorStartPosition) +
+  //     pastedData +
+  //     existingContent.slice(cursorEndPosition);
+
+  //   let characterCount = getCharacters(newData).length;
+  //   let wordCount = getWords(newData).length;
+
+  //   const characterLimitReachedAtState =
+  //     this.state.characters >= parseInt(this.props.content.maxChars);
+
+  //   const wordLimitReachedAtState =
+  //     this.state.words >= parseInt(this.props.content.maxWords);
+
+  //   // If we already are at some limit and the cursor is at the same position, stop the event
+  //   // This is to prevent the user from pasting content that exceeds the limit and a possible bug in cke4
+  //   // that gives false cursor position when pasting content
+  //   if (
+  //     (wordLimitReachedAtState || characterLimitReachedAtState) &&
+  //     cursorEndPosition === cursorStartPosition
+  //   ) {
+  //     const localeContext = wordLimitReachedAtState ? "words" : "characters";
+
+  //     this.props.displayNotification(
+  //       this.props.t("notifications.contentLimitReached", {
+  //         ns: "materials",
+  //         context: localeContext,
+  //       }),
+  //       "info"
+  //     );
+  //     event.stop();
+  //     return;
+  //   }
+  //   const characterLimitReached =
+  //     characterCount >= parseInt(this.props.content.maxChars);
+
+  //   const wordLimitReached = wordCount >= parseInt(this.props.content.maxWords);
+
+  //   // If the new data is over the limit
+
+  //   if (characterLimitReached || wordLimitReached) {
+  //     event.stop();
+  //     newData = "<p>" + this.trimPastedContent(newData) + "</p>";
+  //     characterCount = getCharacters(newData).length;
+  //     wordCount = getWords(newData).length;
+
+  //     // TODO: TEST IF THE SETDATA SHOULD EXIST OR BE AFTER THIS
+
+  //     // Update the state
+  //     this.setState(
+  //       {
+  //         value: newData,
+  //         words: wordCount,
+  //         isPasting: true,
+  //         characters: characterCount,
+  //       },
+  //       () => {
+  //         // Insert the new data at the current selection
+  //         // event.editor.insertHtml(newData);
+
+  //         event.editor.setData(newData);
+
+  //         event.editor.on("afterSetData", () => {
+  //           const range = event.editor.createRange();
+  //           range.moveToElementEditEnd(range.root);
+  //           event.editor.getSelection().selectRanges([range]);
+
+  //           // Manually fire the change event
+  //           event.editor.fire("change");
+  //         });
+  //       }
+  //     );
+
+  //     this.props.onChange &&
+  //       this.props.onChange(this, this.props.content.name, newData);
+  //   }
+  // }
 
   /**
    * onCKEditorChange - this one is for a ckeditor change
@@ -480,21 +492,50 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    */
   onCKEditorChange(value: string, instance: any) {
     // we need the raw text and raw value
-    let rawText = $(value).text();
+    const rawText = $(value).text();
     const rawValue = $(this.state.value).text();
 
     const maxCharacters = parseInt(this.props.content.maxChars);
     const maxWords = parseInt(this.props.content.maxWords);
 
-    if (this.state.isPasting) {
-      this.setState({
-        isPasting: false,
-      });
-      return;
-    }
-
     const exceedsCharacterLimit = getCharacters(rawText).length > maxCharacters;
     const exceedsWordLimit = getWords(rawText).length >= maxWords;
+
+    if (this.state.isPasting) {
+      if (exceedsCharacterLimit || exceedsWordLimit) {
+        const trimmedData = this.trimPastedContent(rawText);
+        const newData = "<p>" + trimmedData + "</p>";
+
+        this.setState(
+          {
+            value: newData,
+            words: getWords(trimmedData).length,
+            characters: getCharacters(trimmedData).length,
+            isPasting: false,
+          },
+          () => {
+            const range = instance.createRange();
+            range.moveToElementEditEnd(range.root);
+            instance.getSelection().selectRanges([range]);
+          }
+        );
+
+        this.props.onChange &&
+          this.props.onChange(this, this.props.content.name, newData);
+      } else {
+        this.setState({
+          value,
+          words: getWords(rawText).length,
+          characters: getCharacters(rawText).length,
+          isPasting: false,
+        });
+
+        this.props.onChange &&
+          this.props.onChange(this, this.props.content.name, value);
+      }
+
+      return;
+    }
 
     // If there's a restriction to the amount of characters or words, we need to check if the user has exceeded the limit
 

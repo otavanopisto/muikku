@@ -76,7 +76,7 @@ interface CKEditorProps {
   configuration?: any;
   ancestorHeight?: number;
   onChange: (arg: string, instance: any) => any;
-  onPaste?: (event: CKEditorEventInfo) => void;
+  onPaste?: () => void;
   onDrop?: () => any;
   children?: string;
   autofocus?: boolean;
@@ -330,6 +330,15 @@ export default class CKEditor extends React.Component<
     getCKEDITOR().instances[this.name].on("key", () => {
       this.cancelChangeTrigger = false;
     });
+
+    if (this.props.onPaste && (props.maxChars || props.maxWords)) {
+      getCKEDITOR().instances[this.name].on(
+        "paste",
+        (event: CKEditorEventInfo) => {
+          props.onPaste();
+        }
+      );
+    }
     getCKEDITOR().instances[this.name].on("instanceReady", (ev: any) => {
       ev.editor.document.on("drop", () => {
         this.props.onDrop && this.props.onDrop();
@@ -344,57 +353,6 @@ export default class CKEditor extends React.Component<
       });
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
-
-      if (props.maxChars || props.maxWords) {
-        instance.on("paste", function (event: CKEditorEventInfo) {
-          // // Get the data
-          // const pastedData = event.data.dataValue.replace(/<[^>]*>/g, "");
-
-          // let data = pastedData;
-
-          //Remove all the html tags from it if there are any
-          // event.data.dataValue = event.data.dataValue.replace(/<[^>]*>/g, "");
-
-          // const words = data.trim().split(/\s+/);
-          // const characters = data
-          //   .trim()
-          //   .replace(/(\s|\r\n|\r|\n)+/g, "")
-          //   .split("").length;
-
-          // // If the pasted data exceeds the limit, trim it
-          // if (characters > props.maxChars) {
-          //   let count = 0;
-          //   let newData = "";
-
-          //   for (const char of data) {
-          //     if (count < props.maxChars) {
-          //       newData += char;
-          //       if (char !== " ") {
-          //         count++;
-          //       }
-          //     } else {
-          //       break;
-          //     }
-          //   }
-          //   data = newData;
-
-          //   // Update the event data with the trimmed pasted data
-          //   event.data.dataValue = data;
-          // }
-
-          // // If the number of words exceeds the limit, trim it
-          // if (words.length > props.maxWords) {
-          //   data = words.slice(0, props.maxWords).join(" ");
-
-          //   // Update the event data with the trimmed pasted data
-          // event.data.dataValue = data;
-          // }
-
-          // const test = event.data.dataValue;
-
-          props.onPaste(event);
-        });
-      }
 
       // Height can be given from the ancestor or from instance container.
       // Instance container is "unstable" and changes according to the content it seems, so for example
