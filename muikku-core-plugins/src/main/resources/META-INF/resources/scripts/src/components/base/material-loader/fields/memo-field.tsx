@@ -287,40 +287,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   };
 
   /**
-   * onInputChange - very simple this one is for only when raw input from the textarea changes
+   * onInputPaste - paste handling for memofield
+   *
    * @param e e
    */
-  onInputPaste(e: React.ClipboardEvent) {
-    let newValue = e.clipboardData.getData("text");
-    const textarea = e.target as HTMLTextAreaElement;
-    const selectionStart = textarea.selectionStart;
-    const selectionEnd = textarea.selectionEnd;
-
-    newValue =
-      textarea.value.substring(0, selectionStart) +
-      newValue +
-      textarea.value.substring(selectionEnd);
-
-    const exceedsCharacterLimit =
-      getCharacters(newValue).length > parseInt(this.props.content.maxChars);
-
-    const exceedsWordLimit =
-      getWords(newValue).length >= parseInt(this.props.content.maxWords);
-
-    if (exceedsCharacterLimit || exceedsWordLimit) {
-      e.preventDefault(); // Prevent the default paste action
-
-      newValue = this.trimPastedContent(newValue);
-
-      this.setState({
-        value: newValue,
-        words: getWords(newValue).length,
-        characters: getCharacters(newValue).length,
-      });
-
-      this.props.onChange &&
-        this.props.onChange(this, this.props.content.name, newValue);
-    }
+  onInputPaste() {
+    this.setState({ isPasting: true });
   }
 
   /**
@@ -331,9 +303,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     let newValue = e.target.value;
     const maxCharacters = parseInt(this.props.content.maxChars);
     const maxWords = parseInt(this.props.content.maxWords);
-    const isBeingDeleted =
-      getCharacters(e.target.value).length <
-      getCharacters(this.state.value).length;
 
     const exceedsCharacterLimit =
       getCharacters(e.target.value).length > maxCharacters;
@@ -341,20 +310,28 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
-      // Limit is exceeded, we set the locale context for notification
-      const localeContext = exceedsCharacterLimit ? "characters" : "words";
+      if (this.state.isPasting) {
+        e.preventDefault(); // Prevent the default action
+        newValue = this.trimPastedContent(newValue);
+      } else {
+        const isBeingDeleted =
+          getCharacters(e.target.value).length <
+          getCharacters(this.state.value).length;
+        // Limit is exceeded, we set the locale context for notification
+        const localeContext = exceedsCharacterLimit ? "characters" : "words";
 
-      // If the content is not being deleted or we are not inside the last word
-      // we reset the value to the state value
-      if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
-        this.props.displayNotification(
-          this.props.t("notifications.contentLimitReached", {
-            ns: "materials",
-            context: localeContext,
-          }),
-          "info"
-        );
-        newValue = this.state.value;
+        // If the content is not being deleted or we are not inside the last word
+        // we reset the value to the state value
+        if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
+          this.props.displayNotification(
+            this.props.t("notifications.contentLimitReached", {
+              ns: "materials",
+              context: localeContext,
+            }),
+            "info"
+          );
+          newValue = this.state.value;
+        }
       }
     }
 
