@@ -223,53 +223,46 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
-    // any content should be parsed from tags before this
+    // This will only trim plain text content
+
     const characters = getCharacters(content);
     let words = getWords(content);
     const maxCharacterLimit = parseInt(this.props.content.maxChars);
     const maxWordLimit = parseInt(this.props.content.maxWords);
     let localeContext = "";
 
-    if (
-      characters.length >= maxCharacterLimit ||
-      words.length >= maxWordLimit
-    ) {
-      // If the pasted data exceeds the limit, trim it
-      if (characters.length >= maxCharacterLimit) {
-        let count = 0;
-        let newData = "";
-        const charTestArray = [];
-        for (const char of content) {
-          if (count < maxCharacterLimit) {
-            newData += char;
-            if (/\S/.test(char)) {
-              count++;
-              charTestArray.push(char);
-            }
-          } else {
-            break;
+    // If the pasted data exceeds the limit, trim it
+    if (characters.length > maxCharacterLimit) {
+      let count = 0;
+      let newData = "";
+      for (const char of content) {
+        if (count < maxCharacterLimit) {
+          newData += char;
+          if (/\S/.test(char)) {
+            count++;
           }
+        } else {
+          break;
         }
-        content = newData;
-        const testCharacters = getCharacters(newData);
-        words = getWords(newData);
-        localeContext = "characters";
       }
-
-      // If the number of words exceeds the limit, trim it
-      if (words.length >= maxWordLimit) {
-        content = words.slice(0, maxWordLimit).join(" ");
-        localeContext = "words";
-      }
-      this.props.displayNotification(
-        this.props.t("notifications.contentLimitReached", {
-          ns: "materials",
-          context: localeContext,
-        }),
-        "info"
-      );
-      return content;
+      content = newData;
+      words = getWords(newData);
+      localeContext = "characters";
     }
+
+    // If the number of words exceeds the limit, trim it
+    if (words.length > maxWordLimit) {
+      content = words.slice(0, maxWordLimit).join(" ");
+      localeContext = "words";
+    }
+    this.props.displayNotification(
+      this.props.t("notifications.contentLimitReached", {
+        ns: "materials",
+        context: localeContext,
+      }),
+      "info"
+    );
+    return content;
   }
 
   /**
@@ -388,113 +381,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       isPasting: true,
     });
   }
-  // /**
-  //  * onCkeditorPaste
-  //  * @param event ckeditor event
-  //  * @param isPasting isPasting state
-  //  */
-  // onCkeditorPaste(event: CKEditorEventInfo) {
-  //   // Get the pasted data
-  //   let newData = event.data.dataValue;
-  //   // const pastedData = event.data.dataValue.replace(/<\/?p>/g, "");
-
-  //   const pastedData = event.data.dataValue.replace(/<[^>]*>/g, "");
-  //   // Get the existing content
-  //   // const existingContent = event.editor.getData().replace(/<\/?p>/g, "");
-  //   const existingContent = event.editor.getData().replace(/<[^>]*>/g, "");
-
-  //   // Get the current selection
-  //   const selection = event.editor.getSelection();
-  //   const ranges = selection.getRanges();
-  //   const cursorStartPosition = ranges[0].startOffset;
-  //   const cursorEndPosition = ranges[0].endOffset;
-
-  //   // Combine the existing content and the pasted data
-  //   newData =
-  //     existingContent.slice(0, cursorStartPosition) +
-  //     pastedData +
-  //     existingContent.slice(cursorEndPosition);
-
-  //   let characterCount = getCharacters(newData).length;
-  //   let wordCount = getWords(newData).length;
-
-  //   const characterLimitReachedAtState =
-  //     this.state.characters >= parseInt(this.props.content.maxChars);
-
-  //   const wordLimitReachedAtState =
-  //     this.state.words >= parseInt(this.props.content.maxWords);
-
-  //   // If we already are at some limit and the cursor is at the same position, stop the event
-  //   // This is to prevent the user from pasting content that exceeds the limit and a possible bug in cke4
-  //   // that gives false cursor position when pasting content
-  //   if (
-  //     (wordLimitReachedAtState || characterLimitReachedAtState) &&
-  //     cursorEndPosition === cursorStartPosition
-  //   ) {
-  //     const localeContext = wordLimitReachedAtState ? "words" : "characters";
-
-  //     this.props.displayNotification(
-  //       this.props.t("notifications.contentLimitReached", {
-  //         ns: "materials",
-  //         context: localeContext,
-  //       }),
-  //       "info"
-  //     );
-  //     event.stop();
-  //     return;
-  //   }
-  //   const characterLimitReached =
-  //     characterCount >= parseInt(this.props.content.maxChars);
-
-  //   const wordLimitReached = wordCount >= parseInt(this.props.content.maxWords);
-
-  //   // If the new data is over the limit
-
-  //   if (characterLimitReached || wordLimitReached) {
-  //     event.stop();
-  //     newData = "<p>" + this.trimPastedContent(newData) + "</p>";
-  //     characterCount = getCharacters(newData).length;
-  //     wordCount = getWords(newData).length;
-
-  //     // TODO: TEST IF THE SETDATA SHOULD EXIST OR BE AFTER THIS
-
-  //     // Update the state
-  //     this.setState(
-  //       {
-  //         value: newData,
-  //         words: wordCount,
-  //         isPasting: true,
-  //         characters: characterCount,
-  //       },
-  //       () => {
-  //         // Insert the new data at the current selection
-  //         // event.editor.insertHtml(newData);
-
-  //         event.editor.setData(newData);
-
-  //         event.editor.on("afterSetData", () => {
-  //           const range = event.editor.createRange();
-  //           range.moveToElementEditEnd(range.root);
-  //           event.editor.getSelection().selectRanges([range]);
-
-  //           // Manually fire the change event
-  //           event.editor.fire("change");
-  //         });
-  //       }
-  //     );
-
-  //     this.props.onChange &&
-  //       this.props.onChange(this, this.props.content.name, newData);
-  //   }
-  // }
-
   /**
    * onCKEditorChange - this one is for a ckeditor change
    * @param value value
-   * @param instance editor instance for manipulation
+   * @param instance editor instance
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCKEditorChange(value: string, instance: any) {
-    // we need the raw text and raw value
+    // we need the raw text and raw existing value
     const rawText = $(value).text();
     const rawValue = $(this.state.value).text();
 
@@ -502,14 +396,16 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const maxWords = parseInt(this.props.content.maxWords);
 
     const exceedsCharacterLimit = getCharacters(rawText).length > maxCharacters;
-    const exceedsWordLimit = getWords(rawText).length >= maxWords;
+    const exceedsWordLimit = getWords(rawText).length > maxWords;
 
+    // If the user is pasting content, we need to check if the content
+    //exceeds the character or word limit
     if (this.state.isPasting) {
       if (exceedsCharacterLimit || exceedsWordLimit) {
+        // If the pasted data exceeds the limit, trim it
         const trimmedData = this.trimPastedContent(rawText);
+        // Add paragraph tags to the trimmed data for CKEditor
         const newData = "<p>" + trimmedData + "</p>";
-        const testCharacters = getCharacters(trimmedData).length;
-        const testWords = getWords(trimmedData).length;
 
         this.setState(
           {
@@ -519,6 +415,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             isPasting: false,
           },
           () => {
+            // Move the cursor to the end of the content
             const range = instance.createRange();
             range.moveToElementEditEnd(range.root);
             instance.getSelection().selectRanges([range]);
@@ -546,10 +443,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
       // If the user has exceeded the limit, we need to revert the changes
-      //Then we set the cursor at the end of the content
 
       const localeContext = exceedsWordLimit ? "words" : "characters";
 
+      // if the content is being deleted, or we are inside the last word
+      // we don't need to revert the changes
       const isBeingDeleted =
         getCharacters(rawText).length < getCharacters(rawValue).length;
 
@@ -558,9 +456,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         value = this.state.value;
 
         // no point in setting state or saving anything, we return the original value
-
         instance.setData(value, {
+          /**
+           * callback function
+           */
           callback: () => {
+            // Move the cursor to the end of the content
             const range = instance.createRange();
             range.moveToElementEditEnd(range.root);
             instance.getSelection().selectRanges([range]);
@@ -574,7 +475,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           "info"
         );
       }
-      // We save if there's a change
+      // Otherwise we save if there's a change
       else if (value !== this.state.value) {
         this.setState({
           value,
