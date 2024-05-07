@@ -238,17 +238,20 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       if (characters.length >= maxCharacterLimit) {
         let count = 0;
         let newData = "";
+        const charTestArray = [];
         for (const char of content) {
           if (count < maxCharacterLimit) {
             newData += char;
-            if (char !== " ") {
+            if (/\S/.test(char)) {
               count++;
+              charTestArray.push(char);
             }
           } else {
             break;
           }
         }
         content = newData;
+        const testCharacters = getCharacters(newData);
         words = getWords(newData);
         localeContext = "characters";
       }
@@ -505,6 +508,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       if (exceedsCharacterLimit || exceedsWordLimit) {
         const trimmedData = this.trimPastedContent(rawText);
         const newData = "<p>" + trimmedData + "</p>";
+        const testCharacters = getCharacters(trimmedData).length;
+        const testWords = getWords(trimmedData).length;
 
         this.setState(
           {
