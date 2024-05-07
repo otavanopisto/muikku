@@ -162,9 +162,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
     
     if (user != null) {
       if (user.getCurriculumIdentifier() != null) {
-        SchoolDataIdentifier curriculumId = user.getCurriculumIdentifier();
-      
-        Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
+        Curriculum curriculum = courseMetaController.findCurriculum(user.getCurriculumIdentifier());
         curriculumName = curriculum == null ? null : curriculum.getName();
       }
     }

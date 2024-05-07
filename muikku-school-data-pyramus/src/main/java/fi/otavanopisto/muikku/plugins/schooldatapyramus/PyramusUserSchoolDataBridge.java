@@ -1065,6 +1065,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       personId = staffMember.getPersonId();
     }
 
+    Long studentParentId = identifierMapper.getStudentParentId(userIdentifier);
+    if (studentParentId != null) {
+      StudentParent studentParent = findPyramusStudentParent(studentParentId);
+      personId = studentParent.getPersonId();
+    }
+
     return personId;
   }
 

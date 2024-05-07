@@ -229,7 +229,7 @@ public class GuiderRESTService extends PluginRESTService {
 
   @GET
   @Path("/students")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response searchStudents(
       @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -242,10 +242,6 @@ public class GuiderRESTService extends PluginRESTService {
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
 
     if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return Response.status(Status.FORBIDDEN).build();
@@ -510,12 +506,8 @@ public class GuiderRESTService extends PluginRESTService {
 
   @GET
   @Path("/students/{ID}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findStudent(@Context Request request, @PathParam("ID") String id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
     if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return Response.status(Status.FORBIDDEN).build();
     }

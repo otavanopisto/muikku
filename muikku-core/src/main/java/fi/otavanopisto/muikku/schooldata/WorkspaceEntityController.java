@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.schooldata;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +28,6 @@ import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -209,22 +207,6 @@ public class WorkspaceEntityController {
         .collect(Collectors.toList());
   }
   
-  /**
-   * Deprecated as this would potentially include workspaces from past UserSchoolDataIdentifiers too, which 
-   * is prone to errors.
-   */
-  @Deprecated
-  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
-    List<WorkspaceEntity> result = new ArrayList<>();
-    
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceUserEntitiesByUserEntity(userEntity);
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      result.add(workspaceUserEntity.getWorkspaceEntity());
-    }
-    
-    return result;
-  }
-
   public List<Long> listPublishedWorkspaceEntityIds() {
     return workspaceEntityDAO.listPublishedWorkspaceEntityIds();
   }

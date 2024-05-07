@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -360,6 +361,11 @@ public class EvaluationRESTService extends PluginRESTService {
       events.add(event);
     }
     
+    // Grade cache
+    
+    Map<SchoolDataIdentifier, GradingScale> gradingScaleCache = new HashMap<>();
+    Map<SchoolDataIdentifier, GradingScaleItem> gradingScaleItemCache = new HashMap<>();
+    
     // Assessments
     
     List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
@@ -374,9 +380,17 @@ public class EvaluationRESTService extends PluginRESTService {
       // More data from Pyramus (urgh)
 
       SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
-      GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+      GradingScale gradingScale = gradingScaleCache.get(gradingScaleIdentifier);
+      if (gradingScale == null) {
+        gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+        gradingScaleCache.put(gradingScaleIdentifier, gradingScale);
+      }
       SchoolDataIdentifier gradeIdentifier = workspaceAssessment.getGradeIdentifier();
-      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+      GradingScaleItem gradingScaleItem = gradingScaleItemCache.get(gradeIdentifier);
+      if (gradingScaleItem == null) {
+        gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+        gradingScaleItemCache.put(gradeIdentifier, gradingScaleItem);
+      }
       SchoolDataIdentifier workspaceSubjectIdentifier = workspaceAssessment.getWorkspaceSubjectIdentifier();
       
       // Event
@@ -391,7 +405,7 @@ public class EvaluationRESTService extends PluginRESTService {
       event.setGradeIdentifier(String.format("PYRAMUS-%s@PYRAMUS-%s", gradingScale.getIdentifier(), gradingScaleItem.getIdentifier()));
       event.setIdentifier(workspaceAssessment.getIdentifier().toId());
       event.setText(workspaceAssessment.getVerbalAssessment());
-      // subseequent workspace assessments are always considered improved grades (#6213: if passing)
+      // Subsequent workspace assessments are always considered improved grades (#6213: if passing)
       if (gradingScaleItem.isPassingGrade() && seenWorkspaceSubjects.contains(workspaceAssessment.getWorkspaceSubjectIdentifier())) {
         event.setType(RestEvaluationEventType.EVALUATION_IMPROVED);
       }
@@ -1245,9 +1259,8 @@ public class EvaluationRESTService extends PluginRESTService {
   @Path("/compositeAssessmentRequests")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listAssessmentRequests(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
+    // Local Workspace cache; key is workspaceEntityId
+    Map<Long, Workspace> workspaceCache = new HashMap<>();
 
     List<RestAssessmentRequest> restAssessmentRequests = new ArrayList<RestAssessmentRequest>();
     if (workspaceEntityId == null) {
@@ -1260,7 +1273,7 @@ public class EvaluationRESTService extends PluginRESTService {
       SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
       List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByStaffMember(loggedUser);
       for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
-        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest, workspaceCache));
       }
       
       // List interim evaluation requests by staff member
@@ -1271,7 +1284,7 @@ public class EvaluationRESTService extends PluginRESTService {
           ? Collections.emptyList()
           : evaluationController.listInterimEvaluationRequests(workspaceEntityIds, Boolean.FALSE);
       for (InterimEvaluationRequest interimEvaluationRequest : interimEvaluationRequests) {
-        RestAssessmentRequest request = toRestAssessmentRequest(interimEvaluationRequest); 
+        RestAssessmentRequest request = toRestAssessmentRequest(interimEvaluationRequest, workspaceCache); 
         if (request != null) {
           restAssessmentRequests.add(request);
         }
@@ -1290,16 +1303,14 @@ public class EvaluationRESTService extends PluginRESTService {
       // List assessment requests by workspace (or rather, create an evaluation card for every student in the workspace)
       
       List<String> workspaceStudentIdentifiers = new ArrayList<String>();
-      SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-
       List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
       for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
         workspaceStudentIdentifiers.add(workspaceUserEntity.getIdentifier());
       }
       
-      List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByWorkspace(workspaceIdentifier, workspaceStudentIdentifiers);
+      List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByWorkspace(workspaceEntity.schoolDataIdentifier(), workspaceStudentIdentifiers);
       for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
-        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest, workspaceCache));
       }
       
       // List all active interim evaluation requests for the workspace, then modify the corresponding entry in the previous list
@@ -1608,7 +1619,7 @@ public class EvaluationRESTService extends PluginRESTService {
         audioAssessments);
   }
   
-  private RestAssessmentRequest toRestAssessmentRequest(CompositeAssessmentRequest compositeAssessmentRequest) {
+  private RestAssessmentRequest toRestAssessmentRequest(CompositeAssessmentRequest compositeAssessmentRequest, Map<Long, Workspace> workspaceCache) {
     Long assignmentsDone = 0L;
     Long assignmentsTotal = 0L;
     // Assignments total
@@ -1681,7 +1692,11 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setInterimEvaluationRequest(Boolean.FALSE);
     
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    Workspace workspace = workspaceCache.get(workspaceEntity.getId());
+    if (workspace == null) {
+      workspace = workspaceController.findWorkspace(workspaceEntity);
+      workspaceCache.put(workspaceEntity.getId(), workspace);
+    }
     List<WorkspaceSubjectRestModel> subjects = workspace.getSubjects().stream()
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
@@ -1691,7 +1706,7 @@ public class EvaluationRESTService extends PluginRESTService {
     return restAssessmentRequest;
   }
 
-  private RestAssessmentRequest toRestAssessmentRequest(InterimEvaluationRequest interimEvaluationRequest) {
+  private RestAssessmentRequest toRestAssessmentRequest(InterimEvaluationRequest interimEvaluationRequest, Map<Long, Workspace> workspaceCache) {
     Long assignmentsDone = 0L;
     Long assignmentsTotal = 0L;
     // Assignments total
@@ -1753,7 +1768,11 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     restAssessmentRequest.setInterimEvaluationRequest(Boolean.TRUE);
 
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    Workspace workspace = workspaceCache.get(workspaceEntity.getId());
+    if (workspace == null) {
+      workspace = workspaceController.findWorkspace(workspaceEntity);
+      workspaceCache.put(workspaceEntity.getId(), workspace);
+    }
     List<WorkspaceSubjectRestModel> subjects = workspace.getSubjects().stream()
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
