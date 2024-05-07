@@ -341,8 +341,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
+      // Limit is exceeded, we set the locale context for notification
       const localeContext = exceedsCharacterLimit ? "characters" : "words";
 
+      // If the content is not being deleted or we are not inside the last word
+      // we reset the value to the state value
       if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
         this.props.displayNotification(
           this.props.t("notifications.contentLimitReached", {
@@ -353,10 +356,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         );
         newValue = this.state.value;
       }
-
-      const textarea = e.target;
-      textarea.selectionStart = textarea.selectionEnd =
-        this.state.value.length + 1;
     }
 
     // and update the count
