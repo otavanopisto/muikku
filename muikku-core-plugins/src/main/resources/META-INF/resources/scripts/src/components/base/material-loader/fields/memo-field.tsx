@@ -223,7 +223,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
-    // This will only trim plain text content
+    // This will only work on plain text content
 
     const characters = getCharacters(content);
     let words = getWords(content);
@@ -238,6 +238,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       for (const char of content) {
         if (count < maxCharacterLimit) {
           newData += char;
+          // we count only non-space characters
           if (/\S/.test(char)) {
             count++;
           }
@@ -245,7 +246,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           break;
         }
       }
+      // reset content
       content = newData;
+      // reset words so that we can check if the word limit
+      // is exceeded even after this trim
       words = getWords(newData);
       localeContext = "characters";
     }
