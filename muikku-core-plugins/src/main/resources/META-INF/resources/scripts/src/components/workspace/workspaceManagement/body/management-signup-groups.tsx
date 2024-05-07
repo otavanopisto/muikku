@@ -238,11 +238,7 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
     };
 
   return (
-    <details
-      style={{
-        width: "100%",
-      }}
-    >
+    <details>
       <summary>
         <span className="form-element form-element--checkbox-radiobutton-inside-summary">
           <input
@@ -301,7 +297,7 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
       <div className="details__content">
         <div className="form__container">
           <div className="form__row">
-            <div className="form-element">
+            <div className="form-element form-element--sign-up-message">
               <label htmlFor="message-caption">
                 {t("labels.workspaceSignupMessageTitle", {
                   ns: "workspace",
@@ -315,14 +311,11 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
                 onChange={handleWorkspaceSignupGroupCaptionChange(
                   workspaceSignupGroup
                 )}
-                style={{
-                  width: "100%",
-                }}
               />
             </div>
           </div>
           <div className="form__row">
-            <div className="form-element">
+            <div className="form-element form-element--sign-up-message">
               <label>
                 {t("labels.workspaceSignupMessageContent", {
                   ns: "workspace",
