@@ -331,14 +331,6 @@ export default class CKEditor extends React.Component<
       this.cancelChangeTrigger = false;
     });
 
-    if (this.props.onPaste && (props.maxChars || props.maxWords)) {
-      getCKEDITOR().instances[this.name].on(
-        "paste",
-        (event: CKEditorEventInfo) => {
-          props.onPaste();
-        }
-      );
-    }
     getCKEDITOR().instances[this.name].on("instanceReady", (ev: any) => {
       ev.editor.document.on("drop", () => {
         this.props.onDrop && this.props.onDrop();
@@ -351,6 +343,18 @@ export default class CKEditor extends React.Component<
         setTimeout(this.onDataChange, 2000);
         setTimeout(this.onDataChange, 3000);
       });
+
+      ev.editor.document.on("paste", (event: CKEditorEventInfo) => {
+        if (this.props.onPaste && (props.maxChars || props.maxWords)) {
+          props.onPaste();
+        }
+        // Same as above. When pasting an image, onDataChange doesn't fire at all because text hasn't changed.
+        // Also, the image has to be uploaded to the server first, hence these timeout shenanigans
+        setTimeout(this.onDataChange, 1000);
+        setTimeout(this.onDataChange, 2000);
+        setTimeout(this.onDataChange, 3000);
+      });
+
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
 

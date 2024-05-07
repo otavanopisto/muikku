@@ -398,10 +398,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const exceedsCharacterLimit = getCharacters(rawText).length > maxCharacters;
     const exceedsWordLimit = getWords(rawText).length > maxWords;
 
-    // If the user is pasting content, we need to check if the content
-    //exceeds the character or word limit
-    if (this.state.isPasting) {
-      if (exceedsCharacterLimit || exceedsWordLimit) {
+    // If there's a restriction to the amount of characters or words,
+    // we need to check if the user has exceeded the limit
+
+    if (exceedsCharacterLimit || exceedsWordLimit) {
+      // If the user is pasting content, we need to check if the content
+      //exceeds the character or word limit
+      if (this.state.isPasting) {
         // If the pasted data exceeds the limit, trim it
         const trimmedData = this.trimPastedContent(rawText);
         // Add paragraph tags to the trimmed data for CKEditor
@@ -425,75 +428,50 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         this.props.onChange &&
           this.props.onChange(this, this.props.content.name, newData);
       } else {
-        this.setState({
-          value,
-          words: getWords(rawText).length,
-          characters: getCharacters(rawText).length,
-          isPasting: false,
-        });
+        // If the user has exceeded the limit and is not pasting, we need to revert the changes
 
-        this.props.onChange &&
-          this.props.onChange(this, this.props.content.name, value);
+        const localeContext = exceedsWordLimit ? "words" : "characters";
+
+        const isBeingDeleted =
+          getCharacters(rawText).length < getCharacters(rawValue).length;
+
+        // if the content is not being deleted, or we are not inside the last word
+        // we reset the value to the state value
+        if (!isBeingDeleted && !this.isInsideLastWord(rawText)) {
+          // over the limit, not being deleted and outside the last word, reset to state value
+          value = this.state.value;
+
+          // no point in setting state or saving anything, we return the original value
+          instance.setData(value, {
+            /**
+             * callback function
+             */
+            callback: () => {
+              // Move the cursor to the end of the content
+              const range = instance.createRange();
+              range.moveToElementEditEnd(range.root);
+              instance.getSelection().selectRanges([range]);
+            },
+          });
+          this.props.displayNotification(
+            this.props.t("notifications.contentLimitReached", {
+              ns: "materials",
+              context: localeContext,
+            }),
+            "info"
+          );
+        }
       }
-
       return;
     }
-
-    // If there's a restriction to the amount of characters or words, we need to check if the user has exceeded the limit
-
-    if (exceedsCharacterLimit || exceedsWordLimit) {
-      // If the user has exceeded the limit, we need to revert the changes
-
-      const localeContext = exceedsWordLimit ? "words" : "characters";
-
-      // if the content is being deleted, or we are inside the last word
-      // we don't need to revert the changes
-      const isBeingDeleted =
-        getCharacters(rawText).length < getCharacters(rawValue).length;
-
-      if (!isBeingDeleted && !this.isInsideLastWord(rawText)) {
-        // over the limit, not being deleted and outside the last word, reset to state value
-        value = this.state.value;
-
-        // no point in setting state or saving anything, we return the original value
-        instance.setData(value, {
-          /**
-           * callback function
-           */
-          callback: () => {
-            // Move the cursor to the end of the content
-            const range = instance.createRange();
-            range.moveToElementEditEnd(range.root);
-            instance.getSelection().selectRanges([range]);
-          },
-        });
-        this.props.displayNotification(
-          this.props.t("notifications.contentLimitReached", {
-            ns: "materials",
-            context: localeContext,
-          }),
-          "info"
-        );
-      }
-      // Otherwise we save if there's a change
-      else if (value !== this.state.value) {
-        this.setState({
-          value,
-          words: getWords(rawText).length,
-          characters: getCharacters(rawText).length,
-        });
-        this.props.onChange &&
-          this.props.onChange(this, this.props.content.name, value);
-      }
-    } else {
-      this.setState({
-        value,
-        words: getWords(rawText).length,
-        characters: getCharacters(rawText).length,
-      });
-      this.props.onChange &&
-        this.props.onChange(this, this.props.content.name, value);
-    }
+    this.setState({
+      value,
+      words: getWords(rawText).length,
+      characters: getCharacters(rawText).length,
+      isPasting: false,
+    });
+    this.props.onChange &&
+      this.props.onChange(this, this.props.content.name, value);
   }
 
   /**
