@@ -181,7 +181,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     this.onInputChange = this.onInputChange.bind(this);
     this.onInputPaste = this.onInputPaste.bind(this);
     this.isInsideLastWord = this.isInsideLastWord.bind(this);
-    this.onInputPaste = this.onInputPaste.bind(this);
     this.trimPastedContent = this.trimPastedContent.bind(this);
     this.onCkeditorPaste = this.onCkeditorPaste.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
