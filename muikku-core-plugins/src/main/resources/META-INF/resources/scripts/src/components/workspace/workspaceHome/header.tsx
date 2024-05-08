@@ -9,7 +9,7 @@ import { bindActionCreators } from "redux";
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
-import { suitabilityMap } from "~/@shared/suitability";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 import { Curriculum } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -96,11 +96,13 @@ class WorkspaceHomeHeader extends React.Component<
         .toLowerCase()
         .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
 
+      const suitabilityMap = suitabilityMapHelper(this.props.t);
+
       /**
        * Check if our map contains data with just created education string
        * Otherwise just return null. There might not be all included values by every OPS created...
        */
-      if (!suitabilityMap.has(education)) {
+      if (!suitabilityMap[education]) {
         return null;
       }
 
@@ -108,7 +110,7 @@ class WorkspaceHomeHeader extends React.Component<
        * Then get correct local string from map by suitability enum value
        */
       const localString =
-        suitabilityMap.get(education)[this.props.workspace.mandatority];
+        suitabilityMap[education][this.props.workspace.mandatority];
 
       return localString ? (
         <div className="meta__item">

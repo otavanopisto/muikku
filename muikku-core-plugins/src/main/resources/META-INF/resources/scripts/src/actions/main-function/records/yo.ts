@@ -48,20 +48,21 @@ export type UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS = SpecificActionType<
  * updateYOTriggerType
  */
 export interface updateYOTriggerType {
-  (): AnyActionType;
+  (userIdentifier?: string): AnyActionType;
 }
 /**
  * UpdateMatriculationSubjectEligibilityTriggerType
  */
 export interface UpdateMatriculationSubjectEligibilityTriggerType {
-  (): AnyActionType;
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
  * updateMatriculationSubjectEligibility
+ * @param userIdentifier muikku student identifier
  */
 const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibilityTriggerType =
-  function updateMatriculationSubjectEligibility() {
+  function updateMatriculationSubjectEligibility(userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -69,6 +70,9 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
       const recordsApi = MApi.getRecordsApi();
 
       try {
+        if (getState().eligibilitySubjects.status === "READY") {
+          return;
+        }
         dispatch({
           type: "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
           payload: <MatriculationSubjectEligibilityStatusType>"LOADING",
@@ -77,6 +81,10 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
         const state = getState();
         const selectedHOPSSubjects =
           state.hops.value.studentMatriculationSubjects;
+
+        const studentIdentifier = userIdentifier
+          ? userIdentifier
+          : state.status.userSchoolDataIdentifier;
 
         const subjects = await recordsApi.getMatriculationSubjects();
 
@@ -96,6 +104,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
             try {
               const subjectEligibility =
                 await recordsApi.getMatriculationSubjectEligibility({
+                  studentIdentifier,
                   subjectCode: subject.subjectCode,
                 });
 
@@ -158,8 +167,9 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 
 /**
  * updateYO
+ * @param userIdentifier muikku student userIdentifier
  */
-const updateYO: updateYOTriggerType = function updateYO() {
+const updateYO: updateYOTriggerType = function updateYO(userIdentifier) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
@@ -168,18 +178,34 @@ const updateYO: updateYOTriggerType = function updateYO() {
     const recordsApi = MApi.getRecordsApi();
     const matriculationApi = MApi.getMatriculationApi();
 
+    const studentIdentifier = userIdentifier
+      ? userIdentifier
+      : state.status.userSchoolDataIdentifier;
+
     try {
-      const matriculationExamData = await matriculationApi.getExams();
+      if (getState().yo.status === "READY") {
+        return;
+      }
 
       dispatch({
         type: "UPDATE_STUDIES_YO",
-        payload: matriculationExamData,
+        payload: [],
       });
 
       dispatch({
         type: "UPDATE_STUDIES_YO_STATUS",
         payload: "LOADING",
       });
+
+      //If the studentIdentifier is not provided, this is called for you, not someone else.
+      // So we go ahead and call exams for you.
+      if (!userIdentifier) {
+        const matriculationExamData = await matriculationApi.getExams();
+        dispatch({
+          type: "UPDATE_STUDIES_YO",
+          payload: matriculationExamData,
+        });
+      }
 
       const subjects = await recordsApi.getMatriculationSubjects();
 
@@ -189,7 +215,7 @@ const updateYO: updateYOTriggerType = function updateYO() {
       });
 
       const eligibility = await recordsApi.getStudentMatriculationEligibility({
-        studentIdentifier: state.status.userSchoolDataIdentifier,
+        studentIdentifier,
       });
 
       dispatch({
