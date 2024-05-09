@@ -115,30 +115,15 @@ const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
               {t("labels.userGroups", { ns: "users" })}
             </legend>
             <div className="form__fieldset-content form__fieldset-content--vertical">
-              {memoizedList.map((permission) => {
-                const signupGroupEditModifiers: string[] = [];
-                const signupGroupToggleModifiers: string[] = [];
-
-                if (permission.signupMessage) {
-                  if (permission.signupMessage.content !== "") {
-                    signupGroupEditModifiers.push("active");
-                  }
-
-                  if (permission.signupMessage.enabled) {
-                    signupGroupToggleModifiers.push("active");
-                  }
-                }
-
-                return (
-                  <ManagementSignupGroupItemMemoized
-                    key={permission.userGroupEntityId}
-                    workspaceName={props.workspaceName}
-                    workspaceSignupGroup={permission}
-                    workspaceSignupGroupFilter={workspaceSignupGroupFilter}
-                    onChange={handleWorkspaceSignupGroupChange}
-                  />
-                );
-              })}
+              {memoizedList.map((permission) => (
+                <ManagementSignupGroupItemMemoized
+                  key={permission.userGroupEntityId}
+                  workspaceName={props.workspaceName}
+                  workspaceSignupGroup={permission}
+                  workspaceSignupGroupFilter={workspaceSignupGroupFilter}
+                  onChange={handleWorkspaceSignupGroupChange}
+                />
+              ))}
             </div>
           </fieldset>
         </div>
