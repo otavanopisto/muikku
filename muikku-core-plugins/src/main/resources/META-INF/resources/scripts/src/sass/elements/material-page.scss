@@ -2099,18 +2099,28 @@ mark[data-muikku-word-definition] {
 
 .material-exercise-feedback-correct {
   border-color: $color-success;
+  color: darken($color-success, 40%);
   padding-left: 72px;
 
   &::before {
     color: $color-success;
     content: "\f164";
     font-size: 2rem;
-    opacity: 40%;
+    opacity: 70%;
   }
 }
 
 .material-exercise-feedback-incorrect {
   border-color: $color-error;
+  color: darken($color-error, 40%);
+  padding-left: 72px;
+
+  &::before {
+    color: $color-error;
+    content: "\ea08";
+    font-size: 2rem;
+    opacity: 90%;
+  }
 }
 
 // INSTRUCTION BOX
