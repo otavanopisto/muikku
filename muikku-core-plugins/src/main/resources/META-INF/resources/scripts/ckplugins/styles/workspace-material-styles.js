@@ -34,8 +34,8 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: "Esimerkki", element: 'div', attributes: { 'class': 'material-example material-styles-text' } },
   { name: "Harjoitustehtävä", element: 'div', attributes: { 'class': 'material-exercise material-styles-text' } },
   { name: "Harjoitustehtävän palaute", element: 'div', attributes: { 'class': 'material-exercise-feedback material-styles-block', 'data-show': "true" } },
-  { name: "Harjoitustehtävät oikein", element: 'div', attributes: { 'class': 'material-exercise-feedback material-styles-block', 'data-show': "true", 'data-name': "excercises-correct-style-box" } },
-  { name: "Harjoitustehtäviä väärin", element: 'div', attributes: { 'class': 'material-exercise-feedback material-styles-block', 'data-show': "true", 'data-name': "excercises-incorrect-style-box" } },
+  { name: "Harjoitustehtävät oikein", element: 'div', attributes: { 'class': 'material-exercise-feedback material-exercise-feedback-correct material-styles-block', 'data-show': "true", 'data-name': "excercises-correct-style-box" } },
+  { name: "Harjoitustehtäviä väärin", element: 'div', attributes: { 'class': 'material-exercise-feedback material-exercise-feedback-incorrect material-styles-block', 'data-show': "true", 'data-name': "excercises-incorrect-style-box" } },
 
   { name: "Kuuntele ja toista", element: 'div', attributes: { 'class': 'material-visually-guided-styles-combo-block material-visually-guided-styles-combo__listen-and-speak'} },
   { name: "Kuuntele", element: 'div', attributes: { 'class': 'material-visually-guided-styles-block material-visually-guided-styles__listen'} },
