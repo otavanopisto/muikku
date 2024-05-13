@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -50,7 +49,6 @@ import fi.otavanopisto.muikku.users.UserProfilePictureController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 @ApplicationScoped
-@Singleton
 public class ChatController {
   
   @Inject
