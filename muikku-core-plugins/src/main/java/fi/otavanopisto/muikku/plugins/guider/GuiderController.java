@@ -117,14 +117,10 @@ public class GuiderController {
   
   public String getCurriculumName(SchoolDataIdentifier curriculumIdentifier) {
     if (curriculumIdentifier != null) {
-      SchoolDataIdentifier curriculumId = curriculumIdentifier;
-
-      Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
-      String curriculumName = curriculum == null ? null : curriculum.getName();
-
-      return curriculumName;
+      Curriculum curriculum = courseMetaController.findCurriculum(curriculumIdentifier);
+      return curriculum == null ? null : curriculum.getName();
     }
-
     return null;
   }
+
 }
