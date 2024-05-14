@@ -1,7 +1,7 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { LoadingState } from "~/@types/shared";
-import { GuidanceCouncelorContact } from "~/generated/client";
+import { GuidanceCounselorContact } from "~/generated/client";
 
 export type ContactState = "WAITING" | "LOADING" | "READY" | "ERROR";
 
@@ -10,7 +10,7 @@ export type ContactState = "WAITING" | "LOADING" | "READY" | "ERROR";
  */
 export interface ContactGroup {
   state: LoadingState;
-  list: GuidanceCouncelorContact[];
+  list: GuidanceCounselorContact[];
 }
 
 /**
