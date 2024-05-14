@@ -77,6 +77,10 @@ class StudiesApplication extends React.Component<
       loading: false,
       activeTab: "SUMMARY",
     };
+
+    this.loadPedagogyFormState = this.loadPedagogyFormState.bind(this);
+    this.isVisible = this.isVisible.bind(this);
+    this.onTabChange = this.onTabChange.bind(this);
   }
 
   /**
@@ -146,11 +150,11 @@ class StudiesApplication extends React.Component<
   /**
    * Returns whether section with given hash should be visible or not
    *
-   * @param id section id
+   * @param tab a tab
    * @returns whether section with given hash should be visible or not
    */
-  isVisible(id: string) {
-    switch (id) {
+  isVisible(tab: Tab) {
+    switch (tab.id) {
       case "HOPS":
         return (
           this.props.status.isActiveUser &&
@@ -275,9 +279,7 @@ class StudiesApplication extends React.Component<
       },
     ];
 
-    panelTabs = panelTabs
-      .filter((pTab) => this.isVisible(pTab.id))
-      .map((item) => item);
+    panelTabs = panelTabs.filter(this.isVisible);
 
     /**
      * Just because we need to have all tabs ready first before rendering Application panel
