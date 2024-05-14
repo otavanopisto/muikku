@@ -8,8 +8,6 @@ import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -50,7 +48,6 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
 import fi.otavanopisto.muikku.rest.model.GuidanceCounselorRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -106,10 +103,6 @@ public class ChatRESTService {
 
   @Inject
   private UserEntityFileController userEntityFileController;
-
-  @Inject
-  @Any
-  private Instance<SearchProvider> searchProviders;
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
