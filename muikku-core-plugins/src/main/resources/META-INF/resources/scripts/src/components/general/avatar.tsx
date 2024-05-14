@@ -12,6 +12,7 @@ interface AvatarProps {
   size?: string;
   userCategory?: number;
   avatarAriaLabel?: string;
+  avatarAriaHidden?: boolean;
 }
 
 /**
@@ -20,7 +21,15 @@ interface AvatarProps {
  * @returns JSX.Element
  */
 const Avatar = (props: AvatarProps) => {
-  const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
+  const {
+    id,
+    userCategory,
+    hasImage,
+    firstName,
+    size,
+    avatarAriaLabel,
+    avatarAriaHidden,
+  } = props;
 
   const category = React.useMemo(() => {
     if (userCategory) return userCategory;
@@ -34,20 +43,19 @@ const Avatar = (props: AvatarProps) => {
   return hasImage ? (
     <div
       className={`avatar-container ${
-        props.size ? "avatar-container--" + props.size : ""
+        props.size ? "avatar-container--" + size : ""
       } rs_skip_always`}
+      aria-hidden={avatarAriaHidden}
     >
       <img
         src={getUserImageUrl(id)}
         alt=""
         aria-label={avatarAriaLabel}
-        className={`avatar avatar-img ${
-          props.size ? "avatar--" + props.size : ""
-        }`}
+        className={`avatar avatar-img ${size ? "avatar--" + size : ""}`}
       />
       <div
         className={`avatar avatar--category-${category} ${
-          props.size ? "avatar--" + props.size : ""
+          size ? "avatar--" + size : ""
         }`}
       >
         {firstName[0]}
@@ -56,12 +64,13 @@ const Avatar = (props: AvatarProps) => {
   ) : (
     <div
       className={`avatar-container ${
-        props.size ? "avatar-container--" + props.size : ""
+        size ? "avatar-container--" + size : ""
       } rs_skip_always`}
+      aria-hidden={avatarAriaHidden}
     >
       <div
         className={`avatar avatar--category-${category} ${
-          props.size ? "avatar--" + props.size : ""
+          size ? "avatar--" + size : ""
         }`}
       >
         {firstName[0]}
