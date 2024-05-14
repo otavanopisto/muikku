@@ -502,6 +502,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_matriculationEligiblity": "Loading the eligibility rights for the {{subject}} failed. Please try refreshing the page.",
       "updateError_summary": "Loading the summary information failed. Please try refreshing the page."
+    },
+    "wcag": {
+      "collapseRecordInfo": "Collapse workspace record info",
+      "assignmentsActivity": "Assignments done {{percent}}%",
+      "exercisesActivity": "Exercises done {{percent}}%",
+      "expandRecordInfo": "Expand workspace record info"
     }
   },
   "hops": {

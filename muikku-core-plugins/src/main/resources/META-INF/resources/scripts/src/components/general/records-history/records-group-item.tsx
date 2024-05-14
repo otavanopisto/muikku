@@ -288,19 +288,42 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
     setShowE((showE) => !showE);
   };
 
+  /**
+   * handleMaterialKeyUp
+   * @param e e
+   */
+  const handleShowEvaluationKeyDown = (
+    e: React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setShowE((showE) => !showE);
+    }
+  };
+
   const animateOpen = showE ? "auto" : 0;
 
   return (
-    <ApplicationListItem
-      key={credit.activity.id}
-      className="course course--studies"
-    >
+    <ApplicationListItem className="course course--studies" tabIndex={-1}>
       <ApplicationListItemHeader
-        key={credit.activity.id}
-        onClick={handleShowEvaluationClick}
         modifiers={
           isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
         }
+        onClick={handleShowEvaluationClick}
+        onKeyDown={handleShowEvaluationKeyDown}
+        role="button"
+        aria-label={
+          showE
+            ? t("wcag.collapseRecordInfo", {
+                ns: "studies",
+              })
+            : t("wcag.expandRecordInfo", {
+                ns: "studies",
+              })
+        }
+        aria-expanded={showE}
+        aria-controls={"record" + credit.activity.id}
+        tabIndex={0}
       >
         <span className="application-list__header-icon icon-books"></span>
         <div className="application-list__header-primary">
@@ -394,7 +417,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           })}
         </ApplicationListItemContentContainer>
       ) : null}
-      <AnimateHeight height={animateOpen}>
+      <AnimateHeight height={animateOpen} id={"record" + credit.activity.id}>
         {renderAssessmentsInformations()}
       </AnimateHeight>
     </ApplicationListItem>
