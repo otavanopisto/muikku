@@ -6034,33 +6034,50 @@ paths:
           description: Internal server error
 
   #ME
-  /rest/me/guidanceCounselors:
+  /rest/me/dependents:
     get:
-      operationId: getGuidanceCounselors
-      summary: Get guidance counselors
-      description: Get guidance counselors
+      operationId: getGuardiansDependents
+      summary: Get guardians dependents
+      description: Get guardians dependents
       tags:
         - Me
-      parameters:
-        - name: properties
-          in: query
-          description: Properties as string divided by comma
-          schema:
-            type: string
-        - name: onlyChatEnabled
-          in: query
-          description: Guidance counselors with chat enabled
-          schema:
-            type: boolean
       responses:
         "200":
-          description: Guidance counselors
+          description: Guardians dependents
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GuidanceCouncelorContact"
+                  $ref: "#/components/schemas/UserGuardiansDependant"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/me/dependents/{studentIdentifier}/workspaces:
+    get:
+      operationId: getGuardiansDependentsActiveWorkspaces
+      summary: Get guardians dependents active workspaces
+      description: Get guardians dependents active workspaces
+      tags:
+        - Me
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Guardians dependents active workspaces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserGuardiansDependantWorkspace"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6768,13 +6785,20 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/hopseligibility:
+  /rest/records/hopseligibility/{studentIdentifier}:
     get:
       operationId: getHopsEligibility
       summary: Get hops eligibility
       description: Get hops eligibility
       tags:
         - HopsUpperSecondary
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Hops eligibility
@@ -6787,7 +6811,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/matriculationEligibility:
+  /rest/records/students/{studentIdentifier}/matriculationEligibility:
     get:
       operationId: getMatriculationSubjectEligibility
       summary: Get matriculation eligibility
@@ -6795,6 +6819,12 @@ paths:
       tags:
         - Records
       parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
         - name: subjectCode
           in: query
           description: Subject code
@@ -7688,6 +7718,39 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserStudentPhoneNumber"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/user/students/{studentIdentifier}/guidanceCounselors:
+    get:
+      operationId: getGuidanceCounselors
+      summary: Get guidance counselors
+      description: Get guidance counselors
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: properties
+          in: query
+          description: Properties as string divided by comma
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Guidance counselors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GuidanceCounselorContact"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -13262,27 +13325,22 @@ components:
         userIdentifier:
           type: string
 
-    GuidanceCouncelorContact:
+    GuidanceCounselorContact:
       type: object
-      description: GuidanceCouncelorContact object
+      description: GuidanceCounselorContact object
       required:
         - id
         - email
-        - chatAvailable
         - userEntityId
         - firstName
         - lastName
         - hasImage
-        - organization
         - properties
-        - roles
       properties:
         id:
           type: string
         email:
           type: string
-        chatAvailable:
-          type: boolean
         userEntityId:
           type: integer
           format: int64
@@ -13292,20 +13350,8 @@ components:
           type: string
         hasImage:
           type: boolean
-        organization:
-          type: object
-          properties:
-            id:
-              type: integer
-              format: int64
-            name:
-              type: string
         properties:
           $ref: "#/components/schemas/AnyValue"
-        roles:
-          type: array
-          items:
-            $ref: "#/components/schemas/Role"
 
     GuiderStudentNotification:
       type: object
@@ -14788,6 +14834,8 @@ components:
           type: boolean
         guidanceCounselor:
           type: boolean
+        studentParent:
+          type: boolean
 
     PedagogyFormState:
       type: string
@@ -14991,6 +15039,7 @@ components:
       enum:
         - TEACHER
         - STUDENT
+        - STUDENT_PARENT
         - ADMINISTRATOR
         - MANAGER
         - STUDY_PROGRAMME_LEADER
@@ -15585,6 +15634,65 @@ components:
           type: boolean
         studiesEnded:
           type: boolean
+
+    UserGuardiansDependant:
+      type: object
+      description: User Guardians Dependant object
+      required:
+        - userEntityId
+        - identifier
+        - firstName
+        - lastName
+        - hasImage
+      properties:
+        userEntityId:
+          type: integer
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickName:
+          type: string
+          nullable: true
+        studyProgrammeName:
+          type: string
+        hasImage:
+          type: boolean
+        email:
+          type: string
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        latestLogin:
+          type: string
+          format: date-time
+          nullable: true
+
+    UserGuardiansDependantWorkspace:
+      type: object
+      description: User Guardians Dependant Workspace object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        nameExtension:
+          type: string
+          nullable: true
+        enrollmentDate:
+          type: string
+          format: date-time
+          nullable: true
+        latestAssessmentRequestDate:
+          type: string
+          format: date-time
+          nullable: true
 
     UserWithSchoolData:
       type: object

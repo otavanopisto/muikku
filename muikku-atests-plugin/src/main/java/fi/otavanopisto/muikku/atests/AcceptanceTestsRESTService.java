@@ -404,6 +404,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
+    workspaceIndexer.indexWorkspace(workspaceEntity);
+    
     return Response.ok(createRestEntity(workspaceEntity, payload.getName())).build();
   }
   
@@ -425,8 +427,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId) {
+    logger.info(String.format("TESTS Deleting workspace %d", workspaceEntityId));
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
+      logger.warning(String.format("TESTS Deleting workspace aborted, workspace %d not found.", workspaceEntityId));
       return Response.status(404).entity("Not found").build();
     }
     try{
@@ -453,6 +458,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);
     workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     
+    logger.info(String.format("TESTS Workspace %d deleted.", workspaceEntityId));
+
     return Response.noContent().build();
   }
 
@@ -460,6 +467,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/workspaces")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteWorkspaces() {
+    logger.info(String.format("TESTS Deleting all workspaces"));
+
     List<WorkspaceEntity> workspaceEntities = workspaceEntityDAO.listAll();
     for (WorkspaceEntity workspaceEntity : workspaceEntities) {
       try{
@@ -489,6 +498,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);  
       workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     }
+    
+    logger.info(String.format("TESTS All workspaces deleted."));
+
     return Response.noContent().build();
   }
   

@@ -21,8 +21,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -146,10 +144,9 @@ public class WhoAmIRESTService extends AbstractRESTService {
     // Response
     
     User user = userIdentifier == null ? null : userController.findUserByIdentifier(userIdentifier);
-    
-    String organizationIdentifier = user == null ? null : user.getOrganizationIdentifier().toId();
-    String defaultOrganizationIdentifier = systemSettingsController.getSetting("defaultOrganization");
-    boolean isDefaultOrganization = user == null ? false : StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
+
+    SchoolDataIdentifier organizationIdentifier = user == null ? null : user.getOrganizationIdentifier();
+    boolean isDefaultOrganization = user == null ? false : systemSettingsController.isDefaultOrganization(organizationIdentifier);
     boolean hasImage = userEntity == null ? false : userEntityFileController.hasProfilePicture(userEntity);
     
     // Study dates
@@ -164,9 +161,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
     
     if (user != null) {
       if (user.getCurriculumIdentifier() != null) {
-        SchoolDataIdentifier curriculumId = user.getCurriculumIdentifier();
-      
-        Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
+        Curriculum curriculum = courseMetaController.findCurriculum(user.getCurriculumIdentifier());
         curriculumName = curriculum == null ? null : curriculum.getName();
       }
     }
@@ -251,7 +246,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
         user == null ? false : user.getHasEvaluationFees(),
         user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId(),
         curriculumName,
-        organizationIdentifier,
+        organizationIdentifier != null ? organizationIdentifier.toId() : null,
         isDefaultOrganization,
         currentUserSession.isActive(),
         permissionSet,

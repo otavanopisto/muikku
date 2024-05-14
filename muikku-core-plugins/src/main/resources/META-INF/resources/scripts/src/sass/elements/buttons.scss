@@ -1051,8 +1051,9 @@
   background-color: $color-main-function-button-pill-settings-background;
   color: $color-main-function-button-pill-settings-text;
   font-size: $button-pill-settings-font-size;
-  height: auto;
+  height: 1.5rem;
   vertical-align: top;
+  width: 1.5rem;
 
   &:hover,
   &.hover {

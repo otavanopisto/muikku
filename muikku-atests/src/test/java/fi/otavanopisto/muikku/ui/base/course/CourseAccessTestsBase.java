@@ -125,6 +125,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
       mockBuilder.addCourseStudent(workspace.getId(), mockCourseStudent).build();
       try{
         updateWorkspaceAccessInUI("workspaceAccessAnyone", workspace);
+        logout(); // logout admin
+        
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);        

@@ -82,6 +82,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.closeByOverlay = this.closeByOverlay.bind(this);
+    this.handleCloseLinkKeyDown = this.handleCloseLinkKeyDown.bind(this);
 
     this.state = {
       displayed: props.open,
@@ -211,6 +212,17 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 
   /**
+   * Handles the keydown event for the close link
+   * @param e e
+   */
+  handleCloseLinkKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      this.close();
+    }
+  }
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -227,7 +239,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
         ref="menu"
-        aria-hidden="true"
+        aria-hidden={!this.state.open}
       >
         <div
           className="drawer__container"
@@ -236,7 +248,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
         >
           <div className="drawer__header">
             <div className="drawer__header-logo">
-              <Link href="/" className="drawer__header-link">
+              <Link
+                aria-label={this.props.i18n.t("wcag.goToMainPage")}
+                href="/"
+                className="drawer__header-link"
+              >
                 <img
                   src={`${
                     this.props.modifier == "frontpage"
@@ -250,6 +266,8 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
               </Link>
             </div>
             <Link
+              aria-label={this.props.i18n.t("wcag.closeMainNavigation")}
+              onKeyDown={this.handleCloseLinkKeyDown}
               className={`drawer__button-close drawer__button-close--${this.props.modifier} icon-arrow-left`}
             ></Link>
           </div>

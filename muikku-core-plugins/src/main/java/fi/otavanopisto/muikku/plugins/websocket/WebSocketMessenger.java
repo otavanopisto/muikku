@@ -211,7 +211,7 @@ public class WebSocketMessenger {
     }
   }
 
-  @Schedule(hour = "*", persistent = false)
+  @Schedule(hour = "*", minute = "*/5", persistent = false)
   private void discardExpiredSessions() {
     for (String ticket : sessions.keySet()) {
       WebSocketSessionInfo sessionInfo = sessions.get(ticket);

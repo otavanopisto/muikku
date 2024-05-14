@@ -26,6 +26,8 @@ public class LogoutServlet extends HttpServlet {
 
   private static final long serialVersionUID = -3642338807691092622L;
 
+  private static final String DEFAULT_REDIRECT = "/";
+  
   @Inject
   private Logger logger;
   
@@ -44,33 +46,38 @@ public class LogoutServlet extends HttpServlet {
   }
 
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    String authSource = localSessionController.getAuthSource();
-    AuthSource authSourceByStrategy = authSourceController.findAuthSourceByStrategy(authSource);
-    AuthenticationProvider authenticationProvider = authSourceController.findAuthenticationProvider(authSourceByStrategy);
-    AuthenticationResult authenticationResult = authenticationProvider.processLogout(authSourceByStrategy);
-    
-    EnumSet<Status> successStates = EnumSet.of(Status.LOGOUT, Status.LOGOUT_WITH_REDIRECT);
-
-    if (successStates.contains(authenticationResult.getStatus())) {
-      String redirectTo = authenticationResult.getStatus() == Status.LOGOUT_WITH_REDIRECT ? authenticationResult.getRedirectUrl() : "/";
-
-      localSessionController.logout();
-    
-      HttpSession session = request.getSession();
-      if (session != null) {
-        try {
-          session.invalidate();
-        } catch (Exception e) {
-          logger.log(Level.SEVERE, "Failed to invalidate http session", e);
+    if (localSessionController.isLoggedIn()) {
+      String authSource = localSessionController.getAuthSource();
+      AuthSource authSourceByStrategy = authSourceController.findAuthSourceByStrategy(authSource);
+      AuthenticationProvider authenticationProvider = authSourceController.findAuthenticationProvider(authSourceByStrategy);
+      AuthenticationResult authenticationResult = authenticationProvider.processLogout(authSourceByStrategy);
+      
+      EnumSet<Status> successStates = EnumSet.of(Status.LOGOUT, Status.LOGOUT_WITH_REDIRECT);
+  
+      if (successStates.contains(authenticationResult.getStatus())) {
+        String redirectTo = authenticationResult.getStatus() == Status.LOGOUT_WITH_REDIRECT ? authenticationResult.getRedirectUrl() : DEFAULT_REDIRECT;
+  
+        localSessionController.logout();
+      
+        HttpSession session = request.getSession();
+        if (session != null) {
+          try {
+            session.invalidate();
+          } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to invalidate http session", e);
+          }
         }
+  
+        logoutEvent.fire(new LogoutEvent());
+  
+        response.sendRedirect(redirectTo);
+      } else {
+        logger.log(Level.WARNING, String.format("Logging off failed as status %s isn't in success states.", authenticationResult.getStatus()));
+        response.sendRedirect(NavigationRules.INTERNAL_ERROR);
       }
-
-      logoutEvent.fire(new LogoutEvent());
-
-      response.sendRedirect(redirectTo);
-    } else {
-      logger.log(Level.WARNING, String.format("Logging off failed as status %s isn't in success states.", authenticationResult.getStatus()));
-      response.sendRedirect(NavigationRules.INTERNAL_ERROR);
+    }
+    else {
+      response.sendRedirect(DEFAULT_REDIRECT);
     }
   }
 
