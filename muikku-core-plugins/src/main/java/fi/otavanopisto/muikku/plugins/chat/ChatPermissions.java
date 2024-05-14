@@ -16,10 +16,6 @@ import fi.otavanopisto.security.Scope;
 public class ChatPermissions  extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
-  public static final String CHAT_STATISTICS = "CHAT_STATISTICS";
-
-  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String CHAT_MANAGE_PUBLIC_ROOMS = "CHAT_MANAGE_PUBLIC_ROOMS";
 
