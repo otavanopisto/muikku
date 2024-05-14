@@ -1,12 +1,15 @@
 package fi.otavanopisto.muikku.plugins.chat.rest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,7 +28,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.chat.ChatPermissions;
 import fi.otavanopisto.muikku.plugins.chat.dao.ChatBlockDAO;
@@ -43,10 +48,17 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
+import fi.otavanopisto.muikku.rest.model.GuidanceCounselorRestModel;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserProfilePictureController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -85,6 +97,22 @@ public class ChatRESTService {
 
   @Inject
   private UserProfilePictureController userProfilePictureController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private UserGroupGuidanceController userGroupGuidanceController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private HttpServletRequest httpRequest;
@@ -617,7 +645,46 @@ public class ChatRESTService {
         session == null ? null : session.getId());
     return Response.ok(chatController.toRestModel(sessionController.getLoggedUserEntity())).build();    
   }
-  
+
+  @GET
+  @Path("/guidanceCounselors")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listGuidanceCounselors() {
+
+    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+    
+    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(sessionController.getLoggedUser(), false);
+    
+    List<GuidanceCounselorRestModel> guidanceCounselorRestModels = new ArrayList<>();
+    
+    for (UserEntity userEntity : guidanceCouncelors) {
+      ChatUser chatUser = chatController.getChatUser(userEntity);
+      boolean chatEnabled = chatUser != null && chatUser.getVisibility() == ChatUserVisibility.ALL;
+      if (!chatEnabled) {
+        continue;
+      }
+      
+      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+      SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
+      UserEntityName userEntityName = userEntityController.getName(userEntity, true);
+      String email = userEmailEntityController.getUserDefaultEmailAddress(schoolDataIdentifier, false);
+      
+      guidanceCounselorRestModels.add(new GuidanceCounselorRestModel(
+          userEntity.defaultSchoolDataIdentifier().toId(),
+          userEntity.getId(),
+          userEntityName.getFirstName(),
+          userEntityName.getLastName(),
+          email,
+          Collections.emptyMap(),
+          hasImage));
+    }
+    
+    return Response.ok(guidanceCounselorRestModels).build();
+  }
+
   private boolean isUserIdentifier(String identifier) {
     return StringUtils.startsWith(identifier, "user-");
   }
