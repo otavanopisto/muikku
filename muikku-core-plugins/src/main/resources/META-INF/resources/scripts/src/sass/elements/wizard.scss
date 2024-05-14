@@ -4,6 +4,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
+@import "cke-styles";
 
 @mixin step-indicator {
   border-radius: 20px;

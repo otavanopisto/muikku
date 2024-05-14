@@ -342,7 +342,7 @@
   @include breakpoint($breakpoint-pad) {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 4;
   }
 }
 
@@ -629,6 +629,8 @@
 .dialog--enrollment {
   background: transparent;
   bottom: auto;
+  left: calc(50% - 235px);
+  max-width: 470px;
   top: 10px;
 
   .dialog__content-row--label {
@@ -648,6 +650,10 @@
 .dialog__header--enrollment {
   background: $color-default;
   color: $color-default-contrast;
+
+  .button-icon--dialog-close {
+    color: $color-info;
+  }
 }
 
 .dialog__executer {

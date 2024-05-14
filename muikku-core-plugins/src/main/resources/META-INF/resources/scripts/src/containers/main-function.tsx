@@ -71,6 +71,7 @@ import {
   loadProfilePurchases,
 } from "~/actions/main-function/profile";
 import RecordsBody from "../components/records/body";
+import GuardianBody from "../components/guardian/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
@@ -105,6 +106,8 @@ import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
+
+import { loadDependants } from "~/actions/main-function/dependants";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
@@ -157,6 +160,7 @@ export default class MainFunction extends React.Component<
     this.renderAnnouncementsBody = this.renderAnnouncementsBody.bind(this);
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
+    this.renderGuardianBody = this.renderGuardianBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
@@ -218,7 +222,16 @@ export default class MainFunction extends React.Component<
     } else if (window.location.pathname.includes("/guider")) {
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")) {
-      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+      this.loadRecordsData(window.location.hash.replace("#", ""));
+    } else if (window.location.pathname.includes("/guardian")) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      const [identifier, tab] = hashArray;
+
+      if (tab) {
+        this.loadRecordsData(tab, identifier);
+      } else {
+        this.loadRecordsData("", identifier);
+      }
     } else if (window.location.pathname.includes("/organization")) {
       this.loadCoursePickerData(
         queryString.parse(window.location.hash.split("?")[1] || "", {
@@ -277,30 +290,30 @@ export default class MainFunction extends React.Component<
 
   /**
    * loadRecordsData
-   * @param dataSplitted dataSplitted
+   * @param tab records tab
+   * @param userId userId
    */
-  loadRecordsData(dataSplitted: string[]) {
-    const givenLocation = dataSplitted[0].split("/")[0];
+  loadRecordsData(tab: string, userId?: string) {
+    const givenLocation = tab;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const originalData: any = queryString.parse(dataSplitted[1] || "", {
-      arrayFormat: "bracket",
-    });
-
-    if (!givenLocation && !originalData.w) {
+    if (givenLocation === "summary" || !givenLocation) {
       this.props.store.dispatch(
         setLocationToSummaryInTranscriptOfRecords() as Action
       );
-      this.props.store.dispatch(updateSummary() as Action);
+      // Summary needs counselors
+      this.props.store.dispatch(
+        loadContactGroup("counselors", userId) as Action
+      );
+      this.props.store.dispatch(updateSummary(userId) as Action);
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
-        updateAllStudentUsersAndSetViewToRecords() as Action
+        updateAllStudentUsersAndSetViewToRecords(userId) as Action
       );
     } else if (givenLocation === "hops") {
       this.props.store.dispatch(
         setLocationToHopsInTranscriptOfRecords() as Action
       );
-      this.props.store.dispatch(updateHops() as Action);
+      this.props.store.dispatch(updateHops(null, userId) as Action);
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
@@ -311,17 +324,12 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(
         updateHops(() => {
-          this.props.store.dispatch(updateYO() as Action);
+          this.props.store.dispatch(updateYO(userId) as Action);
           this.props.store.dispatch(
-            updateMatriculationSubjectEligibility() as Action
+            updateMatriculationSubjectEligibility(userId) as Action
           );
-        }) as Action
+        }, userId) as Action
       );
-    } else if (givenLocation === "summary") {
-      this.props.store.dispatch(
-        setLocationToSummaryInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateSummary() as Action);
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(
         setLocationToStatisticsInTranscriptOfRecords() as Action
@@ -331,9 +339,10 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToInfoInTranscriptOfRecords() as Action
       );
-      this.props.store.dispatch(updateSummary() as Action);
+      this.props.store.dispatch(updateSummary(userId) as Action);
     }
-    this.props.store.dispatch(updateHops() as Action);
+    // Hops needs to be loaded for correct tabs to be seen
+    this.props.store.dispatch(updateHops(null, userId) as Action);
   }
 
   /**
@@ -596,6 +605,7 @@ export default class MainFunction extends React.Component<
     );
     this.updateFirstTime();
     if (this.itsFirstTime) {
+      const state: StateType = this.props.store.getState();
       this.props.websocket &&
         this.props.websocket
           .restoreEventListeners()
@@ -603,6 +613,9 @@ export default class MainFunction extends React.Component<
             "Communicator:newmessagereceived",
             loadLastMessageThreadsFromServer.bind(null, 10)
           );
+      if (state.status.roles.includes("STUDENT_PARENT")) {
+        this.props.store.dispatch(loadDependants() as Action);
+      }
       this.props.store.dispatch(
         loadAnnouncementsAsAClient({}, { loadUserGroups: false }) as Action
       );
@@ -950,10 +963,6 @@ export default class MainFunction extends React.Component<
 
       const state = this.props.store.getState();
 
-      if (state.status.isActiveUser) {
-        this.props.store.dispatch(loadContactGroup("counselors") as Action);
-      }
-
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
@@ -964,10 +973,48 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
 
-      this.loadRecordsData(window.location.hash.replace("#", "").split("?"));
+      this.loadRecordsData(window.location.hash.replace("#", ""));
     }
 
     return <RecordsBody />;
+  }
+
+  /**
+   * renderGuardianBody
+   */
+  renderGuardianBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      const [identifier, tab] = hashArray;
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      const state = this.props.store.getState();
+
+      if (state.dependants.state === "WAIT") {
+        this.props.store.dispatch(loadDependants() as Action);
+      }
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
+      this.props.store.dispatch(
+        titleActions.updateTitle(i18n.t("labels.dependant", { count: 0 }))
+      );
+
+      // If there's an identifier, we can load records data, otherwise it's done in the hash change
+      if (identifier) {
+        if (tab) {
+          this.loadRecordsData(tab, identifier);
+        } else {
+          this.loadRecordsData("", identifier);
+        }
+      }
+    }
+    return <GuardianBody />;
   }
 
   /**
@@ -1089,6 +1136,7 @@ export default class MainFunction extends React.Component<
             />
             <Route path="/announcer" render={this.renderAnnouncerBody} />
             <Route path="/guider" render={this.renderGuiderBody} />
+            <Route path="/guardian" render={this.renderGuardianBody} />
             <Route path="/profile" render={this.renderProfileBody} />
             <Route path="/records" render={this.renderRecordsBody} />
             <Route path="/evaluation" render={this.renderEvaluationBody} />
