@@ -7,14 +7,13 @@ import MApi, { isMApiError } from "~/api/api";
 import {
   ChatMessage,
   ChatUser,
-  GuidanceCouncelorContact,
+  GuidanceCounselorContact,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { ChatUserFilters, generateHash } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
 
 const chatApi = MApi.getChatApi();
-const meApi = MApi.getMeApi();
 
 /**
  * useChatSettings
@@ -47,7 +46,7 @@ function useUsers(props: UseUsersProps) {
   // Discussions that currently are active
   const [bookmarkedUsers, setBookmarkedUsers] = React.useState<ChatUser[]>([]);
   const [myCounselors, setMyCounselors] =
-    React.useState<GuidanceCouncelorContact[]>(null);
+    React.useState<GuidanceCounselorContact[]>(null);
   const [blockedUsers, setBlockedUsers] = React.useState<ChatUser[]>([]);
 
   const usersRef = React.useRef<ChatUser[]>([]);
@@ -138,7 +137,7 @@ function useUsers(props: UseUsersProps) {
      */
     const fetchMyCounselors = async () => {
       try {
-        const counselors = await meApi.getGuidanceCounselors();
+        const counselors = await chatApi.getChatGuidanceCounselors();
 
         setMyCounselors(counselors);
       } catch (err) {

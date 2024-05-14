@@ -1026,6 +1026,26 @@ paths:
         "409":
           description: Nickname already exists
 
+  /rest/chat/guidanceCounselors:
+    get:
+      operationId: getChatGuidanceCounselors
+      summary: Get guidance counselors specifically for chat. Only returns guidance counselors that have enabled chat.
+      tags:
+        - Chat
+      responses:
+        "200":
+          description: Guidance counselors successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GuidanceCounselorContact"
+        "403":
+          description: Calling user is not a chat user currently online
+        "500":
+          description: Internal server error
+
   #CEEPOS
   /rest/ceepos/manualCompletion/{orderId}:
     post:
