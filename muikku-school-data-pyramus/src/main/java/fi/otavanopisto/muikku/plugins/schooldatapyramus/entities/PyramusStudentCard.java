@@ -8,7 +8,7 @@ public class PyramusStudentCard implements StudentCard{
   
   
   public PyramusStudentCard(Long id, Long userEntityId, String firstName, String lastName, String studyProgramme,
-      Date expiryDate, Boolean active, String type) {
+      Date expiryDate, String activity, String type) {
     super();
     this.id = id;
     this.userEntityId = userEntityId;
@@ -16,7 +16,7 @@ public class PyramusStudentCard implements StudentCard{
     this.lastName = lastName;
     this.studyProgramme = studyProgramme;
     this.expiryDate = expiryDate;
-    this.active = active;
+    this.activity = activity;
     this.type = type;
   }
 
@@ -64,14 +64,6 @@ public class PyramusStudentCard implements StudentCard{
     this.expiryDate = expiryDate;
   }
 
-  public Boolean getActive() {
-    return active;
-  }
-
-  public void setActive(Boolean active) {
-    this.active = active;
-  }
-
   public String getType() {
     return type;
   }
@@ -80,12 +72,20 @@ public class PyramusStudentCard implements StudentCard{
     this.type = type;
   }
 
+  public String getActivity() {
+    return activity;
+  }
+
+  public void setActivity(String activity) {
+    this.activity = activity;
+  }
+
   private Long id;
   private Long userEntityId;
   private String firstName;
   private String lastName;
   private String studyProgramme;
   private Date expiryDate;
-  private Boolean active;
+  private String activity;
   private String type;
 }

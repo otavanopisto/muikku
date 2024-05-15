@@ -80,7 +80,7 @@ public class StudentCardRESTService extends PluginRESTService {
     // Update
     
     // Return if active is already same value as in payload
-    if (studentCard.getActive().equals(active) || active == null) {
+    if (studentCard.getActivity().equals(active) || active == null) {
       return Response.status(Status.OK).build();
     }
     

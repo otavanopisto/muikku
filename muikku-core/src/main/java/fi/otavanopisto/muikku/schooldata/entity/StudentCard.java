@@ -16,7 +16,7 @@ public interface StudentCard {
 
   public Date getExpiryDate();
 
-  public Boolean getActive();
+  public String getActivity();
 
   public String getType();
 

@@ -511,7 +511,7 @@ public class PyramusSchoolDataEntityFactory {
         studentCard.getLastName(), 
         studentCard.getStudyProgramme(), 
         studentCard.getExpiryDate(), 
-        studentCard.getActive(), 
+        studentCard.getActivity().name(), 
         studentCard.getType().name());
   }
 
