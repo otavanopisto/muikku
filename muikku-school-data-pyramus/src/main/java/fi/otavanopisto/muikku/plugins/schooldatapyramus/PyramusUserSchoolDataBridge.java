@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -28,6 +29,8 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGuardiansDependent;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSpecEdTeacher;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentCourseStats;
@@ -48,6 +51,8 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
@@ -91,8 +96,11 @@ import fi.otavanopisto.pyramus.rest.model.StudentCourseStats;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
+import fi.otavanopisto.pyramus.rest.model.StudentParent;
+import fi.otavanopisto.pyramus.rest.model.StudentParentChild;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
+import fi.otavanopisto.pyramus.rest.model.students.StudentParentStudentCourseRestModel;
 import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriod;
 import fi.otavanopisto.pyramus.rest.model.students.StudentStudyPeriodType;
 
@@ -394,6 +402,20 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return entityFactory.createEntity(staffMember);
     }
 
+    Long studentParentId = identifierMapper.getStudentParentId(identifier);
+    if (studentParentId != null) {
+      StudentParent studentParent = findPyramusStudentParent(studentParentId);
+      if (studentParent == null) {
+        return null;
+      }
+      Person person = findPyramusPerson(studentParent.getPersonId());
+      if (!studentParent.getId().equals(person.getDefaultUserId())) {
+        return findUserByPyramusUser(person.getDefaultUserId());
+      }
+
+      return entityFactory.createEntity(studentParent);
+    }
+
     logger.warning(String.format("PyramusUserSchoolDataBridge.findActiveUser malformed user identifier %s\n%s",
         identifier,
         ExceptionUtils.getStackTrace(new Throwable())));
@@ -412,6 +434,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     if (staffId != null) {
       StaffMember staffMember = findPyramusStaffMember(staffId);
       return staffMember == null ? null : entityFactory.createEntity(staffMember);
+    }
+
+    Long studentParentId = identifierMapper.getStudentParentId(identifier);
+    if (studentParentId != null) {
+      StudentParent studentParent = findPyramusStudentParent(studentParentId);
+      return studentParent == null ? null : entityFactory.createEntity(studentParent);
     }
 
     logger.warning(String.format("PyramusUserSchoolDataBridge.findUser malformed user identifier %s\n%s",
@@ -463,6 +491,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     for (StaffMember staffMember : pyramusClient.get("/staff/members?email=" + email, StaffMember[].class)) {
       userMap.put(staffMember.getId(), entityFactory.createEntity(staffMember));
       personId = staffMember.getPersonId();
+    }
+
+    for (StudentParent studentParent : pyramusClient.get("/studentparents/studentparents?email=" + email, StudentParent[].class)) {
+      userMap.put(studentParent.getId(), entityFactory.createEntity(studentParent));
+      personId = studentParent.getPersonId();
     }
 
     List<User> result = new ArrayList<User>();
@@ -613,36 +646,61 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public UserProperty getUserProperty(String userIdentifier, String key) {
-    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
-    if (studentId != null) {
-      Student student = findPyramusStudent(studentId);
-      if (student != null) {
-        Map<String, String> variables = student.getVariables();
-        if (variables != null) {
-          String value = variables.get(key);
-          return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
-        }
-        else {
-          return null;
-        }
+    PyramusUserType identifierUserType = identifierMapper.getIdentifierUserType(userIdentifier);
+
+    if (identifierUserType != null) {
+      switch (identifierUserType) {
+        case STUDENT:
+          Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+          if (studentId != null) {
+            Student student = findPyramusStudent(studentId);
+            if (student != null) {
+              Map<String, String> variables = student.getVariables();
+              if (variables != null) {
+                String value = variables.get(key);
+                return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
+              }
+              else {
+                return null;
+              }
+            }
+          }
+        break;
+        case STAFFMEMBER:
+          Long staffMemberId = identifierMapper.getPyramusStaffId(userIdentifier);
+          if (staffMemberId != null) {
+            StaffMember staffMember = findPyramusStaffMember(staffMemberId);
+            if (staffMember != null) {
+              Map<String, String> variables = staffMember.getVariables();
+              if (variables != null) {
+                String value = variables.get(key);
+                return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
+              }
+              else {
+                return null;
+              }
+            }
+          }
+        break;
+        case STUDENTPARENT:
+          Long studentParentId = identifierMapper.getStudentParentId(userIdentifier);
+          if (studentParentId != null) {
+            StudentParent studentParent = findPyramusStudentParent(studentParentId);
+            if (studentParent != null) {
+              Map<String, String> variables = studentParent.getVariables();
+              if (variables != null) {
+                String value = variables.get(key);
+                return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
+              }
+              else {
+                return null;
+              }
+            }
+          }
+        break;
       }
     }
-    else {
-      Long staffMemberId = identifierMapper.getPyramusStaffId(userIdentifier);
-      if (staffMemberId != null) {
-        StaffMember staffMember = findPyramusStaffMember(staffMemberId);
-        if (staffMember != null) {
-          Map<String, String> variables = staffMember.getVariables();
-          if (variables != null) {
-            String value = variables.get(key);
-            return value == null ? null : new PyramusUserProperty(userIdentifier, key, value);
-          }
-          else {
-            return null;
-          }
-        }
-      }
-    }
+    
     logger.warning(String.format("PyramusUserSchoolDataBridge.getUserProperty malformed user identifier %s\n%s",
         userIdentifier,
         ExceptionUtils.getStackTrace(new Throwable())));
@@ -984,6 +1042,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return pyramusClient.get("/staff/members/" + staffId, StaffMember.class);
   }
 
+  private StudentParent findPyramusStudentParent(Long studentParentId) {
+    return pyramusClient.get("/studentparents/studentparents/" + studentParentId, StudentParent.class);
+  }
+
   private Student findPyramusStudent(Long studentId) {
     return pyramusClient.get("/students/students/" + studentId, Student.class);
   }
@@ -1001,6 +1063,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     if (staffId != null) {
       StaffMember staffMember = findPyramusStaffMember(staffId);
       personId = staffMember.getPersonId();
+    }
+
+    Long studentParentId = identifierMapper.getStudentParentId(userIdentifier);
+    if (studentParentId != null) {
+      StudentParent studentParent = findPyramusStudentParent(studentParentId);
+      personId = studentParent.getPersonId();
     }
 
     return personId;
@@ -1095,30 +1163,47 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     PhoneNumber[] phoneNumbers = null;
-    Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
-    if (pyramusStudentId != null) {
-      phoneNumbers = pyramusClient.get(String.format("/students/students/%d/phoneNumbers", pyramusStudentId), PhoneNumber[].class);
-      if (phoneNumbers == null) {
-        return Collections.emptyList();
-      }
-    } else {
-      Long pyramusStaffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
-      if (pyramusStaffId != null) {
-        phoneNumbers = pyramusClient.get(String.format("/staff/members/%d/phoneNumbers", pyramusStaffId), PhoneNumber[].class);
-        if (phoneNumbers == null) {
+    
+    PyramusUserType userType = identifierMapper.getIdentifierUserType(userIdentifier);
+
+    if (userType != null) {
+      switch (userType) {
+        case STUDENT:
+          Long pyramusStudentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+          if (pyramusStudentId != null) {
+            phoneNumbers = pyramusClient.get(String.format("/students/students/%d/phoneNumbers", pyramusStudentId), PhoneNumber[].class);
+            if (phoneNumbers == null) {
+              return Collections.emptyList();
+            }
+          }
+        break;
+        
+        case STAFFMEMBER:
+          Long pyramusStaffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
+          if (pyramusStaffId != null) {
+            phoneNumbers = pyramusClient.get(String.format("/staff/members/%d/phoneNumbers", pyramusStaffId), PhoneNumber[].class);
+            if (phoneNumbers == null) {
+              return Collections.emptyList();
+            }
+          }
+        break;
+        
+        // Student parent has no phonenumbers at the moment.
+        case STUDENTPARENT:
           return Collections.emptyList();
-        }
       }
     }
 
     List<UserPhoneNumber> result = new ArrayList<>();
 
-    for (PhoneNumber phoneNumber : phoneNumbers) {
-      ContactType contactType = phoneNumber.getContactTypeId() != null
-          ? pyramusClient.get(String.format("/common/contactTypes/%d", phoneNumber.getContactTypeId()), ContactType.class)
-          : null;
-
-      result.add(entityFactory.createEntity(userIdentifier, phoneNumber, contactType));
+    if (phoneNumbers != null) {
+      for (PhoneNumber phoneNumber : phoneNumbers) {
+        ContactType contactType = phoneNumber.getContactTypeId() != null
+            ? pyramusClient.get(String.format("/common/contactTypes/%d", phoneNumber.getContactTypeId()), ContactType.class)
+            : null;
+  
+        result.add(entityFactory.createEntity(userIdentifier, phoneNumber, contactType));
+      }
     }
 
     return result;
@@ -1682,6 +1767,90 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         String.format("/students/students/%d/guidanceRelation", studentId),
         fi.otavanopisto.pyramus.rest.model.StudentGuidanceRelation.class);
     return relation == null ? null : entityFactory.createEntity(relation);
+  }
+
+  @Override
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
+    Long studentParentId = identifierMapper.getStudentParentId(guardianUserIdentifier.getIdentifier());
+    if (studentParentId == null) {
+      return null;
+    }
+    
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.StudentParentChild[]> studentParentStudents = pyramusClient.responseGet(
+        String.format("/studentparents/studentparents/%d/students", studentParentId),
+        fi.otavanopisto.pyramus.rest.model.StudentParentChild[].class);
+    
+    List<GuardiansDependent> result = new ArrayList<>();
+    
+    if (studentParentStudents.ok()) {
+      for (StudentParentChild student : studentParentStudents.getEntity()) {
+        String address = null;
+        if (student.getDefaultAddress() != null) {
+          Address addobj = student.getDefaultAddress();
+          
+          String pcc = StringUtils.trim(
+              (StringUtils.isNotBlank(addobj.getPostalCode()) ? addobj.getPostalCode() + " " : "") +
+              (StringUtils.isNotBlank(addobj.getCity()) ? addobj.getCity() : "")
+          );
+          
+          List<String> sequence = Arrays.asList(
+              addobj.getName(),
+              addobj.getStreetAddress(),
+              pcc,
+              addobj.getCountry()
+          );
+          
+          address = sequence.stream().filter(s -> StringUtils.isNotBlank(s)).collect(Collectors.joining(", "));
+        }
+        
+        result.add(new PyramusGuardiansDependent(
+            identifierMapper.getStudentIdentifier(student.getStudentId()), 
+            student.getFirstName(), 
+            student.getLastName(), 
+            student.getNickname(),
+            student.getStudyProgrammeName(),
+            student.getDefaultEmail(),
+            student.getDefaultPhoneNumber(),
+            address
+        ));
+      }
+    }
+    
+    return result;
+  }
+
+  @Override
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
+    Long studentParentId = identifierMapper.getStudentParentId(guardianUserIdentifier.getIdentifier());
+    if (studentParentId == null) {
+      return null;
+    }
+    
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (studentId == null) {
+      return null;
+    }
+    
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.students.StudentParentStudentCourseRestModel[]> studentParentStudents = pyramusClient.responseGet(
+        String.format("/studentparents/studentparents/%d/students/%d/courses", studentParentId, studentId),
+        fi.otavanopisto.pyramus.rest.model.students.StudentParentStudentCourseRestModel[].class);
+    
+    List<GuardiansDependentWorkspace> result = new ArrayList<>();
+    
+    if (studentParentStudents.ok()) {
+      for (StudentParentStudentCourseRestModel course : studentParentStudents.getEntity()) {
+        result.add(new PyramusGuardiansDependentWorkspace(
+            new SchoolDataIdentifier(identifierMapper.getWorkspaceIdentifier(course.getCourseId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE),
+            new SchoolDataIdentifier(identifierMapper.getWorkspaceStudentIdentifier(course.getCourseStudentId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE),
+            course.getName(),
+            course.getNameExtension(),
+            course.getEnrolmentDate(),
+            course.getLatestAssessmentRequestDate()
+        ));
+      }
+    }
+    
+    return result;
   }
 
 }

@@ -166,7 +166,7 @@ public class DiscussionTestsBase extends AbstractUITest {
           "<p>Testing testing daa daa</p>", false, null);
       try{
         navigate("/discussion", false);
-        waitAndClick("a.button-icon--discussion-action");
+        waitAndClick("div.button-icon--discussion-action");
         waitForPresent(".icon-bookmark-full");
         logout();
         mockBuilder.mockLogin(student);

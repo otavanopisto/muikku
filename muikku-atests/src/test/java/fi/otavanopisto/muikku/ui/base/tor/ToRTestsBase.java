@@ -47,7 +47,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .addStaffMember(admin)
         .mockLogin(admin)
         .addCourse(course1)
@@ -142,7 +142,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .addStaffMember(admin)
         .mockLogin(admin)
         .addCourse(course1)
@@ -242,7 +242,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockMatriculationExam(true)
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
@@ -288,7 +288,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockMatriculationExam(true)
         .mockLogin(student)
         .build();
@@ -324,7 +324,7 @@ public class ToRTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockLogin(student)
         .build();
         login();
@@ -376,7 +376,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockEmptyStudyActivity()
         .mockLogin(student)
         .build();

@@ -640,7 +640,7 @@ mark[data-muikku-word-definition] {
 .material-page__assignment-assessment-icon {
   font-size: 2rem;
   line-height: 1;
-  opacity: 30%;
+  opacity: 40%;
   position: absolute;
   right: 15px;
   top: 10px;
@@ -789,6 +789,33 @@ mark[data-muikku-word-definition] {
   border-right-width: 10px;
   box-shadow: 0 3px 5px 2px $color-example-box-shadow;
   margin: 20px -30px 20px -20px;
+  position: relative;
+}
+
+.material-exercise-feedback-correct {
+  border-color: $color-success;
+  color: darken($color-success, 40%);
+  padding-left: 72px;
+
+  &::before {
+    color: $color-success;
+    content: "\f164";
+    font-size: 2rem;
+    opacity: 70%;
+  }
+}
+
+.material-exercise-feedback-incorrect {
+  border-color: $color-error;
+  color: darken($color-error, 40%);
+  padding-left: 72px;
+
+  &::before {
+    color: $color-error;
+    content: "\ea08";
+    font-size: 2rem;
+    opacity: 90%;
+  }
 }
 
 // INSTRUCTION BOX

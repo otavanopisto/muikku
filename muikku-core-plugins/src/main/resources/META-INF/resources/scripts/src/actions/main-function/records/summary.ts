@@ -23,13 +23,16 @@ export type UPDATE_STUDIES_SUMMARY_STATUS = SpecificActionType<
  * UpdateSummaryTriggerType
  */
 export interface UpdateSummaryTriggerType {
-  (): AnyActionType;
+  (studentIdentifier?: string): AnyActionType;
 }
 
 /**
  * UpdateSummaryTriggerType
+ * @param studentIdentifier student pyramus identifier
  */
-const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
+const updateSummary: UpdateSummaryTriggerType = function updateSummary(
+  studentIdentifier
+) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
@@ -40,23 +43,28 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
     const workspaceApi = MApi.getWorkspaceApi();
     const activitylogsApi = MApi.getActivitylogsApi();
-
+    const state = getState();
     try {
+      // Get user id
+      const pyramusIdentifier = studentIdentifier
+        ? studentIdentifier
+        : state.status.userSchoolDataIdentifier;
+
+      if (state.summary.status === "READY") {
+        return null;
+      }
+
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
         payload: <SummaryStatusType>"LOADING",
       });
 
-      // Get user id
-      const pyramusId = getState().status.userSchoolDataIdentifier;
-
-      // We need completed courses from Eligibility
       const eligibility = await recordsApi.getStudentMatriculationEligibility({
-        studentIdentifier: pyramusId,
+        studentIdentifier: pyramusIdentifier,
       });
 
       const activityLogsHash = await activitylogsApi.getUserActivityLogs({
-        userIdentifier: pyramusId,
+        userIdentifier: pyramusIdentifier,
         from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         to: new Date(),
       });
@@ -67,7 +75,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
 
       // Student's study time
       const studentsDetails = await userApi.getStudent({
-        studentId: pyramusId,
+        studentId: pyramusIdentifier,
       });
 
       // Convert key value pairs to array of array of objects
@@ -87,7 +95,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
       });
 
       const workspaces = (await workspaceApi.getWorkspaces({
-        userIdentifier: pyramusId,
+        userIdentifier: pyramusIdentifier,
         includeInactiveWorkspaces: true,
       })) as WorkspaceDataType[];
 
@@ -97,7 +105,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             workspaces.map(async (workspace, index) => {
               const activity = await evaluationApi.getWorkspaceStudentActivity({
                 workspaceId: workspace.id,
-                studentEntityId: pyramusId,
+                studentEntityId: pyramusIdentifier,
               });
               workspaces[index].activity = activity;
             })
@@ -107,7 +115,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
               const statistics =
                 await workspaceDiscussionApi.getWorkspaceDiscussionStatistics({
                   workspaceEntityId: workspace.id,
-                  userIdentifier: pyramusId,
+                  userIdentifier: pyramusIdentifier,
                 });
 
               workspaces[index].forumStatistics = statistics;
@@ -117,7 +125,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             workspaces.map(async (workspace, index) => {
               const courseActivity =
                 await activitylogsApi.getWorkspaceActivityLogs({
-                  userIdentifier: pyramusId,
+                  userIdentifier: pyramusIdentifier,
                   workspaceEntityId: workspace.id,
                   from: new Date(new Date().getFullYear() - 2, 0),
                   to: new Date(),
