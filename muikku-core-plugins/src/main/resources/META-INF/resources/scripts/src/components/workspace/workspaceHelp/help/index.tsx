@@ -903,9 +903,9 @@ const BackToToc = (props: BackToTocProps) => {
 
   return (
     <IconButton
-      icon="bubbles"
+      icon="forward"
       onClick={handleLinkClick}
-      className="link"
+      buttonModifiers={["back-to-toc"]}
       aria-label={t("wcag.focusToToc", { ns: "materials" })}
     />
   );

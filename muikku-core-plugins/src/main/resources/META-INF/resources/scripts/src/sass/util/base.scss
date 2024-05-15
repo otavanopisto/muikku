@@ -30,6 +30,12 @@ body {
   &.using-mouse :focus-visible:not(:focus) {
     outline: none;
   }
+
+  &.using-mouse {
+    .button-icon--back-to-toc {
+      display: none;
+    }
+  }
 }
 
 ul,

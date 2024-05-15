@@ -80,8 +80,12 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
         }
       >
         {props.material.title}
+        {props.anchorElement ? (
+          <span className="material-page__title-back-to-toc">
+            {props.anchorElement}
+          </span>
+        ) : null}
         {props.readspeakerComponent ? props.readspeakerComponent : null}
-        {props.anchorElement ? props.anchorElement : null}
       </h2>
       {hidden &&
       (materialPageType === "exercise" || materialPageType === "assignment") ? (
