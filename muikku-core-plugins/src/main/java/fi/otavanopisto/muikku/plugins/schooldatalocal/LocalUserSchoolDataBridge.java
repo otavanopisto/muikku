@@ -28,6 +28,8 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
@@ -721,6 +723,15 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload,
       Boolean active) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

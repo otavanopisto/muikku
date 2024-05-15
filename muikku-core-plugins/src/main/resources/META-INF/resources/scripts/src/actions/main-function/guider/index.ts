@@ -189,6 +189,13 @@ export interface LoadMoreStudentsTriggerType {
 export interface LoadStudentTriggerType {
   (id: string, forceLoad?: boolean): AnyActionType;
 }
+
+/**
+ * LoadStudentAccessTriggerType action creator type
+ */
+export interface LoadStudentAccessTriggerType {
+  (id: string, forceLoad?: boolean): AnyActionType;
+}
 /**
  * action creator type
  */
@@ -540,6 +547,73 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
     return {
       type: "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
       payload: student,
+    };
+  };
+
+/**
+ * loadStudentPedagogyFormAccess thunk action creator
+ * @param identifier student muikku identifier
+ * @param forceLoad should the load be forced
+ * @returns a thunk functions to load student pedagogy form access
+ */
+const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
+  function loadStudentPedagogyFormAccess(identifier, forceLoad) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      // if the access is loaded, do not load again
+      if (
+        getState().guider.currentStudent.pedagogyFormState === "READY" &&
+        !forceLoad
+      ) {
+        return;
+      }
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "pedagogyFormState",
+          value: <LoadingState>"LOADING",
+        },
+      });
+
+      const pedagogyApi = MApi.getPedagogyApi();
+      try {
+        pedagogyApi
+          .getPedagogyFormAccess({
+            studentIdentifier: identifier,
+          })
+          .then((pedagogyFormAvaibility) => {
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "pedagogyFormAvailable",
+                value: pedagogyFormAvaibility,
+              },
+            });
+            dispatch({
+              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+              payload: {
+                property: "pedagogyFormState",
+                value: <LoadingState>"READY",
+              },
+            });
+          });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "guider",
+              context: "pedagogyFormAccess",
+            }),
+            "error"
+          )
+        );
+      }
     };
   };
 
@@ -2458,6 +2532,7 @@ export {
   loadMoreStudents,
   loadStudent,
   loadStudentHistory,
+  loadStudentPedagogyFormAccess,
   // loadStudentGuiderRelations,
   loadStudentContactLogs,
   createContactLogEvent,

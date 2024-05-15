@@ -8,6 +8,8 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
@@ -357,5 +359,22 @@ public interface UserSchoolDataBridge {
   public StudentCard getStudentCard(String studentIdentifier);
   
   public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active);
+  /**
+   * Lists students for who the given user is a guardian for.
+   * 
+   * @param guardianUserIdentifier guardian, should be of role STUDENT_PARENT
+   * @return guardians' students
+   */
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier);
+
+  /**
+   * Lists workspace information from a data source for given student, who is 
+   * expected to be a guardian's dependent.
+   * 
+   * @param guardianUserIdentifier guardian's identifier
+   * @param studentIdentifier identifier for guardian's dependent (Student)
+   * @return list of workspace information
+   */
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier);
 
 }

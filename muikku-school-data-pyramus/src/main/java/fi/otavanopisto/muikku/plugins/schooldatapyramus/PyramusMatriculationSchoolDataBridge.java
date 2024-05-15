@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -64,8 +65,17 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
   }
 
   @Override
-  public MatriculationEligibilities listEligibilities() {
-    return pyramusClient.get("/matriculation/eligibility", MatriculationEligibilities.class);
+  public BridgeResponse<MatriculationEligibilities> listEligibilities(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    return pyramusClient.responseGet(String.format("/matriculation/students/%d/eligibility", pyramusStudentId), MatriculationEligibilities.class);
   }
 
 }

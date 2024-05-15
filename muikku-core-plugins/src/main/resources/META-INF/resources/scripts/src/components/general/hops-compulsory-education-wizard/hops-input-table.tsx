@@ -54,7 +54,7 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
 
   const uTableHeadModifiers = [];
 
-  if (usePlace === "studies") {
+  if (usePlace === "studies" || usePlace === "guardian") {
     uTableHeadModifiers.push("sticky");
   } else if (usePlace === "guider") {
     uTableHeadModifiers.push("sticky-inside-dialog");
