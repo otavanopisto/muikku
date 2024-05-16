@@ -188,14 +188,12 @@ function ChatRoomEditAndInfoDialog(props: ChatRoomEditAndInfoDialogProps) {
             </Button>
           </>
         ) : (
-          <>
-            <Button
-              buttonModifiers={["standard-ok", "info"]}
-              onClick={handleEditClick}
-            >
-              {t("actions.edit")}
-            </Button>
-          </>
+          <Button
+            buttonModifiers={["standard-ok", "info"]}
+            onClick={handleEditClick}
+          >
+            {t("actions.edit")}
+          </Button>
         )}
       </div>
     );

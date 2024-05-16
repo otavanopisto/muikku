@@ -502,7 +502,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      /* const chatApi = MApi.getChatApi(); */
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
       const evaluationApi = MApi.getEvaluationApi();
@@ -539,7 +538,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let producers: WorkspaceMaterialProducer[];
         let isCourseMember: boolean;
         let details: WorkspaceDetails;
-        /* let chatStatus: WorkspaceChatStatus; */
         const status = state.status;
 
         [
@@ -646,14 +644,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 })
               )
             : null,
-
-          /* state.status.loggedIn
-            ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-                chatApi.getWorkspaceChatSettings({
-                  workspaceEntityId: data.workspaceId,
-                })
-              )
-            : null, */
         ])) as any;
 
         workspace.assessmentRequests = assessmentRequests;
@@ -664,7 +654,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.producers = producers;
         workspace.isCourseMember = isCourseMember;
         workspace.details = details;
-        /* workspace.chatStatus = chatStatus; */
 
         dispatch({
           type: "SET_CURRENT_WORKSPACE",
@@ -1871,49 +1860,6 @@ export type UpdateWorkspaceStateType =
   | "add-teachers"
   | "remove-teachers"
   | "done";
-
-/**
- * loadWorkspaceChatStatus
- */
-/* const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
-  function loadWorkspaceChatStatus() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const chatApi = MApi.getChatApi();
-
-      try {
-        const chatStatus = await chatApi.getWorkspaceChatSettings({
-          workspaceEntityId: getState().workspaces.currentWorkspace.id,
-        });
-
-        const currentWorkspace = getState().workspaces.currentWorkspace;
-
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: currentWorkspace,
-            update: { chatStatus },
-          },
-        });
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.loadError", {
-              ns: "workspace",
-              context: "chatSettings",
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  }; */
 
 /**
  * loadWorkspaceDetailsInCurrentWorkspace
