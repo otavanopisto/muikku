@@ -729,7 +729,7 @@ class ConnectField extends React.Component<
   render() {
     if (this.props.invisible) {
       return (
-        <span className="connectfield__wrapper">
+        <span className="connectfield-wrapper">
           <span className="connectfield">
             <span className="connectfield__terms-container">
               {this.state.fields.map((field, index) => (
@@ -767,7 +767,7 @@ class ConnectField extends React.Component<
         />
 
         <span
-          className={`connectfield__wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`connectfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}

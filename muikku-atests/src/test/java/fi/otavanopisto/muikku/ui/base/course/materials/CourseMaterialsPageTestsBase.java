@@ -315,7 +315,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__textfield");
+        waitForPresent(".textfield");
         selectFinnishLocale();
         waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
         assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input", "");
@@ -444,10 +444,10 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         selectOption(".selectfield", "2");
         sleep(1000);
         waitForNotVisible(".material-page__field-answer-synchronizer");
-        assertSelectValue(".material-page__selectfield", "2");
+        assertSelectValue(".selectfield", "2");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__selectfield");
-        assertSelectedOption(".material-page__selectfield", "dos");
+        waitForPresent(".selectfield");
+        assertSelectedOption(".selectfield", "dos");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -559,7 +559,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".radiobuttonfield__items-wrapper");
-        waitAndClickXPath("//input[@class='radiobutton' and @value='1']");
+        waitAndClickXPath("//input[@class='radiobuttonfield' and @value='1']");
         sleep(1000);
         waitForNotVisible(".material-page__field-answer-synchronizer");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
