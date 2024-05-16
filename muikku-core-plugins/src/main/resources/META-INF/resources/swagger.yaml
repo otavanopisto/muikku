@@ -2133,8 +2133,8 @@ paths:
   /rest/coursepicker/workspaces/{workspaceId}/canSignup:
     get:
       operationId: workspaceCanSignUp
-      summary: Can user signup to workspace
-      description: Can user signup to workspace
+      summary: Returns can signup info for workspace
+      description: Returns can signup info for workspace and any possible existing assessment events
       tags:
         - Coursepicker
       parameters:
@@ -2147,11 +2147,11 @@ paths:
             format: int64
       responses:
         "200":
-          description: Course picker workspace can signup
+          description: Course picker workspace can signup info
           content:
             application/json:
               schema:
-                type: boolean
+                $ref: "#/components/schemas/WorkspaceCansignup"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -16392,6 +16392,22 @@ components:
           type: string
         path:
           type: string
+
+    WorkspaceCansignup:
+      type: object
+      description: WorkspaceCansignup holding info if user can signup to workspace and whether there exists assessment events
+      required:
+        - canSignup
+        - assessmentStates
+      properties:
+        canSignup:
+          description: If the user can signup
+          type: boolean
+        assessmentStates:
+          description: Assessment states of the workspace
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceAssessmentState"
 
     WorklistEditableFieldType:
       type: string
