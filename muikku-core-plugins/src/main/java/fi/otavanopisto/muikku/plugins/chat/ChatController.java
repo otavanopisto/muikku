@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -129,6 +130,9 @@ public class ChatController {
   }
   
   public void postMessage(ChatRoom room, UserEntity userEntity, String message) {
+    
+    // TODO Content sanitation if we ever support formatted messages
+    
     ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), room.getId(), null, message);
 
     // Inform users about the new message (public room message to all users, workspace room message to room users)
@@ -147,6 +151,8 @@ public class ChatController {
   
   public void postMessage(UserEntity targetUserEntity, UserEntity userEntity, String message) {
     
+    // TODO Content sanitation if we ever support formatted messages
+
     // Post message
     
     ChatMessage chatMessage = chatMessageDAO.create(userEntity.getId(), null, targetUserEntity.getId(), message);
@@ -163,6 +169,9 @@ public class ChatController {
   }
   
   public void updateMessage(ChatMessage message, String content, UserEntity modifier) {
+    
+    // TODO Content sanitation if we ever support formatted messages
+    
     ChatMessage chatMessage = chatMessageDAO.update(message, content, modifier.getId());
     
     // Inform suitable parties about updated message
@@ -525,13 +534,12 @@ public class ChatController {
     // Add session data for the user
     
     sessionUsers.put(sessionId, userEntity.getId());
-    Set<String> sessions;
+    ConcurrentSkipListSet<String> sessions;
     if (userSessions.containsKey(userEntity.getId())) {
       sessions = userSessions.get(userEntity.getId());
-      sessions.add(sessionId);
     }
     else {
-      sessions = new HashSet<>();
+      sessions = new ConcurrentSkipListSet<>();
       userSessions.put(userEntity.getId(), sessions);
     }
     sessions.add(sessionId);
@@ -705,9 +713,9 @@ public class ChatController {
   }
   
   private void addRoomUser(Long roomId, Long userEntityId) {
-    Set<Long> users = roomUsers.get(roomId);
+    ConcurrentSkipListSet<Long> users = roomUsers.get(roomId);
     if (users == null) {
-      users = new HashSet<>();
+      users = new ConcurrentSkipListSet<>();
       users.add(userEntityId);
       roomUsers.put(roomId, users);
     }
@@ -786,13 +794,13 @@ public class ChatController {
   private ConcurrentHashMap<Long, ChatUserRestModel> users;
 
   // ChatRoomId -> Set<UserEntityId>
-  private ConcurrentHashMap<Long, Set<Long>> roomUsers;
+  private ConcurrentHashMap<Long, ConcurrentSkipListSet<Long>> roomUsers;
   
   // HttpSessionId -> UserEntityId
   private ConcurrentHashMap<String, Long> sessionUsers;
   
-  // UserEntityId -> List<HttpSessionId>
-  private ConcurrentHashMap<Long, Set<String>> userSessions;
+  // UserEntityId -> Set<HttpSessionId>
+  private ConcurrentHashMap<Long, ConcurrentSkipListSet<String>> userSessions;
   
   private ObjectMapper mapper;
   

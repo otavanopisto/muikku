@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSessionListener;
 
 import fi.otavanopisto.muikku.events.LoginEvent;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @WebListener
@@ -29,10 +28,7 @@ public class ChatSessionListener implements HttpSessionListener {
     HttpSession session = httpRequest.getSession(false);
     if (session != null) {
       UserEntity userEntity = userEntityController.findUserEntityById(loginEvent.getUserEntityId());
-      //ChatUser chatUser = chatController.getChatUser(userEntity);
-      //if (chatUser != null && !chatUser.getArchived()) {
-        chatController.processSessionCreated(userEntity, session.getId());
-      //}
+      chatController.processSessionCreated(userEntity, session.getId());
     }
   }
   

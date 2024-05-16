@@ -63,6 +63,8 @@
          primary key (id)
        );</sql>
     
+  <sql>alter table ChatRoom add constraint UK_hvle837d3ju3panjek1ek0q2f unique (workspaceEntityId);</sql>
+  
   <sql>create index IDXjkv0r84pt7ak6aijs7ye3nw0m on ChatMessage (sourceUserEntityId, targetUserEntityId, sent);</sql>
 
   <sql>create index IDX8q9m8b9v9aqdff34x0jfiwhix on ChatMessage (targetRoomId, sent);</sql>

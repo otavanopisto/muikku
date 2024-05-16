@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.users;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -11,7 +10,6 @@ import fi.otavanopisto.muikku.dao.users.UserEntityFileDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 
 @ApplicationScoped
-@Singleton
 public class UserProfilePictureController {
 
   @Inject

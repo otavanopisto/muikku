@@ -1053,7 +1053,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   private String constructWorkspaceChatRoomName(Workspace workspace) {
-    if (workspace.getSubjects() != null && workspace.getSubjects().size() > 1) {
+    if (CollectionUtils.isNotEmpty(workspace.getSubjects()) && workspace.getSubjects().size() > 1) {
       /**
        *  Workspaces that have multiple subjects use naming convention of
        *
@@ -1084,7 +1084,7 @@ public class WorkspaceRESTService extends PluginRESTService {
        * subjectCode + courseNumber - name
        */
 
-      WorkspaceSubject workspaceSubject = workspace.getSubjects() != null ? workspace.getSubjects().get(0) : null;
+      WorkspaceSubject workspaceSubject = CollectionUtils.isNotEmpty(workspace.getSubjects()) ? workspace.getSubjects().get(0) : null;
       String subjectCode = workspaceSubject != null ? courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier()).getCode() : null;
       StringBuilder roomName = new StringBuilder();
       if (!StringUtils.isBlank(subjectCode)) {

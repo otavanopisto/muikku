@@ -90,7 +90,7 @@ public class ChatRoom {
   @Enumerated(EnumType.STRING)
   private ChatRoomType type;
   
-  @Column
+  @Column (nullable = true, unique = true)
   private Long workspaceEntityId;
 
   @Column(nullable = false)
