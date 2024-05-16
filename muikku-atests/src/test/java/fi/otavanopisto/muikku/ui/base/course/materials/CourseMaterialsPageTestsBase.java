@@ -76,8 +76,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           mockBuilder.mockLogin(student).build();
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
-          sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
+          waitForPresent(".filefield-wrapper .file-uploader__field");
+          sendKeys(".filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
           waitForNotVisible(".material-page__field-answer-synchronizer");
           waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
           waitForVisible(".notification-queue__item--success");
