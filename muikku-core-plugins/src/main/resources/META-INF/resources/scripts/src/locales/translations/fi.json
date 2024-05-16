@@ -989,6 +989,16 @@
       "updateSuccess": "Tehtävän muokkaus onnistui",
       "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti",
       "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen."
+    },
+    "wcag": {
+      "archive": "Arkistoi tehtävä",
+      "archiveUndo": "Palauta tehtävä",
+      "createNewNote": "Luo uusi tehtävä",
+      "editNote": "Muokkaa tehtävän tietoja",
+      "markAsImportant": "Merkitse tehtävä tärkeäksi",
+      "markAsNotImportant": "Merkitse tehtävä ei-tärkeäksi",
+      "prioritySorter": "Tärkeysasteen suodatus {{priorityName}}",
+      "showDetails": "Näytä tehtävän tiedot"
     }
   },
   "users": {
