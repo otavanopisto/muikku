@@ -1373,6 +1373,21 @@
       "updateError_page": "Updating the material page failed",
       "updateError_answers": "Changing the assignment state failed",
       "updateError_compositeReplies": "Updating the answer failed"
+    },
+    "wcag": {
+      "focusToToc": "Press Enter to go to the item in the table of contents corresponding to the current content",
+      "tocTopicAllExpand": "Expand all sections in the table of contents",
+      "tocTopicAllCollapse": "Collapse all sections in the table of contents",
+      "tocTopicExpand": "Expand section content with right arrow",
+      "tocTopicCollapse": "Collapse section content with left arrow",
+      "tocPageMaterialStatus": "Content status",
+      "tocPageMaterialStatus_done": "Content is in the done state",
+      "tocPageMaterialStatus_submitted": "Content is in the submitted state",
+      "tocPageMaterialStatus_withdrawn": "Content is in the withdrawn state",
+      "tocPageMaterialStatus_incomplete": "Content is in the incomplete state",
+      "tocPageMaterialStatus_failed": "Content is in the failed state",
+      "tocPageMaterialStatus_passed": "Content is in the passed state",
+      "tocPageMaterialStatus_restricted": "Content is in the restricted"
     }
   },
   "notebook": {
