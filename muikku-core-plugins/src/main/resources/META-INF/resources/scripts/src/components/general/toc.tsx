@@ -6,8 +6,8 @@
 
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
+import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "usehooks-ts";
-import Link from "~/components/general/link";
 import "~/sass/elements/toc.scss";
 
 /**
@@ -47,7 +47,7 @@ interface TocTopicProps {
   /**
    * Topic id is combination of workspace material folder id + something user related
    */
-  topicId: number | string;
+  topicId: string;
   /**
    * If some of topic's children is active, topic is active
    */
@@ -67,21 +67,27 @@ interface TocTopicProps {
   iconAfterTitle?: string;
   iconAfterColor?: string;
   children?: React.ReactNode;
+  onTitleKeyDown?: (e: React.KeyboardEvent) => void;
 }
 
-export type ToggleOpenHandle = {
+export type TocTopicRef = {
   toggleOpen: (type?: "open" | "close") => void;
+  titleContainerCurrent: HTMLAnchorElement | null;
 };
 
 /**
  * TocTopic component with toggle open functionality with ref forwarding
  */
-const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
-  (props, ref) => {
+const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
+  (props, outerRef) => {
     const [height, setHeight] = useLocalStorage<number | string>(
-      `tocTopic-${props.topicId}`,
+      props.topicId,
       "auto"
     );
+
+    const titleContainerRef = React.useRef<HTMLAnchorElement>(null);
+
+    const { t } = useTranslation(["materials"]);
 
     /**
      * Toggles open state
@@ -95,12 +101,14 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
       }
     };
 
-    // Way to expose toggleHeight to parent component
-    React.useImperativeHandle(ref, () => ({
+    // Way to expose toggleHeight and refs to parent component
+    React.useImperativeHandle(outerRef, () => ({
       // eslint-disable-next-line jsdoc/require-jsdoc
       toggleOpen: (type) => {
         toggleHeight(type);
       },
+      titleContainerCurrent:
+        titleContainerRef.current && titleContainerRef.current,
     }));
 
     /**
@@ -108,18 +116,26 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
      * @param e e
      */
     const handleToggleHeightClick = (e: React.MouseEvent) => {
+      e.preventDefault();
       e.stopPropagation();
       toggleHeight();
     };
 
     /**
-     * Handles Link click. Opens topic if it's closed
+     * Handle key down event for toggle open and close
      * @param e e
      */
-    const handleLinkClick = (e: React.MouseEvent) => {
-      e.stopPropagation();
-      if (height === 0) {
+    const handleTitleKeyDown = (e: React.KeyboardEvent) => {
+      props.onTitleKeyDown && props.onTitleKeyDown(e);
+
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        e.stopPropagation();
         toggleHeight("open");
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleHeight("close");
       }
     };
 
@@ -135,25 +151,33 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
             : ""
         }`}
         lang={props.language}
+        aria-expanded={height !== 0}
       >
         {props.name ? (
-          <div
+          <a
+            id={props.topicId}
+            ref={titleContainerRef}
+            href={props.hash ? "#" + props.hash : null}
             className={`toc__section-title-container ${
               props.isHidden ? "hidden" : ""
             }`}
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={handleTitleKeyDown}
+            aria-controls={`topic-elements-${props.topicId}`}
+            aria-label={
+              height === 0
+                ? t("wcag.tocTopicExpand", { ns: "materials" })
+                : t("wcag.tocTopicCollapse", { ns: "materials" })
+            }
           >
             <span
               className={`toc__icon toc__icon--section-open-close ${arrowModifier}`}
               onClick={handleToggleHeightClick}
+              aria-controls={`topic-elements-${props.topicId}`}
             />
-            <Link
-              className="toc__section-title"
-              href={props.hash ? "#" + props.hash : null}
-              disableSmoothScroll={true}
-              onClick={handleLinkClick}
-            >
+            <div className="toc__section-title">
               <span className="toc__text-body">{props.name}</span>
-            </Link>
+            </div>
             {props.iconAfter ? (
               <span
                 title={props.iconAfterTitle}
@@ -161,9 +185,14 @@ const TocTopic = React.forwardRef<ToggleOpenHandle, TocTopicProps>(
                 style={{ color: props.iconAfterColor }}
               ></span>
             ) : null}
-          </div>
+          </a>
         ) : null}
-        <AnimateHeight duration={200} height={height} easing="ease-in">
+        <AnimateHeight
+          id={`topic-elements-${props.topicId}`}
+          duration={200}
+          height={height}
+          easing="ease-in"
+        >
           {/**TODO: Styling */}
           <div>{props.children}</div>
         </AnimateHeight>
@@ -176,10 +205,18 @@ TocTopic.displayName = "TocTopic";
 
 export default TocTopic;
 
+export type TocElRef = {
+  tocLinkCurrent: HTMLAnchorElement | null;
+};
+
 /**
  * TocElementProps
  */
-interface TocElementProps {
+interface TocElementProps
+  extends React.DetailedHTMLProps<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    HTMLAnchorElement
+  > {
   isActive: boolean;
   isHidden: boolean;
   /**
@@ -190,71 +227,52 @@ interface TocElementProps {
   className?: string;
   modifier?: string;
   hash?: number | string;
-  href?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onClick?: () => any;
   children: string;
   iconAfter?: string;
   iconAfterTitle?: string;
   iconAfterColor?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onScrollToSection?: () => any;
-  scrollPadding?: number;
-  disableScroll?: boolean;
-  language?: string;
 }
 
-/**
- * TocElementState
- */
-interface TocElementState {}
-
-/**
- * TocElement
- */
-export class TocElement extends React.Component<
-  TocElementProps,
-  TocElementState
-> {
-  /**
-   * Component render method
-   * @returns JSX.Element
-   */
-  render() {
+export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
+  (props, outerRef) => {
     const {
       isActive,
       isHidden,
       isFilteredOut = false,
-      className,
       modifier,
       hash,
-      href,
-      onClick,
       children,
       iconAfter,
       iconAfterTitle,
       iconAfterColor,
-      onScrollToSection,
-      scrollPadding,
-      disableScroll,
-      language,
-    } = this.props;
+      className,
+      ...anchorProps
+    } = props;
+
+    /**
+     * Handles link click
+     * @param e e
+     */
+    const handleLinkClick = (e: React.MouseEvent) => {
+      const pageElement = document.getElementById(hash as string);
+
+      if (pageElement) {
+        pageElement.focus();
+      }
+    };
 
     return (
-      <Link
+      <a
+        {...anchorProps}
+        ref={outerRef}
         className={`toc__item ${isActive ? "active" : ""} ${
           className ? className : ""
         } ${isHidden ? "hidden" : ""} ${isFilteredOut ? "filteredOut" : ""} ${
           modifier ? "toc__item--" + modifier : ""
         }`}
-        onScrollToSection={onScrollToSection}
-        scrollPadding={scrollPadding}
-        disableScroll={disableScroll}
         href={hash ? "#" + hash : null}
-        to={href}
-        onClick={onClick}
-        ref="element"
-        lang={language}
+        onClick={handleLinkClick}
+        aria-current={isActive}
       >
         <span className="toc__text-body">{children}</span>
         {iconAfter ? (
@@ -264,23 +282,9 @@ export class TocElement extends React.Component<
             style={{ color: iconAfterColor }}
           ></span>
         ) : null}
-      </Link>
+      </a>
     );
   }
+);
 
-  /**
-   * getElement
-   * @returns HTMLElement
-   */
-  getElement(): HTMLElement {
-    const ref = this.refs["element"] as any;
-
-    if (ref) {
-      if (ref.getWrappedInstance) {
-        return ref.getWrappedInstance().getElement();
-      } else {
-        return ref.getElement();
-      }
-    }
-  }
-}
+TocElement.displayName = "TocElement";

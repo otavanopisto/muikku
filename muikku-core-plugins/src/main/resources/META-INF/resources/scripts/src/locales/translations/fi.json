@@ -989,6 +989,16 @@
       "updateSuccess": "Tehtävän muokkaus onnistui",
       "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti",
       "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen."
+    },
+    "wcag": {
+      "archive": "Arkistoi tehtävä",
+      "archiveUndo": "Palauta tehtävä",
+      "createNewNote": "Luo uusi tehtävä",
+      "editNote": "Muokkaa tehtävän tietoja",
+      "markAsImportant": "Merkitse tehtävä tärkeäksi",
+      "markAsNotImportant": "Merkitse tehtävä ei-tärkeäksi",
+      "prioritySorter": "Tärkeysasteen suodatus {{priorityName}}",
+      "showDetails": "Näytä tehtävän tiedot"
     }
   },
   "users": {
@@ -1370,7 +1380,20 @@
       "organizerTermInUseAndSelected": "Valittu termi on jo käytössä",
       "organiserTermRemove": "Poista termi {{termName}} kategoriasta {{categoryName}}",
       "organizerCategoryName": "Kategoria {{name}}",
-      "sorterTermSelected": "Termi valittu"
+      "sorterTermSelected": "Termi valittu",
+      "focusToToc": "Siirry tämän hetkistä sisältöä vastaavaan sisällysluettelon kohtaan painamalla Enteriä",
+      "tocTopicAllExpand": "Laajenna kaikki osiot sisällysluettelossa",
+      "tocTopicAllCollapse": "Kutista kaikki osiot sisällysluettelossa",
+      "tocTopicExpand": "Laajenna osion sisältö oikealla nuolella",
+      "tocTopicCollapse": "Kutista osion sisältö vasemmalla nuolella",
+      "tocPageMaterialStatus": "Sisällön tila",
+      "tocPageMaterialStatus_done": "Sisältö on tilassa valmis",
+      "tocPageMaterialStatus_submitted": "Sisältö on tilassa palautettu",
+      "tocPageMaterialStatus_withdrawn": "Sisältö on tilassa peruutettu",
+      "tocPageMaterialStatus_incomplete": "Sisältö on tilassa kesken",
+      "tocPageMaterialStatus_failed": "Sisältö on tilassa hylätty",
+      "tocPageMaterialStatus_passed": "Sisältö on tilassa hyväksytty",
+      "tocPageMaterialStatus_restricted": "Sisältö on rajoitettu"
     }
   },
   "notebook": {

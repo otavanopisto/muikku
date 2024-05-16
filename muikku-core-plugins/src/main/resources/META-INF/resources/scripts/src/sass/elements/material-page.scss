@@ -81,6 +81,11 @@
   right: 25px;
 }
 
+.material-page__title-back-to-toc {
+  flex-grow: 1;
+  height: 1.5rem;
+}
+
 // Sets different paddings for left as there is extra border
 .material-page__title--exercise,
 .material-page__title--assignment,
