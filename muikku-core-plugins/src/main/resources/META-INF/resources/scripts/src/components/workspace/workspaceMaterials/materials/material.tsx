@@ -45,6 +45,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   showEvenIfHidden: boolean;
   workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
 }
 
@@ -191,6 +192,7 @@ class WorkspaceMaterial extends React.Component<
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
+            anchorElement={this.props.anchorItem}
           >
             {(props, state, stateConfiguration) => (
               <div>

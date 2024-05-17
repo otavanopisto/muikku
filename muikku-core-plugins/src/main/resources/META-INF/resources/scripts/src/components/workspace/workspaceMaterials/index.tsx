@@ -11,7 +11,6 @@ import MaterialEditor from "~/components/base/material-editor";
 import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
-import MaterialExtraToolDrawer from "./extra-tools-drawer";
 import Tabs, { Tab } from "~/components/general/tabs";
 import NoteBook from "~/components/general/note-book/note-book";
 import {
@@ -177,9 +176,6 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
           onClose={this.props.onCloseSignupDialog}
         />
         <MaterialEditor locationPage="Materials" />
-        <MaterialExtraToolDrawer
-          closeIconModifiers={["workspace-extra-tools-close"]}
-        />
         <Materials
           onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent}
