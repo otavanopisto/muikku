@@ -214,10 +214,13 @@ class Course extends React.Component<CourseProps, CourseState> {
    * @returns JSX.Element
    */
   renderAssessmentStates = () => {
+    // If there are no assessment states, there is nothing to show
     if (this.state.assessmentStates.length === 0) return null;
 
+    // Checking if workspace is combination workspace
     const isCombinationWorkspace = this.state.assessmentStates.length > 1;
 
+    // Rendering goes differently if workspace is combination workspace
     if (isCombinationWorkspace) {
       const elements = this.state.assessmentStates.map((assessment, index) => {
         if (
@@ -240,7 +243,10 @@ class Course extends React.Component<CourseProps, CourseState> {
             >
               {subjectCodeString && (
                 <span className="application-list__item-content-single-item-primary">
-                  {subjectCodeString} - Suoritustilanne:
+                  {subjectCodeString} -{" "}
+                  {this.props.t("labels.courseCompletionStatus", {
+                    ns: "workspace",
+                  })}
                 </span>
               )}
 
@@ -261,6 +267,7 @@ class Course extends React.Component<CourseProps, CourseState> {
       );
     }
 
+    // For non-combination workspace
     const workspaceAssessmentState = this.state.assessmentStates[0];
 
     if (
@@ -270,7 +277,7 @@ class Course extends React.Component<CourseProps, CourseState> {
       return (
         <div className="application-list__item-content-single-item">
           <span className="application-list__item-content-single-item-primary">
-            Suoritustilanne:
+            {this.props.t("labels.courseCompletionStatus", { ns: "workspace" })}
           </span>
           <AssessmentRequestIndicator assessment={workspaceAssessmentState} />
 
