@@ -14,7 +14,7 @@ import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import moment from "~/lib/moment";
+import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
@@ -29,6 +29,7 @@ import Notes from "~/components/general/notes/notes";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { carouselMatrixByStudyProgrammeAndCurriculum } from "~/components/general/carousel/hooks/use-course-carousel";
 
 /**
  * SummaryProps
@@ -97,8 +98,8 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title">
                 {this.props.summary.data.studentsDetails.studyEndDate
-                  ? t("labels.endDate", { ns: "studies" })
-                  : t("labels.studyEndDate", { ns: "users" })}
+                  ? t("labels.studyEndDate", { ns: "users" })
+                  : t("labels.studyTimeEnd", { ns: "users" })}
               </div>
               <div className="application-sub-panel__item-data application-sub-panel__item-data--study-end-date">
                 <span className="application-sub-panel__single-entry">
@@ -302,25 +303,28 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       return (
         <section>
-          <h2 className="application-panel__content-header">
-            {t("labels.summary", { ns: "studies" })}
-          </h2>
           {studentBasicInfo}
           {this.props.status.isActiveUser ? (
             <div className="react-container">
-              {this.props.hops.eligibility &&
-                !this.props.hops.eligibility.upperSecondarySchoolCurriculum && (
-                  <div className="application-sub-panel">
-                    <div className="application-sub-panel__header">
-                      {t("labels.coursesForYou:", { ns: "studies" })}
-                    </div>
-                    <CourseCarousel
-                      studentId={this.props.status.userSchoolDataIdentifier}
-                      studentUserEntityId={this.props.status.userId}
-                      displayNotification={this.props.displayNotification}
-                    />
+              {carouselMatrixByStudyProgrammeAndCurriculum(
+                this.props.status.profile.studyProgrammeName,
+                this.props.status.profile.curriculumName
+              ) !== null && (
+                <div className="application-sub-panel">
+                  <div className="application-sub-panel__header">
+                    {t("labels.coursesForYou", { ns: "studies" })}
                   </div>
-                )}
+                  <CourseCarousel
+                    studentId={this.props.status.userSchoolDataIdentifier}
+                    studentUserEntityId={this.props.status.userId}
+                    studyProgrammeName={
+                      this.props.status.profile.studyProgrammeName
+                    }
+                    curriculumName={this.props.status.profile.curriculumName}
+                    displayNotification={this.props.displayNotification}
+                  />
+                </div>
+              )}
 
               <div className="application-sub-panel">
                 <div className="application-sub-panel__header application-sub-panel__header--with-instructions">

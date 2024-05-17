@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import { localize } from "~/locales/i18n";
-import * as moment from "moment";
+import moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
@@ -150,7 +150,9 @@ class WorkListEditable extends React.Component<
     }
 
     if (props.base && props.base.price) {
-      newState.price = props.base.price.toString();
+      newState.price = (
+        Math.round((props.base.price + Number.EPSILON) * 100) / 100
+      ).toFixed(2);
 
       if (props.locales.current !== "en") {
         newState.price = newState.price.replace(".", ",");

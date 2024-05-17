@@ -61,7 +61,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -75,8 +74,8 @@ import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
@@ -108,7 +107,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   private WorkspaceController workspaceController;
   
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -548,13 +547,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @POST
   @Path("/workspaces/{ID}/signup")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceUser(@PathParam("ID") Long workspaceEntityId, 
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -565,12 +560,8 @@ public class CoursePickerRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
-    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
-    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
+    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
 
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifierIncludeArchived(workspaceEntity, userIdentifier);
     if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
@@ -583,7 +574,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
     if (workspaceUser == null) {
-      workspaceUser = workspaceController.createWorkspaceUser(workspace, user, WorkspaceRoleArchetype.STUDENT);
+      workspaceUser = workspaceController.createWorkspaceUser(workspaceIdentifier, userIdentifier, WorkspaceRoleArchetype.STUDENT);
       waitForWorkspaceUserEntity(workspaceEntity, userIdentifier);
     }
     else {
@@ -596,14 +587,8 @@ public class CoursePickerRESTService extends PluginRESTService {
     List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
     List<UserEntity> teachers = new ArrayList<UserEntity>();
 
-    String workspaceName = workspace.getName();
-    if (!StringUtils.isBlank(workspace.getNameExtension())) {
-      workspaceName += String.format(" (%s)", workspace.getNameExtension()); 
-    }
-
-    String userName = user.getNickName() == null
-      ? user.getDisplayName()
-      : String.format("%s \"%s\" %s (%s)", user.getFirstName(), user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
+    String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
+    String userName = userEntityController.getName(sessionController.getLoggedUserEntity(), true).getDisplayNameWithLine();
 
     for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
       teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
@@ -618,14 +603,13 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     String workspaceLink = String.format("<a href=\"%s/workspace/%s\" >%s</a>", baseUrl, workspaceEntity.getUrlName(), workspaceName);
     
-    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
-    
-    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, studentIdentifier.toId(), userName);
+    String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, userIdentifier.toId(), userName);
     String content;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
       content = MessageFormat.format(content, studentLink, workspaceLink);
-    } else {
+    }
+    else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
       String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
       content = MessageFormat.format(content, studentLink, workspaceLink, blockquoteMessage);

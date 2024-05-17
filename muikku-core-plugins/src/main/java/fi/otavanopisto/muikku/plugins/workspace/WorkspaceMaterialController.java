@@ -392,7 +392,7 @@ public class WorkspaceMaterialController {
 
       newNode = createWorkspaceMaterial(parent, clonedMaterial, workspaceMaterial.getTitle(),
           generateUniqueUrlName(parent, workspaceMaterial.getUrlName()), index, workspaceMaterial.getHidden(),
-          workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers());
+          workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getLanguage());
     }
     else if (workspaceNode instanceof WorkspaceFolder) {
       WorkspaceFolder folder = (WorkspaceFolder) workspaceNode;
@@ -444,26 +444,26 @@ public class WorkspaceMaterialController {
   /* Workspace material */
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
-    return createWorkspaceMaterial(parent, material, null, null);
+    return createWorkspaceMaterial(parent, material, null, null, null);
   }
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material,
-      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers, WorkspaceLanguage materialLanguage) {
     String urlName = generateUniqueUrlName(parent, material.getTitle());
-    return createWorkspaceMaterial(parent, material, urlName, assignmentType, correctAnswers);
+    return createWorkspaceMaterial(parent, material, urlName, assignmentType, correctAnswers, materialLanguage);
   }
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName,
-      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+      WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers, WorkspaceLanguage materialLanguage) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
     return createWorkspaceMaterial(parent, material, material.getTitle(), urlName, index, false, assignmentType,
-        correctAnswers);
+        correctAnswers, materialLanguage);
   }
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String title,
       String urlName, Integer index, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType,
-      WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
+      WorkspaceMaterialCorrectAnswersDisplay correctAnswers, WorkspaceLanguage materialLanguage) {
     // #4927: If binary material filename has changed due to unique constraints,
     // update workspace instance filename accordingly
     if (material instanceof BinaryMaterial) {
@@ -473,7 +473,7 @@ public class WorkspaceMaterialController {
       }
     }
     WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), title, urlName, index,
-        hidden, assignmentType, correctAnswers, null);
+        hidden, assignmentType, correctAnswers, materialLanguage);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
   }

@@ -7,7 +7,7 @@ import { ButtonPill } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
-import moment from "~/lib/moment";
+import moment from "moment";
 import { localize } from "~/locales/i18n";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";

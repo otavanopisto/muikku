@@ -63,6 +63,7 @@
 
 .form__subdivision {
   flex-basis: 100%;
+  margin: 5px 0;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 50%;
@@ -382,6 +383,8 @@ legend {
   &.VALID {
     border-color: $color-success;
   }
+
+  @include form-focus;
 }
 
 .form-element__input--note-title {
@@ -566,6 +569,8 @@ legend {
       no-repeat right 5px center;
     border: 2px solid lighten($color-disabled, 20%);
   }
+
+  @include form-focus;
 }
 
 .form-element__select--guider-hops {
@@ -649,6 +654,8 @@ legend {
   @include breakpoint($breakpoint-desktop) {
     font-size: $text-desktop-font-size;
   }
+
+  @include form-focus;
 }
 
 .form-element__dropdown-selection-container {

@@ -44,9 +44,12 @@
 }
 
 .bubble__title {
+  align-items: flex-end;
   color: $color-bubble-default-title;
+  display: flex;
   font-size: 1.3rem;
   font-weight: 900;
+  min-height: 52px;
   position: relative;
   text-transform: uppercase;
 

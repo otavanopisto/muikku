@@ -28,6 +28,8 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
@@ -426,7 +428,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
           null,
           null,
           null,
-          null, 
+          null,
           false,
           new HashSet<>());
     }
@@ -574,7 +576,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   public boolean isActiveUser(User user) {
     return user.getStudyEndDate() == null;
   }
@@ -584,48 +586,48 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
       String organizationIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntriesByStudent(
       SchoolDataIdentifier studentIdentifier, Integer resultsPerPage, Integer page) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
       StudentContactLogEntryRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
       Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public void removeStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
       Long contactLogEntryId) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryCommentRestModel> createStudentContactLogEntryComment(
       SchoolDataIdentifier studentIdentifier, Long entryId, StudentContactLogEntryCommentRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<StudentContactLogEntryCommentRestModel> updateStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier, Long entryId,
       Long commentId, StudentContactLogEntryCommentRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public void removeStudentContactLogEntryComment(SchoolDataIdentifier userIdentifier, Long commentId) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
-  
+
   @Override
   public BridgeResponse<List<WorklistItemTemplateRestModel>> getWorklistTemplates() {
     throw new SchoolDataBridgeInternalException("Not supported");
@@ -692,6 +694,10 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public List<String> listStudentAlternativeStudyOptions(String userIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+
+  }
   public UserContactInfo getStudentContactInfo(String userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
@@ -704,6 +710,16 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier,
       boolean includeGuidanceCouncelors, boolean onlyMessageReceivers) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

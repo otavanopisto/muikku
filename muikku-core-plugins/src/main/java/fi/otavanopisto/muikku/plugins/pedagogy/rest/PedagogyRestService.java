@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,19 +13,24 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -37,7 +43,13 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -77,7 +89,14 @@ public class PedagogyRestService {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
+  private OrganizationEntityController organizationEntityController;
+  
+  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   /**
    * mApi().pedagogy.form.access.read('PYRAMUS-STUDENT-123');
@@ -86,7 +105,7 @@ public class PedagogyRestService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAccesss(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
-    return Response.ok(getAccess(studentIdentifier, true)).build();
+    return Response.ok(getAccess(studentIdentifier, true, PedagogyFormAccessType.READ)).build();
   }
   
   /**
@@ -114,7 +133,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false, PedagogyFormAccessType.WRITE);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -134,7 +153,7 @@ public class PedagogyRestService {
     
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.READ);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -174,7 +193,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, false, PedagogyFormAccessType.WRITE);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -196,7 +215,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.READ);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -222,7 +241,7 @@ public class PedagogyRestService {
     
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true);
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.WRITE);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -245,6 +264,86 @@ public class PedagogyRestService {
     form = pedagogyController.updateState(form, payload.getState(), sessionController.getLoggedUserEntity().getId());
     
     return Response.ok(toRestModel(form)).build();
+  }
+  
+  @Path("/form/{STUDENTIDENTIFIER}/workspaces")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaces(@PathParam("STUDENTIDENTIFIER") String studentIdentifier,
+      @QueryParam("q") String searchString,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
+      @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults) {
+
+    // Access check
+    
+    PedagogyFormAccessRestModel access = getAccess(studentIdentifier, true, PedagogyFormAccessType.READ);
+    if (!access.isAccessible()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Search provider
+    
+    SearchProvider searchProvider = null;
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      searchProvider = searchProviderIterator.next();
+    }
+    if (searchProvider == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Missing search provider").build();
+    }
+    
+    // List of student's current and past workspaces
+    
+    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(studentIdentifier);
+    List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifierIncludeArchived(sdi);
+    if (workspaceEntities.isEmpty()) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+    List<SchoolDataIdentifier> workspaceIdentifierFilters = new ArrayList<>();
+    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+      workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
+    }
+    
+    // Organization restrictions
+
+    List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, PublicityRestriction.ONLY_PUBLISHED, TemplateRestriction.ONLY_WORKSPACES);
+    organizationRestrictions = organizationRestrictions.stream()
+        .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
+        .collect(Collectors.toList());
+
+    // Search
+
+    SearchResult searchResult = searchProvider.searchWorkspaces()
+        .setWorkspaceIdentifiers(workspaceIdentifierFilters)
+        .setOrganizationRestrictions(organizationRestrictions)
+        .setFreeText(searchString)
+        .setFirstResult(firstResult)
+        .setMaxResults(maxResults)
+        .search();
+    
+    // Return object
+    
+    List<PedagogyWorkspaceRestModel> pedagogyWorkspaces = new ArrayList<>();
+    List<Map<String, Object>> results = searchResult.getResults();
+    for (Map<String, Object> result : results) {
+      String searchId = (String) result.get("id");
+      if (StringUtils.isNotBlank(searchId)) {
+        String[] id = searchId.split("/", 2);
+        if (id.length == 2) {
+          String identifier = id[0];
+          WorkspaceEntity workspaceEntity = workspaceEntities.stream().filter(w -> identifier.equals(w.getIdentifier())).findFirst().orElse(null);
+          if (workspaceEntity != null) {
+            Long workspaceEntityId = workspaceEntity.getId();
+            String urlName = workspaceEntity.getUrlName();
+            String name = (String) result.get("name");
+            String nameExtension = (String) result.get("nameExtension");
+            pedagogyWorkspaces.add(new PedagogyWorkspaceRestModel(workspaceEntityId, urlName, name, nameExtension));
+          }
+        }
+      }
+    }
+    return Response.ok(pedagogyWorkspaces).build();
   }
   
   private PedagogyFormRestModel toRestModel(PedagogyForm form) {
@@ -351,7 +450,12 @@ public class PedagogyRestService {
     return infoMap;
   }
   
-  private PedagogyFormAccessRestModel getAccess(String studentIdentifier, boolean allowStudent) {
+  enum PedagogyFormAccessType {
+    READ,
+    WRITE
+  }
+  
+  private PedagogyFormAccessRestModel getAccess(String studentIdentifier, boolean allowStudent, PedagogyFormAccessType accessType) {
 
     // Master access flag and various roles
     
@@ -359,6 +463,7 @@ public class PedagogyRestService {
     boolean specEdTeacher = false;
     boolean guidanceCounselor = false;
     boolean courseTeacher = false;
+    boolean studentParent = false;
     
     // Students can always access their own form
     
@@ -367,7 +472,7 @@ public class PedagogyRestService {
     }
     else {
       
-      // For staff members, access is based on guidance relation
+      // For staff members or student parents, access is based on (guidance) relation
 
       PedagogyForm form = pedagogyController.findFormByStudentIdentifier(studentIdentifier);
       SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
@@ -379,8 +484,10 @@ public class PedagogyRestService {
         specEdTeacher = relation.isSpecEdTeacher();
         guidanceCounselor = relation.isGuidanceCounselor();
         courseTeacher = relation.isCourseTeacher();
+        studentParent = relation.isStudentParent();
+        
         // If only the courseTeacher is true, check if the student is active in some of the teacher's courses
-        if (courseTeacher && !guidanceCounselor && !specEdTeacher) {
+        if (courseTeacher && !guidanceCounselor && !specEdTeacher && !studentParent) {
 
           SchoolDataIdentifier studentId = SchoolDataIdentifier.fromId(studentIdentifier);
           UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(studentId.getDataSource(), studentId.getIdentifier());
@@ -397,12 +504,12 @@ public class PedagogyRestService {
       // if the form exists and form state is approved by student
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
-      accessible = isAdmin || specEdTeacher;
+      accessible = isAdmin || specEdTeacher || (studentParent && accessType == PedagogyFormAccessType.READ);
       if (!accessible && form != null && form.getState() == PedagogyFormState.APPROVED) {
         accessible = relation.isGuidanceCounselor() || courseTeacher;
       }
     }
-    return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher);
+    return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);
   }
   
   private Long getFormCreator(PedagogyForm form) {

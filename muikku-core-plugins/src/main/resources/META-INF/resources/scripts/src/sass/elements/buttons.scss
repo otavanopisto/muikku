@@ -728,6 +728,12 @@
   }
 }
 
+.button-icon--dialog-close {
+  @include breakpoint($breakpoint-pad) {
+    color: $color-default;
+  }
+}
+
 .button-icon--workspace-notebook {
   height: 25px; // This button is used as a trigger top open extra tools panel. Height is the same as workspace activity container.
 }
@@ -1009,8 +1015,9 @@
   background-color: $color-main-function-button-pill-settings-background;
   color: $color-main-function-button-pill-settings-text;
   font-size: $button-pill-settings-font-size;
-  height: auto;
+  height: 1.5rem;
   vertical-align: top;
+  width: 1.5rem;
 
   &:hover,
   &.hover {
@@ -2215,6 +2222,13 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button-icon--back-to-toc {
+  background: transparent;
+  border: 0;
+  font-size: 1rem;
+  height: 1.5rem;
 }
 
 .button-icon--whatsapp-me {

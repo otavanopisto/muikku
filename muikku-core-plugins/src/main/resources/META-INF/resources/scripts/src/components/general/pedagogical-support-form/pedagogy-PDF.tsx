@@ -2,12 +2,11 @@ import * as React from "react";
 import { Document, Page, Text, Image, View } from "@react-pdf/renderer";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import * as moment from "moment";
+import moment from "moment";
 import Html from "react-pdf-html";
 import {
   matriculationSupportActionsOptions,
   supportActionsOptions,
-  supportReasonsOptions,
 } from "./helpers";
 import { styles, htmlStyles } from "./pedagogy-PDF-styles";
 import { useTranslation } from "react-i18next";
@@ -33,14 +32,6 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
   const { data } = props;
 
   const formData = JSON.parse(props.data.formData) as FormData;
-
-  const supportReasonTranslationByValue = supportReasonsOptions.reduce(
-    (acc: { [key: string]: string }, option) => {
-      acc[option.value] = option.label;
-      return acc;
-    },
-    {}
-  );
 
   const supportActionTranslationByValue = supportActionsOptions.reduce(
     (acc: { [key: string]: string }, option) => {
@@ -290,36 +281,12 @@ const PedagogyPDF = (props: PedagogyPDFProps) => {
 
         <View style={styles.infoFieldContainer}>
           <Text style={styles.infoFieldLabel}>
-            {t("labels.basisForSupport", {
-              ns: "pedagogySupportPlan",
-              context: "pedagogy",
-            })}
+            {t("labels.needForSupport", { ns: "pedagogySupportPlan" })}
           </Text>
-          {formData?.supportReasons?.length > 0 ? (
-            <>
-              {formData?.supportReasons?.map((value, i) => (
-                <Text key={i} style={styles.infoFieldValue}>
-                  - {supportReasonTranslationByValue[value]}
-                </Text>
-              )) || <Text style={styles.infoFieldValue}>-</Text>}
-            </>
-          ) : (
-            <Text style={styles.infoFieldValue}>-</Text>
-          )}
+          <Text style={styles.infoFieldValue}>
+            {formData?.needOfSupport || "-"}
+          </Text>
         </View>
-
-        {formData?.supportReasons?.includes("other") ? (
-          <View style={styles.infoFieldContainer}>
-            <Text style={styles.infoFieldLabel}>
-              {t("labels.basisElse", {
-                ns: "pedagogySupportPlan",
-              })}
-            </Text>
-            <Text style={styles.infoFieldValue}>
-              {formData?.supportReasonOther || "-"}
-            </Text>
-          </View>
-        ) : null}
 
         <Text style={styles.pageTitle}>
           {t("labels.plan", {

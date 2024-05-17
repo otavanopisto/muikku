@@ -14,7 +14,7 @@ import {
 } from "~/actions/main-function/profile";
 import { bindActionCreators } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
-import moment from "~/lib/moment";
+import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { WorklistBillingStateType, WorklistItem } from "~/generated/client";
@@ -249,7 +249,9 @@ class WorkListRow extends React.Component<
           {localize.date(this.props.item.entryDate)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
-          {this.props.item.price}
+          {(
+            Math.round((this.props.item.price + Number.EPSILON) * 100) / 100
+          ).toFixed(2)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
           {this.props.item.factor}

@@ -47,7 +47,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .addStaffMember(admin)
         .mockLogin(admin)
         .addCourse(course1)
@@ -142,7 +142,7 @@ public class ToRTestsBase extends AbstractUITest {
       Course course1 = new CourseBuilder().name("testcourses").id(courseId).description("test course for testing").buildCourse();
       mockBuilder
         .addStudent(student)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .addStaffMember(admin)
         .mockLogin(admin)
         .addCourse(course1)
@@ -213,7 +213,7 @@ public class ToRTestsBase extends AbstractUITest {
         
         navigate("/records#records", false);
         waitForPresent(".application-list__header-secondary");
-        waitAndClick(".application-list__header-secondary .button--assignments-and-exercieses");
+        waitAndClick(".application-list__header-secondary .button--assignments-and-exercises");
         waitUntilHasText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED");
         assertText(".dialog--studies .tabs__tab-data--assignments.active .application-list__indicator-badge.state-PASSED", "E");
         waitAndClick(".dialog--studies .tabs__tab-data--assignments.active .application-list__item-header--studies-assignment");
@@ -242,7 +242,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockMatriculationExam(true)
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
         .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
@@ -288,7 +288,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockMatriculationExam(true)
         .mockLogin(student)
         .build();
@@ -324,7 +324,7 @@ public class ToRTestsBase extends AbstractUITest {
         .addStaffMember(admin)
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockLogin(student)
         .build();
         login();
@@ -376,7 +376,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder
         .addStudent(student)
         .mockStudentCourseStats(student.getId(), 25)
-        .mockMatriculationEligibility(true)
+        .mockMatriculationEligibility(student.getId(), true)
         .mockEmptyStudyActivity()
         .mockLogin(student)
         .build();
@@ -404,9 +404,9 @@ public class ToRTestsBase extends AbstractUITest {
       
       waitAndClick(".notes .notes__item .icon-trash");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      waitAndClick(".tabs--notes #archived");
-      assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
-      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      waitAndClick(".tabs--notes #tabControl-archived");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-header span", "Task for myself.");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();

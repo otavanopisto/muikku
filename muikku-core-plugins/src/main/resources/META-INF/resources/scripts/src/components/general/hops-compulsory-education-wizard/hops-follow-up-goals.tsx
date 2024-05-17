@@ -19,7 +19,7 @@ import { TextField } from "./text-field";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { localize } from "~/locales/i18n";
-import * as moment from "moment";
+import moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { updateFollowUpData, useFollowUp } from "./context/follow-up-context";
 import { HopsGoals } from "~/generated/client";

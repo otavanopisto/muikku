@@ -111,6 +111,32 @@ public class PyramusSchoolDataEntityFactory {
         studyProgrammeIdentifiers);
   }
 
+  public User createEntity(fi.otavanopisto.pyramus.rest.model.StudentParent studentParent) {
+    SchoolDataIdentifier organizationIdentifier = identifierMapper.getOrganizationIdentifier(studentParent.getOrganizationId());
+    return new PyramusUser(
+        identifierMapper.getStudentParentIdentifier(studentParent.getId()).getIdentifier(),
+        studentParent.getFirstName(),
+        studentParent.getLastName(),
+        null,
+        StringUtils.join(studentParent.getFirstName(), " ", studentParent.getLastName()),
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        organizationIdentifier,
+        null, // studyStartDate
+        null, // studyEndDate
+        null, //studyTimeEnded
+        false, // evaluationFees
+        false, // hidden
+        false, // matriculationEligibility
+        new HashSet<>());
+  }
+
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
     List<User> result = new ArrayList<>();
 
@@ -139,7 +165,8 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusStudentGuidanceRelation(
         guidanceRelation.isSpecEdTeacher(),
         guidanceRelation.isGuidanceCounselor(),
-        guidanceRelation.isCourseTeacher());
+        guidanceRelation.isCourseTeacher(),
+        guidanceRelation.isStudentParent());
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
@@ -150,7 +177,7 @@ public class PyramusSchoolDataEntityFactory {
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
 
     String studyProgrammeName = studyProgramme != null ? studyProgramme.getName() : null;
-    String studyProgrammeEducationType = studyProgramme != null ? studyProgramme.getOfficialEducationType() : null;
+    String studyProgrammeEducationType = studyProgramme != null ? studyProgramme.getEducationTypeCode() : null;
     SchoolDataIdentifier studyProgrammeIdentifier = studyProgramme != null
         ? identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId())
         : null;
@@ -558,6 +585,8 @@ public class PyramusSchoolDataEntityFactory {
       return EnvironmentRoleArchetype.STUDY_GUIDER;
     case STUDY_PROGRAMME_LEADER:
       return EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
+    case STUDENT_PARENT:
+      return EnvironmentRoleArchetype.STUDENT_PARENT;
     default:
       return EnvironmentRoleArchetype.CUSTOM;
     }

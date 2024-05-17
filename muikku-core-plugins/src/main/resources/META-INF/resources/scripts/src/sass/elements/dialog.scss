@@ -80,6 +80,10 @@
   opacity: 100%;
 }
 
+.dialog--workspace-signup-dialog {
+  z-index: 9999;
+}
+
 .dialog__window {
   align-items: flex-start;
   background-color: $color-dialog-default-background;
@@ -319,7 +323,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   height: $dialog-title-height;
-  padding: 15px 20px;
+  padding: 15px 10px 15px 20px;
   position: relative;
   width: 100%;
 
@@ -330,7 +334,7 @@
     display: flex;
     height: 3rem;
     min-height: 3rem;
-    padding: 0 20px;
+    padding: 0 5px 0 20px;
   }
 }
 
@@ -338,7 +342,7 @@
   @include breakpoint($breakpoint-pad) {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 4;
   }
 }
 
@@ -449,6 +453,11 @@
   min-height: 0;
   padding: $dialog-content-padding;
   position: relative;
+  width: 100%;
+}
+
+.dialog__content--workspace-signup-dialog {
+  display: block;
   width: 100%;
 }
 
@@ -620,6 +629,8 @@
 .dialog--enrollment {
   background: transparent;
   bottom: auto;
+  left: calc(50% - 235px);
+  max-width: 470px;
   top: 10px;
 
   .dialog__content-row--label {
@@ -639,6 +650,10 @@
 .dialog__header--enrollment {
   background: $color-default;
   color: $color-default-contrast;
+
+  .button-icon--dialog-close {
+    color: $color-info;
+  }
 }
 
 .dialog__executer {

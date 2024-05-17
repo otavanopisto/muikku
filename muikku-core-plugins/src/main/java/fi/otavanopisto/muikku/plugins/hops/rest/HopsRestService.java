@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -40,7 +38,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
@@ -61,8 +61,8 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -104,9 +104,6 @@ public class HopsRestService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserSchoolDataController userSchoolDataController;
 
   @Inject
@@ -130,12 +127,16 @@ public class HopsRestService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private UserController userController;
 
+  @Inject 
+  private GuiderController guiderController;
   @GET
   @Path("/isHopsAvailable/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
   public Response getIsAvailable(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
-    
     boolean available = hopsController.isHopsAvailable(studentIdentifier) && sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_STUDENT_INFO);
 
     return Response.ok(available).build(); 
@@ -144,20 +145,25 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
-
+  public Response findHops(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
     // Access check
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+    if (!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        return Response.status(Status.FORBIDDEN).build();
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
-    Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
+    Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifierStr);
     return hops == null ? Response.noContent().build() : Response.ok(hops.getFormData()).build();
   }
 
@@ -208,20 +214,26 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/hopsGoals")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response findHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
 
     // Access check
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        return Response.status(Status.FORBIDDEN).build();
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
-    HopsGoals hops = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifier);
+    HopsGoals hops = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifierStr);
     return hops == null ? Response.noContent().build() : Response.ok(hops.getGoals()).build();
   }
 
@@ -276,20 +288,26 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/studyActivity")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response getStudyActivity(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
 
     // Access check
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_GET_STUDENT_STUDY_ACTIVITY)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        return Response.status(Status.FORBIDDEN).build();
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
 
     // Pyramus call for ongoing, transferred, and graded courses
 
@@ -300,7 +318,7 @@ public class HopsRestService {
       // Add suggested courses to the list
 
       List<StudyActivityItemRestModel> items = response.getEntity();
-      List<HopsSuggestion> suggestions = hopsController.listSuggestionsByStudentIdentifier(studentIdentifier);
+      List<HopsSuggestion> suggestions = hopsController.listSuggestionsByStudentIdentifier(studentIdentifierStr);
       for (HopsSuggestion suggestion : suggestions) {
 
         // Check if subject + course number already exists. If so, delete suggestion as it is already outdated
@@ -354,22 +372,26 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/history")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifier,
+  public Response getHopsHistory(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("5") Integer maxResults) {
 
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    
     // Access check
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        return Response.status(Status.FORBIDDEN).build();
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
-    List<HopsHistory> history = hopsController.listHistoryByStudentIdentifier(studentIdentifier, firstResult, maxResults);
+    List<HopsHistory> history = hopsController.listHistoryByStudentIdentifier(studentIdentifierStr, firstResult, maxResults);
     if (history.isEmpty()) {
       return Response.ok(Collections.<HistoryItem>emptyList()).build();
     }
@@ -470,26 +492,49 @@ public class HopsRestService {
   @GET
   @Path("/listWorkspaceSuggestions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("onlySignupWorkspaces") @DefaultValue ("false") Boolean onlySignupWorkspaces, @QueryParam("userEntityId") Long userEntityId) {
+  public Response listWorkspaceSuggestions(@QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber, @QueryParam("userEntityId") Long userEntityId) {
     
+    // Student needs to exist and have HOPS available
+    
+    if (userEntityId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing userEntityId").build();
+    }
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    
     SchoolDataIdentifier userIdentifier = userEntity.defaultSchoolDataIdentifier();
-    // Permission checks
-    if(userEntity == null || !hopsController.isHopsAvailable(userIdentifier.getDataSource() + "-" + userIdentifier.getIdentifier())) {
+    if (userEntity == null || !hopsController.isHopsAvailable(userIdentifier.getDataSource() + "-" + userIdentifier.getIdentifier())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
+    // Students may only list suggestions for themselves
+    
     if (userEntity != null && !sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
       UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
-
       if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
+    
+    // Student needs to be active
+    
+    User user = userController.findUserByUserEntityDefaults(userEntity);
+    boolean isActive = userSchoolDataController.isActiveUser(user);
+    if (!isActive) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+    
+    // Student needs to be OPS 2018 or OPS 2021
+    
+    Map<SchoolDataIdentifier, String> curriculumNameCache = new HashMap<>();
+    String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
+    boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
+    boolean studentCurriculumOPS2018 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2018");
+    if (!studentCurriculumOPS2021 && !studentCurriculumOPS2018) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+
     List<SuggestedWorkspaceRestModel> suggestedWorkspaces = new ArrayList<>();
 
-    // Turn code into a Pyramus subject identifier because Elastic index only has that :(
+    // Turn subject code into a Pyramus subject identifier because Elastic index only has that :(
 
     String schoolDataSource = sessionController.getLoggedUserSchoolDataSource();
     Subject subjectObject = courseMetaController.findSubjectByCode(schoolDataSource, subject);
@@ -513,52 +558,88 @@ public class HopsRestService {
             String dataSource = id[1];
             String identifier = id[0];
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
-            if (workspaceEntity != null) {
-              onlySignupWorkspaces = true;
-              if (onlySignupWorkspaces && !hopsController.canSignup(workspaceEntity, userEntity)) {
-                continue;
-              }
-              
-              Double beginDateDouble = (Double) result.get("beginDate");
-              
-              if (beginDateDouble != null) {
-                long itemLong = (long) (beginDateDouble * 1000);
-                Date beginDate = new Date(itemLong);
-                if (beginDate != null && !beginDate.after(new Date())) {
-                  continue;
-                }
-              }
-              
-              Boolean published = (Boolean) result.get("published");
-              
-              if (!published) {
-                continue;
-              }
-              
-              Integer courseNum = null;
-              
-              @SuppressWarnings("unchecked")
-              List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
-              for (Map<String, Object> s : subjects) {
-                if (subjectObject.getCode().equals(s.get("subjectCode"))){
-                  courseNum = (Integer) s.get("courseNumber");
-                  break;
-                }
-              }
-              
-              SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
-              suggestedWorkspace.setId(workspaceEntity.getId());
-              suggestedWorkspace.setName((String) result.get("name"));
-              suggestedWorkspace.setNameExtension((String) result.get("nameExtension"));
-              suggestedWorkspace.setSubject(subjectObject.getCode());
-              suggestedWorkspace.setCourseNumber(courseNum);
-              suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
-              suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
-              suggestedWorkspace.setDescription((String) result.get("description"));
-              suggestedWorkspaces.add(suggestedWorkspace);
-
+            
+            // Skip unpublished courses
+            
+            Boolean published = (Boolean) result.get("published");
+            if (!published) {
+              continue;
             }
+
+            // OPS of the course and the student must match
+            
+            @SuppressWarnings("unchecked")
+            ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
+            boolean correctCurriculum = false;
+            for (String curriculumIdentifier : curriculumIdentifiers) {
+              String courseCurriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
+              if (StringUtils.equalsIgnoreCase(courseCurriculumName, curriculumName)) {
+                correctCurriculum = true;
+                break;
+              }
+            }
+            if (!correctCurriculum) {
+              continue;
+            }
+
+            // Skip missing courses
+            
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier());
+            if (workspaceEntity == null) {
+              continue;
+            }
+            
+            // Skip members only courses
+            
+            if (workspaceEntity.getAccess() != null && workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
+              continue;
+            }
+            
+            // For students, skip courses that they cannot sign up to
+            boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
+            
+            boolean canSignUp = hopsController.canSignup(workspaceEntity, userEntity);
+            if (isStudent && !canSignUp) {
+              continue;
+            }
+            
+            // For teachers, only list non-stop courses
+            
+            WorkspaceType workspaceType = null;
+            if (!isStudent) {
+              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+              workspaceType = workspaceController.findWorkspaceType(workspace.getWorkspaceTypeId());
+              if (workspaceType != null && !StringUtils.equalsIgnoreCase(workspaceType.getName(), "Nonstop")) {
+                continue;
+              }
+            }
+            
+            // Course has passed all checks, so add it as a result
+
+            Integer courseNum = null;
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
+            for (Map<String, Object> s : subjects) {
+              if (subjectObject.getCode().equals(s.get("subjectCode"))){
+                courseNum = (Integer) s.get("courseNumber");
+                break;
+              }
+            }
+
+            SuggestedWorkspaceRestModel suggestedWorkspace = new SuggestedWorkspaceRestModel();
+            suggestedWorkspace.setId(workspaceEntity.getId());
+            suggestedWorkspace.setName((String) result.get("name"));
+            suggestedWorkspace.setNameExtension((String) result.get("nameExtension"));
+            suggestedWorkspace.setSubject(subjectObject.getCode());
+            suggestedWorkspace.setCourseNumber(courseNum);
+            suggestedWorkspace.setUrlName(workspaceEntity.getUrlName());
+            suggestedWorkspace.setHasCustomImage(workspaceEntityFileController.getHasCustomImage(workspaceEntity));
+            suggestedWorkspace.setDescription((String) result.get("description"));
+            suggestedWorkspace.setType(workspaceType != null ? workspaceType.getName() : null);
+            suggestedWorkspace.setCanSignup(canSignUp);
+            suggestedWorkspaces.add(suggestedWorkspace);
+
           }
         }
       }
@@ -566,14 +647,27 @@ public class HopsRestService {
     return Response.ok(suggestedWorkspaces).build();
   }
 
+  private String getCurriculumName(Map<SchoolDataIdentifier, String> curriculumNameCache, SchoolDataIdentifier curriculumIdentifier){
+
+    if (!curriculumNameCache.containsKey(curriculumIdentifier)) {
+      curriculumNameCache.put(curriculumIdentifier, guiderController.getCurriculumName(curriculumIdentifier));
+    }
+
+    return curriculumNameCache.get(curriculumIdentifier);
+  }
+  
   @POST
   @Path("/student/{STUDENTIDENTIFIER}/toggleSuggestion")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response toggleSuggestion(@Context Request request, @PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsSuggestionRestModel payload) {
 
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+
     // Access check
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!userSchoolDataController.amICounselor(schoolDataIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_SUGGEST_WORKSPACES)) {
@@ -593,7 +687,6 @@ public class HopsRestService {
       workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getCourseId());
     }
 
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
     UserEntity counselorEntity = sessionController.getLoggedUserEntity();
 
@@ -693,11 +786,15 @@ public class HopsRestService {
 
     // Create or remove
 
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
+
+    // Access check
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!userSchoolDataController.amICounselor(schoolDataIdentifier)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
     List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
@@ -821,27 +918,31 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/studentInfo")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getStudentInformation(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response getStudentInformation(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
 
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return null;
+    }
+    
     // Access check
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier))
         return Response.status(Status.FORBIDDEN).build();
       }
     }
 
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-
-    User student = userSchoolDataController.findUser(schoolDataIdentifier);
+    User student = userSchoolDataController.findUser(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
     
     List<String> counselorList = new ArrayList<>();
 
-    List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
+    List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, false);
     for (UserEntity counselorEntity : counselorEntities) {
       UserEntityName counselorName = userEntityController.getName(counselorEntity, false);
       if (counselorName != null) {
@@ -855,7 +956,9 @@ public class HopsRestService {
         student.getLastName(),
         student.getStudyProgrammeEducationType(),
         student.getStudyTimeEnd(),
-        counselorList
+        counselorList,
+        student.getCurriculumIdentifier() != null ? guiderController.getCurriculumName(student.getCurriculumIdentifier()) : null
+
     )).build();
   }
 
@@ -865,21 +968,22 @@ public class HopsRestService {
       String lastName,
       String studyProgrammeEducationType,
       OffsetDateTime studyTimeEnd,
-      List<String> counselorList) {
+      List<String> counselorList,
+      String curriculumName) {
     return new fi.otavanopisto.muikku.plugins.hops.rest.StudentInformationRestModel(
         studentIdentifier,
         firstName,
         lastName,
         studyProgrammeEducationType,
         studyTimeEnd,
-        counselorList);
+        counselorList,
+        curriculumName);
   }
 
   @POST
   @Path("/student/{STUDENTIDENTIFIER}/studyHours")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, StudyHoursRestModel payload) {
-    
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -924,50 +1028,53 @@ public class HopsRestService {
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/studyHours")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+  public Response findStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
 
     // Access check
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        return Response.status(Status.FORBIDDEN).build();
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
-    HopsStudyHours hopsStudyHours = hopsController.findHopsStudyHoursByStudentIdentifier(studentIdentifier);
+    HopsStudyHours hopsStudyHours = hopsController.findHopsStudyHoursByStudentIdentifier(studentIdentifierStr);
     return hopsStudyHours == null ? Response.noContent().build() : Response.ok(hopsStudyHours.getStudyHours()).build();
   }
 
   @GET
   @Path("/student/{STUDENTIDENTIFIER}/alternativeStudyOptions")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam) {
-    
-    if(!hopsController.isHopsAvailable(studentIdentifierParam)) {
+  public Response findAlternativeStudyOptions(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
-
     // Access check
 
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
       if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
-        return Response.status(Status.FORBIDDEN).build();
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
+    
+    return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
 
-    User user = userController.findUserByIdentifier(studentIdentifier);
-    UserProperty aidinkieli = userSchoolDataController.getUserProperty(user, "lukioAidinkieli");
-    UserProperty uskonto = userSchoolDataController.getUserProperty(user, "lukioUskonto");
-
-    AlternativeStudyOptionsRestModel alternativeStudyOptionsRestModel = new AlternativeStudyOptionsRestModel();
-    alternativeStudyOptionsRestModel.setNativeLanguageSelection(aidinkieli != null ? aidinkieli.getValue() : null);
-    alternativeStudyOptionsRestModel.setReligionSelection(uskonto != null ? uskonto.getValue() : null);
-
-    return Response.ok(alternativeStudyOptionsRestModel).build();
   }
 }

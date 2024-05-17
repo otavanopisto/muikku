@@ -28,6 +28,7 @@
       "lock": "Lukitse",
       "next": "Seuraava",
       "previous": "Edellinen",
+      "filterContent": "Suodata sisältöä",
       "openAll": "Avaa kaikki",
       "openPDF": "Avaa PDF",
       "quote": "Lainaa",
@@ -97,6 +98,8 @@
       "dateOfBirth": "Syntymäaika",
       "dates": "Päivämäärät",
       "default": "Oletus",
+      "dependant_one": "Huollettava",
+      "dependant_other": "Huollettavat",
       "description": "Kuvaus",
       "discussion": "Keskustelu",
       "edit": "Muokkaa",
@@ -114,7 +117,7 @@
       "forgotPasswordLink": "Unohtuiko tunnuksesi?",
       "guider": "Ohjaamo",
       "helpdesk": "Helpdesk",
-      "history": "historia",
+      "history": "Historia",
       "home": "Muikun etusivu",
       "instructions": "Muikun ohjeet",
       "language": "Kieli",
@@ -235,25 +238,33 @@
       "password_match": "Syötetyt salasanat eivät vastaa toisiaan"
     },
     "wcag": {
+      "active": "Aktiivinen",
       "alternateNavigation": "Muikun käyttäjäprofiilin ja kielivalinnan navigaatio",
       "chooseRulersColor": "Valitse lukiviivaimen taustaväri",
       "clickThroughRuler": "Lukiviivaimen läpiklikkaus",
+      "closeMainNavigation": "Sulje päänavigaatio",
+      "closeMaterial": "Sulje tehtäväsisältö",
       "closeRuler": "Sulje lukiviivain",
       "closeRulersToolbar": "Sulje lukiviivaimen työkalut",
       "currentPage": "Olet sivulla",
       "decreaseRuler": "Pienennä lukiviivaimen korkeutta",
       "externalLink": "Avautuu uuteen välilehteen",
+      "goToMainPage": "Siirry Muikun etusivulle",
+      "goToTab": "Siirry välilehdelle",
       "increaseRuler": "Suurenna lukiviivaimen korkeutta",
       "invertRulersColors": "Käännä lukiviivaimen värit",
       "localeMenu": "Muikun käyttöliittymän kielivalikko",
       "mainNavigation": "Muikun päänavigaatio",
+      "openMainNavigation": "Avaa päänavigaatio",
+      "openMaterial": "Avaa tehtäväsisältö",
       "openRulersToolbar": "Avaa lukiviivaimen työkalut",
       "pinRuler": "Kiinnitä lukiviivain",
-      "profileMenu": "Muikun käyttäjäprofiilin valikko",
-      "uploadPicture": "Lisää profiilin kuva",
       "preset1": "Esiasetettu teema 1",
       "preset2": "Esiasetettu teema 2",
-      "preset3": "Esiasetettu teema 3"
+      "preset3": "Esiasetettu teema 3",
+      "profileMenu": "Muikun käyttäjäprofiilin valikko",
+      "tab": "Välilehti {{current}}/{{tabCount}}",
+      "uploadPicture": "Lisää profiilin kuva"
     }
   },
   "profile": {
@@ -342,7 +353,7 @@
       "lastEvaluationPassed": "viimeisin läpäisevä arviointi: {{value}}",
       "lastJournalEntry": "viimeisin merkintä: {{value}}",
       "lastSubmittedAssignment": "viimeisin palautus: {{value}}",
-      "notInWorkspaces": "Opiskelija ei ole millään kurssilla",
+      "notInWorkspaces": "Opiskelija ei ole suorittanut vielä yhtään kurssia",
       "numberOfAssignments": "{{value}} arvioitavaa tehtävää",
       "numberOfExercises": "{{value}} harjoitustehtävää",
       "numberOfJournalEntries": "{{value}} oppimispäiväkirjamerkintää",
@@ -359,6 +370,9 @@
       "contactLog": "Yhteydenotot",
       "contactInfo_student": "Opiskelijan yhteystiedot",
       "contactInfo_guardian": "Huoltajan tai yhteyshenkilön yhteystiedot",
+      "courseCredits": "Opintopisteet",
+      "courseCreditsMandatory": "Pakolliset: {{mandatoryCredits}}",
+      "courseCreditsTotal": "Yhteensä: {{totalCredits}}",
       "created_interimEvaluation": "Välipalaute annettu",
       "discussionMessages": "Keskusteluviestit",
       "endDate": "Opintojen päättymispäivä",
@@ -403,6 +417,10 @@
       "unanswered": "Aloittamattomat",
       "workspaceVisits": "Käynyt kurssilla"
     },
+    "notifications": {
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_pedagogyFormAccess": "Pedagogisen suunnitelman pääsyoikeuden lataus epäonnistui. Yritä ladata sivu uudelleen."
+    },
     "wcag": {
       "openStudent": "Avaa opiskelijan ohjausnäkymä",
       "select": "Valitse aine",
@@ -426,7 +444,9 @@
       "empty": "$t(common:content.empty)",
       "empty_counselors": "Ei ohjaajia",
       "empty_studyTime": "Ei asetettu",
+      "empty_records": "Ei suorituksia",
       "empty_workspaces": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla opiskelet, jotka olet suorittanut ja joista sinulle on tehty hyväksiluvut.",
+      "empty_workspaces-guardian": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla huollettavasi opiskelee, jotka hän on suorittanut ja joista hänelle on tehty hyväksiluvut.",
       "hopsUnfinished": "Täytä HOPS-lomake nähdäksesi YO-tilanteesi",
       "logins": "kertaa viimeisen kuukauden aikana.",
       "matriculation_eligible": "Sinulla on oikeus osallistua ylioppilaskirjoituksiin",
@@ -444,9 +464,11 @@
     "labels": {
       "abiStatus": "Abistatus",
       "activity": "Aktiivisuus",
+      "courseCredits": "Opintopisteet: Pakolliset {{mandatoryCredits}}, Yhteensä {{totalCredits}}",
+      "evaluated": "Arvioitu {{date}}",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "completedWorkspaces": "Olet suorittanut yhteensä",
-      "coursesForYou:": "Kursseja sinulle",
+      "coursesForYou": "Kursseja sinulle",
       "endDate": "Opintojen loppumispäivä",
       "enrollmentDate": "Ilmoittautumispäivämäärä:",
       "exercisesDone": "{{percent}}% harjoitustehtävistä tehty",
@@ -468,6 +490,7 @@
       "loadError_studies": "Suoritusten lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_counselors": "Ohjaajien lataus epäonnistui",
       "loadError_matriculation": "Yo-tietojen lataus epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_matriculationSubjects": "Yo-aineiden lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_statistics": "Tilastojen lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_userAndWorkspace": "Käyttäjän ja kurssin lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_workspaces": "Kurssien lataus epäonnistui. Yritä ladata sivu uudelleen",
@@ -479,6 +502,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_matriculationEligibility": "Osallistumisoikeuden lataus aineelle {{subject}} epäonnistui",
       "updateError_summary": "Yhteenvedon tietojen lataus epäonnistui. Yritä ladata sivu uudelleen."
+    },
+    "wcag": {
+      "collapseRecordInfo": "Pienennä työtilan suoritustiedot",
+      "assignmentsActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
+      "exercisesActivity": "Harjoitustehtäviä tehty {{percent}}%",
+      "expandRecordInfo": "Laajenna työtilan suoritustiedot"
     }
   },
   "hops": {
@@ -490,7 +519,7 @@
       "finnishMandatority": "Äidinkielessä ja kirjallisuudessa voit valita suomi toisena kielenä -oppimäärän, jos äidinkielesi on jokin muu kuin suomi. Suoritan äidinkielessä oppimäärän",
       "hopsChangeable": "HOPS on suunnitelma, jota voidaan muuttaa. Voit päivittää valintojasi myöhemmin opintojesi aikana.",
       "hopsIntro": "<p><b>Tämä lomake auttaa sinua henkilökohtaisen opiskelusuunnitelman (HOPS) laatimisessa. Vastaa kysymyksiin tämän hetkisten ajatustesi pohjalta. Voit muuttaa suunnitelmaasi myöhemmin. HOPS on ensijaisesti sopimus itsesi kanssa: mitä, miten ja milloin aiot opiskella. Jos täytät lomakkeen itsenäisesti, tutustu huolellisesti täyttöohjeisiin.</b></p><p><b>Palauta HOPS omalle ohjaajallesi tallentamalla lomakkeen tiedon näkymän alareunan Tallenna-painikkeesta.</b></p><p>Lukio-opintoihin saat opiskeluaikaa enintään neljä vuotta. Voit suorittaa opinnot noin 2–4 vuoden aikana riippuen opinto-oikeutesi kestosta ja ajankäytöstäsi. Aiemmat lukio-opinnot vähentävät sinulle myönnettyä opiskeluaikaa.</p><p>Vähintään 2,5-vuotinen ammatillinen perustutkinto (120 ov / 180 osp) antaa suoraan osallistumisoikeuden yo-kirjoituksiin. 2-vuotisen ammatillisen tutkinnon suorittaneelta vaaditaan vähintään <b>kahden pakollisen</b> lukiokurssin suorittamista niissä oppiaineissa, joiden yo-kokeisiin hän haluaa osallistua.</p>",
-      "hopsNotActivatedByCouncelor": "Hopsia ei ole aktivoitu ohjaajan toimesta.",
+      "hopsNotActivatedByCounselor": "Hopsia ei ole aktivoitu ohjaajan toimesta.",
       "iHave": "Minulla on",
       "justTransferCredits": "vuotta aiempia lukio- tai ammatillisia opintoja ja haluan hyväksiluvut suorituksistani",
       "matriculationEligibility": "Osallistumisoikeuteen vaaditut kurssisuoritukset <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
@@ -616,7 +645,9 @@
     "actions": {
       "apply": "Hae opiskelemaan",
       "confirmSave": "Tiedot ovat oikein",
+      "dependantStudies": "Opintojen yhteenveto ja suoritustiedot",
       "exploreMaterials": "Tutustu materiaaleihin",
+      "exploreCourses": "Tutustu kursseihin",
       "readMore": "Lue koko artikkeli",
       "tourNettilukio": "Tutustu Nettilukioon",
       "tourNettilukio_aineopiskelu": "Tutustu Nettilukion aineopiskeluun",
@@ -635,10 +666,11 @@
       "nettilukio": "Tavoitteena aikuislukion päättötodistus ja ylioppilaslakki.",
       "nettiperuskoulu": "Tavoitteena aikuisten perusopetuksen päättötodistus.",
       "noWorkspaces": "Sinulla ei ole yhtään kurssia",
+      "noWorkspaces_guardian": "Huollettavasi ei opiskele tällä hetkellä millään kurssilla",
       "noWorkspaces_body": "Et ole opiskelijana millään kurssilla. Hae tai selaa kursseja",
       "noWorkspaces_link": "kurssipoimurista",
       "noUserByEmail": "Muikussa ei ole käyttäjätiliä, jonka sähköpostiosoite olisi {{email}}.",
-      "openMaterials": "Creative Commons -lisensoituja oppimateriaaleja, joiden käyttö ei vaadi rekisteröitymistä.",
+      "coursesAvailable": "Tutustu Nettilukion ja Nettiperuskoulun itsenäisesti opiskeltaviin verkkokursseihin ja muihin avoimiin materiaaleihin.",
       "organization": "<p>Otavia on Mikkelin kaupungin ylläpitämä liikelaitos, jossa voi suorittaa aikuisten lukiokoulutuksen, perusopetuksen ja vapaan sivistystyön opintoja. Otavian erityisosaamista ovat etäopetus ja verkkopedagogiikka, monikulttuuristen ryhmien opetus sekä vapaan sivistystyön koulutukset. Otavia tarjoaa koulutusta ja koulutuksen kehittämiseen liittyviä palveluita alueellisesti, valtakunnallisesti ja globaalisti.</p>",
       "passwordChangeMailSent": "Lähetimme varmistusviestin osoitteeseen {{email}}. Pääset vaihtamaan salasanasi klikkaamalla viestissä olevaa linkkiä.",
       "plagScan": "Meillä on käytössä PlagScan-plagiaatintunnistusjärjestelmä",
@@ -657,12 +689,14 @@
       "followUs": "Seuraa Otaviaa",
       "instagram": "Seuraa meitä Instagramissa",
       "lastMessages": "Uusimmat viestit",
+      "latestLogin": "Viimeisin kirjautuminen: {{date}}",
       "municipality": "Kotikunta",
       "nettilukio": "Nettilukio",
       "nettiperuskoulu": "Nettiperuskoulu",
       "news": "Ajankohtaista",
       "next": "Seuraavat opinnot",
-      "openMaterials": "Avoimet materiaalit",
+      "courses": "Kurssit",
+      "coursesAvailable": "Kurssitarjonta",
       "organization": "Otavia",
       "postalCode": "Postinumero",
       "privacyPolicy": "Tietosuojaseloste",
@@ -816,6 +850,7 @@
       "archiveError": "Arkistointi epäonnistui",
       "archiveSuccess": "Arkistointi onnistui",
       "availableError": "Tätä tiedotetta ei ole saatavilla tai sitä ei ole olemassa.",
+      "automaticlyEmptyTrash": "Roskakorissa 30 päivää olleet viestit poistuvat automaattisesti",
       "createError": "$t(common:notifications.createError)",
       "createError_announcement": "Tiedotteen luonti epäonnistui. Yritä uudelleen.",
       "createError_contactLog": "Yhteydenoton luonti epäonnistui. Yritä uudelleen.",
@@ -954,6 +989,16 @@
       "updateSuccess": "Tehtävän muokkaus onnistui",
       "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti",
       "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen."
+    },
+    "wcag": {
+      "archive": "Arkistoi tehtävä",
+      "archiveUndo": "Palauta tehtävä",
+      "createNewNote": "Luo uusi tehtävä",
+      "editNote": "Muokkaa tehtävän tietoja",
+      "markAsImportant": "Merkitse tehtävä tärkeäksi",
+      "markAsNotImportant": "Merkitse tehtävä ei-tärkeäksi",
+      "prioritySorter": "Tärkeysasteen suodatus {{priorityName}}",
+      "showDetails": "Näytä tehtävän tiedot"
     }
   },
   "users": {
@@ -968,7 +1013,7 @@
       "empty_students": "Opiskelijoita ei löytynyt",
       "empty_teachers": "Opettajia ei löytynyt",
       "noneSelected": "Ei valittuja käyttäjiä",
-      "noneSelected_councelors": "Ei valittuja ohjaajia",
+      "noneSelected_counselors": "Ei valittuja ohjaajia",
       "noneSelected_students": "Ei valittuja opiskelijoita",
       "noneSelected_teachers": "Ei valittuja opettajia",
       "noStaff": "Annetuilla ehdoilla ei löydy henkilökunnan jäseniä",
@@ -1014,7 +1059,7 @@
       "edituserGroupInfo": "Muokkaa käyttäjäryhmän tietoja {{stepInfo}}",
       "email": "Sähköposti",
       "firstName": "Etunimi",
-      "groupCouncelors": "Käyttäjäryhmän ohjaajat",
+      "groupCounselors": "Käyttäjäryhmän ohjaajat",
       "guidanceGroup": "Ohjausryhmä",
       "lastName": "Sukunimi",
       "manager": "Manageri",
@@ -1085,6 +1130,7 @@
       "createSuccess_staff": "Henkilöstön jäsenen luonti onnistui",
       "createSuccess_userGroup": "Käyttäjäryhmän luonti onnistui",
       "loadError": "Käyttäjien lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
+      "loadError_dependants": "Huollettavien lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_staff": "Henkilökunnan lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_student": "Opiskelijan lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
       "loadError_students": "Opiskelijoiden lataaminen epäonnistui. Yritä ladata sivu uudelleen.",
@@ -1142,11 +1188,14 @@
       "add_formula": "Lisää kaava",
       "cancel": "$t(common:actions.cancel)",
       "cancel_assignment": "Peruuta tehtävän palautus",
+      "cancel_exercise": "Peruuta tehtävän palautus",
       "evaluated": "Tehtävä on jo arvioitu",
       "hide": "Piilota oikeat vastaukset",
       "notSignedUpWarning": "tästä",
       "save": "Tallenna muutokset",
-      "send": "Palauta tehtävä",
+      "send": "Palauta",
+      "send_assignment": "Palauta tehtävä",
+      "send_exercise": "Palauta tehtävä",
       "sent": "Tehtävä palautettu",
       "show": "Näytä oikeat vastaukset",
       "start": "Aloita äänitys",
@@ -1164,8 +1213,8 @@
       "empty_audio": "Ei äänitiedostoja",
       "empty_materials": "Kurssilla ei ole materiaaleja",
       "hiddenButAnswered": "Piilotettu tehtävä",
-      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on poistettu. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee vastauksesi ja voi sen arvioida.",
-      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on poistettu. Olet kuitenkin ehtinyt vastaamaan tähän tehtävään, joten opettaja näkee vastauksesi.",
+      "hiddenButAnswered_assignment": "Tämä arvoitava tehtävä on poistettu käytöstä. Olet kuitenkin ehtinyt vastata tähän tehtävään, joten opettaja näkee vastauksesi ja voi arvioida sen.",
+      "hiddenButAnswered_exercise": "Tämä harjoitustehtävä on poistettu käytöstä. Olet kuitenkin ehtinyt vastata tähän tehtävään, joten opettaja näkee vastauksesi.",
       "interimEvaluationDisclaimer": "Välipalautetta ei voi pyytää, kun kurssista on olemassa aktiivinen arviointipyyntö. Peruuta arviointipyyntö tai odota, että pyyntö on käsitelty.",
       "noRecordings": "Ei äänityksiä",
       "materialLinked": "Materiaali on linkitetty ja käytössä {{materialCount}} kurssilla. Huomaathan, että jos muokkaat materiaalia, se muuttuu myös muilla kursseilla, joilla materiaali on käytössä.",
@@ -1324,6 +1373,21 @@
       "updateError_page": "Materiaalisivun päivitys epäonnistui",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
+    },
+    "wcag": {
+      "focusToToc": "Siirry tämän hetkistä sisältöä vastaavaan sisällysluettelon kohtaan painamalla Enteriä",
+      "tocTopicAllExpand": "Laajenna kaikki osiot sisällysluettelossa",
+      "tocTopicAllCollapse": "Kutista kaikki osiot sisällysluettelossa",
+      "tocTopicExpand": "Laajenna osion sisältö oikealla nuolella",
+      "tocTopicCollapse": "Kutista osion sisältö vasemmalla nuolella",
+      "tocPageMaterialStatus": "Sisällön tila",
+      "tocPageMaterialStatus_done": "Sisältö on tilassa valmis",
+      "tocPageMaterialStatus_submitted": "Sisältö on tilassa palautettu",
+      "tocPageMaterialStatus_withdrawn": "Sisältö on tilassa peruutettu",
+      "tocPageMaterialStatus_incomplete": "Sisältö on tilassa kesken",
+      "tocPageMaterialStatus_failed": "Sisältö on tilassa hylätty",
+      "tocPageMaterialStatus_passed": "Sisältö on tilassa hyväksytty",
+      "tocPageMaterialStatus_restricted": "Sisältö on rajoitettu"
     }
   },
   "notebook": {
@@ -1618,9 +1682,13 @@
     },
     "wcag": {
       "announcementSelect": "Aseta tiedote valituksi",
+      "collapseWorkspaceInfo": "Pienennä kurssin {{workspaceName}} tiedot",
+      "continueWorkspace": "Jatka kurssia {{workspaceName}}",
       "editingMasterSwitch": "Editointitilan valitsin",
+      "expandWorkspaceInfo": "Laajenna kurssin {{workspaceName}} tiedot",
       "journalSelect": "Valitse oppimispäiväkirja",
       "materialLicense": "Materiaalin lisenssi",
+      "signUpWorkspace": "Ilmoittaudu kurssille {{workspaceName}}",
       "workspaceDescription": "Kurssin kuvaus",
       "workspaceImage": "Kurssin kuva",
       "workspaceLicense": "Kurssin lisenssi"
@@ -1686,6 +1754,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_entry": "Oppimispäiväkirjamerkinnän muokkaus epäonnistui",
       "updateError_comment": "Oppimispäiväkirjamerkinnän kommentin muokkaus epäonnistui: {{error}}"
+    },
+    "wcag": {
+      "closeContent": "Sulje päiväkirjamerkinnän sisältö",
+      "closeComments": "Sulje päiväkirjamerkinnän kommentit",
+      "showContent": "Näytä päiväkirjamerkinnän sisältö",
+      "showComments": "Näytä päiväkirjamerkinnän kommentit"
     }
   },
   "files": {
@@ -1852,6 +1926,12 @@
       "updateError_evaluation": "Virhe arvioinnin päivittämisessä: {{error}}",
       "updateError_pricing": "Virhe kurssin maksutietojen päivittämisessä: {{error}}",
       "updateError_sorting": "Virhe lajittelutietojen päivittämisessä: {{error}}"
+    },
+    "wcag": {
+      "evaluationAssessmentFailed": "Hylätty arviointi",
+      "evaluationAssessmentPassed": "Hyväksytty arviointi",
+      "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
+      "evaluationAssessmentUnassessed": "Arvioimaton"
     }
   },
   "calendar": {
@@ -1881,7 +1961,7 @@
       "nonActiveUser": " Näyttää siltä että sinun opintosi ovat päättyneet ja näin ollen tilauksesi opinto-oikeutesi jatkamiseksi on keskeytetty.",
       "noProducts": "Ei ostettavia tuotteita",
       "noPurchases": "Opiskelijalla ei ole tilauksia",
-      "orderConfirmed": "Opiskelija saa sähköpostitse tiedon luomastasi tilauksesta. Sähköpostiviestissä on linkki Mikkelin kaupungin verkkokauppaan, jossa opiskelija voi maksaa opiskelumaksun. Maksulinkki on voimassa 24 tuntia siitä, kun opiskelija on avannut sen ensimmäisen kerran.",
+      "orderConfirmed": "Opiskelija saa sähköpostitse tiedon luomastasi tilauksesta. Sähköpostiviestissä on linkki Mikkelin kaupungin verkkokauppaan, jossa opiskelija voi maksaa opiskelumaksun. Maksulinkki on voimassa 14 vuorokautta siitä, kun opiskelija on avannut sen ensimmäisen kerran.",
       "redirect": "Sinut uudelleenohjataan Mikkelin kaupungin verkkokauppaan.",
       "removing": "Oletko varma, että haluat poistaa opiskelijan tilauksen?"
     },
@@ -2040,6 +2120,7 @@
       "limitedAudioMaterial": "Ääniaineistoltaan rajoitettu koe",
       "matriculationPrePlan": "Ennakkosuunnitelma ylioppilaskirjoituksiin",
       "matriculationPrePlan_else": "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide",
+      "needForSupport": "Tuen tarve",
       "opinionOfSupport": "Näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_school": "Oppilaitoksen näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_student": "Opiskelijan näkemys tuen vaikuttavuudesta",
@@ -2073,5 +2154,55 @@
       "unsavedWarning": "Tallemattomia muutoksia"
     },
     "notifications": {}
+  },
+  "studyMatrix": {
+    "actions": {
+      "cancelSelection": "Peru valinta",
+      "selectOptionalToHops": "Valitse osaksi hopsia",
+      "signUpStudent": "Ilmoita opiskelija",
+      "signupStudentToWorkspace": "Ilmoita kurssille",
+      "suggested": "Ehdotettu",
+      "suggestOptional": "Ehdota valinnaiseksi",
+      "suggestToNext": "Ehdota seuraavaksi"
+    },
+    "content": {
+      "noSubjectTable": "Ei oppiainetaulukkoa saatavilla kyseiselle opinto-ohjelmalle",
+      "noSuggestionAvailable": "Ei kursseja. Tarkista kurssitarjonta!"
+    },
+    "labels": {
+      "colorDescriptions": "Värien kuvaukset",
+      "completed": "Suoritettu",
+      "courses": "Kurssit",
+      "guidanceCouncelorSuggestion": "Ohjaajan ehdottama",
+      "guidanceCouncelorSuggestionNext": "Ohjaajan seuraavaksi ehdottama",
+      "inProgress": "Kesken",
+      "mandatory": "Pakollinen",
+      "optional": "(*)-Valinnainen",
+      "schoolSubject": "Oppiaine",
+      "selected": "Valittu",
+      "signUpMessage": "Ilmoitusviesti",
+      "signUpStudent": "Ilmoita opiskelija kurssille",
+      "signUpStudentToWorkspace": "Ilmoita opiskelija kurssille {{workspaceName}}",
+      "transferred": "Hyväksiluettu",
+      "transferedLanguages": "Hyväksiluvut: Vieraat kielet",
+      "transferedOther": "Hyväksiluvut: Muut",
+      "transferedSkillAndArt": "Hyväksiluvut: Taito- ja taideaineet"
+    },
+    "notifications": {
+      "signUpError": "Opiskelijan ilmoittaminen kurssille epäonnistui"
+    }
+  },
+  "courseCarousel": {
+    "actions": {
+      "checkOut": "Tutustu",
+      "signUp": "Ilmoittaudu"
+    },
+    "content": {
+      "empty": "Sinulle ei löytynyt yhtään kurssiehdotusta. Jos tarvitset apua kurssin valinnassa, ota yhteyttä ohjaajaasi."
+    },
+    "labels": {
+      "description": "Kuvaus",
+      "guidanceCouncelorSuggestion": "Ohjaajan ehdottama!"
+    }
   }
 }

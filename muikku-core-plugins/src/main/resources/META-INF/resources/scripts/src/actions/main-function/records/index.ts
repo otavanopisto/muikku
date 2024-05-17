@@ -1,6 +1,4 @@
 import actions from "../../base/notifications";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -8,14 +6,16 @@ import {
   TranscriptOfRecordLocationType,
   CurrentStudentUserAndWorkspaceStatusType,
   CurrentRecordType,
-  RecordWorkspaceActivityByLine,
-  RecordWorkspaceActivitiesWithLineCategory,
 } from "~/reducers/main-function/records";
 import i18n from "~/locales/i18n";
 import { UserFile } from "~/generated/client";
 import { Dispatch } from "react-redux";
-import { RecordWorkspaceActivityInfo } from "~/generated/client";
+import { WorkspaceActivityInfo } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import {
+  RecordWorkspaceActivitiesWithLineCategory,
+  RecordWorkspaceActivityByLine,
+} from "~/components/general/records-history/types";
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<
   "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
@@ -67,7 +67,7 @@ export interface SetLocationToYoInTranscriptOfRecordsTriggerType {
  * UpdateAllStudentUsersAndSetViewToRecordsTriggerType
  */
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
-  (): AnyActionType;
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -100,15 +100,17 @@ export interface UpdateTranscriptOfRecordsFilesTriggerType {
 
 /**
  * updateAllStudentUsersAndSetViewToRecords
+ * @param userIdentifier user muikku Identifier
  */
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
-  function updateAllStudentUsersAndSetViewToRecords() {
+  function updateAllStudentUsersAndSetViewToRecords(userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const meApi = MApi.getMeApi();
       const recordsApi = MApi.getRecordsApi();
-      const userApi = MApi.getUserApi();
+      const userDataStatus = getState().records.userDataStatus;
 
       try {
         dispatch({
@@ -120,7 +122,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           payload: <TranscriptOfRecordLocationType>"records",
         });
 
-        if (getState().records.userDataStatus !== "WAIT") {
+        if (userDataStatus === "READY") {
           return;
         }
 
@@ -130,15 +132,32 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         });
 
         //OK let me try to explain this :<
+        // we have an identifier given, we work out the user id from that
+
+        let dependantIdentifier = getState().dependants.list.find(
+          (dependant) => dependant.identifier === userIdentifier
+        )?.identifier;
+
+        // if the dependants aren't loaded yet, we load them here, because we must have the id
+
+        if (userIdentifier && !dependantIdentifier) {
+          const dependants = await meApi.getGuardiansDependents();
+
+          dependantIdentifier = dependants.find(
+            (dependant) => dependant.identifier === userIdentifier
+          )?.identifier;
+        }
 
         //We get the current used id this user is supposedly a student
-        const userId: number = getState().status.userId;
 
-        //we get the users that represent that userId
-        let users = await userApi.getStudents({
-          userEntityId: userId,
+        const studentIdentifier: string = dependantIdentifier
+          ? dependantIdentifier
+          : getState().status.userSchoolDataIdentifier;
+
+        //we get the users that represent that studentIdentifier
+        let users = await recordsApi.getStudents({
+          studentIdentifier: studentIdentifier,
           includeInactiveStudents: true,
-          maxResults: 20,
         });
 
         //Then we sort them, alphabetically, using the id, these ids are like PYRAMUS-1 PYRAMUS-42 we want
@@ -151,12 +170,12 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         });
 
         // Get workspaces aka activities with line and category
-        const workspaceWithActivity: RecordWorkspaceActivityInfo[] =
+        const workspaceWithActivity: WorkspaceActivityInfo[] =
           await Promise.all(
             users.map(async (user) => {
               const workspacesWithActivity =
                 await recordsApi.getWorkspaceActivity({
-                  userIdentifier: user.id,
+                  identifier: user.id,
                   includeTransferCredits: "true",
                   includeAssignmentStatistics: "true",
                 });
@@ -195,6 +214,9 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           [category: string]: {
             credits: RecordWorkspaceActivityByLine[];
             transferedCredits: RecordWorkspaceActivityByLine[];
+            completedCourseCredits: number;
+            mandatoryCourseCredits: number;
+            showCredits: boolean;
           };
         } = {};
 
@@ -207,14 +229,13 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
               activity: a,
             }));
 
-          const credits: RecordWorkspaceActivityByLine[] = allCredits.filter(
+          const credits = allCredits.filter(
             (a) => a.activity.assessmentStates[0].state !== "transferred"
           );
 
-          const transferedCredits: RecordWorkspaceActivityByLine[] =
-            allCredits.filter(
-              (a) => a.activity.assessmentStates[0].state === "transferred"
-            );
+          const transferedCredits = allCredits.filter(
+            (a) => a.activity.assessmentStates[0].state === "transferred"
+          );
 
           // If category exists in helper object, add credits to it
           if (helperObject[workspaceActivity.lineCategory]) {
@@ -228,15 +249,14 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
                 workspaceActivity.lineCategory
               ].transferedCredits.concat(transferedCredits);
           } else {
-            // If category does not exist in helper object, create it
+            // If category does not exist in helper object, create it and initialize it
             helperObject[workspaceActivity.lineCategory] = {
-              credits: [],
-              transferedCredits: [],
+              credits: credits || [],
+              transferedCredits: transferedCredits || [],
+              completedCourseCredits: workspaceActivity.completedCourseCredits,
+              mandatoryCourseCredits: workspaceActivity.mandatoryCourseCredits,
+              showCredits: workspaceActivity.showCredits,
             };
-
-            helperObject[workspaceActivity.lineCategory].credits = credits;
-            helperObject[workspaceActivity.lineCategory].transferedCredits =
-              transferedCredits;
           }
         });
 
@@ -246,6 +266,9 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
             lineCategory: a[0],
             credits: a[1].credits,
             transferCredits: a[1].transferedCredits,
+            showCredits: a[1].showCredits,
+            completedCourseCredits: a[1].completedCourseCredits,
+            mandatoryCourseCredits: a[1].mandatoryCourseCredits,
           }));
 
         //and that should do it, it should give us the precious data we need in the order we need it to be

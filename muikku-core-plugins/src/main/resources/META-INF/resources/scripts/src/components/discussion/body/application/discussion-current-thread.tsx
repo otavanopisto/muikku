@@ -33,7 +33,7 @@ import {
   UnsubscribeDiscustionThread,
 } from "~/actions/discussion/index";
 import { DiscussionThread } from "~/generated/client";
-import * as moment from "moment";
+import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
@@ -197,6 +197,29 @@ class DiscussionCurrentThread extends React.Component<
     };
 
   /**
+   * handleSubscribeOrUnsubscribeKeyDown
+   * @param thread thread
+   * @param isSubscribed isSubscribed
+   */
+  handleSubscribeOrUnsubscribeKeyDown =
+    (thread: DiscussionThread, isSubscribed: boolean) =>
+    (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        if (isSubscribed) {
+          this.props.unsubscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        } else {
+          this.props.subscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        }
+      }
+    };
+
+  /**
    * render
    * @returns JSX.Element or null
    */
@@ -211,9 +234,11 @@ class DiscussionCurrentThread extends React.Component<
       ) !== -1;
 
     const areaPermissions =
-      this.props.permissions.AREA_PERMISSIONS[
-        this.props.discussion.current.forumAreaId
-      ] || {};
+      (this.props.permissions.AREA_PERMISSIONS &&
+        this.props.permissions.AREA_PERMISSIONS[
+          this.props.discussion.current.forumAreaId
+        ]) ||
+      {};
 
     const userCreator = this.props.discussion.current.creator;
 
@@ -239,6 +264,7 @@ class DiscussionCurrentThread extends React.Component<
           avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
             ns: "messaging",
           })}
+          avatarAriaHidden={true}
         />
       );
     }
@@ -289,41 +315,39 @@ class DiscussionCurrentThread extends React.Component<
               {this.props.discussion.current.title}
             </span>
             <span className="application-list__title-aside">
-              {isSubscribed ? (
-                <Dropdown
-                  openByHover
-                  modifier="discussion-tooltip"
-                  content={this.props.i18n.t("labels.unsubscribe", {
-                    ns: "messaging",
-                  })}
-                >
-                  <IconButton
-                    icon="bookmark-full"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      this.props.discussion.current,
-                      true
-                    )}
-                    buttonModifiers={["discussion-action-active"]}
-                  />
-                </Dropdown>
-              ) : (
-                <Dropdown
-                  openByHover
-                  modifier="discussion-tooltip"
-                  content={this.props.i18n.t("labels.subscribe", {
-                    ns: "messaging",
-                  })}
-                >
-                  <IconButton
-                    icon="bookmark-empty"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      this.props.discussion.current,
-                      false
-                    )}
-                    buttonModifiers={["discussion-action"]}
-                  />
-                </Dropdown>
-              )}
+              <Dropdown
+                openByHover
+                modifier="discussion-tooltip"
+                content={
+                  isSubscribed
+                    ? this.props.i18n.t("labels.unsubscribe", {
+                        ns: "messaging",
+                      })
+                    : this.props.i18n.t("labels.subscribe", {
+                        ns: "messaging",
+                      })
+                }
+              >
+                <IconButton
+                  as="div"
+                  role="button"
+                  aria-pressed={isSubscribed}
+                  icon={isSubscribed ? "bookmark-full" : "bookmark-empty"}
+                  onClick={this.handleSubscribeOrUnsubscribeClick(
+                    this.props.discussion.current,
+                    isSubscribed
+                  )}
+                  onKeyDown={this.handleSubscribeOrUnsubscribeKeyDown(
+                    this.props.discussion.current,
+                    isSubscribed
+                  )}
+                  buttonModifiers={
+                    isSubscribed
+                      ? ["discussion-action-active"]
+                      : ["discussion-action"]
+                  }
+                />
+              </Dropdown>
             </span>
           </h2>
         }

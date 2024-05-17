@@ -667,7 +667,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             mockBuilder
             .addStudent(student)
             .mockStudentCourseStats(student.getId(), 25)
-            .mockMatriculationEligibility(true)
+            .mockMatriculationEligibility(student.getId(), true)
             .mockMatriculationExam(true)
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
@@ -681,7 +681,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             assertTextIgnoreCase(".journal--feedback .journal__meta-item:first-child .journal__meta-item-data", evaluationDateString);
             assertTextIgnoreCase(".journal--feedback .journal__meta-item:last-child .journal__meta-item-data", "Admin User");
             navigate("/records#records", false);
-            waitAndClick(".button--assignments-and-exercieses");
+            waitAndClick(".button--assignments-and-exercises");
             waitForVisible(".dialog--studies");
             waitForVisible(".journal--feedback");
             assertTextIgnoreCase(".journal--feedback .journal__body", evaluationText);

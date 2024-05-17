@@ -37,8 +37,8 @@ public class MatriculationSchoolDataController {
     return getMatriculationBridge().getStudentId(studentIdentifier);
   }
 
-  public MatriculationEligibilities listEligibilities() {
-    return getMatriculationBridge().listEligibilities();
+  public BridgeResponse<MatriculationEligibilities> listEligibilities(SchoolDataIdentifier studentIdentifier) {
+    return getMatriculationBridge().listEligibilities(studentIdentifier);
   }
   
   public List<MatriculationExam> listMatriculationExams(boolean onlyEligible) {

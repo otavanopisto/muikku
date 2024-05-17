@@ -11,6 +11,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { Dependant } from "~/reducers/main-function/dependants";
 
 /**
  * ItemDataElement
@@ -37,6 +38,7 @@ interface MainFunctionNavbarProps extends WithTranslation {
   status: StatusType;
   messageCount: number;
   title: string;
+  dependants: Dependant[];
 }
 
 /**
@@ -87,18 +89,6 @@ class MainFunctionNavbar extends React.Component<
         badge: this.props.messageCount,
       },
       {
-        modifier: "discussion",
-        trail: "discussion",
-        text: t("labels.discussion"),
-        href: "/discussion",
-        icon: "bubbles",
-        to: true,
-        condition:
-          this.props.status.isActiveUser &&
-          this.props.status.loggedIn &&
-          this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM,
-      },
-      {
         modifier: "guider",
         trail: "guider",
         text: t("labels.guider"),
@@ -115,6 +105,15 @@ class MainFunctionNavbar extends React.Component<
         icon: "profile",
         to: true,
         condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
+      },
+      {
+        modifier: "guardian",
+        trail: "guardian",
+        text: t("labels.dependant", { count: this.props.dependants.length }),
+        href: "/guardian",
+        icon: "users",
+        to: true,
+        condition: this.props.status.permissions.GUARDIAN_VIEW,
       },
       {
         modifier: "announcer",
@@ -144,8 +143,6 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.permissions.ORGANIZATION_VIEW,
       },
     ];
-
-    t("labels.forgotPasswordLink");
 
     return (
       <Navbar
@@ -249,6 +246,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
     title: state.title,
+    dependants: state.dependants.list,
   };
 }
 

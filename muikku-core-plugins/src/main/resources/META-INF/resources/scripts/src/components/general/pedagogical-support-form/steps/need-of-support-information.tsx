@@ -9,12 +9,10 @@ import {
   FormData,
   SupportAction,
   SupportActionMatriculationExamination,
-  SupportReason,
 } from "~/@types/pedagogy-form";
 import {
   matriculationSupportActionsOptions,
   supportActionsOptions,
-  supportReasonsOptions,
 } from "../helpers";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
@@ -50,29 +48,6 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     const updatedFormData: FormData = { ...formData };
 
     updatedFormData[key] = value;
-
-    setFormDataAndUpdateChangedFields(updatedFormData);
-  };
-
-  /**
-   * Handles support reason select change
-   *
-   * @param options options
-   * @param actionMeta actionMeta
-   */
-  const handleSupportReasonChange = (
-    options: readonly OptionDefault<SupportReason>[],
-    actionMeta: ActionMeta<OptionDefault<SupportReason>>
-  ) => {
-    const updatedFormData: FormData = {
-      ...formData,
-    };
-
-    updatedFormData.supportReasons = options.map((option) => option.value);
-
-    if (!updatedFormData.supportReasons.includes("other")) {
-      updatedFormData.supportReasonOther = undefined;
-    }
 
     setFormDataAndUpdateChangedFields(updatedFormData);
   };
@@ -152,71 +127,18 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
-            <label htmlFor="needOfPedagogySupport" className="hops__label">
-              {t("labels.basisForSupport", {
-                ns: "pedagogySupportPlan",
-                context: "pedagogy",
-              })}
-            </label>
-            <Select
-              id="needOfPedagogySupport"
-              className="react-select-override react-select-override--hops react-select-override--pedagogy-form"
-              classNamePrefix="react-select-override"
-              closeMenuOnSelect={false}
-              isMulti
-              menuPortalTarget={document.body}
-              menuPosition={"fixed"}
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-              value={
-                (formData &&
-                  supportReasonsOptions.filter((option) =>
-                    formData?.supportReasons.includes(option.value)
-                  )) ||
-                undefined
+            <Textarea
+              id="needOfSupport"
+              label={t("labels.needForSupport", { ns: "pedagogySupportPlan" })}
+              className="hops__textarea"
+              onChange={(e) =>
+                handleTextAreaChange("needOfSupport", e.target.value)
               }
-              placeholder={t("labels.basisForSupport", {
-                ns: "pedagogySupportPlan",
-                context: "pedagogy",
-              })}
-              noOptionsMessage={() =>
-                t("content.empty", {
-                  ns: "pedagogySupportPlan",
-                  context: "options",
-                })
-              }
-              options={supportReasonsOptions}
-              onChange={handleSupportReasonChange}
-              isSearchable={false}
-              isDisabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+              value={formData?.needOfSupport || ""}
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
             />
           </div>
         </div>
-
-        <AnimateHeight
-          height={formData?.supportReasons.includes("other") ? "auto" : 0}
-        >
-          {t("labels.select", {
-            ns: "common",
-          })}
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                id="reasonOther"
-                label={t("labels.other", {
-                  ns: "pedagogySupportPlan",
-                  context: "support",
-                })}
-                className="hops__textarea"
-                onChange={(e) =>
-                  handleTextAreaChange("supportReasonOther", e.target.value)
-                }
-                value={formData?.supportReasonOther || ""}
-                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-              />
-            </div>
-          </div>
-        </AnimateHeight>
       </fieldset>
 
       <fieldset className="hops-container__fieldset">

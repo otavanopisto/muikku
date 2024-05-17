@@ -271,22 +271,6 @@ class CommunicatorMessages extends BodyScrollLoader<
               ns: "messaging",
               context: message.folder.toLowerCase(),
             });
-            // if (message.folder === "INBOX") {-
-            //   messageFolder = this.props.t("labels.folder", {
-            //     ns: "messaging",
-            //     context: "inbox",
-            //   });
-            // } else if (message.folder === "SENT") {
-            //   messageFolder = this.props.t("labels.folder", {
-            //     ns: "messaging",
-            //     context: "sent",
-            //   });
-            // } else {
-            //   messageFolder = this.props.t("labels.folder", {
-            //     ns: "messaging",
-            //     context: "trash",
-            //   });
-            // }
 
             let senderName = `${message.sender.firstName} ${
               message.sender.nickName ? message.sender.nickName : ""
@@ -355,9 +339,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                     openByHover
                     content={
                       <p>
-                        {`${localize.date(message.created)} klo ${localize.date(
+                        {`${localize.date(message.created)} - ${localize.date(
                           message.created,
-                          "h:mm"
+                          "LT"
                         )}`}
                       </p>
                     }
@@ -409,6 +393,13 @@ class CommunicatorMessages extends BodyScrollLoader<
 
     return (
       <BodyScrollKeeper hidden={!!this.props.currentThread}>
+        {this.props.messages.location === "trash" && (
+          <div className="application-list__item application-list__item--notification">
+            {this.props.t("notifications.automaticlyEmptyTrash", {
+              ns: "messaging",
+            })}
+          </div>
+        )}
         <SelectableList
           as={ApplicationList}
           selectModeModifiers="select-mode"
@@ -502,9 +493,9 @@ class CommunicatorMessages extends BodyScrollLoader<
                         <p>
                           {`${localize.date(
                             thread.threadLatestMessageDate
-                          )} klo ${localize.date(
+                          )} - ${localize.date(
                             thread.threadLatestMessageDate,
-                            "h:mm"
+                            "LT"
                           )}`}
                         </p>
                       }

@@ -614,7 +614,7 @@
 }
 
 .application-sub-panel__multiple-item-container--worklist-price {
-  flex-basis: 60px;
+  flex-basis: 80px;
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
@@ -786,7 +786,8 @@
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 0;
+  margin: 5px 0;
+  padding: 0 10px 0 0;
 
   &:not(:last-child) {
     border: 0;
@@ -1066,6 +1067,10 @@
   display: flex;
 }
 
+.application-sub-panel__item-data-container--guider-course-credits {
+  flex-direction: column;
+}
+
 .application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
   margin-left: 10px;
 }
@@ -1097,7 +1102,7 @@
 
   @include breakpoint($breakpoint-pad) {
     display: flex;
-    flex-basis: 60px;
+    flex-basis: 80px;
     justify-content: center;
     margin: 0 165px 0 0;
   }

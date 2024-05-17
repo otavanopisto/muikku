@@ -28,6 +28,7 @@
       "lock": "Lock",
       "next": "Next",
       "previous": "Previous",
+      "filterContent": "Filter content",
       "openAll": "Open all",
       "openPDF": "Open PDF",
       "quote": "Quote",
@@ -55,6 +56,7 @@
       "empty_people": "No people",
       "empty_students": "No students",
       "empty_rooms": "No rooms",
+      "empty_courses": "No courses",
       "helpdesk": "Trouble with Muikku? helpdesk(a)muikkuverkko.fi",
       "home": "Muikku web-site logo, link to the front page",
       "notFound": "Content not found",
@@ -84,6 +86,7 @@
       "content": "Content",
       "content_vacationMessage": "Vacation message content",
       "copy": "Copy",
+      "course": "Course",
       "coursepicker": "Coursepicker",
       "create": "Create new",
       "create_comment": "New comment",
@@ -94,6 +97,8 @@
       "date": "Date",
       "dateOfBirth": "Date of birth",
       "dates": "Dates",
+      "dependant_one": "Dependant",
+      "dependant_other": "Dependants",
       "default": "Default",
       "description": "Description",
       "discussion": "Discussion",
@@ -112,6 +117,7 @@
       "forgotPasswordLink": "Forgot credentials?",
       "guider": "Guider",
       "helpdesk": "Helpdesk",
+      "history": "History",
       "home": "Muikku homepage",
       "instructions": "Instructions for Muikku",
       "language": "Language",
@@ -165,6 +171,7 @@
       "title_vacationMessage": "Vacation message title",
       "type": "Type",
       "unreachable": "Oh no!...",
+      "updated": "Updated",
       "userName": "Username",
       "whatsApp": "WhatsApp",
       "write": "Write your message...",
@@ -231,25 +238,33 @@
       "password_match": "Given passwords do not match"
     },
     "wcag": {
+      "active": "Active",
       "alternateNavigation": "Navigation for user profile and language selection of Muikku",
       "chooseRulersColor": "Choose the background color of reading ruler",
       "clickThroughRuler": "Allow clicking through the reading ruler",
+      "closeMainNavigation": "Close the main navigation drawer",
+      "closeMaterial": "Close assignment content",
       "closeRuler": "Close the reading ruler",
       "closeRulersToolbar": "Close the reading ruler's toolbar",
       "currentPage": "Current page is",
       "decreaseRuler": "Decrease the height of the reading ruler",
       "externalLink": "Opens in a new tab",
+      "goToMainPage": "Go to the main page of Muikku",
+      "goToTab": "Go to tab",
       "increaseRuler": "Increase the height of the reading ruler",
       "invertRulersColors": "Reverses the colors of the reading ruler",
       "localeMenu": "Language selection menu of Muikku",
       "mainNavigation": "Main navigation of Muikku",
+      "openMainNavigation": "Open the main navigation drawer",
+      "openMaterial": "Open assignment content",
       "openRulersToolbar": "Open the toolbar of reading ruler",
       "pinRuler": "Pin the reading ruler to the screen",
-      "profileMenu": "User profile menu of Muikku",
-      "uploadPicture": "Add profile picture",
       "preset1": "Preset theme 1",
       "preset2": "Preset theme 2",
-      "preset3": "Preset theme 3"
+      "preset3": "Preset theme 3",
+      "profileMenu": "User profile menu of Muikku",
+      "tab": "Tab {{current}}/{{tabCount}}",
+      "uploadPicture": "Add profile picture"
     }
   },
   "profile": {
@@ -338,7 +353,7 @@
       "lastEvaluationPassed": "Latest nonpassing grade: {{value}}",
       "lastJournalEntry": "Latest entry: {{value}}",
       "lastSubmittedAssignment": "Latest assignment submission: {{value}}",
-      "notInWorkspaces": "Student is not in any courses",
+      "notInWorkspaces": "The student has not completed any courses yet",
       "numberOfAssignments": "{{value}} assignments",
       "numberOfExercises": "{{value}} exercises",
       "numberOfJournalEntries": "{{value}} entries",
@@ -355,6 +370,9 @@
       "contactLog": "Contact log",
       "contactInfo_student": "Student contact info",
       "contactInfo_guardian": "Guardian contact info",
+      "courseCredits": "Course credits",
+      "courseCreditsMandatory": "Mandatory: {{mandatoryCredits}}",
+      "courseCreditsTotal": "In total: {{totalCredits}}",
       "created_interimEvaluation": "Interim evaluation given",
       "discussionMessages": "Discussion messages",
       "endDate": "Studies end date",
@@ -399,6 +417,10 @@
       "unanswered": "Unanswered",
       "workspaceVisits": "Visited the course"
     },
+    "notifications": {
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_pedagogyFormAccess": "Loading pedagogy form access failed. Please try refreshing the page."
+    },
     "wcag": {
       "open": "Avaa opiskelijan ohjausnäkymä",
       "select": "Select a subject",
@@ -421,8 +443,10 @@
       "completedWorkspaces_lastMonth": "courses during the last month",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "No counselors",
+      "empty_records": "No records",
       "empty_studyTime": "Not set",
       "empty_workspaces": "No courses. In the future, you will see in this list the courses you are studying, the courses you have completed and the courses you have received transfer credits.",
+      "empty_workspaces-guardian": "No courses. In the future, you will see in this list the courses your dependant is studying, the courses your dependant have completed and the courses your dependant have received transfer credits.",
       "hopsUnfinished": "Fill out your HOPS form to see the state of your progress for matriculation exam.",
       "logins": "times last month.",
       "matriculation_eligible": "You are eligible for the matriculation exam",
@@ -440,10 +464,12 @@
     "labels": {
       "abiStatus": "Abi status",
       "activity": "Activity",
+      "courseCredits": "Course credits: Mandatory {{mandatoryCredits}}, Summary {{totalCredits}}",
       "evaluablesDone": "{{percent}}% of assignments done",
       "completedWorkspaces": "You have completed",
-      "coursesForYou:": "Courses for you",
+      "coursesForYou": "Courses for you",
       "endDate": " Studies end date",
+      "evaluated": "Evaluated {{date}}",
       "enrollmentDate": "Date of enrollment",
       "exercisesDone": "{{percent}}% exercises done",
       "hops": "HOPS",
@@ -464,6 +490,7 @@
       "loadError_studies": "Loading records failed. Please try refreshing the page.",
       "loadError_counselors": "Loading counselors failed. Please try refreshing the page.",
       "loadError_matriculation": "Loading the matriculation examination information failed. Please try again.",
+      "loadError_matriculationSubjects": "Loading the matriculation subjects failed. Please try refreshing the page.",
       "loadError_statistics": "Loading the statistics information failed. Please try again.",
       "loadError_userAndWorkspace": "User and course loading failed. Please try refreshing the page.",
       "loadError_workspaces": "Loading the courses failed. Please try refreshing the page.",
@@ -475,6 +502,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_matriculationEligiblity": "Loading the eligibility rights for the {{subject}} failed. Please try refreshing the page.",
       "updateError_summary": "Loading the summary information failed. Please try refreshing the page."
+    },
+    "wcag": {
+      "collapseRecordInfo": "Collapse workspace record info",
+      "assignmentsActivity": "Assignments done {{percent}}%",
+      "exercisesActivity": "Exercises done {{percent}}%",
+      "expandRecordInfo": "Expand workspace record info"
     }
   },
   "hops": {
@@ -486,7 +519,7 @@
       "finnishMandatority": "In mother tongue and literature you can choose Finnish as a second language, if your mother tongue is other than Finnish. In mother tongue and literature I will study",
       "hopsChangeable": "HOPS can be edited. You can update your choices as you progress.",
       "hopsIntro": "<p><b>This form will help you to make a study plan (HOPS). Answer the questions based on your current thoughts, you can edit your plan later. HOPS is primarily a contract with yourself: What, how and when will you study. If you fill the form individually, pay close attention to the instructions provided.</b></p><p><b>Return the HOPS to your counselor by saving it with the Save-button at the bottom of the page.</b></p><p>You have 4 years for your lukio-studies at most. You can graduate in about 2-4 years based on how long your study rights and time usage are. The previous lukio-studies lessen the study right you are permitted.</p><p> At least 2,5 year vocational basic qualification (120 study weeks / 180 study points) will directly grant you right for matriculation examination. Having 2 year vocational qualification will need you to pass at least <b>2 mandatory</b> lukio-courses in subjects you wish to matriculate in.</p>",
-      "hopsNotActivatedByCouncelor": "HOPS has not been actived by the counselor",
+      "hopsNotActivatedByCounselor": "HOPS has not been actived by the counselor",
       "iHave": "I have",
       "justTransferCredits": "years of previous studies and I want to get transfer credits for them",
       "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
@@ -612,7 +645,9 @@
     "actions": {
       "apply": "Submit application",
       "confirmSave": "Information is correct",
+      "dependantStudies": "Dependant's study summary and study records",
       "exploreMaterials": "Explore materials",
+      "exploreCourses": "Explore courses",
       "readMore": "Read rest of the article",
       "tourNettilukio": "Tour Nettilukio",
       "tourNettilukio_aineopiskelu": "Tour Nettilukio subject studies",
@@ -631,10 +666,11 @@
       "nettilukio": "Aim at Adult Upper Secondary School Certificate.",
       "nettiperuskoulu": "Aim at Adult Secondary School Certificate.",
       "noWorkspaces": "You have no courses.",
+      "noWorkspaces_guardian": "Your dependant is not currently enrolled in any courses",
       "noWorkspaces_body": "You are not a student in any of the courses. Search or browse courses in the",
       "noWorkspaces_link": "coursepicker",
       "noUserByEmail": "Muikku has no user account corresponding to email address {{email}.",
-      "openMaterials": "Materials licensed by Creative Commons license. Registration is not required.",
+      "coursesAvailable": "Explore the self-study online courses offered by Nettilukio and Nettiperuskoulu and other open materials.",
       "organization": "<p>Otavia is a municipal enterprise owned by the city of Mikkeli that specializes in digital education through Online Upper Secondary School for Adults and Online Comprehensive School for Adults. We also welcome students to enroll in on-campus courses as part of different study programmes for students with immigrant backgrounds. It is also possible to enroll in a number of liberal adult education courses. We provide and develop education locally, nationwide and globally. Exploring, trying out and testing new approaches is at the heart of what we do at Otavia.</p>",
       "passwordChangeMailSent": "A confirmation message has sent to the address {{email}}. You can change your password by clicking on the link in the message.",
       "plagScan": "We are using online plagiarism checking system",
@@ -653,12 +689,14 @@
       "followUs": "Follow Otavia",
       "instagram": "Follow us at Instagram",
       "lastMessages": "Latest messages",
+      "latestLogin": "Latest login: {{date}}",
       "municipality": "Municipality",
       "nettilukio": "Nettilukio",
       "nettiperuskoulu": "Nettiperuskoulu",
       "news": "News",
       "next": "Next studies",
-      "openMaterials": "Open materials",
+      "courses": "Courses",
+      "coursesAvailable": "Courses",
       "organization": "Otavia",
       "postalCode": "Postal code",
       "privacyPolicy": "Privacy policy",
@@ -711,10 +749,10 @@
       "empty": "$t(common:content.empty)",
       "empty_messages": "No messages",
       "empty_announcements": "No announcements",
+      "empty_workspaceAnnouncements": "Course has no announcements.",
       "empty_contactLog": "No contact events",
       "empty_discussions": "No ongoing discussions",
       "empty_subscriptions": "No subscribed discussions",
-      "empty_workspaceAnnouncements": "Course has no announcements.",
       "notFound": "Given announcement wasn't found",
       "removed": "Message deleted",
       "noneSelected_announcements": "No announcements selected",
@@ -812,6 +850,7 @@
       "archiveError": "Archiving failed",
       "archiveSuccess": "Archiving succeeded",
       "availableError": "The announcement is not available or it does not exist",
+      "automaticlyEmptyTrash": "Messages that have been in the trash for 30 days are automatically deleted",
       "createError": "$t(common:notifications.createError)",
       "createError_announcement": "Creating the announcement failed. Please try again.",
       "createError_contactLog": "Creating the contact log failed. Please try again.",
@@ -950,6 +989,16 @@
       "updateSuccess": "Updating the task succeeded",
       "updateSuccess_state": "Updating the task sate succeeded",
       "ratingError": "Rating the task failed. Please try again. {{error}}"
+    },
+    "wcag": {
+      "archive": "Archive task",
+      "archiveUndo": "Undo archiving",
+      "createNewNote": "Create a new task",
+      "editNote": "Edit task",
+      "markAsImportant": "Mark task as important",
+      "markAsNotImportant": "Mark task as not important",
+      "prioritySorter": "Priority sorter {{priorityName}}",
+      "showDetails": "Show task details"
     }
   },
   "users": {
@@ -964,7 +1013,7 @@
       "empty_students": "No students",
       "empty_teachers": "No teachers",
       "noneSelected": "No selected users",
-      "noneSelected_councelors": "No selected counselors",
+      "noneSelected_counselors": "No selected counselors",
       "noneSelected_students": "No selected students",
       "noneSelected_teachers": "No selected teachers",
       "noStaff": "No staff found with the given terms",
@@ -1010,7 +1059,7 @@
       "edituserGroupInfo": "Edit user group info {{stepInfo}}",
       "email": "Email",
       "firstName": "First name",
-      "groupCouncelors": "User group counselors",
+      "groupCounselors": "User group counselors",
       "guidanceGroup": "Guidance group",
       "lastName": "Lastname",
       "manager": "Manager",
@@ -1039,6 +1088,8 @@
       "search_teachers": "Search teachers",
       "search_workspaceStudents": "Search course students",
       "search_workspaceTeachers": "Search course teachers",
+      "specialEducationTeacher_one": "Special education teacher",
+      "specialEducationTeacher_other": "Special education teachers",
       "SSN": "Social security number",
       "studyProgramme": "Study programme",
       "staff": "Staff",
@@ -1079,11 +1130,12 @@
       "createSuccess_staff": "Staff creation succeeded",
       "createSuccess_userGroup": "Student group creation succeeded",
       "loadError": "User loading failed",
-      "loadError_staff": "Loading staff failed. Please try reloading the page",
-      "loadError_student": "Loading student failed. Please try reloading the page",
-      "loadError_students": "Loading students failed. Please try reloading the page",
-      "loadError_studyprogrammes": "Loading study programmes failed. Please try reloading the page",
-      "loadError_userGroups": "Loading user groups failed. Please try reloading the page",
+      "loadError_dependants": "Loading dependants failed. Please try reloading the page.",
+      "loadError_staff": "Loading staff failed. Please try reloading the page.",
+      "loadError_student": "Loading student failed. Please try reloading the page.",
+      "loadError_students": "Loading students failed. Please try reloading the page.",
+      "loadError_studyprogrammes": "Loading study programmes failed. Please try reloading the page.",
+      "loadError_userGroups": "Loading user groups failed. Please try reloading the page.",
       "loadError_userGroupStaff": "Student group staff loading failed",
       "loadError_userGroupStudents": "Student group student loading failed",
       "loadError_teachers": "Teacher loading failed",
@@ -1136,11 +1188,14 @@
       "add_formula": "Add formula",
       "cancel": "$t(common:actions.cancel)",
       "cancel_assignment": "Withdraw assignment",
+      "cancel_exercise": "Withdraw exercise",
       "evaluated": "Assignment already evaluated",
       "hide": "Hide the correct answers",
       "notSignedUpWarning": "here",
       "save": "Save the changes",
-      "send": "Return assignment",
+      "send": "Return",
+      "send_assignment": "Return assignment",
+      "send_exercise": "Return exercise",
       "sent": "Assignment returned",
       "show": "Show the correct answers",
       "start": "Start recording",
@@ -1318,6 +1373,21 @@
       "updateError_page": "Updating the material page failed",
       "updateError_answers": "Changing the assignment state failed",
       "updateError_compositeReplies": "Updating the answer failed"
+    },
+    "wcag": {
+      "focusToToc": "Press Enter to go to the item in the table of contents corresponding to the current content",
+      "tocTopicAllExpand": "Expand all sections in the table of contents",
+      "tocTopicAllCollapse": "Collapse all sections in the table of contents",
+      "tocTopicExpand": "Expand section content with right arrow",
+      "tocTopicCollapse": "Collapse section content with left arrow",
+      "tocPageMaterialStatus": "Content status",
+      "tocPageMaterialStatus_done": "Content is in the done state",
+      "tocPageMaterialStatus_submitted": "Content is in the submitted state",
+      "tocPageMaterialStatus_withdrawn": "Content is in the withdrawn state",
+      "tocPageMaterialStatus_incomplete": "Content is in the incomplete state",
+      "tocPageMaterialStatus_failed": "Content is in the failed state",
+      "tocPageMaterialStatus_passed": "Content is in the passed state",
+      "tocPageMaterialStatus_restricted": "Content is in the restricted"
     }
   },
   "notebook": {
@@ -1612,9 +1682,13 @@
     },
     "wcag": {
       "announcementSelect": "Select announcement",
+      "collapseWorkspaceInfo": "Collapse course {{workspaceName}} info",
+      "continueWorkspace": "Continue course {{workspaceName}}",
       "editingMasterSwitch": "Master switch for editing",
+      "expandWorkspaceInfo": "Expand course {{workspaceName}} info",
       "journalSelect": "Select journal",
       "materialLicense": "Material license",
+      "signUpWorkspace": "Signup to course {{workspaceName}}",
       "workspaceDescription": "Course description",
       "workspaceImage": "Image of the course front page",
       "workspaceLicense": "Course license"
@@ -1637,6 +1711,7 @@
       "removing": "Are you sure you want to delete the journal entry?"
     },
     "labels": {
+      "comment": "Add comment to journal entry",
       "create": "Create a journal entry",
       "edit": "Edit the journal entry",
       "feedback": "Journal feedback",
@@ -1679,6 +1754,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_entry": "Updating the entry failed",
       "updateError_comment": "Updating the comment failed: {{error}}"
+    },
+    "wcag": {
+      "closeContent": "Close the journal entry content",
+      "closeComments": "Close the journal entry comments",
+      "showContent": "Show the journal entry content",
+      "showComments": "Show the journal entry comments"
     }
   },
   "files": {
@@ -1845,6 +1926,12 @@
       "updateError_evaluation": "Updating the evaluation failed: {{error}}",
       "updateError_pricing": "Updating the course pricing information failed: {{error}}",
       "updateError_sorting": "Updating the sorting information failed: {{error}}"
+    },
+    "wcag": {
+      "evaluationAssessmentFailed": "Failed assessment",
+      "evaluationAssessmentPassed": "Passed assessment",
+      "evaluationAssessmentIncomplete": "Incomplete assessment",
+      "evaluationAssessmentUnassessed": "Unassessed assessment"
     }
   },
   "calendar": {
@@ -1874,7 +1961,7 @@
       "nonActiveUser": " It seems that your studies have ended and therefore the order of the study time increase has been cancelled.",
       "noProducts": "No products to buy",
       "noPurchases": "Student does not have any purchases",
-      "orderConfirmed": "The student will be notified of the order you have created via email. The email message will include a link to the online store of the city of Mikkeli, where the student will be able to pay the study fee. The payment link will expire in 24 hours after the student has clicked it for the first time.",
+      "orderConfirmed": "The student will be notified of the order you have created via email. The email message will include a link to the online store of the city of Mikkeli, where the student will be able to pay the study fee. The payment link will expire in 14 days after the student has clicked it for the first time.",
       "redirect": "You are being redirected to Mikkeli City's online store.",
       "removing": "Are you sure you wish to delete the student order?"
     },
@@ -2033,6 +2120,7 @@
       "limitedAudioMaterial": "Ääniaineistoltaan rajoitettu koe",
       "matriculationPrePlan": "Ennakkosuunnitelma ylioppilaskirjoituksiin",
       "matriculationPrePlan_else": "Ennakkosuunnitelma ylioppilaskirjoituksiin - Muu toimenpide",
+      "needForSupport": "Tuen tarve",
       "opinionOfSupport": "Näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_school": "Oppilaitoksen näkemys tuen vaikuttavuudesta",
       "opinionOfSupport_student": "Opiskelijan näkemys tuen vaikuttavuudesta",
@@ -2066,5 +2154,55 @@
       "unsavedWarning": "Tallemattomia muutoksia"
     },
     "notifications": {}
+  },
+  "studyMatrix": {
+    "actions": {
+      "cancelSelection": "Cancel selection",
+      "selectOptionalToHops": "Select to HOPS",
+      "signUpStudent": "Sign up student",
+      "signupStudentToWorkspace": "Sign up",
+      "suggested": "Suggested",
+      "suggestOptional": "Suggest to optional",
+      "suggestToNext": "Suggest to next"
+    },
+    "content": {
+      "noSubjectTable": "Subject table not found with given student's curriculum",
+      "noSuggestionAvailable": "No courses available. Check courses and their prerequisites"
+    },
+    "labels": {
+      "colorDescriptions": "Color descriptions",
+      "completed": "Completed",
+      "courses": "Courses",
+      "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
+      "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
+      "inprogress": "In progress",
+      "mandatory": "Mandatory",
+      "optional": "(*)-Optional",
+      "schoolSubject": "School subject",
+      "selected": "Selected",
+      "signUpMessage": "Sign up message",
+      "signUpStudent": "Sign up student to course",
+      "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
+      "transfered": "Transfered",
+      "transferedLanguages": "Transfered: Languages",
+      "transferedOther": "Transfered: Other",
+      "transferedSkillAndArt": "Transfered: Skill and art"
+    },
+    "notifications": {
+      "signUpError": "Signing up to course failed"
+    }
+  },
+  "courseCarousel": {
+    "actions": {
+      "checkOut": "Check out",
+      "signUp": "Sign up"
+    },
+    "content": {
+      "empty": "No course suggestions available. If you need any help when choosing courses, please contact your guidance counselor."
+    },
+    "labels": {
+      "description": "Description",
+      "guidanceCouncelorSuggestion": "Guidance councelor's suggestion"
+    }
   }
 }

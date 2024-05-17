@@ -25,7 +25,6 @@ import {
   MessageThreadExpanded,
   MessageThreadLabel,
 } from "~/generated/client";
-import mApi from "~/lib/mApi";
 
 /**
  * UpdateMessageThreadsCountTriggerType

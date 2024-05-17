@@ -22,7 +22,7 @@ import ApplicationList, {
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { CeeposOrder, CeeposPurchaseProduct } from "~/generated/client";
+import { CeeposOrder, CeeposPurchaseProduct, Role } from "~/generated/client";
 
 /**
  * CeeposProps
@@ -242,7 +242,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
     /**
      * Logic for whether already created order can be deleted
      *
-     * Order can only be deleted if its' state is not ONGOING, COMPLETE or PAID.
+     * Order can only be deleted if its' state is not COMPLETE or PAID.
      *
      * canOderBeDelete
      * @param state state
@@ -250,7 +250,6 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
      */
     const IsOrderDeletionDisabled = (state: string) => {
       switch (state) {
-        case "ONGOING":
         case "COMPLETE":
         case "PAID":
           return true;
@@ -345,7 +344,9 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                         ) : null}
 
                         {/* We show "Complete order" button only if logged in user has COMPLETE_ORDER permission */}
-                        {this.props.status.role === "ADMINISTRATOR" ? (
+                        {this.props.status.roles.includes(
+                          Role.Administrator
+                        ) ? (
                           <Button
                             onClick={this.beginOrderManualCompleteProcess.bind(
                               this,

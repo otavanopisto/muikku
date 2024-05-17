@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.schooldata;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +17,7 @@ import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -27,19 +27,19 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSettings;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
-import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.session.SessionController;
 
 public class WorkspaceController {
   
   @Inject
   private Logger logger;
-  
+
   @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
+  private SessionController sessionController;
 
   @Inject
   private WorkspaceSchoolDataController workspaceSchoolDataController;
@@ -105,22 +105,22 @@ public class WorkspaceController {
     workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
   }
 
-  public void archiveWorkspace(Workspace workspace) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
+  public void archiveWorkspace(SchoolDataIdentifier workspaceIdentifier) {
+    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
     if (workspaceEntity != null) {
       archiveWorkspaceEntity(workspaceEntity);
     }
 
-    workspaceSchoolDataController.removeWorkspace(workspace);
+    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
   }
 
-  public void deleteWorkspace(Workspace workspace) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
+  public void deleteWorkspace(SchoolDataIdentifier workspaceIdentifier) {
+    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
     if (workspaceEntity != null) {
       deleteWorkspaceEntity(workspaceEntity);
     }
 
-    workspaceSchoolDataController.removeWorkspace(workspace);
+    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
   }
   
   /* WorkspaceType */
@@ -139,8 +139,8 @@ public class WorkspaceController {
 
   /* Workspace Entity */
 
-  public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
-    return workspaceSchoolDataController.findWorkspaceEntity(workspace);
+  public WorkspaceEntity findWorkspaceEntity(SchoolDataIdentifier workspaceIdentifier) {
+    return workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
   }
 
   public WorkspaceEntity findWorkspaceEntityById(Long workspaceId) {
@@ -177,20 +177,6 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByPublished(Boolean.TRUE);
   }
   
-  @Deprecated
-  public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity, boolean includeUnpublished) {
-    List<WorkspaceEntity> result = new ArrayList<>();
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      if (includeUnpublished || workspaceUserEntity.getWorkspaceEntity().getPublished()) {
-        if (!result.contains(workspaceUserEntity.getWorkspaceEntity())) {
-          result.add(workspaceUserEntity.getWorkspaceEntity());
-        }
-      }
-    }
-    return result;
-  }
-
   public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
@@ -231,8 +217,8 @@ public class WorkspaceController {
 
   /* WorkspaceUsers */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role) {
-    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, role);
+  public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role) {
+    return workspaceSchoolDataController.createWorkspaceUser(workspaceIdentifier, userIdentifier, role);
   }
 
   public List<WorkspaceUser> listWorkspaceStudents(WorkspaceEntity workspaceEntity) {
@@ -340,6 +326,30 @@ public class WorkspaceController {
 
   public void removeWorkspaceSignupGroup(WorkspaceEntity workspaceEntity, UserGroupEntity userGroupEntity) {
     workspaceSchoolDataController.removeWorkspaceSignupGroup(workspaceEntity.schoolDataIdentifier(), userGroupEntity.schoolDataIdentifier());
+  }
+
+  /**
+   * Returns true if the logged user may manage given workspace.
+   * Checks MANAGE_WORKSPACE but denies it if the user has
+   * STUDY_GUIDER role (not allowed in that role). If these exceptions
+   * become more common this should be refactored to be part of the
+   * permission framework.
+   */
+  public boolean canIManageWorkspace(WorkspaceEntity workspaceEntity) {
+    return sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE, workspaceEntity) 
+        && !sessionController.hasRole(EnvironmentRoleArchetype.STUDY_GUIDER);
+  }
+  
+  /**
+   * Returns true if the logged user may manage workspace materials.
+   * Checks MANAGE_WORKSPACE_MATERIALS but denies it if the user has
+   * STUDY_GUIDER role (not allowed in that role). If these exceptions
+   * become more common this should be refactored to be part of the
+   * permission framework.
+   */
+  public boolean canIManageWorkspaceMaterials(WorkspaceEntity workspaceEntity) {
+    return sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity) 
+        && !sessionController.hasRole(EnvironmentRoleArchetype.STUDY_GUIDER);
   }
   
 }

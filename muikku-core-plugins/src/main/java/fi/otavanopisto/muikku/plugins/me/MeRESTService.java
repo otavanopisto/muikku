@@ -1,45 +1,40 @@
 package fi.otavanopisto.muikku.plugins.me;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserEntityProperty;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
-import fi.otavanopisto.muikku.plugins.chat.ChatController;
-import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
-import fi.otavanopisto.muikku.users.UserEntityName;
-import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -59,23 +54,20 @@ public class MeRESTService {
   private LocalSessionController localSessionController;
 
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-
-  @Inject
-  private UserEntityController userEntityController;
+  private UserController userController;
   
   @Inject
-  private UserEmailEntityController userEmailEntityController;
+  private UserEntityController userEntityController;
   
   @Inject
   private UserEntityFileController userEntityFileController;
 
   @Inject
-  private UserGroupGuidanceController userGroupGuidanceController;
+  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
-  private ChatController chatController;
-  
+  private WorkspaceUserEntityController workspaceUserEntityController;
+
   /**
    * Returns the server side locale for current user or default if not logged in.
    * 
@@ -126,68 +118,69 @@ public class MeRESTService {
   }
   
   @GET
-  @Path("/guidanceCounselors")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listGuidanceCounselors(
-      @QueryParam("onlyChatEnabled") @DefaultValue("false") boolean onlyChatEnabled,
-      @QueryParam("properties") String properties) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
+  @Path("/dependents")
+  @RESTPermit (MuikkuPermissions.STUDENT_PARENT)
+  public Response listGuardiansDependents() {
+    List<GuardiansDependent> guardiansDependents = userController.listGuardiansDependents(sessionController.getLoggedUser());
 
-    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+    List<GuardiansDependentRestModel> restModels = new ArrayList<>();
+    for (GuardiansDependent guardiansDependent : guardiansDependents) {
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(guardiansDependent.getUserIdentifier());
+      boolean hasProfilePicture = userEntityFileController.hasProfilePicture(userEntity);
+      
+      restModels.add(new GuardiansDependentRestModel(
+          userEntity.getId(),
+          guardiansDependent.getUserIdentifier().toId(),
+          guardiansDependent.getFirstName(),
+          guardiansDependent.getLastName(),
+          guardiansDependent.getNickName(),
+          guardiansDependent.getStudyProgrammeName(),
+          hasProfilePicture,
+          guardiansDependent.getEmail(),
+          guardiansDependent.getPhoneNumber(),
+          guardiansDependent.getAddress(),
+          userEntity.getLastLogin()
+      ));
+    }
+    
+    return Response.ok(restModels).build();
+  }
+
+  @GET
+  @Path("/dependents/{ID}/workspaces/")
+  @RESTPermit (MuikkuPermissions.STUDENT_PARENT)
+  public Response listGuardiansDependentsWorkspaces(
+      @PathParam("ID") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    
+    if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
+
+    if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    List<GuardiansDependentWorkspaceRestModel> restModels = new ArrayList<>();
+    List<GuardiansDependentWorkspace> guardiansDependentsWorkspaces = userController.listGuardiansDependentsWorkspaces(
+        sessionController.getLoggedUser(), studentIdentifier);
     
-    Boolean onlyMessageReceivers = false;
-    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(sessionController.getLoggedUser(), onlyMessageReceivers);
-    
-    List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
-    
-    for (UserEntity userEntity : guidanceCouncelors) {
-      boolean chatEnabled = chatController.isChatEnabled(userEntity);
+    for (GuardiansDependentWorkspace workspace : guardiansDependentsWorkspaces) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(workspace.getWorkspaceIdentifier());
+      WorkspaceUserEntity workspaceUserEntity = workspaceEntity != null ? workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier) : null;
 
-      if (onlyChatEnabled && !chatEnabled) {
-        continue;
+      // List only active workspaces
+      if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getActive())) {
+        restModels.add(new GuardiansDependentWorkspaceRestModel(
+            workspace.getWorkspaceName(),
+            workspace.getWorkspaceNameExtension(),
+            workspace.getEnrolledDate(),
+            workspace.getLatestAssessmentRequestDate()
+        ));
       }
-      
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
-      UserEntityName userEntityName = userEntityController.getName(userEntity, true);
-      String email = userEmailEntityController.getUserDefaultEmailAddress(schoolDataIdentifier, false);
-
-      UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
-      OrganizationEntity organizationEntity = usdi.getOrganization();
-      OrganizationRESTModel organizationRESTModel = null;
-      if (organizationEntity != null) {
-        organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
-      }
-
-      String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
-
-      Map<String, String> propertyMap = new HashMap<String, String>();
-      if (userEntity != null) {
-        for (int i = 0; i < propertyArray.length; i++) {
-          UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
-          propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
-        }
-      }
-
-      staffMembers.add(new GuidanceCounselorRestModel(
-          userEntity.defaultSchoolDataIdentifier().toId(),
-          userEntity.getId(),
-          userEntityName.getFirstName(),
-          userEntityName.getLastName(),
-          email,
-          propertyMap,
-          organizationRESTModel,
-          usdi.getRole() != null && usdi.getRole().getArchetype() != null ? usdi.getRole().getArchetype().name() : null,
-          hasImage,
-          chatEnabled));
     }
     
-    return Response.ok(staffMembers).build();
+    return Response.ok(restModels).build();
   }
-  
+
 }

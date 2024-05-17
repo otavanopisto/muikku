@@ -2,7 +2,7 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { TextField } from "../../hops-compulsory-education-wizard/text-field";
-import * as moment from "moment";
+import moment from "moment";
 import { History, HistoryEntryItem } from "../history";
 import { StatusType } from "~/reducers/base/status";
 import PagerV2 from "../../pagerV2";
@@ -225,28 +225,16 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
                 : ""
             }`}
             onClick={handleClickHistoryFilter("EDIT")}
-            style={{
-              padding: "1rem",
-              textDecoration: historyFilters.includes("EDIT")
-                ? "underline"
-                : "none",
-            }}
           >
             {t("labels.events", { ns: "pedagogySupportPlan", context: "edit" })}
           </div>
           <div
             className={`hops-container__history-filter ${
-              historyFilters.includes("EDIT")
+              historyFilters.includes("VIEW")
                 ? "hops-container__history-filter--active"
                 : ""
             }`}
             onClick={handleClickHistoryFilter("VIEW")}
-            style={{
-              padding: "1rem",
-              textDecoration: historyFilters.includes("VIEW")
-                ? "underline"
-                : "none",
-            }}
           >
             {t("labels.events", { ns: "pedagogySupportPlan", context: "view" })}
           </div>

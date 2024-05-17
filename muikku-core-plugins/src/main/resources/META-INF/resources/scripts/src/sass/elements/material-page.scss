@@ -81,6 +81,11 @@
   right: 25px;
 }
 
+.material-page__title-back-to-toc {
+  flex-grow: 1;
+  height: 1.5rem;
+}
+
 // Sets different paddings for left as there is extra border
 .material-page__title--exercise,
 .material-page__title--assignment,
@@ -635,6 +640,8 @@
     margin: 4px;
     max-width: calc(100% - 8px);
     padding: 4px 6px;
+
+    @include form-focus;
   }
 
   &.correct-answer input {
@@ -693,6 +700,8 @@
   &.incorrect-answer {
     border-color: $color-incorrect-answer;
   }
+
+  @include form-focus;
 }
 
 .material-page__selectfield-item-container {
@@ -1941,7 +1950,7 @@ mark[data-muikku-word-definition] {
 .material-page__assignment-assessment-icon {
   font-size: 2rem;
   line-height: 1;
-  opacity: 30%;
+  opacity: 40%;
   position: absolute;
   right: 15px;
   top: 10px;
@@ -2090,6 +2099,33 @@ mark[data-muikku-word-definition] {
   border-right-width: 10px;
   box-shadow: 0 3px 5px 2px $color-example-box-shadow;
   margin: 20px -30px 20px -20px;
+  position: relative;
+}
+
+.material-exercise-feedback-correct {
+  border-color: $color-success;
+  color: darken($color-success, 40%);
+  padding-left: 72px;
+
+  &::before {
+    color: $color-success;
+    content: "\f164";
+    font-size: 2rem;
+    opacity: 70%;
+  }
+}
+
+.material-exercise-feedback-incorrect {
+  border-color: $color-error;
+  color: darken($color-error, 40%);
+  padding-left: 72px;
+
+  &::before {
+    color: $color-error;
+    content: "\ea08";
+    font-size: 2rem;
+    opacity: 90%;
+  }
 }
 
 // INSTRUCTION BOX

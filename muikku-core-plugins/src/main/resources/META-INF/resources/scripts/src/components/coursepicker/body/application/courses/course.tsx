@@ -16,7 +16,7 @@ import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
-import { suitabilityMap } from "~/@shared/suitability";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 import { Curriculum } from "~/generated/client";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -108,6 +108,8 @@ class Course extends React.Component<CourseProps, CourseState> {
       this.props.workspace.mandatority &&
       this.props.workspace.educationTypeName
     ) {
+      const suitabilityMap = suitabilityMapHelper(this.props.t);
+
       /**
        * Create map property from education type name and OPS name that was passed
        * Strings are changes to lowercase form and any empty spaces are removed
@@ -120,7 +122,7 @@ class Course extends React.Component<CourseProps, CourseState> {
        * Check if our map contains data with just created education string
        * Otherwise just return null. There might not be all included values by every OPS created...
        */
-      if (!suitabilityMap.has(education)) {
+      if (!suitabilityMap[education]) {
         return null;
       }
 
@@ -128,7 +130,7 @@ class Course extends React.Component<CourseProps, CourseState> {
        * Then get correct local string from map by suitability enum value
        */
       const localString =
-        suitabilityMap.get(education)[this.props.workspace.mandatority];
+        suitabilityMap[education][this.props.workspace.mandatority];
 
       return ` (${localString})`;
     }
@@ -147,26 +149,31 @@ class Course extends React.Component<CourseProps, CourseState> {
         expanded: !this.state.expanded,
       });
     } else {
-      /**
-       * Otherwise we get requested data from api
-       */
-      this.setState({
-        loading: true,
-      });
+      // If user is student, we need to check if student can signUp for course
+      // else we just expand course body
+      if (this.props.status.isStudent) {
+        this.setState({
+          loading: true,
+        });
 
-      const canSignUp = await this.checkSignUpStatus();
-
-      /**
-       * Timeout for lazier loading because
-       * otherwise it will flick loader-spinner
-       */
-      setTimeout(() => {
+        const canSignUp = await this.checkSignUpStatus();
+        /**
+         * Timeout for lazier loading because
+         * otherwise it will flick loader-spinner
+         */
+        setTimeout(() => {
+          this.setState({
+            expanded: true,
+            canSignUp,
+            loading: false,
+          });
+        }, 500);
+      } else {
         this.setState({
           expanded: true,
-          canSignUp,
-          loading: false,
+          canSignUp: false,
         });
-      }, 500);
+      }
     }
   }
 
@@ -186,6 +193,17 @@ class Course extends React.Component<CourseProps, CourseState> {
   };
 
   /**
+   * handleCourseKeyDown
+   * @param e e
+   */
+  handleCourseKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.toggleExpanded();
+    }
+  };
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -194,11 +212,28 @@ class Course extends React.Component<CourseProps, CourseState> {
 
     return (
       <ApplicationListItem
+        tabIndex={-1}
         className={`course ${this.state.expanded ? "course--open" : ""}`}
       >
         <ApplicationListItemHeader
+          tabIndex={0}
+          role="button"
           className="application-list__item-header--course"
           onClick={this.toggleExpanded}
+          onKeyDown={this.handleCourseKeyDown}
+          aria-label={
+            this.state.expanded
+              ? this.props.t("wcag.expandWorkspaceInfo", {
+                  ns: "workspace",
+                  workspaceName: this.props.workspace.name,
+                })
+              : this.props.t("wcag.collapseWorkspaceInfo", {
+                  ns: "workspace",
+                  workspaceName: this.props.workspace.name,
+                })
+          }
+          aria-expanded={this.state.expanded}
+          aria-controls={"workspace" + this.props.workspace.id}
         >
           <span
             className={`application-list__header-icon icon-books ${
@@ -225,14 +260,17 @@ class Course extends React.Component<CourseProps, CourseState> {
           </span>
         </ApplicationListItemHeader>
         {!this.state.loading && this.state.expanded ? (
-          <div>
+          <div id={"workspace" + this.props.workspace.id}>
             <ApplicationListItemBody
               content={this.props.workspace.description}
               className="application-list__item-body--course"
             />
             <ApplicationListItemFooter className="application-list__item-footer--course">
               <Button
-                aria-label={this.props.workspace.name}
+                aria-label={this.props.t("wcag.continueWorkspace", {
+                  ns: "workspace",
+                  workspaceName: this.props.workspace.name,
+                })}
                 buttonModifiers={[
                   "primary-function-content ",
                   "coursepicker-course-action",
@@ -254,7 +292,10 @@ class Course extends React.Component<CourseProps, CourseState> {
                   }}
                 >
                   <Button
-                    aria-label={this.props.workspace.name}
+                    aria-label={this.props.t("wcag.signUpWorkspace", {
+                      ns: "workspace",
+                      workspaceName: this.props.workspace.name,
+                    })}
                     buttonModifiers={[
                       "primary-function-content",
                       "coursepicker-course-action",

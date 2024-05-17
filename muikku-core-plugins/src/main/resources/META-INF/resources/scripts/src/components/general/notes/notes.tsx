@@ -130,6 +130,7 @@ const Notes: React.FC<NotesProps> = (props) => {
                 <ButtonPill
                   buttonModifiers={["add-note", "within-content"]}
                   icon="plus"
+                  aria-label={t("wcag.createNewNote")}
                 />
               </NotesItemNew>
             </div>
@@ -175,7 +176,8 @@ const Notes: React.FC<NotesProps> = (props) => {
                 <ButtonPill
                   buttonModifiers={["add-note", "within-content"]}
                   icon="plus"
-                  disabled={true}
+                  aria-label={t("wcag.createNewNote")}
+                  disabled
                 />
               </NotesItemNew>
             </div>
@@ -204,6 +206,7 @@ const Notes: React.FC<NotesProps> = (props) => {
       activeTab={activeTab}
       onTabChange={handleTabChange}
       tabs={notesTabs}
+      nested
     />
   );
 };
