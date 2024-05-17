@@ -320,12 +320,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         const isBeingDeleted =
           getCharacters(e.target.value).length <
           getCharacters(this.state.value).length;
-        // Limit is exceeded, we set the locale context for notification
-        const localeContext = exceedsCharacterLimit ? "characters" : "words";
-
         // If the content is not being deleted or we are not inside the last word
         // we reset the value to the state value
         if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
+          // Limit is exceeded, we set the locale context for notification
+          const localeContext = exceedsCharacterLimit ? "characters" : "words";
+
           this.props.displayNotification(
             this.props.t("notifications.contentLimitReached", {
               ns: "materials",
@@ -379,35 +379,32 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // we need to check if the user has exceeded the limit
 
     if (exceedsCharacterLimit || exceedsWordLimit) {
+      const localeContext = exceedsWordLimit ? "words" : "characters";
       // If the user is pasting content, we need to check if the content
       //exceeds the character or word limit
-      if (this.state.isPasting) {
-        // If the pasted data exceeds the limit, trim it
-        const trimmedData = this.trimPastedContent(rawText);
-        // Add paragraph tags to the trimmed data for CKEditor
-        const newData = "<p>" + trimmedData + "</p>";
 
-        this.setState(
-          {
-            value: newData,
-            words: getWords(trimmedData).length,
-            characters: getCharacters(trimmedData).length,
-            isPasting: false,
-          },
-          () => {
+      if (this.state.isPasting) {
+        value = this.state.value;
+        instance.setData(value, {
+          /**
+           * callback function
+           */
+          callback: () => {
             // Move the cursor to the end of the content
             const range = instance.createRange();
             range.moveToElementEditEnd(range.root);
             instance.getSelection().selectRanges([range]);
-          }
+          },
+        });
+        this.props.displayNotification(
+          this.props.t("notifications.pastedContentLimitReached", {
+            ns: "materials",
+            context: localeContext,
+          }),
+          "info"
         );
-
-        this.props.onChange &&
-          this.props.onChange(this, this.props.content.name, newData);
       } else {
         // If the user has exceeded the limit and is not pasting, we need to revert the changes
-
-        const localeContext = exceedsWordLimit ? "words" : "characters";
 
         const isBeingDeleted =
           getCharacters(rawText).length < getCharacters(rawValue).length;
