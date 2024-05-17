@@ -56,12 +56,12 @@ public class StudentCardRESTModel {
     this.expiryDate = expiryDate;
   }
 
-  public Boolean getActive() {
-    return active;
+  public String getActivity() {
+    return activity;
   }
 
-  public void setActive(Boolean active) {
-    this.active = active;
+  public void setActivity(String activity) {
+    this.activity = activity;
   }
 
   public StudentCardType getType() {
@@ -78,6 +78,6 @@ public class StudentCardRESTModel {
   private String lastName;
   private String studyProgramme;
   private Date expiryDate;
-  private Boolean active;
+  private String activity;
   private StudentCardType type;
 }
