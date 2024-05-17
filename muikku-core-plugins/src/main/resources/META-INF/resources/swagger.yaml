@@ -15839,6 +15839,7 @@ components:
         courseNumber:
           description: The number of the course
           type: integer
+          nullable: true
         courseLength:
           description: The length value of the course
           type: string
@@ -15853,6 +15854,7 @@ components:
         - date
         - state
         - grade
+        - gradeDate
         - passingGrade
         - text
         - workspaceSubjectIdentifier
@@ -15867,18 +15869,25 @@ components:
         grade:
           description: The grade of the assessment
           type: string
+          nullable: true
+        gradeDate:
+          description: The date of the grade
+          type: string
+          nullable: true
         passingGrade:
           description: If the assessment has a passing grade
           type: boolean
+          nullable: true
         text:
           description: The text (description) of the assessment
           type: string
+          nullable: true
         workspaceSubjectIdentifier:
           description: The identifier of the workspace subject
           type: string
           nullable: true
         subject:
-          description: The subject
+          description: The subject. Can be null.
           $ref: "#/components/schemas/WorkspaceActivitySubject"
           nullable: true
 
