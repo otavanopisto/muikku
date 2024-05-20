@@ -69,6 +69,7 @@ import {
   loadProfileWorklistTemplates,
   loadProfileWorklistSections,
   loadProfilePurchases,
+  loadProfileAuthorizations,
 } from "~/actions/main-function/profile";
 import RecordsBody from "../components/records/body";
 import GuardianBody from "../components/guardian/body";
@@ -351,6 +352,7 @@ export default class MainFunction extends React.Component<
    */
   loadProfileData(location: string) {
     this.props.store.dispatch(setProfileLocation(location) as Action);
+    this.props.store.dispatch(loadProfileAuthorizations() as Action);
 
     if (location === "work") {
       this.props.store.dispatch(loadProfileWorklistTemplates() as Action);
@@ -960,8 +962,6 @@ export default class MainFunction extends React.Component<
       this.loadlib(
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
-
-      const state = this.props.store.getState();
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
