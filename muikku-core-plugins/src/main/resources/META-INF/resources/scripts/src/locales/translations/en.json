@@ -276,6 +276,7 @@
       "changePassword": "Please enter the old and new password",
       "changeAddressMunicipality": "Enter your new address and municipality",
       "removing": "Are you sure you want to delete your profile picture?",
+      "sliceAuthorization": "You can give the authorization to view the student's information to another staff member. The authorization is valid for 30 days.",
       "nick": "Staff will see your real name but other students can only see your nickname",
       "vacationAutoReply": "Automatic reply is active only when vacation start and end dates are set. If a contact sends you several messages, this automated reply will be sent at most once every 4 days.",
       "whatsAppIntegration": "You can turn the WhatsApp integration on by clicking the icon. Please note that the integration will work only if you have entered your phone number with the country code, e.g. +358 40 123 4567. When the integration is active, you will see a WhatsApp button in your contact information. Clicking the button will open the WhatsApp Web client."
@@ -284,6 +285,7 @@
       "additionalInfo": "Additional information",
       "appointmentCalendar": "Reservation calendar",
       "appointmentCalendar_url": "URL of the reservation calendar",
+      "authorizations": "Authorizations",
       "beginDate": "Vacation starts",
       "changeAddressAndMunicipality": "Change address and municipality",
       "chatSettings": "Chat settings",

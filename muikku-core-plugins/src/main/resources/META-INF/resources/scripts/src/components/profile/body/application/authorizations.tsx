@@ -31,7 +31,7 @@ const Authorizations = (props: AuthorizationsProps) => {
     React.useState(false);
   const [locked, setLocked] = React.useState(false);
 
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "profile"]);
 
   // Effect to update slice integration active state
   React.useEffect(() => {
@@ -107,15 +107,11 @@ const Authorizations = (props: AuthorizationsProps) => {
                     onChange={handleSliceIntegrationChange}
                   />
                   <label htmlFor="profileSliceIntegration">
-                    Tietojen välitys SLICE:lle
+                    {t("labels.authorizations", { ns: "profile" })}
                   </label>
                 </div>
                 <div className="form-element__description">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
+                  {t("content.sliceAuthorization", { ns: "profile" })}
                 </div>
               </div>
             </div>

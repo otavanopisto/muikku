@@ -276,6 +276,7 @@
       "changePassword": "Ole hyvä ja syötä alla olevat tiedot",
       "changeAddressMunicipality": "Syötä uusi osoite ja kotikunta",
       "removing": "Oletko varma, että haluat poistaa kuvan profiilistasi?",
+      "sliceAuthorization": "Tietojen välitys slicelle on mahdollista vain, jos olet antanut siihen luvan. Slicen käyttö edellyttää, että olet antanut luvan tietojesi välittämiseen. Luvan voit antaa tai poistaa tästä.",
       "nick": "Henkilökunnan jäsenet näkevät oikean nimesi. Muut opiskelijat näkevät vain asettamasi nimimerkin.",
       "vacationAutoReply": " Automaattinen lomaviesti on aktiivisena vain, jos loma-ajan alku- ja loppupäivämäärät on asetettu. Samalle yhteydenottajalle lähetetään automaattinen vastausviesti maksimissaan neljän päivän välein.",
       "whatsAppIntegration": "Saat Whatsapp-integraation päälle ikonia klikkaamalla. Huomaa, että integraatio toimii ainoastaan, jos olet syöttänyt puhelinnumerosi maakoodin kanssa (esim. +358 40 123 4567). Yhteystietoihisi ilmestyy Whatsapp-painike, jota klikkaamalla Whatsapp Web -sovellus aukeaa."
@@ -284,6 +285,7 @@
       "additionalInfo": "Lisätietoa",
       "appointmentCalendar": "Ajanvarauskalenteri",
       "appointmentCalendar_url": "Ajanvarauskalenterin URL",
+      "authorizations": "Luvat",
       "beginDate": "Loma alkaa",
       "changeAddressAndMunicipality": "Vaihda osoite ja kotikunta",
       "chatSettings": "Chat asetukset",
