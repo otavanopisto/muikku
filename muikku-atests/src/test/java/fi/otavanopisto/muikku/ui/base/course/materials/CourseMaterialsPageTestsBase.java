@@ -787,21 +787,21 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".connectfield-wrapper");
         scrollIntoView(".connectfield-wrapper");
-        waitAndClickXPath("//span[@class='connectfield__term-label' and contains(text(),'Nakki')]");
-        waitForPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Nakki')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' connectfield__term--selected ')]");
-        waitAndClickXPath("//span[@class='connectfield__counterpart-label' and contains(text(),'Keppi')]");
-        waitAndClickXPath("//span[@class='connectfield__term-label' and contains(text(),'Peruna')]");
-        waitForPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Peruna')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' connectfield__term--selected ')]");
-        waitAndClickXPath("//span[@class='connectfield__counterpart-label' and contains(text(),'Hampurilainen')]");
-        waitAndClickXPath("//span[@class='connectfield__term-label' and contains(text(),'Juusto')]");
-        waitForPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Juusto')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' connectfield__term--selected ')]");
-        waitAndClickXPath("//span[@class='connectfield__counterpart-label' and contains(text(),'Pulla')]");
+        waitAndClickXPath("//span[@class='connectfield__term-data-container']//descendant::span[@class='connectfield__term-label' and contains(text(),'Nakki')]");
+        waitForPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Nakki')]//ancestor::li[contains(concat(' ', normalize-space(@class), ' '), ' connectfield__term--selected ')]");
+        waitAndClickXPath("//span[@class='connectfield__counterpart-data-container']//descendant::span[@class='connectfield__counterpart-label' and contains(text(),'Keppi')]");
+        waitAndClickXPath("//span[@class='connectfield__term-data-container']//descendant::span[@class='connectfield__term-label' and contains(text(),'Peruna')]");
+        waitForPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Peruna')]//ancestor::li[contains(concat(' ', normalize-space(@class), ' '), ' connectfield__term--selected ')]");
+        waitAndClickXPath("//span[@class='connectfield__counterpart-data-container']//descendant::span[@class='connectfield__counterpart-label' and contains(text(),'Hampurilainen')]");
+        waitAndClickXPath("//span[@class='connectfield__term-data-container']//descendant::span[@class='connectfield__term-label' and contains(text(),'Juusto')]");
+        waitForPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Juusto')]//ancestor::li[contains(concat(' ', normalize-space(@class), ' '), ' connectfield__term--selected ')]");
+        waitAndClickXPath("//span[@class='connectfield__counterpart-data-container']//descendant::span[@class='connectfield__counterpart-label' and contains(text(),'Pulla')]");
         waitAndClick(".button--muikku-submit-exercise");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
-        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
-        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Peruna')]/parent::span/parent::span", "incorrect-answer");
-        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Juusto')]/parent::span/parent::span", "incorrect-answer");
+        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Nakki')]/parent::span/parent::li", "correct-answer");
+        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Peruna')]/parent::span/parent::li", "incorrect-answer");
+        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Juusto')]/parent::span/parent::li", "incorrect-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -855,12 +855,12 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(".connectfield-wrapper");
         scrollIntoView(".connectfield-wrapper");
-        dragAndDropXPath("//span[@class='connectfield__counterpart-label' and contains(text(),'Keppi')]", "//span[@class='connectfield__counterparts-container']/span[1]", 10, 10);
+        dragAndDropXPath("//li[@class='connectfield__counterpart']//descendant::span[@class='connectfield__counterpart-label' and contains(text(),'Keppi')]", "//ol[@class='connectfield__counterparts-container']/li[1]", 10, 10);
 
         waitAndClick(".button--muikku-submit-exercise");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
-        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
+        assertClassPresentXPath("//span[@class='connectfield__term-label' and contains(text(),'Nakki')]/parent::span/parent::li", "correct-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
