@@ -93,12 +93,17 @@ const Authorizations = (props: AuthorizationsProps) => {
 
   return (
     <section>
-      <h2 className="application-panel__content-header">Luvat</h2>
+      <h2 className="application-panel__content-header">
+        {t("labels.authorizations", { ns: "profile" })}
+      </h2>
       <div className="application-sub-panel">
         <div className="application-sub-panel__body">
           <div className="application-sub-panel__item  application-sub-panel__item--profile">
             <div className="form__row">
               <div className={`form-element`}>
+                <label>
+                  {t("labels.studentCardAuthorizationTitle", { ns: "profile" })}
+                </label>
                 <div className="form-element form-element--checkbox-radiobutton">
                   <input
                     checked={sliceIntegrationActive}
@@ -107,11 +112,14 @@ const Authorizations = (props: AuthorizationsProps) => {
                     onChange={handleSliceIntegrationChange}
                   />
                   <label htmlFor="profileSliceIntegration">
-                    {t("labels.authorizations", { ns: "profile" })}
+                    {t("labels.iWantDigitalStudentCard", { ns: "profile" })}
                   </label>
                 </div>
                 <div className="form-element__description">
-                  {t("content.sliceAuthorization", { ns: "profile" })}
+                  {t("content.sliceAuthorization1", { ns: "profile" })}
+                </div>
+                <div className="form-element__description">
+                  {t("content.sliceAuthorization2", { ns: "profile" })}
                 </div>
               </div>
             </div>
