@@ -1479,13 +1479,17 @@
       "requestEvaluation": "Pyydä kurssin arviointia opettajalta. Opettaja saa automaattisen tiedon arviointipyynnöstäsi.",
       "selectTemplate": "Valitse kurssipohja, jonka pohjalta kurssi luodaan. Jos haluamasi kurssipohja ei näy listassa, voit käyttää hakua löytääksesi sen.",
       "signUp": "Ilmoittaudu kurssille {{name}} {{nameExtension}}",
-      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun opiskelijan {{studentName}}?"
+      "signUpInformation": "<p>Ilmoittaudu-painikkeen klikkaamisen jälkeen päädyt kurssin etusivulle ja voit aloittaa opiskelun heti.</p><p>Kurssin opettajan tiedot löydät kurssin etusivulta. Voit lähettää opettajalle Muikku-viestin, jos sinulla on asiaa tai kysyttävää kurssin opiskeluun liittyen.</p>",
+      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun opiskelijan {{studentName}}?",
+      "workspaceSignupMessageInfo": "Aktivoi ryhmäkohtainen ilmoittautumisviesti. Tämä on mahdollista kun viestin otsikko ja sisältö on asetettu",
+      "workspaceSignupGroupMessageInfo": "Aktivoi ryhmäkohtainen ilmoittautumisviesti. Tämä on mahdollista kun viestin otsikko ja sisältö on asetettu"
     },
     "labels": {
       "access": "Pääsy",
       "access_anyone": "Kuka tahansa",
       "access_loggedInUsers": "Kirjautuneet käyttäjät",
       "access_membersOnly": "Vain jäsenet",
+      "activateSignupMessage": "Aktivoi ilmoittautumisviesti",
       "addingDetails": "Lisätään tietoja kurssille",
       "additionalInfo": "Lisätiedot",
       "away": "Poissa",
@@ -1553,7 +1557,6 @@
       "mandatory": "Pakollinen",
       "materialCopyType": "Materiaalien kopiointitapa",
       "materials": "Kurssin materiaalit",
-      "message": "Viesti kurssin opettajalle",
       "myWorkspaces": "Omat kurssit",
       "name": "Kurssin nimi",
       "name_copySummary": "Nimi: {{workspaceName}}",
@@ -1622,7 +1625,10 @@
       "workspaceLength": "{{length}} {{symbol}}",
       "workspaceCopying": "Kurssin kopiointi",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
-      "workspaceTypeSelect": "Kurssityyppien listausvalinta"
+      "workspaceTypeSelect": "Kurssityyppien listausvalinta",
+      "workspaceSignupMessage": "Työtilan ilmoittautumisviesti",
+      "workspaceSignupMessageTitle": "Viestin otsikko",
+      "workspaceSignupMessageContent": "Viestin sisältö"
     },
     "notifications": {
       "cancelError": "Peruutus epäonnistui",

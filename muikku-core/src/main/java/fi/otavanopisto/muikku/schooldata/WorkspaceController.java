@@ -341,6 +341,18 @@ public class WorkspaceController {
   }
   
   /**
+   * Returns true if the logged user may manage given workspace.
+   * Checks WORKSPACE_MANAGEWORKSPACESETTINGS but denies it if the user has
+   * STUDY_GUIDER role (not allowed in that role). If these exceptions
+   * become more common this should be refactored to be part of the
+   * permission framework.
+   */
+  public boolean canIManageWorkspaceSettings(WorkspaceEntity workspaceEntity) {
+    return sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity) 
+        && !sessionController.hasRole(EnvironmentRoleArchetype.STUDY_GUIDER);
+  }
+  
+  /**
    * Returns true if the logged user may manage workspace materials.
    * Checks MANAGE_WORKSPACE_MATERIALS but denies it if the user has
    * STUDY_GUIDER role (not allowed in that role). If these exceptions
