@@ -128,6 +128,12 @@ class WorkspaceHomeHeader extends React.Component<
    */
   render() {
     const { t } = this.props;
+    const hasPassingGrade =
+      this.props.workspace &&
+      this.props.workspace.activity &&
+      !!this.props.workspace.activity.assessmentStates.find(
+        (state) => state.passingGrade === true
+      );
 
     if (!this.props.workspace) {
       return null;
@@ -241,9 +247,18 @@ class WorkspaceHomeHeader extends React.Component<
     return (
       <header className="hero hero--workspace">
         <div
-          className="hero__wrapper hero__wrapper--workspace"
+          className={`hero__wrapper hero__wrapper--workspace ${
+            hasPassingGrade ? "STATE-passed" : ""
+          }`}
           style={{ backgroundImage: headerBackgroundImage }}
         >
+          {hasPassingGrade ? (
+            <div className="hero__workspace-assessment-container">
+              <div className="hero__workspace-assessment">
+                {this.props.workspace.activity.assessmentStates[0].grade}
+              </div>
+            </div>
+          ) : null}
           <h1 className="hero__workspace-title">{this.props.workspace.name}</h1>
           {this.props.workspace.nameExtension ? (
             <div className="hero__workspace-name-extension">

@@ -290,6 +290,21 @@
   color: $color-default;
 }
 
+.panel__header-icon--workspace-evaluation {
+  background-color: $color-workspace-text-for-panels-title-teachers-icon-background;
+  color: $color-workspace-text-for-panels-title-teachers-icon-color;
+ 
+  &.STATE-passed {
+    background-color: $color-passed;
+    color: $color-default;
+  }
+
+  &.STATE-incomplete {
+    background-color: $color-incomplete;
+    color: $color-default;
+  }
+}
+
 .panel__header-icon--workspace-teachers {
   background-color: $color-workspace-text-for-panels-title-teachers-icon-background;
   color: $color-workspace-text-for-panels-title-teachers-icon-color;
@@ -331,6 +346,11 @@
     margin: 0 0 0 10px;
   }
 }
+
+.panel__header-icon-text {
+  font-family: $system-font-family;
+}
+
 
 .panel__body {
   @include text;

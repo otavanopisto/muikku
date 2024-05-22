@@ -3,13 +3,40 @@ import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { useTranslation } from "react-i18next";
 import { WorkspaceAssessmentState } from "~/generated/client/models/WorkspaceAssessmentState";
-
+import { WorkspaceSubject } from "~/generated/client/models/WorkspaceSubject";
+import { localize } from "~/locales/i18n";
+import "~/sass/elements/workspace-assessment.scss";
 /**
  * workspaceEvaluationPanelProps
  */
 interface workspaceEvaluationPanelProps {
   evaluation: WorkspaceAssessmentState[];
+  subjects: WorkspaceSubject[];
 }
+
+/**
+ * Gets assessment variables on request for a component
+ * @param assessment state of the assessment
+ * @returns an object with assessment variables
+ */
+const getAssessmentVariables = (assessment: WorkspaceAssessmentState) => {
+  let evalStateModifier = "";
+  let evalStateIcon = "";
+  let assessmentIsIncomplete = false;
+
+  switch (assessment.state) {
+    case "pass":
+      evalStateModifier = "passed";
+      evalStateIcon = "icon-thumb-up";
+      break;
+    case "incomplete":
+      evalStateModifier = "incomplete";
+      assessmentIsIncomplete = true;
+      break;
+  }
+
+  return { evalStateModifier, evalStateIcon, assessmentIsIncomplete };
+};
 
 /**
  * WorkspaceEvaluationPanel
@@ -23,34 +50,64 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
     return null;
   }
 
+  // const isCombinationWorkspace = props.subjects && props.subjects.length > 1;
+
+  const { evalStateModifier, evalStateIcon, assessmentIsIncomplete } =
+    getAssessmentVariables(props.evaluation[0]);
+
+  /**
+   * getAssessmentData
+   * @param assessment assessment
+   */
+
   return (
     <div className="panel panel--workspace-evaluation">
       <div className="panel__header">
-        <div className="panel__header-icon panel__header-icon--workspace-evaluation icon-star"></div>
-        <h2 className="panel__header-title">Evaluation</h2>
+        <div
+          className={`panel__header-icon panel__header-icon--workspace-evaluation ${
+            evalStateModifier ? "STATE-" + evalStateModifier : ""
+          }  ${evalStateIcon}`}
+        >
+          {assessmentIsIncomplete && (
+            <span className="panel__header-icon-text">T</span>
+          )}
+        </div>
+        <h2 className="panel__header-title">
+          {assessmentIsIncomplete
+            ? t("labels.evaluated", {
+                context: "incomplete",
+              })
+            : t("labels.evaluated", {
+                context: "in",
+                date: localize.date(props.evaluation[0]?.date),
+              })}
+        </h2>
       </div>
       <div className="panel__body">
-        <div className="workspace-evaluation">
-          <div className="workspace-evaluation__grade">
-            <span className="workspace-evaluation__grade-label">Grade:</span>
-            <span className="workspace-evaluation__grade-value">
-              {props.evaluation[0]?.grade}
-            </span>
-          </div>
-          {props.evaluation[0]?.text && (
-            <div className="workspace-evaluation__text">
-              <span className="workspace-evaluation__text-label">Text:</span>
-              <span className="workspace-evaluation__text-value">
-                {props.evaluation[0]?.text}
-              </span>
+        <div
+          className={`workspace-assessment workspace-assessment--${evalStateModifier} workspace-assessment--workspace-panel`}
+        >
+          {props.evaluation[0]?.text ? (
+            <div className="workspace-assessment__literal">
+              <div className="workspace-assessment__literal-label">
+                {t("labels.evaluation", {
+                  ns: "evaluation",
+                  context: "literal",
+                })}
+                :
+              </div>
+              <div
+                className="workspace-assessment__literal-data"
+                dangerouslySetInnerHTML={{ __html: props.evaluation[0]?.text }}
+              ></div>
+            </div>
+          ) : (
+            <div className="empty">
+              {t("content.empty", {
+                ns: "evaluation",
+              })}
             </div>
           )}
-          <div className="workspace-evaluation__date">
-            <span className="workspace-evaluation__date-label">Date:</span>
-            <span className="workspace-evaluation__date-value">
-              {props.evaluation[0]?.date}
-            </span>
-          </div>
         </div>
       </div>
     </div>
@@ -64,6 +121,7 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
 function mapStateToProps(state: StateType) {
   return {
     evaluation: state.workspaces.currentWorkspace?.activity?.assessmentStates,
+    subjects: state.workspaces.currentWorkspace?.additionalInfo?.subjects,
   };
 }
 
