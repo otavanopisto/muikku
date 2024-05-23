@@ -284,6 +284,7 @@ export default class ContentPanel extends React.Component<
  */
 interface ContentPanelItemProps {
   id?: string;
+  scrollMarginTopOffset?: number;
 }
 
 /**
@@ -307,7 +308,16 @@ export class ContentPanelItem extends React.Component<
    */
   render() {
     return (
-      <div id={this.props.id} ref="component" className="content-panel__item">
+      <div
+        id={this.props.id}
+        ref="component"
+        className="content-panel__item"
+        style={
+          this.props.scrollMarginTopOffset && {
+            scrollMarginTop: `${this.props.scrollMarginTopOffset}px`,
+          }
+        }
+      >
         {this.props.children}
       </div>
     );

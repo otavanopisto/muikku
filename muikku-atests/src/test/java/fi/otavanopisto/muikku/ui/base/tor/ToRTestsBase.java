@@ -170,11 +170,11 @@ public class ToRTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -194,8 +194,8 @@ public class ToRTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--evaluate");
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
-        assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
+        waitUntilHasText(".evaluation-modal__item-body span.textfield--evaluation");
+        assertText(".evaluation-modal__item-body span.textfield--evaluation", "field value");
         waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
         waitUntilAnimationIsDone(".evaluation-modal__evaluate-drawer");
         waitForPresent(".evaluation-modal__evaluate-drawer.state-OPEN");

@@ -3,7 +3,53 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.material-page__mathfield-toolbar {
+// Math field (Digabi editor wrapper)
+.mathfield-wrapper {
+  position: relative;
+}
+
+.mathfield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mathfield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  box-sizing: content-box;
+  margin: 4px 0;
+  max-width: calc(100% - 8px);
+  min-height: 7.25rem;
+  outline: none;
+  padding: 5px;
+
+  &.focused,
+  &:focus {
+    border: 2px solid $taskfield-border-color;
+
+    img {
+      background: lighten($color-tertiary, 30%);
+      border: 1px solid lighten($color-tertiary, 25%);
+    }
+  }
+
+  img {
+    border: 1px solid transparent;
+    cursor: pointer;
+    margin: 4px;
+    padding: 3px 10px;
+    vertical-align: middle;
+  }
+}
+
+.mathfield.mathfield--readonly {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+}
+
+.mathfield__toolbar {
   background-color: $color-math-exercise-toolbar-default-background;
   border-bottom: $color-math-exercise-toolbar-default-border;
   box-shadow: 0 4px 10px $color-math-exercise-toolbar-default-shadow;
@@ -25,8 +71,8 @@
 }
 
 // Containers for symbols and math formulas
-.material-page__mathfield-toolbar-symbols,
-.material-page__mathfield-toolbar-math {
+.mathfield__toolbar-symbols,
+.mathfield__toolbar-math {
   align-content: flex-start;
   align-items: flex-start;
   display: flex;
@@ -39,13 +85,13 @@
   width: 100%;
 }
 
-.material-page__mathfield-toolbar-math {
+.mathfield__toolbar-math {
   border-top: 1px solid $color-default-separator-border;
   padding: 10px 0 0;
 }
 
 // Button to display more symbols
-.material-page__mathfield-toolbar-more-symbols-button {
+.mathfield__toolbar-more-symbols-button {
   align-items: center;
   background: $color-default;
   border: 0;
@@ -69,8 +115,8 @@
 }
 
 // Labels for symbol groups and math
-.material-page__mathfield-toolbar-symbol-group-label,
-.material-page__mathfield-toolbar-math-label {
+.mathfield__toolbar-symbol-group-label,
+.mathfield__toolbar-math-label {
   align-content: center;
   display: flex;
   flex-direction: column;
@@ -81,8 +127,8 @@
   padding: 0 5px 0 0;
 }
 
-.material-page__mathfield-toolbar-symbol-group,
-.material-page__mathfield-toolbar-math-formula-group {
+.mathfield__toolbar-symbol-group,
+.mathfield__toolbar-math-formula-group {
   display: flex;
   flex-wrap: initial;
   margin-right: 40px;
@@ -91,8 +137,8 @@
   width: 100%;
 }
 
-.material-page__mathfield-toolbar-symbol,
-.material-page__mathfield-toolbar-math-operation {
+.mathfield__toolbar-symbol,
+.mathfield__toolbar-math-operation {
   align-items: center;
   background: $color-default;
   border: 0;
@@ -109,8 +155,8 @@
     background: $color-math-button-background-hover;
   }
 
-  .material-page__mathfield-toolbar-symbol-latex-tooltip,
-  .material-page__mathfield-toolbar-math-operation-tooltip {
+  .mathfield__toolbar-symbol-latex-tooltip,
+  .mathfield__toolbar-math-operation-tooltip {
     background-color: $color-math-button-tooltip-background;
     border-radius: 5px;
     color: $color-default;
@@ -146,8 +192,8 @@
   }
 }
 
-.material-page__mathfield-toolbar-more-math-button,
-.material-page__mathfield-toolbar-add-image-button {
+.mathfield__toolbar-more-math-button,
+.mathfield__toolbar-add-image-button {
   align-items: center;
   background: $color-default;
   border: 0;
@@ -161,7 +207,7 @@
   width: auto;
 }
 
-.material-page__mathfield-editor {
+.mathfield__editor {
   align-items: center;
   background-color: $color-math-editor-background;
   border-radius: 3px;
@@ -176,7 +222,7 @@
   width: calc(100% - 10px);
 }
 
-.material-page__mathfield-editor--formula-container {
+.mathfield__editor--formula-container {
   display: flex;
   flex-basis: 100%;
   flex-grow: 1;
@@ -206,7 +252,7 @@
   }
 }
 
-.material-page__mathfield-editor--formula-text-editor {
+.mathfield__editor--formula-text-editor {
   display: flex;
   flex-basis: 100%;
   flex-grow: 1;

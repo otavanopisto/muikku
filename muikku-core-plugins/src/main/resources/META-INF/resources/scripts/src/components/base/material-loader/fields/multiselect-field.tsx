@@ -8,6 +8,7 @@ import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import "~/sass/elements/checkboxfield.scss";
 
 /**
  * MultiSelectFieldProps
@@ -327,25 +328,18 @@ class MultiSelectField extends React.Component<
               context: "multiSelect",
             })}
           />
-          <span className="material-page__checkbox-wrapper rs_skip_always">
+          <span className="checkboxfield-wrapper rs_skip_always">
             <span
-              className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${
+              className={`checkboxfield__items-wrapper checkboxfield__items-wrapper--${
                 this.props.content.listType === "checkbox-horizontal"
                   ? "horizontal"
                   : "vertical"
               }`}
             >
               {this.props.content.options.map((o, index) => (
-                <span
-                  key={o.name}
-                  className="material-page__checkbox-item-container"
-                >
-                  <input
-                    className="material-page__checkbox"
-                    type="checkbox"
-                    disabled
-                  />
-                  <label className="material-page__checkable-label">
+                <span key={o.name} className="checkboxfield__item-container">
+                  <input className="checkboxfield" type="checkbox" disabled />
+                  <label className="checkboxfield__checkable-label">
                     {o.text}
                   </label>
                 </span>
@@ -375,7 +369,7 @@ class MultiSelectField extends React.Component<
     // and we render
     return (
       <span
-        className={`material-page__checkbox-wrapper ${fieldSavedStateClass} rs_skip_always`}
+        className={`checkboxfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
       >
         <Synchronizer
           synced={this.state.synced}
@@ -383,7 +377,7 @@ class MultiSelectField extends React.Component<
           onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
         />
         <span
-          className={`material-page__checkbox-items-wrapper material-page__checkbox-items-wrapper--${
+          className={`checkboxfield__items-wrapper checkboxfield__items-wrapper--${
             this.props.content.listType === "checkbox-horizontal"
               ? "horizontal"
               : "vertical"
@@ -403,13 +397,10 @@ class MultiSelectField extends React.Component<
             // lets generate unique id for labels and checkboxes
             const uniqueElementID = "cb-" + uuidv4();
             return (
-              <span
-                key={o.name}
-                className="material-page__checkbox-item-container"
-              >
+              <span key={o.name} className="checkboxfield__item-container">
                 <input
                   id={uniqueElementID}
-                  className={`material-page__checkbox ${itemStateAfterCheck}`}
+                  className={`checkboxfield ${itemStateAfterCheck}`}
                   type="checkbox"
                   value={o.name}
                   checked={isChecked}
@@ -418,7 +409,7 @@ class MultiSelectField extends React.Component<
                 />
                 <label
                   htmlFor={uniqueElementID}
-                  className="material-page__checkable-label"
+                  className="checkboxfield__checkable-label"
                 >
                   <StrMathJAX>{o.text}</StrMathJAX>
                 </label>

@@ -14,6 +14,7 @@ import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import "~/sass/elements/textfield.scss";
 
 /**
  * TextFieldProps
@@ -292,11 +293,8 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
               context: "text",
             })}
           />
-          <span
-            ref="base"
-            className="material-page__textfield-wrapper rs_skip_always"
-          >
-            <span className="material-page__textfield">
+          <span ref="base" className="textfield-wrapper rs_skip_always">
+            <span className="textfield">
               <input readOnly />
             </span>
             {correctAnswersummaryComponent}
@@ -369,7 +367,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           inputStyle={objectStyle}
           {...doNotInjectStyles}
           readOnly
-          className={`material-page__textfield ${fieldStateAfterCheck}`}
+          className={`textfield ${fieldStateAfterCheck}`}
           type="text"
           value={this.state.value}
           size={
@@ -377,7 +375,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           }
         />
       ) : (
-        <span className={`material-page__textfield ${fieldStateAfterCheck}`}>
+        <span className={`textfield ${fieldStateAfterCheck}`}>
           <input
             type="text"
             value={this.state.value}
@@ -397,7 +395,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
               context: "text",
             })}
           />
-          <span className="material-page__textfield-wrapper rs_skip_always">
+          <span className="textfield-wrapper rs_skip_always">
             {component}
             {correctAnswersummaryComponent}
           </span>
@@ -409,7 +407,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
     else if (this.props.readOnly && this.props.usedAs === "evaluationTool") {
       const component = (
         <span
-          className={`material-page__textfield ${fieldStateAfterCheck} material-page__textfield--evaluation`}
+          className={`textfield ${fieldStateAfterCheck} textfield--evaluation`}
         >
           {this.state.value ? this.state.value : <>&nbsp;</>}
         </span>
@@ -423,7 +421,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
               context: "text",
             })}
           />
-          <span className="material-page__textfield-wrapper rs_skip_always">
+          <span className="textfield-wrapper rs_skip_always">
             {component}
             {correctAnswersummaryComponent}
           </span>
@@ -439,7 +437,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           style={wrapperStyle}
           inputStyle={objectStyle}
           placeholderIsMinWidth={true}
-          className={`material-page__textfield ${fieldStateAfterCheck}`}
+          className={`textfield ${fieldStateAfterCheck}`}
           type="text"
           value={this.state.value}
           size={
@@ -458,9 +456,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
               context: "text",
             })}
           />
-          <span
-            className={`material-page__textfield ${fieldStateAfterCheck} rs_skip_always`}
-          >
+          <span className={`textfield ${fieldStateAfterCheck} rs_skip_always`}>
             <input
               type="text"
               value={this.state.value}
@@ -491,7 +487,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           })}
         />
         <span
-          className={`material-page__textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}

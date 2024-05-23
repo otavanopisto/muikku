@@ -23,6 +23,8 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import "~/sass/elements/memofield.scss";
+
 /**
  * MemoFieldProps
  */
@@ -489,12 +491,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           <textarea
             readOnly
             maxLength={parseInt(this.props.content.maxChars)}
-            className="material-page__memofield"
+            className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
         ) : (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -502,16 +504,16 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         unloadedField = (
           <textarea
             maxLength={parseInt(this.props.content.maxChars)}
-            className="material-page__memofield"
+            className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
         );
       }
 
       return (
-        <span ref="base" className="material-page__memofield-wrapper">
+        <span ref="base" className="memofield-wrapper">
           {unloadedField}
-          <span className="material-page__counter-wrapper" />
+          <span className="memofield__counter-wrapper" />
           {answerExampleComponent}
         </span>
       );
@@ -533,7 +535,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
-            className="material-page__memofield"
+            className="memofield"
             cols={parseInt(this.props.content.columns)}
             minRows={minRows}
             value={this.state.value}
@@ -542,7 +544,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           />
         ) : (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -551,7 +553,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         // note how somehow numbers come as string...
         field = !this.props.content.richedit ? (
           <TextareaAutosize
-            className="material-page__memofield"
+            className="memofield"
             cols={parseInt(this.props.content.columns)}
             minRows={minRows}
             value={this.state.value}
@@ -577,14 +579,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
-            className="material-page__memofield material-page__memofield--evaluation"
+            className="memofield memofield--evaluation"
             value={this.state.value}
             onChange={this.onInputChange}
             onPaste={this.onInputPaste}
           />
         ) : (
           <div
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -605,42 +607,43 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           })}
         />
         <span
-          className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          {field}
-          <span className="material-page__counter-wrapper">
+
+          <span className="memofield__counter-wrapper">
             <span
-              className={`material-page__word-count-container ${
+              className={`memofield__word-count-container ${
                 this.state.words >= parseInt(this.props.content.maxWords)
                   ? "LIMIT-REACHED"
                   : ""
               }`}
             >
-              <span className="material-page__word-count-title">
+              <span className="memofield__word-count-title">
                 {t("labels.wordCount", { ns: "materials" })}
               </span>
-              <span className="material-page__word-count">
+              <span className="memofield__word-count">
+                {" "}
                 {this.state.words}{" "}
                 {this.props.content.maxWords &&
                   ` / ${this.props.content.maxWords}`}
               </span>
             </span>
             <span
-              className={`material-page__character-count-container ${
+              className={`memofield__character-count-container ${
                 this.state.characters >= parseInt(this.props.content.maxChars)
                   ? "LIMIT-REACHED"
                   : ""
               }`}
             >
-              <span className="material-page__character-count-title">
+              <span className="memofield__character-count-title">
                 {t("labels.characterCount", { ns: "materials" })}
               </span>
-              <span className="material-page__character-count">
+              <span className="memofield__character-count">
                 {this.state.characters}{" "}
                 {this.props.content.maxChars &&
                   ` / ${this.props.content.maxChars}`}
