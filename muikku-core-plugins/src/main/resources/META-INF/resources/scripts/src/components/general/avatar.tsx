@@ -28,6 +28,7 @@ const Avatar = (props: AvatarProps) => {
     hasImage,
     firstName,
     size,
+    modifier,
     avatarAriaLabel,
     avatarAriaHidden,
   } = props;
@@ -43,10 +44,8 @@ const Avatar = (props: AvatarProps) => {
 
   return hasImage ? (
     <div
-      className={`avatar-container ${
-        props.size ? "avatar-container--" + size : ""
-      } ${
-        props.modifier ? "avatar-container--" + props.modifier : ""
+      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
+        modifier ? "avatar-container--" + modifier : ""
       } rs_skip_always`}
       aria-hidden={avatarAriaHidden}
     >
@@ -55,13 +54,13 @@ const Avatar = (props: AvatarProps) => {
         alt=""
         aria-label={avatarAriaLabel}
         className={`avatar avatar-img ${size ? "avatar--" + size : ""} ${
-          props.modifier ? "avatar--" + props.modifier : ""
+          modifier ? "avatar--" + modifier : ""
         }`}
       />
       <div
         className={`avatar avatar--category-${category} ${
           size ? "avatar--" + size : ""
-        } ${props.modifier ? "avatar--" + props.modifier : ""}`}
+        } ${modifier ? "avatar--" + modifier : ""}`}
       >
         {firstName[0]}
       </div>
@@ -69,14 +68,14 @@ const Avatar = (props: AvatarProps) => {
   ) : (
     <div
       className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
-        props.modifier ? "avatar-container--" + props.modifier : ""
+        modifier ? "avatar-container--" + modifier : ""
       } rs_skip_always`}
       aria-hidden={avatarAriaHidden}
     >
       <div
         className={`avatar avatar--category-${category} ${
           size ? "avatar--" + size : ""
-        } ${props.modifier ? "avatar--" + props.modifier : ""}`}
+        } ${modifier ? "avatar--" + modifier : ""}`}
       >
         {firstName[0]}
       </div>
