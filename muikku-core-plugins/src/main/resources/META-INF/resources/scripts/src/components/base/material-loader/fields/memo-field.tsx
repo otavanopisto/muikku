@@ -626,7 +626,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-
+          {field}
           <span className="memofield__counter-wrapper">
             <span
               className={`memofield__word-count-container ${
