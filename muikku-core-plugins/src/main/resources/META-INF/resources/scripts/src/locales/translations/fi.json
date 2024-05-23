@@ -504,6 +504,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_matriculationEligibility": "Osallistumisoikeuden lataus aineelle {{subject}} epäonnistui",
       "updateError_summary": "Yhteenvedon tietojen lataus epäonnistui. Yritä ladata sivu uudelleen."
+    },
+    "wcag": {
+      "collapseRecordInfo": "Pienennä työtilan suoritustiedot",
+      "assignmentsActivity": "Arvioitavia tehtäviä tehty {{percent}}%",
+      "exercisesActivity": "Harjoitustehtäviä tehty {{percent}}%",
+      "expandRecordInfo": "Laajenna työtilan suoritustiedot"
     }
   },
   "hops": {
@@ -985,6 +991,16 @@
       "updateSuccess": "Tehtävän muokkaus onnistui",
       "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti",
       "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen."
+    },
+    "wcag": {
+      "archive": "Arkistoi tehtävä",
+      "archiveUndo": "Palauta tehtävä",
+      "createNewNote": "Luo uusi tehtävä",
+      "editNote": "Muokkaa tehtävän tietoja",
+      "markAsImportant": "Merkitse tehtävä tärkeäksi",
+      "markAsNotImportant": "Merkitse tehtävä ei-tärkeäksi",
+      "prioritySorter": "Tärkeysasteen suodatus {{priorityName}}",
+      "showDetails": "Näytä tehtävän tiedot"
     }
   },
   "users": {
@@ -1359,6 +1375,21 @@
       "updateError_page": "Materiaalisivun päivitys epäonnistui",
       "updateError_answers": "Tehtävän tilan päivitys epäonnistui",
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
+    },
+    "wcag": {
+      "focusToToc": "Siirry tämän hetkistä sisältöä vastaavaan sisällysluettelon kohtaan painamalla Enteriä",
+      "tocTopicAllExpand": "Laajenna kaikki osiot sisällysluettelossa",
+      "tocTopicAllCollapse": "Kutista kaikki osiot sisällysluettelossa",
+      "tocTopicExpand": "Laajenna osion sisältö oikealla nuolella",
+      "tocTopicCollapse": "Kutista osion sisältö vasemmalla nuolella",
+      "tocPageMaterialStatus": "Sisällön tila",
+      "tocPageMaterialStatus_done": "Sisältö on tilassa valmis",
+      "tocPageMaterialStatus_submitted": "Sisältö on tilassa palautettu",
+      "tocPageMaterialStatus_withdrawn": "Sisältö on tilassa peruutettu",
+      "tocPageMaterialStatus_incomplete": "Sisältö on tilassa kesken",
+      "tocPageMaterialStatus_failed": "Sisältö on tilassa hylätty",
+      "tocPageMaterialStatus_passed": "Sisältö on tilassa hyväksytty",
+      "tocPageMaterialStatus_restricted": "Sisältö on rajoitettu"
     }
   },
   "notebook": {
@@ -1450,13 +1481,17 @@
       "requestEvaluation": "Pyydä kurssin arviointia opettajalta. Opettaja saa automaattisen tiedon arviointipyynnöstäsi.",
       "selectTemplate": "Valitse kurssipohja, jonka pohjalta kurssi luodaan. Jos haluamasi kurssipohja ei näy listassa, voit käyttää hakua löytääksesi sen.",
       "signUp": "Ilmoittaudu kurssille {{name}} {{nameExtension}}",
-      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun opiskelijan {{studentName}}?"
+      "signUpInformation": "<p>Ilmoittaudu-painikkeen klikkaamisen jälkeen päädyt kurssin etusivulle ja voit aloittaa opiskelun heti.</p><p>Kurssin opettajan tiedot löydät kurssin etusivulta. Voit lähettää opettajalle Muikku-viestin, jos sinulla on asiaa tai kysyttävää kurssin opiskeluun liittyen.</p>",
+      "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun opiskelijan {{studentName}}?",
+      "workspaceSignupMessageInfo": "Aktivoi ryhmäkohtainen ilmoittautumisviesti. Tämä on mahdollista kun viestin otsikko ja sisältö on asetettu",
+      "workspaceSignupGroupMessageInfo": "Aktivoi ryhmäkohtainen ilmoittautumisviesti. Tämä on mahdollista kun viestin otsikko ja sisältö on asetettu"
     },
     "labels": {
       "access": "Pääsy",
       "access_anyone": "Kuka tahansa",
       "access_loggedInUsers": "Kirjautuneet käyttäjät",
       "access_membersOnly": "Vain jäsenet",
+      "activateSignupMessage": "Aktivoi ilmoittautumisviesti",
       "addingDetails": "Lisätään tietoja kurssille",
       "additionalInfo": "Lisätiedot",
       "away": "Poissa",
@@ -1524,7 +1559,6 @@
       "mandatory": "Pakollinen",
       "materialCopyType": "Materiaalien kopiointitapa",
       "materials": "Kurssin materiaalit",
-      "message": "Viesti kurssin opettajalle",
       "myWorkspaces": "Omat kurssit",
       "name": "Kurssin nimi",
       "name_copySummary": "Nimi: {{workspaceName}}",
@@ -1593,7 +1627,10 @@
       "workspaceLength": "{{length}} {{symbol}}",
       "workspaceCopying": "Kurssin kopiointi",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
-      "workspaceTypeSelect": "Kurssityyppien listausvalinta"
+      "workspaceTypeSelect": "Kurssityyppien listausvalinta",
+      "workspaceSignupMessage": "Työtilan ilmoittautumisviesti",
+      "workspaceSignupMessageTitle": "Viestin otsikko",
+      "workspaceSignupMessageContent": "Viestin sisältö"
     },
     "notifications": {
       "cancelError": "Peruutus epäonnistui",

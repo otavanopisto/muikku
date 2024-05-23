@@ -1,4 +1,7 @@
 import * as React from "react";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
 import { MatriculationSubjectCode } from "./matriculation-subject-type";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
@@ -6,12 +9,18 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import MApi, { isMApiError } from "~/api/api";
 import { MatriculationSubject } from "~/generated/client";
 
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
+
 /**
  * Interface representing MatriculationSubjectsList component properties
  *
  */
 interface MatriculationSubjectsListProps extends WithTranslation {
   initialMatriculationSubjects?: string[];
+  displayNotification: DisplayNotificationTriggerType;
   onMatriculationSubjectsChange: (matriculationSubjects: string[]) => void;
 }
 
@@ -144,6 +153,14 @@ class MatriculationSubjectsList extends React.Component<
         if (!isMApiError(err)) {
           throw err;
         }
+
+        this.props.displayNotification(
+          this.props.i18n.t("notifications.loadError", {
+            ns: "studies",
+            context: "matriculationSubjects",
+          }),
+          "error"
+        );
       }
     }
   }
@@ -221,6 +238,15 @@ class MatriculationSubjectsList extends React.Component<
   }
 }
 
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
+}
+
 export default withTranslation(["studies", "guider", "hops", "common"])(
-  MatriculationSubjectsList
+  connect(null, mapDispatchToProps)(MatriculationSubjectsList)
 );

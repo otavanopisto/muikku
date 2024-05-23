@@ -1,28 +1,16 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import {
-  WorkspaceDataType,
-  WorkspaceUpdateType,
-  languageOptions,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType, WorkspaceUpdateType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
-import Link from "~/components/general/link";
-import DatePicker from "react-datepicker";
-import CKEditor from "~/components/general/ckeditor";
 import equals = require("deep-equal");
-import CopyWizardDialog from "../dialogs/copy-wizard";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/change-image.scss";
 import "~/sass/elements/wcag.scss";
-import LicenseSelector from "~/components/general/license-selector";
-import UploadImageDialog from "../dialogs/upload-image";
-import DeleteImageDialog from "../dialogs/delete-image";
-import AddProducer from "~/components/general/add-producer";
 import {
   updateWorkspace,
   UpdateWorkspaceTriggerType,
@@ -38,10 +26,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { filterMatch, filterHighlight } from "~/util/modifiers";
-import { SearchFormElement } from "~/components/general/form-element";
 import moment from "moment";
-import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnyActionType } from "~/actions/index";
 import {
   Language,
@@ -49,12 +34,20 @@ import {
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
+  WorkspaceSignupMessage,
   WorkspaceType,
 } from "~/generated/client";
-import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-
-const PERMISSIONS_TO_EXTRACT = ["WORKSPACE_SIGNUP"];
+import { ManagementSignupGroupsMemoized } from "./management-signup-groups";
+import { ManagementSignupMessageMemoized } from "./management-signup-message";
+import { ManagementChatSettingsMemoized } from "./management-chat-settings";
+import { ManagementLicenseMemoized } from "./management-license";
+import { ManagementProducersMemoized } from "./management-producers";
+import { ManagementScheduleMemoized } from "./management-schedule";
+import { ManagementAdditionalInfoMemoized } from "./management-additional-info";
+import { ManagementVisibilityMemoized } from "./management-visibility";
+import { ManagementBasicInfoMemoized } from "./management-basic-info";
+import { ManagementImageMemoized } from "./management-image";
 
 /**
  * ManagementPanelProps
@@ -90,8 +83,6 @@ interface ManagementPanelState {
   workspaceHasCustomImage: boolean;
   workspacePermissions: Array<WorkspaceSignupGroup>;
   workspaceChatEnabled: boolean;
-  workspaceUsergroupNameFilter: string;
-  currentWorkspaceProducerInputValue: string;
   newWorkspaceImageSrc?: string;
   newWorkspaceImageFile?: File;
   newWorkspaceImageB64?: string;
@@ -100,25 +91,19 @@ interface ManagementPanelState {
     originalB64?: string;
     croppedB64: string;
   };
-  isImageDialogOpen: boolean;
-  isDeleteImageDialogOpen: boolean;
+  workspaceSignupMessage: WorkspaceSignupMessage;
   locked: boolean;
 }
 
 /**
  * ManagementPanel
+ * @param props props
  */
-class ManagementPanel extends React.Component<
-  ManagementPanelProps,
-  ManagementPanelState
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: ManagementPanelProps) {
-    super(props);
-    this.state = {
+const ManagementPanel = (props: ManagementPanelProps) => {
+  const { workspace, t, workspaceTypes, status } = props;
+
+  const [managementState, setManagementState] =
+    React.useState<ManagementPanelState>({
       workspaceName: null,
       workspaceLanguage: "fi",
       workspacePublished: false,
@@ -130,1173 +115,581 @@ class ManagementPanel extends React.Component<
       workspaceSignupStartDate: null,
       workspaceSignupEndDate: null,
       workspaceProducers: null,
-      workspaceDescription:
-        props.workspace && props.workspace.description
-          ? props.workspace.description
-          : "",
+      workspaceDescription: "",
       workspaceLicense: "",
       workspaceHasCustomImage: false,
       workspaceChatEnabled: false,
       workspacePermissions: [],
-      workspaceUsergroupNameFilter: "",
-      currentWorkspaceProducerInputValue: "",
-      isDeleteImageDialogOpen: false,
-      isImageDialogOpen: false,
+      workspaceSignupMessage: {
+        caption: "",
+        content: "",
+        enabled: false,
+      },
       locked: false,
-    };
+    });
 
-    this.updateWorkspaceName = this.updateWorkspaceName.bind(this);
-    this.updateWorkspaceLanguage = this.updateWorkspaceLanguage.bind(this);
-    this.setWorkspacePublishedTo = this.setWorkspacePublishedTo.bind(this);
-    this.setWorkspaceAccessTo = this.setWorkspaceAccessTo.bind(this);
-    this.updateWorkspaceType = this.updateWorkspaceType.bind(this);
-    this.setWorkspaceChatTo = this.setWorkspaceChatTo.bind(this);
-    this.updateStartDate = this.updateStartDate.bind(this);
-    this.updateEndDate = this.updateEndDate.bind(this);
-    this.updateSignupStartDate = this.updateSignupStartDate.bind(this);
-    this.updateSignupEndDate = this.updateSignupEndDate.bind(this);
-    this.onDescriptionChange = this.onDescriptionChange.bind(this);
-    this.updateWorkspaceExtension = this.updateWorkspaceExtension.bind(this);
-    this.updateLicense = this.updateLicense.bind(this);
-    this.removeCustomImage = this.removeCustomImage.bind(this);
-    this.readNewImage = this.readNewImage.bind(this);
-    this.acceptNewImage = this.acceptNewImage.bind(this);
-    this.imageDeleted = this.imageDeleted.bind(this);
-    this.editCurrentImage = this.editCurrentImage.bind(this);
-    this.updateCurrentWorkspaceProducerInputValue =
-      this.updateCurrentWorkspaceProducerInputValue.bind(this);
-    this.addProducer = this.addProducer.bind(this);
-    this.removeProducer = this.removeProducer.bind(this);
-    this.checkIfEnterKeyIsPressedAndAddProducer =
-      this.checkIfEnterKeyIsPressedAndAddProducer.bind(this);
-    this.togglePermissionIn = this.togglePermissionIn.bind(this);
-    this.updateWorkspaceUsergroupNameFilter =
-      this.updateWorkspaceUsergroupNameFilter.bind(this);
-    this.save = this.save.bind(this);
-  }
+  React.useEffect(() => {
+    if (!workspace) {
+      return;
+    }
 
-  /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
-   */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: ManagementPanelProps) {
-    this.setState({
-      workspaceName: nextProps.workspace ? nextProps.workspace.name : null,
-      workspacePublished: nextProps.workspace
-        ? nextProps.workspace.published
-        : null,
-      workspaceAccess: nextProps.workspace ? nextProps.workspace.access : null,
-      workspaceExtension: nextProps.workspace
-        ? nextProps.workspace.nameExtension
-        : null,
+    setManagementState((prev) => ({
+      ...prev,
+      workspaceName: workspace ? workspace.name : null,
+      workspacePublished: workspace ? workspace.published : null,
+      workspaceAccess: workspace ? workspace.access : null,
+      workspaceExtension: workspace ? workspace.nameExtension : null,
       workspaceType:
-        nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.typeId
-          : null,
+        workspace && workspace.details ? workspace.details.typeId : null,
       workspaceStartDate:
-        nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.beginDate !== null
-            ? moment(nextProps.workspace.details.beginDate).toDate()
+        workspace && workspace.details
+          ? workspace.details.beginDate !== null
+            ? moment(workspace.details.beginDate).toDate()
             : null
           : null,
       workspaceEndDate:
-        nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.endDate !== null
-            ? moment(nextProps.workspace.details.endDate).toDate()
+        workspace && workspace.details
+          ? workspace.details.endDate !== null
+            ? moment(workspace.details.endDate).toDate()
             : null
           : null,
       workspaceSignupStartDate:
-        nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.signupStart !== null
-            ? moment(nextProps.workspace.details.signupStart).toDate()
+        workspace && workspace.details
+          ? workspace.details.signupStart !== null
+            ? moment(workspace.details.signupStart).toDate()
             : null
           : null,
       workspaceSignupEndDate:
-        nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.signupEnd !== null
-            ? moment(nextProps.workspace.details.signupEnd).toDate()
+        workspace && workspace.details
+          ? workspace.details.signupEnd !== null
+            ? moment(workspace.details.signupEnd).toDate()
             : null
           : null,
       workspaceProducers:
-        nextProps.workspace && nextProps.workspace.producers
-          ? nextProps.workspace.producers
-          : null,
-      workspaceLicense: nextProps.workspace
-        ? nextProps.workspace.materialDefaultLicense
-        : "",
-      workspaceDescription: nextProps.workspace
-        ? nextProps.workspace.description || ""
-        : "",
-      workspaceHasCustomImage: nextProps.workspace
-        ? nextProps.workspace.hasCustomImage
-        : false,
-      workspaceChatEnabled:
-        nextProps.workspace && nextProps.workspace.details
-          ? nextProps.workspace.details.chatEnabled
-          : false,
+        workspace && workspace.producers ? workspace.producers : null,
+      workspaceLicense: workspace ? workspace.materialDefaultLicense : "",
+      workspaceDescription: workspace ? workspace.description || "" : "",
+      workspaceHasCustomImage: workspace ? workspace.hasCustomImage : false,
       workspacePermissions:
-        nextProps.workspace && nextProps.workspace.permissions
-          ? nextProps.workspace.permissions
+        workspace && workspace.permissions
+          ? workspace.permissions.map((pr) => ({
+              ...pr,
+              signupMessage: pr.signupMessage || {
+                caption: "",
+                content: "",
+                enabled: false,
+              },
+            }))
           : [],
-      workspaceLanguage: nextProps.workspace
-        ? nextProps.workspace.language
-        : "fi",
-    });
-  }
+      workspaceLanguage: workspace ? workspace.language : "fi",
+      workspaceSignupMessage:
+        workspace && workspace.signupMessage
+          ? workspace.signupMessage
+          : {
+              caption: "",
+              content: "",
+              enabled: false,
+            },
+    }));
+  }, [workspace]);
+
+  const {
+    workspaceName,
+    workspaceLanguage,
+    workspacePublished,
+    workspaceAccess,
+    workspaceExtension,
+    workspaceType,
+    workspaceStartDate,
+    workspaceEndDate,
+    workspaceSignupStartDate,
+    workspaceSignupEndDate,
+    workspaceProducers,
+    workspaceDescription,
+    workspaceLicense,
+    workspaceHasCustomImage,
+    workspacePermissions,
+    workspaceSignupMessage,
+    workspaceChatEnabled,
+    locked,
+  } = managementState;
 
   /**
-   * updateWorkspaceName
-   * @param e e
+   * Handles workspace name change
    */
-  updateWorkspaceName(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({
-      workspaceName: e.target.value,
-    });
-  }
+  const handleWorkspaceNameChange = React.useCallback(
+    (workspaceName: string) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceName,
+      }));
+    },
+    []
+  );
 
   /**
-   * updateWorkspaceName
-   * @param e e
+   * Handles language change
    */
-  updateWorkspaceLanguage(e: React.ChangeEvent<HTMLSelectElement>) {
-    this.setState({
-      workspaceLanguage: e.currentTarget.value as Language,
-    });
-  }
+  const handleWorkspaceLanguageChange = React.useCallback(
+    (language: string) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceLanguage: language as Language,
+      }));
+    },
+    []
+  );
 
   /**
-   * setWorkspacePublishedTo
-   * @param value value
+   * Handles description change
    */
-  setWorkspacePublishedTo(value: boolean) {
-    this.setState({
-      workspacePublished: value,
-    });
-  }
-
-  /**
-   * setWorkspaceChatTo
-   * @param e e
-   */
-  setWorkspaceChatTo(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({
-      workspaceChatEnabled: !this.state.workspaceChatEnabled,
-    });
-  }
-
-  /**
-   * setWorkspaceAccessTo
-   * @param value value
-   */
-  setWorkspaceAccessTo(value: WorkspaceAccess) {
-    this.setState({
-      workspaceAccess: value,
-    });
-  }
-
-  /**
-   * updateWorkspaceExtension
-   * @param e e
-   */
-  updateWorkspaceExtension(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({
-      workspaceExtension: e.target.value,
-    });
-  }
-
-  /**
-   * updateWorkspaceType
-   * @param e e
-   */
-  updateWorkspaceType(e: React.ChangeEvent<HTMLSelectElement>) {
-    this.setState({
-      workspaceType: e.target.value,
-    });
-  }
-
-  /**
-   * updateStartDate
-   * @param newDate newDate
-   */
-  updateSignupStartDate(newDate: Date) {
-    this.setState({
-      workspaceSignupStartDate: newDate,
-    });
-  }
-
-  /**
-   * updateEndDate
-   * @param newDate newDate
-   */
-  updateSignupEndDate(newDate: Date) {
-    this.setState({
-      workspaceSignupEndDate: newDate,
-    });
-  }
-
-  /**
-   * updateStartDate
-   * @param newDate newDate
-   */
-  updateStartDate(newDate: Date) {
-    this.setState({
-      workspaceStartDate: newDate,
-    });
-  }
-
-  /**
-   * updateEndDate
-   * @param newDate newDate
-   */
-  updateEndDate(newDate: Date) {
-    this.setState({
-      workspaceEndDate: newDate,
-    });
-  }
-
-  /**
-   * updateCurrentWorkspaceProducerInputValue
-   * @param e e
-   */
-  updateCurrentWorkspaceProducerInputValue(
-    e: React.ChangeEvent<HTMLInputElement>
-  ) {
-    this.setState({
-      currentWorkspaceProducerInputValue: e.target.value,
-    });
-  }
-
-  /**
-   * updateWorkspaceUsergroupNameFilter
-   * @param query query
-   */
-  updateWorkspaceUsergroupNameFilter(query: string) {
-    this.setState({
-      workspaceUsergroupNameFilter: query,
-    });
-  }
-
-  /**
-   * checkIfEnterKeyIsPressedAndAddProducer
-   * @param e e
-   */
-  checkIfEnterKeyIsPressedAndAddProducer(
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) {
-    if (e.keyCode == 13) {
-      this.addProducer(this.state.currentWorkspaceProducerInputValue);
-    }
-  }
-
-  /**
-   * addProducer
-   * @param name name
-   */
-  addProducer(name: string) {
-    this.setState({
-      currentWorkspaceProducerInputValue: "",
-      workspaceProducers: [
-        ...this.state.workspaceProducers,
-        {
-          name,
-        },
-      ],
-    });
-  }
-
-  /**
-   * removeProducer
-   * @param index index
-   */
-  removeProducer(index: number) {
-    this.setState({
-      workspaceProducers: this.state.workspaceProducers.filter(
-        (p, i) => i !== index
-      ),
-    });
-  }
-
-  /**
-   * onDescriptionChange
-   * @param text text
-   */
-  onDescriptionChange(text: string) {
-    this.setState({
+  const handleDescriptionChange = React.useCallback((text: string) => {
+    setManagementState((prevState) => ({
+      ...prevState,
       workspaceDescription: text,
-    });
-  }
+    }));
+  }, []);
 
   /**
-   * updateLicense
-   * @param newLicense newLicense
+   * Handles published change
    */
-  updateLicense(newLicense: string) {
-    this.setState({
-      workspaceLicense: newLicense,
-    });
-  }
+  const handlePublishedChange = React.useCallback((value: boolean) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspacePublished: value,
+    }));
+  }, []);
 
   /**
-   * removeCustomImage
+   * Handles access change
    */
-  removeCustomImage() {
-    this.setState({
-      isDeleteImageDialogOpen: true,
-    });
-  }
+  const handleAccessChange = React.useCallback((value: WorkspaceAccess) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspaceAccess: value,
+    }));
+  }, []);
 
   /**
-   * readNewImage
-   * @param e e
+   * Handles image change
    */
-  readNewImage(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-
-    e.target.value = "";
-
-    reader.addEventListener(
-      "load",
-      () => {
-        this.setState({
-          newWorkspaceImageB64: String(reader.result),
-          newWorkspaceImageFile: file,
-          isImageDialogOpen: true,
-          newWorkspaceImageSrc: null,
-        });
-      },
-      false
-    );
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  }
+  const handleImageChange = React.useCallback((status: boolean) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspaceHasCustomImage: status,
+    }));
+  }, []);
 
   /**
-   * editCurrentImage
+   * Handles signup start date change
    */
-  editCurrentImage() {
-    // let imageSrc = this.state.newWorkspaceImageCombo && this.state.newWorkspaceImageCombo.originalB64 ? this.state.newWorkspaceImageCombo.originalB64: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`;
-
-    if (this.state.newWorkspaceImageCombo) {
-      this.setState({
-        newWorkspaceImageSrc: this.state.newWorkspaceImageCombo.originalB64,
-        isImageDialogOpen: true,
-        newWorkspaceImageB64: this.state.newWorkspaceImageCombo.originalB64,
-        newWorkspaceImageFile: this.state.newWorkspaceImageCombo.file,
-      });
-    } else if (this.props.workspace.hasCustomImage) {
-      this.setState({
-        newWorkspaceImageSrc: `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-original`,
-        isImageDialogOpen: true,
-        newWorkspaceImageB64: null,
-        newWorkspaceImageFile: null,
-      });
-    }
-  }
+  const handleSignupStartDateChange = React.useCallback((date: Date) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspaceSignupStartDate: date,
+    }));
+  }, []);
 
   /**
-   * imageDeleted
+   * Handles signup end date change
    */
-  imageDeleted() {
-    this.setState({
-      newWorkspaceImageCombo: null,
-      workspaceHasCustomImage: false,
-    });
-  }
+  const handleSignupEndDateChange = React.useCallback((date: Date) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspaceSignupEndDate: date,
+    }));
+  }, []);
 
   /**
-   * acceptNewImage
-   * @param croppedB64 croppedB64
-   * @param originalB64 originalB64
-   * @param file file
+   * Handles workspace type change
+   * @param type type
    */
-  acceptNewImage(croppedB64: string, originalB64?: string, file?: File) {
-    this.setState({
-      workspaceHasCustomImage: true,
-      newWorkspaceImageCombo: {
-        file,
-        originalB64,
-        croppedB64,
-      },
-    });
-  }
+  const handleUpdateWorkspaceTypeChange = React.useCallback((type: string) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspaceType: type,
+    }));
+  }, []);
 
   /**
-   * togglePermissionIn
-   * @param permission permission
+   * Handles workspace extension change
    */
-  togglePermissionIn(permission: WorkspaceSignupGroup) {
-    this.setState({
-      workspacePermissions: this.state.workspacePermissions.map((pte) => {
-        if (pte.userGroupEntityId === permission.userGroupEntityId) {
-          const newPermission = { ...permission };
-          newPermission.canSignup = !newPermission.canSignup;
-          return newPermission;
-        }
-        return pte;
-      }),
-    });
-  }
+  const handleWorkspaceExtensionChange = React.useCallback(
+    (extension: string) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceExtension: extension,
+      }));
+    },
+    []
+  );
+
+  const handleWorkspaceStartDateChange = React.useCallback((date: Date) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspaceStartDate: date,
+    }));
+  }, []);
+
+  const handleWorkspaceEndDateChange = React.useCallback((date: Date) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      workspaceEndDate: date,
+    }));
+  }, []);
 
   /**
-   * saveImage
-   * @param croppedB64 croppedB64
-   * @param originalB64 originalB64
-   * @param file file
+   * Handles workspace license change
    */
-  saveImage(croppedB64: string, originalB64?: string, file?: File) {
-    const { t } = this.props;
-
-    this.props.updateCurrentWorkspaceImagesB64({
-      originalB64: originalB64,
-      croppedB64: croppedB64,
-      /**
-       * success
-       */
-      success: () => {
-        this.props.displayNotification(
-          t("notifications.saveSuccess", {
-            ns: "workspace",
-            context: "coverImage",
-          }),
-          "success"
-        );
-      },
-    });
-
-    this.setState({
-      workspaceHasCustomImage: true,
-      newWorkspaceImageCombo: {
-        file,
-        originalB64,
-        croppedB64,
-      },
-    });
-  }
+  const handleWorkspaceLicenseChange = React.useCallback(
+    (newLicense: string) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceLicense: newLicense,
+      }));
+    },
+    []
+  );
 
   /**
-   * save
+   * Handles workspace producers change
    */
-  save() {
-    const { t } = this.props;
+  const handleWorkspaceProducersChange = React.useCallback(
+    (producers: WorkspaceMaterialProducer[]) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceProducers: producers,
+      }));
+    },
+    []
+  );
 
-    this.setState({
+  /**
+   * Handles workspace chat settings change
+   */
+  const handleWorkspaceChatSettingsChange = React.useCallback(
+    (chatEnabled: boolean) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceChatEnabled: chatEnabled,
+      }));
+    },
+    []
+  );
+
+  /**
+   * Handles signup group message change
+   */
+  const handleWorkspaceSignupMessageChange = React.useCallback(
+    (message: WorkspaceSignupMessage) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceSignupMessage: message,
+      }));
+    },
+    []
+  );
+
+  /**
+   * Handles signup group message change
+   */
+  const handleWorkspaceSignupGroupsChange = React.useCallback(
+    (groups: WorkspaceSignupGroup[]) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspacePermissions: groups,
+      }));
+    },
+    []
+  );
+
+  /**
+   * Handles management settings save click
+   */
+  const handleSaveClick = () => {
+    const { t } = props;
+
+    setManagementState((prevState) => ({
+      ...prevState,
       locked: true,
-    });
+    }));
 
     let payload: WorkspaceUpdateType = {};
     const workspaceUpdate: WorkspaceUpdateType = {
-      name: this.state.workspaceName,
-      published: this.state.workspacePublished,
-      access: this.state.workspaceAccess,
-      nameExtension: this.state.workspaceExtension,
-      materialDefaultLicense: this.state.workspaceLicense,
-      description: this.state.workspaceDescription,
-      hasCustomImage: this.state.workspaceHasCustomImage,
-      language: this.state.workspaceLanguage,
+      name: managementState.workspaceName,
+      published: managementState.workspacePublished,
+      access: managementState.workspaceAccess,
+      nameExtension: managementState.workspaceExtension,
+      materialDefaultLicense: managementState.workspaceLicense,
+      description: managementState.workspaceDescription,
+      hasCustomImage: managementState.workspaceHasCustomImage,
+      language: managementState.workspaceLanguage,
     };
     const currentWorkspaceAsUpdate: WorkspaceUpdateType = {
-      name: this.props.workspace.name,
-      published: this.props.workspace.published,
-      access: this.props.workspace.access,
-      nameExtension: this.props.workspace.nameExtension,
-      materialDefaultLicense: this.props.workspace.materialDefaultLicense,
-      description: this.props.workspace.description,
-      hasCustomImage: this.props.workspace.hasCustomImage,
-      language: this.props.workspace.language,
+      name: workspace.name,
+      published: workspace.published,
+      access: workspace.access,
+      nameExtension: workspace.nameExtension,
+      materialDefaultLicense: workspace.materialDefaultLicense,
+      description: workspace.description,
+      hasCustomImage: workspace.hasCustomImage,
+      language: workspace.language,
     };
 
     if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)) {
       payload = Object.assign(workspaceUpdate, payload);
     }
 
-    const workspaceMaterialProducers = this.state.workspaceProducers;
+    const workspaceMaterialProducers = managementState.workspaceProducers;
 
-    if (!equals(workspaceMaterialProducers, this.props.workspace.producers)) {
+    if (!equals(workspaceMaterialProducers, workspace.producers)) {
       payload = Object.assign(
         { producers: workspaceMaterialProducers },
         payload
       );
     }
 
-    // Chat
-    /* const workspaceChatStatus = this.state.workspaceChatStatus;
-    const currentWorkspaceChatStatus = this.props.workspace.chatStatus; */
-
-    /* if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
-      payload = Object.assign({ chatStatus: workspaceChatStatus }, payload);
-    } */
-
     const workspaceDetails: WorkspaceDetails = {
-      externalViewUrl: this.props.workspace.details.externalViewUrl,
-      typeId: this.state.workspaceType,
+      externalViewUrl: workspace.details.externalViewUrl,
+      typeId: managementState.workspaceType,
       beginDate:
-        this.state.workspaceStartDate !== null
-          ? this.state.workspaceStartDate.toISOString()
+        managementState.workspaceStartDate !== null
+          ? managementState.workspaceStartDate.toISOString()
           : null,
       endDate:
-        this.state.workspaceEndDate !== null
-          ? this.state.workspaceEndDate.toISOString()
+        managementState.workspaceEndDate !== null
+          ? managementState.workspaceEndDate.toISOString()
           : null,
-      rootFolderId: this.props.workspace.details.rootFolderId,
-      helpFolderId: this.props.workspace.details.helpFolderId,
-      indexFolderId: this.props.workspace.details.indexFolderId,
+      rootFolderId: workspace.details.rootFolderId,
+      helpFolderId: workspace.details.helpFolderId,
+      indexFolderId: workspace.details.indexFolderId,
       signupStart:
-        this.state.workspaceSignupStartDate !== null
-          ? this.state.workspaceSignupStartDate.toISOString()
+        managementState.workspaceSignupStartDate !== null
+          ? managementState.workspaceSignupStartDate.toISOString()
           : null,
       signupEnd:
-        this.state.workspaceSignupEndDate !== null
-          ? this.state.workspaceSignupEndDate.toISOString()
+        managementState.workspaceSignupEndDate !== null
+          ? managementState.workspaceSignupEndDate.toISOString()
           : null,
-      chatEnabled: this.state.workspaceChatEnabled,
+      chatEnabled: managementState.workspaceChatEnabled,
     };
 
     const currentWorkspaceAsDetails: WorkspaceDetails = {
-      externalViewUrl: this.props.workspace.details.externalViewUrl,
-      typeId: this.props.workspace.details.typeId,
-      beginDate: moment(this.props.workspace.details.beginDate).toISOString(),
-      endDate: moment(this.props.workspace.details.endDate).toISOString(),
-      rootFolderId: this.props.workspace.details.rootFolderId,
-      helpFolderId: this.props.workspace.details.helpFolderId,
-      indexFolderId: this.props.workspace.details.indexFolderId,
-      signupStart: moment(
-        this.props.workspace.details.signupStart
-      ).toISOString(),
-      signupEnd: moment(this.props.workspace.details.signupEnd).toISOString(),
-      chatEnabled: this.props.workspace.details.chatEnabled,
+      externalViewUrl: workspace.details.externalViewUrl,
+      typeId: workspace.details.typeId,
+      beginDate: moment(workspace.details.beginDate).toISOString(),
+      endDate: moment(workspace.details.endDate).toISOString(),
+      rootFolderId: workspace.details.rootFolderId,
+      helpFolderId: workspace.details.helpFolderId,
+      indexFolderId: workspace.details.indexFolderId,
+      signupStart: moment(workspace.details.signupStart).toISOString(),
+      signupEnd: moment(workspace.details.signupEnd).toISOString(),
+      chatEnabled: workspace.details.chatEnabled,
     };
 
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
       payload = Object.assign({ details: workspaceDetails }, payload);
     }
 
-    if (
-      !equals(this.props.workspace.permissions, this.state.workspacePermissions)
-    ) {
-      const permissionsArray: WorkspaceSignupGroup[] = [];
+    // Set signup message to null if caption or content either is empty
+    // Api does not accept empty values, it must be null
+    const realPermissions = managementState.workspacePermissions.map((pr) => ({
+      ...pr,
+      signupMessage:
+        pr.signupMessage.caption === "" || pr.signupMessage.content === ""
+          ? null
+          : pr.signupMessage,
+    }));
 
-      this.state.workspacePermissions.forEach((permission) => {
-        const originalPermission = this.props.workspace.permissions.find(
-          (p) => p.userGroupEntityId === permission.userGroupEntityId
-        );
-        if (!equals(originalPermission, permission)) {
-          permissionsArray.push(permission);
-        }
-      });
-      payload = Object.assign({ permissions: permissionsArray }, payload);
+    // Check if permissions have changed
+    if (!equals(workspace.permissions, realPermissions)) {
+      payload = Object.assign(
+        {
+          permissions: realPermissions,
+        },
+        payload
+      );
     }
 
-    this.props.updateWorkspace({
-      workspace: this.props.workspace,
+    // Set signup message to null if caption or content either is empty
+    // signup message object must be null.
+    const realSignupMessage =
+      managementState.workspaceSignupMessage.caption === "" ||
+      managementState.workspaceSignupMessage.content === ""
+        ? null
+        : managementState.workspaceSignupMessage;
+
+    // Check if signup message has changed
+    if (!equals(workspace.signupMessage, realSignupMessage)) {
+      payload = Object.assign(
+        { signupMessage: managementState.workspaceSignupMessage },
+        payload
+      );
+    }
+
+    props.updateWorkspace({
+      workspace: workspace,
       update: payload,
       /**
        * success
        */
       success: () => {
-        this.props.displayNotification(
+        props.displayNotification(
           t("notifications.saveSuccess", { ns: "workspace", context: "data" }),
           "success"
         );
-        this.setState({
+        setManagementState((prevState) => ({
+          ...prevState,
           locked: false,
-        });
+        }));
       },
       /**
        * fail
        */
       fail: () => {
-        this.setState({
+        setManagementState((prevState) => ({
+          ...prevState,
           locked: false,
-        });
+        }));
       },
     });
-  }
+  };
 
-  /**
-   * render
-   */
-  render() {
-    const { t } = this.props;
+  const workspaceSignupStartDateMemoized = React.useMemo(
+    () => workspaceSignupStartDate,
+    [workspaceSignupStartDate]
+  );
 
-    let actualBackgroundSRC = this.state.workspaceHasCustomImage
-      ? `/rest/workspace/workspaces/${this.props.workspace.id}/workspacefile/workspace-frontpage-image-cropped`
-      : "/gfx/workspace-default-header.jpg";
-    if (this.state.newWorkspaceImageCombo) {
-      actualBackgroundSRC = this.state.newWorkspaceImageCombo.croppedB64;
-    }
+  const workspaceSignupEndDateMemoized = React.useMemo(
+    () => workspaceSignupEndDate,
+    [workspaceSignupEndDate]
+  );
 
-    return (
-      <>
-        <ApplicationPanel
-          modifier="workspace-management"
-          title={t("labels.settings")}
-        >
+  const memoizedWorkspaceTypes = React.useMemo(
+    () => workspaceTypes,
+    [workspaceTypes]
+  );
+
+  const memoizedWorkspaceProducers = React.useMemo(
+    () => workspaceProducers,
+    [workspaceProducers]
+  );
+
+  const memoizedPermissions = React.useMemo(
+    () => workspacePermissions,
+    [workspacePermissions]
+  );
+
+  const memoizedWorkspaceSignupMessage = React.useMemo(
+    () => workspaceSignupMessage,
+    [workspaceSignupMessage]
+  );
+
+  return (
+    <>
+      <ApplicationPanel
+        modifier="workspace-management"
+        title={t("labels.settings")}
+      >
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementBasicInfoMemoized
+            workspaceName={workspaceName}
+            workspaceDescription={workspaceDescription}
+            workspaceLanguage={workspaceLanguage}
+            externalViewUrl={workspace?.details?.externalViewUrl}
+            onWorkspaceNameChange={handleWorkspaceNameChange}
+            onWorkspaceDescriptionChange={handleDescriptionChange}
+            onWorkspaceLanguageChange={handleWorkspaceLanguageChange}
+          />
+        </section>
+        <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
+          <ManagementImageMemoized
+            workspaceEntityId={workspace?.id}
+            workspaceHasCustomImage={workspaceHasCustomImage}
+            onImageStatusChange={handleImageChange}
+          />
+        </section>
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementVisibilityMemoized
+            workspacePublished={workspacePublished}
+            workspaceAccess={workspaceAccess}
+            onWorkspacePublishedChange={handlePublishedChange}
+            onWorkspaceAccessChange={handleAccessChange}
+          />
+        </section>
+
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementScheduleMemoized
+            workspaceSignupStartDate={workspaceSignupStartDateMemoized}
+            workspaceSignupEndDate={workspaceSignupEndDateMemoized}
+            onSignupStartDateChange={handleSignupStartDateChange}
+            onSignupEndDateChange={handleSignupEndDateChange}
+          />
+        </section>
+
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementAdditionalInfoMemoized
+            workspaceNameExtension={workspaceExtension}
+            workspaceType={workspaceType}
+            workspaceTypes={memoizedWorkspaceTypes}
+            workspaceStartDate={workspaceStartDate}
+            workspaceEndDate={workspaceEndDate}
+            onWorkspaceStartDateChange={handleWorkspaceStartDateChange}
+            onWorkspaceEndDateChange={handleWorkspaceEndDateChange}
+            onWorkspaceTypeChange={handleUpdateWorkspaceTypeChange}
+            onWorkspaceNameExtensionChange={handleWorkspaceExtensionChange}
+          />
+        </section>
+        <section className="form-element application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementLicenseMemoized
+            workspaceLicense={workspaceLicense}
+            onChange={handleWorkspaceLicenseChange}
+          />
+        </section>
+        <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementProducersMemoized
+            workspaceProducers={memoizedWorkspaceProducers}
+            onChange={handleWorkspaceProducersChange}
+          />
+        </section>
+        {status.permissions.CHAT_AVAILABLE ? (
           <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.basicInfo", { ns: "workspace" })}
-            </h2>
-            <div className="application-sub-panel__body">
-              <div className="form__row form__row--split">
-                <div className="form__subdivision">
-                  <div className="form__row">
-                    <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                      <label htmlFor="wokspaceName">{t("labels.name")}</label>
-                      <input
-                        id="wokspaceName"
-                        name="wokspace-name"
-                        type="text"
-                        className="form-element__input form-element__input--workspace-name"
-                        value={this.state.workspaceName || ""}
-                        onChange={this.updateWorkspaceName}
-                      />
-                      <div className="application-sub-panel__item-actions">
-                        <Link
-                          href={
-                            this.props.workspace &&
-                            this.props.workspace.details &&
-                            this.props.workspace.details.externalViewUrl
-                          }
-                          openInNewTab="_blank"
-                          className="link link--workspace-management"
-                        >
-                          {t("labels.showInPyramus", { ns: "workspace" })}
-                        </Link>
-                        <CopyWizardDialog>
-                          <Link className="link link--workspace-management">
-                            {t("labels.copy", {
-                              ns: "workspace",
-                              context: "workspace",
-                            })}
-                          </Link>
-                        </CopyWizardDialog>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form__row">
-                    <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management">
-                      <label htmlFor="workspaceLanguage">
-                        {t("labels.localeCode", { ns: "workspace" })}
-                      </label>
-                      <select
-                        id="workspaceLanguage"
-                        className="form-element__select"
-                        value={this.state.workspaceLanguage}
-                        onChange={this.updateWorkspaceLanguage}
-                      >
-                        {languageOptions.map((language) => (
-                          <option key={language} value={language}>
-                            {t("labels.language", {
-                              ns: "workspace",
-                              context: language,
-                            })}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="form__subdivision">
-                  <div className="form__row">
-                    <div className="application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-description form-element">
-                      <label>{t("labels.description")}</label>
-                      <CKEditor
-                        editorTitle={t("wcag.workspaceDescription", {
-                          ns: "workspace",
-                        })}
-                        onChange={this.onDescriptionChange}
-                      >
-                        {this.state.workspaceDescription}
-                      </CKEditor>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ManagementChatSettingsMemoized
+              chatEnabled={workspaceChatEnabled}
+              onChange={handleWorkspaceChatSettingsChange}
+            />
           </section>
-          <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
-            <h2 className="application-sub-panel__header application-sub-panel__header--workspace-image-settings">
-              {t("labels.image", { ns: "workspace" })}
-            </h2>
-            <div className="application-sub-panel__body application-sub-panel__body--workspace-settings">
-              <div className="form__row">
-                <div className="change-image">
-                  <div
-                    className="change-image__container change-image__container--workspace"
-                    style={{
-                      backgroundImage: `url("${actualBackgroundSRC}")`,
-                      backgroundSize: `cover`,
-                    }}
-                  >
-                    <label className="visually-hidden" htmlFor="workspaceImage">
-                      {t("wcag.workspaceImage", {
-                        ns: "workspace",
-                      })}
-                    </label>
-                    <input
-                      id="workspaceImage"
-                      name="file"
-                      type="file"
-                      accept="image/*"
-                      onChange={this.readNewImage}
-                    />
-                    {this.state.workspaceHasCustomImage ? (
-                      <div className="change-image__actions">
-                        <Button
-                          buttonModifiers="change-image-edit button--change-image-workspace"
-                          onClick={this.editCurrentImage}
-                        >
-                          <span className="icon icon-pencil" />
-                          {t("actions.edit", { ns: "common" })}
-                        </Button>
-                        <Button
-                          buttonModifiers="change-image-delete button--change-image-workspace"
-                          onClick={this.removeCustomImage}
-                        >
-                          <span className="icon icon-trash" />
+        ) : null}
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementSignupMessageMemoized
+            workspaceName={workspaceName}
+            workspaceSignupMessage={memoizedWorkspaceSignupMessage}
+            onChange={handleWorkspaceSignupMessageChange}
+          />
+        </section>
 
-                          {t("actions.remove")}
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="change-image__default-content">
-                        {t("content.changeImage", { ns: "workspace" })}
-                      </div>
-                    )}
-                  </div>
-                  <DeleteImageDialog
-                    isOpen={this.state.isDeleteImageDialogOpen}
-                    onDelete={this.imageDeleted}
-                    onClose={() =>
-                      this.setState({ isDeleteImageDialogOpen: false })
-                    }
-                  />
-                  <UploadImageDialog
-                    isOpen={this.state.isImageDialogOpen}
-                    b64={this.state.newWorkspaceImageB64}
-                    file={this.state.newWorkspaceImageFile}
-                    onClose={() => this.setState({ isImageDialogOpen: false })}
-                    src={this.state.newWorkspaceImageSrc}
-                    onImageChange={this.acceptNewImage}
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.visibility", { ns: "workspace" })}
-            </h2>
-            <div className="application-sub-panel__body">
-              <div className="form__row form__row--split">
-                <div className="form__subdivision form__subdivision--auto-width">
-                  <div className="form__row">
-                    <fieldset className="form__fieldset">
-                      <legend className="form__legend">
-                        {t("labels.publicity", { ns: "workspace" })}
-                      </legend>
-                      <div className="form__fieldset-content form__fieldset-content--horizontal">
-                        <div className="form-element form-element--checkbox-radiobutton">
-                          <input
-                            id="workspacePublish"
-                            name="publish"
-                            type="radio"
-                            checked={this.state.workspacePublished === true}
-                            onChange={this.setWorkspacePublishedTo.bind(
-                              this,
-                              true
-                            )}
-                          />
-                          <label htmlFor="workspacePublish">
-                            {t("labels.workspaces", {
-                              ns: "workspace",
-                              context: "published",
-                            })}
-                          </label>
-                        </div>
-                        <div className="form-element form-element--checkbox-radiobutton">
-                          <input
-                            id="workspaceUnpublish"
-                            name="unpublish"
-                            type="radio"
-                            checked={this.state.workspacePublished === false}
-                            onChange={this.setWorkspacePublishedTo.bind(
-                              this,
-                              false
-                            )}
-                          />
-                          <label htmlFor="workspaceUnpublish">
-                            {t("labels.notPublished", { ns: "workspace" })}
-                          </label>
-                        </div>
-                      </div>
-                    </fieldset>
-                  </div>
-                </div>
-                <div className="form__subdivision form__subdivision--auto-width">
-                  <div className="form__row">
-                    <fieldset className="form__fieldset">
-                      <legend className="form__legend">
-                        {t("labels.access", { ns: "workspace" })}
-                      </legend>
-                      <div className="form__fieldset-content form__fieldset-content--horizontal">
-                        <div className="form-element form-element--checkbox-radiobutton">
-                          <input
-                            id="workspaceAccessMembers"
-                            name="access-members"
-                            type="radio"
-                            checked={
-                              this.state.workspaceAccess === "MEMBERS_ONLY"
-                            }
-                            onChange={this.setWorkspaceAccessTo.bind(
-                              this,
-                              "MEMBERS_ONLY"
-                            )}
-                          />
-                          <label htmlFor="workspaceAccessMembers">
-                            {t("labels.access", {
-                              ns: "workspace",
-                              context: "membersOnly",
-                            })}
-                          </label>
-                        </div>
-                        <div className="form-element form-element--checkbox-radiobutton">
-                          <input
-                            id="workspaceAccessLoggedin"
-                            name="access-loggedin"
-                            type="radio"
-                            checked={this.state.workspaceAccess === "LOGGED_IN"}
-                            onChange={this.setWorkspaceAccessTo.bind(
-                              this,
-                              "LOGGED_IN"
-                            )}
-                          />
-                          <label htmlFor="workspaceAccessLoggedin">
-                            {t("labels.access", {
-                              ns: "workspace",
-                              context: "loggedInUsers",
-                            })}
-                          </label>
-                        </div>
-                        <div className="form-element form-element--checkbox-radiobutton">
-                          <input
-                            id="workspaceAccessAnyone"
-                            name="access-anyone"
-                            type="radio"
-                            checked={this.state.workspaceAccess === "ANYONE"}
-                            onChange={this.setWorkspaceAccessTo.bind(
-                              this,
-                              "ANYONE"
-                            )}
-                          />
-                          <label htmlFor="workspaceAccessAnyone">
-                            {t("labels.access", {
-                              ns: "workspace",
-                              context: "anyone",
-                            })}
-                          </label>
-                        </div>
-                      </div>
-                    </fieldset>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.signUpSchedule", { ns: "workspace" })}
-            </h2>
-            <div className="application-sub-panel__body">
-              <div className="form__row form__row--split">
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                  <label
-                    htmlFor="workspaceSignupStartDate"
-                    className="application-sub-panel__item-header"
-                  >
-                    {t("labels.signUpBeginDate", { ns: "workspace" })}
-                  </label>
-                  <DatePicker
-                    id="workspaceSignupStartDate"
-                    className="form-element__input"
-                    onChange={this.updateSignupStartDate}
-                    minDate={new Date()}
-                    maxDate={
-                      this.state.workspaceSignupEndDate !== null
-                        ? this.state.workspaceSignupEndDate
-                        : undefined
-                    }
-                    locale={outputCorrectDatePickerLocale(localize.language)}
-                    selected={this.state.workspaceSignupStartDate}
-                    dateFormat="P"
-                  />
-                </div>
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                  <label
-                    htmlFor="workspaceSignupEndDate"
-                    className="application-sub-panel__item-header"
-                  >
-                    {t("labels.signUpEndDate", { ns: "workspace" })}
-                  </label>
-                  <DatePicker
-                    id="workspaceSignupEndDate"
-                    className="form-element__input"
-                    onChange={this.updateSignupEndDate}
-                    minDate={
-                      this.state.workspaceSignupStartDate !== null
-                        ? this.state.workspaceSignupStartDate
-                        : new Date()
-                    }
-                    locale={outputCorrectDatePickerLocale(localize.language)}
-                    selected={this.state.workspaceSignupEndDate}
-                    dateFormat="P"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.additionalInfo", { ns: "workspace" })}
-            </h2>
-            <div className="application-sub-panel__body">
-              <div className="form__row form__row--workspace-management">
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-name-extension">
-                  <label htmlFor="workspaceNameExtension">
-                    {t("labels.nameExtension", { ns: "workspace" })}
-                  </label>
-                  <input
-                    id="workspaceNameExtension"
-                    name="workspace-name-extension"
-                    type="text"
-                    className="form-element__input form-element__input--workspace-name-extension"
-                    value={this.state.workspaceExtension || ""}
-                    onChange={this.updateWorkspaceExtension}
-                  />
-                </div>
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-type">
-                  <label htmlFor="workspaceType">{t("labels.type")}</label>
-                  <select
-                    id="workspaceType"
-                    name="workspace-type"
-                    className="form-element__select"
-                    value={this.state.workspaceType || ""}
-                    onChange={this.updateWorkspaceType}
-                  >
-                    {this.props.workspaceTypes &&
-                      this.props.workspaceTypes.map((type) => (
-                        <option key={type.identifier} value={type.identifier}>
-                          {type.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-start-date">
-                  <label
-                    htmlFor="workspaceStartDate"
-                    className="application-sub-panel__item-header"
-                  >
-                    {t("labels.begingDate", { ns: "workspace" })}
-                  </label>
-                  <DatePicker
-                    id="workspaceStartDate"
-                    className="form-element__input"
-                    onChange={this.updateStartDate}
-                    maxDate={this.state.workspaceEndDate}
-                    locale={outputCorrectDatePickerLocale(localize.language)}
-                    selected={this.state.workspaceStartDate}
-                    dateFormat="P"
-                  />
-                </div>
-                <div className="form-element application-sub-panel__item application-sub-panel__item--workspace-management application-sub-panel__item--workspace-end-date">
-                  <label
-                    htmlFor="workspaceEndDate"
-                    className="application-sub-panel__item-header"
-                  >
-                    {t("labels.endDate", { ns: "workspace" })}
-                  </label>
-                  <DatePicker
-                    id="workspaceEndDate"
-                    className="form-element__input"
-                    onChange={this.updateEndDate}
-                    minDate={this.state.workspaceStartDate}
-                    locale={outputCorrectDatePickerLocale(localize.language)}
-                    selected={this.state.workspaceEndDate}
-                    dateFormat="P"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-          <section className="form-element application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.license", { ns: "workspace" })}
-            </h2>
-            <div className="application-sub-panel__body">
-              <LicenseSelector
-                wcagLabel="workspaceLicense"
-                wcagDesc={t("wcag.workspaceLicense", { ns: "workspace" })}
-                modifier="workspace-management"
-                value={this.state.workspaceLicense}
-                onChange={this.updateLicense}
-              />
-            </div>
-          </section>
-          <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.producers", { ns: "users" })}
-            </h2>
-            {this.state.workspaceProducers ? (
-              <div className="application-sub-panel__body">
-                <AddProducer
-                  wcagLabel="workspaceProducer"
-                  removeProducer={this.removeProducer}
-                  addProducer={this.addProducer}
-                  producers={this.state.workspaceProducers}
-                />
-              </div>
-            ) : null}
-          </section>
-
-          <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.chat")}
-            </h2>
-            <div className="application-sub-panel__body">
-              <div className="form__row">
-                <fieldset className="form__fieldset">
-                  <legend className="form__legend">
-                    {t("labels.chatStatus", { ns: "workspace" })}
-                  </legend>
-
-                  <div className="form__fieldset-content form__fieldset-content--horizontal">
-                    <div className="form-element form-element--checkbox-radiobutton">
-                      <input
-                        id="chatEnabled"
-                        name="chat-enabled"
-                        type="checkbox"
-                        checked={this.state.workspaceChatEnabled}
-                        onChange={this.setWorkspaceChatTo}
-                      />
-                      <label htmlFor="chatEnabled">
-                        {t("labels.chatEnabled", { ns: "workspace" })}
-                      </label>
-                    </div>
-                    {/* <div className="form-element form-element--checkbox-radiobutton">
-                        <input
-                          id="chatDisabled"
-                          name="chat-disabled"
-                          type="radio"
-                          value="DISABLED"
-                          checked={!this.state.workspaceChatEnabled}
-                          onChange={this.setWorkspaceChatTo}
-                        />
-                        <label htmlFor="chatDisabled">
-                          {t("labels.chatDisabled", { ns: "workspace" })}
-                        </label>
-                      </div> */}
-                  </div>
-                </fieldset>
-              </div>
-            </div>
-          </section>
-
-          <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <h2 className="application-sub-panel__header">
-              {t("labels.signUpRights", { ns: "workspace" })}
-            </h2>
-            <div className="application-sub-panel__body">
-              <div className="form__row">
-                <SearchFormElement
-                  delay={0}
-                  id="workspacePermissions"
-                  modifiers="subpanel-search"
-                  name="workspace-permissions"
-                  placeholder={t("labels.search", {
-                    ns: "users",
-                    context: "userGroups",
-                  })}
-                  value={this.state.workspaceUsergroupNameFilter}
-                  updateField={this.updateWorkspaceUsergroupNameFilter}
-                />
-              </div>
-
-              <div className="form__row">
-                <fieldset className="form__fieldset">
-                  <legend className="form__legend">
-                    {t("labels.userGroups", { ns: "users" })}
-                  </legend>
-                  <div className="form__fieldset-content form__fieldset-content--vertical">
-                    {/*
-                If we ever have multiple permissions to set then we need to use the following code.
-                Also input and label elements needs to have htmlFor and id attributes removed if there are more than one checkboxes
-
-                  {PERMISSIONS_TO_EXTRACT.map((pte, index) =>
-                  <div className="what" key={pte}>{this.props.t("plugin.workspace.permissions.label." + pte)}</div>
-                  )}
-                */}
-
-                    {this.state.workspacePermissions
-                      .filter((permission) =>
-                        filterMatch(
-                          permission.userGroupName,
-                          this.state.workspaceUsergroupNameFilter
-                        )
-                      )
-                      .map((permission) => (
-                        <span
-                          className="form-element form-element--checkbox-radiobutton"
-                          key={permission.userGroupEntityId}
-                        >
-                          {PERMISSIONS_TO_EXTRACT.map((pte) => (
-                            <input
-                              id={`usergroup${permission.userGroupEntityId}`}
-                              key={pte}
-                              type="checkbox"
-                              checked={permission.canSignup}
-                              onChange={this.togglePermissionIn.bind(
-                                this,
-                                permission,
-                                pte
-                              )}
-                            />
-                          ))}
-                          <label
-                            htmlFor={`usergroup${permission.userGroupEntityId}`}
-                          >
-                            {filterHighlight(
-                              permission.userGroupName,
-                              this.state.workspaceUsergroupNameFilter
-                            )}
-                          </label>
-                        </span>
-                      ))}
-                  </div>
-                </fieldset>
-              </div>
-            </div>
-          </section>
-          <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
-            <div className="form__buttons form__buttons--workspace-management">
-              <Button
-                className="button--primary-function-save"
-                disabled={this.state.locked}
-                onClick={this.save}
-              >
-                {t("actions.save", { ns: "materials" })}
-              </Button>
-            </div>
-          </section>
-        </ApplicationPanel>
-      </>
-    );
-  }
-}
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementSignupGroupsMemoized
+            workspaceName={workspaceName}
+            workspaceSignupGroups={memoizedPermissions}
+            onChange={handleWorkspaceSignupGroupsChange}
+          />
+        </section>
+        <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
+          <div className="form__buttons form__buttons--workspace-management">
+            <Button
+              className="button--primary-function-save"
+              disabled={locked}
+              onClick={handleSaveClick}
+            >
+              {t("actions.save", { ns: "materials" })}
+            </Button>
+          </div>
+        </section>
+      </ApplicationPanel>
+    </>
+  );
+};
 
 /**
  * mapStateToProps
