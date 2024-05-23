@@ -490,7 +490,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         unloadedField = !this.props.content.richedit ? (
           <textarea
             readOnly
-            maxLength={parseInt(this.props.content.maxChars)}
+            maxLength={
+              this.props.content.maxChars &&
+              parseInt(this.props.content.maxChars)
+            }
             className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
@@ -503,7 +506,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       } else {
         unloadedField = (
           <textarea
-            maxLength={parseInt(this.props.content.maxChars)}
+            maxLength={
+              this.props.content.maxChars &&
+              parseInt(this.props.content.maxChars)
+            }
             className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
@@ -565,8 +571,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             configuration={ckEditorConfig}
             onChange={this.onCKEditorChange}
             onPaste={this.onCkeditorPaste}
-            maxChars={parseInt(this.props.content.maxChars)}
-            maxWords={parseInt(this.props.content.maxWords)}
+            maxChars={
+              this.props.content.maxChars &&
+              parseInt(this.props.content.maxChars)
+            }
+            maxWords={
+              this.props.content.maxWords &&
+              parseInt(this.props.content.maxWords)
+            }
           >
             {this.state.value}
           </CKEditor>
