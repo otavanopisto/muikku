@@ -1,0 +1,78 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.textfield-wrapper {
+  align-items: center;
+  display: inline-flex;
+  flex-flow: row wrap;
+  max-width: 100%;
+  position: relative;
+
+  &:hover {
+    .material-page__field-hint {
+      opacity: 0%;
+      visibility: hidden;
+      z-index: 2;
+    }
+  }
+}
+
+.textfield {
+  max-width: 100%;
+
+  &::-ms-clear {
+    display: none;
+  }
+
+  input {
+    @include taskfield-text;
+    @include taskfield-defaults;
+
+    display: inline-flex;
+    margin: 4px;
+    max-width: calc(100% - 8px);
+    padding: 4px 6px;
+
+    @include form-focus;
+  }
+}
+
+.textfield input[readonly] {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+}
+
+.textfield.correct-answer {
+  input {
+    border-color: $color-correct-answer;
+  }
+}
+
+.textfield.incorrect-answer {
+  input {
+    border-color: $color-incorrect-answer;
+  }
+}
+
+// Textfield style implementation for Evaluation view
+.textfield--evaluation {
+  @include taskfield-text;
+
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 2px solid $color-evaluation-readonly-taskfield-background;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 4px;
+  min-width: 30px;
+  padding: 0 6px;
+}
+
+.textfield--evaluation.correct-answer {
+  border: 2px solid $color-correct-answer;
+}
+
+.textfield--evaluation.incorrect-answer {
+  border: 2px solid $color-incorrect-answer;
+}

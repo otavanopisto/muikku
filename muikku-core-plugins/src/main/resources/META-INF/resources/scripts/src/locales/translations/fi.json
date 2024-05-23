@@ -1375,6 +1375,12 @@
       "updateError_compositeReplies": "Vastauksen päivitys epäonnistui"
     },
     "wcag": {
+      "organizerTermSelected": "Termi valittu",
+      "organizerTermInUse": "Termi on jo käytössä",
+      "organizerTermInUseAndSelected": "Valittu termi on jo käytössä",
+      "organiserTermRemove": "Poista termi {{termName}} kategoriasta {{categoryName}}",
+      "organizerCategoryName": "Kategoria {{name}}",
+      "sorterTermSelected": "Termi valittu",
       "focusToToc": "Siirry tämän hetkistä sisältöä vastaavaan sisällysluettelon kohtaan painamalla Enteriä",
       "tocTopicAllExpand": "Laajenna kaikki osiot sisällysluettelossa",
       "tocTopicAllCollapse": "Kutista kaikki osiot sisällysluettelossa",

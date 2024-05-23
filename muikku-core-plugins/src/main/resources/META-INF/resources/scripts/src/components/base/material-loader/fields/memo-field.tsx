@@ -16,6 +16,7 @@ import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import "~/sass/elements/memofield.scss";
 
 /**
  * MemoFieldProps
@@ -268,28 +269,28 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         unloadedField = !this.props.content.richedit ? (
           <textarea
             readOnly
-            className="material-page__memofield"
+            className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
         ) : (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
       } else {
         unloadedField = (
           <textarea
-            className="material-page__memofield"
+            className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
         );
       }
 
       return (
-        <span ref="base" className="material-page__memofield-wrapper">
+        <span ref="base" className="memofield-wrapper">
           {unloadedField}
-          <span className="material-page__counter-wrapper" />
+          <span className="memofield__counter-wrapper" />
           {answerExampleComponent}
         </span>
       );
@@ -311,7 +312,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
-            className="material-page__memofield"
+            className="memofield"
             cols={parseInt(this.props.content.columns)}
             minRows={minRows}
             value={this.state.value}
@@ -319,7 +320,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           />
         ) : (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -328,7 +329,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         // note how somehow numbers come as string...
         field = !this.props.content.richedit ? (
           <TextareaAutosize
-            className="material-page__memofield"
+            className="memofield"
             cols={parseInt(this.props.content.columns)}
             minRows={minRows}
             value={this.state.value}
@@ -350,13 +351,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
-            className="material-page__memofield material-page__memofield--evaluation"
+            className="memofield memofield--evaluation"
             value={this.state.value}
             onChange={this.onInputChange}
           />
         ) : (
           <div
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -377,7 +378,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           })}
         />
         <span
-          className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
@@ -385,20 +386,18 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           {field}
-          <span className="material-page__counter-wrapper">
-            <span className="material-page__word-count-container">
-              <span className="material-page__word-count-title">
+          <span className="memofield__counter-wrapper">
+            <span className="memofield__word-count-container">
+              <span className="memofield__word-count-title">
                 {t("labels.wordCount", { ns: "materials" })}
               </span>
-              <span className="material-page__word-count">
-                {this.state.words}
-              </span>
+              <span className="memofield__word-count">{this.state.words}</span>
             </span>
-            <span className="material-page__character-count-container">
-              <span className="material-page__character-count-title">
+            <span className="memofield__character-count-container">
+              <span className="memofield__character-count-title">
                 {t("labels.characterCount", { ns: "materials" })}
               </span>
-              <span className="material-page__character-count">
+              <span className="memofield__character-count">
                 {this.state.characters}
               </span>
             </span>

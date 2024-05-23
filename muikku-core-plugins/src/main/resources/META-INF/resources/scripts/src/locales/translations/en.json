@@ -1375,6 +1375,12 @@
       "updateError_compositeReplies": "Updating the answer failed"
     },
     "wcag": {
+      "organizerTermSelected": "Term selected",
+      "organizerTermInUse": "Term in use",
+      "organizerTermInUseAndSelected": "Term selected and in use",
+      "organiserTermRemove": "Remove term {{termName}} from category {{categoryName}}",
+      "organizerCategoryName": "Category {{name}}",
+      "sorterTermSelected": "Term selected",
       "focusToToc": "Press Enter to go to the item in the table of contents corresponding to the current content",
       "tocTopicAllExpand": "Expand all sections in the table of contents",
       "tocTopicAllCollapse": "Collapse all sections in the table of contents",
