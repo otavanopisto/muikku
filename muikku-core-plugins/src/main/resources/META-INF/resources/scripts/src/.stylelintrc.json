@@ -128,7 +128,7 @@
     "declaration-block-no-redundant-longhand-properties": [
       true,
       {
-        "ignoreShorthands": ["/flex/", "/border/"]
+        "ignoreShorthands": ["/flex/", "/border/", "/inset/"]
       }
     ],
     "declaration-no-important": true,
@@ -184,7 +184,6 @@
     "at-rule-property-required-list": null,
     "comment-pattern": null,
     "comment-word-disallowed-list": null,
-    "max-nesting-depth": 4,
-    "max-line-length": null
+    "max-nesting-depth": 4
   }
 }
