@@ -9,9 +9,6 @@ import { HTMLAttributeAnchorTarget } from "react";
 import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
-import { StateType } from "~/reducers";
-import { connect } from "react-redux";
-
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**

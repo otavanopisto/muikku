@@ -8233,6 +8233,110 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/workspace/workspaces/{workspaceId}/settings:
+    get:
+      operationId: getWorkspaceSettings
+      summary: Returns workspace settings by id.
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSettings"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateWorkspaceSettings
+      summary: Updates and returns workspace settings
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSettingsUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSettings"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/workspaces/{workspaceId}/signupMessage:
+    get:
+      operationId: getWorkspaceSignupMessage
+      summary: Returns workspace default signup message by id.
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Workspace signup message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSignupMessage"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: updateWorkspaceSignupMessage
+      summary: Updates and returns workspace default signup message
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignupMessageUpdateRequestBody"
+      responses:
+        "200":
+          description: Workspace signup message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkspaceSignupMessage"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/workspace/workspaces/{workspaceId}/additionalInfo:
     get:
       operationId: getWorkspaceAdditionalInfo
@@ -9017,6 +9121,28 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+    put:
+      operationId: updateWorkspaceSignupGroups
+      summary: Updates a set of workspace signup groups
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceSignupGroupsUpdateRequestBody"
+      responses:
+        "204":
+          description: Workspace signup groups updated successfully
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   /rest/workspace/workspaces/{workspaceEntityId}/signupGroups/{userGroupId}:
     put:
@@ -9042,12 +9168,8 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceSignupGroupUpdateRequestBody"
       responses:
-        "200":
+        "204":
           description: Workspace signup group updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/WorkspaceSignupGroup"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11215,9 +11337,6 @@ components:
         application/json:
           schema:
             type: object
-            properties:
-              message:
-                type: string
 
     WorkspaceStudentUpdateRequestBody:
       required: true
@@ -11532,6 +11651,22 @@ components:
           schema:
             $ref: "#/components/schemas/AnyValue"
 
+    WorkspaceSettingsUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/WorkspaceSettings"
+
+    WorkspaceSignupMessageUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/WorkspaceSignupMessage"
+
     WorkspaceCreateRequestBody:
       required: true
       content:
@@ -11558,6 +11693,17 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/WorkspaceSignupGroup"
+
+    WorkspaceSignupGroupsUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              workspaceSignupGroups:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WorkspaceSignupGroup"
 
     WorkspaceFileCreateRequestBody:
       content:
@@ -16117,6 +16263,7 @@ components:
         - userGroupEntityId
         - userGroupName
         - canSignup
+        - signupMessage
       properties:
         workspaceEntityId:
           description: The id of the workspace
@@ -16132,6 +16279,10 @@ components:
         canSignup:
           description: If the user can signup
           type: boolean
+        signupMessage:
+          description: Signup message for the group
+          nullable: true
+          $ref: "#/components/schemas/WorkspaceSignupMessage"
 
     WorkspaceUserEntity:
       type: object
@@ -16585,6 +16736,139 @@ components:
         showCredits:
           description: Should the credits be shown. Currently only OPS 2021 student will have this as true
           type: boolean
+
+    WorkspaceSettings:
+      type: object
+      description: Workspace Settings object
+      required:
+        - id
+        - name
+        - description
+        - published
+        - hasCustomImage
+        - materialDefaultLicense
+        - urlName
+        - curriculumIdentifiers
+        - organizationEntityId
+        - language
+      properties:
+        id:
+          description: The id of the workspace
+          type: integer
+          format: int64
+        name:
+          description: The name of the workspace
+          type: string
+        nameExtension:
+          description: The name extension of the workspace
+          type: string
+          nullable: true
+        description:
+          description: The description of the workspace
+          type: string
+        beginDate:
+          description: The date when the workspace begins
+          type: string
+          format: date-time
+          nullable: true
+        endDate:
+          description: The date when the workspace ends
+          type: string
+          format: date-time
+          nullable: true
+        signupStart:
+          description: The date when the workspace signup opens
+          type: string
+          format: date-time
+          nullable: true
+        signupEnd:
+          description: The date when the workspace signup closes
+          type: string
+          format: date-time
+          nullable: true
+        published:
+          description: If the workspace is published
+          type: boolean
+        subjectIdentifier:
+          description: The identifier of the subject
+          type: string
+        materialDefaultLicense:
+          description: The default license of the workspace
+          type: string
+        hasCustomImage:
+          description: If the workspace has a custom image
+          type: boolean
+        curriculumIdentifiers:
+          description: The identifiers of the curriculums
+          type: array
+          items:
+            type: string
+        workspaceTypeIdentifier:
+          description: The identifier of the workspace type
+          type: string
+        organizationEntityId:
+          description: The id of the organization
+          type: integer
+          format: int64
+        urlName:
+          description: The url name of the workspace
+          type: string
+        language:
+          description: Main language of the workspace
+          $ref: "#/components/schemas/Language"
+        mandatority:
+          description: Mandatority value of the workspace
+          allOf:
+            - $ref: "#/components/schemas/WorkspaceMandatority"
+          nullable: true
+        access:
+          description: Access level of the workspace
+          $ref: "#/components/schemas/WorkspaceAccess"
+        defaultSignupMessage:
+          description: Default sign up greeting of the workspace
+          $ref: "#/components/schemas/WorkspaceSignupMessage"
+        signupGroups:
+          description: Sign up groups and their settings
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceSettingsSignupGroup"
+
+    WorkspaceSignupMessage:
+      type: object
+      description: Workspace sign up message, a message that is sent to student when they sign up to a workspace
+      required:
+        - enabled
+        - caption
+        - content
+      properties:
+        enabled:
+          type: boolean
+        caption:
+          type: string
+        content:
+          type: string
+
+    WorkspaceSettingsSignupGroup:
+      type: object
+      description: WorkspaceSignupGroup object
+      required:
+        - userGroupEntityId
+        - userGroupName
+        - canSignup
+      properties:
+        userGroupEntityId:
+          description: The id of the user group
+          type: integer
+          format: int64
+        userGroupName:
+          description: The name of the user group
+          type: string
+        canSignup:
+          description: If the user can signup
+          type: boolean
+        signupMessage:
+          descrption: Workspace sign up message for members of this group
+          $ref: "#/components/schemas/WorkspaceSignupMessage"
 
     ErrorModel:
       type: object

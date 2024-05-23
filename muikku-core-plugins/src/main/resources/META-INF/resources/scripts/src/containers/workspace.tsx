@@ -28,6 +28,7 @@ import {
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadCurrentWorkspaceUserGroupPermissions,
+  loadCurrentWorkspaceSignupMessage,
   loadWorkspaceChatStatus,
   setAvailableCurriculums,
   loadLastWorkspacesFromServer,
@@ -1122,6 +1123,11 @@ export default class Workspace extends React.Component<
             this.props.store.dispatch(
               loadCurrentWorkspaceUserGroupPermissions() as Action
             );
+
+            this.props.store.dispatch(
+              loadCurrentWorkspaceSignupMessage() as Action
+            );
+
             if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
               this.props.store.dispatch(
                 loadWorkspaceDetailsInCurrentWorkspace() as Action

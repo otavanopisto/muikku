@@ -10,9 +10,23 @@ import { useTranslation } from "react-i18next";
 import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
 
 /**
+ * DropdownItem
+ */
+interface DropdownItem {
+  id: string;
+  text: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onClick: any;
+}
+
+/**
  * NotesListItemProps
  */
-export interface NotesListItemProps {
+export interface NotesListItemProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   archived: boolean;
   notesItem: Note;
   containerModifier?: string[];
@@ -48,10 +62,10 @@ const defaultProps = {
  * NotesListItem
  */
 const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
-  (props, ref) => {
+  (props, outerRef) => {
     props = { ...defaultProps, ...props };
 
-    const myRef = React.useRef<HTMLDivElement>(null);
+    const innerRef = React.useRef<HTMLDivElement>(null);
     const {
       notesItem,
       onArchiveClick,
@@ -65,6 +79,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       archived,
       openInformationToDialog,
       containerModifier,
+      ...restProps
     } = props;
 
     const {
@@ -81,6 +96,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
+
+    React.useImperativeHandle(
+      outerRef,
+      () => innerRef.current && innerRef.current,
+      []
+    );
 
     if (containerModifier && containerModifier.length > 0) {
       updatedModifiers.push(containerModifier);
@@ -108,7 +129,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       e.stopPropagation();
 
       if (onArchiveClick) {
-        myRef.current.classList.add("state-DELETE");
+        innerRef.current.classList.add("state-DELETE");
 
         setTimeout(() => {
           onArchiveClick(id);
@@ -126,7 +147,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       e.stopPropagation();
 
       if (onReturnArchivedClick) {
-        myRef.current.classList.add("state-DELETE");
+        innerRef.current.classList.add("state-DELETE");
 
         setTimeout(() => {
           onReturnArchivedClick(id);
@@ -138,22 +159,22 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * handleUpdateNotesItemStatusClick
      * @param newStatus newStatus
      */
-    const handleUpdateNotesItemStatusClick =
-      (newStatus: NoteStatusType) =>
-      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        e.stopPropagation();
+    const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
+      if (onUpdateNotesItemStatus) {
+        onUpdateNotesItemStatus(id, newStatus);
 
-        if (onUpdateNotesItemStatus) {
-          onUpdateNotesItemStatus(id, newStatus);
+        if (innerRef.current) {
+          innerRef.current.focus();
         }
-      };
+      }
+    };
 
-    if (myRef && myRef.current && myRef.current.classList) {
+    if (innerRef && innerRef.current && innerRef.current.classList) {
       if (active) {
-        myRef.current.classList.add("state-ACTIVE");
+        innerRef.current.classList.add("state-ACTIVE");
       } else {
-        myRef.current.classList.contains("state-ACTIVE") &&
-          myRef.current.classList.remove("state-ACTIVE");
+        innerRef.current.classList.contains("state-ACTIVE") &&
+          innerRef.current.classList.remove("state-ACTIVE");
       }
     }
 
@@ -290,7 +311,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * renderUpdateStatus
      */
     const renderUpdateStatus = () => {
-      let content;
+      let items: DropdownItem[] = [];
 
       if (archived) {
         return;
@@ -298,96 +319,106 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
 
       if (loggedUserIsOwner) {
         if (status === "ONGOING") {
-          content = (
-            <div className="dropdown__container-item">
-              <Link
-                className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick("APPROVAL_PENDING")}
-              >
-                {t("actions.send")}
-              </Link>
-            </div>
-          );
+          items = [
+            {
+              id: "task-item-send",
+              text: t("actions.send"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () =>
+                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
+            },
+          ];
+
           if (loggedUserIsCreator) {
-            content = (
-              <div className="dropdown__container-item">
-                <Link
-                  className="link link--full link--tasks-dropdown"
-                  onClick={handleUpdateNotesItemStatusClick("APPROVED")}
-                >
-                  {t("actions.done")}
-                </Link>
-              </div>
-            );
+            items = [
+              {
+                id: "task-item-done",
+                text: t("actions.done"),
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
+              },
+            ];
           }
         }
         if (status === "APPROVAL_PENDING") {
-          content = (
-            <div className="dropdown__container-item">
-              <Link
-                className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick("ONGOING")}
-              >
-                {t("actions.cancel")}
-              </Link>
-            </div>
-          );
+          items = [
+            {
+              id: "task-item-cancel",
+              text: t("actions.cancel"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
+            },
+          ];
         }
 
         if (status === "APPROVED") {
-          content = (
-            <div className="dropdown__container-item">
-              <Link
-                className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick("ONGOING")}
-              >
-                {t("actions.incomplete")}
-              </Link>
-            </div>
-          );
+          items = [
+            {
+              id: "task-item-incomplete",
+              text: t("actions.incomplete"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
+            },
+          ];
         }
       } else if (loggedUserIsCreator && !loggedUserIsOwner) {
         if (status === "ONGOING") {
           return;
         }
         if (status === "APPROVAL_PENDING") {
-          content = (
-            <>
-              <div className="dropdown__container-item">
-                <Link
-                  className="link link--full link--tasks-dropdown"
-                  onClick={handleUpdateNotesItemStatusClick("APPROVED")}
-                >
-                  {t("actions.approve")}
-                </Link>
-              </div>
-              <div className="dropdown__container-item">
-                <Link
-                  className="link link--full link--tasks-dropdown"
-                  onClick={handleUpdateNotesItemStatusClick("ONGOING")}
-                >
-                  {t("actions.incomplete")}
-                </Link>
-              </div>
-            </>
-          );
+          items = [
+            {
+              id: "task-item-approve",
+              text: t("actions.approve"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
+            },
+            {
+              id: "task-item-incomplete",
+              text: t("actions.incomplete"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
+            },
+          ];
         }
         if (status === "APPROVED") {
-          content = (
-            <div className="dropdown__container-item">
-              <Link
-                className="link link--full link--tasks-dropdown"
-                onClick={handleUpdateNotesItemStatusClick("APPROVAL_PENDING")}
-              >
-                {t("actions.incomplete")}
-              </Link>
-            </div>
-          );
+          items = [
+            {
+              id: "task-item-incomplete",
+              text: t("actions.incomplete"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () =>
+                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
+            },
+          ];
         }
       }
 
+      /**
+       * Renders item
+       * @param item item
+       * @param onClose onClose
+       */
+      const renderItem = (item: DropdownItem, onClose: () => void) => (
+        <Link
+          key={item.id}
+          className={`link link--full link--tasks-dropdown`}
+          onClick={() => {
+            onClose();
+            item.onClick();
+          }}
+        >
+          <span>{item.text}</span>
+        </Link>
+      );
+
       return (
-        <Dropdown content={content}>
+        <Dropdown
+          items={items.map(
+            (item) => (closeDropdown: () => void) =>
+              renderItem(item, closeDropdown)
+          )}
+        >
           <div tabIndex={0}>
             <IconButton
               icon="more_vert"
@@ -400,7 +431,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
 
     return (
       <div
-        ref={myRef}
+        {...restProps}
+        ref={innerRef}
         className={`notes__item ${
           updatedModifiers.length
             ? updatedModifiers.map((m) => `notes__item--${m}`).join(" ")
@@ -416,6 +448,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               <IconButton
                 icon="pencil"
                 buttonModifiers={["notes-action", "notes-edit"]}
+                aria-label={t("wcag.editNote")}
               />
             </NotesItemEdit>
           )}
@@ -433,6 +466,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               onClick={handleNotesItemReturnArchiveClick}
               icon="undo"
               buttonModifiers={["notes-action", "notes-unarchive"]}
+              aria-label={t("wcag.archiveUndo")}
             />
           )}
 
@@ -441,6 +475,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               onClick={handleNotesItemArchiveClick}
               icon="trash"
               buttonModifiers={["notes-action", "notes-archive"]}
+              aria-label={t("wcag.archive")}
             />
           )}
 
@@ -465,7 +500,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               onReturnArchivedClick={onReturnArchivedClick}
               onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
             >
-              <span>{title}</span>
+              <span
+                role="button"
+                aria-label={t("wcag.showDetails")}
+                tabIndex={0}
+              >
+                {title}
+              </span>
             </NoteInformationDialog>
           ) : (
             <span>{title}</span>

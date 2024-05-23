@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table WorkspaceSignupMessage (
+       id bigint not null auto_increment,
+        caption varchar(255) not null,
+        content longtext not null,
+        enabled bit not null,
+        signupGroupEntity_id bigint,
+        workspaceEntity_id bigint,
+        primary key (id)
+    );
+  </sql>
+
+  <sql>
+    alter table WorkspaceSignupMessage 
+       add constraint FKnuyyyta3griewx7dn7n2l99n2 
+       foreign key (signupGroupEntity_id) 
+       references UserGroupEntity (id);
+  </sql>
+
+  <sql>
+    alter table WorkspaceSignupMessage 
+       add constraint FKm5hl0q0whepafo3yj0uwff6fl 
+       foreign key (workspaceEntity_id) 
+       references WorkspaceEntity (id);
+  </sql>
+
+  <sql>
+    alter table WorkspaceSignupMessage 
+       add constraint UKf93kknycnnqg92ip83pd9kcoi unique (workspaceEntity_id, signupGroupEntity_id);
+  </sql>
+  
+</update> 
