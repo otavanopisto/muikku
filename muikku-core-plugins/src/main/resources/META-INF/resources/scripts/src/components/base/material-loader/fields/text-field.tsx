@@ -332,9 +332,9 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
         ? Number(this.props.content.columns) * 10
         : 50;
 
-    const textfieldStyle = {
+    const textfieldStyle: React.CSSProperties = {
       width: textfieldWidth,
-      "box-sizing": "content-box",
+      boxSizing: "content-box",
     };
 
     const doNotInjectStyles = {

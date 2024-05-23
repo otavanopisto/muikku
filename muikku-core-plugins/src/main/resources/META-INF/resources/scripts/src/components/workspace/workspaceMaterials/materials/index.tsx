@@ -143,7 +143,7 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {

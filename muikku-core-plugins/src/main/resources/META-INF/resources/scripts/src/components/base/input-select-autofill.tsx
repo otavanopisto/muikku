@@ -79,10 +79,10 @@ export default class AutofillSelector extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: AutofillSelectorProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: AutofillSelectorProps) {
     if (nextProps.selectedItems !== this.props.selectedItems) {
       this.setState({ selectedItems: nextProps.selectedItems });
     }

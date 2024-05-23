@@ -106,9 +106,10 @@ export default class ImageEditor extends React.Component<
   }
 
   /**
-   * componentWillMount
+   * UNSAFE_componentWillMount
    */
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     document.body.addEventListener("mouseup", this.onMouseUp as any);
     document.body.addEventListener("mousemove", this.onMouseMove as any);
 
@@ -127,10 +128,11 @@ export default class ImageEditor extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ImageEditorProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps: ImageEditorProps) {
     if (nextProps.dataURL !== this.props.dataURL) {
       this.image.src = nextProps.dataURL;
     } else if (nextProps.angle !== this.props.angle) {

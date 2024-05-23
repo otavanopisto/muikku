@@ -1,5 +1,4 @@
 import * as React from "react";
-import { HTMLAttributeAnchorTarget } from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   HTMLtoReactComponent,
@@ -36,9 +35,7 @@ class Link extends React.Component<LinkProps, Record<string, unknown>> {
    * @param target target
    * @returns target accessibility indicator
    */
-  renderAccessibilityIndicatorByTarget = (
-    target: HTMLAttributeAnchorTarget
-  ) => {
+  renderAccessibilityIndicatorByTarget = (target: any) => {
     const { t } = this.props;
 
     switch (target) {

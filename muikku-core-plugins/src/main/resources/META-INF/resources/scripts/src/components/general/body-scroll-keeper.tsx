@@ -33,10 +33,10 @@ export default class BodyScrollKeeper extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: BodyScrollKeeperProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: BodyScrollKeeperProps) {
     if (nextProps.hidden && !this.props.hidden) {
       this.lastPosition =
         document.body.scrollTop || document.documentElement.scrollTop;

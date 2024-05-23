@@ -61,10 +61,10 @@ class ModifyThreadReply extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ModifyThreadReplyProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ModifyThreadReplyProps) {
     if (nextProps.reply.id !== this.props.reply.id) {
       this.setState(
         this.getRecoverStoredState(

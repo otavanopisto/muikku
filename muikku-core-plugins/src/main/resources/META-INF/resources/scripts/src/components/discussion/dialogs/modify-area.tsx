@@ -69,10 +69,10 @@ class DiscussionModifyArea extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: DiscussionModifyAreaProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DiscussionModifyAreaProps) {
     const area = nextProps.discussion.areas.find(
       (area) => area.id === nextProps.discussion.areaId
     );

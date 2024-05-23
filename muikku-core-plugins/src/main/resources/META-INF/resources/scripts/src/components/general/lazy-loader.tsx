@@ -115,9 +115,9 @@ export default class LazyLoader extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    */
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     this.checkWhetherInView();
   }
 

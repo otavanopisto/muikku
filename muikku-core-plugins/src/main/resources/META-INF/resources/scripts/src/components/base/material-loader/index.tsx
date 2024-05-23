@@ -422,11 +422,12 @@ class MaterialLoader extends React.Component<
     this.create();
   }
   /**
-   * componentWillUpdate
+   * UNSAFE_componentWillUpdate
    * @param nextProps nextProps
    * @param nextState nextState
    */
-  componentWillUpdate(
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate(
     nextProps: MaterialLoaderProps,
     nextState: MaterialLoaderState
   ) {
