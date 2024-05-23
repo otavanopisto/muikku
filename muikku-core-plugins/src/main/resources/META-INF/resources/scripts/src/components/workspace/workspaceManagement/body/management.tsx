@@ -83,14 +83,6 @@ interface ManagementPanelState {
   workspaceHasCustomImage: boolean;
   workspacePermissions: Array<WorkspaceSignupGroup>;
   workspaceChatEnabled: boolean;
-  newWorkspaceImageSrc?: string;
-  newWorkspaceImageFile?: File;
-  newWorkspaceImageB64?: string;
-  newWorkspaceImageCombo?: {
-    file?: File;
-    originalB64?: string;
-    croppedB64: string;
-  };
   workspaceSignupMessage: WorkspaceSignupMessage;
   locked: boolean;
 }
