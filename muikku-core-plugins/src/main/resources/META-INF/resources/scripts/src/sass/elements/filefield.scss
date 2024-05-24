@@ -1,0 +1,23 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.filefield-wrapper {
+  display: block;
+  position: relative;
+}
+
+.filefield {
+  display: block;
+}
+
+.filefield--disabled {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+
+  .audiofield__files-container,
+  .file-uploader__items-container {
+    border: 0;
+  }
+}
