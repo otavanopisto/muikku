@@ -84,10 +84,11 @@ export default async function (
     store.dispatch(<Action>updateUnreadMessageThreadsCount());
 
   /**
-   * loadChatSettings
+   * Loads chat settings after logging status has been resolved by loadStatus action.
    */
   const loadChatSettings = () =>
     getOptionValue(options.setupChat) &&
+    store.getState().status.loggedIn &&
     store.dispatch(<Action>updateStatusChatSettings());
 
   /**

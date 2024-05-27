@@ -11,7 +11,10 @@ const ChatWebsocketContext = createContext<Websocket | undefined>(undefined);
  */
 interface ChatWebsocketContextProviderProps {
   children: React.ReactNode;
-  websocket: Websocket;
+  /**
+   * Websocket instance, if not logged in, it will be null
+   */
+  websocket: Websocket | null;
 }
 
 /**
@@ -22,6 +25,10 @@ function ChatWebsocketContextProvider(
   props: ChatWebsocketContextProviderProps
 ) {
   const { children, websocket } = props;
+
+  if (!websocket) {
+    return null;
+  }
 
   return (
     <ChatWebsocketContext.Provider value={websocket}>

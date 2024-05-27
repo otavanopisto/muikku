@@ -16,7 +16,7 @@ import { useChatWebsocketContext } from "../context/chat-websocket-context";
 const chatApi = MApi.getChatApi();
 
 /**
- * useChatSettings
+ * UseUsersProps
  */
 interface UseUsersProps {
   /**

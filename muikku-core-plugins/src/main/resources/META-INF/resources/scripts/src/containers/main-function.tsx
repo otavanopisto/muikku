@@ -967,8 +967,6 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      const state = this.props.store.getState();
-
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
