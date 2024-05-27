@@ -45,15 +45,18 @@ const getAssessmentVariables = (assessment: WorkspaceAssessmentState) => {
  */
 const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
   const { t } = useTranslation("workspace");
+  const notLoaded = !props.evaluation;
+  const hasNoGrade =
+    props.evaluation &&
+    !props.evaluation.some(
+      (e) => e.state === "pass" || e.state === "incomplete"
+    );
 
-  if (!props.evaluation || props.evaluation.length === 0) {
+  if (notLoaded || hasNoGrade) {
     return null;
   }
 
-  // const isCombinationWorkspace = props.subjects && props.subjects.length > 1;
-
-  const { evalStateModifier, evalStateIcon, assessmentIsIncomplete } =
-    getAssessmentVariables(props.evaluation[0]);
+  const isCombinationWorkspace = props.subjects && props.subjects.length > 1;
 
   /**
    * getAssessmentData
@@ -61,56 +64,104 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
    */
 
   return (
-    <div className="panel panel--workspace-evaluation">
-      <div className="panel__header">
-        <div
-          className={`panel__header-icon panel__header-icon--workspace-evaluation ${
-            evalStateModifier ? "STATE-" + evalStateModifier : ""
-          }  ${evalStateIcon}`}
-        >
-          {assessmentIsIncomplete && (
-            <span className="panel__header-icon-text">T</span>
-          )}
-        </div>
-        <h2 className="panel__header-title">
-          {assessmentIsIncomplete
-            ? t("labels.evaluated", {
-                context: "incomplete",
-              })
-            : t("labels.evaluated", {
-                context: "in",
-                date: localize.date(props.evaluation[0]?.date),
-              })}
-        </h2>
-      </div>
-      <div className="panel__body">
-        <div
-          className={`workspace-assessment workspace-assessment--${evalStateModifier} workspace-assessment--workspace-panel`}
-        >
-          {props.evaluation[0]?.text ? (
-            <div className="workspace-assessment__literal">
-              <div className="workspace-assessment__literal-label">
-                {t("labels.evaluation", {
-                  ns: "evaluation",
-                  context: "literal",
-                })}
-                :
-              </div>
+    <>
+      {props.evaluation.map((assessment, index) => {
+        const { evalStateModifier, evalStateIcon, assessmentIsIncomplete } =
+          getAssessmentVariables(props.evaluation[index]);
+
+        if (assessment.state !== "pass" && assessment.state !== "incomplete") {
+          return null;
+        }
+        return (
+          <div
+            key={assessment.date + index}
+            className="panel panel--workspace-evaluation"
+          >
+            <div className="panel__header">
               <div
-                className="workspace-assessment__literal-data"
-                dangerouslySetInnerHTML={{ __html: props.evaluation[0]?.text }}
-              ></div>
+                className={`panel__header-icon panel__header-icon--workspace-evaluation ${
+                  evalStateModifier ? "STATE-" + evalStateModifier : ""
+                }  ${!isCombinationWorkspace ? evalStateIcon : ""}`}
+              >
+                {assessmentIsIncomplete && (
+                  <>
+                    <span
+                      id={assessment.workspaceSubjectIdentifier}
+                      className="panel__header-icon-text"
+                    >
+                      T
+                    </span>
+                  </>
+                )}
+                {isCombinationWorkspace && (
+                  <>
+                    <label
+                      htmlFor={assessment.workspaceSubjectIdentifier}
+                      className="visually-hidden"
+                    >
+                      {t("labels.grade")}
+                    </label>
+                    <span
+                      id={assessment.workspaceSubjectIdentifier}
+                      className="panel__header-icon-text"
+                    >
+                      {assessment.grade}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              <h2 className="panel__header-title">
+                {isCombinationWorkspace &&
+                  props.subjects.find(
+                    (subject) =>
+                      subject.identifier ===
+                      assessment.workspaceSubjectIdentifier
+                  ).subject.name + " "}
+
+                {assessmentIsIncomplete
+                  ? t("labels.evaluated", {
+                      context: "incomplete",
+                    })
+                  : t("labels.evaluated", {
+                      context: "in",
+                      date: localize.date(assessment.date),
+                    })}
+              </h2>
             </div>
-          ) : (
-            <div className="empty">
-              {t("content.empty", {
-                ns: "evaluation",
-              })}
+            <div className="panel__body">
+              <div
+                className={`workspace-assessment workspace-assessment--${evalStateModifier} workspace-assessment--workspace-panel`}
+              >
+                {assessment.text ? (
+                  <div className="workspace-assessment__literal">
+                    <div className="workspace-assessment__literal-label">
+                      {t("labels.evaluation", {
+                        ns: "evaluation",
+                        context: "literal",
+                      })}
+                      :
+                    </div>
+                    <div
+                      className="workspace-assessment__literal-data"
+                      dangerouslySetInnerHTML={{
+                        __html: assessment.text,
+                      }}
+                    ></div>
+                  </div>
+                ) : (
+                  <div className="empty">
+                    {t("content.empty", {
+                      ns: "evaluation",
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
+          </div>
+        );
+      })}
+    </>
   );
 };
 
