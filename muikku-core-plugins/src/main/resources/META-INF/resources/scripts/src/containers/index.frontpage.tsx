@@ -26,56 +26,56 @@ const IndexFrontPage = () => {
   if (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0) {
     return (
       <div>
-        <h1>Painajaisen aika!</h1>
+        <h1 className="staging-title">
+          Painajainen nostaa päätään ... nyt se alkaa!
+        </h1>
         <LoginButton key="0" modifier="campus-nightmare" />
       </div>
     );
   }
 
   return (
-    <div className="timer-wrapper" id="timer">
-      <div className="timer-row">
-        <div className="timer-item" id="days">
-          <div className="timer-item-number">
-            {days}
-            <div className="timer-item-overlay"></div>
-            <div className="timer-item-text">Päivää</div>
-          </div>
-        </div>
-        <div className="timer-item" id="hours">
-          <div className="timer-item-number">
-            {parsedHourses}
-            <div className="timer-item-overlay"></div>
-            <div className="timer-item-text">Tuntia</div>
-          </div>
-        </div>
-      </div>
-      <div className="timer-row">
-        <div className="timer-item" id="minutes">
-          <div className="timer-item-number">
-            {parsedMinutes}
-            <div className="timer-item-overlay"></div>
-            <div className="timer-item-text">Minuuttia</div>
-          </div>
-        </div>
-        <div className="timer-item" id="seconds">
-          <div className="timer-item-number">
-            {parsedSeconds}
-            <div className="timer-item-overlay"></div>
-            <div className="timer-item-text">Sekunttia</div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h2>Ilmoitus paikan löytäneille!</h2>
+    <>
+      <div className="staging-information-wrapper">
+        <h1 className="staging-title">
+          Te! Osoitteessa oikeassa. Sinne löytäneet!
+        </h1>
+        <h2 className="staging-secondary-title">
+          Kaikille äänite. Kuunneltavaksi!
+        </h2>
         <AudioPoolComponent
           className="audiofield__file"
           controls
           preload="metadata"
         />
       </div>
-    </div>
+      <div className="timer-wrapper" id="timer">
+        <div className="timer-row">
+          <div className="timer-item" id="days">
+            <div className="timer-item-number">{days}</div>
+            <div className="timer-item-overlay"></div>
+            <div className="timer-item-text">Päivää</div>
+          </div>
+          <div className="timer-item" id="hours">
+            <div className="timer-item-number">{parsedHourses}</div>
+            <div className="timer-item-overlay"></div>
+            <div className="timer-item-text">Tuntia</div>
+          </div>
+        </div>
+        <div className="timer-row">
+          <div className="timer-item" id="minutes">
+            <div className="timer-item-number">{parsedMinutes}</div>
+            <div className="timer-item-overlay"></div>
+            <div className="timer-item-text">Minuuttia</div>
+          </div>
+          <div className="timer-item" id="seconds">
+            <div className="timer-item-number">{parsedSeconds}</div>
+            <div className="timer-item-overlay"></div>
+            <div className="timer-item-text">Sekuntia</div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

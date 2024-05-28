@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Covered+By+Your+Grace&display=swap');
+
 body {
   align-items: center;
   background-color: #000000;
@@ -17,6 +19,24 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+.staging-information-wrapper {
+  font-family: "Covered By Your Grace";
+  max-width: 960px;
+  padding: 20px;
+}
+
+.staging-title {
+  font-size: 5rem;
+  padding: 10px;
+}
+
+.staging-secondary-title {
+  color: #bd0000;
+  font-size: 3rem;
+  padding: 10px;
+  text-shadow: 0 0 10px #000;
 }
 
 .timer-wrapper {
