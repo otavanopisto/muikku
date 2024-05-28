@@ -76,7 +76,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/coursepicker",
         icon: "books",
         to: true,
-        condition: true,
+        condition: this.props.status.isActiveUser && this.props.status.loggedIn,
       },
       {
         modifier: "communicator",
