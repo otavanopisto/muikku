@@ -30,6 +30,7 @@ body {
 .staging-title {
   font-size: 5rem;
   padding: 10px;
+  text-shadow: 0 0 20px #054fdb;
 }
 
 .staging-secondary-title {

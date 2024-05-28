@@ -2421,7 +2421,19 @@
 }
 
 .button--campus-nightmare {
+  align-items: center;
   background-color: $color-fatal;
+  border-radius: 5px;
   color: $color-default;
-  margin: 0 10px 0 0;
+  display: inline-flex;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 3rem;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 10px 20px 5px;
+  width: auto;
+
+  &:hover {
+    background-color: darken($color-fatal, 20%);
+  }
 }

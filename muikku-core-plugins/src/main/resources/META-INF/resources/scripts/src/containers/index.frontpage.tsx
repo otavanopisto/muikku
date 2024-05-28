@@ -17,6 +17,7 @@ registerLocale("enGB", enGB);
 const IndexFrontPage = () => {
   const [days, hours, minutes, seconds] = useCountdown(
     new Date("2024-08-05T09:00:00.000+03:00")
+    //new Date("2024-05-28T09:00:00.000+03:00")
   );
 
   const parsedHourses = hours < 10 ? `0${hours}` : hours;
@@ -25,9 +26,9 @@ const IndexFrontPage = () => {
 
   if (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0) {
     return (
-      <div>
+      <div className="staging-information-wrapper">
         <h1 className="staging-title">
-          Painajainen nostaa päätään ... nyt se alkaa!
+          Tervehdimme tulevaa ... tästä se alkaa!
         </h1>
         <LoginButton key="0" modifier="campus-nightmare" />
       </div>
