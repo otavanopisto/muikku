@@ -1495,8 +1495,8 @@
       "signUp": "Sign up to {{name}} {{nameExtension}}",
       "signUpInformation": "<p>After clicking the \"Sign up\" button, you will be directed to the front page of the course. You can start studying immediately.</p><p>You can find the teacher's information on the front page of the course. If you have any questions or concerns regarding the course, you can send a message to the teacher via Muikku.</p>",
       "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?",
-      "workspaceSignupMessageInfo": "Activate the course sign-up message. This is possible when the message title and content are set.",
-      "workspaceSignupGroupMessageInfo": "Activate the course sign-up message. This is possible when the message title and content are set."
+      "workspaceSignupMessageInfo": "Activate the course-specific enrollment message. Activation is possible only when the message has a subject and content. If no group-specific messages are set, this message will be sent to all enrolled in the course. You can also send a customized messages to different groups.",
+      "workspaceSignupGroupMessageInfo": "Activate the group-specific enrollment message. Activation is possible only when the message has a subject and content. This message will be sent only to members of this group who enroll in the course."
     },
     "labels": {
       "access": "Access",
