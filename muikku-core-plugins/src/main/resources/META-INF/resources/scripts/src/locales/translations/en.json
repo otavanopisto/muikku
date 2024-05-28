@@ -490,7 +490,7 @@
       "loadError_studies": "Loading records failed. Please try refreshing the page.",
       "loadError_counselors": "Loading counselors failed. Please try refreshing the page.",
       "loadError_matriculation": "Loading the matriculation examination information failed. Please try again.",
-      "loadError_matriculationSubjects": "Loading matriculation subjects failed. Please try refreshing the page.",
+      "loadError_matriculationSubjects": "Loading the matriculation subjects failed. Please try refreshing the page.",
       "loadError_statistics": "Loading the statistics information failed. Please try again.",
       "loadError_userAndWorkspace": "User and course loading failed. Please try refreshing the page.",
       "loadError_workspaces": "Loading the courses failed. Please try refreshing the page.",
@@ -502,6 +502,12 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_matriculationEligiblity": "Loading the eligibility rights for the {{subject}} failed. Please try refreshing the page.",
       "updateError_summary": "Loading the summary information failed. Please try refreshing the page."
+    },
+    "wcag": {
+      "collapseRecordInfo": "Collapse workspace record info",
+      "assignmentsActivity": "Assignments done {{percent}}%",
+      "exercisesActivity": "Exercises done {{percent}}%",
+      "expandRecordInfo": "Expand workspace record info"
     }
   },
   "hops": {
@@ -983,6 +989,16 @@
       "updateSuccess": "Updating the task succeeded",
       "updateSuccess_state": "Updating the task sate succeeded",
       "ratingError": "Rating the task failed. Please try again. {{error}}"
+    },
+    "wcag": {
+      "archive": "Archive task",
+      "archiveUndo": "Undo archiving",
+      "createNewNote": "Create a new task",
+      "editNote": "Edit task",
+      "markAsImportant": "Mark task as important",
+      "markAsNotImportant": "Mark task as not important",
+      "prioritySorter": "Priority sorter {{priorityName}}",
+      "showDetails": "Show task details"
     }
   },
   "users": {
@@ -1287,6 +1303,8 @@
       "license": "Material license",
       "licenseLink": "License URL address or license text",
       "materials": "Materials",
+      "maxWordCount": "Maximum words: {{count}}",
+      "maxCharacterCount": "Maximum characters: {{count}}",
       "metaData": "Metadata",
       "newPage": "New page",
       "noLicense": "No license",
@@ -1339,6 +1357,12 @@
       "assignmentUpdated": "Assignment updated",
       "assignmentWithdrawn": "Assignment withdrawn",
       "connectionError": "The connection to the server was lost, reconnecting...",
+      "contentLimitReached": "Content exceeds the set limit",
+      "contentLimitReached_characters": "Content exceeds the set character limit",
+      "contentLimitReached_words": "Content exceeds the set word limit",
+      "pastedContentLimitReached": "Pasted content exceeds the set limit",
+      "pastedContentLimitReached_characters": "Pasted content exceeds the set character limit",
+      "pastedContentLimitReached_words": "Pasted content exceeds the set word limit",
       "documentCopied": "Document ({{title}}) has been copied to the clipboard",
       "loading": "Loading {{progress}} %",
       "loadError": "$t(common:notifications.loadError)",
@@ -1357,6 +1381,27 @@
       "updateError_page": "Updating the material page failed",
       "updateError_answers": "Changing the assignment state failed",
       "updateError_compositeReplies": "Updating the answer failed"
+    },
+    "wcag": {
+      "organizerTermSelected": "Term selected",
+      "organizerTermInUse": "Term in use",
+      "organizerTermInUseAndSelected": "Term selected and in use",
+      "organiserTermRemove": "Remove term {{termName}} from category {{categoryName}}",
+      "organizerCategoryName": "Category {{name}}",
+      "sorterTermSelected": "Term selected",
+      "focusToToc": "Press Enter to go to the item in the table of contents corresponding to the current content",
+      "tocTopicAllExpand": "Expand all sections in the table of contents",
+      "tocTopicAllCollapse": "Collapse all sections in the table of contents",
+      "tocTopicExpand": "Expand section content with right arrow",
+      "tocTopicCollapse": "Collapse section content with left arrow",
+      "tocPageMaterialStatus": "Content status",
+      "tocPageMaterialStatus_done": "Content is in the done state",
+      "tocPageMaterialStatus_submitted": "Content is in the submitted state",
+      "tocPageMaterialStatus_withdrawn": "Content is in the withdrawn state",
+      "tocPageMaterialStatus_incomplete": "Content is in the incomplete state",
+      "tocPageMaterialStatus_failed": "Content is in the failed state",
+      "tocPageMaterialStatus_passed": "Content is in the passed state",
+      "tocPageMaterialStatus_restricted": "Content is in the restricted"
     }
   },
   "notebook": {
@@ -1448,13 +1493,17 @@
       "requestEvaluation": "Send an evaluation request to your teacher. The teacher is automatically notified.",
       "selectTemplate": "Select a template from which to create the course from.",
       "signUp": "Sign up to {{name}} {{nameExtension}}",
-      "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?"
+      "signUpInformation": "<p>After clicking the \"Sign up\" button, you will be directed to the front page of the course. You can start studying immediately.</p><p>You can find the teacher's information on the front page of the course. If you have any questions or concerns regarding the course, you can send a message to the teacher via Muikku.</p>",
+      "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?",
+      "workspaceSignupMessageInfo": "Activate the course sign-up message. This is possible when the message title and content are set.",
+      "workspaceSignupGroupMessageInfo": "Activate the course sign-up message. This is possible when the message title and content are set."
     },
     "labels": {
       "access": "Access",
       "access_anyone": "Anyone",
       "access_loggedInUsers": "Logged in users",
       "access_membersOnly": "Members only",
+      "activateSignupMessage": "Activate the course sign-up message",
       "addingDetails": "Adding details to the course",
       "additionalInfo": "Additional information",
       "away": "Away",
@@ -1522,7 +1571,6 @@
       "mandatory": "Mandatory",
       "materialCopyType": "Material copy type",
       "materials": "Course materials",
-      "message": "Message to the course teacher",
       "myWorkspaces": "My courses",
       "name": "Course name",
       "name_copySummary": "Name: {{workspaceName}}",
@@ -1591,7 +1639,10 @@
       "workspaceLength": "{{length}} {{symbol}}",
       "workspaceCopying": "Course copying",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
-      "workspaceTypeSelect": "Type select"
+      "workspaceTypeSelect": "Type select",
+      "workspaceSignupMessage": "Course sign up message",
+      "workspaceSignupMessageTitle": "Message title",
+      "workspaceSignupMessageContent": "Message content"
     },
     "notifications": {
       "cancelError": "Canceling failed",

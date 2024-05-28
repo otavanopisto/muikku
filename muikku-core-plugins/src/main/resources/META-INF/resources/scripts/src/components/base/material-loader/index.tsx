@@ -280,6 +280,7 @@ export interface MaterialLoaderProps {
   answersVisible?: boolean;
   isViewRestricted?: boolean;
   readspeakerComponent?: JSX.Element;
+  anchorElement?: JSX.Element;
 
   children?: (
     props: MaterialLoaderProps,

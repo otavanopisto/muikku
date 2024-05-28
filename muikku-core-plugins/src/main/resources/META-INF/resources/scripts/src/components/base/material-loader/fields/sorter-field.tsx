@@ -15,7 +15,7 @@ import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
-
+import "~/sass/elements/sorterfield.scss";
 /**
  * SorterFieldItemType
  */
@@ -77,6 +77,9 @@ interface SorterFieldState {
  * SorterField
  */
 class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
+  itemRefs: HTMLSpanElement[];
+  focusIndexRef: number;
+
   /**
    * constructor
    * @param props props
@@ -128,6 +131,9 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
     this.selectItem = this.selectItem.bind(this);
     this.cancelSelectedItem = this.cancelSelectedItem.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
+
+    this.itemRefs = [];
+    this.focusIndexRef = 0;
   }
 
   /**
@@ -200,7 +206,12 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
       {
         items,
       },
-      this.checkAnswers
+      () => {
+        this.checkAnswers();
+        if (document.activeElement) {
+          this.focusTo(items.findIndex((i) => i.id === itemB.id));
+        }
+      }
     );
   }
 
@@ -287,6 +298,116 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
   }
 
   /**
+   * Set focus to the ordered list first element
+   * @param e event
+   */
+  handleOrderedListKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+
+      this.focusIndexRef = 0;
+
+      this.itemRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+      this.itemRefs[this.focusIndexRef].focus();
+    }
+  };
+
+  /**
+   * Handles focus and blur events
+   * @param index index
+   */
+  handleFocusBlur = (index: number) => (e: React.FocusEvent) => {
+    this.itemRefs[index].setAttribute("tabindex", "-1");
+  };
+
+  /**
+   * Handles key down events
+   * @param item item
+   */
+  handleKeyDown = (item: SorterFieldItemType) => (e: React.KeyboardEvent) => {
+    if (
+      e.key === "ArrowUp" ||
+      e.key === "ArrowDown" ||
+      e.key === "ArrowLeft" ||
+      e.key === "ArrowRight" ||
+      e.key === "Enter" ||
+      e.key === " " ||
+      e.key === "Escape"
+    ) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
+    switch (e.key) {
+      case "Enter":
+      case " ":
+        this.selectItem(item);
+        return;
+
+      case "ArrowUp":
+        this.props.content.orientation === "vertical" &&
+          this.termFocusChange("decrement");
+        return;
+
+      case "ArrowDown":
+        this.props.content.orientation === "vertical" &&
+          this.termFocusChange("increment");
+        return;
+
+      case "ArrowLeft":
+        this.props.content.orientation === "horizontal" &&
+          this.termFocusChange("decrement");
+        return;
+
+      case "ArrowRight":
+        this.props.content.orientation === "horizontal" &&
+          this.termFocusChange("increment");
+        return;
+
+      case "Escape":
+        this.cancelSelectedItem();
+        return;
+
+      default:
+        return;
+    }
+  };
+
+  /**
+   * Change the focus of the term
+   * @param operation operation
+   */
+  termFocusChange = (operation: "increment" | "decrement") => {
+    if (operation === "increment") {
+      this.focusIndexRef++;
+    } else {
+      this.focusIndexRef--;
+    }
+
+    if (this.focusIndexRef > this.itemRefs.length - 1) {
+      this.focusIndexRef = 0;
+    } else if (this.focusIndexRef < 0) {
+      this.focusIndexRef = this.itemRefs.length - 1;
+    }
+
+    this.itemRefs[this.focusIndexRef].setAttribute("tabindex", "0");
+    this.itemRefs[this.focusIndexRef].focus();
+  };
+
+  /**
+   * Focus to the specific term
+   * @param n n
+   */
+  focusTo = (n: number) => {
+    const element = this.itemRefs[n];
+
+    if (element) {
+      element.setAttribute("tabindex", "0");
+      element.focus();
+    }
+  };
+
+  /**
    * cancelSelectedItem
    */
   cancelSelectedItem() {
@@ -351,12 +472,17 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           text = text.charAt(0).toUpperCase() + text.slice(1);
         }
         return (
-          <span className="material-page__sorterfield-item" key={i.id}>
-            <span className="material-page__sorterfield-item-icon icon-move"></span>
-            <span className="material-page__sorterfield-item-label">
-              <StrMathJAX invisible={true}>{text}</StrMathJAX>
+          <li className="sorterfield__item" key={i.id}>
+            <span className="sorterfield__data-container">
+              <span
+                className="sorterfield__item-icon icon-move"
+                role="presentation"
+              ></span>
+              <span className="sorterfield__item-label">
+                <StrMathJAX invisible={true}>{text}</StrMathJAX>
+              </span>
             </span>
-          </span>
+          </li>
         );
       });
       return (
@@ -367,13 +493,8 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               context: "sorter",
             })}
           />
-          <span
-            ref="base"
-            className="material-page__sorterfield-wrapper rs_skip_always"
-          >
-            <span
-              className={`material-page__sorterfield material-page__sorterfield--${elementClassName}`}
-            >
+          <span ref="base" className="sorterfield-wrapper rs_skip_always">
+            <span className={`sorterfield sorterfield--${elementClassName}`}>
               {filler}
             </span>
             {correctAnswersummaryComponent}
@@ -394,7 +515,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
 
     // if elements is disabled
     const elementDisabledStateClassName = this.props.readOnly
-      ? "material-page__taskfield-disabled"
+      ? "sorterfield--disabled"
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
@@ -411,14 +532,14 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           })}
         />
         <span
-          className={`material-page__sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <span className="material-page__taskfield-header">
+          <span className="sorterfield-header">
             <span></span>
             <Instructions
               modifier="instructions"
@@ -436,8 +557,10 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               }
             />
           </span>
-          <span
-            className={`material-page__sorterfield material-page__sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+          <ol
+            tabIndex={0}
+            onKeyDown={this.handleOrderedListKeyDown}
+            className={`sorterfield sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
           >
             {this.state.items.map((item, index) => {
               // We get the text
@@ -464,17 +587,33 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               if (this.props.readOnly) {
                 // readonly component
                 return (
-                  <span
-                    className={`material-page__sorterfield-item ${itemStateAfterCheck}`}
+                  <li
+                    className={`sorterfield__item ${itemStateAfterCheck}`}
                     key={item.id}
                   >
-                    <span className="material-page__sorterfield-item-icon icon-move"></span>
-                    <span className="material-page__sorterfield-item-label">
-                      <StrMathJAX>{text}</StrMathJAX>
+                    <span className="sorterfield__data-container">
+                      <span className="sorterfield__item-icon icon-move"></span>
+                      <span className="sorterfield__item-label">
+                        <StrMathJAX>{text}</StrMathJAX>
+                      </span>
                     </span>
-                  </span>
+                  </li>
                 );
               }
+
+              const ariaLabel =
+                this.state.selectedItem &&
+                this.state.selectedItem.id === item.id
+                  ? this.props.t("wcag.sorterTermSelected", { ns: "materials" })
+                  : "";
+
+              /**
+               * callBackRef
+               * @param ref ref
+               */
+              const callBackRef = (ref: HTMLSpanElement) => {
+                this.itemRefs[index] = ref;
+              };
 
               // The draggable version, note how on interaction we swap
               // the parent component is a class name always make sure to have the right class name not to overflow
@@ -482,12 +621,12 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               return (
                 <Draggable
                   denyWidth={this.props.content.orientation === "horizontal"}
-                  as="span"
-                  parentContainerSelector=".material-page__sorterfield"
-                  className={`material-page__sorterfield-item ${
+                  as="li"
+                  parentContainerSelector=".sorterfield"
+                  className={`sorterfield__item ${
                     this.state.selectedItem &&
                     this.state.selectedItem.id === item.id
-                      ? "material-page__sorterfield-item--selected"
+                      ? "sorterfield__item--selected"
                       : ""
                   } ${itemStateAfterCheck} rs_skip_always`}
                   key={item.id}
@@ -498,14 +637,31 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
                   onDrag={this.selectItem.bind(this, item)}
                   onDropInto={this.cancelSelectedItem}
                 >
-                  <span className="material-page__sorterfield-item-icon icon-move"></span>
-                  <span className="material-page__sorterfield-item-label">
-                    <StrMathJAX>{text}</StrMathJAX>
+                  <span
+                    role="button"
+                    className="sorterfield__data-container"
+                    tabIndex={0}
+                    ref={callBackRef}
+                    onKeyDown={this.handleKeyDown(item)}
+                    onBlur={this.handleFocusBlur(index)}
+                    aria-label={ariaLabel}
+                    aria-pressed={
+                      this.state.selectedItem &&
+                      this.state.selectedItem.id === item.id
+                    }
+                  >
+                    <span
+                      className="sorterfield__item-icon icon-move"
+                      role="presentation"
+                    ></span>
+                    <span className="sorterfield__item-label">
+                      <StrMathJAX>{text}</StrMathJAX>
+                    </span>
                   </span>
                 </Draggable>
               );
             })}
-          </span>
+          </ol>
           {correctAnswersummaryComponent}
         </span>
       </>
