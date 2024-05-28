@@ -2419,3 +2419,9 @@
   background-color: $color-list-selected-background;
   color: $color-default;
 }
+
+.button--campus-nightmare {
+  background-color: $color-fatal;
+  color: $color-default;
+  margin: 0 10px 0 0;
+}

@@ -2,12 +2,12 @@
 //page hence it doesn't really need a reducer, however it could be implmented
 //if ever we wish to turn it into a SPA
 
-import Link from "~/components/general/link";
 import * as React from "react";
 import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import Button from "../general/button";
 
 /**
  * LoginButtonProps
@@ -40,7 +40,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
     const { t } = this.props;
 
     return (
-      <Link
+      <Button
         role="button"
         className={`button button--login ${
           this.props.modifier ? "button--" + this.props.modifier : ""
@@ -48,7 +48,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
         href="/login"
       >
         <span>{t("actions.signIn")}</span>
-      </Link>
+      </Button>
     );
   }
 }
