@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Covered+By+Your+Grace&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Covered+By+Your+Grace&display=swap");
 
 body {
   align-items: center;
   background-color: #000000;
-  background-image: url(bg2.jpg);
+  background-image: url("bg2.jpg");
   background-position: center -140px;
   background-repeat: no-repeat;
   color: #ffffff;
@@ -22,7 +22,7 @@ body {
 }
 
 .staging-information-wrapper {
-  font-family: "Covered By Your Grace";
+  font-family: "Covered By Your Grace", sans-serif;
   max-width: 960px;
   padding: 20px;
 }
@@ -48,7 +48,7 @@ body {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .timer-row:nth-child(1) {
@@ -63,8 +63,8 @@ body {
 
 .timer-item {
   display: inline-block;
-  flex-basis: auto;
-  flex-grow: 1;
+  flex-basis: 240px;
+  flex-grow: 0;
   flex-shrink: 0;
   line-height: 1;
   margin: 10px;
@@ -83,7 +83,7 @@ body {
   border-radius: 10px;
   left: 0;
   opacity: 50%;
-  position:absolute;
+  position: absolute;
   right: 0;
   top: 0;
   z-index: 20;
