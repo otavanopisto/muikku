@@ -242,6 +242,7 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
         </span>
 
         <Dropdown
+          modifier="instructions"
           openByHover
           alignSelfVertically="top"
           content={
@@ -290,7 +291,6 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
               </label>
               <input
                 id="message-caption"
-                placeholder={`Tervetuloa kurssille ${props.workspaceName}`}
                 className="form-element__input"
                 value={workspaceSignupGroup.signupMessage.caption}
                 onChange={handleWorkspaceSignupGroupCaptionChange(
