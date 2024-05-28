@@ -128,6 +128,32 @@ class DiscussionSubscriptions extends React.Component<
     };
 
   /**
+   * Handles subscribe or unsubscribe thread key down
+   *
+   * @param thread thread
+   * @param isSubscribed isSubscribed
+   */
+  handleSubscribeOrUnsubscribeKeyDown =
+    (thread: DiscussionThread, isSubscribed: boolean) =>
+    (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isSubscribed) {
+          this.props.unsubscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        } else {
+          this.props.subscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        }
+      }
+    };
+
+  /**
    * Handles subscribe or unsubscribe area click
    *
    * @param area area
@@ -145,6 +171,29 @@ class DiscussionSubscriptions extends React.Component<
         this.props.subscribeDiscussionArea({
           areaId: area.area.id,
         });
+      }
+    };
+
+  /**
+   * Handles subscribe or unsubscribe area key down
+   * @param area area
+   * @param isSubscribed isSubscribed
+   */
+  handleSubscribeOrUnsubscribeAreaKeyDown =
+    (area: DiscussionSubscribedArea, isSubscribed: boolean) =>
+    (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.stopPropagation();
+        e.preventDefault();
+        if (isSubscribed) {
+          this.props.unsubscribeDiscussionArea({
+            areaId: area.area.id,
+          });
+        } else {
+          this.props.subscribeDiscussionArea({
+            areaId: area.area.id,
+          });
+        }
       }
     };
 
@@ -466,9 +515,15 @@ class DiscussionSubscriptions extends React.Component<
             content={this.props.t("content.unsubscribe", { ns: "messaging" })}
           >
             <IconButton
+              as="div"
+              role="button"
               icon="bookmark-full"
               buttonModifiers={["discussion-subscription active"]}
               onClick={this.handleSubscribeOrUnsubscribeAreaClick(area, true)}
+              onKeyDown={this.handleSubscribeOrUnsubscribeAreaKeyDown(
+                area,
+                true
+              )}
             />
           </Dropdown>
         </ApplicationListItemHeader>
@@ -541,6 +596,7 @@ class DiscussionSubscriptions extends React.Component<
           avatarAriaLabel={this.props.t("wcag.OPUserAvatar", {
             ns: "messaging",
           })}
+          avatarAriaHidden={true}
         />
       );
     }
@@ -574,6 +630,10 @@ class DiscussionSubscriptions extends React.Component<
             <IconButton
               icon="bookmark-full"
               onClick={this.handleSubscribeOrUnsubscribeClick(
+                subscribredThread,
+                true
+              )}
+              onKeyDown={this.handleSubscribeOrUnsubscribeKeyDown(
                 subscribredThread,
                 true
               )}
@@ -718,58 +778,43 @@ class DiscussionSubscriptions extends React.Component<
       ];
     }
 
+    const filterItems = [
+      <div key="discussion-areas-filter" className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            id="discussionAreas"
+            type="checkbox"
+            value="AREAS"
+            onChange={this.handleToggleFilterChange}
+            checked={this.state.filters.includes("AREAS")}
+          />
+          <label htmlFor="discussionAreas" className="filter-item__label">
+            Keskustelualueet
+          </label>
+        </div>
+      </div>,
+      <div key="discussion-threads-filter" className="dropdown__container-item">
+        <div className="filter-item filter-item--workspace-page">
+          <input
+            id="discussionThreads"
+            type="checkbox"
+            value="THREADS"
+            onChange={this.handleToggleFilterChange}
+            checked={this.state.filters.includes("THREADS")}
+          />
+          <label htmlFor="discussionThreads" className="filter-item__label">
+            Viestiketjut
+          </label>
+        </div>
+      </div>,
+    ];
+
     return (
       <BodyScrollKeeper hidden={!!discussion.current}>
         <DiscussionThreadsListHeader
           aside={
-            <Dropdown
-              content={
-                <>
-                  <div className="dropdown__container-item">
-                    <div className="filter-category">
-                      <div className="filter-category__label">
-                        Näytettävät sisällöt
-                      </div>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        id="discussionAreas"
-                        type="checkbox"
-                        value="AREAS"
-                        onChange={this.handleToggleFilterChange}
-                        checked={this.state.filters.includes("AREAS")}
-                      />
-                      <label
-                        htmlFor="discussionAreas"
-                        className="filter-item__label"
-                      >
-                        Keskustelualueet
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        id="discussionThreads"
-                        type="checkbox"
-                        value="THREADS"
-                        onChange={this.handleToggleFilterChange}
-                        checked={this.state.filters.includes("THREADS")}
-                      />
-                      <label
-                        htmlFor="discussionThreads"
-                        className="filter-item__label"
-                      >
-                        Viestiketjut
-                      </label>
-                    </div>
-                  </div>
-                </>
-              }
-            >
-              <IconButton icon="filter" />
+            <Dropdown items={filterItems}>
+              <IconButton as="div" role="button" icon="filter" />
             </Dropdown>
           }
         >

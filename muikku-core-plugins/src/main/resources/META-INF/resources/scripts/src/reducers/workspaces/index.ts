@@ -28,6 +28,8 @@ import {
   MaterialEvaluation,
   WorkspaceAccess,
   WorkspaceMandatority,
+  WorkspaceSettings,
+  WorkspaceSignupMessage,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -120,6 +122,8 @@ export interface WorkspaceDataType {
   subjects?: WorkspaceSubject[];
 
   //These are optional addons, and are usually not available
+  settings?: WorkspaceSettings;
+  signupMessage?: WorkspaceSignupMessage;
   activity?: WorkspaceActivity;
   studentActivity?: WorkspaceActivity;
   forumStatistics?: DiscussionWorkspaceStatistic;

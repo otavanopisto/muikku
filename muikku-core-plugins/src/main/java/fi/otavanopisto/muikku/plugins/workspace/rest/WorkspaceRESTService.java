@@ -72,10 +72,12 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -134,8 +136,11 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntry
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupGroupRestModel;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupMessageRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
@@ -147,8 +152,11 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupGroupController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
@@ -167,6 +175,8 @@ import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -203,6 +213,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
+  
+  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
@@ -223,6 +236,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private UserEmailEntityController userEmailEntityController;
 
+  @Inject
+  private UserGroupController userGroupController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
   @Inject
   private UserEntityFileController userEntityFileController;
 
@@ -296,6 +315,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private ForumThreadSubsciptionController forumThreadSubsciptionController;
+  
+  @Inject
+  private WorkspaceSignupGroupController workspaceSignupGroupController;
 
   @GET
   @Path("/workspaceTypes")
@@ -1037,7 +1059,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceController.updateWorkspace(workspace);
     }
 
-
     String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
     WorkspaceFolder helpFolder = workspaceMaterialController.ensureWorkspaceHelpFolderExists(workspaceEntity);
@@ -1069,12 +1090,8 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace payload) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
@@ -1148,6 +1165,253 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace,
         educationTypeMapping
     )).build();
+  }
+
+  @GET
+  @Path("/workspaces/{ID}/signupMessage")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceSignupMessage(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+    WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) 
+        : new WorkspaceSignupMessageRestModel(false, "", "");
+
+    return Response.ok(restModel).build();
+  }
+
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}/signupMessage")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceSignupMessage(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Make sure the basic properties are defined
+    
+    if (payload == null || StringUtils.isAnyBlank(payload.getCaption(), payload.getContent())) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+    if (defaultSignupMessage == null) {
+      defaultSignupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
+          workspaceEntity, 
+          null, 
+          payload.isEnabled(),
+          payload.getCaption(),
+          payload.getContent());
+    } else {
+      defaultSignupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
+          defaultSignupMessage, 
+          payload.isEnabled(),
+          payload.getCaption(),
+          payload.getContent());
+    }
+    
+    WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) : null;
+
+    return Response.ok(restModel).build();
+  }
+
+  @GET
+  @Path("/workspaces/{ID}/settings")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceSettings(@PathParam("ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    return Response.ok(getWorkspaceSettingsRestModel(workspaceEntity, workspace)).build();
+  }
+
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}/settings")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateWorkspaceSettings(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSettingsRestModel payload) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+
+    if (!workspaceController.canIManageWorkspaceSettings(workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    SchoolDataIdentifier typeIdentifier = null;
+    if (payload.getWorkspaceTypeIdentifier() != null) {
+      typeIdentifier = SchoolDataIdentifier.fromId(payload.getWorkspaceTypeIdentifier());
+      if (typeIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid workspaceTypeIdentifier %s", payload.getWorkspaceTypeIdentifier())).build();
+      }
+    }
+
+    if (payload.getDefaultSignupMessage() != null) {
+      // Make sure the basic properties are defined
+      
+      if (StringUtils.isAnyBlank(payload.getDefaultSignupMessage().getCaption(), payload.getDefaultSignupMessage().getContent())) {
+        return Response.status(Status.BAD_REQUEST).entity("Default Greeting message is missing caption or content.").build();
+      }
+    }
+
+    if (payload.getSignupGroups() != null) {
+      // Make sure the basic properties are defined
+      
+      for (WorkspaceSignupGroupRestModel signupGroupPayload : payload.getSignupGroups()) {
+        if (signupGroupPayload.getUserGroupEntityId() == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Signup group is missing an id.").build();
+        }
+
+        if (signupGroupPayload.getSignupMessage() != null && StringUtils.isAnyBlank(signupGroupPayload.getSignupMessage().getCaption(), signupGroupPayload.getSignupMessage().getContent())) {
+          return Response.status(Status.BAD_REQUEST).entity("Group Greeting message is missing caption or content.").build();
+        }
+      }
+    }
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    Workspace workspace = null;
+    try {
+      workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("Could not find a workspace for WorkspaceEntity #%d", workspaceEntityId)).build();
+      }
+    } catch (Exception e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
+    }
+
+    if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
+      workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
+    }
+    
+    if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
+      workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
+    }
+
+    workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+    workspaceEntity = workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
+
+    if (payload.getDefaultSignupMessage() != null) {
+      WorkspaceSignupMessage studentSignupGreetingMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+      if (studentSignupGreetingMessage == null) {
+        workspaceSignupMessageController.createWorkspaceSignupMessage(
+            workspaceEntity, 
+            null, 
+            payload.getDefaultSignupMessage().isEnabled(),
+            payload.getDefaultSignupMessage().getCaption(),
+            payload.getDefaultSignupMessage().getContent());
+      } else {
+        workspaceSignupMessageController.updateWorkspaceSignupMessage(
+            studentSignupGreetingMessage, 
+            payload.getDefaultSignupMessage().isEnabled(),
+            payload.getDefaultSignupMessage().getCaption(),
+            payload.getDefaultSignupMessage().getContent());
+      }
+    }
+
+    // Fetch the existing Workspace Signup Groups
+    Set<SchoolDataIdentifier> existingWorkspaceSignupGroups = workspaceController.listWorkspaceSignupGroups(workspaceEntity);
+
+    if (payload.getSignupGroups() != null) {
+      for (WorkspaceSignupGroupRestModel signupGroupPayload : payload.getSignupGroups()) {
+        UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(signupGroupPayload.getUserGroupEntityId());
+        
+        boolean permitted = Boolean.TRUE.equals(signupGroupPayload.getCanSignup());
+        
+        if (permitted) {
+          if (!existingWorkspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
+            workspaceController.addWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
+          } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Signup Group already exists").build();
+          }
+        } else {
+          if (existingWorkspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
+            workspaceController.removeWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
+          } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+          }
+        }
+        
+        if (signupGroupPayload.getSignupMessage() != null) {
+          WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
+          if (groupSignupMessage == null) {
+            workspaceSignupMessageController.createWorkspaceSignupMessage(
+                workspaceEntity, 
+                userGroupEntity, 
+                signupGroupPayload.getSignupMessage().isEnabled(),
+                signupGroupPayload.getSignupMessage().getCaption(),
+                signupGroupPayload.getSignupMessage().getContent());
+          } else {
+            workspaceSignupMessageController.updateWorkspaceSignupMessage(
+                groupSignupMessage, 
+                signupGroupPayload.getSignupMessage().isEnabled(),
+                signupGroupPayload.getSignupMessage().getCaption(),
+                signupGroupPayload.getSignupMessage().getContent());
+          }
+        }
+      }
+    }
+    
+    if ((payload.getDescription() != null) || (payload.getName() != null)) {
+      try {
+        if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
+            (!StringUtils.equals(payload.getDescription(), workspace.getDescription())) ||
+            (!StringUtils.equals(payload.getNameExtension(), workspace.getNameExtension())) ||
+            !isEqualDateTime(workspace.getBeginDate(), payload.getBeginDate()) ||
+            !isEqualDateTime(workspace.getEndDate(), payload.getEndDate()) ||
+            !isEqualDateTime(workspace.getSignupStart(), payload.getSignupStart()) ||
+            !isEqualDateTime(workspace.getSignupEnd(), payload.getSignupEnd()) ||
+            !Objects.equals(typeIdentifier, workspace.getWorkspaceTypeId())) {
+          workspace.setName(payload.getName());
+          workspace.setNameExtension(payload.getNameExtension());
+          workspace.setDescription(payload.getDescription());
+          workspace.setBeginDate(payload.getBeginDate());
+          workspace.setEndDate(payload.getEndDate());
+          workspace.setSignupStart(payload.getSignupStart());
+          workspace.setSignupEnd(payload.getSignupEnd());
+          workspace.setWorkspaceTypeId(typeIdentifier);
+          workspace = workspaceController.updateWorkspace(workspace);
+        }
+      }
+      catch (Exception e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
+      }
+    }
+
+    // Reindex the workspace so that Elasticsearch can react to publish and visibility
+
+    workspaceIndexer.indexWorkspace(workspaceEntity);
+
+    // Return the modified settings
+    
+    return Response.ok(getWorkspaceSettingsRestModel(workspaceEntity, workspace)).build();
   }
 
   /**
@@ -1579,7 +1843,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @POST
   @Path("/workspaces/{ID}/materials/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceMaterial(@PathParam("ID") Long workspaceEntityId,
       @QueryParam("sourceNodeId") Long sourceNodeId,
       @QueryParam("targetNodeId") Long targetNodeId,
@@ -2004,28 +2268,36 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/compositeMaterialReplies")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
-    // TODO: Correct workspace entity?,
-    // TODO: Security
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
-
-    // TODO Return everyone's answers
-    if (userEntityId == null) {
-      return Response.status(Status.NOT_IMPLEMENTED).build();
-    }
-
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-
+    
+    // Request validation
+    
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace material could not be found").build();
+      return Response.status(Status.NOT_FOUND).entity("Workspace material not found").build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build(); 
+    }
+    if (userEntityId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing userEntityId").build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
+    }
+    
+    // Access check
+    
+    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
 
     List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
-
     try {
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
       if (reply != null) {
@@ -2047,19 +2319,16 @@ public class WorkspaceRESTService extends PluginRESTService {
       );
 
       return Response.ok(result).build();
-    } catch (WorkspaceFieldIOException e) {
+    }
+    catch (WorkspaceFieldIOException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
     }
   }
 
   @GET
   @Path("/fileanswer/{FILEID}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getFileAnswer(@PathParam("FILEID") String fileId) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
-
     WorkspaceMaterialFileFieldAnswerFile answerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(fileId);
     if (answerFile == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -2142,14 +2411,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Produces("application/zip")
   @Path("/allfileanswers/{FILEID}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAllFileAnswers(@PathParam("FILEID") String fileId, @QueryParam("archiveName") String archiveName) {
-
-    // User has to be logged in
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
 
     // Find the initial file
 
@@ -2542,10 +2805,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("removeAnswers") @DefaultValue ("false") Boolean removeAnswers,
       @QueryParam("updateLinkedMaterials") @DefaultValue ("false") Boolean updateLinkedMaterials) {
 
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
-
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
@@ -2640,14 +2899,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteWorkspaceFolder(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
 
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -2669,15 +2925,11 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @PUT
   @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceFolder(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId,
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder restFolder) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
 
     if (restFolder == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -2723,14 +2975,10 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @POST
   @Path("/workspaces/{WORKSPACEID}/folders/")
-  @RESTPermitUnimplemented
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceFolder(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder restFolder) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
 
     if (restFolder == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -3017,7 +3265,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{ID}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteWorkspaceStudent(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceStudentId) {
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -3032,9 +3280,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // Access check
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
-    }
     if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -3582,6 +3827,62 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
   }
 
+  private WorkspaceSettingsRestModel getWorkspaceSettingsRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
+        ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
+    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
+
+    WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
+    WorkspaceSignupMessageRestModel defaultSignupMessageRestModel = defaultSignupMessage == null ? null
+        : new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent());
+
+    // All Groups that can be assigned as signup groups
+    List<UserGroupEntity> availableWorkspaceSignupGroups = workspaceSignupGroupController.listAvailableWorkspaceSignupGroups();
+    // Currently selected signup groups
+    Set<SchoolDataIdentifier> workspaceSignupGroups = workspaceController.listWorkspaceSignupGroups(workspaceEntity);
+
+    List<WorkspaceSignupGroupRestModel> groupSignupRestModels = new ArrayList<>();
+    for (UserGroupEntity availableSignupGroup : availableWorkspaceSignupGroups) {
+      UserGroup userGroup = userGroupController.findUserGroup(availableSignupGroup);
+
+      if (userGroup != null) {
+        boolean canSignup = workspaceSignupGroups.contains(availableSignupGroup.schoolDataIdentifier());
+        
+        WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, availableSignupGroup);
+        WorkspaceSignupMessageRestModel groupSignupMessageRestModel = groupSignupMessage != null
+            ? new WorkspaceSignupMessageRestModel(groupSignupMessage.isEnabled(), groupSignupMessage.getCaption(), groupSignupMessage.getContent()) : null;
+        WorkspaceSignupGroupRestModel rm = new WorkspaceSignupGroupRestModel(availableSignupGroup.getId(), userGroup.getName(), canSignup, groupSignupMessageRestModel);
+        groupSignupRestModels.add(rm);
+      }
+    }
+    
+    String workspaceTypeIdentifier = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
+    
+    return new WorkspaceSettingsRestModel(
+        workspaceEntity.getId(),
+        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
+        workspaceEntity.getUrlName(),
+        workspaceEntity.getAccess(),
+        workspaceEntity.getPublished(),
+        workspaceEntity.getLanguage(),
+        workspace.getName(),
+        workspace.getNameExtension(),
+        workspace.getDescription(),
+        workspace.getBeginDate(),
+        workspace.getEndDate(),
+        workspace.getSignupStart(),
+        workspace.getSignupEnd(),
+        workspaceEntity.getDefaultMaterialLicense(),
+        mandatority,
+        convertWorkspaceCurriculumIds(workspace),
+        workspaceTypeIdentifier,
+        hasCustomImage,
+        defaultSignupMessageRestModel,
+        groupSignupRestModels
+    );
+  }
+  
   private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
     UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
     UserEntityName userEntityName = author == null ? null : userEntityController.getName(author, true);
