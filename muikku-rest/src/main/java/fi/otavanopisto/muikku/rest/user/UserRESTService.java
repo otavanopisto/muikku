@@ -1300,9 +1300,6 @@ public class UserRESTService extends AbstractRESTService {
   public Response listGuidanceCounselors(
       @PathParam("IDENTIFIER") String studentIdentifierStr,
       @QueryParam("properties") String properties) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
 
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (studentIdentifier == null) {
@@ -1318,8 +1315,7 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    Boolean onlyMessageReceivers = false;
-    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, onlyMessageReceivers);
+    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, false);
     
     List<GuidanceCounselorRestModel> guidanceCounselorRestModels = new ArrayList<>();
     

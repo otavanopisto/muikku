@@ -120,6 +120,9 @@ import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
 import { Announcement, User } from "~/generated/client";
+import Chat from "~/components/chat";
+import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
+import { WindowContextProvider } from "~/context/window-context";
 
 /**
  * MainFunctionProps
@@ -144,6 +147,9 @@ export default class MainFunction extends React.Component<
   private loadedLibs: Array<string>;
   private subscribedChatSettings = false;
   private loadedChatSettings = false;
+
+  rootElementRef = React.createRef<HTMLDivElement>();
+  chatControllerRef = React.createRef<HTMLDivElement>();
 
   /**
    * constructor
@@ -961,8 +967,6 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      const state = this.props.store.getState();
-
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
@@ -1118,31 +1122,42 @@ export default class MainFunction extends React.Component<
     return (
       <BrowserRouter>
         <div id="root">
-          <InfoPopperProvider>
-            <Notifications></Notifications>
-            <DisconnectedWarningDialog />
-            <EasyToUseFunctions />
-            <Route exact path="/" render={this.renderIndexBody} />
-            <Route
-              path="/organization"
-              render={this.renderOrganizationAdministrationBody}
-            />
-            <Route path="/coursepicker" render={this.renderCoursePickerBody} />
-            <Route path="/communicator" render={this.renderCommunicatorBody} />
-            <Route path="/discussion" render={this.renderDiscussionBody} />
-            <Route
-              path="/announcements"
-              render={this.renderAnnouncementsBody}
-            />
-            <Route path="/announcer" render={this.renderAnnouncerBody} />
-            <Route path="/guider" render={this.renderGuiderBody} />
-            <Route path="/guardian" render={this.renderGuardianBody} />
-            <Route path="/profile" render={this.renderProfileBody} />
-            <Route path="/records" render={this.renderRecordsBody} />
-            <Route path="/evaluation" render={this.renderEvaluationBody} />
-            <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
-            <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
-          </InfoPopperProvider>
+          <WindowContextProvider>
+            <ChatWebsocketContextProvider websocket={this.props.websocket}>
+              <Chat />
+            </ChatWebsocketContextProvider>
+            <InfoPopperProvider>
+              <Notifications></Notifications>
+              <DisconnectedWarningDialog />
+              <EasyToUseFunctions />
+              <Route exact path="/" render={this.renderIndexBody} />
+              <Route
+                path="/organization"
+                render={this.renderOrganizationAdministrationBody}
+              />
+              <Route
+                path="/coursepicker"
+                render={this.renderCoursePickerBody}
+              />
+              <Route
+                path="/communicator"
+                render={this.renderCommunicatorBody}
+              />
+              <Route path="/discussion" render={this.renderDiscussionBody} />
+              <Route
+                path="/announcements"
+                render={this.renderAnnouncementsBody}
+              />
+              <Route path="/announcer" render={this.renderAnnouncerBody} />
+              <Route path="/guider" render={this.renderGuiderBody} />
+              <Route path="/guardian" render={this.renderGuardianBody} />
+              <Route path="/profile" render={this.renderProfileBody} />
+              <Route path="/records" render={this.renderRecordsBody} />
+              <Route path="/evaluation" render={this.renderEvaluationBody} />
+              <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+              <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
+            </InfoPopperProvider>
+          </WindowContextProvider>
         </div>
       </BrowserRouter>
     );

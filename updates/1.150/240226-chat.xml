@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>drop table UserChatSettings;</sql>
+  <sql>drop table WorkspaceChatSettings;</sql>
+  <sql>delete from PluginSetting where key_id in (select id from PluginSettingKey where plugin='chat');</sql>
+  <sql>delete from PluginSettingKey where plugin='chat';</sql>
+  <sql>insert into PluginSettingKey (plugin, name) values ('chat', 'enabled');</sql>
+  <sql>insert into PluginSetting (value, key_id) values ('true', (select id from PluginSettingKey where plugin='chat' and name='enabled'));</sql>
+
+  <sql>create table ChatMessage (
+         id bigint not null auto_increment,
+         archived bit not null,
+         edited datetime,
+         lastModifierId bigint,
+         message mediumtext not null,
+         sent datetime not null,
+         sourceUserEntityId bigint not null,
+         targetRoomId bigint,
+         targetUserEntityId bigint,
+         primary key (id)
+       );</sql>
+    
+  <sql>create table ChatRoom (
+         id bigint not null auto_increment,
+         archived bit not null,
+         creatorId bigint not null,
+         description mediumtext,
+         lastModifierId bigint,
+         name varchar(255) not null,
+         type varchar(255) not null,
+         workspaceEntityId bigint,
+         primary key (id)
+       );</sql>
+
+  <sql>create table ChatUser (
+         id bigint not null auto_increment,
+         nick varchar(255) not null,
+         userEntityId bigint not null,
+         visibility varchar(255) not null,
+         primary key (id)
+       );</sql>
+
+  <sql>create table ChatRead (
+         id bigint not null auto_increment,
+         lastRead datetime not null,
+         sourceUserEntityId bigint not null,
+         targetIdentifier varchar(255) not null,
+         primary key (id)
+       );</sql>
+
+  <sql>create table ChatBlock (
+         id bigint not null auto_increment,
+         sourceUserEntityId bigint not null,
+         targetUserEntityId bigint not null,
+         primary key (id)
+       );</sql>
+
+  <sql>create table ChatClosedConvo (
+         id bigint not null auto_increment,
+         sourceUserEntityId bigint not null,
+         targetUserEntityId bigint not null,
+         primary key (id)
+       );</sql>
+    
+  <sql>alter table ChatRoom add constraint UK_hvle837d3ju3panjek1ek0q2f unique (workspaceEntityId);</sql>
+  
+  <sql>create index IDXjkv0r84pt7ak6aijs7ye3nw0m on ChatMessage (sourceUserEntityId, targetUserEntityId, sent);</sql>
+
+  <sql>create index IDX8q9m8b9v9aqdff34x0jfiwhix on ChatMessage (targetRoomId, sent);</sql>
+
+  <sql>alter table ChatUser add constraint UK_eevc6t05lnkvo9cqwy0tm4a3v unique (nick);</sql>
+
+  <sql>alter table ChatUser add constraint UK_jsb7gjq97m2idr29kxvxkl38t unique (userEntityId);</sql>
+
+  <sql>create index IDXfbnr7boyjgref2oa513v4vbng on ChatRead (sourceUserEntityId, targetIdentifier);</sql>
+
+  <sql>alter table ChatBlock add constraint UK9u2afwuji0kql24m2dkffmcc4 unique (sourceUserEntityId, targetUserEntityId);</sql>
+
+  <sql>alter table ChatClosedConvo add constraint UKk82kogku7v233f11bqcok89io unique (sourceUserEntityId, targetUserEntityId);</sql>
+  
+</update> 

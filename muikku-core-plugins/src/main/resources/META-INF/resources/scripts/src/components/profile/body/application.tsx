@@ -9,6 +9,7 @@ import Security from "./application/security";
 import VacationSettings from "./application/vacation-settings";
 import WorkList from "./application/work-list";
 import Purchases from "./application/purchases";
+import ChatSettings from "./application/chat-settings";
 
 /**
  * ProfileApplicationProps
@@ -43,6 +44,7 @@ class ProfileApplication extends React.Component<
           title={this.props.status.profile.displayName}
           asideBefore={this.props.aside}
         >
+          <ChatSettings />
           <ContactInformation />
           <GeneralInformation />
           <Security />

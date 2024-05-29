@@ -120,6 +120,10 @@
   &.visible {
     background-color: $color-toc-overlay-mobile-background;
 
+    @include breakpoint($breakpoint-desktop) {
+      background-color: transparent;
+    }
+
     .content-panel__navigation-content {
       right: 0;
     }

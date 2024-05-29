@@ -259,12 +259,6 @@
         <artifactId>timed-notifications-plugin</artifactId>
         <version>${muikku.version}</version>
       </dependency>
-
-      <dependency>
-        <groupId>fi.otavanopisto.muikku</groupId>
-        <artifactId>openfire-rest-client</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
     
       <!-- Webapp-permission -->
 
