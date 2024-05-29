@@ -301,11 +301,8 @@
       "nick": "Chatin nimimerkki",
       "profileImage": "Profiilikuva",
       "remove": "Poista profiilin kuva",
-<<<<<<< HEAD
       "studentCardAuthorizationTitle": "Digitaalinen opiskelijakortti",
       "vacationSettings": "Loma-asetukset",
-=======
->>>>>>> refs/remotes/origin/devel
       "vacationAutoReply": "Lomaviesti käytössä",
       "vacationSettings": "Loma-asetukset",
       "whatsappIntegration_off": "Whatsapp-integraatio pois päältä",
