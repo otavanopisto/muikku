@@ -90,7 +90,7 @@ public class StudentCardRESTService extends PluginRESTService {
     
     restModel.setUserEntityId(userEntity.getId());
     restModel.setId(cardId);
-    BridgeResponse<StudentCardRESTModel> response = studentCardController.updateActive(sdi, restModel, active);
+    BridgeResponse<StudentCardRESTModel> response = studentCardController.updateActive(sdi, active);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     } else {

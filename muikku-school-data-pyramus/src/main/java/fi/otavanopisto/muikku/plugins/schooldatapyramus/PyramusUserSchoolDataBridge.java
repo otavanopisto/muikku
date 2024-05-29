@@ -1784,7 +1784,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active) {
+  public BridgeResponse<fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel> updateActive(String studentIdentifier, Boolean active) {
 
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     if (studentId == null) {

@@ -721,8 +721,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload,
-      Boolean active) {
+  public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, Boolean active) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
   

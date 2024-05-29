@@ -358,7 +358,7 @@ public interface UserSchoolDataBridge {
 
   public StudentCard getStudentCard(String studentIdentifier);
   
-  public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, StudentCardRESTModel payload, Boolean active);
+  public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, Boolean active);
   /**
    * Lists students for who the given user is a guardian for.
    * 
