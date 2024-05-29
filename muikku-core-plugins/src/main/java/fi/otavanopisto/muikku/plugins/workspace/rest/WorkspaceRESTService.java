@@ -84,11 +84,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
-import fi.otavanopisto.muikku.plugins.chat.ChatSyncController;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
-import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatSettings;
-import fi.otavanopisto.muikku.plugins.chat.model.WorkspaceChatStatus;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
@@ -158,6 +153,7 @@ import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -214,7 +210,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceSignupMessageController workspaceSignupMessageController;
-  
+
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
@@ -238,10 +234,10 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserGroupController userGroupController;
-  
+
   @Inject
   private UserGroupEntityController userGroupEntityController;
-  
+
   @Inject
   private UserEntityFileController userEntityFileController;
 
@@ -299,23 +295,20 @@ public class WorkspaceRESTService extends PluginRESTService {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
-  private ChatSyncController chatSyncController;
-
-  @Inject
   private ChatController chatController;
 
   @Inject
   private WorkspaceRestModels workspaceRestModels;
-  
+
   @Inject
   private PedagogyController pedagogyController;
-  
+
   @Inject
   private ForumAreaSubsciptionController forumAreaSubsciptionController;
-  
+
   @Inject
   private ForumThreadSubsciptionController forumThreadSubsciptionController;
-  
+
   @Inject
   private WorkspaceSignupGroupController workspaceSignupGroupController;
 
@@ -410,7 +403,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       for (WorkspaceMaterialProducer workspaceMaterialProducer : workspaceMaterialProducers) {
         workspaceController.createWorkspaceMaterialProducer(workspaceEntity, workspaceMaterialProducer.getName());
       }
-      
+
       workspaceEntity.setLanguage(sourceWorkspaceEntity.getLanguage());
     }
 
@@ -816,7 +809,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
     WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
     if (workspaceBasicInfo == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -903,7 +896,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getViewLink(),
         rootFolder.getId(),
         helpFolder.getId(),
-        frontPage.getParent().getId())).build();
+        frontPage.getParent().getId(),
+        chatController.isChatEnabled(workspaceEntity))).build();
   }
 
   @GET
@@ -918,7 +912,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<Permission> permissions = permissionController.listPermissionsByScope("WORKSPACE");
     for (Permission permission : permissions) {
       if (sessionController.hasWorkspacePermission(permission.getName(), workspaceEntity)) {
-        
+
         /*
          * The following have exception cases which are handled differently with separate methods.
          */
@@ -948,16 +942,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIAL_PRODUCERS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     // Out with the old
-    
+
     List<WorkspaceMaterialProducer> producers = workspaceController.listWorkspaceMaterialProducers(workspaceEntity);
     for (WorkspaceMaterialProducer producer : producers) {
       workspaceController.deleteWorkspaceMaterialProducer(producer);
     }
-    
+
     // In with the new
-    
+
     producers = new ArrayList<>();
     for (String producer : payload) {
       producers.add(workspaceController.createWorkspaceMaterialProducer(workspaceEntity, producer));
@@ -1059,6 +1053,9 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceController.updateWorkspace(workspace);
     }
 
+    String roomName = constructWorkspaceChatRoomName(workspace);
+    chatController.toggleWorkspaceChatRoom(workspaceEntity, roomName, payload.getChatEnabled(), sessionController.getLoggedUserEntity());
+
     String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
     WorkspaceFolder helpFolder = workspaceMaterialController.ensureWorkspaceHelpFolderExists(workspaceEntity);
@@ -1073,7 +1070,63 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getViewLink(),
         payload.getRootFolderId(),
         helpFolder.getId(),
-        frontPage.getParent().getId())).build();
+        frontPage.getParent().getId(),
+        payload.getChatEnabled())).build();
+  }
+
+  private String constructWorkspaceChatRoomName(Workspace workspace) {
+    if (CollectionUtils.isNotEmpty(workspace.getSubjects()) && workspace.getSubjects().size() > 1) {
+      /**
+       *  Workspaces that have multiple subjects use naming convention of
+       *
+       *  When nameExtension exists:
+       *  workspace.name - workspace.nameExtension
+       *
+       *  Otherwise:
+       *  workspace.name
+       */
+
+      StringBuilder roomName = new StringBuilder();
+      roomName.append(workspace.getName());
+      if (!StringUtils.isBlank(workspace.getNameExtension())) {
+        roomName.append(" - ");
+        roomName.append(workspace.getNameExtension());
+      }
+
+      return roomName.toString();
+    }
+    else {
+      /**
+       * Workspaces that have only one subject
+       *
+       * When nameExtension exists:
+       * subjectCode + courseNumber - nameExtension
+       *
+       * Otherwise:
+       * subjectCode + courseNumber - name
+       */
+
+      WorkspaceSubject workspaceSubject = CollectionUtils.isNotEmpty(workspace.getSubjects()) ? workspace.getSubjects().get(0) : null;
+      String subjectCode = workspaceSubject != null ? courseMetaController.findSubject(workspaceSubject.getSubjectIdentifier()).getCode() : null;
+      StringBuilder roomName = new StringBuilder();
+      if (!StringUtils.isBlank(subjectCode)) {
+        roomName.append(subjectCode);
+      }
+      if ((workspaceSubject != null) && (workspaceSubject.getCourseNumber() != null)) {
+        roomName.append(workspaceSubject.getCourseNumber());
+      }
+      if (!StringUtils.isBlank(roomName)) {
+        roomName.append(" - ");
+      }
+      // Prefer just name extension but fall back to workspace name if extension is not available
+      if (!StringUtils.isBlank(workspace.getNameExtension())) {
+        roomName.append(workspace.getNameExtension());
+      }
+      else {
+        roomName.append(workspace.getName());
+      }
+      return roomName.toString();
+    }
   }
 
   private boolean isEqualDateTime(OffsetDateTime dateTime1, OffsetDateTime dateTime2) {
@@ -1130,7 +1183,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
-    
+
     if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
       workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
     }
@@ -1182,7 +1235,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
     WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
-        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) 
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent())
         : new WorkspaceSignupMessageRestModel(false, "", "");
 
     return Response.ok(restModel).build();
@@ -1202,7 +1255,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // Make sure the basic properties are defined
-    
+
     if (payload == null || StringUtils.isAnyBlank(payload.getCaption(), payload.getContent())) {
       return Response.status(Status.BAD_REQUEST).build();
     }
@@ -1210,19 +1263,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
     if (defaultSignupMessage == null) {
       defaultSignupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
-          workspaceEntity, 
-          null, 
+          workspaceEntity,
+          null,
           payload.isEnabled(),
           payload.getCaption(),
           payload.getContent());
     } else {
       defaultSignupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
-          defaultSignupMessage, 
+          defaultSignupMessage,
           payload.isEnabled(),
           payload.getCaption(),
           payload.getContent());
     }
-    
+
     WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
         ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) : null;
 
@@ -1273,7 +1326,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (payload.getDefaultSignupMessage() != null) {
       // Make sure the basic properties are defined
-      
+
       if (StringUtils.isAnyBlank(payload.getDefaultSignupMessage().getCaption(), payload.getDefaultSignupMessage().getContent())) {
         return Response.status(Status.BAD_REQUEST).entity("Default Greeting message is missing caption or content.").build();
       }
@@ -1281,7 +1334,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (payload.getSignupGroups() != null) {
       // Make sure the basic properties are defined
-      
+
       for (WorkspaceSignupGroupRestModel signupGroupPayload : payload.getSignupGroups()) {
         if (signupGroupPayload.getUserGroupEntityId() == null) {
           return Response.status(Status.BAD_REQUEST).entity("Signup group is missing an id.").build();
@@ -1292,7 +1345,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
     }
-    
+
     if (!sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -1310,7 +1363,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
-    
+
     if (payload.getLanguage() != null && !payload.getLanguage().equals(workspaceEntity.getLanguage())) {
       workspaceEntity = workspaceEntityController.updateLanguage(workspaceEntity, payload.getLanguage());
     }
@@ -1322,14 +1375,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       WorkspaceSignupMessage studentSignupGreetingMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
       if (studentSignupGreetingMessage == null) {
         workspaceSignupMessageController.createWorkspaceSignupMessage(
-            workspaceEntity, 
-            null, 
+            workspaceEntity,
+            null,
             payload.getDefaultSignupMessage().isEnabled(),
             payload.getDefaultSignupMessage().getCaption(),
             payload.getDefaultSignupMessage().getContent());
       } else {
         workspaceSignupMessageController.updateWorkspaceSignupMessage(
-            studentSignupGreetingMessage, 
+            studentSignupGreetingMessage,
             payload.getDefaultSignupMessage().isEnabled(),
             payload.getDefaultSignupMessage().getCaption(),
             payload.getDefaultSignupMessage().getContent());
@@ -1342,9 +1395,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload.getSignupGroups() != null) {
       for (WorkspaceSignupGroupRestModel signupGroupPayload : payload.getSignupGroups()) {
         UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(signupGroupPayload.getUserGroupEntityId());
-        
+
         boolean permitted = Boolean.TRUE.equals(signupGroupPayload.getCanSignup());
-        
+
         if (permitted) {
           if (!existingWorkspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
             workspaceController.addWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
@@ -1358,19 +1411,19 @@ public class WorkspaceRESTService extends PluginRESTService {
             return Response.status(Response.Status.NOT_FOUND).build();
           }
         }
-        
+
         if (signupGroupPayload.getSignupMessage() != null) {
           WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
           if (groupSignupMessage == null) {
             workspaceSignupMessageController.createWorkspaceSignupMessage(
-                workspaceEntity, 
-                userGroupEntity, 
+                workspaceEntity,
+                userGroupEntity,
                 signupGroupPayload.getSignupMessage().isEnabled(),
                 signupGroupPayload.getSignupMessage().getCaption(),
                 signupGroupPayload.getSignupMessage().getContent());
           } else {
             workspaceSignupMessageController.updateWorkspaceSignupMessage(
-                groupSignupMessage, 
+                groupSignupMessage,
                 signupGroupPayload.getSignupMessage().isEnabled(),
                 signupGroupPayload.getSignupMessage().getCaption(),
                 signupGroupPayload.getSignupMessage().getContent());
@@ -1378,7 +1431,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
     }
-    
+
     if ((payload.getDescription() != null) || (payload.getName() != null)) {
       try {
         if ((!StringUtils.equals(payload.getName(), workspace.getName())) ||
@@ -1410,7 +1463,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     workspaceIndexer.indexWorkspace(workspaceEntity);
 
     // Return the modified settings
-    
+
     return Response.ok(getWorkspaceSettingsRestModel(workspaceEntity, workspace)).build();
   }
 
@@ -1653,8 +1706,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity,
         WorkspaceMaterialAssignmentType.EVALUATED);
     result.put("assignmentsTotal", Long.valueOf(evaluatedAssignments.size()));
-    
-    // Done number of evaluated assignments  
+
+    // Done number of evaluated assignments
 
     List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
     replyStates.add(WorkspaceMaterialReplyState.FAILED);
@@ -2246,7 +2299,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         result.add(compositeReply);
       }
-      
+
       if (result.isEmpty()) {
         return Response.ok(Collections.emptyList()).build();
       }
@@ -2270,16 +2323,16 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/compositeMaterialReplies")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
-    
+
     // Request validation
-    
+
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.NOT_FOUND).entity("Workspace material not found").build();
     }
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build(); 
+      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
     }
     if (userEntityId == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing userEntityId").build();
@@ -2288,9 +2341,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
     }
-    
+
     // Access check
-    
+
     if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
@@ -2740,9 +2793,9 @@ public class WorkspaceRESTService extends PluginRESTService {
       Workspace workspace,
       EducationTypeMapping educationTypeMapping) {
 
-    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
+    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null)
         ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
-    
+
     return createRestModel(
         workspaceEntity,
         workspace.getName(),
@@ -2824,7 +2877,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       try {
 
         // #6638: When remove answers flag is on, refuse delete for non-admins if material's workspace is published or has student answers
-        
+
         if (removeAnswers && !sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS)) {
           if (workspaceEntity.getPublished() || workspaceMaterialController.hasStudentAnswers(workspaceMaterial)) {
             logger.log(Level.WARNING, String.format("Delete workspace material %d by user %d denied due to material containing student answers", workspaceMaterialId, sessionController.getLoggedUserEntity().getId()));
@@ -2852,14 +2905,14 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
           }
         }
-        
+
         // Actual delete
 
         workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
         return Response.noContent().build();
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
-        
+
         // #6638: When remove answers flag is off, either refuse delete for non-admins if the material's workspace is published, or notify frontend of the conflict
 
         if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.REMOVE_ANSWERS) && workspaceEntity.getPublished()) {
@@ -2965,9 +3018,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = restFolder.getHidden();
     String title = restFolder.getTitle();
     MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
-    
+
     WorkspaceLanguage titleLanguage = restFolder.getTitleLanguage();
-    
+
 
     workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict, titleLanguage);
     return Response.ok(createRestModel(workspaceFolder)).build();
@@ -3024,7 +3077,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // WorkspaceMaterial
-    
+
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(restWorkspaceMaterial.getId());
     if (workspaceMaterial == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -3047,9 +3100,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceMaterial, materialId, parentNode, nextSibling, hidden,
         restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle(), restWorkspaceMaterial.getTitleLanguage());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
-    
+
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
-    
+
     if (restWorkspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.JOURNAL && titleChanged) {
       List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
       List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies =
@@ -3064,7 +3117,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
     }
-    
+
     return Response.ok(restWorkspaceMaterial).build();
   }
 
@@ -3231,29 +3284,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
     userIndexer.indexUser(userSchoolDataIdentifier.getDataSource().getIdentifier(), userSchoolDataIdentifier.getIdentifier());
 
-    // If workspace and student have chat enabled, toggle room membership accordingly
-
-    WorkspaceChatSettings workspaceChatStatus = chatController.findWorkspaceChatSettings(workspaceEntity);
-    if (workspaceChatStatus != null && workspaceChatStatus.getStatus() == WorkspaceChatStatus.ENABLED) {
-      // Workspace has chat enabled
-      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(
-          workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
-      if (userEntity != null) {
-        UserChatSettings userChatSettings = chatController.findUserChatSettings(userEntity);
-        if (userChatSettings != null && userChatSettings.getVisibility() == UserChatVisibility.VISIBLE_TO_ALL) {
-          // Student has chat enabled
-          if (workspaceStudentRestModel.getActive()) {
-            chatSyncController.syncWorkspaceUser(workspaceEntity, userEntity);
-          }
-          else {
-            chatSyncController.removeChatRoomMembership(userEntity, workspaceEntity);
-          }
-        }
-      }
-    }
-    
     // #6967: When a student is archived from a course, also remove their course discussion subscriptions
-    
+
     if (!workspaceStudentRestModel.getActive()) {
       UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
       forumAreaSubsciptionController.removeAreaSubscriptions(userEntity, workspaceEntity);
@@ -3829,7 +3861,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   private WorkspaceSettingsRestModel getWorkspaceSettingsRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null) 
+    Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null)
         ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
 
@@ -3848,7 +3880,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       if (userGroup != null) {
         boolean canSignup = workspaceSignupGroups.contains(availableSignupGroup.schoolDataIdentifier());
-        
+
         WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, availableSignupGroup);
         WorkspaceSignupMessageRestModel groupSignupMessageRestModel = groupSignupMessage != null
             ? new WorkspaceSignupMessageRestModel(groupSignupMessage.isEnabled(), groupSignupMessage.getCaption(), groupSignupMessage.getContent()) : null;
@@ -3856,9 +3888,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         groupSignupRestModels.add(rm);
       }
     }
-    
+
     String workspaceTypeIdentifier = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
-    
+
     return new WorkspaceSettingsRestModel(
         workspaceEntity.getId(),
         workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
@@ -3882,7 +3914,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         groupSignupRestModels
     );
   }
-  
+
   private WorkspaceJournalCommentRESTModel toRestModel(WorkspaceEntity workspaceEntity, WorkspaceJournalComment workspaceJournalComment) {
     UserEntity author = userEntityController.findUserEntityById(workspaceJournalComment.getCreator());
     UserEntityName userEntityName = author == null ? null : userEntityController.getName(author, true);
@@ -3922,13 +3954,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setIsMaterialField(workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null);
 
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
-      
+
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
-      
+
       Long replyId = Long.parseLong(identifiers[1]);
-      
+
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
-      
+
       if (reply != null) {
         result.setWorkspaceMaterialReplyState(reply.getState());
       }

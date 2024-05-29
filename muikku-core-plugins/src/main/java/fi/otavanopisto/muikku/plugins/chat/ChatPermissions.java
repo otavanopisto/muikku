@@ -13,12 +13,20 @@ import fi.otavanopisto.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
 
 @ApplicationScoped
-public class ChatPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
+public class ChatPermissions  extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
-  public static final String CREATE_PERMANENT_CHATROOM = "CREATE_PERMANENT_CHATROOM";
-  
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  public static final String CHAT_MANAGE_PUBLIC_ROOMS = "CHAT_MANAGE_PUBLIC_ROOMS";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER } )
+  public static final String CHAT_DELETE_MESSAGE = "CHAT_DELETE_MESSAGE";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_GUIDER, EnvironmentRoleArchetype.TEACHER } )
+  public static final String CHAT_USER_INFO = "CHAT_USER_INFO";
+
   @Override
   public List<String> listPermissions() {
     return listPermissions(ChatPermissions.class);

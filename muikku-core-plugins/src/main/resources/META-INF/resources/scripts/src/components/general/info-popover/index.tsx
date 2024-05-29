@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
-import "~/sass/elements/popper.scss";
+import "~/sass/elements/popover.scss";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -151,7 +151,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
                 }, 200);
               }
             }}
-            className="item-list__item item-list__item--info-popper"
+            className="item-list__item item-list__item--info-popover"
           >
             <div className="item-list__profile-picture">
               <Avatar

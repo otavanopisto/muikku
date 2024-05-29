@@ -1,0 +1,23 @@
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.popover {
+  @include text;
+
+  background-color: $color-default;
+  border: 1px solid $color-default-separator-border;
+  border-radius: 4px;
+  box-shadow: 0 10px 20px rgba(0 0 0 / 30%);
+  box-sizing: border-box;
+  font-size: 90%;
+  max-width: calc(100vw - 10px);
+  width: max-content;
+  z-index: 999;
+}
+
+.popover--chat {
+  border-radius: $chat-border-radius;
+  z-index: 9999;
+}
