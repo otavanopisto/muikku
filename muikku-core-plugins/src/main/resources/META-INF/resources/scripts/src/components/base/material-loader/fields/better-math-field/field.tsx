@@ -142,9 +142,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     if (!this.props.readOnly) {
       document.body.addEventListener("click", this.handleAllClicks);
     } else {
-      (this.refs.input as HTMLElement).classList.add(
-        "material-page__mathfield--readonly"
-      );
+      (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
     }
   }
 
@@ -159,14 +157,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     if (nextProps.readOnly !== this.props.readOnly) {
       if (nextProps.readOnly) {
-        (this.refs.input as HTMLElement).classList.add(
-          "material-page__mathfield--readonly"
-        );
+        (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
         (this.refs.input as HTMLElement).removeAttribute("contentEditable");
         document.body.removeEventListener("click", this.handleAllClicks);
       } else {
         (this.refs.input as HTMLElement).classList.remove(
-          "material-page__mathfield--readonly"
+          "mathfield--readonly"
         );
         (this.refs.input as HTMLElement).contentEditable = "true";
         document.body.addEventListener("click", this.handleAllClicks);

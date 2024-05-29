@@ -1308,6 +1308,8 @@
       "license": "Material license",
       "licenseLink": "License URL address or license text",
       "materials": "Materials",
+      "maxWordCount": "Maximum words: {{count}}",
+      "maxCharacterCount": "Maximum characters: {{count}}",
       "metaData": "Metadata",
       "newPage": "New page",
       "noLicense": "No license",
@@ -1360,6 +1362,12 @@
       "assignmentUpdated": "Assignment updated",
       "assignmentWithdrawn": "Assignment withdrawn",
       "connectionError": "The connection to the server was lost, reconnecting...",
+      "contentLimitReached": "Content exceeds the set limit",
+      "contentLimitReached_characters": "Content exceeds the set character limit",
+      "contentLimitReached_words": "Content exceeds the set word limit",
+      "pastedContentLimitReached": "Pasted content exceeds the set limit",
+      "pastedContentLimitReached_characters": "Pasted content exceeds the set character limit",
+      "pastedContentLimitReached_words": "Pasted content exceeds the set word limit",
       "documentCopied": "Document ({{title}}) has been copied to the clipboard",
       "loading": "Loading {{progress}} %",
       "loadError": "$t(common:notifications.loadError)",
@@ -1380,6 +1388,12 @@
       "updateError_compositeReplies": "Updating the answer failed"
     },
     "wcag": {
+      "organizerTermSelected": "Term selected",
+      "organizerTermInUse": "Term in use",
+      "organizerTermInUseAndSelected": "Term selected and in use",
+      "organiserTermRemove": "Remove term {{termName}} from category {{categoryName}}",
+      "organizerCategoryName": "Category {{name}}",
+      "sorterTermSelected": "Term selected",
       "focusToToc": "Press Enter to go to the item in the table of contents corresponding to the current content",
       "tocTopicAllExpand": "Expand all sections in the table of contents",
       "tocTopicAllCollapse": "Collapse all sections in the table of contents",
@@ -1484,13 +1498,17 @@
       "requestEvaluation": "Send an evaluation request to your teacher. The teacher is automatically notified.",
       "selectTemplate": "Select a template from which to create the course from.",
       "signUp": "Sign up to {{name}} {{nameExtension}}",
-      "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?"
+      "signUpInformation": "<p>After clicking the \"Sign up\" button, you will be directed to the front page of the course. You can start studying immediately.</p><p>You can find the teacher's information on the front page of the course. If you have any questions or concerns regarding the course, you can send a message to the teacher via Muikku.</p>",
+      "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?",
+      "workspaceSignupMessageInfo": "Activate the course-specific enrollment message. Activation is possible only when the message has a subject and content. If no group-specific messages are set, this message will be sent to all enrolled in the course. You can also send a customized messages to different groups.",
+      "workspaceSignupGroupMessageInfo": "Activate the group-specific enrollment message. Activation is possible only when the message has a subject and content. This message will be sent only to members of this group who enroll in the course."
     },
     "labels": {
       "access": "Access",
       "access_anyone": "Anyone",
       "access_loggedInUsers": "Logged in users",
       "access_membersOnly": "Members only",
+      "activateSignupMessage": "Activate the course sign-up message",
       "addingDetails": "Adding details to the course",
       "additionalInfo": "Additional information",
       "away": "Away",
@@ -1558,7 +1576,6 @@
       "mandatory": "Mandatory",
       "materialCopyType": "Material copy type",
       "materials": "Course materials",
-      "message": "Message to the course teacher",
       "myWorkspaces": "My courses",
       "name": "Course name",
       "name_copySummary": "Name: {{workspaceName}}",
@@ -1627,7 +1644,10 @@
       "workspaceLength": "{{length}} {{symbol}}",
       "workspaceCopying": "Course copying",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
-      "workspaceTypeSelect": "Type select"
+      "workspaceTypeSelect": "Type select",
+      "workspaceSignupMessage": "Course sign up message",
+      "workspaceSignupMessageTitle": "Message title",
+      "workspaceSignupMessageContent": "Message content"
     },
     "notifications": {
       "cancelError": "Canceling failed",
