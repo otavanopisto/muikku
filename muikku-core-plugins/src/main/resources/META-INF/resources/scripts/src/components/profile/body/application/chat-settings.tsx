@@ -1,42 +1,41 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { ProfileState } from "~/reducers/main-function/profile";
+import Button from "~/components/general/button";
+import { StatusType } from "~/reducers/base/status";
+import "~/sass/elements/application-sub-panel.scss";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
+import Select, { ActionMeta } from "react-select";
 import {
-  saveProfileProperty,
-  SaveProfilePropertyTriggerType,
-  updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
-} from "~/actions/main-function/profile";
-import { bindActionCreators, Dispatch } from "redux";
+  ChatSettingVisibilityOption,
+  selectOptions,
+} from "../../../chat/chat-helpers";
+import { ChatUser, ChatUserVisibilityEnum } from "~/generated/client";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import Button from "~/components/general/button";
-import { StatusType } from "~/reducers/base/status";
-import "~/sass/elements/application-sub-panel.scss";
-import { SimpleActionExecutor } from "~/actions/executor";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 
 /**
  * ChatSettingsProps
  */
-interface ChatSettingsProps extends WithTranslation<["common"]> {
+interface ChatSettingsProps extends WithTranslation<["common", "chat"]> {
   profile: ProfileState;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
-  saveProfileProperty: SaveProfilePropertyTriggerType;
-  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
 /**
  * ChatSettingState
  */
 interface ChatSettingState {
-  chatVisibility: string;
-  chatNickname: string;
+  chatUserSettings: ChatUser;
+  chatVisiblity: ChatUserVisibilityEnum;
+  chatNick: string;
   locked: boolean;
 }
 
@@ -59,101 +58,109 @@ class ChatSettings extends React.Component<
     this.onChatVisibilityChange = this.onChatVisibilityChange.bind(this);
 
     this.state = {
-      chatVisibility:
-        (props.profile.chatSettings && props.profile.chatSettings.visibility) ||
-        null,
-      chatNickname:
-        (props.profile.chatSettings && props.profile.chatSettings.nick) || "",
+      chatUserSettings: null,
+      chatVisiblity: "NONE",
+      chatNick: "",
       locked: false,
     };
   }
 
   /**
-   * componentWillReceiveProps
-   * @param nextProps nextProps
+   * componentDidMount
    */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: ChatSettingsProps) {
-    if (
-      nextProps.profile.chatSettings &&
-      nextProps.profile.chatSettings.visibility &&
-      (!this.props.profile.chatSettings ||
-        this.props.profile.chatSettings.visibility !==
-          nextProps.profile.chatSettings.visibility)
-    ) {
+  componentDidMount = () => {
+    if (this.props.status.chatSettings) {
       this.setState({
-        chatVisibility: nextProps.profile.chatSettings.visibility,
-      });
-    } else if (
-      !nextProps.profile.chatSettings ||
-      typeof nextProps.profile.chatSettings.visibility === "undefined"
-    ) {
-      this.setState({
-        chatVisibility: "DISABLED",
+        locked: false,
+        chatVisiblity: this.props.status.chatSettings.visibility || "NONE",
+        chatNick: this.props.status.chatSettings.nick || "",
       });
     }
+  };
 
-    if (
-      nextProps.profile.chatSettings &&
-      nextProps.profile.chatSettings.nick &&
-      (!this.props.profile.chatSettings ||
-        this.props.profile.chatSettings.nick !==
-          nextProps.profile.chatSettings.nick)
-    ) {
+  /**
+   * componentDidUpdate
+   * @param prevProps prevProps
+   */
+  componentDidUpdate = (prevProps: ChatSettingsProps) => {
+    if (prevProps.status.chatSettings !== this.props.status.chatSettings) {
       this.setState({
-        chatNickname: nextProps.profile.chatSettings.nick,
+        locked: false,
+        chatVisiblity: this.props.status.chatSettings.visibility || "NONE",
+        chatNick: this.props.status.chatSettings.nick || "",
       });
     }
-  }
+  };
 
   /**
    * save
    */
-  save() {
+  async save() {
+    const chatApi = MApi.getChatApi();
+    const { chatVisiblity, chatUserSettings, chatNick } = this.state;
+
     this.setState({ locked: true });
 
-    const executor = new SimpleActionExecutor();
-    executor
-      .addAction(
-        this.props.profile.chatSettings &&
-          ((this.props.profile.chatSettings.visibility || null) !==
-            this.state.chatVisibility ||
-            (this.props.profile.chatSettings.nick || null) !==
-              this.state.chatNickname),
-        () => {
-          this.props.updateProfileChatSettings({
-            visibility: this.state.chatVisibility,
-            nick: this.state.chatNickname,
-            success: executor.succeeded,
-            fail: executor.failed,
-          });
-        }
-      )
-      .onAllSucceed(() => {
-        this.props.displayNotification(
-          this.props.t("notifications.saveSuccess"),
-          "success"
-        );
+    try {
+      await chatApi.updateChatSettings({
+        updateChatSettingsRequest: {
+          ...chatUserSettings,
+          nick: chatNick.trim(),
+          visibility: chatVisiblity,
+        },
+      });
 
-        this.setState({ locked: false });
-      })
-      .onOneFails(() => {
+      this.props.displayNotification(
+        this.props.t("notifications.updateSuccess", {
+          context: "settings",
+        }),
+        "success"
+      );
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      } else if (isResponseError(err)) {
+        if (err.response.status === 400) {
+          this.props.displayNotification(
+            this.props.t("notifications.400", {
+              context: "settings",
+            }),
+            "error"
+          );
+        }
+
+        if (err.response.status === 409) {
+          this.props.displayNotification(
+            this.props.t("notifications.409", {
+              context: "settings",
+            }),
+            "error"
+          );
+        }
+      } else {
         this.props.displayNotification(
-          this.props.t("notifications.saveError"),
+          this.props.t("notifications.updateError", {
+            context: "settings",
+          }),
           "error"
         );
+      }
+    }
 
-        this.setState({ locked: false });
-      });
+    this.setState({ locked: false, chatNick: chatNick.trim() });
   }
 
   /**
    * onChatVisibilityChange
-   * @param e e
+   * @param newValue newValue
+   * @param actionMeta actionMeta
    */
-  onChatVisibilityChange(e: React.ChangeEvent<HTMLSelectElement>) {
+  onChatVisibilityChange(
+    newValue: ChatSettingVisibilityOption,
+    actionMeta: ActionMeta<ChatSettingVisibilityOption>
+  ) {
     this.setState({
-      chatVisibility: e.target.value,
+      chatVisiblity: newValue.value,
     });
   }
 
@@ -163,7 +170,7 @@ class ChatSettings extends React.Component<
    */
   onChatNicknameChange(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      chatNickname: e.target.value,
+      chatNick: e.target.value,
     });
   }
 
@@ -172,12 +179,15 @@ class ChatSettings extends React.Component<
    * @returns JSX.Element
    */
   public render() {
-    if (
-      this.props.profile.location !== "chat" ||
-      !this.props.status.permissions.CHAT_AVAILABLE
-    ) {
+    if (this.props.profile.location !== "chat") {
       return null;
     }
+
+    const options = selectOptions(this.props.t);
+
+    const selectedOption = options.find(
+      (option) => option.value === this.state.chatVisiblity
+    );
 
     return (
       <section>
@@ -190,32 +200,27 @@ class ChatSettings extends React.Component<
               <div className="application-sub-panel__item  application-sub-panel__item--profile">
                 <div className="form__row">
                   <div className="form-element">
-                    <label htmlFor="chatVisibility">
-                      {this.props.t("labels.chatVisibility", { ns: "profile" })}
+                    <label htmlFor="chatSelectVisibility">
+                      {this.props.t("labels.chatSelectVisibility", {
+                        ns: "profile",
+                      })}
                     </label>
-                    <select
-                      id="chatVisibility"
-                      className="form-element__select"
-                      value={
-                        this.state.chatVisibility !== null
-                          ? this.state.chatVisibility
-                          : "DISABLED"
-                      }
+                    <Select<ChatSettingVisibilityOption>
+                      id="chatSelectVisibility"
+                      className="react-select-override"
+                      classNamePrefix="react-select-override"
+                      isDisabled={this.state.locked}
+                      value={selectedOption}
                       onChange={this.onChatVisibilityChange}
-                    >
-                      <option value="VISIBLE_TO_ALL">
-                        {this.props.t("labels.chatVisibility", {
-                          ns: "profile",
-                          context: "all",
-                        })}
-                      </option>
-                      <option value="DISABLED">
-                        {this.props.t("labels.chatVisibility", {
-                          ns: "profile",
-                          context: "disabled",
-                        })}
-                      </option>
-                    </select>
+                      options={options}
+                      styles={{
+                        // eslint-disable-next-line jsdoc/require-jsdoc
+                        container: (baseStyles, state) => ({
+                          ...baseStyles,
+                          width: "100%",
+                        }),
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -230,11 +235,7 @@ class ChatSettings extends React.Component<
                       className="form-element__input"
                       type="text"
                       onChange={this.onChatNicknameChange}
-                      value={
-                        this.state.chatNickname !== null
-                          ? this.state.chatNickname
-                          : ""
-                      }
+                      value={this.state.chatNick}
                     />
                   </div>
 
@@ -279,11 +280,13 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { saveProfileProperty, displayNotification, updateProfileChatSettings },
+    {
+      displayNotification,
+    },
     dispatch
   );
 }
 
-export default withTranslation(["profile"])(
+export default withTranslation(["profile", "chat"])(
   connect(mapStateToProps, mapDispatchToProps)(ChatSettings)
 );

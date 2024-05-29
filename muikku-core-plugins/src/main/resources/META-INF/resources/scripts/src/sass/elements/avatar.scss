@@ -3,33 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.avatar {
-  align-items: center;
-  border-radius: 100%;
-  color: $color-environment-link-icon-color;
-  display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-  font-size: $avatar-mobile-font-size;
-  height: $avatar-mobile-size;
-  justify-content: center;
-  width: $avatar-mobile-size;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: $avatar-desktop-font-size;
-    height: $avatar-desktop-size;
-    width: $avatar-desktop-size;
-  }
-}
-
-.avatar--small {
-  @include breakpoint($breakpoint-pad) {
-    font-size: $avatar-desktop-small-font-size;
-    height: $avatar-desktop-small-size;
-    width: $avatar-desktop-small-size;
-  }
-}
-
 .avatar-container {
   align-items: center;
   border-radius: 100%;
@@ -39,6 +12,7 @@
   height: $avatar-mobile-size;
   justify-content: center;
   overflow: hidden;
+  position: relative;
   width: $avatar-mobile-size;
 
   @include breakpoint($breakpoint-pad) {
@@ -60,9 +34,51 @@
   }
 }
 
+.avatar-container--chat {
+  height: $avatar-mobile-chat-size;
+  width: $avatar-mobile-chat-size;
+
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-chat-size;
+    width: $avatar-desktop-chat-size;
+  }
+}
+
+.avatar {
+  align-items: center;
+  border-radius: 100%;
+  color: $color-environment-link-icon-color;
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $avatar-mobile-font-size;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+  z-index: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-font-size;
+  }
+}
+
+.avatar--small {
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-small-font-size;
+  }
+}
+
+.avatar--chat {
+  font-size: $avatar-mobile-chat-font-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-chat-font-size;
+  }
+}
+
 .avatar-img {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
 }
 
 .avatar--category-1 {

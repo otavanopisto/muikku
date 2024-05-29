@@ -31,7 +31,6 @@ import { AnyActionType } from "~/actions/index";
 import {
   Language,
   WorkspaceAccess,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
@@ -83,7 +82,7 @@ interface ManagementPanelState {
   workspaceLicense: string;
   workspaceHasCustomImage: boolean;
   workspacePermissions: Array<WorkspaceSignupGroup>;
-  workspaceChatStatus: WorkspaceChatStatus;
+  workspaceChatEnabled: boolean;
   workspaceSignupMessage: WorkspaceSignupMessage;
   locked: boolean;
 }
@@ -108,13 +107,10 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       workspaceSignupStartDate: null,
       workspaceSignupEndDate: null,
       workspaceProducers: null,
-      workspaceDescription:
-        props.workspace && props.workspace.description
-          ? props.workspace.description
-          : "",
+      workspaceDescription: "",
       workspaceLicense: "",
       workspaceHasCustomImage: false,
-      workspaceChatStatus: null,
+      workspaceChatEnabled: false,
       workspacePermissions: [],
       workspaceSignupMessage: {
         caption: "",
@@ -166,7 +162,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       workspaceLicense: workspace ? workspace.materialDefaultLicense : "",
       workspaceDescription: workspace ? workspace.description || "" : "",
       workspaceHasCustomImage: workspace ? workspace.hasCustomImage : false,
-      workspaceChatStatus: workspace ? workspace.chatStatus : null,
       workspacePermissions:
         workspace && workspace.permissions
           ? workspace.permissions.map((pr) => ({
@@ -205,9 +200,9 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     workspaceDescription,
     workspaceLicense,
     workspaceHasCustomImage,
-    workspaceChatStatus,
     workspacePermissions,
     workspaceSignupMessage,
+    workspaceChatEnabled,
     locked,
   } = managementState;
 
@@ -365,10 +360,10 @@ const ManagementPanel = (props: ManagementPanelProps) => {
    * Handles workspace chat settings change
    */
   const handleWorkspaceChatSettingsChange = React.useCallback(
-    (value: WorkspaceChatStatus) => {
+    (chatEnabled: boolean) => {
       setManagementState((prevState) => ({
         ...prevState,
-        workspaceChatStatus: value,
+        workspaceChatEnabled: chatEnabled,
       }));
     },
     []
@@ -446,14 +441,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       );
     }
 
-    // Chat
-    const workspaceChatStatus = managementState.workspaceChatStatus;
-    const currentWorkspaceChatStatus = workspace.chatStatus;
-
-    if (!equals(workspaceChatStatus, currentWorkspaceChatStatus)) {
-      payload = Object.assign({ chatStatus: workspaceChatStatus }, payload);
-    }
-
     const workspaceDetails: WorkspaceDetails = {
       externalViewUrl: workspace.details.externalViewUrl,
       typeId: managementState.workspaceType,
@@ -476,6 +463,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         managementState.workspaceSignupEndDate !== null
           ? managementState.workspaceSignupEndDate.toISOString()
           : null,
+      chatEnabled: managementState.workspaceChatEnabled,
     };
 
     const currentWorkspaceAsDetails: WorkspaceDetails = {
@@ -488,6 +476,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       indexFolderId: workspace.details.indexFolderId,
       signupStart: moment(workspace.details.signupStart).toISOString(),
       signupEnd: moment(workspace.details.signupEnd).toISOString(),
+      chatEnabled: workspace.details.chatEnabled,
     };
 
     if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
@@ -658,7 +647,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         {status.permissions.CHAT_AVAILABLE ? (
           <section className="application-sub-panel application-sub-panel--workspace-settings">
             <ManagementChatSettingsMemoized
-              chatStatus={workspaceChatStatus}
+              chatEnabled={workspaceChatEnabled}
               onChange={handleWorkspaceChatSettingsChange}
             />
           </section>

@@ -47,7 +47,6 @@
 	</developers>
 
 	<modules>
-    <module>muikku-openfire-rest-client</module>
 		<module>muikku-bom</module>
 		<module>muikku-core</module>
     <module>muikku-debug</module>

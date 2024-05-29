@@ -1,13 +1,12 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { WorkspaceChatStatus } from "~/generated/client";
 
 /**
  * WorkspaceSignupGroups
  */
 interface ManagementChatSettingsProps {
-  chatStatus: WorkspaceChatStatus;
-  onChange?: (chatStatus: WorkspaceChatStatus) => void;
+  chatEnabled: boolean;
+  onChange?: (chatEnabled: boolean) => void;
 }
 
 /**
@@ -15,21 +14,21 @@ interface ManagementChatSettingsProps {
  * @param props props
  */
 const ManagementChatSettings = (props: ManagementChatSettingsProps) => {
-  const { chatStatus, onChange } = props;
+  const { chatEnabled, onChange } = props;
 
   const { t } = useTranslation(["workspace"]);
 
   /**
    * setWorkspaceChatTo
-   * @param value value
+   * @param e e
    */
-  const handleWorkspaceChatChange =
-    (value: WorkspaceChatStatus) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (onChange) {
-        onChange(value);
-      }
-    };
+  const handleWorkspaceChatChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (onChange) {
+      onChange(e.currentTarget.checked);
+    }
+  };
 
   return (
     <>
@@ -45,24 +44,12 @@ const ManagementChatSettings = (props: ManagementChatSettingsProps) => {
                 <input
                   id="chatEnabled"
                   name="chat-enabled"
-                  type="radio"
-                  checked={chatStatus === "ENABLED"}
-                  onChange={handleWorkspaceChatChange("ENABLED")}
+                  type="checkbox"
+                  checked={chatEnabled}
+                  onChange={handleWorkspaceChatChange}
                 />
                 <label htmlFor="chatEnabled">
                   {t("labels.chatEnabled", { ns: "workspace" })}
-                </label>
-              </div>
-              <div className="form-element form-element--checkbox-radiobutton">
-                <input
-                  id="chatDisabled"
-                  name="chat-disabled"
-                  type="radio"
-                  checked={chatStatus === "DISABLED"}
-                  onChange={handleWorkspaceChatChange("DISABLED")}
-                />
-                <label htmlFor="chatDisabled">
-                  {t("labels.chatDisabled", { ns: "workspace" })}
                 </label>
               </div>
             </div>

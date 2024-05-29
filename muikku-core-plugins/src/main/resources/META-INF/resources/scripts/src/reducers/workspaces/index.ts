@@ -5,7 +5,6 @@ import {
   ActivityLogEntry,
   AssessmentRequest,
   WorkspaceAdditionalInfo,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
@@ -107,7 +106,6 @@ export interface WorkspaceDataType {
   numVisits: number;
   published: boolean;
   urlName: string;
-  chatStatus?: WorkspaceChatStatus;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccess;

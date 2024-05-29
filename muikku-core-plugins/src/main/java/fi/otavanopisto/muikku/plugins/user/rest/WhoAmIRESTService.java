@@ -32,7 +32,6 @@ import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.worklist.WorklistController;
@@ -216,16 +215,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
     /**
      * Chat
      */
-
-    // Chat available in environment
-    boolean chatAvailable = chatController.isChatAvailable();
-    /// Chat active for current user
-    boolean chatActive = false;
-    
-    if (userIdentifier != null && chatAvailable) {
-      UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
-      chatActive = userChatSettings != null;
-    }
+    boolean chatAvailable = chatController.isChatEnabled(sessionController.getLoggedUserEntity());
 
     /**
      * Worklist
@@ -239,7 +229,6 @@ public class WhoAmIRESTService extends AbstractRESTService {
 
     UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
         chatAvailable,
-        chatActive,
         worklistAvailable,
         environmentForumAvailable
     );

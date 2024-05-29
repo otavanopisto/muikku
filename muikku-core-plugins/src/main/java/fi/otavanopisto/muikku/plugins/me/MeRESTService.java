@@ -48,17 +48,17 @@ public class MeRESTService {
 
   @Inject
   private SessionController sessionController;
-  
+
   @Inject
   @LocalSession
   private LocalSessionController localSessionController;
 
   @Inject
   private UserController userController;
-  
+
   @Inject
   private UserEntityController userEntityController;
-  
+
   @Inject
   private UserEntityFileController userEntityFileController;
 
@@ -70,7 +70,7 @@ public class MeRESTService {
 
   /**
    * Returns the server side locale for current user or default if not logged in.
-   * 
+   *
    * Returns:
    * {
    *    lang: "en"
@@ -88,14 +88,14 @@ public class MeRESTService {
 
   /**
    * Sets the server side locale for current user.
-   * 
+   *
    * Payload:
    * {
    *    lang: "en"
    * }
-   * 
+   *
    * Available languages en/fi
-   * 
+   *
    * @param selection
    * @return
    */
@@ -106,17 +106,17 @@ public class MeRESTService {
     if (selection == null || StringUtils.isBlank(selection.getLang())) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     Locale locale = LocaleUtils.toLocale(selection.getLang());
     localSessionController.setLocale(locale);
-    
+
     if (localSessionController.isLoggedIn()) {
       userEntityController.updateLocale(localSessionController.getLoggedUserEntity(), locale);
     }
-    
+
     return Response.noContent().build();
   }
-  
+
   @GET
   @Path("/dependents")
   @RESTPermit (MuikkuPermissions.STUDENT_PARENT)
@@ -127,7 +127,7 @@ public class MeRESTService {
     for (GuardiansDependent guardiansDependent : guardiansDependents) {
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(guardiansDependent.getUserIdentifier());
       boolean hasProfilePicture = userEntityFileController.hasProfilePicture(userEntity);
-      
+
       restModels.add(new GuardiansDependentRestModel(
           userEntity.getId(),
           guardiansDependent.getUserIdentifier().toId(),
@@ -142,7 +142,7 @@ public class MeRESTService {
           userEntity.getLastLogin()
       ));
     }
-    
+
     return Response.ok(restModels).build();
   }
 
@@ -152,7 +152,7 @@ public class MeRESTService {
   public Response listGuardiansDependentsWorkspaces(
       @PathParam("ID") String studentIdentifierStr) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
-    
+
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
@@ -164,7 +164,7 @@ public class MeRESTService {
     List<GuardiansDependentWorkspaceRestModel> restModels = new ArrayList<>();
     List<GuardiansDependentWorkspace> guardiansDependentsWorkspaces = userController.listGuardiansDependentsWorkspaces(
         sessionController.getLoggedUser(), studentIdentifier);
-    
+
     for (GuardiansDependentWorkspace workspace : guardiansDependentsWorkspaces) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(workspace.getWorkspaceIdentifier());
       WorkspaceUserEntity workspaceUserEntity = workspaceEntity != null ? workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier) : null;
@@ -179,7 +179,7 @@ public class MeRESTService {
         ));
       }
     }
-    
+
     return Response.ok(restModels).build();
   }
 

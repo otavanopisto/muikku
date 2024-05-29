@@ -178,6 +178,7 @@
       "yes": "Kyllä"
     },
     "notifications": {
+      "400": "Virheellinen pyyntö",
       "403": "Muikku-istuntosi on vanhentunut. Jos olet vastaamassa tehtäviin, kopioi varmuuden vuoksi vastauksesi talteen omalle koneellesi ja kirjaudu uudelleen sisään.",
       "403_password": "Tarkista salasana, jotta voit jatkaa salasanan vaihtoa",
       "409": "Tieto on jo olemassa",
@@ -284,27 +285,32 @@
     },
     "labels": {
       "additionalInfo": "Lisätietoa",
-      "appointmentCalendar": "Ajanvarauskalenteri",
       "appointmentCalendar_url": "Ajanvarauskalenterin URL",
       "authorizations": "Luvat",
+      "appointmentCalendar": "Ajanvarauskalenteri",
       "beginDate": "Loma alkaa",
       "changeAddressAndMunicipality": "Vaihda osoite ja kotikunta",
-      "chatSettings": "Chat asetukset",
-      "chatVisibility": "Chatin näkyvyys",
+      "chatSelectVisibility": "Valitse näkyvyys",
+      "chatSettings": "Chat-asetukset",
       "chatVisibility_all": "Chat käytössä",
       "chatVisibility_disabled": "Chat ei käytössä",
+      "chatVisibility": "Chatin näkyvyys",
       "endDate": "Loma loppuu",
       "generalInfo": "Yleiset tiedot",
       "iWantDigitalStudentCard": "Haluan digitaalisen opiskelijakortin",
       "nick": "Chatin nimimerkki",
       "profileImage": "Profiilikuva",
       "remove": "Poista profiilin kuva",
+<<<<<<< HEAD
       "studentCardAuthorizationTitle": "Digitaalinen opiskelijakortti",
       "vacationSettings": "Loma-asetukset",
+=======
+>>>>>>> refs/remotes/origin/devel
       "vacationAutoReply": "Lomaviesti käytössä",
-      "whatsAppintegration": "Whatsapp-integraatio",
+      "vacationSettings": "Loma-asetukset",
       "whatsappIntegration_off": "Whatsapp-integraatio pois päältä",
       "whatsappIntegration_on": "Whatsapp-integraatio päällä",
+      "whatsAppintegration": "Whatsapp-integraatio",
       "worklist": "Työlista"
     },
     "notifications": {
@@ -2228,6 +2234,98 @@
     "labels": {
       "description": "Kuvaus",
       "guidanceCouncelorSuggestion": "Ohjaajan ehdottama!"
+    }
+  },
+  "chat": {
+    "actions": {
+      "addRoom": "Lisää uusi huone",
+      "blockUser": "Estä käyttäjä",
+      "chatSettings": "Chatin asetukset",
+      "closeDiscussion": "Sulje keskustelu",
+      "deleteRoom": "Poista huone",
+      "editRoom": "Muokkaa huonetta",
+      "deleteMessage": "Poista viesti",
+      "editMessage": "Muokkaa viestiä",
+      "minMaxPanel": "Pienennä/Suurenna paneeli",
+      "unBlockUser": "Poista esto",
+      "fullscreenMode": "Kokoruututila",
+      "exitFullscreenMode": "Poistu kokoruututilasta",
+      "detachWindow": "Irroita ikkuna",
+      "attachWindow": "Kiinnitä ikkuna"
+    },
+    "labels": {
+      "blocked": "Estetyt",
+      "blockedUsers": "Estetyt käyttäjät",
+      "blockingUser": "Käyttäjän estäminen",
+      "chatSettings": "Chat-asetukset",
+      "councelors": "Ohjaajat",
+      "createNewRoom": "Luo uusi huone",
+      "dashboard": "Etusivu",
+      "deletingMsg": "Viestin poisto",
+      "deletingRoom": "Huoneen poisto",
+      "discussions": "Keskustelut",
+      "editRoomDetails": "Muokkaa huoneen tietoja",
+      "filterSettings": "Suodattimet",
+      "gone": "Poistunut",
+      "nick": "Nimimerkki",
+      "people": "Käyttäjät",
+      "roomDetails": "Huoneen tiedot",
+      "rooms": "Huoneet",
+      "rooms_public": "Julkiset huoneet",
+      "rooms_workspace": "Kurssien huoneet",
+      "selectVisibility": "Valitse, kuka näkee sinut chatissa",
+      "staff": "Henkilökunta",
+      "students": "Opiskelijat",
+      "unblockUser": "Käyttäjän eston poistaminen",
+      "visibilityFilterAll": "Kaikki käyttäjät",
+      "visibilityFilterNone": "Ei kukaan (chat on pois päältä)",
+      "visibilityFilterStaff": "Henkilökunta"
+    },
+    "status": {
+      "away": "Poissa",
+      "online": "Paikalla",
+      "offline": "Ei paikalla",
+      "dnd": "Älä häiritse"
+    },
+    "content": {
+      "blockUserMsg": "Haluatko varmasti estää käyttäjän <b>{{name}}</b>? Tämä estää käyttäjää lähettämästä sinulle uusia viestejä.",
+      "deleteMsgMsg": "Olet poistamassa viestiä:",
+      "deleteRoomMsg": "Oletko varma, että haluat poistaa huoneen: <b>{{name}}</b>? Kaikki huoneen viestit poistuvat myös.",
+      "emptySearchMsg_blockedUsers": "Estettyjä käyttäjiä ei löytynyt",
+      "emptySearchMsg_rooms": "Huoneita ei löytynyt",
+      "emptySearchMsg_users": "Käyttäjiä ei löytynyt",
+      "emptySearchMsg": "Haulla ei löytynyt osumia",
+      "msgDeleted": "Poistettu {{date}}",
+      "msgEdited": "Muokattu {{date}}",
+      "unblockUserMsg": "Olet poistamassa estoa käyttäjältä <b>{{name}}</b>. Poiston jälkeen käyttäjä näkee statuksesi ja hän voi lähettää sinulle viestejä."
+    },
+    "notifications": {
+      "400_settings": "Anna puuttuva nimimerkki",
+      "409_settings": "Valittu nimimerkki on jo käytössä, valitse toinen",
+      "loadError": "Chatin lataaminen epäonnistui",
+      "loadError_activity": "Chat-tapahtumien lataaminen epäonnistui",
+      "loadError_settings": "Chat-asetusten lataaminen epäonnistui",
+      "loadError_rooms": "Chat-huoneiden lataaminen epäonnistui",
+      "loadError_users": "Chat-käyttäjien lataaminen epäonnistui",
+      "loadError_discussions": "Chat-keskustelujen lataaminen epäonnistui",
+      "loadError_discussionMessages": "Chat-keskustelun viestien lataaminen epäonnistui",
+      "loadError_blockedUsers": "Chatin estettyjen käyttäjien lataaminen epäonnistui",
+      "loadError_councelors": "Chatin ohjaajien lataaminen epäonnistui",
+      "postError": "",
+      "postError_message": "Viestin lähettäminen epäonnistui",
+      "postError_room": "Huoneen luonti epäonnistui",
+      "updateError": "Päivittäminen epäonnistui",
+      "updateError_message": "Viestin päivittäminen epäonnistui",
+      "updateError_room": "Huoneen päivittäminen epäonnistui",
+      "updateError_settings": "Chat-asetusten päivittäminen epäonnistui",
+      "deleteError": "Poistaminen epäonnistui",
+      "deleteError_message": "Viestin poistaminen epäonnistui",
+      "deleteError_room": "Huoneen poistaminen epäonnistui",
+      "markAsReadError": "Lukemattomien viestien merkitseminen luetuiksi epäonnistui",
+      "blockUserError": "Käyttäjän estäminen epäonnistui",
+      "unblockUserError": "Käyttäjän eston poistaminen epäonnistui",
+      "closeDiscussionError": "Keskustelun sulkeminen epäonnistui",
+      "updateSuccess_settings": "Asetukset päivitetty onnistuneesti"
     }
   }
 }
