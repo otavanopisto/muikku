@@ -1791,7 +1791,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return null;
     }
     
-    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard", studentId), Entity.entity(active, MediaType.APPLICATION_JSON), StudentCardRESTModel.class);
+    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard/active", studentId), Entity.entity(active, MediaType.APPLICATION_JSON), StudentCardRESTModel.class);
   }
   
   public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
