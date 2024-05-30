@@ -103,10 +103,6 @@ public class StudentCardRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getStudentCard(@PathParam ("STUDENTIDENTIFIER") String studentIdentifier) {
     
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-    
     if(StringUtils.isEmpty(studentIdentifier)) {
     return Response.status(Status.BAD_REQUEST).entity("Missing student identifier").build();
     }
