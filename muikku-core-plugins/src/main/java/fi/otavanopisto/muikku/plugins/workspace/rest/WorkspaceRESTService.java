@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -2162,6 +2163,26 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (workspaceMaterials.isEmpty()) {
     	return Response.ok(Collections.emptyList()).build();
+    }
+
+    // Keharit rullaa, ruharit kellaa
+    
+    Random rand = new Random();
+    WorkspaceMaterial winDoc = workspaceMaterialController.findWorkspaceMaterialById(1947L);
+    WorkspaceMaterial failDoc = workspaceMaterialController.findWorkspaceMaterialById(1948L);
+    List<WorkspaceMaterial> wins = workspaceMaterialController.listWorkspaceMaterialsByParent(winDoc);
+    List<WorkspaceMaterial> fails = workspaceMaterialController.listWorkspaceMaterialsByParent(failDoc);
+    for (ContentNode folder : workspaceMaterials) {
+      for (ContentNode content : folder.getChildren()) {
+        if (StringUtils.contains(content.getHtml(), "[[WIN]]") && !wins.isEmpty()) {
+          WorkspaceMaterial randomWin = wins.get(rand.nextInt(wins.size()));
+          content.setHtml(StringUtils.replace(content.getHtml(), "[[WIN]]", String.format("<img src=\"https://staging.muikkuverkko.fi/workspace/meemivarasto/materials/meemikansio/wins/%s\"/>", randomWin.getUrlName())));
+        }
+        if (StringUtils.contains(content.getHtml(), "[[FAIL]]") && !fails.isEmpty()) {
+          WorkspaceMaterial randomFail = fails.get(rand.nextInt(fails.size()));
+          content.setHtml(StringUtils.replace(content.getHtml(), "[[FAIL]]", String.format("<img src=\"https://staging.muikkuverkko.fi/workspace/meemivarasto/materials/meemikansio/fails/%s\\\"/>", randomFail.getUrlName())));
+        }
+      }
     }
 
     return Response.ok(workspaceMaterials).build();
