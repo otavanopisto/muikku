@@ -12974,6 +12974,7 @@ components:
         - coursesRequired
         - creditPoints
         - creditPointsRequired
+        - personHasCourseAssessments
       properties:
         status:
           $ref: "#/components/schemas/MatriculationEligibilityStatus"
@@ -12985,6 +12986,9 @@ components:
           type: number
         creditPointsRequired:
           type: number
+        personHasCourseAssessments:
+          description: True, if the person has ever completed a course
+          type: boolean
 
     MatriculationSubjectEligibility:
       type: object
@@ -13123,7 +13127,6 @@ components:
       description: MatriculationEnrollment object
       required:
         - id
-        - enrollmentDate
         - starts
         - ends
         - compulsoryEducationEligible

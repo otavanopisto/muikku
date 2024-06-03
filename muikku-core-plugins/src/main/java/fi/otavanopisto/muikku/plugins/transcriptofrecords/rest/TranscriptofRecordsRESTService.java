@@ -596,6 +596,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     double creditPoints = studentCourseStats.getSumMandatoryCompletedCreditPoints();
     double creditPointsRequired = transcriptOfRecordsController.getMandatoryCreditPointsRequiredForMatriculation();
 
+    result.setPersonHasCourseAssessments(studentCourseStats.getPersonHasCourseAssessments());
     result.setCoursesCompleted(coursesCompleted);
     result.setCoursesRequired(coursesRequired);
     result.setCreditPoints(creditPoints);

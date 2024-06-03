@@ -1297,7 +1297,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             studentId,
             educationTypeCode,
             educationSubtypeCode), StudentCourseStats.class);
-    return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses(), courseStats.getNumberCreditPoints());
+    return new PyramusStudentCourseStats(courseStats.getNumberCompletedCourses(), courseStats.getNumberCreditPoints(), courseStats.isPersonHasCourseAssessments());
   }
 
   public boolean isActiveUser(User user) {
