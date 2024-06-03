@@ -29,6 +29,16 @@ body {
   padding: 20px;
 }
 
+.staging-iframe-wrapper {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.staging-iframe {
+  max-width: 100%;
+}
+
 .staging-title {
   font-size: 4rem;
   padding: 10px;

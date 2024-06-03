@@ -44,11 +44,19 @@ const IndexFrontPage = () => {
         <h2 className="staging-secondary-title">
           Kaikille äänite. Kuunneltavaksi!
         </h2>
-        <AudioPoolComponent
-          className="audiofield__file"
-          controls
-          preload="metadata"
-        />
+        <div className="staging-iframe-wrapper">
+          <iframe
+            className="staging-iframe"
+            width="500"
+            height="282"
+            src="https://www.youtube.com/embed/ptniFb2kbfY?si=wKiGIwJMMc7jynYU"
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
+        </div>
       </div>
       <div className="timer-wrapper" id="timer">
         <div className="timer-row">
