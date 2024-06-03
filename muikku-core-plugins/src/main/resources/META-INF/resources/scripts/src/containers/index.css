@@ -3,7 +3,7 @@
 /* stylelint-disable */
 
 body {
-  align-items: center;
+  align-items: flex-start;
   background-color: #000000;
   background-image: url("bg.jpg");
   background-position: center center;
