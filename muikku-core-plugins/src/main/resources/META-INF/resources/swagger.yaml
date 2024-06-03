@@ -13101,33 +13101,51 @@ components:
           items:
             $ref: "#/components/schemas/AnyValue"
 
+    MatriculationExamStudentStatus:
+      description: Status of a student in relation to an matriculation exam
+      type: string
+      enum:
+        - NOT_ELIGIBLE
+        - ELIGIBLE
+        - SUBMITTED
+        - APPROVED
+        - REJECTED
+
+    MatriculationExamTerm:
+      description: Matriculation exam term, either autumn or spring
+      type: string
+      enum:
+        - AUTUMN
+        - SPRING
+
     MatriculationEnrollment:
       type: object
       description: MatriculationEnrollment object
       required:
         - id
-        - enrolled
         - enrollmentDate
-        - eligible
         - starts
         - ends
         - compulsoryEducationEligible
+        - studentStatus
       properties:
         id:
           type: integer
           format: int64
-        enrolled:
-          type: boolean
+        year:
+          type: integer
+        term:
+          $ref: "#/components/schemas/MatriculationExamTerm"
         enrollmentDate:
           type: string
-        eligible:
-          type: boolean
         starts:
           type: string
         ends:
           type: string
         compulsoryEducationEligible:
           type: boolean
+        studentStatus:
+          $ref: "#/components/schemas/MatriculationExamStudentStatus"
 
     MatriculationStudentData:
       type: object
