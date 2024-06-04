@@ -52,11 +52,15 @@ public class StudentCardRESTService extends PluginRESTService {
     
     SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(studentIdentifier);
     
+    if (sdi == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing student identifier").build();
+    }
+    
     // Access
     if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    if (sdi != null && !sessionController.getLoggedUser().equals(sdi)) {
+    if (!sessionController.getLoggedUser().equals(sdi)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -103,12 +107,12 @@ public class StudentCardRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getStudentCard(@PathParam ("STUDENTIDENTIFIER") String studentIdentifier) {
     
-    if(StringUtils.isEmpty(studentIdentifier)) {
-    return Response.status(Status.BAD_REQUEST).entity("Missing student identifier").build();
-    }
-    
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
 
+    if (schoolDataIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing student identifier").build();
+    }
+    
     if (schoolDataIdentifier.equals(sessionController.getLoggedUser()) && !sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.FORBIDDEN).build();
     }
