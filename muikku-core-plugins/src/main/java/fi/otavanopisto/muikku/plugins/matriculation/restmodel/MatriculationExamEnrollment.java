@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.matriculation.restmodel;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public class MatriculationExamEnrollment {
@@ -172,6 +173,14 @@ public class MatriculationExamEnrollment {
     this.degreeStructure = degreeStructure;
   }
 
+  public OffsetDateTime getEnrollmentDate() {
+    return enrollmentDate;
+  }
+
+  public void setEnrollmentDate(OffsetDateTime enrollmentDate) {
+    this.enrollmentDate = enrollmentDate;
+  }
+
   private Long examId;
   private String name;
   private String ssn;
@@ -193,4 +202,5 @@ public class MatriculationExamEnrollment {
   private String state;
   private List<MatriculationExamAttendance> attendances;
   private String degreeStructure;
+  private OffsetDateTime enrollmentDate;
 }

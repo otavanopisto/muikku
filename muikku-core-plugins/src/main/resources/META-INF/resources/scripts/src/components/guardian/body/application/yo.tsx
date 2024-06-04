@@ -21,6 +21,7 @@ import { AnyActionType } from "~/actions";
 import {
   MatriculationEligibility,
   MatriculationEligibilityStatus,
+  MatriculationExamStudentStatus,
 } from "~/generated/client";
 
 /**
@@ -102,13 +103,19 @@ class YO extends React.Component<YOProps, YOState> {
           <div>{t("labels.loading")}</div>
         );
 
+      const doneStatus: MatriculationExamStudentStatus[] = [
+        MatriculationExamStudentStatus.Submitted,
+        MatriculationExamStudentStatus.Approved,
+        MatriculationExamStudentStatus.Rejected,
+        MatriculationExamStudentStatus.Confirmed,
+      ];
       const enrollmentLink =
         this.props.yo.enrollment != null
           ? this.props.yo.enrollment
-              .filter((exam) => exam.eligible == true)
-              .map((exam) =>
-                this.state.succesfulEnrollments.includes(exam.id) ||
-                exam.enrolled ? (
+              .filter((exam) =>
+                  doneStatus.includes(exam.studentStatus) ||
+                  this.state.succesfulEnrollments.includes(exam.id))
+              .map((exam) => (
                   <div key={exam.id}>
                     <div className="application-sub-panel__notification-content">
                       <span className="application-sub-panel__notification-content-title">
@@ -131,7 +138,7 @@ class YO extends React.Component<YOProps, YOState> {
                       ) : null}
                     </div>
                   </div>
-                ) : null
+                )
               )
           : null;
 

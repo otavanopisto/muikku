@@ -13,7 +13,7 @@ public interface MatriculationSchoolDataBridge {
 
   public Long getStudentId(SchoolDataIdentifier studentIdentifier);
 
-  public List<MatriculationExam> listMatriculationExams(boolean onlyEligible);
+  public BridgeResponse<List<MatriculationExam>> listStudentsExams(SchoolDataIdentifier studentIdentifier, MatriculationExamListFilter type);
 
   public MatriculationExamEnrollment createMatriculationExamEnrollment();
 
@@ -22,5 +22,9 @@ public interface MatriculationSchoolDataBridge {
   public MatriculationExamAttendance createMatriculationExamAttendance();
 
   public BridgeResponse<MatriculationEligibilities> listEligibilities(SchoolDataIdentifier studentIdentifier);
+
+  BridgeResponse<MatriculationExamEnrollment> getEnrollment(SchoolDataIdentifier studentIdentifier, Long examId);
+
+  BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, String newState);
 
 }

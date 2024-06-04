@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -231,6 +232,16 @@ public class PyramusMatriculationExamEnrollment
     this.degreeStructure = degreeStructure;
   }
 
+  @Override
+  public OffsetDateTime getEnrollmentDate() {
+    return enrollmentDate;
+  }
+
+  @Override
+  public void setEnrollmentDate(OffsetDateTime enrollmentDate) {
+    this.enrollmentDate = enrollmentDate;
+  }
+
   public Long id;
   public Long examId;
   public String name;
@@ -253,4 +264,5 @@ public class PyramusMatriculationExamEnrollment
   public String state;
   public List<MatriculationExamAttendance> attendances;
   private String degreeStructure;
+  private OffsetDateTime enrollmentDate;
 }

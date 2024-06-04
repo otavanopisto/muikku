@@ -23,6 +23,7 @@ import { AnyActionType } from "~/actions";
 import {
   MatriculationEligibility,
   MatriculationEligibilityStatus,
+  MatriculationExamStudentStatus,
 } from "~/generated/client";
 
 /**
@@ -104,58 +105,76 @@ class YO extends React.Component<YOProps, YOState> {
           <div>{t("labels.loading")}</div>
         );
 
+      const doneStatus: MatriculationExamStudentStatus[] = [
+        MatriculationExamStudentStatus.Submitted,
+        MatriculationExamStudentStatus.Approved,
+        MatriculationExamStudentStatus.Rejected,
+        MatriculationExamStudentStatus.Confirmed,
+      ];
       const enrollmentLink =
-        this.props.yo.enrollment != null
-          ? this.props.yo.enrollment
-              .filter((exam) => exam.eligible == true)
-              .map((exam) =>
-                this.state.succesfulEnrollments.includes(exam.id) ||
-                exam.enrolled ? (
-                  <div key={exam.id}>
-                    <div className="application-sub-panel__notification-content">
-                      <span className="application-sub-panel__notification-content-title">
-                        {t("actions.alreadySignedUp", { ns: "studies" })}
-                      </span>
-                    </div>
-                    <div className="application-sub-panel__notification-content">
-                      {!this.state.succesfulEnrollments.includes(exam.id) ? (
-                        <>
-                          <span className="application-sub-panel__notification-content-label">
-                            {t("labels.enrollmentDate", { ns: "studies" })}
-                          </span>
-
-                          <span className="application-sub-panel__notification-content-data">
-                            {new Date(exam.enrollmentDate).toLocaleDateString(
-                              "fi-Fi"
-                            )}
-                          </span>
-                        </>
-                      ) : null}
-                    </div>
-                  </div>
-                ) : (
-                  <div key={exam.id}>
-                    <MatriculationExaminationWizardDialog
-                      updateEnrollemnts={this.updateEnrollemnts}
-                      examId={exam.id}
-                      key={exam.id}
-                      compulsoryEducationEligible={
-                        exam.compulsoryEducationEligible
-                      }
-                    >
-                      <Button className="button button--yo-signup">
-                        {t("actions.signUp", {
-                          ns: "studies",
-                          dueDate: new Date(exam.ends).toLocaleDateString(
-                            "fi-Fi"
-                          ),
-                        })}
-                      </Button>
-                    </MatriculationExaminationWizardDialog>
-                  </div>
-                )
+        this.props.yo.enrollment != null ? (
+          <div>
+            {this.props.yo.enrollment
+              .filter(
+                (exam) =>
+                  exam.studentStatus ==
+                    MatriculationExamStudentStatus.Eligible &&
+                  !this.state.succesfulEnrollments.includes(exam.id)
               )
-          : null;
+              .map((exam) => (
+                <div key={exam.id}>
+                  <MatriculationExaminationWizardDialog
+                    updateEnrollemnts={this.updateEnrollemnts}
+                    examId={exam.id}
+                    key={exam.id}
+                    compulsoryEducationEligible={
+                      exam.compulsoryEducationEligible
+                    }
+                  >
+                    <Button className="button button--yo-signup">
+                      {t("actions.signUp", {
+                        ns: "studies",
+                        dueDate: new Date(exam.ends).toLocaleDateString(
+                          "fi-Fi"
+                        ),
+                      })}
+                    </Button>
+                  </MatriculationExaminationWizardDialog>
+                </div>
+              ))}
+
+            {this.props.yo.enrollment
+              .filter(
+                (exam) =>
+                  doneStatus.includes(exam.studentStatus) ||
+                  this.state.succesfulEnrollments.includes(exam.id)
+              )
+              .map((exam) => (
+                <div key={exam.id}>
+                  <div className="application-sub-panel__notification-content">
+                    <span className="application-sub-panel__notification-content-title">
+                      {t("actions.alreadySignedUp", { ns: "studies" })}
+                    </span>
+                  </div>
+                  <div className="application-sub-panel__notification-content">
+                    {!this.state.succesfulEnrollments.includes(exam.id) ? (
+                      <>
+                        <span className="application-sub-panel__notification-content-label">
+                          {t("labels.enrollmentDate", { ns: "studies" })}
+                        </span>
+
+                        <span className="application-sub-panel__notification-content-data">
+                          {new Date(exam.enrollment.enrollmentDate).toLocaleDateString(
+                            "fi-Fi"
+                          )}
+                        </span>
+                      </>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+          </div>
+        ) : null;
 
       return (
         // TODO these are a bunch of wannabe components here. Need to be done to application-panel and sub-panel components.

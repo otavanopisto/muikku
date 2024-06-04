@@ -9,7 +9,7 @@ import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
 import {
   MatriculationEligibility,
-  MatriculationEnrollment,
+  MatriculationExam,
   MatriculationEligibilityStatus,
   MatriculationSubject,
 } from "~/generated/client";
@@ -18,7 +18,7 @@ import i18n from "~/locales/i18n";
 
 export type UPDATE_STUDIES_YO = SpecificActionType<
   "UPDATE_STUDIES_YO",
-  MatriculationEnrollment[]
+  MatriculationExam[]
 >;
 export type UPDATE_STUDIES_YO_ELIGIBILITY_STATUS = SpecificActionType<
   "UPDATE_STUDIES_YO_ELIGIBILITY_STATUS",

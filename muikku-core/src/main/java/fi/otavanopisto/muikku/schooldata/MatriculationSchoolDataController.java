@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -41,8 +40,16 @@ public class MatriculationSchoolDataController {
     return getMatriculationBridge().listEligibilities(studentIdentifier);
   }
   
-  public List<MatriculationExam> listMatriculationExams(boolean onlyEligible) {
-    return getMatriculationBridge().listMatriculationExams(onlyEligible);
+  public BridgeResponse<List<MatriculationExam>> listStudentsExams(SchoolDataIdentifier studentIdentifier, MatriculationExamListFilter type) {
+    return getMatriculationBridge().listStudentsExams(studentIdentifier, type);
+  }
+  
+  public BridgeResponse<MatriculationExamEnrollment> getEnrollment(SchoolDataIdentifier studentIdentifier, Long examId) {
+    return getMatriculationBridge().getEnrollment(studentIdentifier, examId);
+  }
+  
+  public BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, String newState) {
+    return getMatriculationBridge().setEnrollmentState(studentIdentifier, examId, newState);
   }
   
   public MatriculationExamEnrollment createMatriculationExamEnrollment() {
@@ -55,11 +62,6 @@ public class MatriculationSchoolDataController {
   
   public MatriculationExamAttendance createMatriculationExamAttendance() {
     return getMatriculationBridge().createMatriculationExamAttendance();
-  }
-
-  public boolean isEligible(Long examId) {
-    List<MatriculationExam> eligibleExams = listMatriculationExams(true);
-    return eligibleExams.stream().anyMatch(exam -> Objects.equals(exam.getId(), examId) && exam.isEligible());
   }
 
 }

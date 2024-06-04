@@ -1,15 +1,18 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -33,12 +36,66 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
   }
 
   @Override
-  public List<MatriculationExam> listMatriculationExams(boolean onlyEligible) {
-    PyramusMatriculationExam[] exams = pyramusClient.get(
-        String.format("/matriculation/exams?onlyEligible=%s", onlyEligible), PyramusMatriculationExam[].class);
-    return Arrays.asList(exams);
+  public BridgeResponse<List<MatriculationExam>> listStudentsExams(SchoolDataIdentifier studentIdentifier, MatriculationExamListFilter type) {
+    if (studentIdentifier == null || type == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    BridgeResponse<PyramusMatriculationExam[]> response = pyramusClient.responseGet(
+        String.format("/matriculation/students/%d/exams?filter=%s", pyramusStudentId, type.name()), PyramusMatriculationExam[].class);
+    
+    List<MatriculationExam> exams = null;
+
+    // Typecast the items to the MatriculationExam interface and swap from array to List
+    if (response.getEntity() != null) {
+      exams = new ArrayList<>();
+      
+      for (PyramusMatriculationExam exam : response.getEntity()) {
+        exams.add(exam);
+      }
+    }
+    
+    return new BridgeResponse<List<MatriculationExam>>(response.getStatusCode(), exams, response.getMessage());
   }
 
+  @Override
+  public BridgeResponse<MatriculationExamEnrollment> getEnrollment(SchoolDataIdentifier studentIdentifier, Long examId) {
+    if (studentIdentifier == null || examId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    BridgeResponse<PyramusMatriculationExamEnrollment> response = pyramusClient.responseGet(String.format("/matriculation/students/%d/exams/%d/enrollment", pyramusStudentId, examId), 
+        PyramusMatriculationExamEnrollment.class);
+    return new BridgeResponse<MatriculationExamEnrollment>(response.getStatusCode(), response.getEntity(), response.getMessage());
+  }
+  
+  @Override
+  public BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, String newState) {
+    if (studentIdentifier == null || examId == null || newState == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    BridgeResponse<PyramusMatriculationExamEnrollment> response = pyramusClient.responsePut(
+        String.format("/matriculation/students/%d/exams/%d/enrollment/state", pyramusStudentId, examId), 
+        Entity.entity(newState, MediaType.APPLICATION_JSON), PyramusMatriculationExamEnrollment.class);
+    return new BridgeResponse<MatriculationExamEnrollment>(response.getStatusCode(), response.getEntity(), response.getMessage());
+  }
+  
   @Override
   public MatriculationExamEnrollment createMatriculationExamEnrollment() {
     return new PyramusMatriculationExamEnrollment();

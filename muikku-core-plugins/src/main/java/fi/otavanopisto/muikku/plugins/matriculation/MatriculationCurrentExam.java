@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
+import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamStudentStatus;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamTerm;
 
@@ -9,15 +10,15 @@ public class MatriculationCurrentExam {
   }
   
   public MatriculationCurrentExam(long id, Integer year, MatriculationExamTerm term, long starts, long ends, 
-      long enrollmentDate, boolean compulsoryEducationEligible, MatriculationExamStudentStatus studentStatus) {
+      boolean compulsoryEducationEligible, MatriculationExamStudentStatus studentStatus, MatriculationExamEnrollment enrollment) {
     this.id = id;
     this.year = year;
     this.term = term;
     this.starts = starts;
     this.ends = ends;
-    this.enrollmentDate = enrollmentDate;
     this.compulsoryEducationEligible = compulsoryEducationEligible;
     this.studentStatus = studentStatus;
+    this.enrollment = enrollment;
   }
 
   public long getStarts() {
@@ -42,14 +43,6 @@ public class MatriculationCurrentExam {
 
   public void setId(long id) {
     this.id = id;
-  }
-
-  public long getEnrollmentDate() {
-    return enrollmentDate;
-  }
-
-  public void setEnrollmentDate(long enrollmentDate) {
-    this.enrollmentDate = enrollmentDate;
   }
 
   public boolean isCompulsoryEducationEligible() {
@@ -84,12 +77,20 @@ public class MatriculationCurrentExam {
     this.term = term;
   }
 
+  public MatriculationExamEnrollment getEnrollment() {
+    return enrollment;
+  }
+
+  public void setEnrollment(MatriculationExamEnrollment enrollment) {
+    this.enrollment = enrollment;
+  }
+
   private long id;
   private Integer year;
   private MatriculationExamTerm term;
   private long starts;
   private long ends;
-  private long enrollmentDate;
   private boolean compulsoryEducationEligible;
   private MatriculationExamStudentStatus studentStatus;
+  private MatriculationExamEnrollment enrollment;
 }

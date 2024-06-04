@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface MatriculationExamEnrollment {
@@ -47,5 +48,7 @@ public interface MatriculationExamEnrollment {
   public void setDegreeType(String degreeType);
   public String getDegreeStructure();
   public void setDegreeStructure(String degreeStructure);
+  public OffsetDateTime getEnrollmentDate();
+  public void setEnrollmentDate(OffsetDateTime enrollmentDate);
 }
 
