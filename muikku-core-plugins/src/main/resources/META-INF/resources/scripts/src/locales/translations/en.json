@@ -1643,8 +1643,8 @@
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Type select",
       "workspaceSignupMessage": "Course sign up message",
-      "workspaceSignupMessageTitle": "Message title",
-      "workspaceSignupMessageContent": "Message content"
+      "workspaceSignupMessageTitle": "Message title (mandatory)",
+      "workspaceSignupMessageContent": "Message content (mandatory)"
     },
     "notifications": {
       "cancelError": "Canceling failed",
@@ -1692,7 +1692,7 @@
       "sendSuccess_evaluationRequestsCancel": "Cancelling the evaluation request succeeded",
       "sendSuccess_interimEvaluationRequests": "Sending the interim evaluation request succeeded",
       "updateError": "$t(common:notifications.updateError)",
-      "updateError_settings": "Updating course settings failed",
+      "updateError_settings": "Updating course settings failed. Please ensure that the course-specific and group-specific enrollment messages have a subject and content.",
       "updateError_answers": "Updating answer failed",
       "updateError_coverImage": "Updating the front page image failed",
       "updateError_details": "Updating details failed",

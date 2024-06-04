@@ -1643,8 +1643,8 @@
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Kurssityyppien listausvalinta",
       "workspaceSignupMessage": "Kurssin ilmoittautumisviesti",
-      "workspaceSignupMessageTitle": "Viestin otsikko",
-      "workspaceSignupMessageContent": "Viestin sisältö"
+      "workspaceSignupMessageTitle": "Viestin otsikko (pakollinen)",
+      "workspaceSignupMessageContent": "Viestin sisältö (pakollinen)"
     },
     "notifications": {
       "cancelError": "Peruutus epäonnistui",
@@ -1692,7 +1692,7 @@
       "sendSuccess_evaluationRequestsCancel": "Arviointipyynnön peruutus onnistui",
       "sendSuccess_interimEvaluationRequests": "Välipalautepyynnön lähetys onnistui",
       "updateError": "$t(common:notifications.updateError)",
-      "updateError_settings": "Kurssin asetusten muokkaus epäonnistui",
+      "updateError_settings": "Kurssin asetusten muokkaus epäonnistui. Varmista, että kurssi- ja ryhmäkohtaisissa ilmoittautumisviesteissä on otsikko ja sisältö.",
       "updateError_answers": "Tehtävän tilan muokkaus epäonnistui",
       "updateError_coverImage": "Kurssin etusivun kuvan muokkaus epäonnistui",
       "updateError_details": "Kurssin lisätietojen muokkaus epäonnistui",

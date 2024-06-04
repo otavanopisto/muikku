@@ -490,12 +490,26 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       payload = Object.assign({ details: workspaceDetails }, payload);
     }
 
-    // Set signup message to null if caption or content either is empty
-    // Api does not accept empty values, it must be null
+    let showError = false;
+
+    // Prevent saving if signup message is partly empty
+    // and show notification
+    showError = managementState.workspacePermissions.some((pr) => {
+      if (
+        (pr.signupMessage.caption !== "" && pr.signupMessage.content === "") ||
+        (pr.signupMessage.caption === "" && pr.signupMessage.content !== "")
+      ) {
+        return true;
+      }
+    });
+
+    // Set signup message to null if caption and content is empty
+    // Api does not accept empty values, it must be null. Otherwise if one of the fields is empty,
+    // Backend will handle it with error nad notifications will be shown
     const realPermissions = managementState.workspacePermissions.map((pr) => ({
       ...pr,
       signupMessage:
-        pr.signupMessage.caption === "" || pr.signupMessage.content === ""
+        pr.signupMessage.caption === "" && pr.signupMessage.content === ""
           ? null
           : pr.signupMessage,
     }));
@@ -510,10 +524,21 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       );
     }
 
+    // Prevent saving if signup message is partly empty
+    if (
+      (managementState.workspaceSignupMessage.caption === "" &&
+        managementState.workspaceSignupMessage.content !== "") ||
+      (managementState.workspaceSignupMessage.caption !== "" &&
+        managementState.workspaceSignupMessage.content === "")
+    ) {
+      showError = true;
+    }
+
     // Set signup message to null if caption or content either is empty
-    // signup message object must be null.
+    // signup message object must be null. Otherwise if one of the fields is empty,
+    // Backend will handle it with error nad notifications will be shown
     const realSignupMessage =
-      managementState.workspaceSignupMessage.caption === "" ||
+      managementState.workspaceSignupMessage.caption === "" &&
       managementState.workspaceSignupMessage.content === ""
         ? null
         : managementState.workspaceSignupMessage;
@@ -524,6 +549,24 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         { signupMessage: managementState.workspaceSignupMessage },
         payload
       );
+    }
+
+    // Show error notification if signup message is partly empty
+    // And terminate saving
+    if (showError) {
+      props.displayNotification(
+        t("notifications.updateError", {
+          ns: "workspace",
+          context: "settings",
+        }),
+        "error"
+      );
+
+      setManagementState((prevState) => ({
+        ...prevState,
+        locked: false,
+      }));
+      return;
     }
 
     props.updateWorkspace({
