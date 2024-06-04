@@ -36,7 +36,8 @@
   }
 }
 
-.checkboxfield.correct-answer {
+.checkboxfield.correct-answer,
+.checkboxfield[disabled].correct-answer {
   border-color: $color-correct-answer;
 
   &:checked {
@@ -45,7 +46,8 @@
   }
 }
 
-.checkboxfield.incorrect-answer {
+.checkboxfield.incorrect-answer,
+.checkboxfield[disabled].incorrect-answer {
   border-color: $color-incorrect-answer;
 
   &:checked {
