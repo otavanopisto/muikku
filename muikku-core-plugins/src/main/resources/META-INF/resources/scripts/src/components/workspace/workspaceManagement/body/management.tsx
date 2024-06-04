@@ -2,7 +2,6 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceDataType, WorkspaceUpdateType } from "~/reducers/workspaces";
-import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import equals = require("deep-equal");
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
@@ -53,7 +52,6 @@ import { ManagementImageMemoized } from "./management-image";
  * ManagementPanelProps
  */
 interface ManagementPanelProps extends WithTranslation {
-  status: StatusType;
   workspace: WorkspaceDataType;
   workspaceTypes: WorkspaceType[];
   updateWorkspace: UpdateWorkspaceTriggerType;
@@ -92,7 +90,7 @@ interface ManagementPanelState {
  * @param props props
  */
 const ManagementPanel = (props: ManagementPanelProps) => {
-  const { workspace, t, workspaceTypes, status } = props;
+  const { workspace, t, workspaceTypes } = props;
 
   const [managementState, setManagementState] =
     React.useState<ManagementPanelState>({
@@ -653,14 +651,14 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             onChange={handleWorkspaceProducersChange}
           />
         </section>
-        {status.permissions.CHAT_AVAILABLE ? (
-          <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <ManagementChatSettingsMemoized
-              chatEnabled={workspaceChatEnabled}
-              onChange={handleWorkspaceChatSettingsChange}
-            />
-          </section>
-        ) : null}
+
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementChatSettingsMemoized
+            chatEnabled={workspaceChatEnabled}
+            onChange={handleWorkspaceChatSettingsChange}
+          />
+        </section>
+
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementSignupMessageMemoized
             workspaceName={workspaceName}
@@ -700,7 +698,6 @@ function mapStateToProps(state: StateType) {
   return {
     workspace: state.workspaces.currentWorkspace,
     workspaceTypes: state.workspaces.types,
-    status: state.status,
   };
 }
 
