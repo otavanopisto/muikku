@@ -10,12 +10,14 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -26,6 +28,8 @@ import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnro
 import fi.otavanopisto.muikku.plugins.matriculation.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -75,10 +79,79 @@ public class MatriculationRESTService {
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
   @Path("/exams")
+  @Deprecated                           // TODO REMOVE THIS AFTER FRONT IS REFACTORED
   public Response listAvailableExams() {
-    List<MatriculationExam> exams = matriculationController.listMatriculationExams(true);
-    List<MatriculationCurrentExam> examRestModels = exams.stream().map(exam -> restModel(exam)).collect(Collectors.toList());
-    return Response.ok(examRestModels).build();
+    return listStudentsExams(sessionController.getLoggedUser().toId(), MatriculationExamListFilter.ALL);
+  }
+  
+  @GET
+  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @Path("/students/{STUDENTIDENTIFIER}/exams")
+  public Response listStudentsExams(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("filter") @DefaultValue("ALL") MatriculationExamListFilter filter) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifierStr == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
+    }
+    
+    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+    
+    BridgeResponse<List<MatriculationExam>> response = matriculationController.listStudentsExams(studentIdentifier, filter);
+    if (response.ok()) {
+      List<MatriculationCurrentExam> examRestModels = response.getEntity().stream().map(exam -> restModel(exam)).collect(Collectors.toList());
+      return Response.ok(examRestModels).build();
+    }
+    else {
+      Status status = Status.fromStatusCode(response.getStatusCode());
+      return status != null ? Response.status(status).build() : Response.status(response.getStatusCode()).build();
+    }
+  }
+  
+  @GET
+  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @Path("/students/{STUDENTIDENTIFIER}/exams/{EXAMID}/enrollment")
+  public Response getEnrollment(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifierStr == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
+    }
+    
+    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+    
+    BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.getEnrollment(studentIdentifier, examId);
+    if (response.ok()) {
+      return Response.ok().entity(restModel(response.getEntity())).build();
+    }
+    else {
+      Status status = Status.fromStatusCode(response.getStatusCode());
+      return status != null ? Response.status(status).build() : Response.status(response.getStatusCode()).build();
+    }
+  }
+  
+  @PUT
+  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @Path("/students/{STUDENTIDENTIFIER}/exams/{EXAMID}/enrollment/state")
+  public Response setEnrollmentState(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId, String newState) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifierStr == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
+    }
+    
+    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+    
+    BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.setEnrollmentState(studentIdentifier, examId, newState);
+    if (response.ok()) {
+      return Response.noContent().build();
+    }
+    else {
+      Status status = Status.fromStatusCode(response.getStatusCode());
+      return status != null ? Response.status(status).build() : Response.status(response.getStatusCode()).build();
+    }
   }
   
   @GET
@@ -262,6 +335,61 @@ public class MatriculationRESTService {
   }
 
   private MatriculationCurrentExam restModel(MatriculationExam exam) {
-    return new MatriculationCurrentExam(exam.getId(), exam.getStarts(), exam.getEnds(), exam.isEligible(), exam.isEnrolled(), exam.getEnrollmentDate(), exam.isCompulsoryEducationEligible());
+    MatriculationExamEnrollment enrollment = restModel(exam.getEnrollment());
+    return new MatriculationCurrentExam(exam.getId(), exam.getYear(), exam.getTerm(), exam.getStarts(), exam.getEnds(), 
+        exam.isCompulsoryEducationEligible(), exam.getStudentStatus(), enrollment);
   }
+  
+  private MatriculationExamEnrollment restModel(
+      fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment enrollment) {
+    if (enrollment == null) {
+      return null;
+    }
+
+    List<MatriculationExamAttendance> attendances = new ArrayList<>();
+    
+    if (enrollment.getAttendances() != null) {
+      for (fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance attendance : enrollment.getAttendances()) {
+        MatriculationExamAttendance attendanceRestModel = new MatriculationExamAttendance();
+        attendanceRestModel.setFunding(attendance.getFunding());
+        attendanceRestModel.setGrade(attendance.getGrade());
+        attendanceRestModel.setMandatory(attendance.getMandatory());
+        attendanceRestModel.setRepeat(attendance.getRepeat());
+        attendanceRestModel.setStatus(attendance.getStatus());
+        attendanceRestModel.setSubject(attendance.getSubject());
+        attendanceRestModel.setTerm(attendance.getTerm());
+        attendanceRestModel.setYear(attendance.getYear());
+        attendances.add(attendanceRestModel);
+      }
+    }
+    
+    MatriculationExamEnrollment restModel = new MatriculationExamEnrollment();
+
+    restModel.setAddress(enrollment.getAddress());
+    restModel.setAttendances(attendances);
+    restModel.setCanPublishName(enrollment.isCanPublishName());
+    restModel.setCity(enrollment.getCity());
+    restModel.setDegreeStructure(enrollment.getDegreeStructure());
+    restModel.setDegreeType(enrollment.getDegreeType());
+    restModel.setEmail(enrollment.getEmail());
+    restModel.setEnrollAs(enrollment.getEnrollAs());
+    restModel.setEnrollmentDate(enrollment.getEnrollmentDate());
+    restModel.setExamId(enrollment.getExamId());
+    restModel.setGuider(enrollment.getGuider());
+    restModel.setLocation(enrollment.getLocation());
+    restModel.setMessage(enrollment.getMessage());
+    restModel.setName(enrollment.getName());
+    restModel.setNationalStudentNumber(enrollment.getNationalStudentNumber());
+    restModel.setNumMandatoryCourses(enrollment.getNumMandatoryCourses());
+    restModel.setPhone(enrollment.getPhone());
+    restModel.setPostalCode(enrollment.getPostalCode());
+    restModel.setRestartExam(enrollment.isRestartExam());
+    restModel.setSsn(enrollment.getSsn());
+    restModel.setState(enrollment.getState());
+//    restModel.setStudentIdentifier(enrollment.getstudentAddress()); // TODO the id mess
+    
+    
+    return restModel;
+  }
+
 }
