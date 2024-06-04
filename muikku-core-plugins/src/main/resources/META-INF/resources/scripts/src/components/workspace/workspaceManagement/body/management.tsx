@@ -385,12 +385,21 @@ const ManagementPanel = (props: ManagementPanelProps) => {
   /**
    * Handles signup group message change
    */
-  const handleWorkspaceSignupGroupsChange = React.useCallback(
-    (groups: WorkspaceSignupGroup[]) => {
-      setManagementState((prevState) => ({
-        ...prevState,
-        workspacePermissions: groups,
-      }));
+  const handleWorkspaceSignupGroupChange = React.useCallback(
+    (groups: WorkspaceSignupGroup) => {
+      setManagementState((prevState) => {
+        const newPermissions = prevState.workspacePermissions.map((pr) => {
+          if (pr.userGroupEntityId === groups.userGroupEntityId) {
+            return groups;
+          }
+          return pr;
+        });
+
+        return {
+          ...prevState,
+          workspacePermissions: newPermissions,
+        };
+      });
     },
     []
   );
@@ -664,7 +673,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
           <ManagementSignupGroupsMemoized
             workspaceName={workspaceName}
             workspaceSignupGroups={memoizedPermissions}
-            onChange={handleWorkspaceSignupGroupsChange}
+            onChange={handleWorkspaceSignupGroupChange}
           />
         </section>
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
