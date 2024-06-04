@@ -294,7 +294,7 @@
       "chatVisibility": "Chat visibility",
       "endDate": "Vacation ends",
       "generalInfo": "General information",
-      "nick": "Chat nickname",
+      "nick": "Chat nickname (mandatory)",
       "profileImage": "Profile picture",
       "remove": "Delete profile picture",
       "vacationAutoReply": "Vacation responder is on",

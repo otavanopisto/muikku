@@ -294,7 +294,7 @@
       "chatVisibility": "Chatin näkyvyys",
       "endDate": "Loma loppuu",
       "generalInfo": "Yleiset tiedot",
-      "nick": "Chatin nimimerkki",
+      "nick": "Chatin nimimerkki (pakollinen)",
       "profileImage": "Profiilikuva",
       "remove": "Poista profiilin kuva",
       "vacationAutoReply": "Lomaviesti käytössä",
