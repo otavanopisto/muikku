@@ -5580,9 +5580,10 @@ paths:
   #MATRICULATION
   /rest/matriculation/exams:
     get:
+      deprecated: true
       operationId: getExams
       summary: Get exams
-      description: Get exams
+      description: Get exams --- deprecated, use getStudentExams instead
       tags:
         - Matriculation
       responses:
@@ -5593,7 +5594,42 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MatriculationEnrollment"
+                  $ref: "#/components/schemas/MatriculationExam"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/matriculation/students/{studentIdentifier}/exams:
+    get:
+      operationId: getStudentExams
+      summary: Get students' exams
+      description: Get students' exams
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter for the query
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/MatriculationExamListFilter"
+            default: ALL
+      responses:
+        "200":
+          description: Exams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatriculationExam"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -13063,7 +13099,8 @@ components:
         - attendances
       properties:
         examId:
-          type: string
+          type: integer
+          format: int64
         name:
           type: string
         ssn:
@@ -13093,7 +13130,7 @@ components:
         message:
           type: string
         degreeStructure:
-          $ref: "#/components/schemas/AudioAssessment"
+          $ref: "#/components/schemas/MatriculationExamDegreeStructure"
         studentIdentifier:
           type: string
         canPublishName:
@@ -13104,6 +13141,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/AnyValue"
+        enrollmentDate:
+          type: string
+          format: date-time
 
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
@@ -13114,6 +13154,7 @@ components:
         - SUBMITTED
         - APPROVED
         - REJECTED
+        - CONFIRMED
 
     MatriculationExamTerm:
       description: Matriculation exam term, either autumn or spring
@@ -13122,9 +13163,16 @@ components:
         - AUTUMN
         - SPRING
 
-    MatriculationEnrollment:
+    MatriculationExamListFilter:
+      type: string
+      enum:
+        - ALL
+        - ELIGIBLE
+        - PAST
+
+    MatriculationExam:
       type: object
-      description: MatriculationEnrollment object
+      description: MatriculationExam object
       required:
         - id
         - starts
@@ -13139,8 +13187,6 @@ components:
           type: integer
         term:
           $ref: "#/components/schemas/MatriculationExamTerm"
-        enrollmentDate:
-          type: string
         starts:
           type: string
         ends:
@@ -13149,6 +13195,8 @@ components:
           type: boolean
         studentStatus:
           $ref: "#/components/schemas/MatriculationExamStudentStatus"
+        enrollment:
+          $ref: "#/components/schemas/MatriculationExamApplication"
 
     MatriculationStudentData:
       type: object
