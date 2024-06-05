@@ -2,7 +2,6 @@ import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
 import { WorkspaceDataType, WorkspaceUpdateType } from "~/reducers/workspaces";
-import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
 import equals = require("deep-equal");
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
@@ -53,7 +52,6 @@ import { ManagementImageMemoized } from "./management-image";
  * ManagementPanelProps
  */
 interface ManagementPanelProps extends WithTranslation {
-  status: StatusType;
   workspace: WorkspaceDataType;
   workspaceTypes: WorkspaceType[];
   updateWorkspace: UpdateWorkspaceTriggerType;
@@ -92,7 +90,7 @@ interface ManagementPanelState {
  * @param props props
  */
 const ManagementPanel = (props: ManagementPanelProps) => {
-  const { workspace, t, workspaceTypes, status } = props;
+  const { workspace, t, workspaceTypes } = props;
 
   const [managementState, setManagementState] =
     React.useState<ManagementPanelState>({
@@ -385,12 +383,21 @@ const ManagementPanel = (props: ManagementPanelProps) => {
   /**
    * Handles signup group message change
    */
-  const handleWorkspaceSignupGroupsChange = React.useCallback(
-    (groups: WorkspaceSignupGroup[]) => {
-      setManagementState((prevState) => ({
-        ...prevState,
-        workspacePermissions: groups,
-      }));
+  const handleWorkspaceSignupGroupChange = React.useCallback(
+    (groups: WorkspaceSignupGroup) => {
+      setManagementState((prevState) => {
+        const newPermissions = prevState.workspacePermissions.map((pr) => {
+          if (pr.userGroupEntityId === groups.userGroupEntityId) {
+            return groups;
+          }
+          return pr;
+        });
+
+        return {
+          ...prevState,
+          workspacePermissions: newPermissions,
+        };
+      });
     },
     []
   );
@@ -483,12 +490,26 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       payload = Object.assign({ details: workspaceDetails }, payload);
     }
 
-    // Set signup message to null if caption or content either is empty
-    // Api does not accept empty values, it must be null
+    let showError = false;
+
+    // Prevent saving if signup message is partly empty
+    // and show notification
+    showError = managementState.workspacePermissions.some((pr) => {
+      if (
+        (pr.signupMessage.caption !== "" && pr.signupMessage.content === "") ||
+        (pr.signupMessage.caption === "" && pr.signupMessage.content !== "")
+      ) {
+        return true;
+      }
+    });
+
+    // Set signup message to null if caption and content is empty
+    // Api does not accept empty values, it must be null. Otherwise if one of the fields is empty,
+    // Backend will handle it with error nad notifications will be shown
     const realPermissions = managementState.workspacePermissions.map((pr) => ({
       ...pr,
       signupMessage:
-        pr.signupMessage.caption === "" || pr.signupMessage.content === ""
+        pr.signupMessage.caption === "" && pr.signupMessage.content === ""
           ? null
           : pr.signupMessage,
     }));
@@ -503,10 +524,21 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       );
     }
 
+    // Prevent saving if signup message is partly empty
+    if (
+      (managementState.workspaceSignupMessage.caption === "" &&
+        managementState.workspaceSignupMessage.content !== "") ||
+      (managementState.workspaceSignupMessage.caption !== "" &&
+        managementState.workspaceSignupMessage.content === "")
+    ) {
+      showError = true;
+    }
+
     // Set signup message to null if caption or content either is empty
-    // signup message object must be null.
+    // signup message object must be null. Otherwise if one of the fields is empty,
+    // Backend will handle it with error nad notifications will be shown
     const realSignupMessage =
-      managementState.workspaceSignupMessage.caption === "" ||
+      managementState.workspaceSignupMessage.caption === "" &&
       managementState.workspaceSignupMessage.content === ""
         ? null
         : managementState.workspaceSignupMessage;
@@ -517,6 +549,24 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         { signupMessage: managementState.workspaceSignupMessage },
         payload
       );
+    }
+
+    // Show error notification if signup message is partly empty
+    // And terminate saving
+    if (showError) {
+      props.displayNotification(
+        t("notifications.updateError", {
+          ns: "workspace",
+          context: "settings",
+        }),
+        "error"
+      );
+
+      setManagementState((prevState) => ({
+        ...prevState,
+        locked: false,
+      }));
+      return;
     }
 
     props.updateWorkspace({
@@ -644,14 +694,14 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             onChange={handleWorkspaceProducersChange}
           />
         </section>
-        {status.permissions.CHAT_AVAILABLE ? (
-          <section className="application-sub-panel application-sub-panel--workspace-settings">
-            <ManagementChatSettingsMemoized
-              chatEnabled={workspaceChatEnabled}
-              onChange={handleWorkspaceChatSettingsChange}
-            />
-          </section>
-        ) : null}
+
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementChatSettingsMemoized
+            chatEnabled={workspaceChatEnabled}
+            onChange={handleWorkspaceChatSettingsChange}
+          />
+        </section>
+
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementSignupMessageMemoized
             workspaceName={workspaceName}
@@ -664,7 +714,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
           <ManagementSignupGroupsMemoized
             workspaceName={workspaceName}
             workspaceSignupGroups={memoizedPermissions}
-            onChange={handleWorkspaceSignupGroupsChange}
+            onChange={handleWorkspaceSignupGroupChange}
           />
         </section>
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
@@ -691,7 +741,6 @@ function mapStateToProps(state: StateType) {
   return {
     workspace: state.workspaces.currentWorkspace,
     workspaceTypes: state.workspaces.types,
-    status: state.status,
   };
 }
 

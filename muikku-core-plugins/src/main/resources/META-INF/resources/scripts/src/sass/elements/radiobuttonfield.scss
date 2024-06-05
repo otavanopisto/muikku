@@ -31,7 +31,8 @@
 }
 
 .radiobuttonfield__items-wrapper.correct-answer {
-  .radiobuttonfield {
+  .radiobuttonfield,
+  .radiobuttonfield[disabled] {
     border-color: $color-correct-answer;
 
     &:checked {
@@ -41,7 +42,8 @@
 }
 
 .radiobuttonfield__items-wrapper.incorrect-answer {
-  .radiobuttonfield {
+  .radiobuttonfield,
+  .radiobuttonfield[disabled] {
     border-color: $color-incorrect-answer;
 
     &:checked {

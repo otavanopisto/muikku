@@ -122,8 +122,8 @@ class ChatSettings extends React.Component<
       } else if (isResponseError(err)) {
         if (err.response.status === 400) {
           this.props.displayNotification(
-            this.props.t("notifications.400", {
-              context: "settings",
+            this.props.t("notifications.400_settings", {
+              ns: "chat",
             }),
             "error"
           );
@@ -131,8 +131,8 @@ class ChatSettings extends React.Component<
 
         if (err.response.status === 409) {
           this.props.displayNotification(
-            this.props.t("notifications.409", {
-              context: "settings",
+            this.props.t("notifications.409_settings", {
+              ns: "chat",
             }),
             "error"
           );
@@ -140,6 +140,7 @@ class ChatSettings extends React.Component<
       } else {
         this.props.displayNotification(
           this.props.t("notifications.updateError", {
+            ns: "chat",
             context: "settings",
           }),
           "error"

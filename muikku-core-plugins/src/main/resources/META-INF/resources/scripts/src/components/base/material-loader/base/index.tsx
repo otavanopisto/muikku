@@ -626,11 +626,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          */
         preprocessReactProperties: (tag, props, children, element) => {
           // prerequisites for showing the box
-          if (
-            this.props.checkAnswers &&
-            this.props.displayCorrectAnswers &&
-            this.props.answerRegistry
-          ) {
+          if (this.props.checkAnswers && this.props.answerRegistry) {
             // We get the correct answers
             const correctAnswers = Object.keys(
               this.props.answerRegistry
@@ -671,11 +667,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          */
         preprocessReactProperties: (tag, props, children, element) => {
           // prerequisites for showing the box
-          if (
-            this.props.checkAnswers &&
-            this.props.displayCorrectAnswers &&
-            this.props.answerRegistry
-          ) {
+          if (this.props.checkAnswers && this.props.answerRegistry) {
             // We get the correct answers
             const correctAnswers = Object.keys(
               this.props.answerRegistry
