@@ -34,6 +34,7 @@ import {
   Middleware,
   ResponseContext,
   ActivitylogsApi,
+  StudentCardsApi,
 } from "../generated/client";
 
 /**
@@ -354,6 +355,15 @@ export default class MApi {
    */
   public static getWorkspaceNotesApi() {
     return new WorkspaceNotesApi(configuration);
+  }
+
+  /**
+   * Gets initialized StudentCard API
+   *
+   * @returns initialized StudentCard API
+   */
+  public static getStudentCardApi() {
+    return new StudentCardsApi(configuration);
   }
 
   /**

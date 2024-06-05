@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.websocket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -50,6 +51,39 @@ public class WebSocketMessenger {
     // this ticket in openSession, we register it to the session map 
     sessions.put(ticket, new WebSocketSessionInfo(userEntityId));
     return ticket;
+  }
+  
+  public void sendMessage(String eventType, String data, Set<Long> recipients) {
+    WebSocketMessage message = new WebSocketMessage(eventType, data);
+    ObjectMapper mapper = new ObjectMapper();
+    String strMessage = null;
+    try {
+      strMessage = mapper.writeValueAsString(message);
+    }
+    catch (Exception e) {
+      logger.warning("Unable to serialize websocket message");
+      return;
+    }
+    for (String ticket : sessions.keySet()) {
+      WebSocketSessionInfo sessionInfo = sessions.get(ticket);
+      try {
+        if (sessionInfo == null || sessionInfo.getSession() == null) {
+          continue; // session not found or not yet opened, so skip it
+        }
+        else if (!sessionInfo.getSession().isOpen()) {
+          discardSession(sessionInfo.getSession(), ticket, null);
+          continue;
+        }
+        if (sessionInfo.getUserEntityId() != null && recipients.contains(sessionInfo.getUserEntityId())) {
+          sessionInfo.getSession().getBasicRemote().sendText(strMessage);
+          sessionInfo.access();
+        }
+      }
+      catch (Exception e) {
+        logger.log(Level.WARNING, String.format("Unable to send websocket message: %s", e.getMessage()));
+        discardSession(sessionInfo.getSession(), ticket, null);
+      }
+    }
   }
   
   public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {

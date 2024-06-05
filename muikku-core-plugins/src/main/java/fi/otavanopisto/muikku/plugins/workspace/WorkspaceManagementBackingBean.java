@@ -13,8 +13,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -61,11 +59,7 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
       return NavigationRules.ACCESS_DENIED;
     }
     
-    UserChatSettings userChatSettings = chatController.findUserChatSettings(sessionController.getLoggedUserEntity());
-    
-    if (userChatSettings != null && userChatSettings.getVisibility().equals(UserChatVisibility.VISIBLE_TO_ALL)) {
-      workspaceChatSettings = true;
-    }
+    workspaceChatSettings = chatController.isChatEnabled(sessionController.getLoggedUserEntity());
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     WorkspaceEntityFile customFrontImage = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-cropped");

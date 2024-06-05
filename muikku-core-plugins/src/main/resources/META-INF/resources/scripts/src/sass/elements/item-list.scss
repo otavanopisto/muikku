@@ -63,7 +63,8 @@
   cursor: auto;
 }
 
-.item-list__item--info-popper {
+.item-list__item--info-popover {
+  background-color: transparent;
   cursor: auto;
   max-width: 325px;
 }

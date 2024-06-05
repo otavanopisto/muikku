@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
  */
 interface PortalProps {
   children?: any;
+  localElementId?: string;
   openByClickOn?: React.ReactElement<any>;
   openByHoverOn?: React.ReactElement<any>;
   openByHoverIsClickToo?: boolean;
@@ -200,7 +201,19 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
-        document.body.removeChild(this.node);
+
+        if (this.props.localElementId) {
+          const localElement = document.getElementById(
+            this.props.localElementId
+          );
+          if (localElement) {
+            localElement.removeChild(this.node);
+          } else {
+            document.body.removeChild(this.node);
+          }
+        } else {
+          document.body.removeChild(this.node);
+        }
       }
       this.portal = null;
       this.node = null;
@@ -279,9 +292,20 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   renderPortal(props: PortalProps, isOpening = false) {
     if (!this.node) {
       this.node = document.createElement("div");
+
       this.node.setAttribute("name", "react-portal");
       this.node.setAttribute("id", this.portalId);
-      document.body.appendChild(this.node);
+
+      if (this.props.localElementId) {
+        const localElement = document.getElementById(this.props.localElementId);
+        if (localElement) {
+          localElement.appendChild(this.node);
+        } else {
+          document.body.appendChild(this.node);
+        }
+      } else {
+        document.body.appendChild(this.node);
+      }
     }
 
     this.portal = unstable_renderSubtreeIntoContainer(

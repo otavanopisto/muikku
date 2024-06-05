@@ -178,11 +178,6 @@
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>openfire-rest-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus</artifactId>
     </dependency>
 

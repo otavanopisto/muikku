@@ -17,7 +17,7 @@ import {
   arrow,
   FloatingArrow,
 } from "@floating-ui/react";
-import "~/sass/elements/popper.scss";
+import "~/sass/elements/popover.scss";
 
 /**
  * PopoverOptions
