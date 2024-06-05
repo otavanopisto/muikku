@@ -6,6 +6,10 @@ import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import {
   ProfileAuthorizations,
   ProfileState,
 } from "~/reducers/main-function/profile";
@@ -19,6 +23,7 @@ import {
  */
 interface AuthorizationsProps {
   profile: ProfileState;
+  displayNotification: DisplayNotificationTriggerType;
   updateProfileAuthorizations: UpdateProfileAuthorizationsTriggerType;
 }
 
@@ -57,7 +62,7 @@ const Authorizations = (props: AuthorizationsProps) => {
     setLocked(true);
 
     // Updated authorizations object
-    let updatedAuthorizations: Partial<ProfileAuthorizations>;
+    let updatedAuthorizations: Partial<ProfileAuthorizations> = {};
 
     // If information has changed
     if (
@@ -73,10 +78,14 @@ const Authorizations = (props: AuthorizationsProps) => {
       updated: updatedAuthorizations,
       // eslint-disable-next-line jsdoc/require-jsdoc
       success: () => {
+        props.displayNotification(t("notifications.saveSuccess"), "success");
+
         setLocked(false);
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       fail: () => {
+        props.displayNotification(t("notifications.saveError"), "error");
+
         setLocked(false);
       },
     });
@@ -159,6 +168,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
       updateProfileAuthorizations,
+      displayNotification,
     },
     dispatch
   );
