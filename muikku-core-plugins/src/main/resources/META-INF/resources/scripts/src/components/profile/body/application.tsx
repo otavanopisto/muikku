@@ -9,6 +9,7 @@ import Security from "./application/security";
 import VacationSettings from "./application/vacation-settings";
 import WorkList from "./application/work-list";
 import Purchases from "./application/purchases";
+import Authorizations from "./application/authorizations";
 import ChatSettings from "./application/chat-settings";
 
 /**
@@ -51,6 +52,7 @@ class ProfileApplication extends React.Component<
           <VacationSettings />
           <WorkList />
           <Purchases />
+          <Authorizations />
         </ApplicationPanel>
       </>
     );

@@ -54,6 +54,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -68,6 +69,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
@@ -1770,6 +1772,28 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public StudentCard getStudentCard(String studentIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      return null;
+    }
+    fi.otavanopisto.pyramus.rest.model.StudentCard studentCard = pyramusClient.get(
+        String.format("/students/students/%d/studentCard", studentId),
+        fi.otavanopisto.pyramus.rest.model.StudentCard.class);
+    return studentCard == null ? null : entityFactory.createEntity(studentCard);
+  }
+
+  @Override
+  public BridgeResponse<fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel> updateActive(String studentIdentifier, Boolean active) {
+
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      return null;
+    }
+    
+    return pyramusClient.responsePut(String.format("/students/students/%d/studentCard/active", studentId), Entity.entity(active, MediaType.APPLICATION_JSON), StudentCardRESTModel.class);
+  }
+  
   public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
     Long studentParentId = identifierMapper.getStudentParentId(guardianUserIdentifier.getIdentifier());
     if (studentParentId == null) {
@@ -1852,5 +1876,4 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     return result;
   }
-
 }
