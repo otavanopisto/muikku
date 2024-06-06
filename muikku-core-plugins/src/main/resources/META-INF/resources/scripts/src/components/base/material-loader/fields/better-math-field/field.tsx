@@ -187,19 +187,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     // straightforward process we find all the formulas and convert it to svg
     (this.refs.input as HTMLInputElement).innerHTML = this.value;
-    Array.from(
-      (this.refs.input as HTMLInputElement).querySelectorAll(
-        "." + this.props.formulaClassName
-      )
-    ).forEach((element: HTMLElement) => {
-      toSVG(element, warningImage, null, loadingImage);
-    });
 
-    // We need this LEGACY check here as we changed the mathfield classNames but DB has already many many formulas
+    // We need also this LEGACY check here as we changed the mathfield classNames but DB has already many many formulas
     // using older className.
     Array.from(
       (this.refs.input as HTMLInputElement).querySelectorAll(
-        ".material-page__mathfield-formula"
+        `.${this.props.formulaClassName}, .material-page__mathfield-formula`
       )
     ).forEach((element: HTMLElement) => {
       toSVG(element, warningImage, null, loadingImage);
@@ -238,6 +231,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // On focus field gets called every time the contenteditable gains focus
     // Because there might be elements inside the contenteditable like an image that represents an equation
     // we might check whether the element that allowed us to gain focus was a formula
+
     if (
       this.lastMouseedDownElement &&
       this.lastMouseedDownElement.className === this.props.formulaClassName
@@ -729,7 +723,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     // If this is the field
     if (areWeInsideTheElement) {
-      if (clickedTarget.className === this.props.formulaClassName) {
+      if (
+        clickedTarget.className === this.props.formulaClassName ||
+        clickedTarget.className === "material-page__mathfield-formula"
+      ) {
         // if we click on a formula, we want to select it
         // this is the part where select formula might be called twice because
         // of the onfocus event and this one both see it, but no problem
