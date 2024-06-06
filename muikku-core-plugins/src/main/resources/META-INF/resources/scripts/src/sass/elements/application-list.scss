@@ -1198,6 +1198,7 @@
 }
 
 .application-list__item-footer--course {
+  align-items: center;
   padding: 0 0 10px;
 
   @include breakpoint($breakpoint-pad) {

@@ -1530,6 +1530,7 @@
       "copy_discussionsAreas": "Copy discussion areas",
       "copy_coverImage": "Copy the front page image",
       "copy_workspace": "Make a copy of the course",
+      "courseCompletionStatus": "Completion status:",
       "coverImage": "Course front page image",
       "create": "Create a new course",
       "creating": "Creating the course",
