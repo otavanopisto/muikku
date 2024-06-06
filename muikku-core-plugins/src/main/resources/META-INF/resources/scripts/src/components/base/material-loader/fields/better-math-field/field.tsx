@@ -234,7 +234,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     if (
       this.lastMouseedDownElement &&
-      this.lastMouseedDownElement.className === this.props.formulaClassName
+      (this.lastMouseedDownElement.className === this.props.formulaClassName ||
+        this.lastMouseedDownElement.className ===
+          "material-page__mathfield-formula")
     ) {
       const elem = this.lastMouseedDownElement;
       this.lastMouseedDownElement = null;
