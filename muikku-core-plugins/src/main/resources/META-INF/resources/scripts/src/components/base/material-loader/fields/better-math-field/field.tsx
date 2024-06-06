@@ -195,6 +195,16 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       toSVG(element, warningImage, null, loadingImage);
     });
 
+    // We need this LEGACY check here as we changed the mathfield classNames but DB has already many many formulas
+    // using older className.
+    Array.from(
+      (this.refs.input as HTMLInputElement).querySelectorAll(
+        ".material-page__mathfield-formula"
+      )
+    ).forEach((element: HTMLElement) => {
+      toSVG(element, warningImage, null, loadingImage);
+    });
+
     this.imgUrls = [];
     Array.from(
       (this.refs.input as HTMLInputElement).querySelectorAll(
