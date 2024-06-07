@@ -188,8 +188,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // straightforward process we find all the formulas and convert it to svg
     (this.refs.input as HTMLInputElement).innerHTML = this.value;
 
-    // We need also this LEGACY check here as we changed the mathfield classNames but DB has already many many formulas
-    // using older className.
+    // WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed
     Array.from(
       (this.refs.input as HTMLInputElement).querySelectorAll(
         `.${this.props.formulaClassName}, .material-page__mathfield-formula`
@@ -232,6 +231,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // Because there might be elements inside the contenteditable like an image that represents an equation
     // we might check whether the element that allowed us to gain focus was a formula
 
+    // WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed
     if (
       this.lastMouseedDownElement &&
       (this.lastMouseedDownElement.className === this.props.formulaClassName ||
@@ -724,6 +724,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     );
 
     // If this is the field
+
+    // WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed
     if (areWeInsideTheElement) {
       if (
         clickedTarget.className === this.props.formulaClassName ||
