@@ -160,6 +160,7 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
               }
             />
           </span>
+          {/* WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed */}
           <MathField
             ref="base"
             className="mathfield"
