@@ -8,10 +8,32 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObject;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObjectLevel2;
+import fi.otavanopisto.muikku.search.annotations.IndexableSubObjectType;
 
 @Indexable (
   indexName = IndexedCommunicatorMessage.INDEX_NAME,
-  typeName = IndexedCommunicatorMessage.TYPE_NAME
+  typeName = IndexedCommunicatorMessage.TYPE_NAME,
+  subObjects = {
+    @IndexableSubObject (
+      name = "sender",
+      type = IndexableSubObjectType.NESTED
+    ),
+    @IndexableSubObject (
+      name = "recipients",
+      type = IndexableSubObjectType.NESTED
+    ),
+    @IndexableSubObject (
+      name = "groupRecipients",
+      subObjects = {
+        @IndexableSubObjectLevel2 (
+          name = "recipients",
+          type = IndexableSubObjectType.NESTED
+        )
+      }
+    ),
+  }
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IndexedCommunicatorMessage {
