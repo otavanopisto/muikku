@@ -8,12 +8,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.guidancerequest.GuidanceRequest_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.guidancerequest.GuidanceRequest;
-
-
 
 public class GuidanceRequestDAO extends CorePluginsDAO<GuidanceRequest> {
 
