@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
@@ -271,7 +271,7 @@ class PyramusRestClient implements Serializable {
     if (responseContent != null && statusCode >= 200 && statusCode < 300) {
       // ok response with entity 
       try {
-        entity = new ObjectMapper().registerModule(new JSR310Module()).readValue(responseContent, type);
+        entity = new ObjectMapper().registerModule(new JavaTimeModule()).readValue(responseContent, type);
       }
       catch (Exception e) {
         logger.log(Level.SEVERE, String.format("Failed to deserialize path %s entity %s from %s", path, type.getSimpleName(), responseContent), e);

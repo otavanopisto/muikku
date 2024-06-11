@@ -1,12 +1,11 @@
 package fi.otavanopisto.muikku.rest;
 
-
-import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Provider
 public class JacksonConfigurator implements ContextResolver<ObjectMapper> {
@@ -14,7 +13,7 @@ public class JacksonConfigurator implements ContextResolver<ObjectMapper> {
   @Override
   public ObjectMapper getContext(Class<?> type) {
 	ObjectMapper objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JSR310Module());
+    objectMapper.registerModule(new JavaTimeModule());
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     return objectMapper;
   }

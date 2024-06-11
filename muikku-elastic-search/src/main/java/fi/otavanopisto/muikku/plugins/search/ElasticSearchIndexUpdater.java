@@ -22,7 +22,7 @@ import org.elasticsearch.client.indices.PutMappingRequest;
 import org.elasticsearch.xcontent.XContentType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.search.IndexableEntityVault;
@@ -272,7 +272,7 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
   @Override
   public void addOrUpdateIndex(String indexName, String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(new JSR310Module());
+    mapper.registerModule(new JavaTimeModule());
     
     String json;
     try {
