@@ -72,7 +72,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     .addCourseStaffMember(courseId, courseStaffMember)
     .build();
     try{
-      Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null, null);
+      Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
       updateAnnouncementWorkspace(announcementId, workspace.getId());
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       
