@@ -174,7 +174,7 @@ public class NoLoggedInForTwoMonthsNotificationStrategy extends AbstractTimedNot
         continue;
       }
       
-      Long userEntityId = new Long((int) result.get("userEntityId"));
+      Long userEntityId = Long.valueOf((int) result.get("userEntityId"));
       UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
       if (studentEntity == null) {
         continue;
