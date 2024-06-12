@@ -8,6 +8,7 @@ import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 import { useTranslation } from "react-i18next";
 import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
 /**
  * DropdownItem
@@ -205,9 +206,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * createHtmlMarkup
      * @param htmlString string that contains html
      */
-    const createHtmlMarkup = (htmlString: string) => ({
+    /* const createHtmlMarkup = (htmlString: string) => ({
       __html: htmlString,
-    });
+    }); */
 
     /**
      * Renders dates. Date or date range string
@@ -514,10 +515,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         </div>
 
         {description ? (
-          <div
-            className="notes__item-body"
-            dangerouslySetInnerHTML={createHtmlMarkup(description)}
-          />
+          <div className="notes__item-body">
+            <CkeditorLoaderContent html={description} />
+          </div>
         ) : null}
         <div className="notes__item-author">
           {!loggedUserIsCreator ? creatorName : null}

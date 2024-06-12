@@ -139,7 +139,7 @@ const extraConfig = (props: CKEditorProps) => ({
     { name: "links", items: ["Link"] },
     {
       name: "insert",
-      items: ["Image", "Smiley", "SpecialChar"],
+      items: ["Image", "Smiley", "SpecialChar", "Iframe", "oembed"],
     },
     { name: "colors", items: ["TextColor", "BGColor"] },
     { name: "styles", items: ["Format"] },
@@ -166,7 +166,7 @@ const extraConfig = (props: CKEditorProps) => ({
   ],
   uploadUrl: "/communicatorAttachmentUploadServlet",
   extraPlugins:
-    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt",
+    "widget,lineutils,filetools,notification,notificationaggregator,uploadwidget,uploadimage,divarea,scayt,oembed",
   removePlugins: "exportpdf,wsc",
   /* eslint-enable camelcase */
 });

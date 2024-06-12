@@ -30,6 +30,7 @@ const NoteInformationDialog: React.FC<NoteInformationDialogProps> = (props) => {
   const content = (closeDialog: () => never) => (
     <NotesListItem
       {...item}
+      ref={undefined}
       containerModifier={["dialog-information"]}
       openInformationToDialog={false}
     />
