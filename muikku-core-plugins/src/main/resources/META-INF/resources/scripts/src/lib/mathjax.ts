@@ -76,6 +76,11 @@ export function toSVG(
   placeholderSrc?: string,
   placeholderCb?: (element: HTMLImageElement) => any
 ) {
+  // Crummy duct tape fix to not bother with elements that are detached from DOM already
+  // Actual solution is to figure out why fields even go through a mount/dismount/mount cycle in materials
+  if (!element || !element.isConnected) {
+	return;
+  }
   if (!(window as any).MathJax) {
     queue.push(
       toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb)
@@ -83,6 +88,13 @@ export function toSVG(
     return;
   }
   let formula = element.textContent || (element as HTMLImageElement).alt;
+  // Apparently some elements coming to this method could have no content to render, so skip them
+  if (!formula) {
+	if (window.console) {
+      console.error('Unable to render MathJax element ' + element.outerHTML);
+	}
+	return;
+  }
   if (!formula.startsWith("\\(")) {
     formula = "\\(" + formula + "\\)";
   }
