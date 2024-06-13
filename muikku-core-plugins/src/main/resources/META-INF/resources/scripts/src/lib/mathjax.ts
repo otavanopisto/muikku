@@ -79,7 +79,7 @@ export function toSVG(
   // Crummy duct tape fix to not bother with elements that are detached from DOM already
   // Actual solution is to figure out why fields even go through a mount/dismount/mount cycle in materials
   if (!element || !element.isConnected) {
-	return;
+    return;
   }
   if (!(window as any).MathJax) {
     queue.push(
