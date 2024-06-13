@@ -9,7 +9,6 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
-import fi.otavanopisto.muikku.plugins.organizationmanagement.OrganizationManagementPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @Named

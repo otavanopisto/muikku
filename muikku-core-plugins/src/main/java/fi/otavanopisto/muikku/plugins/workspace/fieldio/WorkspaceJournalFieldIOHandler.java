@@ -2,8 +2,6 @@ package fi.otavanopisto.muikku.plugins.workspace.fieldio;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;

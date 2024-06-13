@@ -11,7 +11,6 @@ import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierAction;
 import fi.otavanopisto.muikku.notifier.NotifierContext;
-import fi.otavanopisto.muikku.plugins.guidancerequest.GuidanceRequest;
 import fi.otavanopisto.muikku.plugins.notifier.email.NotifierEmailContent;
 import fi.otavanopisto.muikku.plugins.notifier.email.NotifierEmailMessageComposer;
 import fi.otavanopisto.muikku.schooldata.entity.User;
