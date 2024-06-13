@@ -90,10 +90,10 @@ export function toSVG(
   let formula = element.textContent || (element as HTMLImageElement).alt;
   // Apparently some elements coming to this method could have no content to render, so skip them
   if (!formula) {
-	if (window.console) {
+    if (window.console) {
       console.error('Unable to render MathJax element ' + element.outerHTML);
-	}
-	return;
+    }
+    return;
   }
   if (!formula.startsWith("\\(")) {
     formula = "\\(" + formula + "\\)";
