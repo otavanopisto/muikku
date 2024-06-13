@@ -12,11 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-
 import javax.validation.constraints.NotEmpty;
-
-import fi.otavanopisto.muikku.model.users.UserEntity;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class UserEntityFile {
