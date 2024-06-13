@@ -41,17 +41,21 @@ export const MATHJAXSRC =
  * loadMathJax
  */
 export function loadMathJax() {
+  console.log('LOAD MATHJAX CALLED!');
   const mathjaxScriptTag = document.querySelector(
     `script[src="${MATHJAXSRC}"]`
   );
   if (mathjaxScriptTag || (window as any).MathJax) {
+    console.log('MATHJAX ALREADY PRESENT!');
     return;
   }
+  console.log('LET US DO A MATHJAX SCRIPT!');
   const script = document.createElement("script");
   script.src = MATHJAXSRC;
   script.async = true;
   // eslint-disable-next-line
   script.onload = () => {
+    console.log('MATHJAX SCRIPT ONLOAD!');
     (window as any).MathJax.Hub.Config(MATHJAXCONFIG);
     if (queue.length) {
       queue.forEach((q) => q());
@@ -77,12 +81,15 @@ export function toSVG(
   placeholderCb?: (element: HTMLImageElement) => any
 ) {
   if (!(window as any).MathJax) {
+    console.log(element.outerHTML + ' TOSVG BUT QUEUED BECAUSE MATHJAX NOT YET AVAILABLE');
     queue.push(
       toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb)
     );
     return;
   }
+  console.log(element.outerHTML + ' TOSVG');
   let formula = element.textContent || (element as HTMLImageElement).alt;
+  // TODO Tässä jos formula on undefined niin kaatuu koko pasha
   if (!formula.startsWith("\\(")) {
     formula = "\\(" + formula + "\\)";
   }
@@ -123,6 +130,7 @@ export function toSVG(
     newImage.className = element.className;
 
     if (mjOut) {
+      console.log('BASE64 CODING...');
       mjOut.setAttribute("xmlns", "http://www.w3.org/2000/svg");
       newImage.src =
         "data:image/svg+xml;base64," +
