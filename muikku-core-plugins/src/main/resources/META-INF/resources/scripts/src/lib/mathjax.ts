@@ -32,6 +32,18 @@ export const MATHJAXCONFIG = {
   showProcessingMessages: true,
   messageStyle: "normal",
   showMathMenu: true,
+  menuSettings: {
+    collapsible: false,
+    autocollapse: false,
+    explorer: false,
+  },
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+  },
+  mml2jax: {
+    preview: "mathml",
+  },
+  skipStartupTypeset: true,
 };
 
 export const MATHJAXSRC =
@@ -62,6 +74,7 @@ export function loadMathJax() {
 }
 
 /**
+ *
  * toSVG
  * @param element element
  * @param errorSrc errorSrc
@@ -91,7 +104,7 @@ export function toSVG(
   // Apparently some elements coming to this method could have no content to render, so skip them
   if (!formula) {
     if (window.console) {
-      console.error('Unable to render MathJax element ' + element.outerHTML);
+      console.error("Unable to render MathJax element " + element.outerHTML);
     }
     return;
   }
