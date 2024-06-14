@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.236-SNAPSHOT</version>
+    <version>1.1.236</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
