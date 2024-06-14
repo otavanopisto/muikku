@@ -182,7 +182,7 @@ public class OrganizationUserManagementRESTService {
       
       staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
           staffMemberIdentifier.toId(),
-          new Long((Integer) o.get("userEntityId")),
+          Long.valueOf((Integer) o.get("userEntityId")),
           (String) o.get("firstName"),
           (String) o.get("lastName"), 
           email,
