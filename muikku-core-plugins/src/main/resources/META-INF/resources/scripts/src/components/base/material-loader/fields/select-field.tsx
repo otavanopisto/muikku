@@ -345,9 +345,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
 
     // The classname that represents the state of the whole field
     const fieldStateAfterCheck =
-      this.state.answerState !== "UNKNOWN" &&
-      this.props.displayCorrectAnswers &&
-      this.props.checkAnswers
+      this.state.answerState !== "UNKNOWN" && this.props.checkAnswers
         ? this.state.answerState === "FAIL"
           ? "incorrect-answer"
           : "correct-answer"
@@ -433,8 +431,26 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
             {this.props.content.options.map((o) => {
               // lets generate unique id for labels and radio buttons
               const uniqueElementID = "rb-" + uuidv4();
+
+              // Classname that represents the state of the individual radio button
+              let radioButtonStateAfterCheck = "";
+
+              if (
+                this.state.answerState !== "UNKNOWN" &&
+                this.props.checkAnswers &&
+                this.props.displayCorrectAnswers
+              ) {
+                radioButtonStateAfterCheck =
+                  this.state.answerState === "FAIL"
+                    ? "incorrect-answer"
+                    : "correct-answer";
+              }
+
               return (
-                <span className="radiobuttonfield__item-container" key={o.name}>
+                <span
+                  className={`radiobuttonfield__item-container ${radioButtonStateAfterCheck}`}
+                  key={o.name}
+                >
                   <input
                     id={uniqueElementID}
                     className="radiobuttonfield"

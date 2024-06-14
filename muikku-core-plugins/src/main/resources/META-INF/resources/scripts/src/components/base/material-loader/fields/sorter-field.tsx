@@ -505,9 +505,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
 
     // Lets get the class name to match the state of the entire field if necessary
     const fieldStateAfterCheck =
-      this.props.displayCorrectAnswers &&
-      this.props.checkAnswers &&
-      this.state.answerState
+      this.props.checkAnswers && this.state.answerState
         ? this.state.answerState.includes("FAIL")
           ? "incorrect-answer"
           : "correct-answer"

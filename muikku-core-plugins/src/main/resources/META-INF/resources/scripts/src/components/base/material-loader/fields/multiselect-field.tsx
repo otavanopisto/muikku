@@ -353,7 +353,6 @@ class MultiSelectField extends React.Component<
 
     // the classname we add to the element itself depending to the state, and only available if we check answers
     const fieldStateAfterCheck =
-      this.props.displayCorrectAnswers &&
       this.props.checkAnswers &&
       this.state.answerState &&
       this.state.answerState !== "UNKNOWN"
@@ -387,7 +386,7 @@ class MultiSelectField extends React.Component<
             // if we are told to mark correct answers
             const isChecked = this.state.values.includes(o.name);
             let itemStateAfterCheck = "";
-            if (this.props.displayCorrectAnswers) {
+            if (this.props.checkAnswers && this.props.displayCorrectAnswers) {
               if ((o.correct && isChecked) || (!o.correct && !isChecked)) {
                 itemStateAfterCheck = "correct-answer";
               } else {

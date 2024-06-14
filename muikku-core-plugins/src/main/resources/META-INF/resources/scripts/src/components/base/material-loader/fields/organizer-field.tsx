@@ -1034,7 +1034,6 @@ class OrganizerField extends React.Component<
                 // we make a category class name for if the answer state is there, only worth it if the whole thing is not right
                 // if the whole thing is right then every category is right
                 const fieldCategoryStateAfterCheck =
-                  this.props.displayCorrectAnswers &&
                   this.props.checkAnswers &&
                   !answerIsCheckedAndItisCorrect &&
                   this.state.answerState &&
