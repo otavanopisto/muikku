@@ -91,7 +91,11 @@ export function toSVG(
 ) {
   // Crummy duct tape fix to not bother with elements that are detached from DOM or are still to be lazy-loaded
   // Actual solution is to figure out why fields even go through a mount/unmount/mount cycle in materials
-  if (!element || !element.isConnected || element.closest('div.material-lazy-loader-container')) {
+  if (
+    !element ||
+    !element.isConnected ||
+    element.closest("div.material-lazy-loader-container")
+  ) {
     return;
   }
   if (!(window as any).MathJax) {
