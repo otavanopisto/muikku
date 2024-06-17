@@ -123,6 +123,12 @@ export default function status(
       return {
         ...state,
         chatSettings: action.payload,
+        services: {
+          ...state.services,
+          chat: {
+            isAvailable: action.payload.visibility !== "NONE",
+          },
+        },
       };
 
     case "UPDATE_STATUS": {

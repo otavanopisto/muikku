@@ -246,7 +246,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
     title: state.title,
-    dependants: state.dependants.list,
+    dependants: (state.dependants && state.dependants.list) || [],
   };
 }
 

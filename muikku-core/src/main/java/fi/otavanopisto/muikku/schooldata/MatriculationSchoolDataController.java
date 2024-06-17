@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -55,11 +54,6 @@ public class MatriculationSchoolDataController {
   
   public MatriculationExamAttendance createMatriculationExamAttendance() {
     return getMatriculationBridge().createMatriculationExamAttendance();
-  }
-
-  public boolean isEligible(Long examId) {
-    List<MatriculationExam> eligibleExams = listMatriculationExams(true);
-    return eligibleExams.stream().anyMatch(exam -> Objects.equals(exam.getId(), examId) && exam.isEligible());
   }
 
 }
