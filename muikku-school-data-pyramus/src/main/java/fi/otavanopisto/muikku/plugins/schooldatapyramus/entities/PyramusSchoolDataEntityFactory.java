@@ -529,6 +529,18 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusGroupUser(identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupUser.getId()),
         identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()).getIdentifier());
   }
+  
+  public PyramusStudentCard createEntity(fi.otavanopisto.pyramus.rest.model.StudentCard studentCard) {
+    return new PyramusStudentCard(
+        studentCard.getId(), 
+        studentCard.getUserEntityId(), 
+        studentCard.getFirstName(), 
+        studentCard.getLastName(), 
+        studentCard.getStudyProgramme(), 
+        studentCard.getExpiryDate(), 
+        studentCard.getActivity().name(), 
+        studentCard.getType().name());
+  }
 
   public List<GroupUser> createEntities(StudentGroupStudent... studentGroupStudents) {
     List<GroupUser> results = new ArrayList<>();

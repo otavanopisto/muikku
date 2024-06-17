@@ -36,9 +36,6 @@ const ManagementChatSettings = (props: ManagementChatSettingsProps) => {
       <div className="application-sub-panel__body">
         <div className="form__row">
           <fieldset className="form__fieldset">
-            <legend className="form__legend">
-              {t("labels.chatStatus", { ns: "workspace" })}
-            </legend>
             <div className="form__fieldset-content form__fieldset-content--horizontal">
               <div className="form-element form-element--checkbox-radiobutton">
                 <input

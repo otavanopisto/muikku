@@ -3,6 +3,7 @@ import { Reducer } from "redux";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import {
   CeeposOrder,
+  StudentCard,
   UserStudentAddress,
   UserWithSchoolData,
   WorklistItem,
@@ -26,6 +27,14 @@ export interface ProfileProperty {
 }
 
 /**
+ * ProfileAuthorizations
+ */
+export interface ProfileAuthorizations {
+  studentCard: StudentCard;
+  studentCardActive: boolean;
+}
+
+/**
  * ProfileState
  */
 export interface ProfileState {
@@ -38,6 +47,7 @@ export interface ProfileState {
   worklistTemplates?: WorklistTemplate[];
   worklist?: Array<WorklistSection>;
   purchases?: CeeposOrder[];
+  authorizations?: ProfileAuthorizations;
 }
 
 /**
@@ -52,6 +62,7 @@ const initialProfileState: ProfileState = {
   worklistTemplates: null,
   worklist: null,
   purchases: null,
+  authorizations: null,
 };
 
 /**
@@ -96,6 +107,9 @@ export const profile: Reducer<ProfileState> = (
 
     case "SET_PURCHASE_HISTORY":
       return { ...state, purchases: action.payload };
+
+    case "SET_PROFILE_AUTHORIZATIONS":
+      return { ...state, authorizations: action.payload };
 
     default:
       return state;

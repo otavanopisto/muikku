@@ -277,6 +277,8 @@
       "changePassword": "Please enter the old and new password",
       "changeAddressMunicipality": "Enter your new address and municipality",
       "removing": "Are you sure you want to delete your profile picture?",
+      "sliceAuthorization1": "We use Slice.fi, which is a digital student card and student benefit service. By answering yes, you give us permission to provide the service with the following information: name, email address, date of birth, and the end date of your study right or studies.",
+      "sliceAuthorization2": "You can access the card by downloading the Slice.fi app to your phone. Using the service requires strong authentication, such as bank credentials.",
       "nick": "Staff will see your real name but other students can only see your nickname",
       "vacationAutoReply": "Automatic reply is active only when vacation start and end dates are set. If a contact sends you several messages, this automated reply will be sent at most once every 4 days.",
       "whatsAppIntegration": "You can turn the WhatsApp integration on by clicking the icon. Please note that the integration will work only if you have entered your phone number with the country code, e.g. +358 40 123 4567. When the integration is active, you will see a WhatsApp button in your contact information. Clicking the button will open the WhatsApp Web client."
@@ -284,6 +286,7 @@
     "labels": {
       "additionalInfo": "Additional information",
       "appointmentCalendar_url": "URL of the reservation calendar",
+      "authorizations": "Authorizations",
       "appointmentCalendar": "Reservation calendar",
       "beginDate": "Vacation starts",
       "changeAddressAndMunicipality": "Change address and municipality",
@@ -294,11 +297,13 @@
       "chatVisibility": "Chat visibility",
       "endDate": "Vacation ends",
       "generalInfo": "General information",
-      "nick": "Chat nickname",
+      "nick": "Chat nickname (mandatory)",
+      "iWantDigitalStudentCard": "I want a digital student card",
       "profileImage": "Profile picture",
       "remove": "Delete profile picture",
-      "vacationAutoReply": "Vacation responder is on",
+      "studentCardAuthorizationTitle": "Digital student card",
       "vacationSettings": "Vacation settings",
+      "vacationAutoReply": "Vacation responder is on",
       "whatsappIntegration_off": "WhatsApp integration on",
       "whatsappIntegration_on": "WhatsApp integration off",
       "whatsAppintegration": "WhatsApp integration",
@@ -1643,8 +1648,8 @@
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Type select",
       "workspaceSignupMessage": "Course sign up message",
-      "workspaceSignupMessageTitle": "Message title",
-      "workspaceSignupMessageContent": "Message content"
+      "workspaceSignupMessageTitle": "Message title (mandatory)",
+      "workspaceSignupMessageContent": "Message content (mandatory)"
     },
     "notifications": {
       "cancelError": "Canceling failed",
@@ -1692,7 +1697,7 @@
       "sendSuccess_evaluationRequestsCancel": "Cancelling the evaluation request succeeded",
       "sendSuccess_interimEvaluationRequests": "Sending the interim evaluation request succeeded",
       "updateError": "$t(common:notifications.updateError)",
-      "updateError_settings": "Updating course settings failed",
+      "updateError_settings": "Updating course settings failed. Please ensure that the course-specific and group-specific enrollment messages have a subject and content.",
       "updateError_answers": "Updating answer failed",
       "updateError_coverImage": "Updating the front page image failed",
       "updateError_details": "Updating details failed",
