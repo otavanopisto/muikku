@@ -108,7 +108,7 @@ const extraConfig = (props: CKEditorProps) => ({
    * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
    * */
   extraAllowedContent:
-    "*{*}; *[data*]; audio source[*](*){*}; mark; details(*); summary(*);",
+    "*{*}; *[data*]; audio source[*](*){*}; video source[*](*){*}; mark; details(*); summary(*);",
 
   /**
    * We remove every class attribute from every html element and every on* prefixed attributes as well as everything related to font stylings.
