@@ -118,6 +118,7 @@ export const CKEditorConfig = (locale: string) => ({
         "oembed",
         "Muikku-mathjax",
         "Table",
+        "Iframe",
         "Smiley",
         "SpecialChar",
       ],
@@ -149,7 +150,7 @@ export const CKEditorConfig = (locale: string) => ({
   ],
   removePlugins: "image,exportpdf,wsc",
   resize_enabled: true,
-  extraPlugins: "divarea,image2,muikku-mathjax",
+  extraPlugins: "divarea,image2,muikku-mathjax,oembed",
 });
 /* eslint-enable camelcase */
 

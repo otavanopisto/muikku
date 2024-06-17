@@ -12,6 +12,7 @@ import AssessmentRequestIndicator from "~/components/general/records-history/ass
 import RecordsAssessmentIndicator from "~/components/general/records-history/records-assessment-indicator";
 import { WorkspaceAssessmentState } from "~/generated/client";
 import { RecordWorkspaceActivityByLine } from "~/components/general/records-history/types";
+import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 
 /**
  * RecordsGroupItemProps
@@ -168,10 +169,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                         })}
                     :
                   </div>
-                  <div
+                  <CkeditorContentLoader html={literalAssessment} />
+                  {/* <div
                     className="workspace-assessment__literal-data rich-text"
                     dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                  ></div>
+                  ></div> */}
                 </div>
               </div>
             );
@@ -231,10 +233,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       })}
                       :
                     </div>
-                    <div
+                    <CkeditorContentLoader html={literalAssessment} />
+                    {/* <div
                       className="workspace-assessment__literal-data rich-text"
                       dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
+                    ></div> */}
                   </div>
                 </div>
               );
@@ -263,10 +266,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       })}
                       :
                     </div>
-                    <div
+                    <CkeditorContentLoader html={literalAssessment} />
+                    {/* <div
                       className="workspace-assessment__literal-data rich-text"
                       dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
+                    ></div> */}
                   </div>
                 </div>
               );

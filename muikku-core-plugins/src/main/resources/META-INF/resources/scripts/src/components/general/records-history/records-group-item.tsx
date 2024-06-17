@@ -15,6 +15,7 @@ import RecordsAssessmentIndicator from "./records-assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import { RecordWorkspaceActivityByLine } from "./types";
 import { useRecordsInfoContext } from "./context/records-info-context";
+import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 
 /**
  * RecordsGroupItemProps
@@ -173,10 +174,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                         })}
                     :
                   </div>
-                  <div
+                  <CkeditorContentLoader html={literalAssessment} />
+                  {/* <div
                     className="workspace-assessment__literal-data rich-text"
                     dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                  ></div>
+                  ></div> */}
                 </div>
               </div>
             );
@@ -236,10 +238,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       })}
                       :
                     </div>
-                    <div
+                    <CkeditorContentLoader html={literalAssessment} />
+                    {/* <div
                       className="workspace-assessment__literal-data rich-text"
                       dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
+                    ></div> */}
                   </div>
                 </div>
               );
@@ -267,10 +270,11 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       })}
                       :
                     </div>
-                    <div
+                    <CkeditorContentLoader html={literalAssessment} />
+                    {/* <div
                       className="workspace-assessment__literal-data rich-text"
                       dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
+                    ></div> */}
                   </div>
                 </div>
               );

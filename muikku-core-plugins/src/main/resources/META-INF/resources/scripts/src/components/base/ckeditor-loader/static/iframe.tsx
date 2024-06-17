@@ -207,10 +207,7 @@ class Iframe extends React.Component<IframeProps, IframeState> {
                   onClickOutside={this.handleClickOutside}
                 >
                   {!this.state.active && (
-                    <div
-                      onClick={this.handleOverlayClick}
-                      className="material-page__iframe-wrapper-overlay"
-                    />
+                    <div onClick={this.handleOverlayClick} />
                   )}
 
                   <Tag {...iframeProps}>{children}</Tag>
