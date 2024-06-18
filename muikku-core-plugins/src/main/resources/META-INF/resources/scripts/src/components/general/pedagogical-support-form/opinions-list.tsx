@@ -3,7 +3,7 @@ import { Opinion, OpinionType } from "~/@types/pedagogy-form";
 import { TextField } from "../hops-compulsory-education-wizard/text-field";
 import CKEditor from "../ckeditor";
 import Button from "../button";
-import CkeditorLoaderContent from "../../base/ckeditor-loader/content";
+import CkeditorContentLoader from "../../base/ckeditor-loader/content";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 
@@ -105,7 +105,7 @@ export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
                 {t("content.pointOfViewNotSet", { ns: "pedagogySupportPlan" })}
               </p>
             ) : (
-              <CkeditorLoaderContent html={opinionText} />
+              <CkeditorContentLoader html={opinionText} />
             )}
           </div>
         )}

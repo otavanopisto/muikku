@@ -12,7 +12,7 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/link.scss";
 import AnswerMessageDrawer from "./message-editor/answer-message-drawer";
 import { AnyActionType } from "~/actions";
-import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
+import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
 import { WithTranslation, withTranslation } from "react-i18next";
 import InfoPopover from "~/components/general/info-popover";
@@ -426,9 +426,9 @@ class Message extends React.Component<MessageProps, MessageState> {
              * inside of "valid" html tags and go with it
              */}
             {isStringHTML(this.props.message.content) ? (
-              <CkeditorLoaderContent html={this.props.message.content} />
+              <CkeditorContentLoader html={this.props.message.content} />
             ) : (
-              <CkeditorLoaderContent
+              <CkeditorContentLoader
                 html={`<p>${this.props.message.content}</p>`}
               />
             )}

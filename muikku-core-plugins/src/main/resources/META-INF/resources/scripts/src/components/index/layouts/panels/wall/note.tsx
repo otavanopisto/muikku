@@ -7,6 +7,8 @@ import NotesItemEdit from "~/components/general/notes/notes-item-edit";
 import Link from "~/components/general/link";
 import "~/sass/elements/note.scss";
 import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
+import { isStringHTML } from "~/helper-functions/shared";
 /**
  * NoteProps
  */
@@ -76,10 +78,15 @@ export const NoteComponent: React.FC<NoteProps> = (props) => {
         </span>
       </div>
       <AnimateHeight height={showDescription ? "auto" : 0}>
-        <div
+        {/* <div
           className="note__description"
           dangerouslySetInnerHTML={{ __html: note.description }}
-        ></div>
+        ></div> */}
+        {isStringHTML(note.description) ? (
+          <CkeditorContentLoader html={note.description} />
+        ) : (
+          <CkeditorContentLoader html={`<p>${note.description}</p>`} />
+        )}
         <div className="note__footer">
           <Link className="link link--index" onClick={handleStatusChange}>
             {t(updateButtonLocale)}

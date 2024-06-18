@@ -8,7 +8,7 @@ import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
 import { UserIndexState } from "~/reducers/user-index";
-import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
+import CkeditorContentLoader from "../../../base/ckeditor-loader/content";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
@@ -96,7 +96,7 @@ class Announcements extends React.Component<
         ) : null}
         <div className="article__date">{articleDate}</div>
         <section className="article__body rich-text">
-          <CkeditorLoaderContent html={this.props.announcement.content} />
+          <CkeditorContentLoader html={this.props.announcement.content} />
         </section>
       </article>
     );

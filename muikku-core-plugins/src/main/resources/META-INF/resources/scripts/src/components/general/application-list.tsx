@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/application-list.scss";
-import CkeditorLoaderContent from "../base/ckeditor-loader/content";
+import CkeditorContentLoader from "../base/ckeditor-loader/content";
 
 /**
  * ApplicationListProps
@@ -371,7 +371,7 @@ export class ApplicationListItemBody extends React.Component<
                 : ""
             }`}
           >
-            <CkeditorLoaderContent html={this.props.content} />
+            <CkeditorContentLoader html={this.props.content} />
           </section>
         ) : null}
         {this.props.children}

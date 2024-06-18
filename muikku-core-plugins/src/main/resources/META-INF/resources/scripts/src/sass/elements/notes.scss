@@ -113,6 +113,7 @@
     scrollbar-color: lighten($color-default-contrast, 35%) $color-default;
     scrollbar-width: thin;
     white-space: pre-line;
+    width: 100%;
 
     &::-webkit-scrollbar {
       background-color: $color-default;

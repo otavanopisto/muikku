@@ -16,6 +16,7 @@ import ActivityIndicator from "./activity-indicator";
 import { RecordWorkspaceActivityByLine } from "./types";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
+import { isStringHTML } from "~/helper-functions/shared";
 
 /**
  * RecordsGroupItemProps
@@ -174,11 +175,13 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                         })}
                     :
                   </div>
-                  <CkeditorContentLoader html={literalAssessment} />
-                  {/* <div
-                    className="workspace-assessment__literal-data rich-text"
-                    dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                  ></div> */}
+                  {isStringHTML(literalAssessment) ? (
+                    <CkeditorContentLoader html={literalAssessment} />
+                  ) : (
+                    <CkeditorContentLoader
+                      html={`<p>${literalAssessment}</p>`}
+                    />
+                  )}
                 </div>
               </div>
             );
@@ -238,11 +241,13 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       })}
                       :
                     </div>
-                    <CkeditorContentLoader html={literalAssessment} />
-                    {/* <div
-                      className="workspace-assessment__literal-data rich-text"
-                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div> */}
+                    {isStringHTML(literalAssessment) ? (
+                      <CkeditorContentLoader html={literalAssessment} />
+                    ) : (
+                      <CkeditorContentLoader
+                        html={`<p>${literalAssessment}</p>`}
+                      />
+                    )}
                   </div>
                 </div>
               );
@@ -270,11 +275,13 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       })}
                       :
                     </div>
-                    <CkeditorContentLoader html={literalAssessment} />
-                    {/* <div
-                      className="workspace-assessment__literal-data rich-text"
-                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div> */}
+                    {isStringHTML(literalAssessment) ? (
+                      <CkeditorContentLoader html={literalAssessment} />
+                    ) : (
+                      <CkeditorContentLoader
+                        html={`<p>${literalAssessment}</p>`}
+                      />
+                    )}
                   </div>
                 </div>
               );

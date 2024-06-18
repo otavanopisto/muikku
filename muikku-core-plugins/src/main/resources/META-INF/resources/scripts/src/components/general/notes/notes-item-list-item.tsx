@@ -8,7 +8,7 @@ import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 import { useTranslation } from "react-i18next";
 import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
-import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
+import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 
 /**
  * DropdownItem
@@ -515,8 +515,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         </div>
 
         {description ? (
-          <div className="notes__item-body">
-            <CkeditorLoaderContent html={description} />
+          <div className="notes__item-body rich-text">
+            <CkeditorContentLoader html={description} />
           </div>
         ) : null}
         <div className="notes__item-author">
