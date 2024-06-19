@@ -1,0 +1,254 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// Organizer field
+.organizerfield-wrapper {
+  display: block;
+  position: relative;
+
+  ul.organizerfield__terms-container {
+    display: flex;
+    flex-flow: row wrap;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li.organizerfield__term {
+    display: inline-flex;
+    list-style-type: none;
+    padding: 0;
+  }
+
+  ul.organizerfield__categories {
+    display: flex;
+    flex-flow: row wrap;
+    list-style-type: none;
+    margin: 5px 0 0;
+    padding: 0;
+  }
+
+  li.organizerfield__category {
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    list-style-type: none;
+    margin: 4px;
+    max-width: 100%;
+
+    @include breakpoint($breakpoint-pad) {
+      flex-basis: calc(50% - 8px);
+      max-width: calc(50% - 8px);
+    }
+  }
+
+  ul.organizerfield__category-terms-container {
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row wrap;
+    list-style-type: none;
+    margin: 0;
+    min-height: 100px;
+    padding: 5px;
+  }
+}
+
+.organizerfield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.organizerfield {
+  display: block;
+
+  &.correct-answer {
+    .organizerfield__category { // If the whole taskfield is correct we then mark taskfield's category and items as correct . This class inception is needed so we don't add styles to terms that are only available
+      border-color: $color-correct-answer;
+    }
+
+    .organizerfield__term {
+      background: $color-default;
+      border-color: $color-correct-answer;
+    }
+  }
+}
+
+.organizerfield-disabled {
+  cursor: not-allowed;
+
+  .organizerfield__category,
+  .organizerfield__category-title,
+  .organizerfield__term {
+    border-color: $color-disabled-taskfield-border;
+    cursor: not-allowed;
+  }
+
+  .organizerfield__term--in-use,
+  .organizerfield__term--no-dragging {
+    background: $color-disabled-taskfield-background;
+  }
+
+  .organizerfield__term-icon {
+    color: $color-disabled-taskfield-icon;
+  }
+}
+
+.organizerfield__terms {
+  display: block;
+}
+
+.organizerfield__terms-title { // Title of draggable terms
+  display: block;
+  font-weight: 600;
+  padding: 0 4px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-weight: 400;
+  }
+}
+
+.organizerfield__term { // Single draggable term
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  align-items: center;
+  cursor: grab;
+  flex-flow: row nowrap;
+  margin: 4px;
+  user-select: text;
+
+  &.correct-answer {
+    background: $color-default;
+    border-color: $color-correct-answer;
+  }
+
+  &.incorrect-answer {
+    background: $color-default;
+    border-color: $color-incorrect-answer;
+  }
+}
+
+.organizerfield__term--in-use { // Single draggable term in IN USE state
+  background: lighten($taskfield-border-color, 25%);
+}
+
+// Selected needs to be defined after edited unless we want to create more complex scss inception
+// as edited and selected modifiers can be present at the same time and we need to show visually if
+// edited item is selected
+.organizerfield__term--selected { // Single draggable term in SELEDTED state
+  background: $taskfield-selected-background-color;
+  border-color: $taskfield-selected-background-color;
+  color: $color-default;
+
+  .organizerfield__term-icon {
+    color: $color-default;
+  }
+}
+
+.organizerfield__term--no-dragging { // Single term in NO DRAGGING state a.k.a term is placed in target container
+  background: lighten($taskfield-border-color, 25%);
+  cursor: default;
+
+  .organizerfield__term-icon {
+    @include rotate-icon-on-hover;
+
+    cursor: pointer;
+    padding: 6px;
+  }
+
+  .organizerfield__term-label {
+    padding: 6px 0 6px 6px;
+
+    @include breakpoint($breakpoint-pad) {
+      padding: 4px 0 4px 6px;
+    }
+  }
+}
+
+.organizerfield__term--missing {
+  cursor: default;
+  font-style: italic;
+  line-height: 1; // This prevents text misalignment in mobile views
+  opacity: 60%;
+  padding: 4px 6px;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.25rem;
+  }
+}
+
+.organizerfield__term-data-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.organizerfield__term-icon {
+  color: $taskfield-border-color;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 6px;
+}
+
+.organizerfield__term-label {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  line-height: 1; // This prevents text misalignment in mobile views
+  padding: 6px 6px 6px 0;
+  user-select: none;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.25rem;
+    padding: 4px 6px 4px 0;
+  }
+}
+
+.organizerfield__categories { // Wrapper for multiple categories
+  align-items: flex-start;
+  flex-flow: row wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.organizerfield__category { // Wrapper for single category
+  @include taskfield-defaults;
+
+  flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 1;
+
+  &.correct-answer {
+    border-color: $color-correct-answer;
+  }
+
+  &.incorrect-answer {
+    border-color: $color-incorrect-answer;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: calc(50% - 8px);
+  }
+}
+
+.organizerfield__category-container {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.organizerfield__category-title { // Title of single category
+  border-bottom: 3px dotted lighten($taskfield-border-color, 20%);
+  display: block;
+  font-weight: 600;
+  padding: 4px 6px;
+
+  @include breakpoint($breakpoint-pad) {
+    font-weight: 400;
+  }
+}

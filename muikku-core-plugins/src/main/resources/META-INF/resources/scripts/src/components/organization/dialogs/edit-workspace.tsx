@@ -598,6 +598,7 @@ class OrganizationEditWorkspace extends React.Component<
       rootFolderId: this.props.currentWorkspace.details.rootFolderId,
       helpFolderId: this.props.currentWorkspace.details.helpFolderId,
       indexFolderId: this.props.currentWorkspace.details.indexFolderId,
+      chatEnabled: this.props.currentWorkspace.details.chatEnabled,
     };
 
     payload.details = detailsUpdate;
