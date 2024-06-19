@@ -77,29 +77,15 @@ export const NoteComponent: React.FC<NoteProps> = (props) => {
           ) : null}
         </span>
       </div>
-      <AnimateHeight height={showDescription ? "auto" : 0}>
-        {/* <div
-          className="note__description"
-          dangerouslySetInnerHTML={{ __html: note.description }}
-        ></div> */}
+      <AnimateHeight
+        className="note__description rich-text"
+        height={showDescription ? "auto" : 0}
+      >
         {isStringHTML(note.description) ? (
           <CkeditorContentLoader html={note.description} />
         ) : (
           <CkeditorContentLoader html={`<p>${note.description}</p>`} />
         )}
-        <div className="note__footer">
-          <Link className="link link--index" onClick={handleStatusChange}>
-            {t(updateButtonLocale)}
-          </Link>
-          {isCreator && (
-            <NotesItemEdit
-              selectedNotesItem={note}
-              onNotesItemSaveUpdateClick={onUpdate}
-            >
-              <Link className="link link--index">{t("labels.edit")}</Link>
-            </NotesItemEdit>
-          )}
-        </div>
       </AnimateHeight>
     </div>
   );
