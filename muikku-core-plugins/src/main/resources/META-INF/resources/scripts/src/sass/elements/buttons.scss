@@ -110,18 +110,18 @@
 }
 
 .button--execute {
-  background-color: $color-button-execute-background;
+  background-color: $color-staging-alt;
   color: $color-button-execute-text;
   order: 3;
 
   &:hover,
   &.hover {
-    background-color: darken($color-button-execute-background, 10%);
+    background-color: darken($color-staging-alt, 10%);
   }
 
   &:active,
   &.active {
-    background-color: darken($color-button-execute-background, 20%);
+    background-color: darken($color-staging-alt, 20%);
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -153,17 +153,17 @@
 }
 
 .button--info {
-  background-color: $color-button-info-background;
+  background-color: $color-staging;
   color: $color-button-info-text;
 
   &:hover,
   &.hover {
-    background-color: darken($color-button-info-background, 10%);
+    background-color: darken($color-staging, 10%);
   }
 
   &:active,
   &.active {
-    background-color: darken($color-button-info-background, 20%);
+    background-color: darken($color-staging, 20%);
   }
 }
 
@@ -539,7 +539,7 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
-    background-color: $color-button-primary-background;
+    background-color: $color-staging;
     color: $color-button-primary-text;
     display: inline-flex;
     height: $button-primary-height;
@@ -547,12 +547,12 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-button-primary-background, 10%);
+      background-color: darken($color-staging, 10%);
     }
 
     &:active,
     &.active {
-      background-color: darken($color-button-primary-background, 20%);
+      background-color: darken($color-staging, 20%);
     }
   }
 }
@@ -563,7 +563,7 @@
 
 // Button that appears inside views component
 .button--primary-function-content {
-  background-color: $color-button-primary-background;
+  background-color: $color-staging;
   border: 0;
   color: $color-button-primary-text;
   display: inline-flex;
@@ -575,12 +575,12 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-button-primary-background, 10%);
+    background-color: darken($color-staging, 10%);
   }
 
   &:active,
   &.active {
-    background-color: darken($color-button-primary-background, 20%);
+    background-color: darken($color-staging, 20%);
   }
 }
 
@@ -600,7 +600,7 @@
 
 // Button that is used to save views form information
 .button--primary-function-save {
-  background-color: $color-button-primary-save-background;
+  background-color: $color-staging;
   color: $color-button-primary-save-text;
   display: inline-flex;
   font-size: $button-mobile-primary-font-size;
@@ -1406,7 +1406,7 @@
 
 // Environment dialog
 .button--workspace-management {
-  background-color: $color-button-execute-background;
+  background-color: $color-staging-alt;
   color: $color-button-execute-text;
   order: 3;
 
@@ -1416,26 +1416,26 @@
 }
 
 .button--load-further {
-  background-color: $color-pager-selected-page-index-background;
+  background-color: $color-staging-alt;
   color: $color-pager-selected-page-index-font;
   width: 200px;
 }
 
 .button--form-element-next {
-  background-color: $color-button-primary-background;
+  background-color: $color-staging-alt;
   color: $color-button-primary-text;
   order: 5;
 }
 
 .button--form-element-last {
-  background-color: $color-button-primary-background;
+  background-color: $color-staging-alt;
   color: $color-button-primary-text;
   order: 4;
 }
 
 .button--dialog-execute,
 .button--form-element-execute {
-  background-color: $color-button-execute-background;
+  background-color: $color-staging-alt;
   color: $color-button-execute-text;
   order: 4;
 
@@ -1452,7 +1452,7 @@
 
 .button--dialog-clear,
 .button--form-element-clear {
-  background-color: $color-button-clear-background;
+  background-color: $color-default-contrast;
   color: $color-button-execute-text;
   order: 1;
 
@@ -2179,7 +2179,7 @@
 }
 
 .button-pill--new-message-to-staff {
-  background: $color-info;
+  background: $color-staging-alt;
   color: $color-default;
   font-size: 1.125rem;
   height: 2rem;
@@ -2188,12 +2188,12 @@
 
   &:hover,
   &.hover {
-    background: darken($color-info, 10%);
+    background: darken($color-staging-alt, 10%);
   }
 
   &:active,
   &.active {
-    background: darken($color-info, 10%);
+    background: darken($color-staging-alt, 10%);
   }
 }
 

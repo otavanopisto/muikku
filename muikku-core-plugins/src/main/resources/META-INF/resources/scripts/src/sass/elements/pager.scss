@@ -50,7 +50,7 @@
 
 .pager__item--current,
 .pager__item--current > a {
-  background-color: $color-pager-selected-page-index-background;
+  background-color: $color-default-contrast;
   color: $color-pager-selected-page-index-font;
   cursor: initial;
 }

@@ -1,4 +1,6 @@
 // Generic
+$color-staging: #8e0505;
+$color-staging-alt: #000000;
 $color-outline: #d90ed5;
 $color-default: #ffffff;
 $color-default-contrast: #2c2c2c;
@@ -71,7 +73,7 @@ $color-label-mobile-selected-background: #97e1ef;
 $color-label-alert: $color-fatal;
 
 // Workspace
-$color-workspace: #2fd4af;
+$color-workspace: #298400;
 $color-workspace-hero-shadow: rgb(0 0 0 / 10%);
 
 // Ceepos
@@ -426,9 +428,9 @@ $color-loader-empty-ring: #f3f3f3;
 $color-loader-empty-rotating-piece: #3498db;
 
 // Form fields
-$color-form-element-border: #62c3eb;
+$color-form-element-border: $color-staging-alt;
 $color-form-element-selected: #29b0c4;
-$color-form-element-autocomplete-highlight: #ffc200;
+$color-form-element-autocomplete-highlight: $color-staging;
 
 // Form field input tag
 $color-form-element-selected-item-background: $color-label-background;
@@ -529,10 +531,10 @@ $taskfield-selected-background-color: #1e7fa6;
 $color-default-navbar-background: #f5f5f5;
 $color-default-navbar-text: $color-inverse;
 $color-default-navbar-shadow: rgb(0 0 0 / 20%);
-$color-environment-navbar-background: #009fe3;
+$color-environment-navbar-background: $color-staging;
 $color-environment-navbar-title: $color-default;
 $color-environment-navbar-item-menu-button: $color-default;
-$color-workspace-navbar-background: $color-workspace;
+$color-workspace-navbar-background: $color-staging;
 $color-workspace-edit-mode-navbar-background: #000000;
 
 // SCROLLBAR
@@ -557,12 +559,12 @@ $color-workspace-link-material-management-hover-background: $color-link-hover-ba
 // BUTTONS
 $color-environment-button-pill-language-background: $color-inverse;
 $color-environment-button-pill-language-text: $color-inverse-contrast;
-$color-environment-button-pill-icon-search: $color-environment-navbar-background;
+$color-environment-button-pill-icon-search: $color-staging;
 $color-environment-button-pill-icon-user: #1fe00a;
 
 // MENU
-$color-environment-menu-header-background: $color-environment-navbar-background;
-$color-environment-link-menu-icon-background: $color-environment-navbar-background;
+$color-environment-menu-header-background: $color-staging;
+$color-environment-link-menu-icon-background: $color-staging;
 $color-environment-link-menu-icon-color: $color-default;
 $color-environment-link-menu-profile-icon-background: $color-environment-button-pill-icon-user;
 $color-environment-link-menu-profile-icon-color: $color-environment-link-menu-icon-color;
@@ -618,7 +620,7 @@ $color-chat-user-status-online: #6de164;
 $color-chat-user-status-offline: #cecdcd;
 $color-chat-user-status-away: #fbb470;
 $color-chat-user-status-dnd: #de3211;
-$color-chat-primary: #e844d5;
+$color-chat-primary: $color-staging-alt;
 $color-chat-panel-background: #f2f2f2;
 $color-chat-active-item: #1eaebd;
 

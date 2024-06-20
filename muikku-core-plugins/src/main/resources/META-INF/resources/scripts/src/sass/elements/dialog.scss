@@ -341,7 +341,7 @@
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    background-color: $color-dialog-desktop-background;
+    background-color: $color-staging;
     color: $color-dialog-desktop-text;
     display: flex;
     height: 3rem;
@@ -366,7 +366,7 @@
 
 .dialog__header--wizard {
   @include breakpoint($breakpoint-pad) {
-    background-color: $color-dialog-wizard-desktop-background;
+    background-color: $color-staging;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     color: $color-dialog-wizard-desktop-text;

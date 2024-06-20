@@ -87,7 +87,7 @@
 
   .item-list__item--unread {
     .item-list__icon {
-      color: $color-index-item-list-item-panel-latest-messages-unread-icon;
+      color: $color-staging-alt;
     }
   }
 }
@@ -185,11 +185,11 @@
 .item-list__icon--workspaces,
 .item-list__icon--dependant-workspaces,
 .item-list__icon--next-studies {
-  color: $color-index-item-list-item-panel-workspaces-icon;
+  color: $color-workspace;
 }
 
 .item-list__icon--continue-studies {
-  color: $color-index-item-list-item-panel-workspaces-icon;
+  color: $color-workspace;
 }
 
 .item-list__icon--latest-messages {

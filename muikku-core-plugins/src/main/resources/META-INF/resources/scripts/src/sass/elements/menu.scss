@@ -54,11 +54,12 @@
 
   &:hover,
   &.hover {
-    background-color: $color-item-list-item-aside-background-hover;
+    background-color: $color-staging;
+    color: $color-item-list-item-font-color-active;
   }
 
   &.active {
-    background-color: $color-item-list-item-aside-background-active;
+    background-color: $color-staging;
     color: $color-item-list-item-font-color-active;
 
     .menu__item-link-icon {
