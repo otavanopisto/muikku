@@ -2,6 +2,9 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.List;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
@@ -68,6 +71,8 @@ public interface UserSchoolDataBridge {
   
   public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntriesByStudent(SchoolDataIdentifier userIdentifier, Integer firstResult, Integer maxResults);
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload);
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(List<UserEntity> userRecipients, List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceRecipients, StudentContactLogEntryRestModel payload);
+
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload);
   public void removeStudentContactLogEntry(SchoolDataIdentifier studentIdentifier, Long contactLogEntryId);
   

@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+
 public class CommunicatorNewMessageRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorNewMessageRESTModel() {
@@ -20,6 +22,14 @@ public class CommunicatorNewMessageRESTModel extends AbstractCommunicatorMessage
     this.recipientGroupIds = recipientGroupIds;
     this.recipientStudentsWorkspaceIds = recipientStudentsWorkspaceIds;
     this.recipientTeachersWorkspaceIds = recipientTeachersWorkspaceIds;
+  }
+
+  public List<EnvironmentRoleArchetype> getRecipientRoles() {
+    return recipientRoles;
+  }
+
+  public void setRecipientRoles(List<EnvironmentRoleArchetype> recipientRoles) {
+    this.recipientRoles = recipientRoles;
   }
 
   public List<Long> getRecipientGroupIds() {
@@ -71,4 +81,6 @@ public class CommunicatorNewMessageRESTModel extends AbstractCommunicatorMessage
   private List<Long> recipientStudentsWorkspaceIds = new ArrayList<Long>();
 
   private List<Long> recipientTeachersWorkspaceIds = new ArrayList<Long>();
+  
+  private List<EnvironmentRoleArchetype> recipientRoles = new ArrayList<EnvironmentRoleArchetype>();
 }

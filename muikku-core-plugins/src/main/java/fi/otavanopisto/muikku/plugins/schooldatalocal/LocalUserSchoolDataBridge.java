@@ -11,6 +11,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserImageImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserPropertyImpl;
@@ -598,6 +601,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   @Override
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier userIdentifier,
       StudentContactLogEntryRestModel payload) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+  
+  @Override
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(List<UserEntity> recipientList, List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceStudentRecipients, StudentContactLogEntryRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

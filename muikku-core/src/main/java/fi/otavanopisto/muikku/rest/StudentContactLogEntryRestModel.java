@@ -94,6 +94,14 @@ public class StudentContactLogEntryRestModel {
     this.hasImage = hasImage;
   }
 
+  public MessageRecipientList getRecipients() {
+    return recipients;
+  }
+
+  public void setRecipients(MessageRecipientList recipients) {
+    this.recipients = recipients;
+  }
+
   private Long id;
   private String text;
   private Long creatorId;
@@ -103,4 +111,5 @@ public class StudentContactLogEntryRestModel {
   private List<StudentContactLogEntryCommentRestModel> comments;
   private Boolean archived;
   private Boolean hasImage;
+  private MessageRecipientList recipients;
 }

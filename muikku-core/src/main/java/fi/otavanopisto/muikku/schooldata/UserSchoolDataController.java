@@ -15,7 +15,9 @@ import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
@@ -121,6 +123,10 @@ public class UserSchoolDataController {
 
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload) {
     return getUserBridge(dataSource).createStudentContactLogEntry(userIdentifier,payload);
+  }
+  
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(String dataSource, List<UserEntity> recipientList, List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceStudentRecipients, StudentContactLogEntryRestModel payload) {
+    return getUserBridge(dataSource).createStudentContactLogEntryBatch(recipientList, userGroupRecipients, workspaceStudentRecipients, payload);
   }
 
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
