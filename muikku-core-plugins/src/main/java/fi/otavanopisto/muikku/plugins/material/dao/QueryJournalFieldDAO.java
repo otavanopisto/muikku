@@ -5,13 +5,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.material.model.QueryTextField_;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.QueryJournalField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryJournalField_;
-import fi.otavanopisto.muikku.plugins.material.model.QueryTextField;
-
 
 public class QueryJournalFieldDAO extends CorePluginsDAO<QueryJournalField> {
 
