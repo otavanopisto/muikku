@@ -970,8 +970,9 @@ class ConnectField extends React.Component<
                   );
                 }
 
+                /*
                 // if we are asked for correct answers
-                let itemCorrectAnswerComponent = null;
+                let {itemCorrectAnswerComponent} = null;
                 // we need to do this
                 if (
                   this.props.displayCorrectAnswers &&
@@ -992,6 +993,7 @@ class ConnectField extends React.Component<
                     </span>
                   );
                 }
+                  */
 
                 /**
                  * callBackRef
@@ -1056,7 +1058,7 @@ class ConnectField extends React.Component<
                       <span className="connectfield__counterpart-label">
                         <StrMathJAX>{field.text}</StrMathJAX>
                       </span>
-                      {itemCorrectAnswerComponent}
+                      {/* itemCorrectAnswerComponent */}
                     </span>
                   </Draggable>
                 );
