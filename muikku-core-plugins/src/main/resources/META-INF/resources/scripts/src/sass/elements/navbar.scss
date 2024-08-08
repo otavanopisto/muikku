@@ -156,7 +156,8 @@
   .navbar__item--users,
   .navbar__item--assessment-request,
   .navbar__item--workspace-management,
-  .navbar__item--organization {
+  .navbar__item--organization,
+  .navbar__item--hops {
     display: inline-block;
     width: $navbar-desktop-item-width;
   }

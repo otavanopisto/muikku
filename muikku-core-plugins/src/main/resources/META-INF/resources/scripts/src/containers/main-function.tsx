@@ -61,6 +61,7 @@ import { GuiderActiveFiltersType } from "~/reducers/main-function/guider";
 import { loadStudents, loadStudent } from "~/actions/main-function/guider";
 import GuiderBody from "../components/guider/body";
 import ProfileBody from "../components/profile/body";
+import HopsBody from "../components/hops/body";
 import {
   loadProfilePropertiesSet,
   loadProfileUsername,
@@ -169,6 +170,7 @@ export default class MainFunction extends React.Component<
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderGuardianBody = this.renderGuardianBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
+    this.renderHopsBody = this.renderHopsBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
     this.renderCeeposDoneBody = this.renderCeeposDoneBody.bind(this);
@@ -958,6 +960,27 @@ export default class MainFunction extends React.Component<
   }
 
   /**
+   * renderHopsBody
+   */
+  renderHopsBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
+      this.props.store.dispatch(titleActions.updateTitle("HOPS"));
+      this.props.store.dispatch(updateHops() as Action);
+    }
+
+    return <HopsBody />;
+  }
+
+  /**
    * renderRecordsBody
    */
   renderRecordsBody() {
@@ -1155,6 +1178,7 @@ export default class MainFunction extends React.Component<
               <Route path="/guardian" render={this.renderGuardianBody} />
               <Route path="/profile" render={this.renderProfileBody} />
               <Route path="/records" render={this.renderRecordsBody} />
+              <Route path="/hops" render={this.renderHopsBody} />
               <Route path="/evaluation" render={this.renderEvaluationBody} />
               <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
               <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />

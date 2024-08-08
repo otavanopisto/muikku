@@ -164,9 +164,9 @@ class YO extends React.Component<YOProps, YOState> {
                         </span>
 
                         <span className="application-sub-panel__notification-content-data">
-                          {new Date(exam.enrollment.enrollmentDate).toLocaleDateString(
-                            "fi-Fi"
-                          )}
+                          {new Date(
+                            exam.enrollment.enrollmentDate
+                          ).toLocaleDateString("fi-Fi")}
                         </span>
                       </>
                     ) : null}
