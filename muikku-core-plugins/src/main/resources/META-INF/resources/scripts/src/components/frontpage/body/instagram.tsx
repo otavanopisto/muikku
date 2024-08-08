@@ -37,31 +37,24 @@ class FrontpageInstagram extends React.Component<
               <div className="card__content">
                 <div className="card__meta">
                   <div className="card__meta-aside">
-                    <a
-                      href="https://www.instagram.com/muikkuofficial/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <span className="card__meta-aside-logo icon-instagram">
-                        <span className="visually-hidden">
-                          Instagram muikkuofficial
-                        </span>
-                        <span className="visually-hidden">
-                          {this.props.t("wcag.externalLink")}
-                        </span>
+                    <span className="card__meta-aside-logo icon-instagram">
+                      <span className="visually-hidden">
+                        {this.props.t("wcag.externalLink")}
                       </span>
-                    </a>
+                    </span>
                   </div>
                   <div className="card__meta-body">
                     <div className="card__meta-body-title">
                       <a
                         className="card__meta-body-link card__meta-body-link--instagram"
-                        href="https://www.instagram.com/muikkuofficial/"
+                        href="https://www.instagram.com/nettilukio.fi/"
                         target="_blank"
                         rel="noreferrer"
                       >
                         <span className="visually-hidden">Instagram </span>
-                        muikkuofficial
+                        {this.props.t("labels.nettilukio", {
+                          ns: "frontPage",
+                        })}
                         <span className="visually-hidden">
                           {this.props.t("wcag.externalLink")}
                         </span>
@@ -71,11 +64,25 @@ class FrontpageInstagram extends React.Component<
                         />
                       </a>
                     </div>
-                    <div className="card__meta-body-description">
-                      {this.props.t("labels.nettilukio", { ns: "frontPage" })} /{" "}
-                      {this.props.t("labels.nettiperuskoulu", {
-                        ns: "frontPage",
-                      })}
+                    <div className="card__meta-body-title">
+                      <a
+                        className="card__meta-body-link card__meta-body-link--instagram"
+                        href="https://www.instagram.com/nettiperuskoulu/"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <span className="visually-hidden">Instagram </span>
+                        {this.props.t("labels.nettiperuskoulu", {
+                          ns: "frontPage",
+                        })}
+                        <span className="visually-hidden">
+                          {this.props.t("wcag.externalLink")}
+                        </span>
+                        <span
+                          role="presentation"
+                          className="external-link-indicator icon-external-link"
+                        />
+                      </a>
                     </div>
                   </div>
                 </div>
