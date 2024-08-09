@@ -105,6 +105,17 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    */
   // eslint-disable-next-line react/no-deprecated
   componentWillReceiveProps(nextProps: ContentProps) {
+    // If materials have changed, specifically length, reset elementRefs
+    if (this.props.materials.length !== nextProps.materials.length) {
+      this.elementRefs = nextProps.materials.reduce<TocElementRef>(
+        (acc, node) => {
+          acc[`s-${node.workspaceMaterialId}`] = [];
+          return acc;
+        },
+        {}
+      );
+    }
+
     this.setState({
       materials: nextProps.materials,
     });
