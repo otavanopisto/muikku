@@ -568,10 +568,7 @@ export default class Dropdown extends React.Component<
           ></span>
           {(this.props.content || this.props.items) && (
             // We use tooltipId prop here so we can attach tooltip's trigger button's [aria-describedby] attibute directly to the content of the tooltip
-            <div
-              className="dropdown__container"
-              id={this.props.tooltipId ? this.props.tooltipId : ""}
-            >
+            <div className="dropdown__container" id={this.props.tooltipId}>
               {this.props.content ? this.props.content : null}
               {this.props.items
                 ? this.props.items.map((item, index) => {
