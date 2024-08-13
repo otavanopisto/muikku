@@ -217,11 +217,24 @@ class Course extends React.Component<CourseProps, CourseState> {
     // If there are no assessment states, there is nothing to show
     if (this.state.assessmentStates.length === 0) return null;
 
-    // Checking if workspace is combination workspace
+    // Checking if workspace has more than 1 module and therefore it is combination workspace
     const isCombinationWorkspace = this.state.assessmentStates.length > 1;
 
-    // Rendering goes differently if workspace is combination workspace
+    // Rendering goes differently if workspace is combination workspace and has assessments done for the modules
     if (isCombinationWorkspace) {
+      // Checking if workspace is combination workspace and if any of it's modules
+      // has been assessed as incomplete or any module has grade/passingGrade set
+      const combinationWorkspaceModulesHasAssessment =
+        this.state.assessmentStates.find(
+          (assessment) =>
+            assessment.state === "pending" ||
+            assessment.state === "incomplete" ||
+            (assessment.grade && assessment.passingGrade)
+        );
+      if (combinationWorkspaceModulesHasAssessment === undefined) {
+        return null;
+      }
+
       const elements = this.state.assessmentStates.map((assessment, index) => {
         if (
           assessment.state === "pending" ||
@@ -261,7 +274,7 @@ class Course extends React.Component<CourseProps, CourseState> {
       });
 
       return (
-        <ApplicationListItemContentContainer>
+        <ApplicationListItemContentContainer modifiers="course-assessments">
           {elements}
         </ApplicationListItemContentContainer>
       );
@@ -275,17 +288,21 @@ class Course extends React.Component<CourseProps, CourseState> {
       (workspaceAssessmentState.grade && workspaceAssessmentState.passingGrade)
     ) {
       return (
-        <div className="application-list__item-content-single-item">
-          <span className="application-list__item-content-single-item-primary">
-            {this.props.t("labels.courseCompletionStatus", { ns: "workspace" })}
-          </span>
-          <AssessmentRequestIndicator assessment={workspaceAssessmentState} />
+        <ApplicationListItemContentContainer modifiers="course-assessments">
+          <div className="application-list__item-content-single-item">
+            <span className="application-list__item-content-single-item-primary">
+              {this.props.t("labels.courseCompletionStatus", {
+                ns: "workspace",
+              })}
+            </span>
+            <AssessmentRequestIndicator assessment={workspaceAssessmentState} />
 
-          <RecordsAssessmentIndicator
-            assessment={workspaceAssessmentState}
-            isCombinationWorkspace={false}
-          />
-        </div>
+            <RecordsAssessmentIndicator
+              assessment={workspaceAssessmentState}
+              isCombinationWorkspace={false}
+            />
+          </div>
+        </ApplicationListItemContentContainer>
       );
     }
 
@@ -354,7 +371,7 @@ class Course extends React.Component<CourseProps, CourseState> {
               content={this.props.workspace.description}
               className="application-list__item-body--course"
             />
-
+            {this.renderAssessmentStates()}
             <ApplicationListItemFooter className="application-list__item-footer--course">
               <Button
                 aria-label={this.props.t("wcag.continueWorkspace", {
@@ -395,8 +412,6 @@ class Course extends React.Component<CourseProps, CourseState> {
                   </Button>
                 </WorkspaceSignupDialog>
               ) : null}
-
-              {this.renderAssessmentStates()}
             </ApplicationListItemFooter>
           </div>
         ) : (

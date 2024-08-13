@@ -396,6 +396,13 @@
   }
 }
 
+.application-list__item-content-container--course-assessments {
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  margin: 0 0 20px;
+  padding: 10px;
+}
+
 .application-list__item-content-single-item {
   align-items: center;
   display: flex;
