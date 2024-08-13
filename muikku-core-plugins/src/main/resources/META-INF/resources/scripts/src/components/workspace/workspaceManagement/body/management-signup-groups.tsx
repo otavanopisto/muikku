@@ -1,4 +1,3 @@
-import deepEqual from "deep-equal";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import CKEditor from "~/components/general/ckeditor";
@@ -8,19 +7,16 @@ import { WorkspaceSignupGroup } from "~/generated/client";
 import { filterHighlight, filterMatch } from "~/util/modifiers";
 
 /**
- * WorkspaceSignupGroupsHash
- */
-interface ManagementSignupGroupsHash {
-  [id: number]: WorkspaceSignupGroup;
-}
-
-/**
  * WorkspaceSignupGroups
  */
 interface ManagementSignupGroupsProps {
   workspaceName: string;
   workspaceSignupGroups: WorkspaceSignupGroup[];
-  onChange?: (workspaceSignupGroups: WorkspaceSignupGroup[]) => void;
+  /**
+   * Handle signup group change
+   * @param workspaceSignupGroup workspaceSignupGroup
+   */
+  onChange?: (workspaceSignupGroup: WorkspaceSignupGroup) => void;
 }
 
 /**
@@ -30,25 +26,7 @@ interface ManagementSignupGroupsProps {
 const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
   const { t } = useTranslation(["workspace"]);
 
-  const memoizedHashMap = React.useMemo(
-    () =>
-      props.workspaceSignupGroups.reduce<ManagementSignupGroupsHash>(
-        (acc, workspaceSignupGroup) => {
-          if (workspaceSignupGroup.signupMessage === null) {
-            workspaceSignupGroup.signupMessage = {
-              caption: "",
-              content: "",
-              enabled: false,
-            };
-          }
-
-          acc[workspaceSignupGroup.userGroupEntityId] = workspaceSignupGroup;
-          return acc;
-        },
-        {}
-      ),
-    [props.workspaceSignupGroups]
-  );
+  const { onChange } = props;
 
   const [workspaceSignupGroupFilter, setWorkspaceSignupGroupFilter] =
     React.useState<string>("");
@@ -61,31 +39,28 @@ const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
     setWorkspaceSignupGroupFilter(workspaceSignupGroupFilter);
   };
 
-  /**
-   * Handles permission change
-   * @param signupGroup signupGroup
-   */
-  const handleWorkspaceSignupGroupChange = React.useCallback(
-    (signupGroup: WorkspaceSignupGroup) => {
-      const updatedWorkspaceSignupGroups = {
-        ...memoizedHashMap,
-        [signupGroup.userGroupEntityId]: signupGroup,
-      };
-
-      //setworkspaceSignupGroups(updatedWorkspaceSignupGroups);
-      props.onChange(Object.values(updatedWorkspaceSignupGroups));
-    },
-    [memoizedHashMap, props]
-  );
-
+  // Expensive operation, memoize the list
   const memoizedList = React.useMemo(
     () =>
-      Object.values(memoizedHashMap)
+      props.workspaceSignupGroups
+        .map((permission) => {
+          if (permission.signupMessage === null) {
+            permission.signupMessage = {
+              caption: "",
+              content: "",
+              enabled: false,
+            };
+
+            return permission;
+          }
+
+          return permission;
+        })
         .filter((permission) =>
           filterMatch(permission.userGroupName, workspaceSignupGroupFilter)
         )
         .sort((a, b) => a.userGroupName.localeCompare(b.userGroupName)),
-    [workspaceSignupGroupFilter, memoizedHashMap]
+    [props.workspaceSignupGroups, workspaceSignupGroupFilter]
   );
 
   return (
@@ -121,7 +96,7 @@ const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
                   workspaceName={props.workspaceName}
                   workspaceSignupGroup={permission}
                   workspaceSignupGroupFilter={workspaceSignupGroupFilter}
-                  onChange={handleWorkspaceSignupGroupChange}
+                  onChange={onChange}
                 />
               ))}
             </div>
@@ -242,6 +217,7 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
         </span>
 
         <Dropdown
+          modifier="instructions"
           openByHover
           alignSelfVertically="top"
           content={
@@ -290,7 +266,6 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
               </label>
               <input
                 id="message-caption"
-                placeholder={`Tervetuloa kurssille ${props.workspaceName}`}
                 className="form-element__input"
                 value={workspaceSignupGroup.signupMessage.caption}
                 onChange={handleWorkspaceSignupGroupCaptionChange(
@@ -327,8 +302,4 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
 
 // Memoized component, using deepEqual to compare props for memoization
 // so that the component is not re-rendered if the props are equal
-const ManagementSignupGroupItemMemoized = React.memo(
-  ManagementSignupGroupItem,
-  (prevProps, nextProps) =>
-    deepEqual(prevProps.workspaceSignupGroup, nextProps.workspaceSignupGroup)
-);
+const ManagementSignupGroupItemMemoized = React.memo(ManagementSignupGroupItem);

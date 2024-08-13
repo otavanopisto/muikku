@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.dao.workspace;
 
 import java.util.Date;
-import java.util.List;
 
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;

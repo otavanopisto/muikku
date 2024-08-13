@@ -7,7 +7,7 @@
 //4. it works :D
 
 import { ActionType } from "~/actions";
-import { Role, UserWhoAmIServices } from "~/generated/client";
+import { ChatUser, Role, UserWhoAmIServices } from "~/generated/client";
 
 /**
  * StatusType
@@ -46,6 +46,7 @@ export interface StatusType {
   imgVersion: number;
   hopsEnabled: boolean;
   currentWorkspaceId: number;
+  chatSettings: ChatUser;
 }
 
 /**
@@ -92,6 +93,7 @@ export default function status(
     canCurrentWorkspaceSignup: false,
     hopsEnabled: false, // /user/property/hops.enabled
     services: null,
+    chatSettings: null,
   },
   action: ActionType
 ): StatusType {
@@ -117,6 +119,18 @@ export default function status(
         imgVersion: new Date().getTime(),
       };
 
+    case "UPDATE_STATUS_CHAT_SETTINGS":
+      return {
+        ...state,
+        chatSettings: action.payload,
+        services: {
+          ...state.services,
+          chat: {
+            isAvailable: action.payload.visibility !== "NONE",
+          },
+        },
+      };
+
     case "UPDATE_STATUS": {
       const actionPayloadWoPermissions = { ...action.payload };
       delete actionPayloadWoPermissions["permissions"];
@@ -138,6 +152,7 @@ export default function status(
         loggedIn: !!action.payload.userId,
         isActiveUser: action.payload.isActiveUser,
         permissions: { ...state.permissions, ...action.payload.permissions },
+        chatSettings: state.chatSettings,
       };
     }
 

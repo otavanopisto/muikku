@@ -28,7 +28,6 @@ import MApi, { isMApiError } from "~/api/api";
 import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   Curriculum,
@@ -497,7 +496,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const chatApi = MApi.getChatApi();
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
       const evaluationApi = MApi.getEvaluationApi();
@@ -534,8 +532,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let producers: WorkspaceMaterialProducer[];
         let isCourseMember: boolean;
         let details: WorkspaceDetails;
-        let chatStatus: WorkspaceChatStatus;
-
         const status = state.status;
 
         [
@@ -556,8 +552,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           isCourseMember,
           // eslint-disable-next-line prefer-const
           details,
-          // eslint-disable-next-line prefer-const
-          chatStatus,
         ] = (await Promise.all([
           reuseExistantValue(true, workspace, () =>
             workspaceApi.getWorkspace({
@@ -644,14 +638,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 })
               )
             : null,
-
-          state.status.loggedIn
-            ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-                chatApi.getWorkspaceChatSettings({
-                  workspaceEntityId: data.workspaceId,
-                })
-              )
-            : null,
         ])) as any;
 
         workspace.assessmentRequests = assessmentRequests;
@@ -662,7 +648,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.producers = producers;
         workspace.isCourseMember = isCourseMember;
         workspace.details = details;
-        workspace.chatStatus = chatStatus;
 
         dispatch({
           type: "SET_CURRENT_WORKSPACE",
@@ -1336,7 +1321,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
-    const chatApi = MApi.getChatApi();
     const workspaceApi = MApi.getWorkspaceApi();
 
     // Note there is a lot of logic related to managing workspace object in this function,
@@ -1358,7 +1342,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["isCourseMember"];
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
-    delete actualOriginal["chatStatus"];
     delete actualOriginal["inactiveStudents"];
     delete actualOriginal["signupMessage"];
 
@@ -1367,7 +1350,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       const newPermissions = data.update.permissions;
       const appliedProducers = data.update.producers;
       const currentWorkspace = getState().workspaces.currentWorkspace;
-      const newChatStatus = data.update.chatStatus;
       const newSignupMessage = data.update.signupMessage;
 
       // I left the workspace image out of this, because it never is in the application state anyway
@@ -1375,7 +1357,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       delete data.update["details"];
       delete data.update["permissions"];
       delete data.update["producers"];
-      delete data.update["chatStatus"];
       delete data.update["signupMessage"];
 
       // First update the workspace
@@ -1402,20 +1383,6 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
         });
 
         data.update.additionalInfo = additionalInfo;
-      }
-
-      // Update workspace chat status (enabled/disabled)
-      if (newChatStatus) {
-        await chatApi.updateWorkspaceChatSettings({
-          workspaceEntityId: data.workspace.id,
-          updateWorkspaceChatSettingsRequest: {
-            chatStatus: newChatStatus,
-            workspaceEntityId: data.workspace.id,
-          },
-        });
-
-        // Add chat status back to the update object
-        data.update.chatStatus = newChatStatus;
       }
 
       // Then signup message - if any
@@ -1880,49 +1847,6 @@ export type UpdateWorkspaceStateType =
   | "add-teachers"
   | "remove-teachers"
   | "done";
-
-/**
- * loadWorkspaceChatStatus
- */
-const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
-  function loadWorkspaceChatStatus() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const chatApi = MApi.getChatApi();
-
-      try {
-        const chatStatus = await chatApi.getWorkspaceChatSettings({
-          workspaceEntityId: getState().workspaces.currentWorkspace.id,
-        });
-
-        const currentWorkspace = getState().workspaces.currentWorkspace;
-
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: currentWorkspace,
-            update: { chatStatus },
-          },
-        });
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.loadError", {
-              ns: "workspace",
-              context: "chatSettings",
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
 
 /**
  * loadWorkspaceDetailsInCurrentWorkspace
@@ -2468,7 +2392,6 @@ export {
   cancelAssessmentAtWorkspace,
   updateWorkspace,
   loadStaffMembersOfWorkspace,
-  loadWorkspaceChatStatus,
   updateAssignmentState,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,

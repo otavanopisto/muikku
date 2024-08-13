@@ -8,6 +8,7 @@ import NavigationMenu, {
 } from "~/components/general/navigation";
 import { StatusType } from "~/reducers/base/status";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { ProfileState } from "../../../reducers/main-function/profile";
 
 /**
  * NavigationProps
@@ -15,6 +16,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface NavigationProps extends WithTranslation<["common"]> {
   location: string;
   status: StatusType;
+  profile: ProfileState;
 }
 
 /**
@@ -46,11 +48,9 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
       this.props.status.roles.length === 1;
     switch (hash) {
       case "contact":
-        return !isOnlyStudentParent;
       case "vacation":
-        return !isOnlyStudentParent;
       case "chat":
-        return this.props.status.permissions.CHAT_AVAILABLE;
+        return !isOnlyStudentParent;
       case "work":
         return (
           !this.props.status.isStudent &&
@@ -58,6 +58,12 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         );
       case "purchases":
         return this.props.status.isStudent;
+      case "authorizations":
+        return (
+          this.props.status.roles.includes("STUDENT") &&
+          this.props.profile.authorizations &&
+          Object.keys(this.props.profile.authorizations).length > 0
+        );
       default:
         return true;
     }
@@ -96,6 +102,10 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         name: this.props.t("labels.orders", { ns: "orders" }),
         hash: "purchases",
       },
+      {
+        name: "Luvat",
+        hash: "authorizations",
+      },
     ];
 
     return (
@@ -124,6 +134,7 @@ function mapStateToProps(state: StateType) {
   return {
     location: state.profile.location,
     status: state.status,
+    profile: state.profile,
   };
 }
 

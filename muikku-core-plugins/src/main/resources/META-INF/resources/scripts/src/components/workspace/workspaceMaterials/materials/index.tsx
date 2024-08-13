@@ -975,7 +975,7 @@ const BackToToc = (props: BackToTocProps) => {
     <IconButton
       icon="forward"
       onClick={handleLinkClick}
-      buttonModifiers={["back-to-toc"]}
+      buttonModifiers={["back-to-toc rs_skip_always"]}
       aria-label={t("wcag.focusToToc", { ns: "materials" })}
     />
   );

@@ -18,7 +18,7 @@ interface ManagementSignupMessageProps {
  * @param props props
  */
 const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
-  const { workspaceSignupMessage, workspaceName, onChange } = props;
+  const { workspaceSignupMessage, onChange } = props;
 
   const { t } = useTranslation(["workspace"]);
 
@@ -80,14 +80,15 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
           ns: "workspace",
         })}
         <Dropdown
+          modifier="instructions"
           openByHover
           alignSelfVertically="top"
           content={
-            <p>
+            <div>
               {t("content.workspaceSignupMessageInfo", {
                 ns: "workspace",
               })}
-            </p>
+            </div>
           }
         >
           <span>
@@ -128,7 +129,6 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
               </label>
               <input
                 id="message-caption"
-                placeholder={`Tervetuloa kurssille ${workspaceName}`}
                 className="form-element__input"
                 value={workspaceSignupMessage.caption}
                 onChange={handleWorkspaceSignupMessageCaptionChange}

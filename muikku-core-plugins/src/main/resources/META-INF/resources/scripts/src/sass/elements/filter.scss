@@ -175,6 +175,16 @@
   }
 }
 
+.filter-item--chat {
+  input[type="checkbox"] {
+    border-color: $color-chat-primary;
+  }
+
+  input:checked {
+    background-color: $color-chat-primary;
+  }
+}
+
 .filter__activator {
   background-color: $color-primary;
   border-radius: 2px;
