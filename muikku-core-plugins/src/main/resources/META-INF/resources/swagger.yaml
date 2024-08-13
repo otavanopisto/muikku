@@ -14170,6 +14170,7 @@ components:
         enrollmentSent:
           type: boolean
         guidanceCounselor:
+          description: Name of the student's guidance counselor
           type: string
         locality:
           type: string
@@ -14183,6 +14184,10 @@ components:
           type: string
         studentIdentifier:
           type: string
+        completedCreditPointsCount:
+          description: Number of completed credit points
+          type: integer
+          format: int64
 
     MatriculationAttendanceStatusType:
       type: string

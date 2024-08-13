@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
+import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.security.rest.RESTPermit;
 
 @Path("/matriculation")
@@ -83,6 +84,9 @@ public class MatriculationRESTService {
   @Inject
   private MatriculationNotificationController matriculationNotificationController;
   
+  @Inject
+  private UserGroupGuidanceController userGroupGuidanceController;
+
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
   @Path("/exams")
@@ -253,6 +257,9 @@ public class MatriculationRESTService {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(user);
+    // TODO Should this be message receivers only?
+    UserEntity guidanceCounselor = userGroupGuidanceController.getGuidanceCounselor(identifier, false);
+    UserEntityName guidanceCounselorName = userEntity != null ? userEntityController.getName(guidanceCounselor, false) : null;
     
     String address = "";
     String postalCode = "";
@@ -279,6 +286,7 @@ public class MatriculationRESTService {
         phoneNumber = userPhoneNumber.getNumber();
       }
     }
+    
     result.setName(name);
     result.setSsn(ssn);
     result.setEmail(emailAddress);
@@ -286,8 +294,10 @@ public class MatriculationRESTService {
     result.setAddress(address);
     result.setPostalCode(postalCode);
     result.setLocality(locality);
-    result.setGuidanceCounselor("");
+    result.setGuidanceCounselor(guidanceCounselorName != null ? guidanceCounselorName.getDisplayName() : "");
     result.setStudentIdentifier(identifier.toId());
+    // TODO Fetch this
+    result.setCompletedCreditPointsCount(123L);
     
     return Response.ok(result).build();
   }
@@ -342,6 +352,7 @@ public class MatriculationRESTService {
     schoolDataEntity.setStudentId(studentId);
     schoolDataEntity.setState(enrollment.getState());
     schoolDataEntity.setDegreeStructure(enrollment.getDegreeStructure());
+    
     List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = new ArrayList<>();
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance resultAttendance
