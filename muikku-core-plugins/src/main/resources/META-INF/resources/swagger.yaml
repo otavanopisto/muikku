@@ -2495,8 +2495,8 @@ paths:
   /rest/coursepicker/workspaces/{workspaceId}/canSignup:
     get:
       operationId: workspaceCanSignUp
-      summary: Can user signup to workspace
-      description: Can user signup to workspace
+      summary: Returns can signup info for workspace
+      description: Returns can signup info for workspace and any possible existing assessment events
       tags:
         - Coursepicker
       parameters:
@@ -2509,11 +2509,11 @@ paths:
             format: int64
       responses:
         "200":
-          description: Course picker workspace can signup
+          description: Course picker workspace can signup info
           content:
             application/json:
               schema:
-                type: boolean
+                $ref: "#/components/schemas/WorkspaceCansignup"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -16718,6 +16718,7 @@ components:
         courseNumber:
           description: The number of the course
           type: integer
+          nullable: true
         courseLength:
           description: The length value of the course
           type: string
@@ -16732,9 +16733,11 @@ components:
         - date
         - state
         - grade
+        - gradeDate
         - passingGrade
         - text
         - workspaceSubjectIdentifier
+        - subject
       properties:
         date:
           description: The date of the assessment
@@ -16745,15 +16748,26 @@ components:
         grade:
           description: The grade of the assessment
           type: string
+          nullable: true
+        gradeDate:
+          description: The date of the grade
+          type: string
+          nullable: true
         passingGrade:
           description: If the assessment has a passing grade
           type: boolean
+          nullable: true
         text:
           description: The text (description) of the assessment
           type: string
+          nullable: true
         workspaceSubjectIdentifier:
           description: The identifier of the workspace subject
           type: string
+          nullable: true
+        subject:
+          description: The subject. Can be null.
+          $ref: "#/components/schemas/WorkspaceActivitySubject"
           nullable: true
 
     WorkspaceAssessmentStateType:
@@ -17280,6 +17294,22 @@ components:
           type: string
         path:
           type: string
+
+    WorkspaceCansignup:
+      type: object
+      description: WorkspaceCansignup holding info if user can signup to workspace and whether there exists assessment events
+      required:
+        - canSignup
+        - assessmentStates
+      properties:
+        canSignup:
+          description: If the user can signup
+          type: boolean
+        assessmentStates:
+          description: Assessment states of the workspace
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceAssessmentState"
 
     WorklistEditableFieldType:
       type: string
