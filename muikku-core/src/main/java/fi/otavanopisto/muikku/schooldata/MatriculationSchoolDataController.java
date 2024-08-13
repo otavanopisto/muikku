@@ -12,6 +12,7 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
 
 public class MatriculationSchoolDataController {
 
@@ -53,7 +54,7 @@ public class MatriculationSchoolDataController {
     return getMatriculationBridge().getEnrollmentChangeLog(studentIdentifier, examId);
   }
   
-  public BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, String newState) {
+  public BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, MatriculationExamEnrollmentState newState) {
     return getMatriculationBridge().setEnrollmentState(studentIdentifier, examId, newState);
   }
   

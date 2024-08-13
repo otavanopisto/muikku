@@ -39,6 +39,7 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -163,17 +164,22 @@ public class MatriculationRESTService {
   @PUT
   @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
   @Path("/students/{STUDENTIDENTIFIER}/exams/{EXAMID}/enrollment/state")
-  public Response setEnrollmentState(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId, String newState) {
+  public Response setEnrollmentState(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId, MatriculationEnrollmentStateChangePayload payload) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (studentIdentifierStr == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
+    }
+    
+    // Allow only CONFIRMED state change
+    if (payload == null || payload.getState() != MatriculationExamEnrollmentState.CONFIRMED) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid or missing state").build();
     }
     
     if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
-    BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.setEnrollmentState(studentIdentifier, examId, newState);
+    BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.setEnrollmentState(studentIdentifier, examId, payload.getState());
     if (response.ok()) {
       return Response.noContent().build();
     }
