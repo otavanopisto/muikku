@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
@@ -20,6 +21,10 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogType;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
+import fi.otavanopisto.pyramus.rest.model.matriculation.MatriculationExamEnrollmentChangeLog;
 
 @Dependent
 public class PyramusMatriculationSchoolDataBridge implements MatriculationSchoolDataBridge {
@@ -79,6 +84,57 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
     return new BridgeResponse<MatriculationExamEnrollment>(response.getStatusCode(), response.getEntity(), response.getMessage());
   }
   
+  @Override
+  public BridgeResponse<List<MatriculationExamEnrollmentChangeLogEntry>> getEnrollmentChangeLog(SchoolDataIdentifier studentIdentifier,
+      Long examId) {
+    if (studentIdentifier == null || examId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    BridgeResponse<MatriculationExamEnrollmentChangeLog[]> response = pyramusClient.responseGet(String.format("/matriculation/students/%d/exams/%d/enrollment/changelog", pyramusStudentId, examId), 
+        MatriculationExamEnrollmentChangeLog[].class);
+    
+    List<MatriculationExamEnrollmentChangeLogEntry> responseAsList = null;
+    
+    if (response.getEntity() != null) {
+      responseAsList = new ArrayList<>();
+      
+      for (MatriculationExamEnrollmentChangeLog changeLogEntry : response.getEntity()) {
+        SchoolDataIdentifier modifierIdentifier = null;
+        
+        if (changeLogEntry.getModifierRoleClass() != null) {
+          switch (changeLogEntry.getModifierRoleClass()) {
+            case STAFF:
+              modifierIdentifier = pyramusIdentifierMapper.getStaffIdentifier(changeLogEntry.getModifierId());
+            break;
+            case STUDENT:
+              modifierIdentifier = pyramusIdentifierMapper.getStudentIdentifier(changeLogEntry.getModifierId());
+            break;
+            case STUDENT_PARENT:
+              modifierIdentifier = pyramusIdentifierMapper.getStudentParentIdentifier(changeLogEntry.getModifierId());
+            break;
+          }
+        }
+        
+        PyramusMatriculationExamEnrollmentChangeLogEntry entry = new PyramusMatriculationExamEnrollmentChangeLogEntry();
+        entry.setId(changeLogEntry.getId());
+        entry.setEnrollmentId(changeLogEntry.getEnrollmentId());
+        entry.setTimestamp(changeLogEntry.getTimestamp());
+        entry.setNewState(changeLogEntry.getNewState() != null ? MatriculationExamEnrollmentState.valueOf(changeLogEntry.getNewState().name()) : null);
+        entry.setChangeType(changeLogEntry.getChangeType() != null ? MatriculationExamEnrollmentChangeLogType.valueOf(changeLogEntry.getChangeType().name()) : null);
+        entry.setModifierIdentifier(modifierIdentifier);
+        responseAsList.add(entry);
+      }
+    }
+    
+    return new BridgeResponse<List<MatriculationExamEnrollmentChangeLogEntry>>(response.getStatusCode(), responseAsList, response.getMessage());
+  }
+
   @Override
   public BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, String newState) {
     if (studentIdentifier == null || examId == null || newState == null) {
