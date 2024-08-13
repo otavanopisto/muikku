@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.matriculation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -28,12 +30,15 @@ import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnro
 import fi.otavanopisto.muikku.plugins.matriculation.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollmentChangeLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -41,6 +46,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 
 @Path("/matriculation")
@@ -122,6 +128,29 @@ public class MatriculationRESTService {
     }
     
     BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.getEnrollment(studentIdentifier, examId);
+    if (response.ok()) {
+      return Response.ok().entity(restModel(response.getEntity())).build();
+    }
+    else {
+      Status status = Status.fromStatusCode(response.getStatusCode());
+      return status != null ? Response.status(status).build() : Response.status(response.getStatusCode()).build();
+    }
+  }
+  
+  @GET
+  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @Path("/students/{STUDENTIDENTIFIER}/exams/{EXAMID}/enrollment/changelog")
+  public Response getEnrollmentChangeLog(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifierStr == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
+    }
+    
+    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+    
+    BridgeResponse<List<MatriculationExamEnrollmentChangeLogEntry>> response = matriculationController.getEnrollmentChangeLog(studentIdentifier, examId);
     if (response.ok()) {
       return Response.ok().entity(restModel(response.getEntity())).build();
     }
@@ -389,6 +418,32 @@ public class MatriculationRESTService {
 //    restModel.setStudentIdentifier(enrollment.getstudentAddress()); // TODO the id mess
     
     
+    return restModel;
+  }
+
+  private List<MatriculationExamEnrollmentChangeLogEntryRestModel> restModel(List<MatriculationExamEnrollmentChangeLogEntry> entryList) {
+    return entryList != null 
+        ? entryList.stream()
+            .sorted(Comparator.comparing(MatriculationExamEnrollmentChangeLogEntry::getTimestamp).reversed())
+            .map(entry -> restModel(entry))
+            .collect(Collectors.toList()) 
+        : Collections.emptyList();
+  }
+
+  private MatriculationExamEnrollmentChangeLogEntryRestModel restModel(MatriculationExamEnrollmentChangeLogEntry entry) {
+    SchoolDataIdentifier modifierIdentifier = entry.getModifierIdentifier();
+    UserEntityName modifierName = userEntityController.getName(modifierIdentifier, false);
+    UserEntity modifierUserEntity = userEntityController.findUserEntityByUserIdentifier(modifierIdentifier);
+    boolean hasImage = modifierUserEntity != null ? userEntityController.hasProfilePicture(modifierUserEntity) : false;
+    
+    UserBasicInfo modifier = (modifierUserEntity != null && modifierName != null) ? new UserBasicInfo(modifierUserEntity.getId(), modifierIdentifier.toId(), 
+        modifierName.getFirstName(), modifierName.getLastName(), modifierName.getNickName(), hasImage) : null;
+    
+    MatriculationExamEnrollmentChangeLogEntryRestModel restModel = new MatriculationExamEnrollmentChangeLogEntryRestModel();
+    restModel.setModifier(modifier);
+    restModel.setTimestamp(entry.getTimestamp());
+    restModel.setChangeType(entry.getChangeType());
+    restModel.setNewState(entry.getNewState());
     return restModel;
   }
 

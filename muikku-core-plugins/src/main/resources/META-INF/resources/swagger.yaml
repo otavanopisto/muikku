@@ -5997,6 +5997,41 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/matriculation/students/{studentIdentifier}/exams/{examId}/enrollment/changelog:
+    get:
+      operationId: getStudentExamEnrollmentChangeLog
+      summary: Get students' exam enrollment's change log'
+      description: Get students' exam enrollment's change log
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam enrollment's change log entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatriculationExamChangeLogEntry"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/matriculation/exams/{examId}/enrollments:
     post:
       operationId: createEnrollment
@@ -13998,6 +14033,7 @@ components:
         - NOT_ELIGIBLE
         - ELIGIBLE
         - SUBMITTED
+        - SUPPLEMENTATION_REQUEST
         - APPROVED
         - REJECTED
         - CONFIRMED
@@ -14015,6 +14051,13 @@ components:
         - ALL
         - ELIGIBLE
         - PAST
+
+    MatriculationExamEnrollmentChangeLogType:
+      type: string
+      enum:
+        - ENROLLMENT_CREATED
+        - ENROLLMENT_UPDATED
+        - STATE_CHANGED
 
     MatriculationExam:
       type: object
@@ -14044,6 +14087,23 @@ components:
         enrollment:
           $ref: "#/components/schemas/MatriculationExamApplication"
 
+    MatriculationExamChangeLogEntry:
+      type: object
+      description: MatriculationExamChangeLogEntry object
+      required:
+        - timestamp
+        - changeType
+      properties:
+        modifier:
+          $ref: "#/components/schemas/UserBasicInfo"
+        timestamp:
+          type: string
+          format: date-time
+        changeType:
+          $ref: "#/components/schemas/MatriculationExamEnrollmentChangeLogType"
+        newState:
+          $ref: "#/components/schemas/MatriculationExamStudentStatus"
+                
     MatriculationStudentData:
       type: object
       description: MatriculationStudent object
@@ -15930,6 +15990,30 @@ components:
         firstResult:
           type: integer
 
+    UserBasicInfo:
+      type: object
+      description: User object
+      required:
+        - id
+        - identifier
+        - firstName
+        - lastName
+        - hasImage
+      properties:
+        id:
+          type: integer
+          format: int64
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickName:
+          type: string
+        hasImage:
+          type: boolean
+          
     User:
       type: object
       description: User object
