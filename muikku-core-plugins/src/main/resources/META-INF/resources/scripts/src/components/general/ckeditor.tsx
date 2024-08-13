@@ -58,6 +58,7 @@ export interface CKEditorEventInfo {
   editor: any;
   data: {
     dataValue: string;
+    preventDefault: () => void;
   };
   /**
    * cancel method
@@ -345,6 +346,7 @@ export default class CKEditor extends React.Component<
       });
 
       ev.editor.document.on("paste", (event: CKEditorEventInfo) => {
+        event.data.preventDefault(); // This stops the default paste event because sometimes, in some scenarios it happens twice
         if (this.props.onPaste && (props.maxChars || props.maxWords)) {
           props.onPaste();
         }
@@ -353,7 +355,6 @@ export default class CKEditor extends React.Component<
         setTimeout(this.onDataChange, 1000);
         setTimeout(this.onDataChange, 2000);
         setTimeout(this.onDataChange, 3000);
-        event.stop(); // This stops the default paste event because sometimes, in some scenarios it happens twice
       });
 
       const instance = getCKEDITOR().instances[this.name];
