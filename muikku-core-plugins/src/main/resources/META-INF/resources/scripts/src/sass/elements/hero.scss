@@ -71,7 +71,6 @@
   padding: 0;
   position: relative;
 
-
   @include breakpoint($breakpoint-pad) {
     min-height: 196px;
   }
@@ -85,28 +84,25 @@
   }
 
   &.STATE-passed::before {
-    filter: grayscale(100%);  
-    content: "";
-    position: absolute;
+    background-image: inherit;
     background-position: center center;
     background-size: cover;
-    top: 0;
-    right: 0;
     bottom: 0;
-    left: 0;
-    background-image: inherit;
+    content: "";
     filter: grayscale(100%);
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
     z-index: 0;
   }
-  
 }
-
 
 .hero__workspace-assessment-container {
   align-items: center;
-  height: 100%;
   display: flex;
   flex-flow: row nowrap;
+  height: 100%;
   justify-content: end;
   position: absolute;
   width: 100%;
@@ -124,12 +120,12 @@
   justify-content: center;
   margin-right: 20px;
   width: 150px;
-  
 }
 
 .hero__workspace-title {
   display: none;
   z-index: 1;
+
   @include breakpoint($breakpoint-pad) {
     background: $color-default;
     border-bottom-right-radius: 5px;
