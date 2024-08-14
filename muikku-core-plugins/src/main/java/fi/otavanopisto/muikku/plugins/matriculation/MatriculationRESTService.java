@@ -31,6 +31,7 @@ import fi.otavanopisto.muikku.plugins.matriculation.model.SentMatriculationEnrol
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollmentChangeLogEntryRestModel;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
@@ -40,6 +41,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -83,6 +85,9 @@ public class MatriculationRESTService {
 
   @Inject
   private MatriculationNotificationController matriculationNotificationController;
+  
+  @Inject
+  private TranscriptOfRecordsController transcriptOfRecordsController;
   
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
@@ -260,6 +265,7 @@ public class MatriculationRESTService {
     // TODO Should this be message receivers only?
     UserEntity guidanceCounselor = userGroupGuidanceController.getGuidanceCounselor(identifier, false);
     UserEntityName guidanceCounselorName = userEntity != null ? userEntityController.getName(guidanceCounselor, false) : null;
+    StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(identifier);
     
     String address = "";
     String postalCode = "";
@@ -296,8 +302,7 @@ public class MatriculationRESTService {
     result.setLocality(locality);
     result.setGuidanceCounselor(guidanceCounselorName != null ? guidanceCounselorName.getDisplayName() : "");
     result.setStudentIdentifier(identifier.toId());
-    // TODO Fetch this
-    result.setCompletedCreditPointsCount(123L);
+    result.setCompletedCreditPointsCount(studentCourseStats != null ? studentCourseStats.getSumMandatoryCompletedCreditPoints() : null);
     
     return Response.ok(result).build();
   }
@@ -331,7 +336,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Exam ids do not match").build();
     }
     
-    schoolDataEntity.setId(null);
+    schoolDataEntity.setId(enrollment.getId());
     schoolDataEntity.setExamId(enrollment.getExamId());
     schoolDataEntity.setName(enrollment.getName());
     schoolDataEntity.setSsn(enrollment.getSsn());
@@ -357,6 +362,7 @@ public class MatriculationRESTService {
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance resultAttendance
         = matriculationController.createMatriculationExamAttendance();
+      resultAttendance.setId(attendance.getId());
       resultAttendance.setSubject(attendance.getSubject());
       resultAttendance.setGrade(attendance.getGrade());
       resultAttendance.setMandatory(attendance.getMandatory());

@@ -181,6 +181,15 @@ public class MatriculationExamEnrollment {
     this.enrollmentDate = enrollmentDate;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  private Long id;
   private Long examId;
   private String name;
   private String ssn;

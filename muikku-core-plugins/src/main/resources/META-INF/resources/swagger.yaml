@@ -5997,10 +5997,45 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/matriculation/students/{studentIdentifier}/exams/{examId}/enrollment:
+    get:
+      operationId: getStudentExamEnrollment
+      summary: Get student's exam enrollment
+      description: Get student's exam enrollment
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam enrollment
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatriculationExamEnrollment"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/matriculation/students/{studentIdentifier}/exams/{examId}/enrollment/changelog:
     get:
       operationId: getStudentExamEnrollmentChangeLog
-      summary: Get students' exam enrollment's change log'
+      summary: Get students' exam enrollment's change log
       description: Get students' exam enrollment's change log
       tags:
         - Matriculation
@@ -13992,17 +14027,33 @@ components:
         subjectCode:
           type: string
 
+    MatriculationExamDegreeType:
+      type: string
+      enum:
+        - MATRICULATIONEXAMINATION
+        - MATRICULATIONEXAMINATIONSUPPLEMENT
+        - SEPARATEEXAM
+
     MatriculationExamDegreeStructure:
       type: string
       enum:
         - PRE2022
         - POST2022
 
-    MatriculationExamApplication:
+    MatriculationExamSchoolType:
+      type: string
+      enum:
+        - UPPERSECONDARY
+        - VOCATIONAL
+        - UPPERSECONDARYANDVOCATIONAL
+        - UNKNOWN
+
+    MatriculationExamEnrollment:
       type: object
-      description: MatriculationExamApplication object
+      description: MatriculationExamEnrollment object
       required:
         - examId
+        - studentIdentifier
         - name
         - ssn
         - email
@@ -14018,14 +14069,18 @@ components:
         - location
         - message
         - degreeStructure
-        - studentIdentifier
         - canPublishName
         - state
         - attendances
       properties:
+        id:
+          type: integer
+          format: int64
         examId:
           type: integer
           format: int64
+        studentIdentifier:
+          type: string
         name:
           type: string
         ssn:
@@ -14043,9 +14098,9 @@ components:
         guider:
           type: string
         enrollAs:
-          type: string
+          $ref: "#/components/schemas/MatriculationExamSchoolType"
         degreeType:
-          type: string
+          $ref: "#/components/schemas/MatriculationExamDegreeType"
         restartExam:
           type: boolean
         numMandatoryCourses:
@@ -14056,20 +14111,50 @@ components:
           type: string
         degreeStructure:
           $ref: "#/components/schemas/MatriculationExamDegreeStructure"
-        studentIdentifier:
-          type: string
         canPublishName:
           type: boolean
         state:
-          type: string
+          $ref: "#/components/schemas/MatriculationExamStudentStatus"
         attendances:
           type: array
           items:
-            $ref: "#/components/schemas/AnyValue"
+            $ref: "#/components/schemas/MatriculationExamAttendance"
         enrollmentDate:
           type: string
           format: date-time
 
+    MatriculationExamAttendance:
+      type: object
+      description: MatriculationExamAttendance object
+      required:
+        - subject
+        - mandatory
+        - repeat
+        - year
+        - term
+        - status
+        - funding
+      properties:
+        id:
+          type: integer
+          format: int64
+        subject:
+          type: string
+        mandatory:
+          type: boolean
+        repeat:
+          type: boolean
+        year:
+          type: integer
+        term:
+          $ref: "#/components/schemas/MatriculationExamTerm"
+        status:
+          $ref: "#/components/schemas/MatriculationAttendanceStatusType"
+        grade:
+          $ref: "#/components/schemas/MatriculationExamGrade"
+        funding:
+          $ref: "#/components/schemas/MatriculationExamFundingType"
+    
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
       type: string
@@ -14129,7 +14214,7 @@ components:
         studentStatus:
           $ref: "#/components/schemas/MatriculationExamStudentStatus"
         enrollment:
-          $ref: "#/components/schemas/MatriculationExamApplication"
+          $ref: "#/components/schemas/MatriculationExamEnrollment"
 
     MatriculationExamChangeLogEntry:
       type: object
@@ -14186,8 +14271,7 @@ components:
           type: string
         completedCreditPointsCount:
           description: Number of completed credit points
-          type: integer
-          format: int64
+          type: double
 
     MatriculationAttendanceStatusType:
       type: string
@@ -14202,6 +14286,19 @@ components:
         - SELF_FUNDED
         - COMPULSORYEDUCATION_FREE
         - COMPULSORYEDUCATION_FREE_RETRY
+        
+    MatriculationExamGrade:
+      type: string
+      enum:
+        - IMPROBATUR
+        - APPROBATUR
+        - LUBENTER_APPROBATUR
+        - CUM_LAUDE_APPROBATUR
+        - MAGNA_CUM_LAUDE_APPROBATUR
+        - EXIMIA_CUM_LAUDE_APPROBATUR
+        - LAUDATUR
+        - UNKNOWN
+        - K
 
     MatriculationExamEnrolledSubject:
       type: object
