@@ -471,7 +471,7 @@
     "labels": {
       "abiStatus": "Abistatus",
       "activity": "Aktiivisuus",
-      "courseCredits": "Opintopisteet: Pakolliset {{mandatoryCredits}}, Yhteensä {{totalCredits}}",
+      "courseCredits": "Opintopisteet: pakolliset {{mandatoryCredits}}, yhteensä {{totalCredits}}",
       "evaluated": "Arvioitu {{date}}",
       "evaluablesDone": "{{percent}}% arvioitavista tehtävistä tehty",
       "completedWorkspaces": "Olet suorittanut yhteensä",
