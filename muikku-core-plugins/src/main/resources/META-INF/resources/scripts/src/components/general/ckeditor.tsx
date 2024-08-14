@@ -356,7 +356,6 @@ export default class CKEditor extends React.Component<
           setTimeout(this.onDataChange, 1000);
           setTimeout(this.onDataChange, 2000);
           setTimeout(this.onDataChange, 3000);
-          event.data.preventDefault(); // This stops the default paste event because sometimes, in some scenarios it happens twice
         }
       );
 
