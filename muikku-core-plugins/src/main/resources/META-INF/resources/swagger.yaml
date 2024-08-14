@@ -6032,6 +6032,37 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/matriculation/students/{studentIdentifier}/exams/{examId}/enrollment/state:
+    put:
+      operationId: setStudentExamEnrollmentState
+      summary: Set students' exam enrollment state
+      description: Set students' exam enrollment state
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/MatriculationEnrollmentStateUpdateRequestBody"
+      responses:
+        "204":
+          description: OK
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/matriculation/exams/{examId}/enrollments:
     post:
       operationId: createEnrollment
@@ -12333,6 +12364,19 @@ components:
               state:
                 $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
+    MatriculationEnrollmentStateUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: MatriculationEnrollmentStateUpdateRequestBody object
+            required:
+              - state
+            properties:
+              state:
+                $ref: "#/components/schemas/MatriculationExamStudentStatus"
+
   #SCHEMAS
   schemas:
     AnyValue:
@@ -14126,6 +14170,7 @@ components:
         enrollmentSent:
           type: boolean
         guidanceCounselor:
+          description: Name of the student's guidance counselor
           type: string
         locality:
           type: string
@@ -14139,6 +14184,10 @@ components:
           type: string
         studentIdentifier:
           type: string
+        completedCreditPointsCount:
+          description: Number of completed credit points
+          type: integer
+          format: int64
 
     MatriculationAttendanceStatusType:
       type: string

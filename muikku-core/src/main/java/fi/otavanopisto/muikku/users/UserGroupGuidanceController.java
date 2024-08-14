@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -21,6 +23,20 @@ public class UserGroupGuidanceController {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  /**
+   * Returns a (pseudo) random Guidance Couselor of given student which is
+   * - member of any role archetype
+   * - specified as message receiver if so wanted
+   * 
+   * @param studentIdentifier
+   * @param onlyMessageReceivers
+   * @return
+   */
+  public UserEntity getGuidanceCounselor(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+    List<UserEntity> guidanceCounselors = getGuidanceCounselors(studentIdentifier, onlyMessageReceivers);
+    return CollectionUtils.isNotEmpty(guidanceCounselors) ? guidanceCounselors.get(0) : null;
+  }
   
   /**
    * Returns Guidance Couselors of given student which are
