@@ -682,7 +682,7 @@
       "passwordChangeMailSent": "Lähetimme varmistusviestin osoitteeseen {{email}}. Pääset vaihtamaan salasanasi klikkaamalla viestissä olevaa linkkiä.",
       "plagScan": "Meillä on käytössä PlagScan-plagiaatintunnistusjärjestelmä",
       "site": "Nettilukion ja Nettiperuskoulun oppimisympäristö",
-      "studentApplication": "Tutustu koulutuksiin ja täytä hakulomake"
+      "studentApplication": "Tutustu koulutuksiin ja täytä hakulomake."
     },
     "labels": {
       "accessibilityStatement": "Saavutettavuusseloste",
