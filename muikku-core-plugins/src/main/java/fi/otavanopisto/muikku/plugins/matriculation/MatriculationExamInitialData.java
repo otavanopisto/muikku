@@ -82,11 +82,11 @@ public class MatriculationExamInitialData {
     this.enrollmentSent = enrollmentSent;
   }
 
-  public Long getCompletedCreditPointsCount() {
+  public Double getCompletedCreditPointsCount() {
     return completedCreditPointsCount;
   }
 
-  public void setCompletedCreditPointsCount(Long completedCreditPointsCount) {
+  public void setCompletedCreditPointsCount(Double completedCreditPointsCount) {
     this.completedCreditPointsCount = completedCreditPointsCount;
   }
 
@@ -100,7 +100,7 @@ public class MatriculationExamInitialData {
   private String guidanceCounselor;
   private String studentIdentifier;
   private boolean enrollmentSent;
-  private Long completedCreditPointsCount;
+  private Double completedCreditPointsCount;
 
 }
 

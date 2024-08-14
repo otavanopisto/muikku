@@ -14186,8 +14186,7 @@ components:
           type: string
         completedCreditPointsCount:
           description: Number of completed credit points
-          type: integer
-          format: int64
+          type: double
 
     MatriculationAttendanceStatusType:
       type: string
