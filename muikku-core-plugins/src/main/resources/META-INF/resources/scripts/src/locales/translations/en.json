@@ -471,7 +471,7 @@
     "labels": {
       "abiStatus": "Abi status",
       "activity": "Activity",
-      "courseCredits": "Course credits: mandatory {{mandatoryCredits}}, total {{totalCredits}}",
+      "courseCredits": "Course credits: mandatory {{mandatoryCredits}}, in total {{totalCredits}}",
       "evaluablesDone": "{{percent}}% of assignments done",
       "completedWorkspaces": "You have completed",
       "coursesForYou": "Courses for you",
