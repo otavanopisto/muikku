@@ -5,7 +5,7 @@ function getCKEDITOR() {
   return (<any>window).CKEDITOR;
 }
 
-const CKEDITOR_VERSION = "4.24.0";
+const CKEDITOR_VERSION = "4.22.1";
 
 export { CKEDITOR_VERSION };
 
