@@ -336,7 +336,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Exam ids do not match").build();
     }
     
-    schoolDataEntity.setId(null);
+    schoolDataEntity.setId(enrollment.getId());
     schoolDataEntity.setExamId(enrollment.getExamId());
     schoolDataEntity.setName(enrollment.getName());
     schoolDataEntity.setSsn(enrollment.getSsn());
@@ -362,6 +362,7 @@ public class MatriculationRESTService {
     for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
       fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance resultAttendance
         = matriculationController.createMatriculationExamAttendance();
+      resultAttendance.setId(attendance.getId());
       resultAttendance.setSubject(attendance.getSubject());
       resultAttendance.setGrade(attendance.getGrade());
       resultAttendance.setMandatory(attendance.getMandatory());
