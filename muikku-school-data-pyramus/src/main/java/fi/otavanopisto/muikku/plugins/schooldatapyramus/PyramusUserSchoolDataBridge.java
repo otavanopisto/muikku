@@ -1495,35 +1495,16 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(List<UserEntity> userRecipients, List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceRecipients, StudentContactLogEntryRestModel payload){
-
-    MessageRecipientList recipients = new MessageRecipientList();
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(List<UserEntity> recipients, StudentContactLogEntryRestModel payload){
     
-    List<Long> uGRecipients = new ArrayList<Long>();
-    if (!userGroupRecipients.isEmpty()) {
-      for (UserGroupEntity entity : userGroupRecipients) {
-        uGRecipients.add(entity.getId());
+    List<Long> recipientList = new ArrayList<Long>();
+    if (!recipients.isEmpty()) {
+      for (UserEntity entity : recipients) {
+        recipientList.add(entity.getId());
       }
     }
+    payload.setRecipients(recipientList);
     
-    List<Long> uRecipients = new ArrayList<Long>();
-    if (!userRecipients.isEmpty()) {
-      for (UserEntity entity : userRecipients) {
-        uRecipients.add(entity.getId());
-      }
-    }
-    
-    List<Long> wRecipients = new ArrayList<Long>();
-    if (!workspaceRecipients.isEmpty()) {
-      for (WorkspaceEntity entity : workspaceRecipients) {
-        wRecipients.add(entity.getId());
-      }
-    }
-    recipients.setUserRecipients(uGRecipients);
-    recipients.setUserGroupRecipients(uRecipients);
-    recipients.setWorkspaceRecipients(wRecipients);
-    
-    payload.setRecipients(recipients);
     BridgeResponse<StudentContactLogEntryRestModel[]> response =  pyramusClient.responsePost(String.format("/students/students/contactLogEntries/batch"), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryRestModel[].class);
 
     List<StudentContactLogEntryRestModel> items = null;

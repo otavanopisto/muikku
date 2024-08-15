@@ -605,7 +605,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(List<UserEntity> recipientList, List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceStudentRecipients, StudentContactLogEntryRestModel payload) {
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(List<UserEntity> recipientList, StudentContactLogEntryRestModel payload) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 

@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.otavanopisto.muikku.plugins.communicator.MessageRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.rest.CommunicatorNewMessageRESTModel;
@@ -985,6 +986,8 @@ public class GuiderRESTService extends PluginRESTService {
     
     List<UserEntity> recipientList = new ArrayList<UserEntity>();
     
+    MessageRecipientList messageRecipientList = new MessageRecipientList();
+
     for (Long recipientId : recipients.getRecipientIds()) {
       UserEntity recipient = userEntityController.findUserEntityById(recipientId);
       
@@ -998,6 +1001,8 @@ public class GuiderRESTService extends PluginRESTService {
     List<UserGroupEntity> userGroupRecipients = null;
     List<WorkspaceEntity> workspaceStudentRecipients = null;
     UserGroupEntity group = null;
+    
+    // user groups
     if (!CollectionUtils.isEmpty(recipients.getRecipientGroupIds())) {
       if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
         userGroupRecipients = new ArrayList<UserGroupEntity>();
@@ -1034,7 +1039,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
     }
     
-    BridgeResponse<List<StudentContactLogEntryRestModel>> response = userSchoolDataController.createStudentContactLogEntryBatch(dataSource, recipientList, userGroupRecipients, workspaceStudentRecipients, payload);
+    BridgeResponse<List<StudentContactLogEntryRestModel>> response = userSchoolDataController.createStudentContactLogEntryBatch(dataSource, prepareRecipientList.getUserRecipients(), payload);
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }

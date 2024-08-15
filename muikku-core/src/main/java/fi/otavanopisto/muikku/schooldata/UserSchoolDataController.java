@@ -125,8 +125,8 @@ public class UserSchoolDataController {
     return getUserBridge(dataSource).createStudentContactLogEntry(userIdentifier,payload);
   }
   
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(String dataSource, List<UserEntity> recipientList, List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceStudentRecipients, StudentContactLogEntryRestModel payload) {
-    return getUserBridge(dataSource).createStudentContactLogEntryBatch(recipientList, userGroupRecipients, workspaceStudentRecipients, payload);
+  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(String dataSource, List<UserEntity> recipientList, StudentContactLogEntryRestModel payload) {
+    return getUserBridge(dataSource).createStudentContactLogEntryBatch(recipientList, payload);
   }
 
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload) {

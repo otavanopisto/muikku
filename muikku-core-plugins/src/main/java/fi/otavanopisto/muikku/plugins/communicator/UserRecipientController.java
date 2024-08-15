@@ -154,7 +154,7 @@ public class UserRecipientController {
     return isActiveUser(userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier()));
   }
   
-  private boolean hasAnyRole (List<EnvironmentRoleArchetype> roles, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+  private boolean hasAnyRole (List<EnvironmentRoleArchetype> roles, UserSchoolDataIdentifier userSchoolDataIdentifier) { 
 
     EnvironmentRoleArchetype[] roleArray = roles.toArray(new EnvironmentRoleArchetype[0]);
     
