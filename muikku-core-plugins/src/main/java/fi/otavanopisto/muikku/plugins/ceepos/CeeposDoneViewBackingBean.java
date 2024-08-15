@@ -87,7 +87,7 @@ public class CeeposDoneViewBackingBean {
 
     // Order specified by order query parameter must exist
     
-    CeeposOrder ceeposOrder = ceeposController.findOrderByIdAndArchived(new Long(id), false);
+    CeeposOrder ceeposOrder = ceeposController.findOrderByIdAndArchived(Long.valueOf(id), false);
     if (ceeposOrder == null) {
       logger.warning(String.format("Ceepos order %s: Not found", id));
       return NavigationRules.NOT_FOUND;
