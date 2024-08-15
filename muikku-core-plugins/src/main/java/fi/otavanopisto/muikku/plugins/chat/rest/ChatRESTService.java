@@ -621,7 +621,7 @@ public class ChatRESTService {
     }
     // Make sure nick is unique
     if (!StringUtils.isEmpty(nick)) {
-      if (nick.length() > 32) {
+      if (nick.length() > 64) {
         return Response.status(Status.BAD_REQUEST).entity("Nick too long").build();
       }
       ChatUser nickUser = chatController.getChatUser(nick);

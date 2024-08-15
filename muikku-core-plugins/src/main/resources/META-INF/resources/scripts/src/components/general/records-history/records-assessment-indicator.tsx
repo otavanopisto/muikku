@@ -31,7 +31,11 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
 
   // We can have situation where course module has PASSED assessment and also it's state is INCOMPLETE
   // as it has been evaluated as incomplete after evaluated as PASSED
-  if (assessment.grade && assessment.state !== "incomplete") {
+  if (
+    assessment.grade &&
+    assessment.gradeDate &&
+    assessment.state !== "incomplete"
+  ) {
     return (
       <Dropdown
         openByHover
@@ -39,7 +43,7 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           <span>
             {t("labels.evaluated", {
               ns: "studies",
-              date: localize.date(assessment.date),
+              date: localize.date(assessment.gradeDate),
             }) + getShortenGradeExtension(assessment.grade)}
           </span>
         }
@@ -94,10 +98,10 @@ const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
           openByHover
           content={
             <span>
-              {assessment.grade
+              {assessment.grade && assessment.gradeDate
                 ? t("labels.evaluated", {
                     ns: "studies",
-                    date: localize.date(assessment.date),
+                    date: localize.date(assessment.gradeDate),
                   }) + getShortenGradeExtension(assessment.grade)
                 : t("content.notEvaluated", {
                     ns: "studies",
