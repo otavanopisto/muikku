@@ -54,8 +54,8 @@ public class WorkspaceSignupMessageController {
   private Instance<MessagingWidget> messagingWidgets;
 
   public WorkspaceSignupMessage createWorkspaceSignupMessage(WorkspaceEntity workspaceEntity, 
-      UserGroupEntity signupGroupEntity, boolean enabled, String caption, String content) {
-    return workspaceEntityMessageDAO.create(workspaceEntity, signupGroupEntity, enabled, clean(caption), clean(content));
+      boolean defaultMessage, boolean enabled, String caption, String content) {
+    return workspaceEntityMessageDAO.create(workspaceEntity, defaultMessage, enabled, clean(caption), clean(content));
   }
   
   /**
@@ -147,13 +147,13 @@ public class WorkspaceSignupMessageController {
     return workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
   }
   
-  public WorkspaceSignupMessage findGroupSignupMessage(WorkspaceEntity workspaceEntity, UserGroupEntity signupGroupEntity) {
-    return workspaceEntityMessageDAO.findBy(workspaceEntity, signupGroupEntity);
-  }
-  
-  public List<WorkspaceSignupMessage> listGroupBoundSignupMessages(WorkspaceEntity workspaceEntity) {
-    return workspaceEntityMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
-  }
+//  public WorkspaceSignupMessage findGroupSignupMessage(WorkspaceEntity workspaceEntity, UserGroupEntity signupGroupEntity) {
+//    return workspaceEntityMessageDAO.findBy(workspaceEntity, signupGroupEntity);
+//  }
+//  
+//  public List<WorkspaceSignupMessage> listGroupBoundSignupMessages(WorkspaceEntity workspaceEntity) {
+//    return workspaceEntityMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
+//  }
   
   public WorkspaceSignupMessage updateWorkspaceSignupMessage(WorkspaceSignupMessage workspaceEntityMessage, 
       boolean enabled, String caption, String content) {

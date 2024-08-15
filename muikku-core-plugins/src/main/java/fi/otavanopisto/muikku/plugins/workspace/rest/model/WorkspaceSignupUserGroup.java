@@ -5,12 +5,11 @@ public class WorkspaceSignupUserGroup {
   public WorkspaceSignupUserGroup() {
   }
   
-  public WorkspaceSignupUserGroup(Long workspaceEntityId, Long userGroupEntityId, String userGroupName, Boolean canSignup, WorkspaceSignupMessageRestModel signupMessage) {
+  public WorkspaceSignupUserGroup(Long workspaceEntityId, Long userGroupEntityId, String userGroupName, Boolean canSignup) {
     this.workspaceEntityId = workspaceEntityId;
     this.userGroupEntityId = userGroupEntityId;
     this.userGroupName = userGroupName;
     this.canSignup = canSignup;
-    this.signupMessage = signupMessage;
   }
 
   public Long getWorkspaceEntityId() {
@@ -45,17 +44,9 @@ public class WorkspaceSignupUserGroup {
     this.canSignup = canSignup;
   }
 
-  public WorkspaceSignupMessageRestModel getSignupMessage() {
-    return signupMessage;
-  }
-
-  public void setSignupMessage(WorkspaceSignupMessageRestModel signupMessage) {
-    this.signupMessage = signupMessage;
-  }
-
   private Long workspaceEntityId;
   private Long userGroupEntityId;
   private String userGroupName;
   private Boolean canSignup;
-  private WorkspaceSignupMessageRestModel signupMessage;
+
 }

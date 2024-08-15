@@ -17000,7 +17000,6 @@ components:
         - userGroupEntityId
         - userGroupName
         - canSignup
-        - signupMessage
       properties:
         workspaceEntityId:
           description: The id of the workspace
@@ -17016,10 +17015,6 @@ components:
         canSignup:
           description: If the user can signup
           type: boolean
-        signupMessage:
-          description: Signup message for the group
-          nullable: true
-          $ref: "#/components/schemas/WorkspaceSignupMessage"
 
     WorkspaceUserEntity:
       type: object
@@ -17603,9 +17598,6 @@ components:
         canSignup:
           description: If the user can signup
           type: boolean
-        signupMessage:
-          descrption: Workspace sign up message for members of this group
-          $ref: "#/components/schemas/WorkspaceSignupMessage"
 
     ErrorModel:
       type: object

@@ -1,25 +1,25 @@
 package fi.otavanopisto.muikku.model.workspace;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 
 @Entity
-@Table (
-    uniqueConstraints = {
-        @UniqueConstraint (columnNames = { "workspaceEntity_id", "signupGroupEntity_id" })
-    }
-)
 public class WorkspaceSignupMessage {
 
   public Long getId() {
@@ -58,12 +58,20 @@ public class WorkspaceSignupMessage {
     this.enabled = enabled;
   }
 
-  public UserGroupEntity getSignupGroupEntity() {
-    return signupGroupEntity;
+  public List<UserGroupEntity> getUserGroupEntities() {
+    return userGroupEntities;
   }
 
-  public void setSignupGroupEntity(UserGroupEntity signupGroupEntity) {
-    this.signupGroupEntity = signupGroupEntity;
+  public void setUserGroupEntities(List<UserGroupEntity> userGroupEntities) {
+    this.userGroupEntities = userGroupEntities;
+  }
+
+  public boolean isDefaultMessage() {
+    return defaultMessage;
+  }
+
+  public void setDefaultMessage(boolean defaultMessage) {
+    this.defaultMessage = defaultMessage;
   }
 
   @Id
@@ -73,8 +81,12 @@ public class WorkspaceSignupMessage {
   @ManyToOne
   private WorkspaceEntity workspaceEntity;
 
-  @ManyToOne
-  private UserGroupEntity signupGroupEntity;
+  @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinTable (name = "WorkspaceSignupMessageGroups", joinColumns = @JoinColumn(name = "workspaceSignupMessage_id"), inverseJoinColumns = @JoinColumn(name = "userGroupEntity_id"))
+  private List<UserGroupEntity> userGroupEntities;
+
+  @Column(nullable = false)
+  private boolean defaultMessage;
   
   @Column(nullable = false)
   private boolean enabled;

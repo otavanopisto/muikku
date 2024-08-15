@@ -18,13 +18,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupMessageRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupUserGroup;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupUserGroupListRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -79,12 +75,7 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
 
       if (userGroup != null) {
         boolean canSignup = workspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier());
-        
-        WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
-        WorkspaceSignupMessageRestModel signupMessageRestModel = groupSignupMessage != null
-            ? new WorkspaceSignupMessageRestModel(groupSignupMessage.isEnabled(), groupSignupMessage.getCaption(), groupSignupMessage.getContent()) : null;
-        
-        userGroupRestModels.add(new WorkspaceSignupUserGroup(workspaceEntityId, userGroupEntity.getId(), userGroup.getName(), canSignup, signupMessageRestModel));
+        userGroupRestModels.add(new WorkspaceSignupUserGroup(workspaceEntityId, userGroupEntity.getId(), userGroup.getName(), canSignup));
       }
     }
     
@@ -124,10 +115,6 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
       if (!availableUserGroupEntityIds.contains(signupGroup.getUserGroupEntityId())) {
         return Response.status(Status.BAD_REQUEST).entity("User group not available").build();
       }
-      
-      if (signupGroup.getSignupMessage() != null && StringUtils.isAnyBlank(signupGroup.getSignupMessage().getCaption(), signupGroup.getSignupMessage().getContent())) {
-        return Response.status(Status.BAD_REQUEST).entity("Signup message missing mandatory fields.").build();
-      }
     }
 
     // Save the settings
@@ -153,24 +140,6 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
           workspaceController.removeWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
         }
       }
-
-      if (signupGroup.getSignupMessage() != null) {
-        WorkspaceSignupMessage signupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
-        if (signupMessage == null) {
-          signupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
-              workspaceEntity, 
-              userGroupEntity, 
-              signupGroup.getSignupMessage().isEnabled(),
-              signupGroup.getSignupMessage().getCaption(),
-              signupGroup.getSignupMessage().getContent());
-        } else {
-          signupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
-              signupMessage, 
-              signupGroup.getSignupMessage().isEnabled(),
-              signupGroup.getSignupMessage().getCaption(),
-              signupGroup.getSignupMessage().getContent());
-        }
-      }
     }
     
     return Response.noContent().build();
@@ -182,10 +151,6 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
   public Response setWorkspaceSettingsUserGroup(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
       @PathParam("USERGROUPID") Long userGroupEntityId, WorkspaceSignupUserGroup payload) {
     if (!Objects.equals(workspaceEntityId, payload.getWorkspaceEntityId()) || !Objects.equals(userGroupEntityId, payload.getUserGroupEntityId())) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    if (payload.getSignupMessage() != null && StringUtils.isAnyBlank(payload.getSignupMessage().getCaption(), payload.getSignupMessage().getContent())) {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
@@ -215,24 +180,6 @@ public class WorkspaceSignupGroupsRESTService extends PluginRESTService {
         workspaceController.removeWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
       } else {
         return Response.status(Response.Status.NOT_FOUND).build();
-      }
-    }
-
-    if (payload.getSignupMessage() != null) {
-      WorkspaceSignupMessage signupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
-      if (signupMessage == null) {
-        signupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
-            workspaceEntity, 
-            userGroupEntity, 
-            payload.getSignupMessage().isEnabled(),
-            payload.getSignupMessage().getCaption(),
-            payload.getSignupMessage().getContent());
-      } else {
-        signupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
-            signupMessage, 
-            payload.getSignupMessage().isEnabled(),
-            payload.getSignupMessage().getCaption(),
-            payload.getSignupMessage().getContent());
       }
     }
     

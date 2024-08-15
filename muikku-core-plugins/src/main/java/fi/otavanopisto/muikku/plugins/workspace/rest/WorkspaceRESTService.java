@@ -1263,7 +1263,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (defaultSignupMessage == null) {
       defaultSignupMessage = workspaceSignupMessageController.createWorkspaceSignupMessage(
           workspaceEntity,
-          null,
+          true,
           payload.isEnabled(),
           payload.getCaption(),
           payload.getContent());
@@ -1333,14 +1333,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (payload.getSignupGroups() != null) {
       // Make sure the basic properties are defined
-
       for (WorkspaceSignupGroupRestModel signupGroupPayload : payload.getSignupGroups()) {
         if (signupGroupPayload.getUserGroupEntityId() == null) {
           return Response.status(Status.BAD_REQUEST).entity("Signup group is missing an id.").build();
-        }
-
-        if (signupGroupPayload.getSignupMessage() != null && StringUtils.isAnyBlank(signupGroupPayload.getSignupMessage().getCaption(), signupGroupPayload.getSignupMessage().getContent())) {
-          return Response.status(Status.BAD_REQUEST).entity("Group Greeting message is missing caption or content.").build();
         }
       }
     }
@@ -1375,7 +1370,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (studentSignupGreetingMessage == null) {
         workspaceSignupMessageController.createWorkspaceSignupMessage(
             workspaceEntity,
-            null,
+            true,
             payload.getDefaultSignupMessage().isEnabled(),
             payload.getDefaultSignupMessage().getCaption(),
             payload.getDefaultSignupMessage().getContent());
@@ -1411,23 +1406,23 @@ public class WorkspaceRESTService extends PluginRESTService {
           }
         }
 
-        if (signupGroupPayload.getSignupMessage() != null) {
-          WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
-          if (groupSignupMessage == null) {
-            workspaceSignupMessageController.createWorkspaceSignupMessage(
-                workspaceEntity,
-                userGroupEntity,
-                signupGroupPayload.getSignupMessage().isEnabled(),
-                signupGroupPayload.getSignupMessage().getCaption(),
-                signupGroupPayload.getSignupMessage().getContent());
-          } else {
-            workspaceSignupMessageController.updateWorkspaceSignupMessage(
-                groupSignupMessage,
-                signupGroupPayload.getSignupMessage().isEnabled(),
-                signupGroupPayload.getSignupMessage().getCaption(),
-                signupGroupPayload.getSignupMessage().getContent());
-          }
-        }
+//        if (signupGroupPayload.getSignupMessage() != null) {
+//          WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
+//          if (groupSignupMessage == null) {
+//            workspaceSignupMessageController.createWorkspaceSignupMessage(
+//                workspaceEntity,
+//                userGroupEntity,
+//                signupGroupPayload.getSignupMessage().isEnabled(),
+//                signupGroupPayload.getSignupMessage().getCaption(),
+//                signupGroupPayload.getSignupMessage().getContent());
+//          } else {
+//            workspaceSignupMessageController.updateWorkspaceSignupMessage(
+//                groupSignupMessage,
+//                signupGroupPayload.getSignupMessage().isEnabled(),
+//                signupGroupPayload.getSignupMessage().getCaption(),
+//                signupGroupPayload.getSignupMessage().getContent());
+//          }
+//        }
       }
     }
 
@@ -3878,11 +3873,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
       if (userGroup != null) {
         boolean canSignup = workspaceSignupGroups.contains(availableSignupGroup.schoolDataIdentifier());
-
-        WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, availableSignupGroup);
-        WorkspaceSignupMessageRestModel groupSignupMessageRestModel = groupSignupMessage != null
-            ? new WorkspaceSignupMessageRestModel(groupSignupMessage.isEnabled(), groupSignupMessage.getCaption(), groupSignupMessage.getContent()) : null;
-        WorkspaceSignupGroupRestModel rm = new WorkspaceSignupGroupRestModel(availableSignupGroup.getId(), userGroup.getName(), canSignup, groupSignupMessageRestModel);
+        WorkspaceSignupGroupRestModel rm = new WorkspaceSignupGroupRestModel(availableSignupGroup.getId(), userGroup.getName(), canSignup);
         groupSignupRestModels.add(rm);
       }
     }
