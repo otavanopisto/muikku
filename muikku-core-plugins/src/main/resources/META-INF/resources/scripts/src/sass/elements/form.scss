@@ -223,8 +223,7 @@ legend {
 
 // CHECKBOX or RADIOBUTTON form-element wrapper
 .form-element--checkbox-radiobutton,
-.form-element--icon-with-label,
-.form-element--checkbox-radiobutton-inside-summary {
+.form-element--icon-with-label{
   align-items: center;
   background-color: transparent;
   border-radius: 0;
@@ -237,11 +236,6 @@ legend {
     font-weight: 400;
     padding: 0;
   }
-}
-
-.form-element--checkbox-radiobutton-inside-summary {
-  margin: 0;
-  padding: 0;
 }
 
 .form-element--edit-label {
