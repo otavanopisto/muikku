@@ -6024,9 +6024,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MatriculationExamEnrollment"
+                $ref: "#/components/schemas/MatriculationExamEnrollment"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6151,7 +6149,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MatriculationStudentData"
+                $ref: "#/components/schemas/MatriculationStudent"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6159,7 +6157,7 @@ paths:
 
   /rest/matriculation/exams/{examId}/savedEnrollments/{userIdentifier}:
     get:
-      operationId: getSavedEnrollments
+      operationId: getSavedEnrollmentDraft
       summary: Get saved enrollments
       description: Get saved enrollments
       tags:
@@ -6184,7 +6182,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MatriculationStudentExamination"
+                $ref: "#/components/schemas/AnyValue"
+        "400":
+          description: Invalid request was sent to the server
+        "404":
+          description: Saved enrollments not found
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updateEnrollmentDraft
+      summary: Update enrollment draft
+      description: Update enrollment draft
+      tags:
+        - Matriculation
+      parameters:
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userIdentifier
+          in: path
+          description: identifier of user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/MatriculationEnrollmentDraftUpdateRequestBody"
+      responses:
+        "200":
+          description: Saved enrollments
+          content:
+            application/json:
+              schema:
+                type: object
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11441,7 +11475,12 @@ components:
       content:
         application/json:
           schema:
-            description: MatriculationEnrollmentsCreateRequestBody object
+            $ref: "#/components/schemas/MatriculationExamEnrollment"
+
+    MatriculationEnrollmentDraftUpdateRequestBody:
+      content:
+        application/json:
+          schema:
             type: string
 
     LocalizationSetRequestBody:
@@ -14123,38 +14162,6 @@ components:
           type: string
           format: date-time
 
-    MatriculationExamAttendance:
-      type: object
-      description: MatriculationExamAttendance object
-      required:
-        - subject
-        - mandatory
-        - repeat
-        - year
-        - term
-        - status
-        - funding
-      properties:
-        id:
-          type: integer
-          format: int64
-        subject:
-          type: string
-        mandatory:
-          type: boolean
-        repeat:
-          type: boolean
-        year:
-          type: integer
-        term:
-          $ref: "#/components/schemas/MatriculationExamTerm"
-        status:
-          $ref: "#/components/schemas/MatriculationAttendanceStatusType"
-        grade:
-          $ref: "#/components/schemas/MatriculationExamGrade"
-        funding:
-          $ref: "#/components/schemas/MatriculationExamFundingType"
-    
     MatriculationExamStudentStatus:
       description: Status of a student in relation to an matriculation exam
       type: string
@@ -14232,8 +14239,8 @@ components:
           $ref: "#/components/schemas/MatriculationExamEnrollmentChangeLogType"
         newState:
           $ref: "#/components/schemas/MatriculationExamStudentStatus"
-                
-    MatriculationStudentData:
+
+    MatriculationStudent:
       type: object
       description: MatriculationStudent object
       required:
@@ -14286,7 +14293,7 @@ components:
         - SELF_FUNDED
         - COMPULSORYEDUCATION_FREE
         - COMPULSORYEDUCATION_FREE_RETRY
-        
+
     MatriculationExamGrade:
       type: string
       enum:
@@ -14308,14 +14315,14 @@ components:
         - mandatory
         - repeat
         - status
-        - refType
+        - funding
       properties:
         subject:
           type: string
         mandatory:
-          type: string
+          type: boolean
         repeat:
-          type: string
+          type: boolean
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
@@ -14323,21 +14330,20 @@ components:
 
     MatriculationExamFinishedSubject:
       type: object
-      description: MatriculationExamEnrolledSubject object
+      description: MatriculationExamFinishedSubject object
       required:
         - term
         - subject
         - mandatory
         - grade
         - status
-        - refType
       properties:
         term:
           $ref: "#/components/schemas/AnyValue"
         subject:
           type: string
         mandatory:
-          type: string
+          type: boolean
         grade:
           type: string
         status:
@@ -14347,7 +14353,7 @@ components:
 
     MatriculationExamPlannedSubject:
       type: object
-      description: MatriculationExamEnrolledSubject object
+      description: MatriculationExamPlannedSubject object
       required:
         - term
         - subject
@@ -14359,73 +14365,23 @@ components:
         subject:
           type: string
         mandatory:
-          type: string
+          type: boolean
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
           $ref: "#/components/schemas/MatriculationExamFundingType"
 
-    MatriculationExamSubject:
+    MatriculationExamAttendance:
+      discriminator:
+        propertyName: status
+        mapping:
+          ENROLLED: "#/components/schemas/MatriculationExamEnrolledSubject"
+          FINISHED: "#/components/schemas/MatriculationExamFinishedSubject"
+          PLANNED: "#/components/schemas/MatriculationExamPlannedSubject"
       oneOf:
         - $ref: "#/components/schemas/MatriculationExamEnrolledSubject"
         - $ref: "#/components/schemas/MatriculationExamFinishedSubject"
         - $ref: "#/components/schemas/MatriculationExamPlannedSubject"
-
-    MatriculationStudentExamination:
-      type: object
-      description: MatriculationStudentExamination object
-      required:
-        - canPublishName
-        - changedContactInfo
-        - degreeType
-        - enrollAs
-        - enrolledAttendances
-        - finishedAttendances
-        - plannedAttendances
-        - guider
-        - initialized
-        - location
-        - message
-        - numMandatoryCourses
-        - restartExam
-        - degreeStructure
-      properties:
-        canPublishName:
-          type: boolean
-        changedContactInfo:
-          type: boolean
-        degreeType:
-          type: string
-        enrollAs:
-          type: string
-        enrolledAttendances:
-          type: array
-          items:
-            $ref: "#/components/schemas/MatriculationExamEnrolledSubject"
-        finishedAttendances:
-          type: array
-          items:
-            $ref: "#/components/schemas/MatriculationExamFinishedSubject"
-        plannedAttendances:
-          type: array
-          items:
-            $ref: "#/components/schemas/MatriculationExamPlannedSubject"
-        guider:
-          type: string
-        initialized:
-          type: boolean
-        location:
-          type: string
-        message:
-          type: string
-        numMandatoryCourses:
-          type: integer
-        restartExam:
-          description: Value is either boolean or string
-          allOf:
-            - $ref: "#/components/schemas/AnyValue"
-        degreeStructure:
-          $ref: "#/components/schemas/MatriculationExamDegreeStructure"
 
     MaterialReply:
       type: object
@@ -16159,7 +16115,7 @@ components:
           type: string
         hasImage:
           type: boolean
-          
+
     User:
       type: object
       description: User object

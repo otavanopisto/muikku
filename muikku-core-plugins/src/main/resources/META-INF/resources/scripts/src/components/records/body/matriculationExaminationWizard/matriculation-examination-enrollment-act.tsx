@@ -1,186 +1,174 @@
-import * as React from "react";
-import "~/sass/elements/matriculation.scss";
-import { ExaminationInformation, SaveState } from "~/@types/shared";
-import { Textarea } from "./textarea";
-import { TextField } from "./textfield";
-import { SavingDraftError } from "./saving-draft-error";
-import { SavingDraftInfo } from "./saving-draft-info";
-
-/**
- * MatriculationExaminationEnrollmentActProps
- */
-interface MatriculationExaminationEnrollmentActProps {
-  examination: ExaminationInformation;
-  draftSaveErrorMsg?: string;
-  saveState: SaveState;
-  onChange: (examination: ExaminationInformation) => void;
-}
-
-/**
- * MatriculationExaminationEnrollmentAct
- */
-export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
-  MatriculationExaminationEnrollmentActProps,
-  Record<string, unknown>
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: MatriculationExaminationEnrollmentActProps) {
-    super(props);
-  }
-
-  /**
-   * Handles examination information changes and passes it to parent component
-   * @param key key of the changed value
-   * @param value value
-   */
-  onExaminationInformationChange = <T extends keyof ExaminationInformation>(
-    key: T,
-    value: ExaminationInformation[T]
-  ) => {
-    const { examination, onChange } = this.props;
-
-    const modifiedExamination: ExaminationInformation = {
-      ...examination,
-      [key]: value,
-    };
-
-    onChange(modifiedExamination);
-  };
-
-  /**
-   * Render method
-   */
-  render() {
-    const { examination, draftSaveErrorMsg, saveState } = this.props;
-    const { location, message, canPublishName, name, date } = examination;
-
-    return (
-      <div className="matriculation-container">
-        <SavingDraftError draftSaveErrorMsg={draftSaveErrorMsg} />
-        <SavingDraftInfo saveState={saveState} />
-        <fieldset className="matriculation-container__fieldset">
-          <legend className="matriculation-container__subheader">
-            Kokeen suorittaminen
-          </legend>
-          <div className="matriculation-container__row">
-            <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Suorituspaikka</label>
-              <select
-                onChange={(e) =>
-                  this.onExaminationInformationChange(
-                    "location",
-                    e.currentTarget.value
-                  )
-                }
-                value={location === "Mikkeli" ? "Mikkeli" : ""}
-                className="matriculation__select"
-              >
-                <option>Mikkeli</option>
-                <option value="">Muu</option>
-              </select>
-            </div>
-          </div>
-
-          {location !== "Mikkeli" ? (
-            <div>
-              <div className="matriculation-container__row">
-                <div className="matriculation__form-element-container">
-                  <TextField
-                    label="Muu paikka"
-                    value={location}
-                    type="text"
-                    placeholder="Kirjoita tähän oppilaitoksen nimi"
-                    className="matriculation__input"
-                    onChange={(e) =>
-                      this.onExaminationInformationChange(
-                        "location",
-                        e.currentTarget.value
-                      )
-                    }
-                  />
-                </div>
-              </div>
-
-              {location === "" ? (
-                <div className="matriculation-container__state state-WARNING">
-                  <div className="matriculation-container__state-icon icon-notification"></div>
-                  <div className="matriculation-container__state-text">
-                    <p>
-                      Jos haluat suorittaa kokeen muualla, siitä on sovittava
-                      ensin kyseisen oppilaitoksen kanssa.
-                    </p>
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-
-          <div className="matriculation-container__row">
-            <div className="matriculation__form-element-container">
-              <Textarea
-                label="Lisätietoa ohjaajalle"
-                rows={5}
-                onChange={(e) =>
-                  this.onExaminationInformationChange(
-                    "message",
-                    e.currentTarget.value
-                  )
-                }
-                value={message}
-                className="matriculation__textarea"
-              />
-            </div>
-          </div>
-          <div className="matriculation-container__row">
-            <div className="matriculation__form-element-container">
-              <label className="matriculation__label">Julkaisulupa</label>
-              <select
-                onChange={(e) =>
-                  this.onExaminationInformationChange(
-                    "canPublishName",
-                    e.currentTarget.value
-                  )
-                }
-                value={canPublishName}
-                className="matriculation__select"
-              >
-                <option value="true">
-                  Haluan nimeni julkaistavan valmistujalistauksissa
-                </option>
-                <option value="false">
-                  En halua nimeäni julkaistavan valmistujaislistauksissa
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div className="matriculation-container__row">
-            <div className="matriculation__form-element-container">
-              <TextField
-                label="Nimi"
-                value={name}
-                type="text"
-                readOnly
-                className="matriculation__input"
-              />
-            </div>
-            <div className="matriculation__form-element-container">
-              <TextField
-                label="Päivämäärä"
-                value={date}
-                type="text"
-                readOnly
-                className="matriculation__input"
-              />
-            </div>
-          </div>
-        </fieldset>
-      </div>
-    );
-  }
-}
-
-export default MatrMatriculationExaminationEnrollmentAct;
+//                         "location",
+//                         e.currentTarget.value
+//                       )
+//                       ensin kyseisen oppilaitoksen kanssa.
+//                       Jos haluat suorittaa kokeen muualla, siitä on sovittava
+//                       this.onExaminationInformationChange(
+//                     "canPublishName",
+//                     "location",
+//                     "message",
+//                     }
+//                     </p>
+//                     <p>
+//                     className="matriculation__input"
+//                     e.currentTarget.value
+//                     e.currentTarget.value
+//                     e.currentTarget.value
+//                     label="Muu paikka"
+//                     onChange={(e) =>
+//                     placeholder="Kirjoita tähän oppilaitoksen nimi"
+//                     type="text"
+//                     value={location}
+//                   )
+//                   )
+//                   )
+//                   />
+//                   </div>
+//                   <div className="matriculation-container__state-icon icon-notification"></div>
+//                   <div className="matriculation-container__state-text">
+//                   <TextField
+//                   En halua nimeäni julkaistavan valmistujaislistauksissa
+//                   Haluan nimeni julkaistavan valmistujalistauksissa
+//                   this.onExaminationInformationChange(
+//                   this.onExaminationInformationChange(
+//                   this.onExaminationInformationChange(
+//                 }
+//                 }
+//                 }
+//                 </div>
+//                 </div>
+//                 </option>
+//                 </option>
+//                 <div className="matriculation__form-element-container">
+//                 <div className="matriculation-container__state state-WARNING">
+//                 <option value="">Muu</option>
+//                 <option value="false">
+//                 <option value="true">
+//                 <option>Mikkeli</option>
+//                 className="matriculation__input"
+//                 className="matriculation__input"
+//                 className="matriculation__select"
+//                 className="matriculation__select"
+//                 className="matriculation__textarea"
+//                 label="Lisätietoa ohjaajalle"
+//                 label="Nimi"
+//                 label="Päivämäärä"
+//                 onChange={(e) =>
+//                 onChange={(e) =>
+//                 onChange={(e) =>
+//                 readOnly
+//                 readOnly
+//                 rows={5}
+//                 type="text"
+//                 type="text"
+//                 value={canPublishName}
+//                 value={date}
+//                 value={location === "Mikkeli" ? "Mikkeli" : ""}
+//                 value={message}
+//                 value={name}
+//               ) : null}
+//               {location === "" ? (
+//               />
+//               />
+//               />
+//               </div>
+//               </select>
+//               </select>
+//               <div className="matriculation-container__row">
+//               <label className="matriculation__label">Julkaisulupa</label>
+//               <label className="matriculation__label">Suorituspaikka</label>
+//               <select
+//               <select
+//               <Textarea
+//               <TextField
+//               <TextField
+//               >
+//               >
+//             </div>
+//             </div>
+//             </div>
+//             </div>
+//             </div>
+//             </div>
+//             <div className="matriculation__form-element-container">
+//             <div className="matriculation__form-element-container">
+//             <div className="matriculation__form-element-container">
+//             <div className="matriculation__form-element-container">
+//             <div className="matriculation__form-element-container">
+//             <div>
+//             Kokeen suorittaminen
+//           ) : null}
+//           {location !== "Mikkeli" ? (
+//           </div>
+//           </div>
+//           </div>
+//           </div>
+//           </legend>
+//           <div className="matriculation-container__row">
+//           <div className="matriculation-container__row">
+//           <div className="matriculation-container__row">
+//           <div className="matriculation-container__row">
+//           <legend className="matriculation-container__subheader">
+//         </fieldset>
+//         <fieldset className="matriculation-container__fieldset">
+//         <SavingDraftError draftSaveErrorMsg={draftSaveErrorMsg} />
+//         <SavingDraftInfo saveState={saveState} />
+//       ...examination,
+//       [key]: value,
+//       </div>
+//       <div className="matriculation-container">
+//     );
+//     };
+//     const { examination, draftSaveErrorMsg, saveState } = this.props;
+//     const { examination, onChange } = this.props;
+//     const { location, message, canPublishName, name, date } = examination;
+//     const modifiedExamination: ExaminationInformation = {
+//     key: T,
+//     onChange(modifiedExamination);
+//     return (
+//     super(props);
+//     value: ExaminationInformation[T]
+//    * @param key key of the changed value
+//    * @param props props
+//    * @param value value
+//    * constructor
+//    * Handles examination information changes and passes it to parent component
+//    * Render method
+//    */
+//    */
+//    */
+//   ) => {
+//   }
+//   }
+//   };
+//   /**
+//   /**
+//   /**
+//   constructor(props: MatriculationExaminationEnrollmentActProps) {
+//   draftSaveErrorMsg?: string;
+//   examination: ExaminationInformation;
+//   MatriculationExaminationEnrollmentActProps,
+//   onChange: (examination: ExaminationInformation) => void;
+//   onExaminationInformationChange = <T extends keyof ExaminationInformation>(
+//   Record<string, unknown>
+//   render() {
+//   saveState: SaveState;
+//  * MatriculationExaminationEnrollmentAct
+//  * MatriculationExaminationEnrollmentActProps
+//  */
+//  */
+// }
+// }
+// /**
+// /**
+// > {
+// export class MatrMatriculationExaminationEnrollmentAct extends React.Component<
+// export default MatrMatriculationExaminationEnrollmentAct;
+// import "~/sass/elements/matriculation.scss";
+// import { ExaminationInformation, SaveState } from "~/@types/shared";
+// import { SavingDraftError } from "./saving-draft-error";
+// import { SavingDraftInfo } from "./saving-draft-info";
+// import { Textarea } from "./textarea";
+// import { TextField } from "./textfield";
+// import * as React from "react";
+// interface MatriculationExaminationEnrollmentActProps {

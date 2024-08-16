@@ -144,6 +144,7 @@ export class MatriculationExaminationEnrollmentInformationNew extends React.Comp
       guidanceCounselor: "",
       ssn: null,
       date: "",
+      completedCreditPointsCount: 0,
       degreeStructure: ExamEnrollmentDegreeStructure.PRE2022,
     };
 

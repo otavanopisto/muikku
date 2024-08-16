@@ -80,7 +80,7 @@ export const StepperItem = (props: StepperItemProps) => {
         alignItems: "center",
         justifyContent: "center",
       }}
-      onClick={onClick}
+      onClick={!disabled ? onClick : undefined}
     >
       <em className="stepper-button">{index + 1}</em>
       {label && <span>{label}</span>}

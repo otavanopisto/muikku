@@ -17,7 +17,7 @@ import "~/sass/elements/buttons.scss";
 import MatriculationEligibilityRow from "./matriculation-eligibility-row/matriculation-eligibility-row";
 import { updateYO } from "~/actions/main-function/records/yo";
 import { updateYOTriggerType } from "../../../../actions/main-function/records/yo";
-import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
+//import MatriculationExaminationWizardDialog from "../../dialogs/matriculation-wizard";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import {
@@ -123,7 +123,7 @@ class YO extends React.Component<YOProps, YOState> {
               )
               .map((exam) => (
                 <div key={exam.id}>
-                  <MatriculationExaminationWizardDialog
+                  {/* <MatriculationExaminationWizardDialog
                     updateEnrollemnts={this.updateEnrollemnts}
                     examId={exam.id}
                     key={exam.id}
@@ -139,7 +139,7 @@ class YO extends React.Component<YOProps, YOState> {
                         ),
                       })}
                     </Button>
-                  </MatriculationExaminationWizardDialog>
+                  </MatriculationExaminationWizardDialog> */}
                 </div>
               ))}
 

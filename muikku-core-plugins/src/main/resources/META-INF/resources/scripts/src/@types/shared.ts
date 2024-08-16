@@ -4,6 +4,10 @@ import {
   HopsHistoryEntry,
   StudentStudyActivity,
   WorkspaceSuggestion,
+  MatriculationExamEnrolledSubject,
+  MatriculationExamFinishedSubject,
+  MatriculationExamPlannedSubject,
+  MatriculationExamEnrollment,
 } from "~/generated/client";
 
 /**
@@ -47,27 +51,7 @@ export type SaveState =
  */
 export type AttentionPlace = "Mikkeli" | "Muu";
 
-/**
- * attendanceStatus
- */
-export type attendanceStatus = "ENROLLED" | "FINISHED" | "PLANNED";
-
-/**
- * ExaminationFunding
- */
-export enum ExaminationFunding {
-  SELF_FUNDED = "SELF_FUNDED",
-  COMPULSORYEDUCATION_FREE = "COMPULSORYEDUCATION_FREE",
-  COMPULSORYEDUCATION_FREE_RETRY = "COMPULSORYEDUCATION_FREE_RETRY",
-}
-
-/**
- * ExamEnrollmentDegreeStructure
- */
-export enum ExamEnrollmentDegreeStructure {
-  PRE2022 = "PRE2022",
-  POST2022 = "POST2022",
-}
+export type MatriculationFormType = "initial" | "edit";
 
 /**
  * Grades by string code
@@ -86,145 +70,49 @@ export interface ExaminationSubject {
 /**
  * Examination
  */
-export interface ExaminationInformation
-  extends MatriculationStudent,
-    MatriculationStudentExamination {
+export interface ExaminationInformation extends MatriculationExamEnrollment {
   date: string;
-}
-
-/**
- * ExaminationAttendedSubject
- */
-export interface ExaminationEnrolledSubject {
-  subject: string;
-  mandatory: string;
-  repeat: string;
-  status: attendanceStatus;
-  funding?: ExaminationFunding | string;
-}
-
-/**
- * export interface ExaminationCompletedSubject {
- */
-export interface ExaminationFinishedSubject {
-  term: any;
-  subject: string;
-  mandatory: string;
-  grade: string;
-  status: attendanceStatus;
-  funding?: ExaminationFunding | string;
-}
-
-/**
- * ExaminationFutureSubject
- */
-export interface ExaminationPlannedSubject {
-  term: any;
-  subject: string;
-  mandatory: string;
-  status: attendanceStatus;
-  funding?: ExaminationFunding | string;
-}
-
-/**
- * Examination information
- */
-export interface ExaminationAttentionInformation {
-  placeToAttend: string;
-  extraInfoForSupervisor: string;
-  publishPermission: string;
-  publishedName: string;
-  date: any;
-}
-
-/**
- * Term
- */
-export interface Term {
-  name: string;
-  value: string;
-  adessive: string;
-}
-
-/**
- * MatriculationStudent
- */
-export interface MatriculationStudent {
-  address: string;
-  email: string;
-  enrollmentSent: boolean;
-  guidanceCounselor: string;
-  locality: string;
-  name: string;
-  phone: string;
-  postalCode: string;
-  ssn: string;
-  studentIdentifier: string;
-}
-
-/**
- * MatriculationStudentExamination
- */
-export interface MatriculationStudentExamination {
-  canPublishName: string;
-  changedContactInfo: string;
-  degreeType: string;
-  enrollAs: string;
-  enrolledAttendances: ExaminationEnrolledSubject[];
-  finishedAttendances: ExaminationFinishedSubject[];
-  plannedAttendances: ExaminationPlannedSubject[];
-  guider: string;
   initialized: boolean;
-  location: string;
-  message: string;
-  numMandatoryCourses: string;
-  restartExam: boolean | string;
-  degreeStructure: ExamEnrollmentDegreeStructure;
-}
-
-/**
- * MatriculationExaminationDraft
- */
-export interface MatriculationExaminationDraft {
+  // These values are used specifically for draft
   changedContactInfo: string;
-  guider: string;
-  enrollAs: string;
-  degreeType: string;
-  numMandatoryCourses: string;
-  restartExam: string;
-  message: string;
-  location: string;
-  canPublishName: string;
-  degreeStructure: ExamEnrollmentDegreeStructure;
-  enrolledAttendances: ExaminationEnrolledSubject[];
-  plannedAttendances: ExaminationPlannedSubject[];
-  finishedAttendances: ExaminationFinishedSubject[];
+  enrolledAttendances: Array<MatriculationExamEnrolledSubject>;
+  finishedAttendances: Array<MatriculationExamFinishedSubject>;
+  plannedAttendances: Array<MatriculationExamPlannedSubject>;
 }
 
 /**
- * MatriculationExaminationApplication
+ * Generic type guard for status
+ * @param val status
+ * @returns type guard
  */
-export interface MatriculationExaminationApplication {
-  examId: string;
-  name: string;
-  ssn: string;
-  email: string;
-  phone: string;
-  address: string;
-  postalCode: string;
-  city: string;
-  guider: string;
-  enrollAs: string;
-  degreeType: string;
-  restartExam: string;
-  numMandatoryCourses: number;
-  location: string;
-  message: string;
-  degreeStructure: ExamEnrollmentDegreeStructure;
-  studentIdentifier: string;
-  canPublishName: boolean;
-  state: string;
-  attendances: object[];
+export function isOfStatus<
+  GenericType extends string,
+  MatriculationExamAttendance extends { status: GenericType },
+  SpecificType extends GenericType
+>(val: SpecificType) {
+  return (
+    obj: MatriculationExamAttendance
+  ): obj is Extract<MatriculationExamAttendance, { status: SpecificType }> =>
+    obj.status === val;
+}
+
+/**
+ * Convert string to boolean
+ * @param str str
+ * @returns boolean
+ */
+export function stringToBoolean(str: string): boolean {
+  const boolMap = new Map<string, boolean>([
+    ["true", true],
+    ["false", false],
+  ]);
+
+  const result = boolMap.get(str.toLowerCase());
+  if (result !== undefined) {
+    return result;
+  } else {
+    throw new Error("Invalid boolean string");
+  }
 }
 
 /**

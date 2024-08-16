@@ -125,6 +125,7 @@ import { Announcement, User } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
+import { loadMatriculationData } from "~/actions/main-function/hops/";
 
 /**
  * MainFunctionProps
@@ -232,6 +233,8 @@ export default class MainFunction extends React.Component<
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")) {
       this.loadRecordsData(window.location.hash.replace("#", ""));
+    } else if (window.location.pathname.includes("/hops")) {
+      this.loadHopsData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
@@ -352,6 +355,19 @@ export default class MainFunction extends React.Component<
     }
     // Hops needs to be loaded for correct tabs to be seen
     this.props.store.dispatch(updateHops(null, userId) as Action);
+  }
+
+  /**
+   * loadHopsData
+   * @param tab tab
+   * @param userId userId
+   */
+  loadHopsData(tab: string, userId?: string) {
+    const givenLocation = tab;
+
+    if (givenLocation === "matriculation" || !givenLocation) {
+      this.props.store.dispatch(loadMatriculationData() as Action);
+    }
   }
 
   /**
@@ -974,7 +990,7 @@ export default class MainFunction extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(titleActions.updateTitle("HOPS"));
-      this.props.store.dispatch(updateHops() as Action);
+      this.loadHopsData(window.location.hash.replace("#", ""));
     }
 
     return <HopsBody />;

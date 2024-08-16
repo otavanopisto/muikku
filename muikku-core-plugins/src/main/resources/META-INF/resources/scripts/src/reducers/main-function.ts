@@ -28,6 +28,7 @@ import { ceepos } from "./main-function/ceepos";
 import { organizationWorkspaces } from "./workspaces/organization";
 import { contacts } from "./base/contacts";
 import { dependants } from "./main-function/dependants";
+import { hopsNew } from "./hops/index";
 export default combineReducers({
   announcements,
   ceepos,
@@ -57,4 +58,5 @@ export default combineReducers({
   websocket,
   workspaces,
   yo,
+  hopsNew,
 });

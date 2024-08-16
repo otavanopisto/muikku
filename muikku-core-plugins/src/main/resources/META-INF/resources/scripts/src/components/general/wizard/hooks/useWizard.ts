@@ -7,6 +7,7 @@ import { WizardStep } from "..";
 export interface UseWizardProps {
   preventNextIfInvalid: boolean;
   steps: WizardStep[];
+  onStepChange?: (step: WizardStep) => void;
 }
 
 export type UseWizardType = ReturnType<typeof useWizard>;
@@ -18,6 +19,8 @@ export type UseWizardType = ReturnType<typeof useWizard>;
  * @returns wizard method and state values
  */
 export const useWizard = (props: UseWizardProps) => {
+  const { preventNextIfInvalid, onStepChange } = props;
+
   const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(0);
   const [steps, setSteps] = React.useState<WizardStep[]>(props.steps);
 
@@ -47,9 +50,12 @@ export const useWizard = (props: UseWizardProps) => {
       if (i >= steps.length - 1) {
         return i;
       }
+
+      // When onStepChange is defined, call it with the new step
+      onStepChange && onStepChange(steps[i + 1]);
       return i + 1;
     });
-  }, [steps.length]);
+  }, [onStepChange, steps]);
 
   /**
    * Go to the previous step
@@ -59,9 +65,12 @@ export const useWizard = (props: UseWizardProps) => {
       if (i <= 0) {
         return i;
       }
+
+      // When onStepChange is defined, call it with the new step
+      onStepChange && onStepChange(steps[i - 1]);
       return i - 1;
     });
-  }, []);
+  }, [onStepChange, steps]);
 
   /**
    * Go to a specific step
@@ -72,10 +81,29 @@ export const useWizard = (props: UseWizardProps) => {
         throw new Error(`Invalid step index: ${step}`);
       }
 
+      // When onStepChange is defined, call it with the new step
+      onStepChange && onStepChange(steps[step]);
       setCurrentStepIndex(step);
     },
-    [steps.length]
+    [onStepChange, steps]
   );
+
+  // List of disabled steps indexes. If any of the steps are invalid, all the following steps are disabled
+  const disabledSteps = React.useMemo(() => {
+    const disabledSteps: number[] = [];
+    let invalidStepIndex = undefined;
+
+    for (let i = 0; i < steps.length; i++) {
+      if (invalidStepIndex !== undefined) {
+        disabledSteps.push(i);
+      }
+
+      if (steps[i].isInvalid) {
+        invalidStepIndex = i;
+      }
+    }
+    return disabledSteps;
+  }, [steps]);
 
   return {
     step: steps[currentStepIndex],
@@ -87,6 +115,7 @@ export const useWizard = (props: UseWizardProps) => {
     previous,
     goTo,
     isInvalid,
-    preventNextIfInvalid: props.preventNextIfInvalid,
+    preventNextIfInvalid,
+    disabledSteps,
   };
 };
