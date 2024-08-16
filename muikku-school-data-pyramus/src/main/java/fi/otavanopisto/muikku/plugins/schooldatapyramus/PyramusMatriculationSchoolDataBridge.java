@@ -158,9 +158,19 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
   }
 
   @Override
-  public void submitMatriculationExamEnrollment(Long examId,
-      MatriculationExamEnrollment enrollment) {
-    pyramusClient.post(String.format("/matriculation/exams/%d/enrollments", examId), enrollment);
+  public BridgeResponse<MatriculationExamEnrollment> submitMatriculationExamEnrollment(SchoolDataIdentifier studentIdentifier,
+      Long examId, MatriculationExamEnrollment enrollment) {
+    if (studentIdentifier == null || examId == null) {
+      throw new IllegalArgumentException();
+    }
+
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    BridgeResponse<PyramusMatriculationExamEnrollment> response = pyramusClient.responsePost(String.format("/matriculation/students/%d/exams/%d/enrollment", pyramusStudentId, examId), Entity.entity(enrollment, MediaType.APPLICATION_JSON), PyramusMatriculationExamEnrollment.class);
+    return new BridgeResponse<MatriculationExamEnrollment>(response.getStatusCode(), response.getEntity(), response.getMessage());
   }
 
   @Override

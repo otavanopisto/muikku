@@ -380,18 +380,24 @@ public class MatriculationRESTService {
       attendances.add(resultAttendance);
     }
     schoolDataEntity.setAttendances(attendances);
-    matriculationController.submitMatriculationExamEnrollment(examId, schoolDataEntity);
+    BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.submitMatriculationExamEnrollment(userIdentifier, examId, schoolDataEntity);
     
+    if (response.ok()) {
     // TODO ????
 //    sentMatriculationEnrollmentDAO.create(examId, userIdentifier);
     
-    try {
-      matriculationNotificationController.sendEnrollmentNotification(enrollment);
-    } catch (IOException e) {
-      logger.log(Level.SEVERE, "Failed to send matriculation enrollment notification email", e);
+      try {
+        matriculationNotificationController.sendEnrollmentNotification(enrollment);
+      } catch (IOException e) {
+        logger.log(Level.SEVERE, "Failed to send matriculation enrollment notification email", e);
+      }
+      
+      return Response.ok().build();
     }
-    
-    return Response.ok().build();
+    else {
+      Status status = Status.fromStatusCode(response.getStatusCode());
+      return status != null ? Response.status(status).build() : Response.status(response.getStatusCode()).build();
+    }
   }
 
   private MatriculationCurrentExam restModel(MatriculationExam exam) {

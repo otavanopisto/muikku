@@ -19,7 +19,7 @@ public interface MatriculationSchoolDataBridge {
 
   public MatriculationExamEnrollment createMatriculationExamEnrollment();
 
-  public void submitMatriculationExamEnrollment(Long examId, MatriculationExamEnrollment enrollment);
+  public BridgeResponse<MatriculationExamEnrollment> submitMatriculationExamEnrollment(SchoolDataIdentifier studentIdentifier, Long examId, MatriculationExamEnrollment enrollment);
 
   public MatriculationExamAttendance createMatriculationExamAttendance();
 
