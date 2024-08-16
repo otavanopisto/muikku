@@ -150,7 +150,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceSignupGroupController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -1223,6 +1222,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{ID}/signupMessage")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getWorkspaceSignupMessage(@PathParam("ID") Long workspaceEntityId) {
+    // TODO Is this used anywhere?
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -1234,8 +1234,8 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
     WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
-        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent())
-        : new WorkspaceSignupMessageRestModel(false, "", "");
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.getId(), defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent(), Collections.emptyList())
+        : new WorkspaceSignupMessageRestModel(null, false, "", "", Collections.emptyList());
 
     return Response.ok(restModel).build();
   }
@@ -1244,6 +1244,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/signupMessage")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateWorkspaceSignupMessage(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceSignupMessageRestModel payload) {
+    // TODO Is this used anywhere?
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
@@ -1266,17 +1267,19 @@ public class WorkspaceRESTService extends PluginRESTService {
           true,
           payload.isEnabled(),
           payload.getCaption(),
-          payload.getContent());
+          payload.getContent(),
+          Collections.emptyList());
     } else {
       defaultSignupMessage = workspaceSignupMessageController.updateWorkspaceSignupMessage(
           defaultSignupMessage,
           payload.isEnabled(),
           payload.getCaption(),
-          payload.getContent());
+          payload.getContent(),
+          Collections.emptyList());
     }
 
     WorkspaceSignupMessageRestModel restModel = defaultSignupMessage != null
-        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent()) : null;
+        ? new WorkspaceSignupMessageRestModel(defaultSignupMessage.getId(), defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent(), Collections.emptyList()) : null;
 
     return Response.ok(restModel).build();
   }
@@ -1373,14 +1376,55 @@ public class WorkspaceRESTService extends PluginRESTService {
             true,
             payload.getDefaultSignupMessage().isEnabled(),
             payload.getDefaultSignupMessage().getCaption(),
-            payload.getDefaultSignupMessage().getContent());
+            payload.getDefaultSignupMessage().getContent(),
+            Collections.emptyList());
       } else {
         workspaceSignupMessageController.updateWorkspaceSignupMessage(
             studentSignupGreetingMessage,
             payload.getDefaultSignupMessage().isEnabled(),
             payload.getDefaultSignupMessage().getCaption(),
-            payload.getDefaultSignupMessage().getContent());
+            payload.getDefaultSignupMessage().getContent(),
+            Collections.emptyList());
       }
+    }
+    
+    // Signup messages
+    
+    List<WorkspaceSignupMessage> existingMessages = workspaceSignupMessageController.listGroupBoundSignupMessages(workspaceEntity);
+    if (!CollectionUtils.isEmpty(payload.getSignupMessages())) {
+      for (WorkspaceSignupMessageRestModel restMessage : payload.getSignupMessages()) {
+        List<UserGroupEntity> groups = new ArrayList<>();
+        for (WorkspaceSignupGroupRestModel restGroup : restMessage.getSignupGroups()) {
+          UserGroupEntity uge = userGroupEntityController.findUserGroupEntityById(restGroup.getUserGroupEntityId());
+          if (uge != null) {
+            groups.add(uge);
+          }
+        }
+        if (restMessage.getId() == null) {
+          workspaceSignupMessageController.createWorkspaceSignupMessage(
+              workspaceEntity,
+              false,
+              restMessage.isEnabled(),
+              restMessage.getCaption(),
+              restMessage.getContent(),
+              groups);
+        }
+        else {
+          WorkspaceSignupMessage message = workspaceSignupMessageController.findSignupMessageById(restMessage.getId());
+          if (message != null) {
+            workspaceSignupMessageController.updateWorkspaceSignupMessage(
+                message,
+                restMessage.isEnabled(),
+                restMessage.getCaption(),
+                restMessage.getContent(),
+                groups);
+          }
+          existingMessages.removeIf(em -> em.getId().equals(message.getId()));
+        }
+      }
+    }
+    for (WorkspaceSignupMessage existingMessage : existingMessages) {
+      workspaceSignupMessageController.deleteWorkspaceSignupMessage(existingMessage);
     }
 
     // Fetch the existing Workspace Signup Groups
@@ -1405,24 +1449,6 @@ public class WorkspaceRESTService extends PluginRESTService {
             return Response.status(Response.Status.NOT_FOUND).build();
           }
         }
-
-//        if (signupGroupPayload.getSignupMessage() != null) {
-//          WorkspaceSignupMessage groupSignupMessage = workspaceSignupMessageController.findGroupSignupMessage(workspaceEntity, userGroupEntity);
-//          if (groupSignupMessage == null) {
-//            workspaceSignupMessageController.createWorkspaceSignupMessage(
-//                workspaceEntity,
-//                userGroupEntity,
-//                signupGroupPayload.getSignupMessage().isEnabled(),
-//                signupGroupPayload.getSignupMessage().getCaption(),
-//                signupGroupPayload.getSignupMessage().getContent());
-//          } else {
-//            workspaceSignupMessageController.updateWorkspaceSignupMessage(
-//                groupSignupMessage,
-//                signupGroupPayload.getSignupMessage().isEnabled(),
-//                signupGroupPayload.getSignupMessage().getCaption(),
-//                signupGroupPayload.getSignupMessage().getContent());
-//          }
-//        }
       }
     }
 
@@ -3853,29 +3879,70 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   private WorkspaceSettingsRestModel getWorkspaceSettingsRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
+    
+    SearchProvider elasticSearchProvider = null;
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      elasticSearchProvider = searchProviderIterator.next();
+    }
+
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
     Mandatority mandatority = (educationTypeMapping != null && workspace.getEducationSubtypeIdentifier() != null)
         ? educationTypeMapping.getMandatority(workspace.getEducationSubtypeIdentifier()) : null;
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
 
     WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageController.findDefaultSignupMessage(workspaceEntity);
-    WorkspaceSignupMessageRestModel defaultSignupMessageRestModel = defaultSignupMessage == null ? null
-        : new WorkspaceSignupMessageRestModel(defaultSignupMessage.isEnabled(), defaultSignupMessage.getCaption(), defaultSignupMessage.getContent());
+    WorkspaceSignupMessageRestModel defaultSignupMessageRestModel = defaultSignupMessage == null
+        ? null
+        : new WorkspaceSignupMessageRestModel(defaultSignupMessage.getId(),
+            defaultSignupMessage.isEnabled(),
+            defaultSignupMessage.getCaption(),
+            defaultSignupMessage.getContent(),
+            Collections.emptyList());
 
-    // All Groups that can be assigned as signup groups
+    // All groups that can be assigned as signup groups
+    
     List<UserGroupEntity> availableWorkspaceSignupGroups = workspaceSignupGroupController.listAvailableWorkspaceSignupGroups();
+    
     // Currently selected signup groups
+    
     Set<SchoolDataIdentifier> workspaceSignupGroups = workspaceController.listWorkspaceSignupGroups(workspaceEntity);
-
     List<WorkspaceSignupGroupRestModel> groupSignupRestModels = new ArrayList<>();
     for (UserGroupEntity availableSignupGroup : availableWorkspaceSignupGroups) {
-      UserGroup userGroup = userGroupController.findUserGroup(availableSignupGroup);
-
-      if (userGroup != null) {
+      SearchResult searchResult = elasticSearchProvider.findUserGroup(availableSignupGroup.schoolDataIdentifier());
+      if (searchResult.getTotalHitCount() == 1) {
+        List<Map<String, Object>> results = searchResult.getResults();
+        Map<String, Object> match = results.get(0);
         boolean canSignup = workspaceSignupGroups.contains(availableSignupGroup.schoolDataIdentifier());
-        WorkspaceSignupGroupRestModel rm = new WorkspaceSignupGroupRestModel(availableSignupGroup.getId(), userGroup.getName(), canSignup);
-        groupSignupRestModels.add(rm);
+        groupSignupRestModels.add(new WorkspaceSignupGroupRestModel(
+            availableSignupGroup.getId(),
+            (String) match.get("name"),
+            canSignup));
       }
+    }
+    
+    // Signup messages
+    
+    List<WorkspaceSignupMessage> messages = workspaceSignupMessageController.listGroupBoundSignupMessages(workspaceEntity);
+    List<WorkspaceSignupMessageRestModel> restMessages = new ArrayList<>();
+    for (WorkspaceSignupMessage message : messages) {
+      List<WorkspaceSignupGroupRestModel> restGroups = new ArrayList<>();
+      for (UserGroupEntity group : message.getUserGroupEntities()) {
+        SearchResult searchResult = elasticSearchProvider.findUserGroup(group.schoolDataIdentifier());
+        if (searchResult.getTotalHitCount() == 1) {
+          List<Map<String, Object>> results = searchResult.getResults();
+          Map<String, Object> match = results.get(0);
+          restGroups.add(new WorkspaceSignupGroupRestModel(
+              group.getId(),
+              (String) match.get("name"),
+              workspaceSignupGroups.contains(group.schoolDataIdentifier())));
+        }
+      }
+      restMessages.add(new WorkspaceSignupMessageRestModel(message.getId(),
+            message.isEnabled(),
+            message.getCaption(),
+            message.getContent(),
+            restGroups));
     }
 
     String workspaceTypeIdentifier = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
@@ -3900,7 +3967,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceTypeIdentifier,
         hasCustomImage,
         defaultSignupMessageRestModel,
-        groupSignupRestModels
+        groupSignupRestModels,
+        restMessages
     );
   }
 

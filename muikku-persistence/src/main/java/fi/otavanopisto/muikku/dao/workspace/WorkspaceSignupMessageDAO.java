@@ -19,7 +19,7 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
   private static final long serialVersionUID = -5858701935832435144L;
 
   public WorkspaceSignupMessage create(WorkspaceEntity workspaceEntity, boolean defaultMessage, 
-      boolean enabled, String caption, String content) {
+      boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
     WorkspaceSignupMessage workspaceEntityMessage = new WorkspaceSignupMessage();
     
     workspaceEntityMessage.setWorkspaceEntity(workspaceEntity);
@@ -27,10 +27,16 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
     workspaceEntityMessage.setEnabled(enabled);
     workspaceEntityMessage.setCaption(caption);
     workspaceEntityMessage.setContent(content);
+    workspaceEntityMessage.setUserGroupEntities(signupGroups);
     
     getEntityManager().persist(workspaceEntityMessage);
     
     return workspaceEntityMessage;
+  }
+
+  @Override
+  public void delete(WorkspaceSignupMessage e) {
+    super.delete(e);
   }
 
 //  /**
@@ -80,28 +86,28 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-//  /**
-//   * Lists signup messages for given workspace which have a specified signup group.
-//   * 
-//   * @param workspaceEntity
-//   * @return
-//   */
-//  public List<WorkspaceSignupMessage> listGroupBoundSignupMessagesBy(WorkspaceEntity workspaceEntity) {
-//    EntityManager entityManager = getEntityManager(); 
-//    
-//    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//    CriteriaQuery<WorkspaceSignupMessage> criteria = criteriaBuilder.createQuery(WorkspaceSignupMessage.class);
-//    Root<WorkspaceSignupMessage> root = criteria.from(WorkspaceSignupMessage.class);
-//    criteria.select(root);
-//    criteria.where(
-//        criteriaBuilder.and(
-//            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.workspaceEntity), workspaceEntity),
-//            criteriaBuilder.isNotNull(root.get(WorkspaceSignupMessage_.signupGroupEntity))
-//        )
-//    );
-//    
-//    return entityManager.createQuery(criteria).getResultList();
-//  }
+  /**
+   * Lists signup messages for given workspace which have a specified signup group.
+   * 
+   * @param workspaceEntity
+   * @return
+   */
+  public List<WorkspaceSignupMessage> listGroupBoundSignupMessagesBy(WorkspaceEntity workspaceEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceSignupMessage> criteria = criteriaBuilder.createQuery(WorkspaceSignupMessage.class);
+    Root<WorkspaceSignupMessage> root = criteria.from(WorkspaceSignupMessage.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.workspaceEntity), workspaceEntity),
+            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.defaultMessage), Boolean.FALSE)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
   /**
    * Lists enabled signup messages matching given workspace and any of the user groups.
@@ -128,10 +134,11 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public WorkspaceSignupMessage update(WorkspaceSignupMessage workspaceEntityMessage, boolean enabled, String caption, String content) {
+  public WorkspaceSignupMessage update(WorkspaceSignupMessage workspaceEntityMessage, boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
     workspaceEntityMessage.setEnabled(enabled);
     workspaceEntityMessage.setCaption(caption);
     workspaceEntityMessage.setContent(content);
+    workspaceEntityMessage.setUserGroupEntities(signupGroups);
     
     getEntityManager().persist(workspaceEntityMessage);
     

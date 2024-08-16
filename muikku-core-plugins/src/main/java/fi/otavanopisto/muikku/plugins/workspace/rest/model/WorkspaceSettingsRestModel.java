@@ -33,8 +33,8 @@ public class WorkspaceSettingsRestModel {
       String workspaceTypeIdentifier,
       boolean hasCustomImage,
       WorkspaceSignupMessageRestModel defaultSignupMessage,
-      Collection<WorkspaceSignupGroupRestModel> signupGroups
-      ) {
+      Collection<WorkspaceSignupGroupRestModel> signupGroups,
+      Collection<WorkspaceSignupMessageRestModel> signupMessages) {
     super();
     this.id = id;
     this.organizationEntityId = organizationEntityId;
@@ -56,6 +56,7 @@ public class WorkspaceSettingsRestModel {
     this.hasCustomImage = hasCustomImage;
     this.defaultSignupMessage = defaultSignupMessage;
     this.signupGroups = signupGroups;
+    this.signupMessages = signupMessages;
   }
 
   public Long getId() {
@@ -218,6 +219,14 @@ public class WorkspaceSettingsRestModel {
     this.signupGroups = signupGroups;
   }
 
+  public Collection<WorkspaceSignupMessageRestModel> getSignupMessages() {
+    return signupMessages;
+  }
+
+  public void setSignupMessages(Collection<WorkspaceSignupMessageRestModel> signupMessages) {
+    this.signupMessages = signupMessages;
+  }
+
   private Long id;
   private Long organizationEntityId;
   private String workspaceTypeIdentifier;
@@ -238,5 +247,6 @@ public class WorkspaceSettingsRestModel {
   private OffsetDateTime endDate;
   private OffsetDateTime signupStart;
   private OffsetDateTime signupEnd;
+  private Collection<WorkspaceSignupMessageRestModel> signupMessages;
   
 }

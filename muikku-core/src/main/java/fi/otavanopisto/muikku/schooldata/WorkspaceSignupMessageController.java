@@ -54,8 +54,12 @@ public class WorkspaceSignupMessageController {
   private Instance<MessagingWidget> messagingWidgets;
 
   public WorkspaceSignupMessage createWorkspaceSignupMessage(WorkspaceEntity workspaceEntity, 
-      boolean defaultMessage, boolean enabled, String caption, String content) {
-    return workspaceEntityMessageDAO.create(workspaceEntity, defaultMessage, enabled, clean(caption), clean(content));
+      boolean defaultMessage, boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
+    return workspaceEntityMessageDAO.create(workspaceEntity, defaultMessage, enabled, clean(caption), clean(content), signupGroups);
+  }
+  
+  public void deleteWorkspaceSignupMessage(WorkspaceSignupMessage message) {
+    workspaceEntityMessageDAO.delete(message);
   }
   
   /**
@@ -147,17 +151,17 @@ public class WorkspaceSignupMessageController {
     return workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
   }
   
-//  public WorkspaceSignupMessage findGroupSignupMessage(WorkspaceEntity workspaceEntity, UserGroupEntity signupGroupEntity) {
-//    return workspaceEntityMessageDAO.findBy(workspaceEntity, signupGroupEntity);
-//  }
-//  
-//  public List<WorkspaceSignupMessage> listGroupBoundSignupMessages(WorkspaceEntity workspaceEntity) {
-//    return workspaceEntityMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
-//  }
+  public WorkspaceSignupMessage findSignupMessageById(Long id) {
+    return workspaceEntityMessageDAO.findById(id);
+  }
+  
+  public List<WorkspaceSignupMessage> listGroupBoundSignupMessages(WorkspaceEntity workspaceEntity) {
+    return workspaceEntityMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
+  }
   
   public WorkspaceSignupMessage updateWorkspaceSignupMessage(WorkspaceSignupMessage workspaceEntityMessage, 
-      boolean enabled, String caption, String content) {
-    return workspaceEntityMessageDAO.update(workspaceEntityMessage, enabled, clean(caption), clean(content));
+      boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
+    return workspaceEntityMessageDAO.update(workspaceEntityMessage, enabled, clean(caption), clean(content), signupGroups);
   }
   
   private String clean(String html) {

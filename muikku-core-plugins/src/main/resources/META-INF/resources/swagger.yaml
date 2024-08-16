@@ -17564,6 +17564,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceSettingsSignupGroup"
+        signupMessages:
+          description: Sign up messages and their settings
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceSignupMessage"
 
     WorkspaceSignupMessage:
       type: object
@@ -17573,12 +17578,21 @@ components:
         - caption
         - content
       properties:
+        id:
+          description: The id of the message
+          type: integer
+          format: int64
         enabled:
           type: boolean
         caption:
           type: string
         content:
           type: string
+        signupGroups:
+          description: Sign up groups and their settings
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkspaceSettingsSignupGroup"
 
     WorkspaceSettingsSignupGroup:
       type: object
