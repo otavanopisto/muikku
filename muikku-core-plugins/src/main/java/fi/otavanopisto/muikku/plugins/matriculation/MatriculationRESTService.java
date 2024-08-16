@@ -315,8 +315,9 @@ public class MatriculationRESTService {
   @RESTPermit(MatriculationPermissions.MATRICULATION_SEND_ENROLLMENT)
   @Path("/exams/{EXAMID}/enrollments")
   public Response sendEnrollment(@PathParam("EXAMID") Long examId, MatriculationExamEnrollment enrollment) {
-    fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment 
-      schoolDataEntity = matriculationController.createMatriculationExamEnrollment();
+    if (enrollment.getStudentIdentifier() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing StudentIdentifier").build();
+    }
 
     SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(enrollment.getStudentIdentifier());
@@ -327,14 +328,19 @@ public class MatriculationRESTService {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     Long studentId = getStudentIdFromIdentifier(userIdentifier);
-    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(examId, userIdentifier);
-    if (sentEnrollment != null) {
-      return Response.status(Status.BAD_REQUEST).entity("Enrollment already sent").build();
-    }
+    
+    // TODO How to check this or do we need to anymore?
+//    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(examId, userIdentifier);
+//    if (sentEnrollment != null) {
+//      return Response.status(Status.BAD_REQUEST).entity("Enrollment already sent").build();
+//    }
     
     if (!Objects.equals(examId, enrollment.getExamId()) && examId != null) {
       return Response.status(Status.BAD_REQUEST).entity("Exam ids do not match").build();
     }
+    
+    fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment schoolDataEntity = 
+        matriculationController.createMatriculationExamEnrollment();
     
     schoolDataEntity.setId(enrollment.getId());
     schoolDataEntity.setExamId(enrollment.getExamId());

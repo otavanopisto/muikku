@@ -1,9 +1,5 @@
 package fi.otavanopisto.muikku.ui.base.newevaluation;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertEquals;
 
@@ -13,8 +9,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import org.junit.Test;
-
-import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
@@ -35,7 +29,6 @@ import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
-import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 
 public class NewEvaluationTestsBase extends AbstractUITest {
   
