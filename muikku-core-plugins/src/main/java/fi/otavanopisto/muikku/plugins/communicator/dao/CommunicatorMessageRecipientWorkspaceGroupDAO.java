@@ -37,15 +37,18 @@ public class CommunicatorMessageRecipientWorkspaceGroupDAO extends CorePluginsDA
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<CommunicatorMessageRecipientWorkspaceGroup> criteria = criteriaBuilder.createQuery(CommunicatorMessageRecipientWorkspaceGroup.class);
-    Root<CommunicatorMessageRecipientWorkspaceGroup> root = criteria.from(CommunicatorMessageRecipientWorkspaceGroup.class);
-    Root<CommunicatorMessageRecipient> root2 = criteria.from(CommunicatorMessageRecipient.class);
+    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
     
-    criteria.select(root).distinct(true);
+    /**
+     * Treat is not ideal here but it seems to end up with cleanest query. Better would be if there
+     * could be simpler and/or bidirectional relationship with CommunicatorMessageRecipient and
+     * CommunicatorMessageRecipientWorkspaceGroup (or all of the group classes). Many other approaches
+     * end up in a cross join or other complications.
+     */
+    
+    criteria.select(criteriaBuilder.treat(root.get(CommunicatorMessageRecipient_.recipientGroup), CommunicatorMessageRecipientWorkspaceGroup.class)).distinct(true);
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.recipientGroup), root),
-            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage)
-        )
+        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage)
     );
     
     return entityManager.createQuery(criteria).getResultList();

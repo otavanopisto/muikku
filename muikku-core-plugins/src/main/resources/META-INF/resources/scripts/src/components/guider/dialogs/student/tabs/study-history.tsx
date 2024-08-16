@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import RecordsGroup from "~/components/general/records-history/records-group";
 import MainChart from "~/components/general/graph/main-chart";
 import { breakpoints } from "~/util/breakpoints";
+import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 
 type studyHistoryAside = "history" | "library";
 
@@ -147,31 +148,37 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
    * studentRecords
    */
   const studentRecords = (
-    <ApplicationSubPanel>
-      {pastStudies.map((lineCategoryData, i) => (
-        <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
-          {lineCategoryData.credits.length +
-            lineCategoryData.transferCredits.length >
-          0 ? (
-            <RecordsGroup
-              key={`credit-category-${i}`}
-              recordGroup={lineCategoryData}
-            />
-          ) : (
-            <div className="application-sub-panel__item">
-              <div className="empty">
-                <span>
-                  {t("content.empty", {
-                    ns: "studies",
-                    context: "workspaces",
-                  })}
-                </span>
+    <RecordsInfoProvider
+      value={{
+        identifier: basic.id,
+        userEntityId: basic.userEntityId,
+      }}
+    >
+      <ApplicationSubPanel>
+        {pastStudies.map((lineCategoryData, i) => (
+          <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
+            {lineCategoryData.credits.length +
+              lineCategoryData.transferCredits.length >
+            0 ? (
+              <RecordsGroup
+                key={`credit-category-${i}`}
+                recordGroup={lineCategoryData}
+              />
+            ) : (
+              <div className="application-sub-panel__item">
+                <div className="empty">
+                  <span>
+                    {t("content.notInWorkspaces", {
+                      ns: "guider",
+                    })}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
-        </ApplicationSubPanel.Body>
-      ))}
-    </ApplicationSubPanel>
+            )}
+          </ApplicationSubPanel.Body>
+        ))}
+      </ApplicationSubPanel>
+    </RecordsInfoProvider>
   );
 
   const historyComponent = (

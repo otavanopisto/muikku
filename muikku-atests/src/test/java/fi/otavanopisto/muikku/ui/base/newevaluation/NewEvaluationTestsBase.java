@@ -93,11 +93,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
       selectFinnishLocale();
-      waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-      assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-      waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-      waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-      waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+      waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+      assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+      waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+      waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+      waitForPresent(".textfield-wrapper.state-SAVED");
       waitAndClick(".button--muikku-submit-assignment");
 
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -245,11 +245,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
@@ -269,8 +269,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--evaluate");
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
-        assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
+        waitUntilHasText(".evaluation-modal__item-body span.textfield--evaluation");
+        assertText(".evaluation-modal__item-body span.textfield--evaluation", "field value");
         String srcUrl = getAttributeValue(".evaluation-modal__item-body span.image img", "src");
         assertEquals(srcUrl, getAppUrl(false) + "/workspace/testcourse/materials/test-course-material-folder/test-exercise/5T0EHUR.gif");
         waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
@@ -497,11 +497,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -617,10 +617,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             
             navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
             waitForPresent(".content-panel__chapter-title-text");
-            addTextToCKEditor(".material-page__journalfield-wrapper", contentInput);
+            addTextToCKEditor(".journalfield-wrapper", contentInput);
             waitForPresent(".material-page__field-answer-synchronizer--saved");
             waitAndClick(".button--muikku-submit-journal");
-            waitForPresent(".material-page__journalfield-wrapper .material-page__ckeditor-replacement--readonly p");
+            waitForPresent(".journalfield-wrapper .journalfield__ckeditor-replacement--readonly p");
             
             mockBuilder.removeMockCourseStudent(mockCourseStudent);
             mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
@@ -669,7 +669,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             mockBuilder
             .addStudent(student)
             .mockStudentCourseStats(student.getId(), 25)
-            .mockMatriculationEligibility(true)
+            .mockMatriculationEligibility(student.getId(), true)
             .mockMatriculationExam(true)
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
@@ -701,6 +701,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
   @Test
   public void evaluationPaymentTest() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     OffsetDateTime dateNow = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
     Builder mockBuilder = mocker();

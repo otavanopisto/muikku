@@ -15,37 +15,6 @@ public class WorkspaceAssessmentState {
   public static final String INTERIM_EVALUATION = "interim_evaluation";                   // interim evaluation
   public static final String TRANSFERRED = "transferred";                                 // transfer credit
 
-  public WorkspaceAssessmentState() {
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-    this.date = date;
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-    this.date = date;
-    this.text = text;
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text, String grade, Date gradeDate, Boolean passingGrade) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-    this.date = date;
-    this.text = text;
-    this.grade = grade;
-    this.gradeDate = gradeDate;
-    this.passingGrade = passingGrade;
-  }
-
   public String getState() {
     return state;
   }
@@ -86,10 +55,12 @@ public class WorkspaceAssessmentState {
     this.gradeDate = gradeDate;
   }
 
+  @Deprecated
   public String getWorkspaceSubjectIdentifier() {
     return workspaceSubjectIdentifier;
   }
 
+  @Deprecated
   public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
   }
@@ -102,12 +73,22 @@ public class WorkspaceAssessmentState {
     this.passingGrade = passingGrade;
   }
 
+  public WorkspaceActivitySubject getSubject() {
+    return subject;
+  }
+
+  public void setSubject(WorkspaceActivitySubject subject) {
+    this.subject = subject;
+  }
+
   private Date date;
   private String state;
   private String grade;
   private Boolean passingGrade;
   private Date gradeDate;
   private String text;
+  // TODO Refactor front-end to make use of subject instead
   private String workspaceSubjectIdentifier;
+  private WorkspaceActivitySubject subject;
   
 }

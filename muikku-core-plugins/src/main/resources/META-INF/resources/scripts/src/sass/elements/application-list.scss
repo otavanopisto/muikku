@@ -396,6 +396,13 @@
   }
 }
 
+.application-list__item-content-container--course-assessments {
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  margin: 0 0 20px;
+  padding: 10px;
+}
+
 .application-list__item-content-single-item {
   align-items: center;
   display: flex;
@@ -518,24 +525,12 @@
 }
 
 .application-list__item--notification {
-  border-top: 3px solid $color-message-border;
-  margin: 0 0 1px;
-  padding: 10px 10px 10px 0;
-
-  @include breakpoint($breakpoint-pad) {
-    border-width: 1px;
-  }
-
-  &:first-child {
-    border-color: transparent;
-  }
-
-  &.course--open {
-    background: $color-default;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px #000000;
-    z-index: 10;
-  }
+  background: lighten($color-notice, 20%);
+  border-radius: 5px;
+  font-size: 1rem;
+  font-style: italic;
+  padding: 10px;
+  text-align: center;
 }
 
 .application-list__item--user {
@@ -1210,6 +1205,7 @@
 }
 
 .application-list__item-footer--course {
+  align-items: center;
   padding: 0 0 10px;
 
   @include breakpoint($breakpoint-pad) {

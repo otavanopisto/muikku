@@ -29,7 +29,10 @@ export class DiscussionArea extends React.Component<
       >
         <ApplicationListItemContentWrapper
           aside={
-            <div className="avatar-container avatar-container--discussion-area">
+            <div
+              className="avatar-container avatar-container--discussion-area"
+              aria-hidden={true}
+            >
               <span className="icon-bubbles"></span>
             </div>
           }

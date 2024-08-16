@@ -12,6 +12,8 @@ interface AvatarProps {
   size?: string;
   userCategory?: number;
   avatarAriaLabel?: string;
+  modifier?: string;
+  avatarAriaHidden?: boolean;
 }
 
 /**
@@ -20,7 +22,16 @@ interface AvatarProps {
  * @returns JSX.Element
  */
 const Avatar = (props: AvatarProps) => {
-  const { id, userCategory, hasImage, firstName, avatarAriaLabel } = props;
+  const {
+    id,
+    userCategory,
+    hasImage,
+    firstName,
+    size,
+    modifier,
+    avatarAriaLabel,
+    avatarAriaHidden,
+  } = props;
 
   const category = React.useMemo(() => {
     if (userCategory) return userCategory;
@@ -33,36 +44,38 @@ const Avatar = (props: AvatarProps) => {
 
   return hasImage ? (
     <div
-      className={`avatar-container ${
-        props.size ? "avatar-container--" + props.size : ""
+      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
+        modifier ? "avatar-container--" + modifier : ""
       } rs_skip_always`}
+      aria-hidden={avatarAriaHidden}
     >
       <img
         src={getUserImageUrl(id)}
         alt=""
         aria-label={avatarAriaLabel}
-        className={`avatar avatar-img ${
-          props.size ? "avatar--" + props.size : ""
+        className={`avatar avatar-img ${size ? "avatar--" + size : ""} ${
+          modifier ? "avatar--" + modifier : ""
         }`}
       />
       <div
         className={`avatar avatar--category-${category} ${
-          props.size ? "avatar--" + props.size : ""
-        }`}
+          size ? "avatar--" + size : ""
+        } ${modifier ? "avatar--" + modifier : ""}`}
       >
         {firstName[0]}
       </div>
     </div>
   ) : (
     <div
-      className={`avatar-container ${
-        props.size ? "avatar-container--" + props.size : ""
+      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
+        modifier ? "avatar-container--" + modifier : ""
       } rs_skip_always`}
+      aria-hidden={avatarAriaHidden}
     >
       <div
         className={`avatar avatar--category-${category} ${
-          props.size ? "avatar--" + props.size : ""
-        }`}
+          size ? "avatar--" + size : ""
+        } ${modifier ? "avatar--" + modifier : ""}`}
       >
         {firstName[0]}
       </div>

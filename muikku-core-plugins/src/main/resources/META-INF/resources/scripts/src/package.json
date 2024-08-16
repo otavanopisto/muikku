@@ -29,6 +29,7 @@
     "audio-recorder-polyfill": "0.4.1",
     "css-loader": "5.2.7",
     "deep-equal": "2.0.5",
+    "focus-trap-react": "10.2.3",
     "esbuild": "0.19.12",
     "esbuild-sass-plugin": "2.16.1",
     "framer-motion": "6.5.1",
@@ -71,11 +72,14 @@
     "sass": "1.49.9",
     "sass-autoprefixer": "1.0.1",
     "sass-loader": "12.6.0",
+    "slate": "0.91.4",
+    "slate-history": "0.86.0",
+    "slate-react": "0.98.3",
     "source-map-loader": "3.0.1",
     "swiper": "8.0.7",
     "ts-loader": "9.2.8",
     "typescript": "4.9.5",
-    "usehooks-ts": "2.6.0",
+    "usehooks-ts": "2.16.0",
     "uuid": "8.3.2"
   },
   "devDependencies": {

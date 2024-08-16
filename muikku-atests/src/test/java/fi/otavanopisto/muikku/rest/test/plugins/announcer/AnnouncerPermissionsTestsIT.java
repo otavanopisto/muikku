@@ -185,8 +185,9 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
     /**
      * Teacher can see
      *  - The public announcement
+     *  - The group announcement (special permission)
      */
-    testListAndFind(asTeacher(), TestRole.TEACHER, 1);
+    testListAndFind(asTeacher(), TestRole.TEACHER, 2);
   }
 
   @Test

@@ -23,7 +23,6 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
-import { MaterialContentNode } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -37,6 +36,7 @@ interface HelpMaterialProps extends WithTranslation {
   isViewRestricted: boolean;
   workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
 }
 
@@ -112,6 +112,7 @@ class WorkspaceMaterial extends React.Component<
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
+            anchorElement={this.props.anchorItem}
           >
             {(props, state, stateConfiguration) => (
               <div>

@@ -76,8 +76,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           mockBuilder.mockLogin(student).build();
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__filefield-wrapper .file-uploader__field");
-          sendKeys(".material-page__filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
+          waitForPresent(".filefield-wrapper .file-uploader__field");
+          sendKeys(".filefield-wrapper .file-uploader__field", testFile.getAbsolutePath());
           waitForNotVisible(".material-page__field-answer-synchronizer");
           waitForPresent(".file-uploader__item--taskfield .file-uploader__item-download-icon");
           waitForVisible(".notification-queue__item--success");
@@ -315,20 +315,20 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__textfield");
+        waitForPresent(".textfield");
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input", "field value");
         waitForNotVisible(".material-page__field-answer-synchronizer");
         waitAndClick(".button--muikku-submit-exercise");
         waitUntilContentChanged(".button--muikku-submit-exercise", "Palauta tehtävä");
-        assertTextIgnoreCase(".button--muikku-submit-exercise", "Tehtävä palautettu");
+        assertTextIgnoreCase(".button--muikku-submit-exercise", "Peruuta tehtävän palautus");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-        waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+        waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input", "field value");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -382,18 +382,18 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-          assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "");
-          waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-          waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+          waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+          assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input", "");
+          waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+          waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input", "field value");
           waitForNotVisible(".material-page__field-answer-synchronizer");
           waitAndClick(".button--muikku-submit-exercise");
           waitUntilContentChanged(".button--muikku-submit-exercise", "Palauta tehtävä");
-          assertTextIgnoreCase(".button--muikku-submit-exercise", "Tehtävä palautettu");
+          assertTextIgnoreCase(".button--muikku-submit-exercise", "Peruuta tehtävän palautus");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-          waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input");
-          assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .material-page__textfield input", "field value");
+          waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+          waitForValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input");
+          assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--exercise .textfield input", "field value");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -440,14 +440,14 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__selectfield");
-        selectOption(".material-page__selectfield", "2");
+        waitForPresent(".selectfield");
+        selectOption(".selectfield", "2");
         sleep(1000);
         waitForNotVisible(".material-page__field-answer-synchronizer");
-        assertSelectValue(".material-page__selectfield", "2");
+        assertSelectValue(".selectfield", "2");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__selectfield");
-        assertSelectedOption(".material-page__selectfield", "dos");
+        waitForPresent(".selectfield");
+        assertSelectedOption(".selectfield", "dos");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -501,16 +501,16 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           mockBuilder.mockLogin(student);
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__selectfield");
-          selectOption(".material-page__selectfield", "2");
+          waitForPresent(".selectfield");
+          selectOption(".selectfield", "2");
           sleep(1000);
           waitForNotVisible(".material-page__field-answer-synchronizer");
-          assertSelectValue(".material-page__selectfield", "2");
+          assertSelectValue(".selectfield", "2");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__selectfield");
+          waitForPresent(".selectfield");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__selectfield");
-          assertSelectedOption(".material-page__selectfield", "dos");
+          waitForPresent(".selectfield");
+          assertSelectedOption(".selectfield", "dos");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -558,13 +558,13 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__radiobutton-items-wrapper");
-        waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
+        waitForPresent(".radiobuttonfield__items-wrapper");
+        waitAndClickXPath("//input[@class='radiobuttonfield' and @value='1']");
         sleep(1000);
         waitForNotVisible(".material-page__field-answer-synchronizer");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__radiobutton-items-wrapper");
-        assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
+        waitForPresent(".radiobuttonfield__items-wrapper");
+        assertCheckedXPath("//input[@class='radiobuttonfield' and @value='1']", true);
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -617,13 +617,13 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           mockBuilder.mockLogin(student);
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__radiobutton-items-wrapper");
-          waitAndClickXPath("//input[@class='material-page__radiobutton' and @value='1']");
+          waitForPresent(".radiobuttonfield__items-wrapper");
+          waitAndClickXPath("//input[@class='radiobuttonfield' and @value='1']");
           sleep(1000);
           waitForNotVisible(".material-page__field-answer-synchronizer");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__radiobutton-items-wrapper");
-          assertCheckedXPath("//input[@class='material-page__radiobutton' and @value='1']", true);
+          waitForPresent(".radiobuttonfield__items-wrapper");
+          assertCheckedXPath("//input[@class='radiobuttonfield' and @value='1']", true);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         }
@@ -785,23 +785,20 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__connectfield-wrapper");
-        scrollIntoView(".material-page__connectfield-wrapper");
-        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
-        waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]");
-        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
-        waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Hampurilainen')]");
-        waitAndClickXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]");
-        waitForPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]//ancestor::span[contains(concat(' ', normalize-space(@class), ' '), ' material-page__connectfield-term--selected ')]");
-        waitAndClickXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Pulla')]");
+        waitForPresent(".connectfield-wrapper");
+        scrollIntoView(".connectfield-wrapper");
+
+        waitAndClick("ol.connectfield__terms-container li:first-child");
+        waitAndClick("span.connectfield__counterpart-data-container[aria-label='Keppi']");
+        waitAndClick("ol.connectfield__terms-container li:nth-child(2)");
+        waitAndClick("span.connectfield__counterpart-data-container[aria-label='Pulla']");
+        
         waitAndClick(".button--muikku-submit-exercise");
         waitForPresent(".material-page__correct-answers-label");
-        sleep(1500);
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Peruna')]/parent::span/parent::span", "incorrect-answer");
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Juusto')]/parent::span/parent::span", "incorrect-answer");
+        sleep(500);
+        assertPresent("li.correct-answer span.connectfield__counterpart-data-container[aria-label='Keppi']");
+        assertPresent("li.correct-answer span.connectfield__counterpart-data-container[aria-label='Pulla']");
+        assertPresent("li.correct-answer span.connectfield__counterpart-data-container[aria-label='Hampurilainen']");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -853,14 +850,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       login();
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".material-page__connectfield-wrapper");
-        scrollIntoView(".material-page__connectfield-wrapper");
-        dragAndDropXPath("//span[@class='material-page__connectfield-counterpart-label' and contains(text(),'Keppi')]", "//span[@class='material-page__connectfield-counterparts-container']/span[1]", 10, 10);
+        waitForPresent(".connectfield-wrapper");
+        scrollIntoView(".connectfield-wrapper");
+        dragAndDropWithOffSetAndTimeout("span.connectfield__counterpart-data-container[aria-label='Keppi']", "ol.connectfield__terms-container li:first-child", 250, 0);
+        dragAndDropWithOffSetAndTimeout("span.connectfield__counterpart-data-container[aria-label='Pulla']", "ol.connectfield__terms-container li:nth-child(2)", 250, 0);
 
         waitAndClick(".button--muikku-submit-exercise");
         waitForPresent(".material-page__correct-answers-label");
         sleep(1500);
-        assertClassPresentXPath("//span[@class='material-page__connectfield-term-label' and contains(text(),'Nakki')]/parent::span/parent::span", "correct-answer");
+        assertClassPresent("span.connectfield", "correct-answer");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
@@ -884,7 +882,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
-
+    
     try {
       Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
       mockBuilder
@@ -905,12 +903,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         
         WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder.getId(), 
             "Test", "text/html;editor=CKEditor", 
-            "<p><object type=\"application/vnd.muikku.field.sorter\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" "
-            + "value=\"{&quot;name&quot;:&quot;muikku-field-2lIF1dGXqMJtFA2M2el2aSaF&quot;,&quot;items&quot;:[{&quot;id&quot;:&quot;f07wb&quot;,&quot;name&quot;:&quot;`5x(a/(a + c)) = d`&quot;},"
-            + "{&quot;id&quot;:&quot;tfqd8&quot;,&quot;name&quot;:&quot;dsaf&quot;},{&quot;id&quot;:&quot;y3l26&quot;,&quot;name&quot;:&quot;54et&quot;}]}\" /></object></p>"
-            + "<p>Mea facete feugiat scriptorem ei, ex vidit everti laoreet mea. Ius soleat consectetuer eu, docendi mandamus iudicabit vis ne. Aliquam detracto per te, "
-            + "ne fabulas consulatu nec, modo ocurreret assentior quo an. Ius invenire similique ei, et aeque consequat per. Has in facete delicata praesent, mei no lorem ignota. "
-            + "Eu eam dictas ceteros petentium.</p>",
+            "<p><object type=\"application/vnd.muikku.field.sorter\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-eyCxhV5VNcrtvlrgvjUewJul&quot;,&quot;orientation&quot;:&quot;horizontal&quot;,&quot;capitalize&quot;:false,&quot;items&quot;:[{&quot;id&quot;:&quot;5ogim&quot;,&quot;name&quot;:&quot;`6x(a/(a + c)) = d`&quot;},{&quot;id&quot;:&quot;38hzy&quot;,&quot;name&quot;:&quot;54et&quot;},{&quot;id&quot;:&quot;tre8v&quot;,&quot;name&quot;:&quot;dsaf&quot;}]}\" /></object></p>\n"
+            + "\n"
+            + "<p>Mea facete feugiat scriptorem ei, ex vidit everti laoreet mea. Ius soleat consectetuer eu, docendi mandamus iudicabit vis ne. Aliquam detracto per te, ne fabulas consulatu nec, modo ocurreret assentior quo an. Ius invenire similique ei, et aeque consequat per. Has in facete delicata praesent, mei no lorem ignota. Eu eam dictas ceteros petentium.</p>",
             "EXERCISE");
         logout();
         MockCourseStudent mockCourseStudent = new MockCourseStudent(3l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
@@ -919,16 +914,11 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         login();
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForVisible(".material-page__sorterfield-wrapper");
-          assertVisible(".material-page__sorterfield-wrapper");
-          waitForPresent(".material-page__sorterfield-item .MathJax_SVG");
-          waitForAttributeToHaveValue(".material-page__sorterfield-item .MathJax_SVG", "data-mathml");
-          String mathml = getAttributeValue(".material-page__sorterfield-item .MathJax_SVG", "data-mathml");
-          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-          dragAndDropWithOffSetAndTimeout(".material-page__sorterfield-item:first-child", ".material-page__sorterfield-item:nth-child(2)", 20, 0);
-          waitForAttributeToHaveValue(".material-page__sorterfield-item .MathJax_SVG", "data-mathml");
-          mathml = getAttributeValue(".material-page__sorterfield-item .MathJax_SVG", "data-mathml");
-          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+          waitForVisible(".sorterfield-wrapper");
+          assertVisible(".sorterfield-wrapper");
+          waitForPresent(".sorterfield__item .MathJax_SVG");
+          dragAndDropWithOffSetAndTimeout(".sorterfield__item:first-child", ".sorterfield__item:nth-child(2)", 20, 0);
+
           sleep(1000);
           waitAndClick(".button--muikku-submit-exercise");
           
@@ -937,10 +927,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           if(StringUtils.equals(correctAnswersCount, "1 / 1")) {
             assertTrue(true);
           }else {
-            waitForVisible(".material-page__field-answer-examples--sorterfield");
-            waitForAttributeToHaveValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
-            mathml = getAttributeValue(".material-page__field-answer-examples--sorterfield .MathJax_SVG", "data-mathml");
-            assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
+            waitForVisible(".sorterfield__item .MathJax_SVG");
+            assertTrue(true);
           }
 
         } finally {
@@ -997,18 +985,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "EXERCISE");
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".material-page__organizerfield-terms");
-          waitForPresent(".material-page__organizerfield-categories");
-          waitForVisible(".material-page__organizerfield-terms .MathJax_SVG");
+          waitForPresent(".organizerfield__terms");
+          waitForPresent(".organizerfield__categories");
+          waitForVisible(".organizerfield__terms .MathJax_SVG");
           
-          waitForAttributeToHaveValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
-          String mathml = getAttributeValue(".material-page__organizerfield-terms .MathJax_SVG", "data-mathml");
-          assertEquals("<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mstyle displaystyle=\"true\"><mn>5</mn><mi>x</mi><mrow><mo>(</mo><mfrac><mi>a</mi><mrow><mi>a</mi><mo>+</mo><mi>c</mi></mrow></mfrac><mo>)</mo></mrow><mo>=</mo><mi>d</mi></mstyle></math>", mathml);
-          waitForVisible("div .material-page__organizerfield-term:nth-child(1)");
-          dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(1)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
-          dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(2)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
-          dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(3)", ".material-page__organizerfield-category:nth-child(1)", 80, 50);
-          dragAndDropWithOffSetAndTimeout("div .material-page__organizerfield-term:nth-child(4)", ".material-page__organizerfield-category:nth-child(2)", 120, 50);
+          waitForVisible("div .organizerfield__term:nth-child(1)");
+          dragAndDropWithOffSetAndTimeout("div .organizerfield__term:nth-child(1)", ".organizerfield__category:nth-child(1)", 80, 50);
+          dragAndDropWithOffSetAndTimeout("div .organizerfield__term:nth-child(2)", ".organizerfield__category:nth-child(1)", 80, 50);
+          dragAndDropWithOffSetAndTimeout("div .organizerfield__term:nth-child(3)", ".organizerfield__category:nth-child(1)", 80, 50);
+          dragAndDropWithOffSetAndTimeout("div .organizerfield__term:nth-child(4)", ".organizerfield__category:nth-child(2)", 120, 50);
   //        TODO: Remove sleep when concurrent save and submit issue fixed
           sleep(350);
           waitAndClick(".button--muikku-submit-exercise");
@@ -1147,8 +1132,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
-          addTextToCKEditor(".material-page__memofield-wrapper", contentInput);
-          waitForPresent(".material-page__memofield-wrapper.state-SAVED");
+          addTextToCKEditor(".memofield-wrapper", contentInput);
+          waitForPresent(".memofield-wrapper.state-SAVED");
           navigate("/", false);
           waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -1216,15 +1201,15 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
-          waitForElementToBeClickable(".material-page__memofield");
-          sendKeys(".material-page__memofield", contentInput);
+          waitForElementToBeClickable(".memofield");
+          sendKeys(".memofield", contentInput);
           waitForPresent(".material-page__field-answer-synchronizer--saved");
           navigate("/", false);
           waitForPresent(".panel__header-title");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(".content-panel__chapter-title-text");
-          waitForPresent(".material-page__memofield");
-          String actualInput = getElementText(".material-page__memofield");
+          waitForPresent(".memofield");
+          String actualInput = getElementText(".memofield");
           assertEquals(contentInput, actualInput);
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());

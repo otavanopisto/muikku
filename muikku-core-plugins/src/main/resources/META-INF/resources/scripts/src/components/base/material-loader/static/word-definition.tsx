@@ -48,6 +48,8 @@ export default class WordDefinition extends React.Component<
         content={this.props.dataset.muikkuWordDefinition}
       >
         <mark
+          role="button"
+          tabIndex={0}
           data-muikku-word-definition={this.props.dataset.muikkuWordDefinition}
         >
           {this.props.children}

@@ -114,7 +114,7 @@ public class WorkspaceIndexer {
     
     if (workspace.getEducationTypeIdentifier() != null) {
       SchoolDataIdentifier educationTypeIdentifier = workspace.getEducationTypeIdentifier();
-      EducationType educationType = courseMetaController.findEducationType(educationTypeIdentifier.getDataSource(), educationTypeIdentifier.getIdentifier());
+      EducationType educationType = courseMetaController.findEducationType(educationTypeIdentifier);
       if (educationType != null) {
         educationTypeName = educationType.getName();
       }

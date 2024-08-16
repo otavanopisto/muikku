@@ -1,4 +1,4 @@
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import { PedagogyWorkspace } from "~/generated/client";
 
 // used for frontend logic
 const useRoles = [
@@ -6,6 +6,7 @@ const useRoles = [
   "COURSE_TEACHER",
   "GUIDANCE_COUNSELOR",
   "SPECIAL_ED_TEACHER",
+  "STUDENT_PARENT",
 ] as const;
 
 // For the PedagogyForm JSON
@@ -76,7 +77,7 @@ export interface SupportActionImplementation {
   /**
    * The details of the action
    */
-  course?: WorkspaceDataType;
+  course?: PedagogyWorkspace;
   /**
    * The extra information of the action
    */
@@ -131,13 +132,9 @@ export interface FormData {
    */
   studentStrengths?: string;
   /**
-   * Reasoning for the support
+   * The description of the student's challenges
    */
-  supportReasons: SupportReason[];
-  /**
-   * Some other reason for the support
-   */
-  supportReasonOther?: string;
+  needOfSupport?: string;
   /**
    * Actions to support the student
    */

@@ -27,7 +27,7 @@
   // DISABLED FILE FIELD
   &.file-uploader--readonly {
     border-color: $color-disabled-taskfield-border;
-    cursor: text;
+    cursor: not-allowed;
 
     .file-uploader__field-container--taskfield {
       display: none;
