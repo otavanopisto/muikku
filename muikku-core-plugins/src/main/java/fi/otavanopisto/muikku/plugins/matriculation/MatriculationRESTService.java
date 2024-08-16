@@ -381,7 +381,9 @@ public class MatriculationRESTService {
     }
     schoolDataEntity.setAttendances(attendances);
     matriculationController.submitMatriculationExamEnrollment(examId, schoolDataEntity);
-    sentMatriculationEnrollmentDAO.create(examId, userIdentifier);
+    
+    // TODO ????
+//    sentMatriculationEnrollmentDAO.create(examId, userIdentifier);
     
     try {
       matriculationNotificationController.sendEnrollmentNotification(enrollment);
