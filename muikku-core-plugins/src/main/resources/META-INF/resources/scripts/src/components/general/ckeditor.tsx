@@ -410,7 +410,7 @@ export default class CKEditor extends React.Component<
       // current data gets overridden by the empty children
       // I did not find any case where this would break anything
 
-      if (this.props.children.trim() !== "") {
+      if (props.children.trim() !== "") {
         instance.setData(props.children || "");
       }
 
