@@ -9,17 +9,17 @@ import { useMatriculationContext } from "../context/matriculation-context";
  */
 export const MatriculationExaminationEnrollmentCompleted = () => {
   const { matriculation } = useMatriculationContext();
-  const { saveState, errorMsg } = matriculation;
+  const { saveState } = matriculation;
 
   /**
    * handleClickClose
    */
-  const handleClickClose = () => {
-    /* if (saveState === "SUCCESS") {
-      this.props.updateEnrollemnts(this.props.examId);
-    } */
-    //this.props.onDone();
-  };
+  // const handleClickClose = () => {
+  //   /* if (saveState === "SUCCESS") {
+  //     this.props.updateEnrollemnts(this.props.examId);
+  //   } */
+  //   //this.props.onDone();
+  // };
 
   /**
    * renderStateMessage

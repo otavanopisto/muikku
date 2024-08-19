@@ -611,7 +611,6 @@ const RepeatSelect: React.FC<RepeatSelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
-        <option>Valitse...</option>
         <option value="false">Ensimmäinen suorituskerta</option>
         <option value="true">Uusinta</option>
       </select>
