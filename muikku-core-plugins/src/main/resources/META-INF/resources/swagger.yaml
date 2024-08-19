@@ -6182,7 +6182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                type: string
         "400":
           description: Invalid request was sent to the server
         "404":
@@ -14168,7 +14168,7 @@ components:
       enum:
         - NOT_ELIGIBLE
         - ELIGIBLE
-        - SUBMITTED
+        - PENDING
         - SUPPLEMENTATION_REQUEST
         - APPROVED
         - REJECTED

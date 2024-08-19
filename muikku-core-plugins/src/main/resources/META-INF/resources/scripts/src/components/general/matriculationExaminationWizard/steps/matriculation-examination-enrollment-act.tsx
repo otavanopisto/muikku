@@ -13,7 +13,8 @@ import { TextField } from "../textfield";
 const MatrMatriculationExaminationEnrollmentAct = () => {
   const { matriculation, onExaminationInformationChange } =
     useMatriculationContext();
-  const { examinationInformation, saveState, errorMsg } = matriculation;
+  const { examinationInformation, studentInformation, saveState, errorMsg } =
+    matriculation;
 
   /**
    * Handles examination information changes and passes it to parent component
@@ -140,7 +141,7 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
           <div className="matriculation__form-element-container">
             <TextField
               label="Nimi"
-              value={examinationInformation.name}
+              value={studentInformation.name}
               type="text"
               readOnly
               className="matriculation__input"

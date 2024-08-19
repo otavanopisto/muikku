@@ -127,18 +127,14 @@ export const useMatriculation = (
       }
 
       try {
-        const draft = (await matriculationApi.getSavedEnrollmentDraft({
+        const draft = await matriculationApi.getSavedEnrollmentDraft({
           examId,
           userIdentifier: userSchoolDataIdentifier,
-        })) as ExaminationInformation;
+        });
 
         setMatriculation((prevState) => ({
           ...prevState,
-          initialized: true,
-          studentInformation: {
-            ...prevState.studentInformation,
-            ...draft,
-          },
+          examinationInformation: JSON.parse(draft) as ExaminationInformation,
         }));
       } catch (err) {
         if (!isMApiError(err)) {
@@ -280,23 +276,26 @@ export const useMatriculation = (
       enrolledAttendances,
       finishedAttendances,
       plannedAttendances,
-      name,
-      email,
-      ssn,
-      phone,
-      address,
-      postalCode,
-      city,
-      guider,
       enrollAs,
       degreeType,
       restartExam,
       numMandatoryCourses,
       location,
-      studentIdentifier,
       canPublishName,
       degreeStructure,
     } = matriculation.examinationInformation;
+
+    const {
+      name,
+      email,
+      phone,
+      address,
+      postalCode,
+      ssn,
+      locality,
+      guidanceCounselor,
+      studentIdentifier,
+    } = matriculation.studentInformation;
 
     let modifiedMessage = message;
 
@@ -354,17 +353,17 @@ export const useMatriculation = (
       phone,
       address,
       postalCode,
-      city,
-      guider,
+      city: locality,
+      guider: guidanceCounselor,
       enrollAs,
       degreeType,
       restartExam,
       numMandatoryCourses,
       location,
       message: modifiedMessage,
-      studentIdentifier: studentIdentifier,
+      studentIdentifier,
       canPublishName,
-      state: "SUBMITTED",
+      state: "PENDING",
       degreeStructure,
       attendances: [
         ...attendedSubjectListParsed,

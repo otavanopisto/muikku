@@ -99,7 +99,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
     const filteredExams = hops.hopsMatriculation.exams.filter(
       (e) =>
-        e.studentStatus === MatriculationExamStudentStatus.Submitted ||
+        e.studentStatus === MatriculationExamStudentStatus.Pending ||
         e.studentStatus ===
           MatriculationExamStudentStatus.SupplementationRequest ||
         e.studentStatus === MatriculationExamStudentStatus.Approved ||
@@ -113,7 +113,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
     const statusMap: {
       [key in MatriculationExamStudentStatus]?: string;
     } = {
-      [MatriculationExamStudentStatus.Submitted]: "Odottaa hyväksyntää",
+      [MatriculationExamStudentStatus.Pending]: "Odottaa hyväksyntää",
       [MatriculationExamStudentStatus.SupplementationRequest]: "Täydennettävä",
       [MatriculationExamStudentStatus.Approved]: "Hyväksytty",
       [MatriculationExamStudentStatus.Rejected]: "Hylätty",
@@ -249,7 +249,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
  */
 const contentDataModifiers = (e: MatriculationExam) => {
   switch (e.studentStatus) {
-    case MatriculationExamStudentStatus.Submitted:
+    case MatriculationExamStudentStatus.Pending:
       return ["pending"];
     case MatriculationExamStudentStatus.SupplementationRequest:
       return ["supplementation-request"];

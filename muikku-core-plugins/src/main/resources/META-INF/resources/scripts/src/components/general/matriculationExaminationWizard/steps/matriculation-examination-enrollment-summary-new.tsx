@@ -28,7 +28,8 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   MatriculationExaminationEnrollmentSummaryProps
 > = (props) => {
   const { matriculation } = useMatriculationContext();
-  const { examinationInformation, saveState, errorMsg } = matriculation;
+  const { examinationInformation, studentInformation, saveState, errorMsg } =
+    matriculation;
 
   const {
     name,
@@ -120,7 +121,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label="Nimi"
               readOnly
               type="text"
-              value={name}
+              value={studentInformation.name}
               className="matriculation__input"
             />
           </div>
@@ -129,7 +130,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label="Henkilötunnus"
               readOnly
               type="text"
-              value={ssn}
+              value={studentInformation.ssn}
               className="matriculation__input"
             />
           </div>
@@ -140,7 +141,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label="Sähköpostiosoite"
               readOnly
               type="text"
-              value={email}
+              value={studentInformation.email}
               className="matriculation__input"
             />
           </div>
@@ -149,7 +150,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label="Puhelinnumero"
               readOnly
               type="text"
-              value={phone}
+              value={studentInformation.phone}
               className="matriculation__input"
             />
           </div>
@@ -160,7 +161,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label="Osoite"
               readOnly
               type="text"
-              value={address}
+              value={studentInformation.address}
               className="matriculation__input"
             />
           </div>
@@ -169,7 +170,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label="Postinumero"
               readOnly
               type="text"
-              value={postalCode}
+              value={studentInformation.postalCode}
               className="matriculation__input"
             />
           </div>
@@ -180,7 +181,18 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label="Postitoimipaikka"
               readOnly
               type="text"
-              value={city}
+              value={studentInformation.locality}
+              className="matriculation__input"
+            />
+          </div>
+        </div>
+        <div className="matriculation-container__row">
+          <div className="matriculation__form-element-container">
+            <TextField
+              label="Ohjaaja"
+              readOnly
+              type="text"
+              value={studentInformation.guidanceCounselor}
               className="matriculation__input"
             />
           </div>
@@ -201,17 +213,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <legend className="matriculation-container__subheader">
           Opiskelijatiedot
         </legend>
-        <div className="matriculation-container__row">
-          <div className="matriculation__form-element-container">
-            <TextField
-              label="Ohjaaja"
-              readOnly
-              type="text"
-              value={guider}
-              className="matriculation__input"
-            />
-          </div>
-        </div>
+
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
