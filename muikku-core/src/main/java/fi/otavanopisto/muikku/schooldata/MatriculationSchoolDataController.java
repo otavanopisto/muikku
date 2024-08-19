@@ -62,8 +62,8 @@ public class MatriculationSchoolDataController {
     return getMatriculationBridge().createMatriculationExamEnrollment();
   }
   
-  public void submitMatriculationExamEnrollment(Long examId, MatriculationExamEnrollment enrollment) {
-    getMatriculationBridge().submitMatriculationExamEnrollment(examId, enrollment);
+  public BridgeResponse<MatriculationExamEnrollment> submitMatriculationExamEnrollment(SchoolDataIdentifier studentIdentifier, Long examId, MatriculationExamEnrollment enrollment) {
+    return getMatriculationBridge().submitMatriculationExamEnrollment(studentIdentifier, examId, enrollment);
   }
   
   public MatriculationExamAttendance createMatriculationExamAttendance() {
