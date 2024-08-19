@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.schooldata;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -75,23 +76,26 @@ public class WorkspaceSignupMessageController {
    * @return
    */
   public WorkspaceSignupMessage getApplicableSignupMessage(SchoolDataIdentifier userIdentifier, WorkspaceEntity workspaceEntity) {
+    WorkspaceSignupMessage applicableMessage = null;
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
-    
+    List<Long> userGroupIds = userGroupEntities.stream().map(UserGroupEntity::getId).collect(Collectors.toList());
     if (CollectionUtils.isNotEmpty(userGroupEntities)) {
-      /*
-       * List the group bound signup messages that match any of the user groups the user is member of.
-       * If we find any, return the first one - there's no priorities to pick "a better one"
-      */
-      List<WorkspaceSignupMessage> groupBoundSignupMessages = workspaceEntityMessageDAO.listEnabledGroupBoundSignupMessagesBy(workspaceEntity, userGroupEntities);
-      
-      // If we found any groups, we'll use the first one. There's no way to 
-      if (CollectionUtils.isNotEmpty(groupBoundSignupMessages)) {
-        return groupBoundSignupMessages.get(0);
+      List<WorkspaceSignupMessage> groupMessages = workspaceEntityMessageDAO.listEnabledGroupBoundSignupMessagesBy(workspaceEntity);
+      for (WorkspaceSignupMessage groupMessage: groupMessages) {
+        List<Long> messageGroupIds = groupMessage.getUserGroupEntities().stream().map(UserGroupEntity::getId).collect(Collectors.toList());
+        if (!Collections.disjoint(userGroupIds, messageGroupIds)) {
+          applicableMessage = groupMessage;
+          break;
+        }
       }
     }
-    
-    WorkspaceSignupMessage defaultSignupMessage = workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
-    return defaultSignupMessage != null && defaultSignupMessage.isEnabled() ? defaultSignupMessage : null;
+    if (applicableMessage == null) {
+      WorkspaceSignupMessage defaultSignupMessage = workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
+      if (defaultSignupMessage != null && defaultSignupMessage.isEnabled()) {
+        applicableMessage = defaultSignupMessage;
+      }
+    }
+    return applicableMessage;
   }
   
   /**

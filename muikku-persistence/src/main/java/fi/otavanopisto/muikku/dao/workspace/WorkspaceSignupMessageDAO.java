@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.dao.workspace;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -39,30 +38,6 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
     super.delete(e);
   }
 
-//  /**
-//   * Returns the signup message set for given workspace and signup group.
-//   * 
-//   * @param workspaceEntity
-//   * @param signupGroupEntity
-//   * @return
-//   */
-//  public WorkspaceSignupMessage findBy(WorkspaceEntity workspaceEntity, UserGroupEntity signupGroupEntity) {
-//    EntityManager entityManager = getEntityManager(); 
-//    
-//    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//    CriteriaQuery<WorkspaceSignupMessage> criteria = criteriaBuilder.createQuery(WorkspaceSignupMessage.class);
-//    Root<WorkspaceSignupMessage> root = criteria.from(WorkspaceSignupMessage.class);
-//    criteria.select(root);
-//    criteria.where(
-//        criteriaBuilder.and(
-//            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.workspaceEntity), workspaceEntity),
-//            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.signupGroupEntity), signupGroupEntity)
-//        )
-//    );
-//    
-//    return getSingleResult(entityManager.createQuery(criteria));
-//  }
-
   /**
    * Returns the default (the one with null signupGroupEntity) signup message of a given workspace.
    * 
@@ -87,7 +62,7 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
   }
 
   /**
-   * Lists signup messages for given workspace which have a specified signup group.
+   * Lists all group bound signup messages for given workspace.
    * 
    * @param workspaceEntity
    * @return
@@ -110,13 +85,12 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
   }
 
   /**
-   * Lists enabled signup messages matching given workspace and any of the user groups.
+   * Lists enabled group bound signup messages for given workspace.
    * 
    * @param workspaceEntity
-   * @param signupGroupEntities
    * @return
    */
-  public List<WorkspaceSignupMessage> listEnabledGroupBoundSignupMessagesBy(WorkspaceEntity workspaceEntity, Collection<UserGroupEntity> signupGroupEntities) {
+  public List<WorkspaceSignupMessage> listEnabledGroupBoundSignupMessagesBy(WorkspaceEntity workspaceEntity) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -125,9 +99,9 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.enabled), Boolean.TRUE),
             criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.workspaceEntity), workspaceEntity),
-            root.get(WorkspaceSignupMessage_.userGroupEntities).in(signupGroupEntities)
+            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.defaultMessage), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.enabled), Boolean.TRUE)
         )
     );
     
