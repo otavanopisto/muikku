@@ -6,7 +6,7 @@ import {
   SaveState,
 } from "~/@types/shared";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import MApi, { isMApiError } from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
   MatriculationExamAttendance,
   MatriculationExamChangeLogEntry,
@@ -106,47 +106,49 @@ export const useMatriculation = (
      * Loads initial data. Checks if there is draft saved for this user and exam
      */
     const loadInitialData = async () => {
-      const studentInformation = await matriculationApi.getInitialData({
-        examId,
-        userIdentifier: userSchoolDataIdentifier,
-      });
-
-      matriculationApi
-        .getSavedEnrollmentDraftRaw({
+      try {
+        const intialData = await matriculationApi.getInitialData({
           examId,
           userIdentifier: userSchoolDataIdentifier,
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then(async (res) => {
-          if (res.raw.status === 404) {
-            return "{}";
-          } else {
-            return await res.raw.json();
-          }
-        })
-        .then((value) => {
-          if (value !== "{}") {
-            const draftValues = JSON.parse(value) as ExaminationInformation;
-
-            setMatriculation((prevState) => ({
-              ...prevState,
-              initialized: true,
-              studentInformation: {
-                ...prevState.studentInformation,
-                ...studentInformation,
-              },
-              examinationInformation: {
-                ...prevState.examinationInformation,
-                ...draftValues,
-              },
-            }));
-          } else {
-            setMatriculation((prevState) => ({
-              ...prevState,
-              initialized: true,
-            }));
-          }
         });
+
+        setMatriculation((prevState) => ({
+          ...prevState,
+          initialized: true,
+          studentInformation: {
+            ...prevState.studentInformation,
+            ...intialData,
+          },
+        }));
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+      }
+
+      try {
+        const draft = (await matriculationApi.getSavedEnrollmentDraft({
+          examId,
+          userIdentifier: userSchoolDataIdentifier,
+        })) as ExaminationInformation;
+
+        setMatriculation((prevState) => ({
+          ...prevState,
+          initialized: true,
+          studentInformation: {
+            ...prevState.studentInformation,
+            ...draft,
+          },
+        }));
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        } else if (isResponseError(err) && err.response.status === 404) {
+          setMatriculation((prevState) => ({
+            ...prevState,
+          }));
+        }
+      }
     };
 
     /**
