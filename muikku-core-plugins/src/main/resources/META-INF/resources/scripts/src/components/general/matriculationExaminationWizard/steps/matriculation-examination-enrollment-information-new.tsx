@@ -558,32 +558,21 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    */
   const isIncompleteAttendances = React.useCallback((): boolean => {
     for (const attendance of examinationInformation.enrolledAttendances) {
-      if (
-        attendance.subject === undefined ||
-        attendance.mandatory === undefined ||
-        attendance.repeat === undefined ||
-        attendance.funding === undefined
-      ) {
+      if (attendance.subject === "") {
         return true;
       }
     }
     for (const attendance of examinationInformation.finishedAttendances) {
       if (
-        attendance.term === undefined ||
-        attendance.subject === undefined ||
-        attendance.mandatory === undefined ||
-        attendance.grade === undefined ||
-        attendance.funding === undefined
+        attendance.term === "" ||
+        attendance.subject === "" ||
+        attendance.grade === ""
       ) {
         return true;
       }
     }
     for (const attendance of examinationInformation.plannedAttendances) {
-      if (
-        attendance.term === undefined ||
-        attendance.subject === undefined ||
-        attendance.mandatory === undefined
-      ) {
+      if (attendance.term === "" || attendance.subject === "") {
         return true;
       }
     }
@@ -730,6 +719,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
     finishedAttendances.push({
       term: getDefaultPastTerm().value,
+      year: null,
       subject: getDefaultSubject(getFinishedSubjects()),
       mandatory: false,
       grade: "",
@@ -753,6 +743,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
     plannedAttendances.push({
       term: getDefaultNextTerm().value,
+      year: null,
       subject: getDefaultSubject(getPlannedSubjects()),
       mandatory: false,
       status: "PLANNED",

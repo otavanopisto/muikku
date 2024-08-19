@@ -68,6 +68,16 @@ export interface ExaminationSubject {
 }
 
 /**
+ * Term
+ */
+export interface Term {
+  name: string;
+  value: string;
+  year: number;
+  adessive: string;
+}
+
+/**
  * Examination
  */
 export interface ExaminationInformation extends MatriculationExamEnrollment {

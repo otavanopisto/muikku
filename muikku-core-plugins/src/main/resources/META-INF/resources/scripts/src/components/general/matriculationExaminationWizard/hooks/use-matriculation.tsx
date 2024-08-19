@@ -13,6 +13,7 @@ import {
   MatriculationExamEnrollment,
   MatriculationStudent,
 } from "~/generated/client";
+import { parseTermToValues } from "~/helper-functions/matriculation-functions";
 
 export type UseMatriculationType = ReturnType<typeof useMatriculation>;
 
@@ -58,7 +59,6 @@ export const useMatriculation = (
       ssn: "",
       studentIdentifier: "",
       guidanceCounselor: "",
-      enrollmentSent: false,
       locality: "Mikkeli",
       completedCreditPointsCount: 0,
     },
@@ -313,8 +313,6 @@ export const useMatriculation = (
         subject: aSubject.subject,
         mandatory: aSubject.mandatory,
         repeat: aSubject.repeat,
-        year: null,
-        term: null,
         status: "ENROLLED",
         funding: aSubject.funding,
       }));
@@ -326,8 +324,8 @@ export const useMatriculation = (
       finishedAttendances.map((fsubject) => ({
         subject: fsubject.subject,
         mandatory: fsubject.mandatory,
-        year: fsubject.term ? Number(fsubject.term.substring(6)) : null,
-        term: fsubject.term ? fsubject.term.substring(0, 6) : null,
+        year: parseTermToValues(fsubject.term).year,
+        term: parseTermToValues(fsubject.term).term,
         status: "FINISHED",
         grade: fsubject.grade,
         funding: fsubject.funding,
@@ -340,8 +338,8 @@ export const useMatriculation = (
       plannedAttendances.map((pSubject) => ({
         subject: pSubject.subject,
         mandatory: pSubject.mandatory,
-        year: pSubject.term ? Number(pSubject.term.substring(6)) : null,
-        term: pSubject.term ? pSubject.term.substring(0, 6) : null,
+        year: parseTermToValues(pSubject.term).year,
+        term: parseTermToValues(pSubject.term).term,
         status: "PLANNED",
       }));
 

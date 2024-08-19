@@ -32,17 +32,9 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
     matriculation;
 
   const {
-    name,
-    email,
-    phone,
-    address,
-    postalCode,
-    city,
-    ssn,
     changedContactInfo,
     restartExam,
     enrollAs,
-    guider,
     location,
     message,
     canPublishName,
@@ -385,7 +377,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           <div className="matriculation__form-element-container">
             <TextField
               label="Nimi"
-              value={name}
+              value={studentInformation.name}
               type="text"
               readOnly
               className="matriculation__input"

@@ -11,6 +11,7 @@ const resolveTerm = (from: moment.Moment): Term => {
   const quarter = from.quarter();
   return {
     value: (quarter < 3 ? "SPRING" : "AUTUMN") + from.year(),
+    year: from.year(),
     name: (quarter < 3 ? "Kevät " : "Syksy ") + from.year(),
     adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year(),
   };
@@ -18,7 +19,6 @@ const resolveTerm = (from: moment.Moment): Term => {
 
 /**
  * Resolves current term
- * @returns {object} term details
  */
 export const resolveCurrentTerm = () => resolveTerm(moment().add(6, "months"));
 
@@ -94,3 +94,15 @@ export const getDefaultPastTerm = () => getPastTerms()[0];
  * @returns default next term
  */
 export const getDefaultNextTerm = () => getNextTerms()[0];
+
+/**
+ * Returns parsed term values
+ *
+ * @param termString Term + year. Example: "SPRING2021"
+ */
+export const parseTermToValues = (termString: string) => {
+  const term = termString ? termString.substring(0, 6) : null;
+  const year = term ? Number(termString.substring(6)) : null;
+
+  return { term, year };
+};

@@ -14246,7 +14246,6 @@ components:
       required:
         - address
         - email
-        - enrollmentSent
         - guidanceCounselor
         - locality
         - name
@@ -14259,8 +14258,6 @@ components:
           type: string
         email:
           type: string
-        enrollmentSent:
-          type: boolean
         guidanceCounselor:
           description: Name of the student's guidance counselor
           type: string
@@ -14333,13 +14330,16 @@ components:
       description: MatriculationExamFinishedSubject object
       required:
         - term
+        - year
         - subject
         - mandatory
         - grade
         - status
       properties:
         term:
-          $ref: "#/components/schemas/AnyValue"
+          type: string
+        year:
+          type: integer
         subject:
           type: string
         mandatory:
@@ -14356,12 +14356,15 @@ components:
       description: MatriculationExamPlannedSubject object
       required:
         - term
+        - year
         - subject
         - mandatory
         - status
       properties:
         term:
-          $ref: "#/components/schemas/AnyValue"
+          type: string
+        year:
+          type: integer
         subject:
           type: string
         mandatory:
