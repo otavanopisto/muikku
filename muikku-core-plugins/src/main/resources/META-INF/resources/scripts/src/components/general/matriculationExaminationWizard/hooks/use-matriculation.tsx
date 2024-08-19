@@ -183,12 +183,18 @@ export const useMatriculation = (
             enrolledAttendances: matriculationData.attendances.filter(
               isOfStatus("ENROLLED")
             ),
-            plannedAttendances: matriculationData.attendances.filter(
-              isOfStatus("PLANNED")
-            ),
-            finishedAttendances: matriculationData.attendances.filter(
-              isOfStatus("FINISHED")
-            ),
+            plannedAttendances: matriculationData.attendances
+              .filter(isOfStatus("PLANNED"))
+              .map((pSubject) => ({
+                ...pSubject,
+                term: `${pSubject.term}${pSubject.year}`,
+              })),
+            finishedAttendances: matriculationData.attendances
+              .filter(isOfStatus("FINISHED"))
+              .map((fSubject) => ({
+                ...fSubject,
+                term: `${fSubject.term}${fSubject.year}`,
+              })),
           },
           examFormChangeLogs: historyEntries,
         }));

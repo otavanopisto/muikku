@@ -12096,10 +12096,10 @@ components:
               description:
                 type: string
               price:
-                type: number
+                type: integer
                 format: double
               factor:
-                type: number
+                type: integer
                 format: double
               billingNumber:
                 type: integer
@@ -14314,12 +14314,19 @@ components:
         - status
         - funding
       properties:
+        id:
+          type: integer
+          format: int64
+          description: Id of the subject.
         subject:
           type: string
+          description: Subject code. Example "AI" etc...
         mandatory:
           type: boolean
+          description: Is the subject mandatory.
         repeat:
           type: boolean
+          description: If exam for that specific subject is already done before.
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
@@ -14336,16 +14343,25 @@ components:
         - grade
         - status
       properties:
+        id:
+          type: integer
+          format: int64
+          description: Id of the subject.
         term:
           type: string
+          description: Term of the exam. Example "AUTUMN" or "SPRING"
         year:
           type: integer
+          description: Year of the exam.
         subject:
           type: string
+          description: Subject code. Example "AI" etc...
         mandatory:
           type: boolean
+          description: Is the subject mandatory.
         grade:
           type: string
+          description: Grade of the exam.
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
@@ -14361,14 +14377,22 @@ components:
         - mandatory
         - status
       properties:
+        id:
+          type: integer
+          format: int64
+          description: Id of the subject.
         term:
           type: string
+          description: Term of the exam. Example "AUTUMN" or "SPRING"
         year:
           type: integer
+          description: Year of the exam.
         subject:
           type: string
+          description: Subject code. Example "AI" etc...
         mandatory:
           type: boolean
+          description: Is the subject mandatory.
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
