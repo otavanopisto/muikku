@@ -430,6 +430,7 @@ public class MatriculationRESTService {
     if (enrollment.getAttendances() != null) {
       for (fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance attendance : enrollment.getAttendances()) {
         MatriculationExamAttendance attendanceRestModel = new MatriculationExamAttendance();
+        attendanceRestModel.setId(attendance.getId());
         attendanceRestModel.setFunding(attendance.getFunding());
         attendanceRestModel.setGrade(attendance.getGrade());
         attendanceRestModel.setMandatory(attendance.getMandatory());
