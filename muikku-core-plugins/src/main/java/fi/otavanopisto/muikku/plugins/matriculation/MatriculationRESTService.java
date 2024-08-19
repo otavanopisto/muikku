@@ -323,12 +323,6 @@ public class MatriculationRESTService {
     }
     Long studentId = getStudentIdFromIdentifier(userIdentifier);
     
-    // TODO How to check this or do we need to anymore?
-//    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(examId, userIdentifier);
-//    if (sentEnrollment != null) {
-//      return Response.status(Status.BAD_REQUEST).entity("Enrollment already sent").build();
-//    }
-
     /*
      * Validation
      */
@@ -405,9 +399,6 @@ public class MatriculationRESTService {
     BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.submitMatriculationExamEnrollment(userIdentifier, examId, schoolDataEntity);
     
     if (response.ok()) {
-    // TODO ????
-//    sentMatriculationEnrollmentDAO.create(examId, userIdentifier);
-    
       try {
         matriculationNotificationController.sendEnrollmentNotification(enrollment);
       } catch (IOException e) {
