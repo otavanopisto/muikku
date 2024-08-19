@@ -74,14 +74,6 @@ public class MatriculationExamInitialData {
     this.studentIdentifier = studentIdentifier;
   }
 
-  public boolean isEnrollmentSent() {
-    return enrollmentSent;
-  }
-
-  public void setEnrollmentSent(boolean enrollmentSent) {
-    this.enrollmentSent = enrollmentSent;
-  }
-
   public Double getCompletedCreditPointsCount() {
     return completedCreditPointsCount;
   }
@@ -99,7 +91,6 @@ public class MatriculationExamInitialData {
   private String locality;
   private String guidanceCounselor;
   private String studentIdentifier;
-  private boolean enrollmentSent;
   private Double completedCreditPointsCount;
 
 }

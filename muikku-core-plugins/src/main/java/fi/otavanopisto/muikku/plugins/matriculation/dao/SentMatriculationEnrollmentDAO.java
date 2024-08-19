@@ -10,6 +10,7 @@ import fi.otavanopisto.muikku.plugins.matriculation.model.SentMatriculationEnrol
 import fi.otavanopisto.muikku.plugins.matriculation.model.SentMatriculationEnrollment_;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
+@Deprecated // TODO Remove
 public class SentMatriculationEnrollmentDAO extends CorePluginsDAO<SentMatriculationEnrollment> {
 
   private static final long serialVersionUID = 7506613764993681620L;

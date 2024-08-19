@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.matriculation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,11 +24,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.matriculation.dao.SavedMatriculationEnrollmentDAO;
-import fi.otavanopisto.muikku.plugins.matriculation.dao.SentMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment;
-import fi.otavanopisto.muikku.plugins.matriculation.model.SentMatriculationEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollmentChangeLogEntryRestModel;
@@ -80,9 +81,6 @@ public class MatriculationRESTService {
   @Inject
   private SavedMatriculationEnrollmentDAO savedMatriculationEnrollmentDAO;
   
-  @Inject
-  private SentMatriculationEnrollmentDAO sentMatriculationEnrollmentDAO;
-
   @Inject
   private MatriculationNotificationController matriculationNotificationController;
   
@@ -255,10 +253,6 @@ public class MatriculationRESTService {
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
-    SentMatriculationEnrollment sentEnrollment = sentMatriculationEnrollmentDAO.findByUser(examId, identifier);
-    if (sentEnrollment != null) {
-      result.setEnrollmentSent(true);
-    }
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(user);
@@ -334,9 +328,37 @@ public class MatriculationRESTService {
 //    if (sentEnrollment != null) {
 //      return Response.status(Status.BAD_REQUEST).entity("Enrollment already sent").build();
 //    }
+
+    /*
+     * Validation
+     */
     
-    if (!Objects.equals(examId, enrollment.getExamId()) && examId != null) {
+    if (examId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Exam ids cannot be null").build();
+    }
+    
+    if (!Objects.equals(examId, enrollment.getExamId())) {
       return Response.status(Status.BAD_REQUEST).entity("Exam ids do not match").build();
+    }
+
+    List<String> validAttendanceStatus = Arrays.asList("FINISHED", "PLANNED", "ENROLLED");
+    
+    for (MatriculationExamAttendance attendance : enrollment.getAttendances()) {
+      if (!validAttendanceStatus.contains(attendance.getStatus())) {
+        return Response.status(Status.BAD_REQUEST).entity("Attendance has invalid status").build();
+      }
+
+      /*
+       * Validate term and year.
+       */
+      if (StringUtils.equals(attendance.getStatus(), "FINISHED") || StringUtils.equals(attendance.getStatus(), "PLANNED")) {
+        if (attendance.getTerm() == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Attendance missing term").build();
+        }
+        if (attendance.getYear() == null) {
+          return Response.status(Status.BAD_REQUEST).entity("Attendance missing year").build();
+        }
+      }
     }
     
     fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment schoolDataEntity = 
