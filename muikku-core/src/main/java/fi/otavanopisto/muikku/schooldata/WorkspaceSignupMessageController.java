@@ -103,9 +103,9 @@ public class WorkspaceSignupMessageController {
    * 
    * @param studentUserSchoolDataIdentifier student's UserSchoolDataIdentifier
    * @param workspaceEntity Workspace
-   * @return true if the signup message was sent, false otherwise
+   * @return message sent to student, <code>null</code> if nothing was sent
    */
-  public boolean sendApplicableSignupMessage(UserSchoolDataIdentifier studentUserSchoolDataIdentifier, WorkspaceEntity workspaceEntity) {
+  public WorkspaceSignupMessage sendApplicableSignupMessage(UserSchoolDataIdentifier studentUserSchoolDataIdentifier, WorkspaceEntity workspaceEntity) {
     WorkspaceSignupMessage workspaceSignupMessage = getApplicableSignupMessage(studentUserSchoolDataIdentifier.schoolDataIdentifier(), workspaceEntity);
 
     if (workspaceSignupMessage != null && workspaceSignupMessage.isEnabled()) {
@@ -144,11 +144,10 @@ public class WorkspaceSignupMessageController {
             workspaceSignupMessage.getContent()
         );
       }
-      
-      return true;
+      return workspaceSignupMessage;
     }
     
-    return false;
+    return null;
   }
 
   public WorkspaceSignupMessage findDefaultSignupMessage(WorkspaceEntity workspaceEntity) {
