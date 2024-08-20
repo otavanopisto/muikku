@@ -56,6 +56,7 @@ import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -1261,7 +1262,13 @@ public class GuiderRESTService extends PluginRESTService {
      * Send workspace signup message to student
      */
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
-    workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
+    WorkspaceSignupMessage signupMessage = workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
+    String studentsSignupMessageSentNotification = signupMessage != null
+        ? localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageSent")
+        : localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageNotSent");
+    if (signupMessage != null) {
+      studentsSignupMessageSentNotification = MessageFormat.format(studentsSignupMessageSentNotification, signupMessage.getCaption(), signupMessage.getContent());
+    }
 
     /**
      * Setup the message which goes to the teachers
@@ -1279,18 +1286,33 @@ public class GuiderRESTService extends PluginRESTService {
     String contentStudent;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
-      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink);
-      
+      content = MessageFormat.format(
+          content,
+          loggedUserEntityName.getDisplayName(),
+          studentLink,
+          workspaceLink,
+          studentsSignupMessageSentNotification);
       contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentStudent");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink);
-    } else {
+      contentStudent = MessageFormat.format(
+          contentStudent,
+          loggedUserEntityName.getDisplayName(),
+          workspaceLink);
+    }
+    else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
-      String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
-      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink, blockquoteMessage);
-      
+      content = MessageFormat.format(
+          content,
+          loggedUserEntityName.getDisplayName(),
+          studentLink,
+          workspaceLink,
+          StringUtils.replace(entity.getMessage(), "\n", "<br/>"),
+          studentsSignupMessageSentNotification);
       contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessageStudent");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink, blockquoteMessage);
-
+      contentStudent = MessageFormat.format(
+          contentStudent,
+          loggedUserEntityName.getDisplayName(),
+          workspaceLink,
+          StringUtils.replace(entity.getMessage(), "\n", "<br/>"));
     }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
