@@ -26,12 +26,18 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.matriculation.dao.SavedMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollmentChangeLogEntryRestModel;
+import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationPlanRESTModel;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -52,7 +58,9 @@ import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/matriculation")
 @Produces("application/json")
@@ -89,6 +97,9 @@ public class MatriculationRESTService {
   
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
@@ -411,6 +422,67 @@ public class MatriculationRESTService {
       Status status = Status.fromStatusCode(response.getStatusCode());
       return status != null ? Response.status(status).build() : Response.status(response.getStatusCode()).build();
     }
+  }
+
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @Path("/students/{STUDENTIDENTIFIER}/plan")
+  public Response getStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifierStr == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
+    }
+    
+    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
+
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    if (userSchoolDataIdentifier == null || !userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
+    }
+
+    MatriculationPlanRESTModel planRestModel = null;
+    UserIdentifierProperty hopsProperty = userEntityController.getUserIdentifierPropertyByKey(studentIdentifier.getIdentifier(), "matriculationPlan");
+    if (hopsProperty != null && !StringUtils.isBlank(hopsProperty.getValue())) {
+      try {
+        planRestModel = new ObjectMapper().readValue(hopsProperty.getValue(), MatriculationPlanRESTModel.class);
+      }
+      catch (Exception e) {
+        logger.log(Level.SEVERE, "Error deserializing HOPS form", e);
+      }
+    }
+
+    if (planRestModel == null) {
+      planRestModel = new MatriculationPlanRESTModel();
+    }
+    
+    return Response.ok(planRestModel).build();
+  }
+  
+  @PUT
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  @Path("/students/{STUDENTIDENTIFIER}/plan")
+  public Response updateHops(MatriculationPlanRESTModel model) {
+    if (model == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing payload").build();
+    }
+    
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    if (userSchoolDataIdentifier == null || !userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
+    }
+
+    try {
+      userEntityController.setUserIdentifierProperty(userIdentifier.getIdentifier(), "matriculationPlan", new ObjectMapper().writeValueAsString(model));
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Error serializing matriculation plan", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error serializing matriculation plan").build();
+    }
+
+    return Response.ok().entity(model).build();
   }
 
   private MatriculationCurrentExam restModel(MatriculationExam exam) {

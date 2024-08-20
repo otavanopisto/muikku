@@ -5962,6 +5962,62 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/matriculation/students/{studentIdentifier}/plan:
+    get:
+      operationId: getStudentMatriculationPlan
+      summary: Get student's matriculation plan
+      description: Get student's matriculation plan
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Exams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatriculationPlan"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: setStudentMatriculationPlan
+      summary: Set student's matriculation plan
+      description: Set student's matriculation plan
+      tags:
+        - Matriculation
+      requestBody:
+        $ref: "#/components/requestBodies/MatriculationPlanUpdateRequestBody"
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Exams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatriculationPlan"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/matriculation/students/{studentIdentifier}/exams:
     get:
       operationId: getStudentExams
@@ -14409,6 +14465,25 @@ components:
         - $ref: "#/components/schemas/MatriculationExamEnrolledSubject"
         - $ref: "#/components/schemas/MatriculationExamFinishedSubject"
         - $ref: "#/components/schemas/MatriculationExamPlannedSubject"
+
+    MatriculationPlan:
+      type: object
+      description: MatriculationPlan object
+      required:
+        - plannedSubjects
+      properties:
+        plannedSubjects:
+          type: array
+          items:
+            type: string
+
+    MatriculationPlanUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/MatriculationPlan"
 
     MaterialReply:
       type: object
