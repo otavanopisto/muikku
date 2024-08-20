@@ -7,7 +7,6 @@ import { useMatriculationContext } from "../context/matriculation-context";
 import { SavingDraftError } from "../saving-draft-error";
 import { SavingDraftInfo } from "../saving-draft-info";
 import { MatriculationExamFundingType } from "~/generated/client";
-import { History } from "../history";
 
 /**
  * Required amount attendances for valid Examination (vähintään 5 suoritusta)
@@ -199,15 +198,6 @@ export const MatriculationExaminationStudentInformation = () => {
               className="matriculation__textarea"
             />
           </div>
-        </div>
-      </fieldset>
-      <fieldset className="matriculation-container__fieldset">
-        <legend className="matriculation-container__subheader">
-          Muokkaushistoria
-        </legend>
-
-        <div className="hops-container__info">
-          <History />
         </div>
       </fieldset>
     </div>

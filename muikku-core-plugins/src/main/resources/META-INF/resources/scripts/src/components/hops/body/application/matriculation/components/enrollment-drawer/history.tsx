@@ -3,28 +3,28 @@ import * as React from "react";
 import Avatar from "~/components/general/avatar";
 import { MatriculationExamChangeLogEntry } from "~/generated/client";
 import "~/sass/elements/hops.scss";
-import { useMatriculationContext } from "./context/matriculation-context";
 
 /**
  * HopsHistoryProps
  */
-interface HistoryProps {}
+interface HistoryProps {
+  entryLogs: MatriculationExamChangeLogEntry[];
+}
 
 /**
  * HopsHistory
  * @param props props
  */
 export const History: React.FC<HistoryProps> = (props) => {
-  const { matriculation } = useMatriculationContext();
-  const { examFormChangeLogs } = matriculation;
+  const { entryLogs } = props;
 
-  if (!examFormChangeLogs || examFormChangeLogs.length === 0) {
+  if (!entryLogs || entryLogs.length === 0) {
     return <p>No history available for this examination at the moment.</p>;
   }
 
   return (
     <div className="hops-container__history">
-      {examFormChangeLogs.map((logEntry, index) => (
+      {entryLogs.map((logEntry, index) => (
         <HistoryEntryItem key={index} logEntry={logEntry} />
       ))}
     </div>

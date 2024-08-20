@@ -12,12 +12,19 @@ import {
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops/";
 import MatriculationExaminationWizardDialog from "./dialogs/matriculation-wizard";
+import {
+  VerifyMatriculationExamTriggerType,
+  verifyMatriculationExam,
+} from "../../../../../actions/main-function/hops/index";
+import MatriculationEnrollmentDrawerList from "./components/enrollment-drawer/enrollment-history-drawer-list";
+import MatriculationEnrollmentDrawerListItem from "./components/enrollment-drawer/enrollment-history-drawer-item";
 
 /**
  * MatriculationPlanProps
  */
 interface MatriculationEnrollmentProps {
   hops: HopsState;
+  verifyMatriculationExam: VerifyMatriculationExamTriggerType;
 }
 
 /**
@@ -25,13 +32,19 @@ interface MatriculationEnrollmentProps {
  * @param props props
  */
 const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
-  const { hops } = props;
+  const { hops, verifyMatriculationExam } = props;
 
   const { t } = useTranslation(["hops", "guider", "common"]);
 
-  if (hops.hopsMatriculationStatus !== "READY") {
-    return <div className="loader-empty" />;
-  }
+  /**
+   * Handles verify matriculation exam
+   * @param examId examId
+   */
+  const handleVerifyMatriculationExam =
+    (examId: number) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      verifyMatriculationExam(examId);
+    };
 
   /**
    * Renders enrollment links
@@ -125,22 +138,42 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
      * @returns JSX.Element
      */
     const mapExam = (e: MatriculationExam) => {
-      const editEnrollmentLink =
-        e.studentStatus ===
-        MatriculationExamStudentStatus.SupplementationRequest ? (
-          <div key={e.id}>
-            <MatriculationExaminationWizardDialog
-              updateEnrollemnts={() => undefined}
-              examId={e.id}
-              compulsoryEducationEligible={e.compulsoryEducationEligible}
-              formType="edit"
-            >
-              <Button className="button button--yo-signup">
-                Muokkaa ilmoittautumista
-              </Button>
-            </MatriculationExaminationWizardDialog>
-          </div>
-        ) : null;
+      /**
+       * Render function by status
+       */
+      const renderFunctionByStatus = () => {
+        switch (e.studentStatus) {
+          case MatriculationExamStudentStatus.SupplementationRequest:
+            return (
+              <div key={e.id}>
+                <MatriculationExaminationWizardDialog
+                  updateEnrollemnts={() => undefined}
+                  examId={e.id}
+                  compulsoryEducationEligible={e.compulsoryEducationEligible}
+                  formType="edit"
+                >
+                  <Button className="button button--yo-signup">
+                    Muokkaa ilmoittautumista
+                  </Button>
+                </MatriculationExaminationWizardDialog>
+              </div>
+            );
+          case MatriculationExamStudentStatus.Approved:
+            return (
+              <div key={e.id}>
+                <Button
+                  className="button button--yo-signup"
+                  onClick={handleVerifyMatriculationExam(e.id)}
+                >
+                  Vahvista ilmoittautuminen
+                </Button>
+              </div>
+            );
+
+          default:
+            return null;
+        }
+      };
 
       const term = e.term === "AUTUMN" ? "Syksy" : "Kevät";
       const year = e.year;
@@ -183,7 +216,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
               {statusMap[e.studentStatus]}
             </span>
 
-            {editEnrollmentLink}
+            {renderFunctionByStatus()}
           </div>
         </div>
       );
@@ -200,6 +233,10 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
       </div>
     );
   };
+
+  if (hops.hopsMatriculationStatus !== "READY") {
+    return <div className="loader-empty" />;
+  }
 
   return (
     <>
@@ -226,16 +263,11 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
           Ilmoittautumishistoria
         </div>
         <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
-          <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
-              Huom. Tarkasta ennen ilmoittautumista
-              Osallistumisoikeus-välilehdeltä, oletko suorittanut riittävästi
-              opintoja, jotta voit osallistua yo-kirjoituksiin.
-            </div>
-            <div className="application-sub-panel__notification-footer">
-              asd
-            </div>
-          </div>
+          <MatriculationEnrollmentDrawerList>
+            {hops.hopsMatriculation.exams.map((e) => (
+              <MatriculationEnrollmentDrawerListItem key={e.id} exam={e} />
+            ))}
+          </MatriculationEnrollmentDrawerList>
         </div>
       </ApplicationSubPanel>
     </>
@@ -277,7 +309,12 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      verifyMatriculationExam,
+    },
+    dispatch
+  );
 }
 
 export default connect(

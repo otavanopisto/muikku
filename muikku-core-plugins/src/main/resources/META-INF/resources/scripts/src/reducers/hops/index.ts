@@ -4,6 +4,7 @@ import {
   MatriculationEligibility,
   MatriculationEligibilityStatus,
   MatriculationExam,
+  MatriculationExamChangeLogEntry,
   MatriculationSubject,
 } from "~/generated/client";
 
@@ -32,10 +33,18 @@ interface HopsBackgroundState {}
 interface HopsStudyPlanState {}
 
 /**
+ * MatriculationExamWithHistory
+ */
+export interface MatriculationExamWithHistory extends MatriculationExam {
+  status: ReducerStateType;
+  changeLogs: MatriculationExamChangeLogEntry[];
+}
+
+/**
  * hopsMatriculation
  */
 interface hopsMatriculation {
-  exams: MatriculationExam[] | null;
+  exams: MatriculationExamWithHistory[] | null;
   subjects: MatriculationSubject[] | null;
   eligibility: MatriculationEligibility | null;
 }
@@ -103,7 +112,11 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsMatriculation: {
           ...state.hopsMatriculation,
-          exams: action.payload,
+          exams: action.payload.map<MatriculationExamWithHistory>((exam) => ({
+            ...exam,
+            status: "IDLE",
+            changeLogs: [],
+          })),
         },
       };
     case "HOPS_MATRICULATION_UPDATE_SUBJECTS":
@@ -123,6 +136,67 @@ export const hopsNew: Reducer<HopsState> = (
           eligibility: action.payload,
         },
       };
+
+    case "HOPS_MATRICULATION_UPDATE_EXAM_STATE": {
+      const updatedExams = state.hopsMatriculation.exams.map((exam) => {
+        if (exam.id === action.payload.examId) {
+          return {
+            ...exam,
+            studentStatus: action.payload.newState,
+          };
+        }
+        return exam;
+      });
+
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          exams: updatedExams,
+        },
+      };
+    }
+
+    case "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS": {
+      const updatedExams = state.hopsMatriculation.exams.map((exam) => {
+        if (exam.id === action.payload.examId) {
+          return {
+            ...exam,
+            status: action.payload.status,
+          };
+        }
+        return exam;
+      });
+
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          exams: updatedExams,
+        },
+      };
+    }
+
+    case "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY": {
+      const updatedExams = state.hopsMatriculation.exams.map((exam) => {
+        if (exam.id === action.payload.examId) {
+          return {
+            ...exam,
+            changeLogs: action.payload.history,
+            status: action.payload.status,
+          };
+        }
+        return exam;
+      });
+
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          exams: updatedExams,
+        },
+      };
+    }
 
     default:
       return state;
