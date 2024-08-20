@@ -6,21 +6,9 @@ import java.util.List;
 public class MatriculationPlanRESTModel {
 
   public MatriculationPlanRESTModel() {
-    this.studentMatriculationSubjects = new ArrayList<>();
+    this.setPlannedSubjects(new ArrayList<>());
   }
 
-  public MatriculationPlanRESTModel(List<MatriculationPlanSubjectRESTModel> studentMatriculationSubjects) {
-    this.studentMatriculationSubjects = studentMatriculationSubjects;
-  }
-
-  public List<MatriculationPlanSubjectRESTModel> getStudentMatriculationSubjects() {
-    return studentMatriculationSubjects;
-  }
-  
-  public void setStudentMatriculationSubjects(List<MatriculationPlanSubjectRESTModel> studentMatriculationSubjects) {
-    this.studentMatriculationSubjects = studentMatriculationSubjects;
-  }
-  
   public Boolean getGoalMatriculationExam() {
     return goalMatriculationExam;
   }
@@ -29,6 +17,14 @@ public class MatriculationPlanRESTModel {
     this.goalMatriculationExam = goalMatriculationExam;
   }
 
+  public List<MatriculationPlanSubjectRESTModel> getPlannedSubjects() {
+    return plannedSubjects;
+  }
+
+  public void setPlannedSubjects(List<MatriculationPlanSubjectRESTModel> plannedSubjects) {
+    this.plannedSubjects = plannedSubjects;
+  }
+
   private Boolean goalMatriculationExam;
-  private List<MatriculationPlanSubjectRESTModel> studentMatriculationSubjects;
+  private List<MatriculationPlanSubjectRESTModel> plannedSubjects;
 }
