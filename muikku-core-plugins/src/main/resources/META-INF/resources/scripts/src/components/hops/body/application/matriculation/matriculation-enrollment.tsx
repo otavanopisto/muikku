@@ -178,45 +178,53 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
       const term = e.term === "AUTUMN" ? "Syksy" : "Kevät";
       const year = e.year;
 
+      const functionByStatus = renderFunctionByStatus();
+
       return (
-        <div key={e.id}>
-          <div className="application-sub-panel__notification-content">
-            <span className="application-sub-panel__notification-content-title">
-              {`Olet ilmoittautunut YO-kirjoituksiin (${term} ${year}) ${new Date(
-                e.enrollment.enrollmentDate
-              ).toLocaleDateString("fi-Fi")}.`}
-            </span>
-          </div>
+        <div className="application-sub-panel__notification-item">
+          <div className="application-sub-panel__notification-footer">
+            <div className="application-sub-panel__notification-content">
+              <span className="application-sub-panel__notification-content-title">
+                {`Olet ilmoittautunut YO-kirjoituksiin (${term} ${year}) ${new Date(
+                  e.enrollment.enrollmentDate
+                ).toLocaleDateString("fi-Fi")}.`}
+              </span>
+            </div>
 
-          <div className="application-sub-panel__notification-content">
-            <span className="application-sub-panel__notification-content-label">
-              Ilmoittautuminen sulkeutuu:
-            </span>
+            <div className="application-sub-panel__notification-content">
+              <span className="application-sub-panel__notification-content-label">
+                Ilmoittautuminen sulkeutuu:
+              </span>
 
-            <span className="application-sub-panel__notification-content-data">
-              {new Date(e.ends).toLocaleDateString("fi-Fi")}
-            </span>
-          </div>
+              <span className="application-sub-panel__notification-content-data">
+                {new Date(e.ends).toLocaleDateString("fi-Fi")}
+              </span>
+            </div>
 
-          <div className="application-sub-panel__notification-content">
-            <span className="application-sub-panel__notification-content-label">
-              Ilmoittautumistila:
-            </span>
+            <div className="application-sub-panel__notification-content">
+              <span className="application-sub-panel__notification-content-label">
+                Ilmoittautumistila:
+              </span>
 
-            <span
-              className={`application-sub-panel__notification-content-data ${contentDataModifiers(
-                e
-              )
-                .map(
-                  (m) =>
-                    `application-sub-panel__notification-content-data--${m}`
+              <span
+                className={`application-sub-panel__notification-content-data ${contentDataModifiers(
+                  e
                 )
-                .join(" ")}`}
-            >
-              {statusMap[e.studentStatus]}
-            </span>
+                  .map(
+                    (m) =>
+                      `application-sub-panel__notification-content-data--${m}`
+                  )
+                  .join(" ")}`}
+              >
+                {statusMap[e.studentStatus]}
+              </span>
+            </div>
 
-            {renderFunctionByStatus()}
+            {functionByStatus && (
+              <div className="application-sub-panel__notification-content">
+                {functionByStatus}
+              </div>
+            )}
           </div>
         </div>
       );
@@ -224,14 +232,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
     const signedEnrollments = filteredExams.map(mapExam);
 
-    return (
-      <div className="application-sub-panel__notification-item">
-        <div className="application-sub-panel__notification-body application-sub-panel__notification-body"></div>
-        <div className="application-sub-panel__notification-footer">
-          {signedEnrollments}
-        </div>
-      </div>
-    );
+    return signedEnrollments;
   };
 
   if (hops.hopsMatriculationStatus !== "READY") {
@@ -241,34 +242,35 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
   return (
     <>
       <ApplicationSubPanel>
-        <div className="application-sub-panel__header">
+        <ApplicationSubPanel.Header>
           Ylioppilaskirjoituksiin ilmoittautuminen
-        </div>
-        <div className="application-sub-panel__body application-sub-panel__body">
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
           {renderEnrollmentLinks()}
           {renderSubmittedEnrollments()}
-        </div>
+        </ApplicationSubPanel.Body>
 
-        <div className="application-sub-panel__body application-sub-panel__body">
+        <ApplicationSubPanel.Body>
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen
               (riikka.turpeinen@otavia.fi).
             </div>
           </div>
-        </div>
+        </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
+
       <ApplicationSubPanel>
-        <div className="application-sub-panel__header">
+        <ApplicationSubPanel.Header>
           Ilmoittautumishistoria
-        </div>
-        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body modifier="studies-yo-subjects">
           <MatriculationEnrollmentDrawerList>
             {hops.hopsMatriculation.exams.map((e) => (
               <MatriculationEnrollmentDrawerListItem key={e.id} exam={e} />
             ))}
           </MatriculationEnrollmentDrawerList>
-        </div>
+        </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
     </>
   );
