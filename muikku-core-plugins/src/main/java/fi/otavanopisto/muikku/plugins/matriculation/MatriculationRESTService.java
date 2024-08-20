@@ -445,6 +445,7 @@ public class MatriculationRESTService {
     
     MatriculationExamEnrollment restModel = new MatriculationExamEnrollment();
 
+    restModel.setId(enrollment.getId());
     restModel.setAddress(enrollment.getAddress());
     restModel.setAttendances(attendances);
     restModel.setCanPublishName(enrollment.isCanPublishName());
