@@ -59,7 +59,7 @@ const MatriculationEnrollmentDrawerListItem = (
         <span className={`application-list__header-icon icon-books`}></span>
         <span className="application-list__header-primary">{headerTitle}</span>
       </ApplicationListItemHeader>
-      <ApplicationListItemBody className="application-list__item-body--course">
+      <ApplicationListItemBody>
         <AnimateHeight duration={400} height={isOpen ? "auto" : 0}>
           {exam.status !== "READY" ? (
             <div className="loader-empty"></div>

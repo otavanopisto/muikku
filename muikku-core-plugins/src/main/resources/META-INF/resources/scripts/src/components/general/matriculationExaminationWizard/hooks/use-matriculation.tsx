@@ -277,6 +277,7 @@ export const useMatriculation = (
     }));
 
     const {
+      id,
       changedContactInfo,
       message,
       enrolledAttendances,
@@ -350,6 +351,7 @@ export const useMatriculation = (
       }));
 
     const matriculationForm: MatriculationExamEnrollment = {
+      id,
       examId,
       name,
       ssn,
