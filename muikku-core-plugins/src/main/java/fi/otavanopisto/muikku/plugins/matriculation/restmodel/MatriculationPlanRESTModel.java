@@ -9,27 +9,26 @@ public class MatriculationPlanRESTModel {
     this.studentMatriculationSubjects = new ArrayList<>();
   }
 
-  public MatriculationPlanRESTModel(List<String> studentMatriculationSubjects) {
+  public MatriculationPlanRESTModel(List<MatriculationPlanSubjectRESTModel> studentMatriculationSubjects) {
     this.studentMatriculationSubjects = studentMatriculationSubjects;
   }
 
-  /**
-   * Returns student's matriculation subjects
-   * 
-   * @return student's matriculation subjects
-   */
-  public List<String> getStudentMatriculationSubjects() {
+  public List<MatriculationPlanSubjectRESTModel> getStudentMatriculationSubjects() {
     return studentMatriculationSubjects;
   }
   
-  /**
-   * Sets student's matriculation subjects
-   * 
-   * @param studentMatriculationSubjects student's matriculation subjects
-   */
-  public void setStudentMatriculationSubjects(List<String> studentMatriculationSubjects) {
+  public void setStudentMatriculationSubjects(List<MatriculationPlanSubjectRESTModel> studentMatriculationSubjects) {
     this.studentMatriculationSubjects = studentMatriculationSubjects;
   }
   
-  private List<String> studentMatriculationSubjects;
+  public Boolean getGoalMatriculationExam() {
+    return goalMatriculationExam;
+  }
+
+  public void setGoalMatriculationExam(Boolean goalMatriculationExam) {
+    this.goalMatriculationExam = goalMatriculationExam;
+  }
+
+  private Boolean goalMatriculationExam;
+  private List<MatriculationPlanSubjectRESTModel> studentMatriculationSubjects;
 }

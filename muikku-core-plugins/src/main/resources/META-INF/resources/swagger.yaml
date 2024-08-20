@@ -14470,12 +14470,28 @@ components:
       type: object
       description: MatriculationPlan object
       required:
+        - goalMatriculationExam
         - plannedSubjects
       properties:
+        goalMatriculationExam:
+          type: boolean
         plannedSubjects:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/MatriculationPlanSubject"
+
+    MatriculationPlanSubject:
+      type: object
+      description: MatriculationPlanSubject object
+      required:
+        - subject
+      properties:
+        subject:
+          type: string
+        term:
+          $ref: "#/components/schemas/MatriculationExamTerm"
+        year:
+          type: integer
 
     MatriculationPlanUpdateRequestBody:
       required: true
