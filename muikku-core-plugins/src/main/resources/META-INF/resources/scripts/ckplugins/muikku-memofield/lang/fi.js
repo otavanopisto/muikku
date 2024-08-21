@@ -6,5 +6,7 @@ CKEDITOR.plugins.setLang('muikku-memofield', 'fi', {
   propertiesDialogRows: 'Rivejä',
   propertiesDialogCols: 'Sarakkeita',
   propertiesDialogExample: 'Mallivastaus',
-  propertiesDialogRichEdit: 'Käytä tekstieditoria'
+  propertiesDialogRichEdit: 'Käytä tekstieditoria',
+  propertiesDialogMaxChars: 'Merkkiraja',
+  propertiesDialogMaxWords: 'Sanaraja'
 });

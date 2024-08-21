@@ -11,11 +11,19 @@ import $ from "~/lib/jquery";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import TextareaAutosize from "react-textarea-autosize";
+import { connect, Dispatch } from "react-redux";
 import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions/index";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+import "~/sass/elements/memofield.scss";
 
 /**
  * MemoFieldProps
@@ -28,6 +36,8 @@ interface MemoFieldProps extends WithTranslation {
     rows: string;
     name: string;
     richedit: boolean;
+    maxChars: string;
+    maxWords: string;
   };
   usedAs: UsedAs;
   readOnly?: boolean;
@@ -41,7 +51,7 @@ interface MemoFieldProps extends WithTranslation {
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;
-
+  displayNotification: DisplayNotificationTriggerType;
   invisible?: boolean;
 }
 
@@ -57,6 +67,7 @@ interface MemoFieldState {
   // We can use it but it's the parent managing function that modifies them
   // We only set them up in the initial state
   modified: boolean;
+  isPasting: boolean;
   synced: boolean;
   syncError: string;
 
@@ -105,24 +116,35 @@ const ckEditorConfig = {
 /**
  * characterCount - Counts the amount of characters
  * @param rawText rawText
- * @returns number of characters
+ * @returns characters void of spaces
  */
-function characterCount(rawText: string) {
-  return rawText === ""
-    ? 0
-    : rawText
-        .trim()
-        .replace(/(\s|\r\n|\r|\n)+/g, "")
-        .split("").length;
+function getCharacters(rawText: string) {
+  if (rawText === "") return [];
+
+  // force a string just in case
+  rawText = String(rawText);
+
+  // Remove any tags
+  rawText = rawText.replace(/<[^>]*>/g, "");
+  return rawText
+    .trim()
+    .replace(/(\s|\r\n|\r|\n)+/g, "")
+    .split("");
 }
 
 /**
  * wordCount - Counts the amount of words
  * @param rawText rawText
- * @returns number of words
+ * @returns words
  */
-function wordCount(rawText: string) {
-  return rawText === "" ? 0 : rawText.trim().split(/\s+/).length;
+function getWords(rawText: string) {
+  if (rawText === "") return [];
+  // force a string just in case
+  rawText = String(rawText);
+
+  // Remove any tags
+  rawText = rawText.replace(/<[^>]*>/g, "");
+  return rawText.trim().split(/\s+/);
 }
 
 /**
@@ -148,18 +170,21 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     // set the state with the counts
     this.state = {
       value,
-      words: wordCount(rawText),
-      characters: characterCount(rawText),
-
+      words: getWords(rawText).length,
+      characters: getCharacters(rawText).length,
+      isPasting: false,
       // modified synced and syncerror are false, true and null by default
       modified: false,
       synced: true,
       syncError: null,
-
       fieldSavedState: null,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
+    this.onInputPaste = this.onInputPaste.bind(this);
+    this.isInsideLastWord = this.isInsideLastWord.bind(this);
+    this.trimPastedContent = this.trimPastedContent.bind(this);
+    this.onCkeditorPaste = this.onCkeditorPaste.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
@@ -194,36 +219,233 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   }
 
   /**
+   * trimPastedContent - Trims the pasted content if it exceeds the character or word limit
+   * @param content
+   * @returns trimmed content
+   */
+  trimPastedContent(content: string): string {
+    // This will only work on plain text content
+
+    const characters = getCharacters(content);
+    let words = getWords(content);
+    const maxCharacterLimit = parseInt(this.props.content.maxChars);
+    const maxWordLimit = parseInt(this.props.content.maxWords);
+    let localeContext = "";
+
+    // If the pasted data exceeds the limit, trim it
+    if (characters.length > maxCharacterLimit) {
+      let count = 0;
+      let newData = "";
+      for (const char of content) {
+        if (count < maxCharacterLimit) {
+          newData += char;
+          // we count only non-space characters
+          if (/\S/.test(char)) {
+            count++;
+          }
+        } else {
+          break;
+        }
+      }
+      // reset content
+      content = newData;
+      // reset words so that we can check if the word limit
+      // is exceeded even after this trim
+      words = getWords(newData);
+      localeContext = "characters";
+    }
+
+    // If the number of words exceeds the limit, trim it
+    if (words.length > maxWordLimit) {
+      content = words.slice(0, maxWordLimit).join(" ");
+      localeContext = "words";
+    }
+    this.props.displayNotification(
+      this.props.t("notifications.contentLimitReached", {
+        ns: "materials",
+        context: localeContext,
+      }),
+      "info"
+    );
+    return content;
+  }
+
+  /**
+   * A function tha checks if it is the last word we are writing
+   * @param value
+   * @returns boolean
+   */
+  isInsideLastWord = (value: string) => {
+    const words = getWords(value);
+    const maxWords = parseInt(this.props.content.maxWords);
+
+    const atCharacterLimit =
+      getCharacters(value).length > parseInt(this.props.content.maxChars);
+
+    return (
+      // If the character limit is reached, then just stop this madness
+      !atCharacterLimit &&
+      // If the last word is not empty, then we are inside the last word
+      words.length === maxWords &&
+      words[words.length - 1].length >= 1
+    );
+  };
+
+  /**
+   * onInputPaste - paste handling for memofield
+   *
+   * @param e e
+   */
+  onInputPaste() {
+    this.setState({ isPasting: true });
+  }
+
+  /**
    * onInputChange - very simple this one is for only when raw input from the textarea changes
    * @param e e
    */
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    // and update the count
+    let newValue = e.target.value;
+    const maxCharacters = parseInt(this.props.content.maxChars);
+    const maxWords = parseInt(this.props.content.maxWords);
+
+    const exceedsCharacterLimit =
+      getCharacters(e.target.value).length > maxCharacters;
+
+    const exceedsWordLimit = getWords(e.target.value).length >= maxWords;
+
+    if (exceedsCharacterLimit || exceedsWordLimit) {
+      if (this.state.isPasting) {
+        e.preventDefault(); // Prevent the default action
+        newValue = this.trimPastedContent(newValue);
+      } else {
+        const isBeingDeleted =
+          getCharacters(e.target.value).length <
+          getCharacters(this.state.value).length;
+        // If the content is not being deleted or we are not inside the last word
+        // we reset the value to the state value
+        if (!isBeingDeleted && !this.isInsideLastWord(newValue)) {
+          // Limit is exceeded, we set the locale context for notification
+          const localeContext = exceedsCharacterLimit ? "characters" : "words";
+
+          this.props.displayNotification(
+            this.props.t("notifications.contentLimitReached", {
+              ns: "materials",
+              context: localeContext,
+            }),
+            "info"
+          );
+          newValue = this.state.value;
+        }
+      }
+    }
+
     this.setState({
-      value: e.target.value,
-      words: wordCount(e.target.value),
-      characters: characterCount(e.target.value),
+      value: newValue,
+      words: getWords(newValue).length,
+      characters: getCharacters(newValue).length,
     });
 
-    //we call the on change
     this.props.onChange &&
-      this.props.onChange(this, this.props.content.name, e.target.value);
+      this.props.onChange(this, this.props.content.name, newValue);
   }
 
   /**
+   * onCkeditorPaste
+   * @param event ckeditor event
+   * @param isPasting isPasting state
+   */
+  onCkeditorPaste() {
+    this.setState({
+      isPasting: true,
+    });
+  }
+  /**
    * onCKEditorChange - this one is for a ckeditor change
    * @param value value
+   * @param instance editor instance
    */
-  onCKEditorChange(value: string) {
-    // we need the raw text
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onCKEditorChange(value: string, instance: any) {
+    // we need the raw text and raw existing value
     const rawText = $(value).text();
-    // and update the state
+    const rawValue = $(this.state.value).text();
+
+    const maxCharacters = parseInt(this.props.content.maxChars);
+    const maxWords = parseInt(this.props.content.maxWords);
+
+    const exceedsCharacterLimit = getCharacters(rawText).length > maxCharacters;
+    const exceedsWordLimit = getWords(rawText).length > maxWords;
+
+    // If there's a restriction to the amount of characters or words,
+    // we need to check if the user has exceeded the limit
+
+    if (exceedsCharacterLimit || exceedsWordLimit) {
+      const localeContext = exceedsWordLimit ? "words" : "characters";
+      // If the user is pasting content, we need to check if the content
+      //exceeds the character or word limit
+
+      if (this.state.isPasting) {
+        value = this.state.value;
+        instance.setData(value, {
+          /**
+           * callback function
+           */
+          callback: () => {
+            // Move the cursor to the end of the content
+            const range = instance.createRange();
+            range.moveToElementEditEnd(range.root);
+            instance.getSelection().selectRanges([range]);
+          },
+        });
+        this.props.displayNotification(
+          this.props.t("notifications.pastedContentLimitReached", {
+            ns: "materials",
+            context: localeContext,
+          }),
+          "info"
+        );
+      } else {
+        // If the user has exceeded the limit and is not pasting, we need to revert the changes
+
+        const isBeingDeleted =
+          getCharacters(rawText).length < getCharacters(rawValue).length;
+
+        // if the content is not being deleted, or we are not inside the last word
+        // we reset the value to the state value
+        if (!isBeingDeleted && !this.isInsideLastWord(rawText)) {
+          // over the limit, not being deleted and outside the last word, reset to state value
+          value = this.state.value;
+
+          // no point in setting state or saving anything, we return the original value
+          instance.setData(value, {
+            /**
+             * callback function
+             */
+            callback: () => {
+              // Move the cursor to the end of the content
+              const range = instance.createRange();
+              range.moveToElementEditEnd(range.root);
+              instance.getSelection().selectRanges([range]);
+            },
+          });
+          this.props.displayNotification(
+            this.props.t("notifications.contentLimitReached", {
+              ns: "materials",
+              context: localeContext,
+            }),
+            "info"
+          );
+        }
+      }
+      return;
+    }
     this.setState({
       value,
-      words: wordCount(rawText),
-      characters: characterCount(rawText),
+      words: getWords(rawText).length,
+      characters: getCharacters(rawText).length,
+      isPasting: false,
     });
-
     this.props.onChange &&
       this.props.onChange(this, this.props.content.name, value);
   }
@@ -268,28 +490,36 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         unloadedField = !this.props.content.richedit ? (
           <textarea
             readOnly
-            className="material-page__memofield"
+            maxLength={
+              this.props.content.maxChars &&
+              parseInt(this.props.content.maxChars)
+            }
+            className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
         ) : (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
       } else {
         unloadedField = (
           <textarea
-            className="material-page__memofield"
+            maxLength={
+              this.props.content.maxChars &&
+              parseInt(this.props.content.maxChars)
+            }
+            className="memofield"
             rows={parseInt(this.props.content.rows)}
           />
         );
       }
 
       return (
-        <span ref="base" className="material-page__memofield-wrapper">
+        <span ref="base" className="memofield-wrapper">
           {unloadedField}
-          <span className="material-page__counter-wrapper" />
+          <span className="memofield__counter-wrapper" />
           {answerExampleComponent}
         </span>
       );
@@ -311,15 +541,16 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
-            className="material-page__memofield"
+            className="memofield"
             cols={parseInt(this.props.content.columns)}
             minRows={minRows}
             value={this.state.value}
             onChange={this.onInputChange}
+            onPaste={this.onInputPaste}
           />
         ) : (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -328,16 +559,26 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         // note how somehow numbers come as string...
         field = !this.props.content.richedit ? (
           <TextareaAutosize
-            className="material-page__memofield"
+            className="memofield"
             cols={parseInt(this.props.content.columns)}
             minRows={minRows}
             value={this.state.value}
             onChange={this.onInputChange}
+            onPaste={this.onInputPaste}
           />
         ) : (
           <CKEditor
             configuration={ckEditorConfig}
             onChange={this.onCKEditorChange}
+            onPaste={this.onCkeditorPaste}
+            maxChars={
+              this.props.content.maxChars &&
+              parseInt(this.props.content.maxChars)
+            }
+            maxWords={
+              this.props.content.maxWords &&
+              parseInt(this.props.content.maxWords)
+            }
           >
             {this.state.value}
           </CKEditor>
@@ -350,13 +591,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         field = !this.props.content.richedit ? (
           <TextareaAutosize
             readOnly
-            className="material-page__memofield material-page__memofield--evaluation"
+            className="memofield memofield--evaluation"
             value={this.state.value}
             onChange={this.onInputChange}
+            onPaste={this.onInputPaste}
           />
         ) : (
           <div
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation"
+            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -377,7 +619,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           })}
         />
         <span
-          className={`material-page__memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
@@ -385,21 +627,38 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
           {field}
-          <span className="material-page__counter-wrapper">
-            <span className="material-page__word-count-container">
-              <span className="material-page__word-count-title">
+          <span className="memofield__counter-wrapper">
+            <span
+              className={`memofield__word-count-container ${
+                this.state.words >= parseInt(this.props.content.maxWords)
+                  ? "LIMIT-REACHED"
+                  : ""
+              }`}
+            >
+              <span className="memofield__word-count-title">
                 {t("labels.wordCount", { ns: "materials" })}
               </span>
-              <span className="material-page__word-count">
-                {this.state.words}
+              <span className="memofield__word-count">
+                {" "}
+                {this.state.words}{" "}
+                {this.props.content.maxWords &&
+                  ` / ${this.props.content.maxWords}`}
               </span>
             </span>
-            <span className="material-page__character-count-container">
-              <span className="material-page__character-count-title">
+            <span
+              className={`memofield__character-count-container ${
+                this.state.characters >= parseInt(this.props.content.maxChars)
+                  ? "LIMIT-REACHED"
+                  : ""
+              }`}
+            >
+              <span className="memofield__character-count-title">
                 {t("labels.characterCount", { ns: "materials" })}
               </span>
-              <span className="material-page__character-count">
-                {this.state.characters}
+              <span className="memofield__character-count">
+                {this.state.characters}{" "}
+                {this.props.content.maxChars &&
+                  ` / ${this.props.content.maxChars}`}
               </span>
             </span>
           </span>
@@ -410,4 +669,14 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   }
 }
 
-export default withTranslation(["materials", "common"])(MemoField);
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({ displayNotification }, dispatch);
+}
+
+export default withTranslation(["materials", "common"])(
+  connect(null, mapDispatchToProps)(MemoField)
+);

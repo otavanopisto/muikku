@@ -31,7 +31,7 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
 
   const uTableHeadModifiers = ["language-table"];
 
-  if (usePlace === "studies") {
+  if (usePlace === "studies" || usePlace === "guardian") {
     uTableHeadModifiers.push("sticky");
   } else if (usePlace === "guider") {
     uTableHeadModifiers.push("sticky-inside-dialog");

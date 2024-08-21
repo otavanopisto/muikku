@@ -5,7 +5,6 @@ import {
   ActivityLogEntry,
   AssessmentRequest,
   WorkspaceAdditionalInfo,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
   WorkspaceSignupGroup,
@@ -28,6 +27,8 @@ import {
   MaterialEvaluation,
   WorkspaceAccess,
   WorkspaceMandatority,
+  WorkspaceSettings,
+  WorkspaceSignupMessage,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -105,7 +106,6 @@ export interface WorkspaceDataType {
   numVisits: number;
   published: boolean;
   urlName: string;
-  chatStatus?: WorkspaceChatStatus;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
   access?: WorkspaceAccess;
@@ -120,6 +120,8 @@ export interface WorkspaceDataType {
   subjects?: WorkspaceSubject[];
 
   //These are optional addons, and are usually not available
+  settings?: WorkspaceSettings;
+  signupMessage?: WorkspaceSignupMessage;
   activity?: WorkspaceActivity;
   studentActivity?: WorkspaceActivity;
   forumStatistics?: DiscussionWorkspaceStatistic;

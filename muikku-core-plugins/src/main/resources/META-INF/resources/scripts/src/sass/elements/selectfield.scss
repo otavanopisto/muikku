@@ -1,0 +1,44 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.selectfield-wrapper {
+  align-items: center;
+  display: inline-flex;
+  flex-flow: row wrap;
+  position: relative;
+}
+
+.selectfield-wrapper--list {
+  vertical-align: middle;
+}
+
+.selectfield[disabled] {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+}
+
+.selectfield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  margin: 4px;
+  padding: 3px;
+
+  @include form-focus;
+}
+
+.selectfield.correct-answer {
+  border-color: $color-correct-answer;
+}
+
+.selectfield.incorrect-answer {
+  border-color: $color-incorrect-answer;
+}
+
+.selectfield__item-container {
+  @include taskfield-text;
+
+  padding: 2px 4px; // This affects only select element that has size attribute set (element is list)
+}

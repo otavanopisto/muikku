@@ -59,6 +59,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
@@ -120,6 +121,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -506,20 +510,26 @@ public class CoursePickerRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response getCanSignup(@PathParam("ID") Long workspaceEntityId) {
     
+    CanSignupRestModel restModel = new CanSignupRestModel();
+    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    boolean canSignup = getCanSignup(workspaceEntity);
+    // Student may not have been evaluated yet (also populates return object with assessment states)
     
-    if (canSignup) {
-      canSignup = !getIsAlreadyEvaluated(workspaceEntity);
+    restModel.setCanSignup(!getIsAlreadyEvaluated(workspaceEntity, restModel));
+    
+    // Allowed user groups must match 
+    
+    if (restModel.getCanSignup()) {
+      restModel.setCanSignup(getCanSignup(workspaceEntity));
     }
     
     // #5950: If both student and workspace have curriculum(s), they have to match
     
-    if (canSignup) {
+    if (restModel.getCanSignup()) {
       Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
       if (searchProviderIterator.hasNext()) {
         SearchProvider searchProvider = searchProviderIterator.next();
@@ -534,7 +544,7 @@ public class CoursePickerRESTService extends PluginRESTService {
               @SuppressWarnings("unchecked")
               List<String> workspaceCurriculums = (List<String>) result.get("curriculumIdentifiers");
               if (workspaceCurriculums != null && workspaceCurriculums.size() > 0) {
-                canSignup = workspaceCurriculums.contains(studentCurriculum);
+                restModel.setCanSignup(workspaceCurriculums.contains(studentCurriculum));
               }
             }
           }
@@ -542,18 +552,18 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(canSignup).build();
+    if (restModel.getAssessmentStates() == null) {
+      restModel.setAssessmentStates(Collections.emptyList());
+    }
+    
+    return Response.ok(restModel).build();
   }
   
   @POST
   @Path("/workspaces/{ID}/signup")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createWorkspaceUser(@PathParam("ID") Long workspaceEntityId, 
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -600,8 +610,19 @@ public class CoursePickerRESTService extends PluginRESTService {
 
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     
-    workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), entity.getMessage());
+    workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), null);
 
+    /**
+     * Send workspace signup message to student
+     */
+    boolean studentsSignupMessageSent = workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
+    String studentsSignupMessageSentNotification = studentsSignupMessageSent
+        ? localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageSent")
+        : localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageNotSent");
+
+    /**
+     * Setup the message which goes to the teachers
+     */
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, userName, workspaceName);
 
@@ -609,15 +630,9 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, userIdentifier.toId(), userName);
     String content;
-    if (StringUtils.isEmpty(entity.getMessage())) {
-      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
-      content = MessageFormat.format(content, studentLink, workspaceLink);
-    }
-    else {
-      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
-      String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
-      content = MessageFormat.format(content, studentLink, workspaceLink, blockquoteMessage);
-    }
+
+    content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
+    content = MessageFormat.format(content, studentLink, workspaceLink, studentsSignupMessageSentNotification);
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
       // TODO: Category?
@@ -654,23 +669,29 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private boolean getIsAlreadyEvaluated(WorkspaceEntity workspaceEntity) {
+  private boolean getIsAlreadyEvaluated(WorkspaceEntity workspaceEntity, CanSignupRestModel restModel) {
     Boolean isEvaluated = false;
     if (sessionController.isLoggedIn()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier());
-      if (workspaceUserEntity != null) {
-        WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
-        WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
-        if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
-          List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
-          for (WorkspaceAssessmentState assessmentState : assessmentStates) {
-            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
-              isEvaluated = true;
-              break;
+      List<WorkspaceAssessmentState> states = new ArrayList<>();
+      List<UserSchoolDataIdentifier> usdis = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(sessionController.getLoggedUserEntity());
+      for (UserSchoolDataIdentifier usdi : usdis) {
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, usdi.schoolDataIdentifier());
+        if (workspaceUserEntity != null) {
+          WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
+          WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
+          if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
+            List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+            states.addAll(assessmentStates);
+            for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+              if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
+                isEvaluated = true;
+                break;
+              }
             }
-          }
-        }  
+          }  
+        }
       }
+      restModel.setAssessmentStates(states);
     }
     return isEvaluated;
   }

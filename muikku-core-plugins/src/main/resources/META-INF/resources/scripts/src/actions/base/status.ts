@@ -3,7 +3,7 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import MApi from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
-import { WorkspaceBasicInfo } from "~/generated/client";
+import { ChatUser, WorkspaceBasicInfo } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { Role } from "~/generated/client";
 
@@ -19,6 +19,11 @@ export type UPDATE_STATUS_HAS_IMAGE = SpecificActionType<
 export type UPDATE_STATUS = SpecificActionType<
   "UPDATE_STATUS",
   Partial<StatusType>
+>;
+
+export type UPDATE_STATUS_CHAT_SETTINGS = SpecificActionType<
+  "UPDATE_STATUS_CHAT_SETTINGS",
+  ChatUser
 >;
 
 export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
@@ -49,6 +54,20 @@ export interface LoadWorkspaceStatusInfoType {
  * LoadWorkspaceStatusInfoType
  */
 export interface LoadEnviromentalForumAreaPermissionsType {
+  (): AnyActionType;
+}
+
+/**
+ * LoadChatSettingsType
+ */
+export interface LoadStatusChatSettingsType {
+  (): AnyActionType;
+}
+
+/**
+ * UpdateStatusChatSettingsType
+ */
+export interface UpdateStatusChatSettingsType {
   (): AnyActionType;
 }
 
@@ -86,6 +105,9 @@ async function loadWhoAMI(
         ),
         ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
         ANNOUNCER_TOOL: whoAmI.permissions.includes("ANNOUNCER_TOOL"),
+        CHAT_MANAGE_PUBLIC_ROOMS: whoAmI.permissions.includes(
+          "CHAT_MANAGE_PUBLIC_ROOMS"
+        ),
         COMMUNICATOR_GROUP_MESSAGING: whoAmI.permissions.includes(
           "COMMUNICATOR_GROUP_MESSAGING"
         ),
@@ -99,6 +121,7 @@ async function loadWhoAMI(
         FORUM_UPDATEENVIRONMENTFORUM: whoAmI.permissions.includes(
           "FORUM_UPDATEENVIRONMENTFORUM"
         ),
+        GUARDIAN_VIEW: whoAmI.permissions.includes("GUARDIAN_VIEW"),
         GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes(
@@ -111,8 +134,6 @@ async function loadWhoAMI(
         PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
         LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
-        CHAT_ACTIVE: whoAmI.services.chat.isActive,
-        CHAT_AVAILABLE: whoAmI.services.chat.isAvailable,
         FORUM_ACCESSENVIRONMENTFORUM: whoAmI.permissions.includes(
           "FORUM_ACCESSENVIRONMENTFORUM"
         ),
@@ -317,6 +338,24 @@ const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissions
   };
 
 /**
+ * loadChatSettings
+ */
+const updateStatusChatSettings: LoadStatusChatSettingsType =
+  function loadChatSettings() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const chatApi = MApi.getChatApi();
+      const chatSettings = await chatApi.getChatSettings();
+      dispatch({
+        type: "UPDATE_STATUS_CHAT_SETTINGS",
+        payload: chatSettings,
+      });
+    };
+  };
+
+/**
  * LogoutTriggerType
  */
 export interface LogoutTriggerType {
@@ -378,6 +417,7 @@ export default {
   loadStatus,
   loadWorkspaceStatus,
   loadEnviromentalForumAreaPermissions,
+  updateStatusChatSettings,
 };
 export {
   logout,
@@ -386,4 +426,5 @@ export {
   loadStatus,
   loadWorkspaceStatus,
   loadEnviromentalForumAreaPermissions,
+  updateStatusChatSettings,
 };

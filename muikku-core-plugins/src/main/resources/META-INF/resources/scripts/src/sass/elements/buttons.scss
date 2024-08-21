@@ -677,6 +677,15 @@
   font-weight: 600;
 }
 
+.button--chat {
+  background: transparent;
+  color: $color-info;
+  font-size: 0.75rem;
+  margin: 0 4px;
+  padding: 0;
+  text-transform: none;
+}
+
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
@@ -789,12 +798,6 @@
   width: 2.5rem;
 }
 
-.button-icon--edit-hops-history-event-description {
-  font-size: 0.8125rem;
-  height: auto;
-  width: auto;
-}
-
 .button-icon--workspace-users-contact {
   color: $color-info;
 }
@@ -813,6 +816,39 @@
 
 .button-icon--discussion-action-active {
   color: $color-info;
+}
+
+.button-icon--chat {
+  background: transparent;
+  border-radius: 100%;
+  color: $color-default-contrast;
+  font-size: 0.875rem;
+  height: 1.625rem;
+  padding: 5px;
+  width: 1.625rem;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background: transparent;
+  }
+}
+
+.button-icon--chat-mobile-footer {
+  background: $color-default;
+  color: lighten($color-default-contrast, 20%);
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
+}
+
+.button-icon--chat-invert {
+  color: $color-default;
+}
+
+.button-icon--chat-block {
+  color: $color-fatal;
 }
 
 .button-pill {
@@ -1015,8 +1051,9 @@
   background-color: $color-main-function-button-pill-settings-background;
   color: $color-main-function-button-pill-settings-text;
   font-size: $button-pill-settings-font-size;
-  height: auto;
+  height: 1.5rem;
   vertical-align: top;
+  width: 1.5rem;
 
   &:hover,
   &.hover {
@@ -1963,6 +2000,81 @@
   }
 }
 
+.button-pill--autoreply-switch {
+  align-items: center;
+  appearance: none;
+  background: $color-default;
+  border: 2px solid $color-default;
+  border-radius: 10px; // This is half of the whole width of the switch
+  box-shadow: 0 0 0 1px $color-default-helper;
+  display: flex;
+  justify-content: center;
+  margin: 0 20px;
+  position: relative;
+  rotate: (-90deg);
+  width: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
+
+  &::after {
+    background: $color-default-helper;
+    border-radius: 100%;
+    content: " ";
+    height: $generic-mobile-switch-size;
+    position: absolute;
+    top: 0;
+    transition: 0.3s;
+    width: $generic-mobile-switch-size;
+  }
+
+  &:hover {
+    background: $color-default;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    border-radius: 12px; // This is half of the whole width of the switch
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+
+    &::after {
+      height: $generic-desktop-switch-size;
+      width: $generic-desktop-switch-size;
+    }
+  }
+}
+
+.button-pill--autoreply-switch-active {
+  background: lighten($color-success, 45%);
+  border-color: lighten($color-success, 45%);
+  box-shadow: 0 0 0 1px $color-success;
+
+  &::after {
+    background: $color-success;
+    border-radius: 100%;
+    content: " ";
+    height: $generic-mobile-switch-size;
+    position: absolute;
+    top: calc(100% - #{$generic-mobile-switch-size} * 2);
+    transform: translateY(100%);
+    width: $generic-mobile-switch-size;
+  }
+
+  &:hover {
+    background: lighten($color-success, 45%);
+  }
+
+  @include breakpoint($breakpoint-pad) {
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+
+    &::after {
+      height: $generic-desktop-switch-size;
+      top: calc(100% - #{$generic-desktop-switch-size} * 2);
+      width: $generic-desktop-switch-size;
+    }
+  }
+}
+
 // Teacher's Worklist
 .button-pill--expand-worklist {
   background: transparent;
@@ -2221,6 +2333,13 @@
     background-color: transparent;
     color: $color-disabled;
   }
+}
+
+.button-icon--back-to-toc {
+  background: transparent;
+  border: 0;
+  font-size: 1rem;
+  height: 1.5rem;
 }
 
 .button-icon--whatsapp-me {

@@ -9,6 +9,7 @@ import {
   loadEnviromentalForumAreaPermissions,
   loadStatus,
   loadWorkspaceStatus,
+  updateStatusChatSettings,
 } from "~/actions/base/status";
 
 /**
@@ -28,12 +29,14 @@ function getOptionValue(option: boolean) {
  * @param options options
  * @param options.setupMessages setupMessages
  * @param options.setupWorkspacePermissions setupWorkspacePermissions
+ * @param options.setupChat setupChat
  */
 export default async function (
   store: Store<StateType>,
   options: {
     setupMessages?: boolean;
     setupWorkspacePermissions?: boolean;
+    setupChat?: boolean;
   } = {}
 ) {
   let actionsAndCallbacks = {};
@@ -49,6 +52,10 @@ export default async function (
       },
       "Communicator:threaddeleted": {
         actions: [updateUnreadMessageThreadsCount],
+        callbacks: [],
+      },
+      "chat:settings-change": {
+        actions: [updateStatusChatSettings],
         callbacks: [],
       },
     };
@@ -77,6 +84,14 @@ export default async function (
     store.dispatch(<Action>updateUnreadMessageThreadsCount());
 
   /**
+   * Loads chat settings after logging status has been resolved by loadStatus action.
+   */
+  const loadChatSettings = () =>
+    getOptionValue(options.setupChat) &&
+    store.getState().status.loggedIn &&
+    store.dispatch(<Action>updateStatusChatSettings());
+
+  /**
    * Loads area permissions for environmental forum
    * after logging status has been resolved by loadStatus action.
    */
@@ -89,6 +104,7 @@ export default async function (
       const resolveFn = () => {
         loadAreaPermissions();
         updateUnreadThreadMessagesCount();
+        loadChatSettings();
         resolve(initializeWebsocket(actionsAndCallbacks));
       };
       store.dispatch(<Action>loadStatus(resolveFn));
@@ -104,6 +120,7 @@ export default async function (
         if (loadedTotal === 2) {
           loadAreaPermissions();
           updateUnreadThreadMessagesCount();
+          loadChatSettings();
           resolve(initializeWebsocket(actionsAndCallbacks));
         }
       };

@@ -9,7 +9,7 @@ export default function tabOrMouse() {
 
   // Re-enable focus styling when Tab is pressed
   document.body.addEventListener("keydown", function (event) {
-    if (event.keyCode === 9) {
+    if (event.key === "Tab") {
       document.body.classList.remove("using-mouse");
     }
   });

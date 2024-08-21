@@ -306,15 +306,17 @@ class HopsStartingLevel extends React.Component<
                   )
                 )}
               </HopsLanguageGradeTable>
-              <div className="hops-container__row">
-                <Button
-                  buttonModifiers={["add-hops-row"]}
-                  onClick={this.handleAddNewCustomLngClick}
-                  icon="plus"
-                >
-                  Lisää kieli
-                </Button>
-              </div>
+              {!this.props.disabled ? (
+                <div className="hops-container__row">
+                  <Button
+                    buttonModifiers={["add-hops-row"]}
+                    onClick={this.handleAddNewCustomLngClick}
+                    icon="plus"
+                  >
+                    Lisää kieli
+                  </Button>
+                </div>
+              ) : null}
             </div>
           </div>
         </fieldset>

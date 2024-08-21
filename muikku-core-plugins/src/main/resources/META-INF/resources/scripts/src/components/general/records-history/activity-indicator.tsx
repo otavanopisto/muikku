@@ -40,8 +40,17 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             </span>
           }
         >
-          <div className="activity-badge__item activity-badge__item--assignment">
+          <div
+            tabIndex={0}
+            className="activity-badge__item activity-badge__item--assignment"
+          >
             <div
+              aria-label={t("wcag.assignmentsActivity", {
+                ns: "studies",
+                percent: Math.round(
+                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                ),
+              })}
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
                 Math.round(
@@ -68,8 +77,17 @@ const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
             </span>
           }
         >
-          <div className="activity-badge__item activity-badge__item--exercise">
+          <div
+            tabIndex={0}
+            className="activity-badge__item activity-badge__item--exercise"
+          >
             <div
+              aria-label={t("wcag.exercisesActivity", {
+                ns: "studies",
+                percent: Math.round(
+                  (credit.exercisesAnswered / credit.exercisesTotal) * 100
+                ),
+              })}
               className={
                 "activity-badge__unit-bar activity-badge__unit-bar--" +
                 Math.round(

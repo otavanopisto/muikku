@@ -24,7 +24,7 @@ import "~/sass/elements/material-admin.scss";
 import TocTopic, {
   Toc,
   TocElement,
-  ToggleOpenHandle,
+  TocTopicRef,
 } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
@@ -44,9 +44,15 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import TableOfContentPDFDialog from "./table-of-content-pdf-dialog";
 import {
   MaterialCompositeReply,
-  MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
+
+/**
+ * TocElementRef
+ */
+interface TocElementRef {
+  [key: string]: HTMLAnchorElement[];
+}
 
 /**
  * ContentProps
@@ -74,30 +80,6 @@ interface ContentState {
 }
 
 /**
- * isScrolledIntoView
- * @param el el
- * @returns boolean
- */
-function isScrolledIntoView(el: HTMLElement) {
-  const rect = el.getBoundingClientRect();
-  const elemTop = rect.top;
-  const elemBottom = rect.bottom;
-
-  const element = document.querySelector(
-    ".content-panel__navigation"
-  ) as HTMLElement;
-
-  if (element) {
-    const isVisible =
-      elemTop < window.innerHeight - 100 &&
-      elemBottom >= element.offsetTop + 50;
-    return isVisible;
-  } else {
-    return true;
-  }
-}
-
-/**
  * ContentComponent
  */
 class ContentComponent extends SessionStateComponent<
@@ -106,7 +88,10 @@ class ContentComponent extends SessionStateComponent<
 > {
   private storedLastUpdateServerExecution: Function;
   private originalMaterials: MaterialContentNodeWithIdAndLogic[];
-  private topicRefs: ToggleOpenHandle[];
+  private topicRefs: TocTopicRef[];
+  private elementRefs: TocElementRef;
+
+  private tocElementFocusIndexRef: number;
 
   /**
    * constructor
@@ -118,8 +103,6 @@ class ContentComponent extends SessionStateComponent<
     const sessionId = props.status.loggedIn
       ? `${props.workspace.id}.${props.status.userId}`
       : `${props.workspace.id}`;
-
-    this.topicRefs = [];
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -148,16 +131,14 @@ class ContentComponent extends SessionStateComponent<
       this.onInteractionBetweenSubnodes.bind(this);
     this.onDropBetweenSubnodes = this.onDropBetweenSubnodes.bind(this);
     this.onDropBetweenSections = this.onDropBetweenSections.bind(this);
-  }
 
-  /**
-   * componentDidUpdate
-   * @param prevProps prevProps
-   */
-  componentDidUpdate(prevProps: ContentProps) {
-    if (prevProps.activeNodeId !== this.props.activeNodeId) {
-      this.refresh();
-    }
+    this.topicRefs = [];
+    this.elementRefs = props.materials.reduce<TocElementRef>((acc, node) => {
+      acc[`s-${node.workspaceMaterialId}`] = [];
+      return acc;
+    }, {});
+
+    this.tocElementFocusIndexRef = 0;
   }
 
   /**
@@ -166,27 +147,20 @@ class ContentComponent extends SessionStateComponent<
    */
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
+    // If materials have changed, specifically length, reset elementRefs
+    if (this.props.materials.length !== nextProps.materials.length) {
+      this.elementRefs = nextProps.materials.reduce<TocElementRef>(
+        (acc, node) => {
+          acc[`s-${node.workspaceMaterialId}`] = [];
+          return acc;
+        },
+        {}
+      );
+    }
+
     this.setState({
       materials: nextProps.materials,
     });
-  }
-
-  /**
-   * refresh
-   * @param props props
-   */
-  refresh(props: ContentProps = this.props) {
-    const tocElement = this.refs[props.activeNodeId] as TocElement;
-    if (tocElement) {
-      const element = tocElement.getElement();
-      if (!isScrolledIntoView(element)) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "start",
-        });
-      }
-    }
   }
 
   /**
@@ -419,11 +393,26 @@ class ContentComponent extends SessionStateComponent<
    * handleOpenAllSections
    * @param type type
    */
-  handleToggleAllSectionsOpen =
+  handleToggleAllSectionsClick =
     (type: "close" | "open") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       for (const ref of this.topicRefs) {
         ref.toggleOpen(type);
+      }
+    };
+
+  /**
+   * handleToggleAllSectionKeyDown
+   * @param type type
+   */
+  handleToggleAllSectionKeyDown =
+    (type: "close" | "open") => (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+        for (const ref of this.topicRefs) {
+          ref.toggleOpen(type);
+        }
       }
     };
 
@@ -448,6 +437,14 @@ class ContentComponent extends SessionStateComponent<
     } else {
       newAssignmentFilter.push(clickedValue);
     }
+
+    this.elementRefs = this.state.materials.reduce<TocElementRef>(
+      (acc, node) => {
+        acc[`s-${node.workspaceMaterialId}`] = [];
+        return acc;
+      },
+      {}
+    );
 
     // Using session component to store filters
     this.setStateAndStore(
@@ -535,6 +532,124 @@ class ContentComponent extends SessionStateComponent<
   };
 
   /**
+   * Sets ref to topic
+   * @param index index
+   */
+  handleCallbackTocTopicRef = (index: number) => (ref: TocTopicRef) => {
+    this.topicRefs[index] = ref;
+  };
+
+  /**
+   * Sets ref to element
+   * @param parentIdentifier parentIdentifier
+   * @param index index
+   */
+  handleCallbackTocElementRef =
+    (parentIdentifier: string, index: number) => (ref: HTMLAnchorElement) => {
+      this.elementRefs[parentIdentifier][index] = ref;
+    };
+
+  /**
+   * Handle keydown event on toc topic
+   * @param topicIdentifier topicIdentifier
+   */
+  handleTocTopicTitleKeyDown =
+    (topicIdentifier: string) => (e: React.KeyboardEvent) => {
+      // Change focus to first element in topic
+      if (e.key === "ArrowDown") {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.tocElementFocusIndexRef = 0;
+
+        // Check if there are any elements in topic top focus
+        if (this.elementRefs[topicIdentifier].length > 0) {
+          this.elementRefs[topicIdentifier][
+            this.tocElementFocusIndexRef
+          ].setAttribute("tabindex", "0");
+          this.elementRefs[topicIdentifier][
+            this.tocElementFocusIndexRef
+          ].focus();
+        }
+      }
+    };
+
+  /**
+   * Handles keydown event on toc element
+   * @param parentNodeIdentifier parentNodeIdentifier
+   */
+  handleTocElementKeyDown =
+    (parentNodeIdentifier: string) => (e: React.KeyboardEvent) => {
+      /**
+       * elementFocusChange
+       * @param operation operation
+       */
+      const elementFocusChange = (operation: "decrement" | "increment") => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (operation === "decrement") {
+          this.tocElementFocusIndexRef--;
+        } else {
+          this.tocElementFocusIndexRef++;
+        }
+
+        if (this.tocElementFocusIndexRef < 0) {
+          this.tocElementFocusIndexRef =
+            this.elementRefs[parentNodeIdentifier].length - 1;
+        } else if (
+          this.tocElementFocusIndexRef >
+          this.elementRefs[parentNodeIdentifier].length - 1
+        ) {
+          this.tocElementFocusIndexRef = 0;
+        }
+
+        this.elementRefs[parentNodeIdentifier][
+          this.tocElementFocusIndexRef
+        ].setAttribute("tabindex", "0");
+        this.elementRefs[parentNodeIdentifier][
+          this.tocElementFocusIndexRef
+        ].focus();
+      };
+
+      if (e.key === "ArrowUp") {
+        elementFocusChange("decrement");
+      }
+
+      if (e.key === "ArrowDown") {
+        elementFocusChange("increment");
+      }
+    };
+
+  /**
+   * Handle blur event on toc element
+   * @param parentNodeIdentifier parentNodeIdentifier
+   * @param elementIndex elementIndex
+   */
+  handleTocElementBlur =
+    (parentNodeIdentifier: string, elementIndex: number) =>
+    (e: React.FocusEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.elementRefs[parentNodeIdentifier][elementIndex].setAttribute(
+        "tabindex",
+        "-1"
+      );
+    };
+
+  /**
+   * Handle focus event on toc element
+   * @param elementIndex elementIndex
+   */
+  handleTocElementFocus = (elementIndex: number) => (e: React.FocusEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.tocElementFocusIndexRef = elementIndex;
+  };
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -550,136 +665,138 @@ class ContentComponent extends SessionStateComponent<
     return (
       <Toc
         modifier="workspace-materials"
-        // tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}
         tocHeaderExtraContent={
           <>
             <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}>
               <IconButton
                 icon="arrow-down"
-                aria-label={t("actions.openAll")}
+                aria-label={t("wcag.tocTopicAllExpand", {
+                  ns: "materials",
+                })}
                 buttonModifiers={["toc-action"]}
-                onClick={this.handleToggleAllSectionsOpen("open")}
+                onClick={this.handleToggleAllSectionsClick("open")}
+                onKeyDown={this.handleToggleAllSectionKeyDown("open")}
               />
             </Dropdown>
             <Dropdown openByHover content={<p>{t("actions.closeAll")}</p>}>
               <IconButton
                 icon="arrow-up"
-                aria-label={t("actions.closeAll")}
+                aria-label={t("wcag.tocTopicAllCollapse", {
+                  ns: "materials",
+                })}
                 buttonModifiers={["toc-action"]}
-                onClick={this.handleToggleAllSectionsOpen("close")}
+                onClick={this.handleToggleAllSectionsClick("close")}
+                onKeyDown={this.handleToggleAllSectionKeyDown("close")}
               />
             </Dropdown>
             <Dropdown
-              content={
-                <>
-                  <div className="dropdown__container-item">
-                    <div className="filter-category">
-                      <div className="filter-category__label">
-                        {t("labels.pagesShown", { ns: "materials" })}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="THEORY"
-                        id="theory-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "THEORY"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="theory-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.theoryPages", { ns: "materials" })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="EXERCISE"
-                        id="exercise-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "EXERCISE"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="exercise-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.exercises", { ns: "materials" })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="EVALUATED"
-                        id="assignment-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "EVALUATED"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="assignment-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.evaluables", {
-                          ns: "materials",
-                        })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="JOURNAL"
-                        id="journal-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "JOURNAL"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="journal-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.journalAssignments", { ns: "materials" })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="INTERIM_EVALUATION"
-                        id="interim-evaluation-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "INTERIM_EVALUATION"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="interim-evaluation-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.interimEvaluationPages", {
-                          ns: "materials",
-                        })}
-                      </label>
-                    </div>
-                  </div>
-                </>
-              }
+              items={[
+                <div
+                  key="theory-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="THEORY"
+                    id="theory-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "THEORY"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="theory-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.theoryPages", { ns: "materials" })}
+                  </label>
+                </div>,
+                <div
+                  key="exercise-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="EXERCISE"
+                    id="exercise-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "EXERCISE"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="exercise-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.exercises", { ns: "materials" })}
+                  </label>
+                </div>,
+                <div
+                  key="evaluated-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="EVALUATED"
+                    id="assignment-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "EVALUATED"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="assignment-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.evaluables", {
+                      ns: "materials",
+                    })}
+                  </label>
+                </div>,
+                <div
+                  key="journal-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="JOURNAL"
+                    id="journal-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "JOURNAL"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="journal-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.journalAssignments", { ns: "materials" })}
+                  </label>
+                </div>,
+
+                <div
+                  key="interim-evaluation-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="INTERIM_EVALUATION"
+                    id="interim-evaluation-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "INTERIM_EVALUATION"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="interim-evaluation-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.interimEvaluationPages", {
+                      ns: "materials",
+                    })}
+                  </label>
+                </div>,
+              ]}
             >
               <IconButton
                 icon="filter"
@@ -745,16 +862,22 @@ class ContentComponent extends SessionStateComponent<
               ? [this.buildViewRestrictionModifiers(node.viewRestrict, true)]
               : [];
 
+          const filteredChildren = node.children.filter((child) => {
+            const isTheory = child.assignmentType === null;
+
+            return this.state.assignmentTypeFilters.includes(
+              child.assignmentType || (isTheory && "THEORY")
+            );
+          });
+
           const topic = (
             <TocTopic
-              ref={(ref) => {
-                this.topicRefs[nodeIndex] = ref;
-              }}
+              ref={this.handleCallbackTocTopicRef(nodeIndex)}
               isActive={this.isSectionActive(node)}
               topicId={
                 this.props.status.loggedIn
-                  ? `${node.workspaceMaterialId}_${this.props.status.userId}`
-                  : node.workspaceMaterialId
+                  ? `tocTopic-${node.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${node.workspaceMaterialId}`
               }
               name={node.title}
               isHidden={node.hidden}
@@ -767,10 +890,13 @@ class ContentComponent extends SessionStateComponent<
               modifiers={topicClassMods}
               iconAfter={iconTopic}
               iconAfterTitle={iconTitleTopic}
+              onTitleKeyDown={this.handleTocTopicTitleKeyDown(
+                `s-${node.workspaceMaterialId}`
+              )}
               language={node.titleLanguage || this.props.workspace.language}
             >
               {!isTocTopicViewRestrictedFromUser &&
-                node.children.map((subnode) => {
+                filteredChildren.map((subnode, subNodeIndex) => {
                   // Boolean if there is view Restriction for toc element
                   const isTocElementViewRestricted =
                     subnode.viewRestrict === MaterialViewRestriction.LoggedIn ||
@@ -782,14 +908,6 @@ class ContentComponent extends SessionStateComponent<
                   const isJournal = subnode.assignmentType === "JOURNAL";
                   const isInterimEvaluation =
                     subnode.assignmentType === "INTERIM_EVALUATION";
-                  const isTheory = subnode.assignmentType === null;
-
-                  // Boolean if toc element is filtered out
-                  // if there is filters, then only elements that match the filters are shown
-                  const filteredOut =
-                    !this.state.assignmentTypeFilters.includes(
-                      subnode.assignmentType || (isTheory && "THEORY")
-                    );
 
                   //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
                   const modifier = isAssignment
@@ -805,6 +923,7 @@ class ContentComponent extends SessionStateComponent<
                   let icon: string | null = null;
                   let iconTitle: string | null = null;
                   let className: string | null = null;
+                  let ariaLabel: string | null = null;
 
                   const compositeReplies =
                     this.props.materialReplies &&
@@ -830,12 +949,20 @@ class ContentComponent extends SessionStateComponent<
                           context: "done",
                           ns: "materials",
                         });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "done",
+                          ns: "materials",
+                        });
                         break;
                       case "SUBMITTED":
                         icon = "check";
                         className = "toc__item--submitted";
                         iconTitle = t("labels.assignment", {
                           context: "returned",
+                          ns: "materials",
+                        });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "submitted",
                           ns: "materials",
                         });
                         break;
@@ -846,8 +973,10 @@ class ContentComponent extends SessionStateComponent<
                           context: "cancelled",
                           ns: "materials",
                         });
-                        break;
-
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "withdrawn",
+                          ns: "materials",
+                        });
                         break;
                       case "INCOMPLETE":
                         icon = "check";
@@ -856,7 +985,10 @@ class ContentComponent extends SessionStateComponent<
                           context: "incomplete",
                           ns: "materials",
                         });
-                        break;
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "incomplete",
+                          ns: "materials",
+                        });
                         break;
                       case "FAILED":
                         icon = "thumb-down";
@@ -866,6 +998,10 @@ class ContentComponent extends SessionStateComponent<
                           ns: "materials",
                         });
                         iconTitle = "Tittel";
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "failed",
+                          ns: "materials",
+                        });
                         break;
                       case "PASSED":
                         icon = "thumb-up";
@@ -874,8 +1010,11 @@ class ContentComponent extends SessionStateComponent<
                           context: "passed",
                           ns: "materials",
                         });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "passed",
+                          ns: "materials",
+                        });
                         break;
-
                       case "UNANSWERED":
                       default:
                         break;
@@ -899,16 +1038,19 @@ class ContentComponent extends SessionStateComponent<
 
                   const pageElement = (
                     <TocElement
+                      id={`tocElement-${subnode.workspaceMaterialId}`}
                       modifier={modifier}
-                      ref={subnode.workspaceMaterialId + ""}
+                      tabIndex={-1}
+                      ref={this.handleCallbackTocElementRef(
+                        `s-${node.workspaceMaterialId}`,
+                        subNodeIndex
+                      )}
                       key={subnode.workspaceMaterialId}
                       isActive={
                         this.props.activeNodeId === subnode.workspaceMaterialId
                       }
                       className={className}
                       isHidden={subnode.hidden || node.hidden}
-                      isFilteredOut={filteredOut}
-                      disableScroll
                       iconAfter={icon}
                       iconAfterTitle={iconTitle}
                       hash={
@@ -916,11 +1058,20 @@ class ContentComponent extends SessionStateComponent<
                           ? null
                           : "p-" + subnode.workspaceMaterialId
                       }
-                      language={
+                      onKeyDown={this.handleTocElementKeyDown(
+                        `s-${node.workspaceMaterialId}`
+                      )}
+                      onBlur={this.handleTocElementBlur(
+                        `s-${node.workspaceMaterialId}`,
+                        subNodeIndex
+                      )}
+                      onFocus={this.handleTocElementFocus(subNodeIndex)}
+                      lang={
                         subnode.titleLanguage ||
                         node.titleLanguage ||
                         this.props.workspace.language
                       }
+                      aria-label={ariaLabel}
                     >
                       {subnode.title}
                     </TocElement>

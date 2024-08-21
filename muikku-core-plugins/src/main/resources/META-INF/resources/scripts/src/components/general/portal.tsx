@@ -11,16 +11,14 @@ import {
   unmountComponentAtNode,
   findDOMNode,
 } from "react-dom";
-
-const KEYCODES = {
-  ESCAPE: 27,
-};
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * PortalProps
  */
 interface PortalProps {
   children?: any;
+  localElementId?: string;
   openByClickOn?: React.ReactElement<any>;
   openByHoverOn?: React.ReactElement<any>;
   openByHoverIsClickToo?: boolean;
@@ -51,6 +49,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   private node: HTMLElement | null;
   private isUnmounted: boolean;
   private isClosing: boolean;
+  private portalId: string;
 
   /**
    * constructor
@@ -68,6 +67,8 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.node = null;
     this.isUnmounted = false;
     this.isClosing = false;
+
+    this.portalId = uuidv4();
   }
 
   /**
@@ -200,7 +201,19 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
-        document.body.removeChild(this.node);
+
+        if (this.props.localElementId) {
+          const localElement = document.getElementById(
+            this.props.localElementId
+          );
+          if (localElement) {
+            localElement.removeChild(this.node);
+          } else {
+            document.body.removeChild(this.node);
+          }
+        } else {
+          document.body.removeChild(this.node);
+        }
       }
       this.portal = null;
       this.node = null;
@@ -250,8 +263,21 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
    * @param e e
    */
   handleKeydown(e: KeyboardEvent) {
-    if (e.keyCode === KEYCODES.ESCAPE && this.state.active) {
-      this.closePortal();
+    if (e.key === "Escape" && this.state.active) {
+      e.stopPropagation();
+
+      const portalElements = document.querySelectorAll(`[name="react-portal"]`);
+
+      // Portals are stacked, so to close them in the correct order, we need to check the last one
+      // and close it if it's the current one
+      // Note: This is not fool proof, there is chance that some bug could cause portals (dropdown etc...) not to be closed
+      // and then the last portal would not be the current one
+      if (portalElements.length > 0) {
+        const lastPortal = portalElements[portalElements.length - 1];
+        if (lastPortal.id === this.portalId) {
+          this.closePortal();
+        }
+      }
     } else if (this.state.active) {
       this.props.onKeyStroke &&
         this.props.onKeyStroke(e.keyCode, this.closePortal);
@@ -266,7 +292,20 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   renderPortal(props: PortalProps, isOpening = false) {
     if (!this.node) {
       this.node = document.createElement("div");
-      document.body.appendChild(this.node);
+
+      this.node.setAttribute("name", "react-portal");
+      this.node.setAttribute("id", this.portalId);
+
+      if (this.props.localElementId) {
+        const localElement = document.getElementById(this.props.localElementId);
+        if (localElement) {
+          localElement.appendChild(this.node);
+        } else {
+          document.body.appendChild(this.node);
+        }
+      } else {
+        document.body.appendChild(this.node);
+      }
     }
 
     this.portal = unstable_renderSubtreeIntoContainer(

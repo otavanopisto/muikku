@@ -15,6 +15,7 @@ import { createFieldSavedStateClass } from "../base/index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
+import "~/sass/elements/journalfield.scss";
 
 /**
  * JournalProps
@@ -217,16 +218,16 @@ class JournalField extends React.Component<
       if (this.props.readOnly) {
         unloadedField = (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="journalfield__ckeditor-replacement journalfield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
       } else {
-        unloadedField = <textarea className="material-page__journalfield" />;
+        unloadedField = <textarea className="journalfield" />;
       }
 
       return (
-        <span ref="base" className="material-page__journalfield-wrapper">
+        <span ref="base" className="journalfield-wrapper">
           {unloadedField}
         </span>
       );
@@ -240,7 +241,7 @@ class JournalField extends React.Component<
       if (this.props.readOnly) {
         field = (
           <span
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly"
+            className="journalfield__ckeditor-replacement journalfield__ckeditor-replacement--readonly"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -249,8 +250,8 @@ class JournalField extends React.Component<
         // note how somehow numbers come as string...
         field = (
           <>
-            <span className="material-page__taskfield-header">
-              <span className="material-page__taskfield-title">
+            <span className="journalfield-header">
+              <span className="journalfield-header__title">
                 {t("labels.diaryEntry", { ns: "materials" })}
               </span>
               <Instructions
@@ -286,7 +287,7 @@ class JournalField extends React.Component<
         // here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections
         field = (
           <div
-            className="material-page__ckeditor-replacement material-page__ckeditor-replacement--readonly material-page__ckeditor-replacement--evaluation"
+            className="journalfield__ckeditor-replacement journalfield__ckeditor-replacement--readonly journalfield__ckeditor-replacement--evaluation"
             dangerouslySetInnerHTML={{ __html: this.state.value }}
           />
         );
@@ -307,7 +308,7 @@ class JournalField extends React.Component<
           })}
         />
         <span
-          className={`material-page__journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}

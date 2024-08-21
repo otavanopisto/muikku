@@ -9,14 +9,16 @@ import {
   updateStatusHasImage,
 } from "~/actions/base/status";
 import {
+  ProfileAuthorizations,
   ProfileProperty,
   WorklistSection,
 } from "~/reducers/main-function/profile";
 import moment from "moment";
-import MApi, { isMApiError } from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { Dispatch } from "react-redux";
 import {
   CeeposOrder,
+  StudentCard,
   UserStudentAddress,
   UserWithSchoolData,
   WorklistBillingStateType,
@@ -63,6 +65,32 @@ export interface LoadProfileAddressTriggerType {
  * LoadProfilePurchasesTriggerType
  */
 export interface LoadProfilePurchasesTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * LoadProfileAuthorizationsTriggerType
+ */
+export interface LoadProfileAuthorizationsTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * UpdateProfileAuthorizationsStudentCardTriggerType
+ */
+export interface UpdateProfileAuthorizationsTriggerType {
+  (data: {
+    current: ProfileAuthorizations;
+    updated: Partial<ProfileAuthorizations>;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * LoadProfileStudentCardInfoTriggerType
+ */
+export interface LoadProfileStudentCardInfoTriggerType {
   (): AnyActionType;
 }
 
@@ -243,6 +271,11 @@ export type SET_WORKLIST = SpecificActionType<
 export type SET_PURCHASE_HISTORY = SpecificActionType<
   "SET_PURCHASE_HISTORY",
   Array<CeeposOrder>
+>;
+
+export type SET_PROFILE_AUTHORIZATIONS = SpecificActionType<
+  "SET_PROFILE_AUTHORIZATIONS",
+  ProfileAuthorizations
 >;
 
 /**
@@ -1183,6 +1216,121 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
     };
   };
 
+/**
+ * Thunk function to load profile authorizations data. Can be expanded to load more data in the future.
+ * Currently only student card data is loaded.
+ */
+const loadProfileAuthorizations: LoadProfileAuthorizationsTriggerType =
+  function loadProfileAuthorizations() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const studentCardApi = MApi.getStudentCardApi();
+
+      const status = getState().status;
+
+      /**
+       * Callback helper function to get student card data
+       * @returns Student card data or null if not found
+       */
+      const getStudentCardCallback = async () => {
+        if (status.isStudent) {
+          try {
+            return await studentCardApi.getStudentCard({
+              studentIdentifier: status.userSchoolDataIdentifier,
+            });
+          } catch (err) {
+            if (!isMApiError(err)) {
+              throw err;
+            }
+
+            // In case the student card is not found, we don't want to throw an error
+            // but we want to handle it as null value
+            if (isResponseError(err) && err.response.status === 404) {
+              return null;
+            }
+          }
+        }
+        return null;
+      };
+
+      try {
+        let studentCard: StudentCard = null;
+
+        [studentCard] = await Promise.all([await getStudentCardCallback()]);
+
+        let authorizations: ProfileAuthorizations;
+
+        if (studentCard) {
+          authorizations = {
+            studentCard,
+            studentCardActive: studentCard.activity === "ACTIVE",
+          };
+        }
+
+        dispatch({
+          type: "SET_PROFILE_AUTHORIZATIONS",
+          payload: authorizations,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+      }
+    };
+  };
+
+/**
+ * updateProfileAuthorizations
+ * @param data data
+ */
+const updateProfileAuthorizations: UpdateProfileAuthorizationsTriggerType =
+  function updateProfileAuthorizationStudentCard(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const studentCardApi = MApi.getStudentCardApi();
+
+      const currentAuthorizationData = data.current;
+      const newAuthorizationData = data.updated;
+
+      const updatedAuthorizations: ProfileAuthorizations = {
+        ...currentAuthorizationData,
+      };
+
+      try {
+        // As endpoint only uses boolean value and not whole object but returns the whole object
+        // thats why studentCardActive is used to store the boolean value
+        if (newAuthorizationData.studentCardActive !== undefined) {
+          const studentCard = await studentCardApi.updateStudentCard({
+            studentIdentifier: getState().status.userSchoolDataIdentifier,
+            studentCardId: currentAuthorizationData.studentCard.id,
+            active: newAuthorizationData.studentCardActive,
+          });
+
+          updatedAuthorizations.studentCard = studentCard;
+          updatedAuthorizations.studentCardActive =
+            studentCard.activity === "ACTIVE";
+        }
+
+        dispatch({
+          type: "SET_PROFILE_AUTHORIZATIONS",
+          payload: updatedAuthorizations,
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        data.fail && data.fail();
+      }
+    };
+  };
+
 export {
   loadProfilePropertiesSet,
   saveProfileProperty,
@@ -1201,4 +1349,6 @@ export {
   editProfileWorklistItem,
   updateProfileWorklistItemsState,
   loadProfilePurchases,
+  loadProfileAuthorizations,
+  updateProfileAuthorizations,
 };

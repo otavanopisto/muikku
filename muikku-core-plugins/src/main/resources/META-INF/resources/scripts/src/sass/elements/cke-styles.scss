@@ -4,6 +4,19 @@
 @import "../base/breakpoints";
 
 /* stylelint-disable selector-class-pattern, declaration-no-important */
+.cke.cke_focus {
+  outline: $color-outline solid 2px;
+  outline-offset: -2px;
+}
+
+.cke_contents,
+.cke_editable {
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
 .cke_reset_all .cke_dialog * {
   @include text;
 }
