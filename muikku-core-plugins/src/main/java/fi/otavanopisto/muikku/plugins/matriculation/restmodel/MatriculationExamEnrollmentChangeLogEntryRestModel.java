@@ -40,8 +40,17 @@ public class MatriculationExamEnrollmentChangeLogEntryRestModel {
     this.modifier = modifier;
   }
 
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
   private UserBasicInfo modifier;
   private OffsetDateTime timestamp;
   private MatriculationExamEnrollmentChangeLogType changeType;
   private MatriculationExamEnrollmentState newState;
+  private String message;
 }

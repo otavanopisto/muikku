@@ -6,7 +6,7 @@ import java.util.List;
 public class MatriculationPlanRESTModel {
 
   public MatriculationPlanRESTModel() {
-    this.setPlannedSubjects(new ArrayList<>());
+    this.plannedSubjects = new ArrayList<>();
   }
 
   public Boolean getGoalMatriculationExam() {
