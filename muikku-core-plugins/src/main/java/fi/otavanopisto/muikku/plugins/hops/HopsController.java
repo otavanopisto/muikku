@@ -33,6 +33,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -72,29 +73,47 @@ public class HopsController {
   private AssessmentRequestController assessmentRequestController;
   
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  private UserController userController;
   
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
-  public boolean isHopsAvailable(String studentIdentifier) {
+  public boolean isHopsAvailable(String studentIdentifierStr) {
     if (sessionController.isLoggedIn()) {
+      SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+      if (studentIdentifier == null) {
+        return false;
+      }
       
       // Hops is always available for admins
-      
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      if (userSchoolDataIdentifier != null && (userSchoolDataIdentifier.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER))) {
-        return true;
-      }
-      SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-      
-      if (sessionController.getLoggedUser().equals(schoolDataIdentifier)) {
+      if (sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
         return true;
       }
       
-      return userSchoolDataController.amICounselor(schoolDataIdentifier);
+      if (sessionController.getLoggedUser().equals(studentIdentifier) || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+        return true;
+      }
+      
+      if (userSchoolDataController.amICounselor(studentIdentifier)) {
+        return true;
+      }
+      
+      /*
+       * If logged user is TEACHER and given identifier belongs to a STUDENT
+       * we'll allow the access if logged user is a teacher on a workspace where
+       * the student is.
+       */
+      if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
+        UserSchoolDataIdentifier studentUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+        if (studentUserSchoolDataIdentifier != null && studentUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+          return workspaceUserEntityController.haveSharedWorkspaces(sessionController.getLoggedUserEntity(), studentUserSchoolDataIdentifier.getUserEntity());
+        }
+      }
     }
+    
     return false;
   }
   

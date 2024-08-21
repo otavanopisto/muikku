@@ -2,17 +2,6 @@ import * as React from "react";
 import { useEffect, useState, useRef } from "react";
 import { MathJaxCollector } from "./mathjax-collector";
 
-const baseConfig = {
-  showMathMenu: true,
-  tex2jax: {
-    inlineMath: [["\\(", "\\)"]],
-  },
-  mml2jax: {
-    preview: "mathml",
-  },
-  skipStartupTypeset: true,
-};
-
 /**
  * MathJaxPreviewProps
  */
@@ -57,7 +46,7 @@ const MathjaxReactLoader = (props: MathJaxPreviewProps) => {
      */
     const onloadHandler = () => {
       setLoadingState("loaded");
-      (window as any).MathJax.Hub.Config({ ...baseConfig, ...config });
+      (window as any).MathJax.Hub.Config({ ...config });
     };
 
     /**
@@ -74,7 +63,7 @@ const MathjaxReactLoader = (props: MathJaxPreviewProps) => {
       mathjaxScriptTag.removeEventListener("load", onloadHandler);
       mathjaxScriptTag.removeEventListener("error", onloadHandler);
     };
-  }, [setLoadingState, config, baseConfig]);
+  }, [setLoadingState, config]);
 
   useEffect(() => {
     if (loadingState !== "loaded") {

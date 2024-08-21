@@ -12,6 +12,8 @@ interface MaterialLoaderContentProps extends MaterialLoaderProps {
   answersVisible: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stateConfiguration: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  answerRegistry: { [name: string]: any };
 }
 
 /**
@@ -129,6 +131,7 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             onAnswerCheckableChange={props.onAnswerCheckableChange}
             invisible={props.invisible}
             answerable={props.answerable}
+            answerRegistry={props.answerRegistry}
           />
         )}
       </div>

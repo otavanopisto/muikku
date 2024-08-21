@@ -152,7 +152,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
     .build();
     login();
     
@@ -245,10 +245,10 @@ public class GuiderTestsBase extends AbstractUITest {
       
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
         waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
@@ -783,7 +783,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
     .build();
     login();

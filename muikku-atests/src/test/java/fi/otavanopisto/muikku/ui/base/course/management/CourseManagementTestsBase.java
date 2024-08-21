@@ -454,8 +454,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
         assertPresent(".dialog--workspace-signup-dialog .button--standard-ok");
-        waitForVisible(".dialog__content-row #signUpMessage");
-        sendKeys("#signUpMessage", "Hello!\nSigning up!");
         
         MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         
@@ -475,8 +473,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick("div.application-list__item.message");
         assertText(".application-list__item-content-body", "Opiskelija Student Tester (Test Study Programme) on ilmoittautunut kurssille Test (test extension).\n" + 
             "\n" + 
-            "Viesti opiskelijalta:\n" + 
-            "Hello! Signing up!");
+            "Opiskelijalle ei lähetetty automaattista liittymisviestiä");
       }finally{
         deleteUserGroupUsers();
         deleteUserGroups();

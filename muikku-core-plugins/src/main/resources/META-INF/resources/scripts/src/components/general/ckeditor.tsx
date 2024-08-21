@@ -52,15 +52,36 @@ const PLUGINS = {
 const pluginsLoaded: any = {};
 
 /**
+ * CKEditorEventInfo class definition
+ */
+export interface CKEditorEventInfo {
+  editor: any;
+  data: {
+    dataValue: string;
+  };
+  /**
+   * cancel method
+   */
+  cancel(): void;
+  /**
+   * stop method
+   */
+  stop(): void;
+}
+
+/**
  * CKEditorProps
  */
 interface CKEditorProps {
   configuration?: any;
   ancestorHeight?: number;
-  onChange: (arg: string) => any;
+  onChange: (arg: string, instance: any) => any;
+  onPaste?: () => void;
   onDrop?: () => any;
   children?: string;
   autofocus?: boolean;
+  maxChars?: number;
+  maxWords?: number;
   editorTitle?: string;
 }
 
@@ -218,7 +239,6 @@ export default class CKEditor extends React.Component<
       this.timeoutProps = nextProps;
       return;
     }
-
     const configObj = {
       ...extraConfig(nextProps),
       ...(nextProps.configuration || {}),
@@ -259,7 +279,7 @@ export default class CKEditor extends React.Component<
     const data = instance.getData();
     if (data !== this.currentData) {
       this.currentData = data;
-      props.onChange(data);
+      props.onChange(data, instance);
     }
   }
 
@@ -310,6 +330,7 @@ export default class CKEditor extends React.Component<
     getCKEDITOR().instances[this.name].on("key", () => {
       this.cancelChangeTrigger = false;
     });
+
     getCKEDITOR().instances[this.name].on("instanceReady", (ev: any) => {
       ev.editor.document.on("drop", () => {
         this.props.onDrop && this.props.onDrop();
@@ -322,6 +343,18 @@ export default class CKEditor extends React.Component<
         setTimeout(this.onDataChange, 2000);
         setTimeout(this.onDataChange, 3000);
       });
+
+      ev.editor.document.on("paste", (event: CKEditorEventInfo) => {
+        if (this.props.onPaste && (props.maxChars || props.maxWords)) {
+          props.onPaste();
+        }
+        // Same as above. When pasting an image, onDataChange doesn't fire at all because text hasn't changed.
+        // Also, the image has to be uploaded to the server first, hence these timeout shenanigans
+        setTimeout(this.onDataChange, 1000);
+        setTimeout(this.onDataChange, 2000);
+        setTimeout(this.onDataChange, 3000);
+      });
+
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
 

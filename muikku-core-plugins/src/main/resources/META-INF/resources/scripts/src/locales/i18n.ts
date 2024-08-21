@@ -48,7 +48,7 @@ export class Localize {
   }
 
   /**
-   * getter function for language
+   * Setter function for language
    */
   get language(): string {
     return this.lang.toLowerCase();

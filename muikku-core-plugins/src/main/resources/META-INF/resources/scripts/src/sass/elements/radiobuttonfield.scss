@@ -1,0 +1,102 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.radiobuttonfield-wrapper { // This wraps task field itself and correct answers component inside of the same parent
+  align-items: center;
+  display: inline-flex;
+  flex-flow: row wrap;
+  position: relative;
+  vertical-align: middle;
+}
+
+.radiobuttonfield__items-wrapper {
+  align-items: center;
+  background: lighten($taskfield-border-color, 30%);
+  border-radius: 2px;
+  display: inline-flex;
+  margin: 4px;
+  padding: 4px;
+}
+
+.radiobuttonfield__items-wrapper--vertical {
+  align-items: flex-start;
+  flex-flow: column nowrap;
+  vertical-align: middle;
+}
+
+.radiobuttonfield__items-wrapper--horizontal {
+  flex-flow: row wrap;
+}
+
+.radiobuttonfield__items-wrapper.correct-answer {
+  .radiobuttonfield,
+  .radiobuttonfield[disabled] {
+    border-color: $color-correct-answer;
+
+    &:checked {
+      background-color: $color-correct-answer;
+    }
+  }
+}
+
+.radiobuttonfield__items-wrapper.incorrect-answer {
+  .radiobuttonfield,
+  .radiobuttonfield[disabled] {
+    border-color: $color-incorrect-answer;
+
+    &:checked {
+      background-color: $color-incorrect-answer;
+    }
+  }
+}
+
+.radiobuttonfield {
+  align-items: center;
+  appearance: none;
+  border: solid 2px $taskfield-border-color;
+  border-radius: 100%;
+  display: inline-flex;
+  height: 1.125rem;
+  justify-content: center;
+  min-width: 1.125rem;
+  width: 1.125rem;
+
+  &:checked {
+    background-color: $taskfield-border-color;
+    border: solid 2px $taskfield-border-color;
+  }
+
+  &:checked::after {
+    color: $color-default;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 0.875rem;
+  }
+}
+
+.radiobuttonfield[disabled] {
+  border-color: darken($color-disabled-taskfield-border, 10%);
+  cursor: not-allowed;
+
+  &[checked],
+  &:checked {
+    background-color: darken($color-disabled-taskfield-border, 20%);
+    border-color: darken($color-disabled-taskfield-border, 20%);
+  }
+}
+
+.radiobuttonfield__checkable-label {
+  @include taskfield-text;
+
+  display: inline;
+  padding: 0 0 0 6px;
+}
+
+.radiobuttonfield__item-container {
+  align-items: center;
+  display: inline-flex;
+  margin: 0 2px;
+  padding: 2px;
+}

@@ -83,6 +83,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
@@ -194,6 +195,9 @@ public class GuiderRESTService extends PluginRESTService {
   private WorkspaceUserEntityIdFinder workspaceUserEntityIdFinder;
 
   @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
+
+  @Inject
   private LocaleController localeController;
 
   @Inject
@@ -225,7 +229,7 @@ public class GuiderRESTService extends PluginRESTService {
 
   @GET
   @Path("/students")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response searchStudents(
       @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -238,10 +242,6 @@ public class GuiderRESTService extends PluginRESTService {
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
 
     if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return Response.status(Status.FORBIDDEN).build();
@@ -506,12 +506,8 @@ public class GuiderRESTService extends PluginRESTService {
 
   @GET
   @Path("/students/{ID}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findStudent(@Context Request request, @PathParam("ID") String id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
     if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -1261,6 +1257,15 @@ public class GuiderRESTService extends PluginRESTService {
     }
     workspaceController.createWorkspaceUserSignup(workspaceEntity, studentEntity, new Date(), entity.getMessage());
 
+    /**
+     * Send workspace signup message to student
+     */
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
+
+    /**
+     * Setup the message which goes to the teachers
+     */
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
     caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), studentName.getDisplayNameWithLine(), workspaceName);
 
