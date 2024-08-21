@@ -22,6 +22,7 @@ interface MatriculationEligibilityProps {
  */
 const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
   const { hops } = props;
+  const { eligibility } = hops.hopsMatriculation;
 
   const { t } = useTranslation(["hops", "guider", "common"]);
 
@@ -38,17 +39,25 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
   const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
     t(`matriculationSubjects.${code}`, { ns: "hops" });
 
-  const selectedMatriculationSubjects = (
-    <MatriculationEligibilityRow
-      label={getMatriculationSubjectNameByCode("A")}
-      eligibility="ELIGIBLE"
-      description={t("content.matriculationEligibility", {
-        ns: "hops",
-        acceptedCount: 0,
-        requiredCount: 20,
-      })}
-    />
-  );
+  const selectedMatriculationSubjects =
+    hops.hopsMatriculation.subjectsWithEligibility.map(
+      (sEligibility, index) => (
+        <MatriculationEligibilityRow
+          key={index}
+          label={getMatriculationSubjectNameByCode(
+            sEligibility.subject.code as MatriculationSubjectCode
+          )}
+          eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
+          description={t("content.matriculationEligibility", {
+            ns: "hops",
+            acceptedCount:
+              sEligibility.acceptedCourseCount +
+              sEligibility.acceptedTransferCreditCount,
+            requiredCount: sEligibility.requirePassingGrades,
+          })}
+        />
+      )
+    );
 
   return (
     <>
@@ -75,7 +84,11 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                 description="Olet suorittanut vähintään 40 opintopistettä pakollisia opintoja"
               />
               <MatriculationEligibilityRow
-                eligibility="ELIGIBLE"
+                eligibility={
+                  eligibility.personHasCourseAssessments
+                    ? "ELIGIBLE"
+                    : "NOT_ELIGIBLE"
+                }
                 description="Olet suorittanut vähintään yhden opintojakson Nettilukiossa"
               />
               <MatriculationEligibilityRow

@@ -5,7 +5,9 @@ import {
   MatriculationEligibilityStatus,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
+  MatriculationPlan,
   MatriculationSubject,
+  MatriculationSubjectEligibility,
 } from "~/generated/client";
 
 /**
@@ -41,12 +43,22 @@ export interface MatriculationExamWithHistory extends MatriculationExam {
 }
 
 /**
+ * MatriculationSubjectWithEligibility
+ */
+export interface MatriculationSubjectWithEligibility
+  extends MatriculationSubjectEligibility {
+  subject: MatriculationSubject;
+}
+
+/**
  * hopsMatriculation
  */
 interface hopsMatriculation {
   exams: MatriculationExamWithHistory[] | null;
   subjects: MatriculationSubject[] | null;
+  subjectsWithEligibility: MatriculationSubjectWithEligibility[] | null;
   eligibility: MatriculationEligibility | null;
+  plan: MatriculationPlan | null;
 }
 
 /**
@@ -85,6 +97,8 @@ const initialHopsState: HopsState = {
     exams: null,
     subjects: null,
     eligibility: null,
+    subjectsWithEligibility: null,
+    plan: null,
   },
   hopsCareerPlanStatus: "IDLE",
   hopsCareerPlanState: {},
@@ -194,6 +208,26 @@ export const hopsNew: Reducer<HopsState> = (
         hopsMatriculation: {
           ...state.hopsMatriculation,
           exams: updatedExams,
+        },
+      };
+    }
+
+    case "HOPS_MATRICULATION_UPDATE_PLAN": {
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          plan: action.payload,
+        },
+      };
+    }
+
+    case "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY": {
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          subjectsWithEligibility: action.payload,
         },
       };
     }

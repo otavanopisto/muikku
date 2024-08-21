@@ -8,9 +8,13 @@ import {
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationExamStudentStatus,
+  MatriculationPlan,
   MatriculationSubject,
 } from "~/generated/client";
-import { ReducerStateType } from "~/reducers/hops";
+import {
+  MatriculationSubjectWithEligibility,
+  ReducerStateType,
+} from "~/reducers/hops";
 import i18n from "~/locales/i18n";
 
 // Api instances
@@ -79,6 +83,16 @@ export type HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS = SpecificActionType<
   { examId: number; status: ReducerStateType }
 >;
 
+export type HOPS_MATRICULATION_UPDATE_PLAN = SpecificActionType<
+  "HOPS_MATRICULATION_UPDATE_PLAN",
+  MatriculationPlan
+>;
+
+export type HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY = SpecificActionType<
+  "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
+  MatriculationSubjectWithEligibility[]
+>;
+
 /**
  * loadExamDataTriggerType
  */
@@ -98,6 +112,13 @@ export interface VerifyMatriculationExamTriggerType {
  */
 export interface LoadMatriculationExamHistoryTriggerType {
   (examId: number): AnyActionType;
+}
+
+/**
+ * SaveMatriculationPlanTriggerType
+ */
+export interface SaveMatriculationPlanTriggerType {
+  (plan: MatriculationPlan): AnyActionType;
 }
 
 /**
@@ -127,15 +148,18 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
       });
 
       try {
-        //If the studentIdentifier is not provided, this is called for you, not someone else.
-        // So we go ahead and call exams for you.
+        const matriculationPlan =
+          await matriculationApi.getStudentMatriculationPlan({
+            studentIdentifier,
+          });
 
-        const matriculationExams = await matriculationApi.getStudentExams({
-          studentIdentifier,
-        });
+        if (matriculationPlan.goalMatriculationExam === null) {
+          matriculationPlan.goalMatriculationExam = false;
+        }
+
         dispatch({
-          type: "HOPS_MATRICULATION_UPDATE_EXAMS",
-          payload: matriculationExams,
+          type: "HOPS_MATRICULATION_UPDATE_PLAN",
+          payload: matriculationPlan,
         });
 
         // Load and dispatch examination subjects
@@ -145,6 +169,59 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_SUBJECTS",
           payload: matriculationSubjects,
+        });
+
+        if (matriculationPlan.plannedSubjects) {
+          try {
+            const subjectsToFetch: MatriculationSubject[] = [];
+
+            matriculationPlan.plannedSubjects.map((s) => {
+              const match = matriculationSubjects.find(
+                (sub) => sub.code === s.subject
+              );
+
+              if (match) {
+                subjectsToFetch.push(match);
+              }
+            });
+
+            const subjectEligibilityDataArray =
+              await Promise.all<MatriculationSubjectWithEligibility>(
+                subjectsToFetch.map(async (s) => {
+                  const subjectEligibility =
+                    await recordsApi.getMatriculationSubjectEligibility({
+                      studentIdentifier,
+                      subjectCode: s.subjectCode,
+                    });
+
+                  return {
+                    ...subjectEligibility,
+                    subject: s,
+                  };
+                })
+              );
+
+            dispatch({
+              type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
+              payload: subjectEligibilityDataArray,
+            });
+          } catch (err) {
+            // FIX: ADD ERROR HANDLING
+            if (!isMApiError(err)) {
+              throw err;
+            }
+          }
+        }
+
+        //If the studentIdentifier is not provided, this is called for you, not someone else.
+        // So we go ahead and call exams for you.
+
+        const matriculationExams = await matriculationApi.getStudentExams({
+          studentIdentifier,
+        });
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_EXAMS",
+          payload: matriculationExams,
         });
 
         // Load and dispatch student matriculation eligibility
@@ -259,8 +336,40 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
     };
   };
 
+/**
+ * saveMatriculationPlan
+ * @param plan plan
+ */
+const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
+  function saveMatriculationPlan(plan) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const studentIdentifier = getState().status.userSchoolDataIdentifier;
+
+      try {
+        await matriculationApi.setStudentMatriculationPlan({
+          studentIdentifier,
+          setStudentMatriculationPlanRequest: plan,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_PLAN",
+          payload: plan,
+        });
+      } catch (err) {
+        // FIX: ADD ERROR HANDLING
+        if (!isMApiError(err)) {
+          throw err;
+        }
+      }
+    };
+  };
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
   loadMatriculationExamHistory,
+  saveMatriculationPlan,
 };
