@@ -38,15 +38,6 @@
         command: 'muikkumemofield',
         toolbar: 'insert,20'
       });
-      if (editor.addMenuItems) {
-        editor.addMenuItems( {
-          muikku: {
-            label: editor.lang.flash.properties,
-            command: 'muikkumemofield',
-            group: 'muikku'
-          }
-        } );
-      }
       editor.on('doubleclick', function(evt) {
         var element = evt.data.element;
 

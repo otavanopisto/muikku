@@ -102,6 +102,10 @@ const extraConfig = (props: CKEditorProps) => ({
   /* eslint-disable camelcase */
   startupFocus: props.autofocus,
   title: props.editorTitle ? props.editorTitle : "",
+  versionCheck: false,
+  delayIfDetached: false,
+  delayIfDetached_callback: "undefined",
+  delayIfDetached_interval: 50,
 
   /**
    * We allow style attribute for every element that can be pasted/added to the CKEditor.
