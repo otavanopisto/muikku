@@ -128,7 +128,13 @@
     "declaration-block-no-redundant-longhand-properties": [
       true,
       {
-        "ignoreShorthands": ["/flex/", "/border/", "/inset/"]
+        "ignoreShorthands": [
+          "/flex/",
+          "/border/",
+          "/inset/",
+          "/overflow/",
+          "/-content/"
+        ]
       }
     ],
     "declaration-no-important": true,
