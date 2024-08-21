@@ -14289,6 +14289,8 @@ components:
       required:
         - timestamp
         - changeType
+        - newState
+        - message
       properties:
         modifier:
           $ref: "#/components/schemas/UserBasicInfo"
@@ -14299,8 +14301,10 @@ components:
           $ref: "#/components/schemas/MatriculationExamEnrollmentChangeLogType"
         newState:
           $ref: "#/components/schemas/MatriculationExamStudentStatus"
+          nullable: true
         message:
           type: string
+          nullable: true
 
     MatriculationStudent:
       type: object

@@ -125,6 +125,12 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
             {moment(logEntry.timestamp).format("l")}
           </span>
         </div>
+
+        {logEntry.message && (
+          <div className="hops-container__history-event-secondary">
+            <span>{logEntry.message}</span>
+          </div>
+        )}
       </div>
     </>
   );
