@@ -67,10 +67,20 @@ public class PyramusMatriculationExamEnrollmentChangeLogEntry
     this.modifierIdentifier = modifierIdentifier;
   }
 
+  @Override
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
   private Long id;
   private Long enrollmentId;
   private SchoolDataIdentifier modifierIdentifier;
   private OffsetDateTime timestamp;
   private MatriculationExamEnrollmentChangeLogType changeType;
   private MatriculationExamEnrollmentState newState;
+  private String message;
 }

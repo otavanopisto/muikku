@@ -14295,6 +14295,8 @@ components:
           $ref: "#/components/schemas/MatriculationExamEnrollmentChangeLogType"
         newState:
           $ref: "#/components/schemas/MatriculationExamStudentStatus"
+        message:
+          type: string
 
     MatriculationStudent:
       type: object

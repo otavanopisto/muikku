@@ -128,6 +128,7 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
         entry.setNewState(changeLogEntry.getNewState() != null ? MatriculationExamEnrollmentState.valueOf(changeLogEntry.getNewState().name()) : null);
         entry.setChangeType(changeLogEntry.getChangeType() != null ? MatriculationExamEnrollmentChangeLogType.valueOf(changeLogEntry.getChangeType().name()) : null);
         entry.setModifierIdentifier(modifierIdentifier);
+        entry.setMessage(changeLogEntry.getMessage());
         responseAsList.add(entry);
       }
     }

@@ -568,6 +568,7 @@ public class MatriculationRESTService {
     restModel.setTimestamp(entry.getTimestamp());
     restModel.setChangeType(entry.getChangeType());
     restModel.setNewState(entry.getNewState());
+    restModel.setMessage(entry.getMessage());
     return restModel;
   }
 

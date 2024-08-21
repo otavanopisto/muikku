@@ -12,4 +12,5 @@ public interface MatriculationExamEnrollmentChangeLogEntry {
   OffsetDateTime getTimestamp();
   MatriculationExamEnrollmentChangeLogType getChangeType();
   MatriculationExamEnrollmentState getNewState();
+  String getMessage();
 }
