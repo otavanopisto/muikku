@@ -134,6 +134,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelCon
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupGroupRestModel;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupMessageGroupRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSignupMessageRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStaffMember;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceStudentRestModel;
@@ -1328,7 +1329,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!CollectionUtils.isEmpty(payload.getSignupMessages())) {
       for (WorkspaceSignupMessageRestModel restMessage : payload.getSignupMessages()) {
         List<UserGroupEntity> groups = new ArrayList<>();
-        for (WorkspaceSignupGroupRestModel restGroup : restMessage.getSignupGroups()) {
+        for (WorkspaceSignupMessageGroupRestModel restGroup : restMessage.getSignupGroups()) {
           UserGroupEntity uge = userGroupEntityController.findUserGroupEntityById(restGroup.getUserGroupEntityId());
           if (uge != null) {
             groups.add(uge);
@@ -3860,16 +3861,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceSignupMessage> messages = workspaceSignupMessageController.listGroupBoundSignupMessages(workspaceEntity);
     List<WorkspaceSignupMessageRestModel> restMessages = new ArrayList<>();
     for (WorkspaceSignupMessage message : messages) {
-      List<WorkspaceSignupGroupRestModel> restGroups = new ArrayList<>();
+      List<WorkspaceSignupMessageGroupRestModel> restGroups = new ArrayList<>();
       for (UserGroupEntity group : message.getUserGroupEntities()) {
         SearchResult searchResult = elasticSearchProvider.findUserGroup(group.schoolDataIdentifier());
         if (searchResult.getTotalHitCount() == 1) {
           List<Map<String, Object>> results = searchResult.getResults();
           Map<String, Object> match = results.get(0);
-          restGroups.add(new WorkspaceSignupGroupRestModel(
+          restGroups.add(new WorkspaceSignupMessageGroupRestModel(
               group.getId(),
-              (String) match.get("name"),
-              workspaceSignupGroups.contains(group.schoolDataIdentifier())));
+              (String) match.get("name")));
         }
       }
       restMessages.add(new WorkspaceSignupMessageRestModel(message.getId(),

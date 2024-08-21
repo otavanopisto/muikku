@@ -7,7 +7,7 @@ public class WorkspaceSignupMessageRestModel {
   public WorkspaceSignupMessageRestModel() {
   }
 
-  public WorkspaceSignupMessageRestModel(Long id, boolean enabled, String caption, String content, List<WorkspaceSignupGroupRestModel> signupGroups) {
+  public WorkspaceSignupMessageRestModel(Long id, boolean enabled, String caption, String content, List<WorkspaceSignupMessageGroupRestModel> signupGroups) {
     this.setId(id);
     this.setEnabled(enabled);
     this.setCaption(caption);
@@ -39,11 +39,11 @@ public class WorkspaceSignupMessageRestModel {
     this.content = content;
   }
 
-  public List<WorkspaceSignupGroupRestModel> getSignupGroups() {
+  public List<WorkspaceSignupMessageGroupRestModel> getSignupGroups() {
     return signupGroups;
   }
 
-  public void setSignupGroups(List<WorkspaceSignupGroupRestModel> signupGroups) {
+  public void setSignupGroups(List<WorkspaceSignupMessageGroupRestModel> signupGroups) {
     this.signupGroups = signupGroups;
   }
 
@@ -59,5 +59,5 @@ public class WorkspaceSignupMessageRestModel {
   private boolean enabled;
   private String caption;
   private String content;
-  private List<WorkspaceSignupGroupRestModel> signupGroups;
+  private List<WorkspaceSignupMessageGroupRestModel> signupGroups;
 }

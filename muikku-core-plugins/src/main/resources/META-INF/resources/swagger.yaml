@@ -16956,6 +16956,21 @@ components:
           description: If the user can signup
           type: boolean
 
+    WorkspaceSignupMessageGroup:
+      type: object
+      description: Usegroup of a signup message
+      required:
+        - userGroupEntityId
+        - userGroupName
+      properties:
+        userGroupEntityId:
+          description: The id of the user group
+          type: integer
+          format: int64
+        userGroupName:
+          description: The name of the user group
+          type: string
+
     WorkspaceUserEntity:
       type: object
       description: WorkspaceUserEntity object
@@ -17532,7 +17547,7 @@ components:
           description: Sign up groups and their settings
           type: array
           items:
-            $ref: "#/components/schemas/WorkspaceSettingsSignupGroup"
+            $ref: "#/components/schemas/WorkspaceSignupMessageGroup"
 
     WorkspaceSettingsSignupGroup:
       type: object
