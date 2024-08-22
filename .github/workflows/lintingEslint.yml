@@ -29,5 +29,6 @@ jobs:
           reporter: github-pr-review
           eslint_flags: '--ext .ts,.tsx'
           level: error
+          fail-level: error
           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
