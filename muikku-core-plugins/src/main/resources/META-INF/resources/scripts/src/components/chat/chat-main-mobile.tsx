@@ -93,9 +93,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           />
           <div className="chat__users chat__users--others" role="menu">
             <div className="chat__users-category-title">
-              {t("labels.discussions", {
-                ns: "chat",
-              })}
+              {t("labels.discussions", { ns: "chat" })}
             </div>
             <ChatMyActiveDiscussions
               onItemClick={() => setPanelRightOpen(false)}
@@ -107,7 +105,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
 
       <div className="chat-mobile__footer">
         <div className="chat__button-wrapper">
-          <IconButton
+     <IconButton
             buttonModifiers={["chat", "chat-mobile-footer"]}
             icon="stack"
             onClick={() => setPanelLeftOpen((prev) => !prev)}
@@ -118,7 +116,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             {t("labels.dashboard", {
               ns: "chat",
             })}
-          </Button>
+    </Button>
         </div>
         <div className="chat__button-wrapper">
           <Button onClick={toggleControlBox}>
