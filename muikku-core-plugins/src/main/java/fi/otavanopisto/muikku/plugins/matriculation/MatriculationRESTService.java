@@ -522,6 +522,7 @@ public class MatriculationRESTService {
         attendanceRestModel.setId(attendance.getId());
         attendanceRestModel.setFunding(attendance.getFunding());
         attendanceRestModel.setGrade(attendance.getGrade());
+        attendanceRestModel.setGradeDate(attendance.getGradeDate());
         attendanceRestModel.setMandatory(attendance.getMandatory());
         attendanceRestModel.setRepeat(attendance.getRepeat());
         attendanceRestModel.setStatus(attendance.getStatus());

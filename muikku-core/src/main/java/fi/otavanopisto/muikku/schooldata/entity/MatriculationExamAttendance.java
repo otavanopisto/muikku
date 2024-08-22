@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
+import java.time.OffsetDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -77,6 +79,14 @@ public class MatriculationExamAttendance {
     this.id = id;
   }
 
+  public OffsetDateTime getGradeDate() {
+    return gradeDate;
+  }
+
+  public void setGradeDate(OffsetDateTime gradeDate) {
+    this.gradeDate = gradeDate;
+  }
+
   private Long id;
   private String subject;
   private Boolean mandatory;
@@ -85,5 +95,6 @@ public class MatriculationExamAttendance {
   private String term;
   private String status;
   private String grade;
+  private OffsetDateTime gradeDate;
   private String funding;
 }
