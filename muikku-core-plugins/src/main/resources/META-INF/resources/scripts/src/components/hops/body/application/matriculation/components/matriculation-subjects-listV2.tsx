@@ -123,7 +123,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
           {t("labels.select", { ns: "hops" })}
         </option>
         {subjects.map((s) => (
-          <option key={index} value={s}>
+          <option key={s} value={s}>
             {getMatriculationSubjectNameByCode(s)}
           </option>
         ))}

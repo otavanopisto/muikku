@@ -348,15 +348,103 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
     ) => {
       const studentIdentifier = getState().status.userSchoolDataIdentifier;
 
+      const state = getState();
+
       try {
         await matriculationApi.setStudentMatriculationPlan({
           studentIdentifier,
           setStudentMatriculationPlanRequest: plan,
         });
 
+        // After saving the plan, we need to update the eligibility for the subjects
+        // if there are any changes in the plan
+        const loadEligibilityForNewSubjects: MatriculationSubject[] = [];
+        const deleteEligibilityForFollowingSubjects: MatriculationSubject[] =
+          [];
+
+        // Check if subjects are removed and add them to the list
+        state.hopsNew.hopsMatriculation.plan.plannedSubjects.forEach((s) => {
+          const match = plan.plannedSubjects.find(
+            (ns) => ns.subject === s.subject
+          );
+
+          if (!match) {
+            const subject = state.hopsNew.hopsMatriculation.subjects.find(
+              (sub) => sub.code === s.subject
+            );
+            deleteEligibilityForFollowingSubjects.push(subject);
+          }
+        });
+
+        // Check if new subjects are added and add them to the list
+        plan.plannedSubjects.forEach((s) => {
+          const match =
+            state.hopsNew.hopsMatriculation.plan.plannedSubjects.find(
+              (ns) => ns.subject === s.subject
+            );
+
+          if (!match) {
+            const subject = state.hopsNew.hopsMatriculation.subjects.find(
+              (sub) => sub.code === s.subject
+            );
+            loadEligibilityForNewSubjects.push(subject);
+          }
+        });
+
+        // Copy the current list of eligibility
+        let updatedListOfEligibility = [
+          ...state.hopsNew.hopsMatriculation.subjectsWithEligibility,
+        ];
+
+        // Remove subjects that are not in the plan anymore with helper list
+        if (deleteEligibilityForFollowingSubjects.length) {
+          deleteEligibilityForFollowingSubjects.forEach((s) => {
+            const index = updatedListOfEligibility.findIndex(
+              (el) => el.subject.code === s.code
+            );
+
+            if (index !== -1) {
+              updatedListOfEligibility.splice(index, 1);
+            }
+          });
+        }
+
+        // Initialize new array for newly added subjects
+        let newSubjectEligibilityDataArray: MatriculationSubjectWithEligibility[] =
+          [];
+
+        // Load eligibility for newly added subjects if there are any
+        if (loadEligibilityForNewSubjects.length) {
+          newSubjectEligibilityDataArray =
+            await Promise.all<MatriculationSubjectWithEligibility>(
+              loadEligibilityForNewSubjects.map(async (s) => {
+                const subjectEligibility =
+                  await recordsApi.getMatriculationSubjectEligibility({
+                    studentIdentifier,
+                    subjectCode: s.subjectCode,
+                  });
+
+                return {
+                  ...subjectEligibility,
+                  subject: s,
+                };
+              })
+            );
+        }
+
+        updatedListOfEligibility = [
+          ...updatedListOfEligibility,
+          ...newSubjectEligibilityDataArray,
+        ];
+
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_PLAN",
           payload: plan,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
+          payload: updatedListOfEligibility,
         });
       } catch (err) {
         // FIX: ADD ERROR HANDLING

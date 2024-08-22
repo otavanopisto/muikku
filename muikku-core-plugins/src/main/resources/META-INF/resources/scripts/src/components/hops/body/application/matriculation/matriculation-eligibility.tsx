@@ -39,7 +39,29 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
   const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
     t(`matriculationSubjects.${code}`, { ns: "hops" });
 
-  const selectedMatriculationSubjects =
+  // Abistatus eligibility rows
+  const subjectAbistatusEligibilityRows =
+    hops.hopsMatriculation.subjectsWithEligibility.map(
+      (sEligibility, index) => (
+        <MatriculationEligibilityRow
+          key={index}
+          label={getMatriculationSubjectNameByCode(
+            sEligibility.subject.code as MatriculationSubjectCode
+          )}
+          eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
+          description={t("content.matriculationAbistatusEligibility4", {
+            ns: "hops",
+            acceptedCount:
+              sEligibility.acceptedCourseCount +
+              sEligibility.acceptedTransferCreditCount,
+            requiredCount: sEligibility.requirePassingGrades,
+          })}
+        />
+      )
+    );
+
+  // Participation rights eligibility rows
+  const subjectEligibilityRows =
     hops.hopsMatriculation.subjectsWithEligibility.map(
       (sEligibility, index) => (
         <MatriculationEligibilityRow
@@ -80,8 +102,19 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
               <MatriculationEligibilityRow
-                eligibility="ELIGIBLE"
-                description="Olet suorittanut vähintään 40 opintopistettä pakollisia opintoja"
+                eligibility={
+                  hops.hopsMatriculation.eligibility.creditPoints >=
+                  hops.hopsMatriculation.eligibility.creditPointsRequired
+                    ? "ELIGIBLE"
+                    : "NOT_ELIGIBLE"
+                }
+                description={t("content.matriculationAbistatusEligibility1", {
+                  ns: "hops",
+                  acceptedCount:
+                    hops.hopsMatriculation.eligibility.creditPoints,
+                  requiredCount:
+                    hops.hopsMatriculation.eligibility.creditPointsRequired,
+                })}
               />
               <MatriculationEligibilityRow
                 eligibility={
@@ -89,44 +122,24 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                     ? "ELIGIBLE"
                     : "NOT_ELIGIBLE"
                 }
-                description="Olet suorittanut vähintään yhden opintojakson Nettilukiossa"
+                description={t("content.matriculationAbistatusEligibility2", {
+                  ns: "hops",
+                })}
               />
               <MatriculationEligibilityRow
                 eligibility="ELIGIBLE"
-                description="Olet suorittanut kaikista ylioppilastutkintoon suunnittelemistasi aineista vähintään yhden pakollisen opintojakson"
+                description={t("content.matriculationAbistatusEligibility3", {
+                  ns: "hops",
+                  acceptedCount: 0,
+                  requiredCount: 20,
+                })}
               />
             </div>
           </div>
 
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
-              <MatriculationEligibilityRow
-                label={getMatriculationSubjectNameByCode("EA")}
-                eligibility="ELIGIBLE"
-                description={t("content.matriculationEligibility", {
-                  ns: "hops",
-                  acceptedCount: 0,
-                  requiredCount: 20,
-                })}
-              />
-              <MatriculationEligibilityRow
-                label={getMatriculationSubjectNameByCode("TE")}
-                eligibility="ELIGIBLE"
-                description={t("content.matriculationEligibility", {
-                  ns: "hops",
-                  acceptedCount: 0,
-                  requiredCount: 20,
-                })}
-              />
-              <MatriculationEligibilityRow
-                label={getMatriculationSubjectNameByCode("ET")}
-                eligibility="ELIGIBLE"
-                description={t("content.matriculationEligibility", {
-                  ns: "hops",
-                  acceptedCount: 0,
-                  requiredCount: 20,
-                })}
-              />
+              {subjectAbistatusEligibilityRows}
             </div>
           </div>
         </div>
@@ -139,7 +152,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
         <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
-              {selectedMatriculationSubjects}
+              {subjectEligibilityRows}
             </div>
           </div>
         </div>
