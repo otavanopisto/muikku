@@ -46,15 +46,28 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
       plannedSubjects: [],
     });
 
-  const [selectedMatriculationSubjects, setSelectedMatriculationSubjects] =
-    React.useState<SelectedMatriculationSubject[]>([
-      {
-        subjectCode: "",
-        term: "",
-      },
-    ]);
-
   const draftTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
+
+  // Memoized selected subjects
+  const selectedSubjects = React.useMemo(() => {
+    if (!plan) return [];
+
+    return plan.plannedSubjects.map<SelectedMatriculationSubject>(
+      (subject) => ({
+        subjectCode: subject.subject,
+        term: `${subject.term}${subject.year}`,
+      })
+    );
+  }, [plan]);
+
+  // Memoized selectable subjects
+  const selectableSubjects = React.useMemo(() => {
+    if (!hops.hopsMatriculation || !hops.hopsMatriculation.subjects) return [];
+
+    return hops.hopsMatriculation.subjects.map(
+      (s) => s.code as MatriculationSubjectCode
+    );
+  }, [hops.hopsMatriculation]);
 
   // Set initial values and update when plan changes
   React.useEffect(() => {
@@ -64,47 +77,43 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
 
     unstable_batchedUpdates(() => {
       setMatriculationPlan(plan);
-      setSelectedMatriculationSubjects(
-        plan.plannedSubjects.map<SelectedMatriculationSubject>((subject) => ({
-          subjectCode: subject.subject,
-          term: `${subject.term}${subject.year}`,
-        }))
-      );
     });
   }, [plan]);
 
   /**
-   * Saves plan after delay (5s)
+   * Saves plan after delay (1s)
    *
    * @param matriculationPlan examination
    * @param selectedSubjects selected subjects
    */
-  const savePlanAfterDelay = (
-    matriculationPlan: MatriculationPlan,
-    selectedSubjects: SelectedMatriculationSubject[]
-  ) => {
-    if (draftTimer.current) {
-      clearTimeout(draftTimer.current);
-      draftTimer.current = undefined;
-    }
+  const savePlanAfterDelay = React.useCallback(
+    (
+      matriculationPlan: MatriculationPlan,
+      selectedSubjects: SelectedMatriculationSubject[]
+    ) => {
+      if (draftTimer.current) {
+        clearTimeout(draftTimer.current);
+        draftTimer.current = undefined;
+      }
 
-    draftTimer.current = setTimeout(() => {
-      // Filter entries that contains empty values and
-      // convert rest selected subjects to MatriculationPlanSubject
-      const convertedList = selectedSubjects
-        .filter((s) => s.subjectCode && s.term)
-        .map<MatriculationPlanSubject>((subject) => ({
-          subject: subject.subjectCode,
-          term: subject.term.substring(0, 6) as MatriculationExamTerm,
-          year: parseInt(subject.term.substring(6)),
-        }));
-
-      saveMatriculationPlan({
-        ...matriculationPlan,
-        plannedSubjects: convertedList,
-      });
-    }, 5000);
-  };
+      draftTimer.current = setTimeout(() => {
+        // Filter entries that contains empty values and
+        // convert rest selected subjects to MatriculationPlanSubject
+        const convertedList = selectedSubjects.map<MatriculationPlanSubject>(
+          (subject) => ({
+            subject: subject.subjectCode,
+            term: subject.term.substring(0, 6) as MatriculationExamTerm,
+            year: parseInt(subject.term.substring(6)),
+          })
+        );
+        saveMatriculationPlan({
+          ...matriculationPlan,
+          plannedSubjects: convertedList,
+        });
+      }, 1000);
+    },
+    [saveMatriculationPlan]
+  );
 
   /**
    * Handles checkbox change
@@ -117,34 +126,21 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
       goalMatriculationExam: event.target.checked,
     };
 
-    savePlanAfterDelay(updateMatriculationPlan, selectedMatriculationSubjects);
+    savePlanAfterDelay(updateMatriculationPlan, selectedSubjects);
     setMatriculationPlan(updateMatriculationPlan);
   };
 
   /**
    * Handles matriculation subjects change.
-   * Saves plan after delay if toSave is true
    *
    * @param selectSubjects Selected subjects
-   * @param toSave to save
    */
-  const handleMatriculationSubjectsChange = (
-    selectSubjects: SelectedMatriculationSubject[],
-    toSave: boolean
-  ) => {
-    if (toSave) {
+  const handleMatriculationSubjectsChange = React.useCallback(
+    (selectSubjects: SelectedMatriculationSubject[]) => {
       savePlanAfterDelay(matriculationPlan, selectSubjects);
-    }
-    setSelectedMatriculationSubjects(selectSubjects);
-  };
-
-  const selectableSubjects = React.useMemo(() => {
-    if (!hops.hopsMatriculation || !hops.hopsMatriculation.subjects) return [];
-
-    return hops.hopsMatriculation.subjects.map(
-      (s) => s.code as MatriculationSubjectCode
-    );
-  }, [hops.hopsMatriculation]);
+    },
+    [matriculationPlan, savePlanAfterDelay]
+  );
 
   if (hops.hopsMatriculationStatus !== "READY" || matriculationPlan === null) {
     return <div className="loader-empty" />;
@@ -175,7 +171,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
           <div className="application-sub-panel__item-data">
             <MatriculationSubjectsList
               subjects={selectableSubjects}
-              selectedSubjects={selectedMatriculationSubjects}
+              selectedSubjects={selectedSubjects}
               onSubjectsChange={handleMatriculationSubjectsChange}
             />
           </div>

@@ -14,10 +14,7 @@ interface MatriculationSubjectsListProps {
    * @param matriculationSubjects matriculationSubjects
    * @param save Whether to save the changes
    */
-  onSubjectsChange?: (
-    selectedSubjects: SelectedMatriculationSubject[],
-    toSave: boolean
-  ) => void;
+  onSubjectsChange?: (selectedSubjects: SelectedMatriculationSubject[]) => void;
 }
 
 /**
@@ -29,11 +26,15 @@ export interface SelectedMatriculationSubject {
 }
 
 /**
- * MatriculationSubjectsList
+ * MatriculationSubjectsList.
+ * Has internal state for selected subjects that is initialized once.
+ * Notifies parent component about changes in selected subjects that have all values set.
  * @param props props
  */
 const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   const { onSubjectsChange, selectedSubjects, subjects } = props;
+  const [selectedSubjects2, setSelectedSubjects2] =
+    React.useState<SelectedMatriculationSubject[]>(selectedSubjects);
 
   const { t } = useTranslation(["hops", "studies", "guider", "common"]);
 
@@ -47,15 +48,25 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     t(`matriculationSubjects.${code}`, { ns: "hops" });
 
   /**
-   * Event handler for handling matriculation subject additions
+   * Method for notifying about matriculation subject changes
+   * @param selectedSubjects selected subjects
    */
-  const handleMatriculationSubjectAdd = () => {
+  const notifyMatriculationSubjectChange = (
+    selectedSubjects: SelectedMatriculationSubject[]
+  ) => {
     if (!onSubjectsChange) {
       return;
     }
+    // Filter out empty values from input array
+    onSubjectsChange(selectedSubjects.filter((s) => s.subjectCode && s.term));
+  };
 
-    const updatedList = [...selectedSubjects, { subjectCode: "", term: "" }];
-    onSubjectsChange(updatedList, false);
+  /**
+   * Event handler for handling matriculation subject additions
+   */
+  const handleMatriculationSubjectAdd = () => {
+    const updatedList = [...selectedSubjects2, { subjectCode: "", term: "" }];
+    setSelectedSubjects2(updatedList);
   };
 
   /**
@@ -65,12 +76,10 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    */
   const handleMatriculationSubjectRemove =
     (index: number) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      if (!onSubjectsChange) {
-        return;
-      }
-      const updatedList = [...selectedSubjects];
+      const updatedList = [...selectedSubjects2];
       updatedList.splice(index, 1);
-      onSubjectsChange(updatedList, true);
+      notifyMatriculationSubjectChange(updatedList);
+      setSelectedSubjects2(updatedList);
     };
 
   /**
@@ -80,13 +89,11 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    */
   const handleMatriculationSubjectChange =
     (index: number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-      if (!onSubjectsChange) {
-        return;
-      }
       const { value } = e.target;
-      const updatedList = [...selectedSubjects];
+      const updatedList = [...selectedSubjects2];
       updatedList[index].subjectCode = value;
-      onSubjectsChange(updatedList, true);
+      notifyMatriculationSubjectChange(updatedList);
+      setSelectedSubjects2(updatedList);
     };
 
   /**
@@ -96,16 +103,14 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    */
   const handleMatriculationSubjectTermChange =
     (index: number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-      if (!onSubjectsChange) {
-        return;
-      }
       const { value } = e.target;
-      const updatedList = [...selectedSubjects];
+      const updatedList = [...selectedSubjects2];
       updatedList[index].term = value;
-      onSubjectsChange(updatedList, true);
+      notifyMatriculationSubjectChange(updatedList);
+      setSelectedSubjects2(updatedList);
     };
 
-  const matriculationSubjectInputs = selectedSubjects.map((subject, index) => (
+  const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
     <div className="form-element__dropdown-selection-container" key={index}>
       <label
         htmlFor={`matriculationSubject` + index}
