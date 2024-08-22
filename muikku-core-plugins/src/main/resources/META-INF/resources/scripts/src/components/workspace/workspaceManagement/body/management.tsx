@@ -39,6 +39,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import { ManagementSignupGroupsMemoized } from "./management-signup-groups";
 import { ManagementSignupMessageMemoized } from "./management-signup-message";
+import { ManagementCustomSignupMessageMemoized } from "./management-custom-signup-message";
 import { ManagementChatSettingsMemoized } from "./management-chat-settings";
 import { ManagementLicenseMemoized } from "./management-license";
 import { ManagementProducersMemoized } from "./management-producers";
@@ -82,6 +83,7 @@ interface ManagementPanelState {
   workspacePermissions: Array<WorkspaceSignupGroup>;
   workspaceChatEnabled: boolean;
   workspaceSignupMessage: WorkspaceSignupMessage;
+  workspaceCustomSignupMessages: WorkspaceSignupMessage[];
   locked: boolean;
 }
 
@@ -115,6 +117,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         content: "",
         enabled: false,
       },
+      workspaceCustomSignupMessages: [],
       locked: false,
     });
 
@@ -164,11 +167,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         workspace && workspace.permissions
           ? workspace.permissions.map((pr) => ({
               ...pr,
-              signupMessage: pr.signupMessage || {
-                caption: "",
-                content: "",
-                enabled: false,
-              },
             }))
           : [],
       workspaceLanguage: workspace ? workspace.language : "fi",
@@ -200,6 +198,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     workspaceHasCustomImage,
     workspacePermissions,
     workspaceSignupMessage,
+    workspaceCustomSignupMessages,
     workspaceChatEnabled,
     locked,
   } = managementState;
@@ -381,6 +380,19 @@ const ManagementPanel = (props: ManagementPanelProps) => {
   );
 
   /**
+   * Handles custom signup group message change
+   */
+  const handleWorkspaceCustomSignupMessageChange = React.useCallback(
+    (messages: WorkspaceSignupMessage[]) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        workspaceCustomSignupMessages: messages,
+      }));
+    },
+    []
+  );
+
+  /**
    * Handles signup group message change
    */
   const handleWorkspaceSignupGroupChange = React.useCallback(
@@ -492,26 +504,11 @@ const ManagementPanel = (props: ManagementPanelProps) => {
 
     let showError = false;
 
-    // Prevent saving if signup message is partly empty
-    // and show notification
-    showError = managementState.workspacePermissions.some((pr) => {
-      if (
-        (pr.signupMessage.caption !== "" && pr.signupMessage.content === "") ||
-        (pr.signupMessage.caption === "" && pr.signupMessage.content !== "")
-      ) {
-        return true;
-      }
-    });
-
     // Set signup message to null if caption and content is empty
     // Api does not accept empty values, it must be null. Otherwise if one of the fields is empty,
     // Backend will handle it with error nad notifications will be shown
     const realPermissions = managementState.workspacePermissions.map((pr) => ({
       ...pr,
-      signupMessage:
-        pr.signupMessage.caption === "" && pr.signupMessage.content === ""
-          ? null
-          : pr.signupMessage,
     }));
 
     // Check if permissions have changed
@@ -626,6 +623,10 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     () => workspaceSignupMessage,
     [workspaceSignupMessage]
   );
+  const memoizedCustomWorkspaceSignupMessage = React.useMemo(
+    () => workspaceCustomSignupMessages,
+    [workspaceCustomSignupMessages]
+  );
 
   return (
     <>
@@ -659,7 +660,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             onWorkspaceAccessChange={handleAccessChange}
           />
         </section>
-
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementScheduleMemoized
             workspaceSignupStartDate={workspaceSignupStartDateMemoized}
@@ -668,7 +668,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             onSignupEndDateChange={handleSignupEndDateChange}
           />
         </section>
-
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementAdditionalInfoMemoized
             workspaceNameExtension={workspaceExtension}
@@ -694,14 +693,12 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             onChange={handleWorkspaceProducersChange}
           />
         </section>
-
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementChatSettingsMemoized
             chatEnabled={workspaceChatEnabled}
             onChange={handleWorkspaceChatSettingsChange}
           />
         </section>
-
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementSignupMessageMemoized
             workspaceName={workspaceName}
@@ -709,7 +706,13 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             onChange={handleWorkspaceSignupMessageChange}
           />
         </section>
-
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
+          <ManagementCustomSignupMessageMemoized
+            signupGroups={memoizedPermissions}
+            workspaceCustomSignupMessages={memoizedCustomWorkspaceSignupMessage}
+            onChange={handleWorkspaceCustomSignupMessageChange}
+          />
+        </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementSignupGroupsMemoized
             workspaceName={workspaceName}

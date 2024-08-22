@@ -1648,7 +1648,9 @@
       "workspaceCopying": "Kurssin kopiointi",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Kurssityyppien listausvalinta",
-      "workspaceSignupMessage": "Kurssin ilmoittautumisviesti",
+      "workspaceUserGroupSignupMessages": "Ryhmäkohtaiset ilmoittautumisviestit",
+      "workspaceUserGroupSignupMessage": "Ilmoittautumisviesti {{index}}",
+      "workspaceSignupMessage": "Kurssin ilmoittautuviesti",
       "workspaceSignupMessageTitle": "Viestin otsikko (pakollinen)",
       "workspaceSignupMessageContent": "Viestin sisältö (pakollinen)"
     },

@@ -1648,6 +1648,8 @@
       "workspaceCopying": "Course copying",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Type select",
+      "workspaceUserGroupSignupMessages": "User group-specific sign up messages",
+      "workspaceUserGroupSignupMessage": "Sign up message {{index}}",
       "workspaceSignupMessage": "Course sign up message",
       "workspaceSignupMessageTitle": "Message title (mandatory)",
       "workspaceSignupMessageContent": "Message content (mandatory)"
