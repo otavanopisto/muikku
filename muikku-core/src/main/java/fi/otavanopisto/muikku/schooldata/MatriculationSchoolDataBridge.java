@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibilityOPS2021;
 
 public interface MatriculationSchoolDataBridge {
 
@@ -31,4 +32,13 @@ public interface MatriculationSchoolDataBridge {
   
   BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, MatriculationExamEnrollmentState newState);
 
+  /**
+   * Returns student eligibility to participate matriculation exams
+   * 
+   * @param studentIdentifier student's identifier
+   * @param subjectCode subject code
+   * @return student eligibility to participate matriculation exams
+   */
+  public StudentMatriculationEligibilityOPS2021 getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode);
+  
 }

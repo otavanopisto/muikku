@@ -5,6 +5,7 @@ package fi.otavanopisto.muikku.schooldata.entity;
  * 
  * @author Antti Leppä
  */
+@Deprecated
 public interface StudentMatriculationEligibility extends SchoolDataEntity {
   
   /**

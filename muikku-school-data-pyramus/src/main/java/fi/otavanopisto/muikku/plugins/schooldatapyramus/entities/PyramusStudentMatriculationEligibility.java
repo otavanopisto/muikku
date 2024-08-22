@@ -8,6 +8,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
  * 
  * @author Antti Leppä
  */
+@Deprecated
 public class PyramusStudentMatriculationEligibility implements StudentMatriculationEligibility {
 
   private Boolean eligible;

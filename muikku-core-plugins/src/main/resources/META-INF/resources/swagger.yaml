@@ -6211,6 +6211,38 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/matriculation/students/{studentIdentifier}/matriculationEligibility:
+    get:
+      operationId: getMatriculationSubjectEligibility
+      summary: Get matriculation eligibility
+      description: Get matriculation eligibility
+      tags:
+        - Records
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: subjectCode
+          in: query
+          description: Subject code
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matriculation eligibility
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatriculationSubjectEligibilityOPS2021"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/matriculation/exams/{examId}/savedEnrollments/{userIdentifier}:
     get:
       operationId: getSavedEnrollmentDraft
@@ -14109,6 +14141,28 @@ components:
         schoolDataSource:
           description: Data source of the school
           type: string
+
+    MatriculationSubjectEligibilityOPS2021:
+      type: object
+      description: Matriculation eligibility by subject
+      required:
+        - eligible
+        - requiredPassingGradeCourseCreditPoints
+        - passingGradeCourseCreditPoints
+      properties:
+        eligible:
+          description: If the subject is eligible for matriculation exam
+          type: boolean
+        requiredPassingGradeCourseCreditPoints:
+          description: Number of required passing credit points for the subject
+          type: number
+          format: double
+          nullable: true
+        passingGradeCourseCreditPoints:
+          description: Number of passing credit points for the subject the student has
+          type: number
+          format: double
+          nullable: true
 
     MatriculationSubject:
       type: object

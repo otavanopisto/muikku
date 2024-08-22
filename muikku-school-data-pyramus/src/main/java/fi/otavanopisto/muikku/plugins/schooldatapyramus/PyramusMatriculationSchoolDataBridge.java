@@ -8,14 +8,18 @@ import javax.inject.Inject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExam;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusMatriculationExamEnrollmentChangeLogEntry;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusStudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
@@ -24,6 +28,7 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogType;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.pyramus.rest.model.matriculation.MatriculationExamEnrollmentChangeLog;
 
 @Dependent
@@ -202,4 +207,23 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
     return pyramusClient.responseGet(String.format("/matriculation/students/%d/eligibility", pyramusStudentId), MatriculationEligibilities.class);
   }
 
+  @Override
+  public StudentMatriculationEligibilityOPS2021 getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
+    if (!StringUtils.equals(studentIdentifier.getDataSource(), getSchoolDataSource())) {
+      throw new SchoolDataBridgeInternalException(String.format("Could not evaluate students' matriculation eligibility from school data source %s", studentIdentifier.getDataSource()));
+    }
+
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId != null) {
+      fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021 result = pyramusClient.get(String.format("/matriculation/students/%d/matriculationEligibility?subjectCode=%s", pyramusStudentId, subjectCode), fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021.class);
+      if (result == null) {
+        throw new SchoolDataBridgeInternalException(String.format("Could not resolve matriculation eligibility for student %s", studentIdentifier));
+      }
+
+      return new PyramusStudentMatriculationEligibilityOPS2021(result.isEligible(), result.getRequiredPassingGradeCourseCreditPoints(), result.getPassingGradeCourseCreditPoints());
+    } else {
+      throw new SchoolDataBridgeInternalException(String.format("Failed to resolve Pyramus user from studentIdentifier %s", studentIdentifier));
+    }
+  }
+  
 }

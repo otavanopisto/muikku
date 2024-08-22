@@ -49,6 +49,7 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -483,6 +484,22 @@ public class MatriculationRESTService {
     }
 
     return Response.ok().entity(model).build();
+  }
+
+  @GET
+  @Path("/students/{STUDENTIDENTIFIER}/matriculationEligibility")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findMatriculationEligibility(
+      @PathParam("STUDENTIDENTIFIER") String studentIdentifierParam,
+      @QueryParam ("subjectCode") String subjectCode) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    StudentMatriculationEligibilityOPS2021 result = matriculationController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
+
+    return Response.ok(result).build();
   }
 
   private MatriculationCurrentExam restModel(MatriculationExam exam) {

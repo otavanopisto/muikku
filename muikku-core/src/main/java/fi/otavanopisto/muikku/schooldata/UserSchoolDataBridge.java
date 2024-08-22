@@ -342,6 +342,7 @@ public interface UserSchoolDataBridge {
    * @param subjectCode subject code
    * @return student eligibility to participate matriculation exams
    */
+  @Deprecated
   public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode);
   fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(
       SchoolDataIdentifier studentIdentifier,
