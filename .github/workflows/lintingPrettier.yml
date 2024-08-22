@@ -28,7 +28,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           level: error
-          fail-level: error
+          fail-on-error: true
           prettier_flags: '**/*.{ts,tsx}'
           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 

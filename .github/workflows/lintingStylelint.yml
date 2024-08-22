@@ -29,6 +29,6 @@ jobs:
           reporter: github-pr-review
           stylelint_input: '**/*.scss'
           level: error
-          fail-level: error
+          fail-on-error: true
           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
