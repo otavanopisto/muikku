@@ -1,33 +1,42 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
-import { useMatriculationSubjects } from "../hooks/use-matriculation-subjects";
 import { MatriculationSubjectCode } from "./matriculation-subject-type";
 
 /**
  * MatriculationSubjectsListProps
  */
 interface MatriculationSubjectsListProps {
-  initialMatriculationSubjects?: string[];
-  onMatriculationSubjectsChange?: (matriculationSubjects: string[]) => void;
+  subjects: MatriculationSubjectCode[];
+  selectedSubjects: SelectedMatriculationSubject[];
+  /**
+   * onSubjectsChange
+   * @param matriculationSubjects matriculationSubjects
+   * @param save Whether to save the changes
+   */
+  onSubjectsChange?: (selectedSubjects: SelectedMatriculationSubject[]) => void;
 }
 
 /**
- * MatriculationSubjectsList
+ * SelectedMatriculationSubject
+ */
+export interface SelectedMatriculationSubject {
+  subjectCode?: string;
+  term?: string;
+}
+
+/**
+ * MatriculationSubjectsList.
+ * Has internal state for selected subjects that is initialized once.
+ * Notifies parent component about changes in selected subjects that have all values set.
  * @param props props
  */
 const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
-  const { onMatriculationSubjectsChange } = props;
+  const { onSubjectsChange, selectedSubjects, subjects } = props;
+  const [selectedSubjects2, setSelectedSubjects2] =
+    React.useState<SelectedMatriculationSubject[]>(selectedSubjects);
 
   const { t } = useTranslation(["hops", "studies", "guider", "common"]);
-
-  const [selectedMatriculationSubjects, setSelectedMatriculationSubjects] =
-    React.useState<string[]>(props.initialMatriculationSubjects || [""]);
-  const { subjects, loading } = useMatriculationSubjects();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   /**
    * Finds a matriculation subject name by subject value
@@ -40,24 +49,24 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
 
   /**
    * Method for notifying about matriculation subject changes
-   *
-   * Method filters out empty values from input array
-   *
    * @param selectedSubjects selected subjects
    */
-  const notifyMatriculationSubjectChange = (selectedSubjects: string[]) => {
-    if (onMatriculationSubjectsChange) {
-      onMatriculationSubjectsChange(
-        selectedSubjects.filter((selectedSubject) => !!selectedSubject)
-      );
+  const notifyMatriculationSubjectChange = (
+    selectedSubjects: SelectedMatriculationSubject[]
+  ) => {
+    if (!onSubjectsChange) {
+      return;
     }
+    // Filter out empty values from input array
+    onSubjectsChange(selectedSubjects.filter((s) => s.subjectCode && s.term));
   };
 
   /**
    * Event handler for handling matriculation subject additions
    */
   const handleMatriculationSubjectAdd = () => {
-    setSelectedMatriculationSubjects([...selectedMatriculationSubjects, ""]);
+    const updatedList = [...selectedSubjects2, { subjectCode: "", term: "" }];
+    setSelectedSubjects2(updatedList);
   };
 
   /**
@@ -67,14 +76,10 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    */
   const handleMatriculationSubjectRemove =
     (index: number) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      setSelectedMatriculationSubjects((selectedSubjects) => {
-        const updatedSelectedSubjects = [...selectedSubjects];
-
-        updatedSelectedSubjects.splice(index, 1);
-
-        notifyMatriculationSubjectChange(updatedSelectedSubjects);
-        return updatedSelectedSubjects;
-      });
+      const updatedList = [...selectedSubjects2];
+      updatedList.splice(index, 1);
+      notifyMatriculationSubjectChange(updatedList);
+      setSelectedSubjects2(updatedList);
     };
 
   /**
@@ -85,75 +90,80 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   const handleMatriculationSubjectChange =
     (index: number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
       const { value } = e.target;
-
-      setSelectedMatriculationSubjects((selectedSubjects) => {
-        const updateSelectedSubjects = [...selectedSubjects];
-
-        updateSelectedSubjects[index] = value;
-
-        notifyMatriculationSubjectChange(updateSelectedSubjects);
-        return updateSelectedSubjects;
-      });
+      const updatedList = [...selectedSubjects2];
+      updatedList[index].subjectCode = value;
+      notifyMatriculationSubjectChange(updatedList);
+      setSelectedSubjects2(updatedList);
     };
 
-  const matriculationSubjectInputs = selectedMatriculationSubjects.map(
-    (subject, index) => (
-      <div className="form-element__dropdown-selection-container" key={index}>
-        <label
-          htmlFor={`matriculationSubject` + index}
-          className="visually-hidden"
-        >
-          {t("wcag.select", { ns: "guider" })}
-        </label>
-        <select
-          id={`matriculationSubject` + index}
-          className="form-element__select form-element__select--matriculation-exam"
-          value={subject}
-          onChange={handleMatriculationSubjectChange(index)}
-        >
-          <option disabled value="">
-            {t("labels.select", { ns: "hops" })}
-          </option>
-          {subjects.map((subject, index: number) => (
-            <option key={index} value={subject.code}>
-              {getMatriculationSubjectNameByCode(
-                subject.code as MatriculationSubjectCode
-              )}
-            </option>
-          ))}
-        </select>
-        <label
-          htmlFor={`matriculationSubject` + index}
-          className="visually-hidden"
-        >
-          {t("wcag.select", { ns: "guider" })}
-        </label>
-        <select
-          id={`matriculationSubject` + index}
-          className="form-element__select form-element__select--matriculation-exam"
-          //value={subject}
-          //onChange={this.handleMatriculationSubjectChange.bind(this, index)}
-        >
-          <option disabled value="">
-            {t("labels.select", { ns: "hops" })}
-          </option>
+  /**
+   * Event handler for matriculation subject term change
+   *
+   * @param index index
+   */
+  const handleMatriculationSubjectTermChange =
+    (index: number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const { value } = e.target;
+      const updatedList = [...selectedSubjects2];
+      updatedList[index].term = value;
+      notifyMatriculationSubjectChange(updatedList);
+      setSelectedSubjects2(updatedList);
+    };
 
-          <option key="Syksy2024" value="Syksy 2024">
-            Syksy 2024
+  const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
+    <div className="form-element__dropdown-selection-container" key={index}>
+      <label
+        htmlFor={`matriculationSubject` + index}
+        className="visually-hidden"
+      >
+        {t("wcag.select", { ns: "guider" })}
+      </label>
+      <select
+        id={`matriculationSubject` + index}
+        className="form-element__select form-element__select--matriculation-exam"
+        value={subject.subjectCode || ""}
+        onChange={handleMatriculationSubjectChange(index)}
+      >
+        <option disabled value="">
+          {t("labels.select", { ns: "hops" })}
+        </option>
+        {subjects.map((s) => (
+          <option key={s} value={s}>
+            {getMatriculationSubjectNameByCode(s)}
           </option>
-          <option key="Kevät2025" value="Kevät 2025">
-            Kevät 2025
-          </option>
-        </select>
-        <Button
-          buttonModifiers={["primary-function-content", "remove-subject-row"]}
-          onClick={handleMatriculationSubjectRemove(index)}
-        >
-          {t("actions.remove")}
-        </Button>
-      </div>
-    )
-  );
+        ))}
+      </select>
+      <label
+        htmlFor={`matriculationSubject` + index}
+        className="visually-hidden"
+      >
+        {t("wcag.select", { ns: "guider" })}
+      </label>
+      <select
+        id={`matriculationSubject` + index}
+        className="form-element__select form-element__select--matriculation-exam"
+        value={subject.term || ""}
+        onChange={handleMatriculationSubjectTermChange(index)}
+      >
+        <option disabled value="">
+          {t("labels.select", { ns: "hops" })}
+        </option>
+
+        <option key="Syksy2024" value="AUTUMN2024">
+          Syksy 2024
+        </option>
+        <option key="Kevät2025" value="SPRING2025">
+          Kevät 2025
+        </option>
+      </select>
+      <Button
+        buttonModifiers={["primary-function-content", "remove-subject-row"]}
+        onClick={handleMatriculationSubjectRemove(index)}
+      >
+        {t("actions.remove")}
+      </Button>
+    </div>
+  ));
 
   return (
     <div className="form-element">
@@ -170,4 +180,4 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   );
 };
 
-export default MatriculationSubjectsList;
+export default React.memo(MatriculationSubjectsList);

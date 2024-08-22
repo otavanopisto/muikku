@@ -5982,9 +5982,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MatriculationPlan"
+                $ref: "#/components/schemas/MatriculationPlan"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5995,8 +5993,6 @@ paths:
       description: Set student's matriculation plan
       tags:
         - Matriculation
-      requestBody:
-        $ref: "#/components/requestBodies/MatriculationPlanUpdateRequestBody"
       parameters:
         - name: studentIdentifier
           in: path
@@ -6004,15 +6000,15 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        $ref: "#/components/requestBodies/MatriculationPlanUpdateRequestBody"
       responses:
         "200":
           description: Exams
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MatriculationPlan"
+                $ref: "#/components/schemas/MatriculationPlan"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11559,6 +11555,14 @@ components:
               name:
                 type: string
 
+    MatriculationPlanUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/MatriculationPlan"
+
     MatriculationEnrollmentsCreateRequestBody:
       content:
         application/json:
@@ -14339,6 +14343,8 @@ components:
       required:
         - timestamp
         - changeType
+        - newState
+        - message
       properties:
         modifier:
           $ref: "#/components/schemas/UserBasicInfo"
@@ -14349,8 +14355,10 @@ components:
           $ref: "#/components/schemas/MatriculationExamEnrollmentChangeLogType"
         newState:
           $ref: "#/components/schemas/MatriculationExamStudentStatus"
+          nullable: true
         message:
           type: string
+          nullable: true
 
     MatriculationStudent:
       type: object
@@ -14548,14 +14556,6 @@ components:
           $ref: "#/components/schemas/MatriculationExamTerm"
         year:
           type: integer
-
-    MatriculationPlanUpdateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/MatriculationPlan"
 
     MaterialReply:
       type: object

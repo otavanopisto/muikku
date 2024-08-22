@@ -4,15 +4,31 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import {
+  MatriculationExamTerm,
+  MatriculationPlan,
+  MatriculationPlanSubject,
+} from "~/generated/client";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
-import MatriculationSubjectsList from "./components/matriculation-subjects-listV2";
+import MatriculationSubjectsList, {
+  SelectedMatriculationSubject,
+} from "./components/matriculation-subjects-listV2";
+import {
+  SaveMatriculationPlanTriggerType,
+  saveMatriculationPlan,
+} from "../../../../../actions/main-function/hops/index";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
+import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 
 /**
  * MatriculationPlanProps
  */
 interface MatriculationPlanProps {
   hops: HopsState;
+  plan: MatriculationPlan;
+  saveMatriculationPlan: SaveMatriculationPlanTriggerType;
 }
 
 /**
@@ -20,35 +36,115 @@ interface MatriculationPlanProps {
  * @param props props
  */
 const MatriculationPlan = (props: MatriculationPlanProps) => {
-  const { hops } = props;
+  const { plan, hops, saveMatriculationPlan } = props;
 
   const { t } = useTranslation(["hops", "guider", "common"]);
 
-  if (hops.hopsMatriculationStatus !== "READY") {
+  const [matriculationPlan, setMatriculationPlan] =
+    React.useState<MatriculationPlan>({
+      goalMatriculationExam: false,
+      plannedSubjects: [],
+    });
+
+  const draftTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
+
+  // Memoized selected subjects
+  const selectedSubjects = React.useMemo(() => {
+    if (!plan) return [];
+
+    return plan.plannedSubjects.map<SelectedMatriculationSubject>(
+      (subject) => ({
+        subjectCode: subject.subject,
+        term: `${subject.term}${subject.year}`,
+      })
+    );
+  }, [plan]);
+
+  // Memoized selectable subjects
+  const selectableSubjects = React.useMemo(() => {
+    if (!hops.hopsMatriculation || !hops.hopsMatriculation.subjects) return [];
+
+    return hops.hopsMatriculation.subjects.map(
+      (s) => s.code as MatriculationSubjectCode
+    );
+  }, [hops.hopsMatriculation]);
+
+  // Set initial values and update when plan changes
+  React.useEffect(() => {
+    if (!plan) {
+      return;
+    }
+
+    unstable_batchedUpdates(() => {
+      setMatriculationPlan(plan);
+    });
+  }, [plan]);
+
+  /**
+   * Saves plan after delay (1s)
+   *
+   * @param matriculationPlan examination
+   * @param selectedSubjects selected subjects
+   */
+  const savePlanAfterDelay = React.useCallback(
+    (
+      matriculationPlan: MatriculationPlan,
+      selectedSubjects: SelectedMatriculationSubject[]
+    ) => {
+      if (draftTimer.current) {
+        clearTimeout(draftTimer.current);
+        draftTimer.current = undefined;
+      }
+
+      draftTimer.current = setTimeout(() => {
+        // Filter entries that contains empty values and
+        // convert rest selected subjects to MatriculationPlanSubject
+        const convertedList = selectedSubjects.map<MatriculationPlanSubject>(
+          (subject) => ({
+            subject: subject.subjectCode,
+            term: subject.term.substring(0, 6) as MatriculationExamTerm,
+            year: parseInt(subject.term.substring(6)),
+          })
+        );
+        saveMatriculationPlan({
+          ...matriculationPlan,
+          plannedSubjects: convertedList,
+        });
+      }, 1000);
+    },
+    [saveMatriculationPlan]
+  );
+
+  /**
+   * Handles checkbox change
+   *
+   * @param event event
+   */
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const updateMatriculationPlan = {
+      ...matriculationPlan,
+      goalMatriculationExam: event.target.checked,
+    };
+
+    savePlanAfterDelay(updateMatriculationPlan, selectedSubjects);
+    setMatriculationPlan(updateMatriculationPlan);
+  };
+
+  /**
+   * Handles matriculation subjects change.
+   *
+   * @param selectSubjects Selected subjects
+   */
+  const handleMatriculationSubjectsChange = React.useCallback(
+    (selectSubjects: SelectedMatriculationSubject[]) => {
+      savePlanAfterDelay(matriculationPlan, selectSubjects);
+    },
+    [matriculationPlan, savePlanAfterDelay]
+  );
+
+  if (hops.hopsMatriculationStatus !== "READY" || matriculationPlan === null) {
     return <div className="loader-empty" />;
   }
-
-  const valueToLanguageString: { [key: string]: string } = {
-    yes: t("labels.yes"),
-    no: t("labels.no"),
-    maybe: t("labels.maybe", { ns: "hops" }),
-    AI: t("content.finnish", {
-      ns: "hops",
-    }),
-    S2: t("content.finnish", {
-      ns: "hops",
-      context: "secondary",
-    }),
-    MAA: t("labels.longSyllabus", { ns: "hops" }),
-    MAB: t("labels.shortSyllabus", { ns: "hops" }),
-    BI: t("labels.biology", { ns: "hops" }),
-    FY: t("labels.physics", { ns: "hops" }),
-    GE: t("labels.geography", { ns: "hops" }),
-    KE: t("labels.chemistry", { ns: "hops" }),
-    UE: t("labels.religionEl", { ns: "hops" }),
-    ET: t("labels.ethics", { ns: "hops" }),
-    UX: t("labels.religionOther", { ns: "hops" }),
-  };
 
   return (
     <>
@@ -58,21 +154,14 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
             {t("content.targetMatriculationExam", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
-            {["yes", "no", "maybe"].map((option) => (
-              <div
-                className="form-element form-element--checkbox-radiobutton"
-                key={option}
-              >
-                <input
-                  id={"goalMatriculationExam" + option}
-                  type="radio"
-                  value={option}
-                />
-                <label htmlFor={"goalMatriculationExam" + option}>
-                  {valueToLanguageString[option]}
-                </label>
-              </div>
-            ))}
+            <div className="form-element form-element">
+              <input
+                id={"goalMatriculationExam"}
+                type="checkbox"
+                checked={matriculationPlan.goalMatriculationExam}
+                onChange={handleCheckboxChange}
+              />
+            </div>
           </div>
         </div>
         <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
@@ -80,7 +169,11 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
             {t("content.matriculationSubjectsGoal", { ns: "hops" })}
           </div>
           <div className="application-sub-panel__item-data">
-            <MatriculationSubjectsList />
+            <MatriculationSubjectsList
+              subjects={selectableSubjects}
+              selectedSubjects={selectedSubjects}
+              onSubjectsChange={handleMatriculationSubjectsChange}
+            />
           </div>
         </div>
       </ApplicationSubPanel>
@@ -95,6 +188,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
 function mapStateToProps(state: StateType) {
   return {
     hops: state.hopsNew,
+    plan: state.hopsNew.hopsMatriculation.plan,
   };
 }
 
@@ -103,7 +197,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({ saveMatriculationPlan }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MatriculationPlan);
