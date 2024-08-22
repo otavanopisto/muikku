@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +39,7 @@ import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamA
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollmentChangeLogEntryRestModel;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationPlanRESTModel;
+import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationSubjectResult;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -502,6 +504,52 @@ public class MatriculationRESTService {
     return Response.ok(result).build();
   }
 
+  @GET
+  @Path("/students/{STUDENTIDENTIFIER}/results")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findMatriculationResults(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    BridgeResponse<List<MatriculationExam>> bridgeResponse = matriculationController.listStudentsExams(studentIdentifier, MatriculationExamListFilter.PAST);
+
+    if (bridgeResponse.ok()) {
+      List<MatriculationSubjectResult> result = new ArrayList<>();
+      
+      List<MatriculationExam> pastExams = bridgeResponse.getEntity();
+      
+      Map<String, List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance>> subjectGroups = pastExams.stream()
+        .map(MatriculationExam::getEnrollment)
+        .flatMap(enrollment -> enrollment.getAttendances().stream())
+        .filter(attendance -> "ENROLLED".equals(attendance.getStatus()))
+        .filter(attendance -> StringUtils.isNotBlank(attendance.getGrade()))
+        .filter(attendance -> attendance.getGradeDate() != null)
+        .collect(Collectors.groupingBy(attendance -> attendance.getSubject()));
+
+      for (String subjectCode : subjectGroups.keySet()) {
+        List<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance> attendances = subjectGroups.get(subjectCode);
+        
+        List<MatriculationExamAttendance> attendanceRestModels = attendances.stream()
+          .sorted(Comparator.comparing(fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance::getGradeDate))
+          .map(attendance -> restModel(attendance))
+          .collect(Collectors.toList());
+        
+        MatriculationSubjectResult subjectResult = new MatriculationSubjectResult();
+        subjectResult.setSubjectCode(subjectCode);
+        subjectResult.setAttendances(attendanceRestModels);
+        result.add(subjectResult);
+      }
+      
+      return Response.ok(result).build();
+    } 
+    else {
+      Status status = Status.fromStatusCode(bridgeResponse.getStatusCode());
+      return status != null ? Response.status(status).build() : Response.status(bridgeResponse.getStatusCode()).build();
+    }
+  }
+
   private MatriculationCurrentExam restModel(MatriculationExam exam) {
     MatriculationExamEnrollment enrollment = restModel(exam.getEnrollment());
     return new MatriculationCurrentExam(exam.getId(), exam.getYear(), exam.getTerm(), exam.getStarts(), exam.getEnds(), 
@@ -518,18 +566,7 @@ public class MatriculationRESTService {
     
     if (enrollment.getAttendances() != null) {
       for (fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance attendance : enrollment.getAttendances()) {
-        MatriculationExamAttendance attendanceRestModel = new MatriculationExamAttendance();
-        attendanceRestModel.setId(attendance.getId());
-        attendanceRestModel.setFunding(attendance.getFunding());
-        attendanceRestModel.setGrade(attendance.getGrade());
-        attendanceRestModel.setGradeDate(attendance.getGradeDate());
-        attendanceRestModel.setMandatory(attendance.getMandatory());
-        attendanceRestModel.setRepeat(attendance.getRepeat());
-        attendanceRestModel.setStatus(attendance.getStatus());
-        attendanceRestModel.setSubject(attendance.getSubject());
-        attendanceRestModel.setTerm(attendance.getTerm());
-        attendanceRestModel.setYear(attendance.getYear());
-        attendances.add(attendanceRestModel);
+        attendances.add(restModel(attendance));
       }
     }
     
@@ -561,6 +598,22 @@ public class MatriculationRESTService {
     
     
     return restModel;
+  }
+
+  private MatriculationExamAttendance restModel(
+      fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance attendance) {
+    MatriculationExamAttendance attendanceRestModel = new MatriculationExamAttendance();
+    attendanceRestModel.setId(attendance.getId());
+    attendanceRestModel.setFunding(attendance.getFunding());
+    attendanceRestModel.setGrade(attendance.getGrade());
+    attendanceRestModel.setGradeDate(attendance.getGradeDate());
+    attendanceRestModel.setMandatory(attendance.getMandatory());
+    attendanceRestModel.setRepeat(attendance.getRepeat());
+    attendanceRestModel.setStatus(attendance.getStatus());
+    attendanceRestModel.setSubject(attendance.getSubject());
+    attendanceRestModel.setTerm(attendance.getTerm());
+    attendanceRestModel.setYear(attendance.getYear());
+    return attendanceRestModel;
   }
 
   private List<MatriculationExamEnrollmentChangeLogEntryRestModel> restModel(List<MatriculationExamEnrollmentChangeLogEntry> entryList) {

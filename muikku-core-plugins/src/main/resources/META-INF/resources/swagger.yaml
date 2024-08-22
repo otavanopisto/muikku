@@ -6014,6 +6014,32 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/matriculation/students/{studentIdentifier}/results:
+    get:
+      operationId: getStudentMatriculationResults
+      summary: Get student's matriculation results
+      description: Get student's matriculation results
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Exams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatriculationResults"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/matriculation/students/{studentIdentifier}/exams:
     get:
       operationId: getStudentExams
@@ -14556,6 +14582,20 @@ components:
           $ref: "#/components/schemas/MatriculationExamTerm"
         year:
           type: integer
+
+    MatriculationResults:
+      type: object
+      description: MatriculationResults object
+      required:
+        - subjectCode
+        - attendances
+      properties:
+        subjectCode:
+          type: string
+        attendances:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatriculationExamEnrolledSubject"
 
     MaterialReply:
       type: object
