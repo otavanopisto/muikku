@@ -5978,7 +5978,7 @@ paths:
             type: string
       responses:
         "200":
-          description: Exams
+          description: Matriculation Plan
           content:
             application/json:
               schema:
@@ -6004,7 +6004,7 @@ paths:
         $ref: "#/components/requestBodies/MatriculationPlanUpdateRequestBody"
       responses:
         "200":
-          description: Exams
+          description: Matriculation Plan
           content:
             application/json:
               schema:
@@ -6030,10 +6030,11 @@ paths:
             type: string
       responses:
         "200":
-          description: Exams
+          description: Matriculation Results
           content:
             application/json:
               schema:
+                type: array
                 $ref: "#/components/schemas/MatriculationResults"
         "400":
           description: Invalid request was sent to the server
