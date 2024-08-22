@@ -123,7 +123,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             {t("actions.close", {
               ns: "common",
             })}
-                </Button>
+          </Button>
         </div>
         <div className="chat__button-wrapper">
           <IconButton
