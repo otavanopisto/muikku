@@ -105,7 +105,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
 
       <div className="chat-mobile__footer">
         <div className="chat__button-wrapper">
-     <IconButton
+          <IconButton
             buttonModifiers={["chat", "chat-mobile-footer"]}
             icon="stack"
             onClick={() => setPanelLeftOpen((prev) => !prev)}
@@ -116,7 +116,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
             {t("labels.dashboard", {
               ns: "chat",
             })}
-    </Button>
+          </Button>
         </div>
         <div className="chat__button-wrapper">
           <Button onClick={toggleControlBox}>
