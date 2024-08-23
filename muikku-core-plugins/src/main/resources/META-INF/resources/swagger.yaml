@@ -6213,7 +6213,7 @@ paths:
       summary: Get matriculation eligibility
       description: Get matriculation eligibility
       tags:
-        - Records
+        - Matriculation
       parameters:
         - name: studentIdentifier
           in: path
@@ -7088,9 +7088,10 @@ paths:
 
   /rest/records/students/{studentIdentifier}/matriculationEligibility:
     get:
-      operationId: getMatriculationSubjectEligibility
+      operationId: getMatriculationSubjectEligibilityOld
       summary: Get matriculation eligibility
       description: Get matriculation eligibility
+      deprecated: true
       tags:
         - Records
       parameters:
