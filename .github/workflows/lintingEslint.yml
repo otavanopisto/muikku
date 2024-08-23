@@ -15,9 +15,6 @@ jobs:
         with:
           node-version: 20.11.1
 
-      - name: Install npm@10.2.4
-        run: npm install --global npm@10.2.4
-
       - name: Install Node.js dependencies
         run: npm ci
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src

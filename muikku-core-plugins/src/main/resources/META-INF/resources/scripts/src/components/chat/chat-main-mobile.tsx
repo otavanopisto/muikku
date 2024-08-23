@@ -37,10 +37,6 @@ interface ChatMainMobileProps {}
 function ChatMainMobile(props: ChatMainMobileProps) {
   const { openOverview, toggleControlBox } = useChatContext();
 
-  const plaa = () => {
-    return null;
-  };
-
   const [panelLeftOpen, setPanelLeftOpen] = React.useState(false);
   const [panelRightOpen, setPanelRightOpen] = React.useState(false);
 
