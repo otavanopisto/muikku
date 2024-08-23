@@ -53,4 +53,4 @@ jobs:
       - name: Running Stylelint Code Quality Review
         uses: actions-hub/stylelint@master
         env:
-          PATTERN: "*.scss"
+          PATTERN: "**/*.scss"
