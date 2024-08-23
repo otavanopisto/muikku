@@ -1,11 +1,46 @@
+# name: Stylelint Code Quality Review
+# on:
+#   pull_request:
+#     branches: devel
+# jobs:
+#   stylelint:
+#     name: runner / stylelint
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Check out Git repository
+#         uses: actions/checkout@v4
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: 20.11.1
+
+#       - name: Install Node.js dependencies
+#         run: npm ci
+#         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+
+#       - name: Running Stylelint Code Quality Review
+#         uses: reviewdog/action-stylelint@v1
+#         with:
+#           github_token: ${{ secrets.github_token }}
+#           reporter: github-pr-review
+#           stylelint_input: "**/*.scss"
+#           level: error
+#           fail_on_error: true
+#           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+
+# https://github.com/marketplace/actions/lint-action
 name: Stylelint Code Quality Review
+
 on:
   pull_request:
     branches: devel
+
 jobs:
   stylelint:
     name: runner / stylelint
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
@@ -19,13 +54,10 @@ jobs:
         run: npm ci
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
-      - name: Running Stylelint Code Quality Review
-        uses: reviewdog/action-stylelint@v1
+      - name: Running linters
+        uses: wearerequired/lint-action@v1
         with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
-          stylelint_input: "**/*.scss"
-          level: error
-          fail_on_error: true
-          workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+          stylelint: true
+          stylelint_extensions: "scss"
+          stylelint_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src/sass
 
