@@ -6,6 +6,7 @@ import {
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationPlan,
+  MatriculationResults,
   MatriculationSubject,
   MatriculationSubjectEligibilityOPS2021,
 } from "~/generated/client";
@@ -55,12 +56,13 @@ export interface MatriculationSubjectWithEligibility
  * hopsMatriculation
  */
 interface hopsMatriculation {
-  exams: MatriculationExamWithHistory[] | null;
-  subjects: MatriculationSubject[] | null;
-  subjectsWithEligibility: MatriculationSubjectWithEligibility[] | null;
+  exams: MatriculationExamWithHistory[];
+  subjects: MatriculationSubject[];
+  subjectsWithEligibility: MatriculationSubjectWithEligibility[];
   eligibility: MatriculationEligibility | null;
   plan: MatriculationPlan | null;
   abistatus: Abistatus | null;
+  results: MatriculationResults[];
 }
 
 /**
@@ -96,12 +98,13 @@ const initialHopsState: HopsState = {
   hopsStudyPlanState: {},
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
-    exams: null,
-    subjects: null,
+    exams: [],
+    subjects: [],
     eligibility: null,
-    subjectsWithEligibility: null,
+    subjectsWithEligibility: [],
     plan: null,
     abistatus: null,
+    results: [],
   },
   hopsCareerPlanStatus: "IDLE",
   hopsCareerPlanState: {},
@@ -241,6 +244,16 @@ export const hopsNew: Reducer<HopsState> = (
         hopsMatriculation: {
           ...state.hopsMatriculation,
           abistatus: action.payload,
+        },
+      };
+    }
+
+    case "HOPS_MATRICULATION_UPDATE_RESULTS": {
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          results: action.payload,
         },
       };
     }

@@ -31,6 +31,15 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
   }
 
   /**
+   * Check planned subjects for 0 passing grade course credit points
+   * @returns Boolean if any of the planned subjects have 0 passing grade course credit points
+   */
+  const plannedSubjectsNotEligible = () =>
+    hops.hopsMatriculation.subjectsWithEligibility.some(
+      (subject) => subject.passingGradeCourseCreditPoints === 0
+    );
+
+  /**
    * Finds a matriculation subject name by subject value
    *
    * @param code matriculation subject code
@@ -121,11 +130,11 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                 })}
               />
               <MatriculationEligibilityRow
-                eligibility="ELIGIBLE"
+                eligibility={
+                  !plannedSubjectsNotEligible() ? "ELIGIBLE" : "NOT_ELIGIBLE"
+                }
                 description={t("content.matriculationAbistatusEligibility3", {
                   ns: "hops",
-                  acceptedCount: 0,
-                  requiredCount: 20,
                 })}
               />
             </div>

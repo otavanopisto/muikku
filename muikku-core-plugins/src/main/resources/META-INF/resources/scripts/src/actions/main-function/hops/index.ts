@@ -7,9 +7,9 @@ import {
   MatriculationEligibility,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
-  MatriculationExamFinishedSubject,
   MatriculationExamStudentStatus,
   MatriculationPlan,
+  MatriculationResults,
   MatriculationSubject,
 } from "~/generated/client";
 import {
@@ -102,7 +102,7 @@ export type HOPS_MATRICULATION_UPDATE_ABISTATUS = SpecificActionType<
 
 export type HOPS_MATRICULATION_UPDATE_RESULTS = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_RESULTS",
-  MatriculationExamFinishedSubject[]
+  MatriculationResults[]
 >;
 
 /**
@@ -218,16 +218,24 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
               subjectEligibilityDataArray
             );
 
-            console.log("abistatusData", abistatusData);
+            dispatch({
+              type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
+              payload: subjectEligibilityDataArray,
+            });
+
+            const results =
+              await matriculationApi.getStudentMatriculationResults({
+                studentIdentifier,
+              });
+
+            dispatch({
+              type: "HOPS_MATRICULATION_UPDATE_RESULTS",
+              payload: results,
+            });
 
             dispatch({
               type: "HOPS_MATRICULATION_UPDATE_ABISTATUS",
               payload: abistatusData,
-            });
-
-            dispatch({
-              type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
-              payload: subjectEligibilityDataArray,
             });
           } catch (err) {
             // FIX: ADD ERROR HANDLING

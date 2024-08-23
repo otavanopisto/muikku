@@ -21,6 +21,7 @@ import {
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
+import ItemList from "~/components/general/item-list";
 
 /**
  * MatriculationPlanProps
@@ -147,37 +148,69 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
   }
 
   return (
-    <>
-      <ApplicationSubPanel>
-        <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-          <div className="application-sub-panel__item-title">
-            {t("content.targetMatriculationExam", { ns: "hops" })}
-          </div>
-          <div className="application-sub-panel__item-data">
-            <div className="form-element form-element">
-              <input
-                id={"goalMatriculationExam"}
-                type="checkbox"
-                checked={matriculationPlan.goalMatriculationExam}
-                onChange={handleCheckboxChange}
-              />
+    <ApplicationSubPanel>
+      <ApplicationSubPanel.Header>YO - suunnitelma</ApplicationSubPanel.Header>
+      <ApplicationSubPanel modifier="matriculation-plan-content">
+        <ApplicationSubPanel modifier="matriculation-plan-data">
+          <ApplicationSubPanel.Body>
+            <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
+              <div className="application-sub-panel__item-title">
+                {t("content.targetMatriculationExam", { ns: "hops" })}
+              </div>
+              <div className="application-sub-panel__item-data">
+                <div className="form-element form-element">
+                  <input
+                    id={"goalMatriculationExam"}
+                    type="checkbox"
+                    checked={matriculationPlan.goalMatriculationExam}
+                    onChange={handleCheckboxChange}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-          <div className="application-sub-panel__item-title">
-            {t("content.matriculationSubjectsGoal", { ns: "hops" })}
-          </div>
-          <div className="application-sub-panel__item-data">
-            <MatriculationSubjectsList
-              subjects={selectableSubjects}
-              selectedSubjects={selectedSubjects}
-              onSubjectsChange={handleMatriculationSubjectsChange}
-            />
-          </div>
-        </div>
+
+            <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
+              <div className="application-sub-panel__item-title">
+                {t("content.matriculationSubjectsGoal", { ns: "hops" })}
+              </div>
+              <div className="application-sub-panel__item-data">
+                <MatriculationSubjectsList
+                  subjects={selectableSubjects}
+                  selectedSubjects={selectedSubjects}
+                  onSubjectsChange={handleMatriculationSubjectsChange}
+                />
+              </div>
+            </div>
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
+        <ApplicationSubPanel>
+          <ApplicationSubPanel.Body>
+            <p>
+              Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan
+              vähintään kolmesta aineryhmästä:
+            </p>
+
+            <ItemList>
+              <ItemList.Item icon="icon-check">
+                Äidinkieli (tai S2)
+              </ItemList.Item>
+              <ItemList.Item icon="icon-check">
+                Vieras kieli (pitkä tai lyhyt)
+              </ItemList.Item>
+              <ItemList.Item icon="icon-check">
+                Matematiikka (pitkä tai lyhyt)
+              </ItemList.Item>
+              <ItemList.Item icon="icon-check">
+                Toinen kotimainen kieli eli ruotsi (pitkä tai keskipitkä)
+              </ItemList.Item>
+              <ItemList.Item icon="icon-check">
+                Yksi reaaliaineen koe
+              </ItemList.Item>
+            </ItemList>
+          </ApplicationSubPanel.Body>
+        </ApplicationSubPanel>
       </ApplicationSubPanel>
-    </>
+    </ApplicationSubPanel>
   );
 };
 
