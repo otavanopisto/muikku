@@ -41,24 +41,20 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
   // Abistatus eligibility rows
   const subjectAbistatusEligibilityRows =
-    hops.hopsMatriculation.subjectsWithEligibility.map(
-      (sEligibility, index) => (
-        <MatriculationEligibilityRow
-          key={index}
-          label={getMatriculationSubjectNameByCode(
-            sEligibility.subject.code as MatriculationSubjectCode
-          )}
-          eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
-          description={t("content.matriculationAbistatusEligibility4", {
-            ns: "hops",
-            acceptedCount:
-              sEligibility.acceptedCourseCount +
-              sEligibility.acceptedTransferCreditCount,
-            requiredCount: sEligibility.requirePassingGrades,
-          })}
-        />
-      )
-    );
+    hops.hopsMatriculation.abistatus.subjectStats.map((sAbistatus, index) => (
+      <MatriculationEligibilityRow
+        key={index}
+        label={getMatriculationSubjectNameByCode(
+          sAbistatus.code as MatriculationSubjectCode
+        )}
+        eligibility={sAbistatus.abistatusOk ? "ELIGIBLE" : "NOT_ELIGIBLE"}
+        description={t("content.matriculationAbistatusEligibility4", {
+          ns: "hops",
+          acceptedCount: sAbistatus.doneCredits,
+          requiredCount: sAbistatus.requiredCredits,
+        })}
+      />
+    ));
 
   // Participation rights eligibility rows
   const subjectEligibilityRows =
@@ -72,10 +68,8 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
           description={t("content.matriculationEligibility", {
             ns: "hops",
-            acceptedCount:
-              sEligibility.acceptedCourseCount +
-              sEligibility.acceptedTransferCreditCount,
-            requiredCount: sEligibility.requirePassingGrades,
+            acceptedCount: sEligibility.passingGradeCourseCreditPoints,
+            requiredCount: sEligibility.requiredPassingGradeCourseCreditPoints,
           })}
         />
       )

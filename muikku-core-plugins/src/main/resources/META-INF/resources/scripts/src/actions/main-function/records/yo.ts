@@ -103,7 +103,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
           selectedSubjects.map(async (subject) => {
             try {
               const subjectEligibility =
-                await recordsApi.getMatriculationSubjectEligibility({
+                await recordsApi.getMatriculationSubjectEligibilityOld({
                   studentIdentifier,
                   subjectCode: subject.subjectCode,
                 });

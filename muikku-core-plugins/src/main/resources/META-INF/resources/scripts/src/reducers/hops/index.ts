@@ -7,8 +7,9 @@ import {
   MatriculationExamChangeLogEntry,
   MatriculationPlan,
   MatriculationSubject,
-  MatriculationSubjectEligibility,
+  MatriculationSubjectEligibilityOPS2021,
 } from "~/generated/client";
+import { Abistatus } from "~/helper-functions/abistatus";
 
 /**
  * MatriculationSubjectWithEligibilityStatus
@@ -46,7 +47,7 @@ export interface MatriculationExamWithHistory extends MatriculationExam {
  * MatriculationSubjectWithEligibility
  */
 export interface MatriculationSubjectWithEligibility
-  extends MatriculationSubjectEligibility {
+  extends MatriculationSubjectEligibilityOPS2021 {
   subject: MatriculationSubject;
 }
 
@@ -59,6 +60,7 @@ interface hopsMatriculation {
   subjectsWithEligibility: MatriculationSubjectWithEligibility[] | null;
   eligibility: MatriculationEligibility | null;
   plan: MatriculationPlan | null;
+  abistatus: Abistatus | null;
 }
 
 /**
@@ -99,6 +101,7 @@ const initialHopsState: HopsState = {
     eligibility: null,
     subjectsWithEligibility: null,
     plan: null,
+    abistatus: null,
   },
   hopsCareerPlanStatus: "IDLE",
   hopsCareerPlanState: {},
@@ -228,6 +231,16 @@ export const hopsNew: Reducer<HopsState> = (
         hopsMatriculation: {
           ...state.hopsMatriculation,
           subjectsWithEligibility: action.payload,
+        },
+      };
+    }
+
+    case "HOPS_MATRICULATION_UPDATE_ABISTATUS": {
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          abistatus: action.payload,
         },
       };
     }

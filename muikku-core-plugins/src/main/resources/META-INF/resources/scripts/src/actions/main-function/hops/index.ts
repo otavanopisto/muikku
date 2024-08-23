@@ -7,6 +7,7 @@ import {
   MatriculationEligibility,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
+  MatriculationExamFinishedSubject,
   MatriculationExamStudentStatus,
   MatriculationPlan,
   MatriculationSubject,
@@ -16,6 +17,7 @@ import {
   ReducerStateType,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
+import { Abistatus, abistatus } from "~/helper-functions/abistatus";
 
 // Api instances
 const recordsApi = MApi.getRecordsApi();
@@ -91,6 +93,16 @@ export type HOPS_MATRICULATION_UPDATE_PLAN = SpecificActionType<
 export type HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
   MatriculationSubjectWithEligibility[]
+>;
+
+export type HOPS_MATRICULATION_UPDATE_ABISTATUS = SpecificActionType<
+  "HOPS_MATRICULATION_UPDATE_ABISTATUS",
+  Abistatus
+>;
+
+export type HOPS_MATRICULATION_UPDATE_RESULTS = SpecificActionType<
+  "HOPS_MATRICULATION_UPDATE_RESULTS",
+  MatriculationExamFinishedSubject[]
 >;
 
 /**
@@ -189,7 +201,7 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
               await Promise.all<MatriculationSubjectWithEligibility>(
                 subjectsToFetch.map(async (s) => {
                   const subjectEligibility =
-                    await recordsApi.getMatriculationSubjectEligibility({
+                    await matriculationApi.getMatriculationSubjectEligibility({
                       studentIdentifier,
                       subjectCode: s.subjectCode,
                     });
@@ -200,6 +212,18 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
                   };
                 })
               );
+
+            const abistatusData = abistatus(
+              matriculationSubjects,
+              subjectEligibilityDataArray
+            );
+
+            console.log("abistatusData", abistatusData);
+
+            dispatch({
+              type: "HOPS_MATRICULATION_UPDATE_ABISTATUS",
+              payload: abistatusData,
+            });
 
             dispatch({
               type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
@@ -419,7 +443,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
             await Promise.all<MatriculationSubjectWithEligibility>(
               loadEligibilityForNewSubjects.map(async (s) => {
                 const subjectEligibility =
-                  await recordsApi.getMatriculationSubjectEligibility({
+                  await matriculationApi.getMatriculationSubjectEligibility({
                     studentIdentifier,
                     subjectCode: s.subjectCode,
                   });
