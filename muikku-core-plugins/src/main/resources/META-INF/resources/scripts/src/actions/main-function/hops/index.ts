@@ -4,7 +4,6 @@ import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
 import MApi, { isMApiError } from "~/api/api";
 import {
-  MatriculationEligibility,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationExamStudentStatus,
@@ -13,11 +12,12 @@ import {
   MatriculationSubject,
 } from "~/generated/client";
 import {
+  MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
   ReducerStateType,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
-import { Abistatus, abistatus } from "~/helper-functions/abistatus";
+import { abistatus } from "~/helper-functions/abistatus";
 
 // Api instances
 const recordsApi = MApi.getRecordsApi();
@@ -63,7 +63,7 @@ export type HOPS_MATRICULATION_UPDATE_SUBJECTS = SpecificActionType<
 
 export type HOPS_MATRICULATION_UPDATE_ELIGIBILITY = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_ELIGIBILITY",
-  MatriculationEligibility
+  MatriculationEligibilityWithAbistatus
 >;
 
 export type HOPS_MATRICULATION_UPDATE_EXAM_STATE = SpecificActionType<
@@ -93,11 +93,6 @@ export type HOPS_MATRICULATION_UPDATE_PLAN = SpecificActionType<
 export type HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
   MatriculationSubjectWithEligibility[]
->;
-
-export type HOPS_MATRICULATION_UPDATE_ABISTATUS = SpecificActionType<
-  "HOPS_MATRICULATION_UPDATE_ABISTATUS",
-  Abistatus
 >;
 
 export type HOPS_MATRICULATION_UPDATE_RESULTS = SpecificActionType<
@@ -183,6 +178,16 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
           payload: matriculationSubjects,
         });
 
+        // Load and dispatch student matriculation eligibility
+        const eligibility = await recordsApi.getStudentMatriculationEligibility(
+          {
+            studentIdentifier,
+          }
+        );
+
+        // Load and dispatch student matriculation subject eligibility and Abistatus
+        // Those are related to the planned subjects in the matriculation plan
+        // So they are handled together
         if (matriculationPlan.plannedSubjects) {
           try {
             const subjectsToFetch: MatriculationSubject[] = [];
@@ -214,28 +219,27 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
               );
 
             const abistatusData = abistatus(
-              matriculationSubjects,
-              subjectEligibilityDataArray
+              subjectEligibilityDataArray,
+              eligibility.creditPoints,
+              eligibility.creditPointsRequired
             );
+
+            // Merge eligibility and abistatus data single object
+            const eligibilityWithAbistatus: MatriculationEligibilityWithAbistatus =
+              {
+                ...abistatusData,
+                personHasCourseAssessments:
+                  eligibility.personHasCourseAssessments,
+              };
 
             dispatch({
               type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
               payload: subjectEligibilityDataArray,
             });
 
-            const results =
-              await matriculationApi.getStudentMatriculationResults({
-                studentIdentifier,
-              });
-
             dispatch({
-              type: "HOPS_MATRICULATION_UPDATE_RESULTS",
-              payload: results,
-            });
-
-            dispatch({
-              type: "HOPS_MATRICULATION_UPDATE_ABISTATUS",
-              payload: abistatusData,
+              type: "HOPS_MATRICULATION_UPDATE_ELIGIBILITY",
+              payload: eligibilityWithAbistatus,
             });
           } catch (err) {
             // FIX: ADD ERROR HANDLING
@@ -245,27 +249,23 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
           }
         }
 
-        //If the studentIdentifier is not provided, this is called for you, not someone else.
-        // So we go ahead and call exams for you.
+        // Load and dispatch student matriculation results
+        const results = await matriculationApi.getStudentMatriculationResults({
+          studentIdentifier,
+        });
 
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_RESULTS",
+          payload: results,
+        });
+
+        // Load and dispatch student matriculation exams
         const matriculationExams = await matriculationApi.getStudentExams({
           studentIdentifier,
         });
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_EXAMS",
           payload: matriculationExams,
-        });
-
-        // Load and dispatch student matriculation eligibility
-        const eligibility = await recordsApi.getStudentMatriculationEligibility(
-          {
-            studentIdentifier,
-          }
-        );
-
-        dispatch({
-          type: "HOPS_MATRICULATION_UPDATE_ELIGIBILITY",
-          payload: eligibility,
         });
 
         // All done

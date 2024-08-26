@@ -1,7 +1,6 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import {
-  MatriculationEligibility,
   MatriculationEligibilityStatus,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
@@ -10,7 +9,7 @@ import {
   MatriculationSubject,
   MatriculationSubjectEligibilityOPS2021,
 } from "~/generated/client";
-import { Abistatus } from "~/helper-functions/abistatus";
+import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
 /**
  * MatriculationSubjectWithEligibilityStatus
@@ -53,15 +52,22 @@ export interface MatriculationSubjectWithEligibility
 }
 
 /**
+ * MatriculationEligibility
+ */
+export interface MatriculationEligibilityWithAbistatus
+  extends MatriculationAbistatus {
+  personHasCourseAssessments: boolean;
+}
+
+/**
  * hopsMatriculation
  */
 interface hopsMatriculation {
   exams: MatriculationExamWithHistory[];
   subjects: MatriculationSubject[];
   subjectsWithEligibility: MatriculationSubjectWithEligibility[];
-  eligibility: MatriculationEligibility | null;
+  eligibility: MatriculationEligibilityWithAbistatus | null;
   plan: MatriculationPlan | null;
-  abistatus: Abistatus | null;
   results: MatriculationResults[];
 }
 
@@ -103,7 +109,6 @@ const initialHopsState: HopsState = {
     eligibility: null,
     subjectsWithEligibility: [],
     plan: null,
-    abistatus: null,
     results: [],
   },
   hopsCareerPlanStatus: "IDLE",
@@ -238,15 +243,15 @@ export const hopsNew: Reducer<HopsState> = (
       };
     }
 
-    case "HOPS_MATRICULATION_UPDATE_ABISTATUS": {
-      return {
-        ...state,
-        hopsMatriculation: {
-          ...state.hopsMatriculation,
-          abistatus: action.payload,
-        },
-      };
-    }
+    // case "HOPS_MATRICULATION_UPDATE_ABISTATUS": {
+    //   return {
+    //     ...state,
+    //     hopsMatriculation: {
+    //       ...state.hopsMatriculation,
+    //       abistatus: action.payload,
+    //     },
+    //   };
+    // }
 
     case "HOPS_MATRICULATION_UPDATE_RESULTS": {
       return {

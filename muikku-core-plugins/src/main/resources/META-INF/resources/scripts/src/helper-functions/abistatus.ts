@@ -1,65 +1,9 @@
-import { MatriculationSubject } from "~/generated/client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { MatriculationSubjectWithEligibility } from "~/reducers/hops";
-
-/**
- * Subject
- */
-interface Subject {
-  subjectCode: string;
-  name: string;
-  requiredCredits: number;
-}
-
-// Äidinkieli
-const FINNISH_SUBJECTS = ["AI", "S2"];
-
-// Toinen kotimainen kieli
-const SECONDONDARY_LANGUAGE = ["RUA", "RUB"];
-
-// Matematiikka
-const MATH_SUBJECTS = ["MAA", "MAB"];
-
-// Pitkät kieli (A-taso)
-const ADVANCED_SUBJECTS_LANGUAGE = [
-  "ENA",
-  "RAA",
-  "EAA",
-  "SAA",
-  "VEA",
-  "RUA",
-  "LAB3",
-];
-
-const NON_ADVANCED_SUBJECTS_LANGUAGE = [
-  "RAB3",
-  "EAB3",
-  "SAB3",
-  "VEB3",
-  "IAB3",
-  "POB3",
-  "SMB3",
-  "ENB3",
-  "LAB3",
-];
-
-// Reaaliaineet
-const ACADEMIC_SUBJECTS = [
-  "UE",
-  "ET",
-  "YH",
-  "KE",
-  "GE",
-  "TE",
-  "PS",
-  "FI",
-  "HI",
-  "FY",
-  "BI",
-];
 
 // Ainelista ja abistatukseen vaadittavat pistemäärät
 const SUBJECT_MAP: {
-  [key: string]: Subject;
+  [key: string]: SubjectRequirement;
 } = {
   ÄI: {
     subjectCode: "AI",
@@ -218,39 +162,49 @@ const SUBJECT_MAP: {
   },
 };
 
-type SubjectAbistatus = Subject & {
+/**
+ * Matriculation Abistatus
+ */
+export interface MatriculationAbistatus {
+  overallAbistatusOk: boolean;
+  subjectStats: AbistatusSubject[];
+  credits: number;
+  creditsRequired: number;
+}
+
+/**
+ * Abistatus Subject with additional properties for subject
+ */
+export type AbistatusSubject = SubjectRequirement & {
   code: string;
   doneCredits: number;
   abistatusOk: boolean;
 };
 
 /**
- * Abistatus
+ * Subject Requirement by subject code
  */
-export interface Abistatus {
-  overallAbistatusOk: boolean;
-  subjectStats: SubjectAbistatus[];
+export interface SubjectRequirement {
+  subjectCode: string;
+  name: string;
+  requiredCredits: number;
 }
 
 /**
  * Gets abistatus value
- * @param subjects subjects
  * @param subjectsWithEligibility subjectsWithEligibility
+ * @param credits credits
+ * @param requiredCredits requiredCredits
  */
 export const abistatus = (
-  subjects: MatriculationSubject[],
-  subjectsWithEligibility: MatriculationSubjectWithEligibility[]
-): Abistatus => {
-  const plannedSubjectCodes = subjects.map((s) => {
-    if (subjectsWithEligibility.find((sE) => sE.subject.code === s.code)) {
-      return s.subjectCode;
-    }
-  });
-
+  subjectsWithEligibility: MatriculationSubjectWithEligibility[],
+  credits: number,
+  requiredCredits: number
+): MatriculationAbistatus => {
   // Create helper object by iterating planned subjects codes from SUBJECT_MAP
   // and checking if the subject is found in planned subjects
   const helpObject: {
-    [key: string]: SubjectAbistatus;
+    [key: string]: AbistatusSubject;
   } = Object.entries(SUBJECT_MAP).reduce((acc, [key, value]) => {
     const plannedSubjectWithEligibility = subjectsWithEligibility.find(
       (s) => s.subject.subjectCode === key
@@ -281,38 +235,14 @@ export const abistatus = (
     }
   }, {});
 
-  //Next we need to check if specific subject conditions are met
-
-  // Äidinkieli exist in plan
-  const finnishLanguageExist =
-    plannedSubjectCodes.find((s) => FINNISH_SUBJECTS.includes(s)) !== undefined;
-
-  // Matematiikka exist in plan
-  const mathExist =
-    plannedSubjectCodes.find((s) => MATH_SUBJECTS.includes(s)) !== undefined;
-
-  // Vieras kieli (A-taso) exist in plan
-  const advancedLanguageExist =
-    plannedSubjectCodes.find((s) => ADVANCED_SUBJECTS_LANGUAGE.includes(s)) !==
-    undefined;
-
-  // Vieras kieli (C-taso) exist in plan
-  const nonAdvancedLanguageExist =
-    plannedSubjectCodes.find((s) =>
-      NON_ADVANCED_SUBJECTS_LANGUAGE.includes(s)
-    ) !== undefined;
-
-  const secondLanguageExist =
-    plannedSubjectCodes.find((s) => SECONDONDARY_LANGUAGE.includes(s)) !==
-    undefined;
-
   const overallSubjectStatusOk = Object.values(helpObject).every(
     (s) => s.abistatusOk
   );
 
   return {
-    overallAbistatusOk:
-      overallSubjectStatusOk && finnishLanguageExist && mathExist,
+    overallAbistatusOk: overallSubjectStatusOk,
     subjectStats: Object.values(helpObject),
+    credits,
+    creditsRequired: requiredCredits,
   };
 };

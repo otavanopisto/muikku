@@ -207,6 +207,17 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
                 Yksi reaaliaineen koe
               </ItemList.Item>
             </ItemList>
+
+            <p>
+              <b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe
+              (esim. pitkä matematiikka tai A-tason vieras kieli). <br />
+              Kokeile
+              <a href="https://ilmo.ylioppilastutkinto.fi/fi">
+                ILMO-työkalulla
+              </a>
+              , millaisilla aineyhdistelmillä voit suorittaa
+              ylioppilastutkinnon.
+            </p>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </ApplicationSubPanel>
