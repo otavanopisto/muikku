@@ -39,7 +39,6 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGrou
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
-import fi.otavanopisto.muikku.rest.MessageRecipientList;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
@@ -1495,42 +1494,34 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public BridgeResponse<List<StudentContactLogEntryRestModel>> createStudentContactLogEntryBatch(List<UserEntity> recipients, StudentContactLogEntryRestModel payload){
-    
-    List<Long> recipientList = new ArrayList<Long>();
+  public BridgeResponse<StudentContactLogEntryRestModel> createMultipleStudentContactLogEntries(List<SchoolDataIdentifier> recipients, StudentContactLogEntryRestModel payload){
+    List<Long> recipientList = new ArrayList<>();
     if (!recipients.isEmpty()) {
-      for (UserEntity entity : recipients) {
-        recipientList.add(entity.getId());
+      for (SchoolDataIdentifier studentIdentifier : recipients) {
+        recipientList.add(identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier()));
       }
     }
-    payload.setRecipients(recipientList);
     
-    BridgeResponse<StudentContactLogEntryRestModel[]> response =  pyramusClient.responsePost(String.format("/students/students/contactLogEntries/batch"), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryRestModel[].class);
-
-    List<StudentContactLogEntryRestModel> items = null;
+    payload.setRecipients(recipientList);
+    BridgeResponse<StudentContactLogEntryRestModel> response =  pyramusClient.responsePost(String.format("/students/students/contactLogEntries/batch"), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryRestModel.class);
     
     if (response.getEntity() != null) {
-      items = new ArrayList<>();
-      for (StudentContactLogEntryRestModel item : response.getEntity()) {
         
-        if (item.getCreatorId() != null) {
-          item.setCreatorId(toUserEntityId(item.getCreatorId()));
+        if (response.getEntity().getCreatorId() != null) {
+          response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
 
           boolean hasImage = false;
-          UserEntity userEntity = userEntityController.findUserEntityById(item.getCreatorId());
+          UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
           
           if (userEntity != null) {
             hasImage = userEntityFileController.hasProfilePicture(userEntity);
           }
             
-          item.setHasImage(hasImage);
+          response.getEntity().setHasImage(hasImage);
         }
-        
-        items.add(item);
-      }
     }
       
-    return new BridgeResponse<List<StudentContactLogEntryRestModel>>(response.getStatusCode(), items);
+    return new BridgeResponse<StudentContactLogEntryRestModel>(response.getStatusCode(), response.getEntity());
   }
 
   @Override

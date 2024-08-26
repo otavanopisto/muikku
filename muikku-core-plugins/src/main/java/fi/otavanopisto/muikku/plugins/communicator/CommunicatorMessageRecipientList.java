@@ -115,6 +115,9 @@ public class CommunicatorMessageRecipientList {
     return workspaceRecipient.getRecipients();
   }
   
+  public Set<Long> getRecipientIds(){
+    return this.recipientIds;
+  }
   private Set<Long> recipientIds = new HashSet<Long>();
   private List<UserEntity> recipients = new ArrayList<>();
   private Map<Long, UserGroupRecipient> userGroupRecipients = new HashMap<>();

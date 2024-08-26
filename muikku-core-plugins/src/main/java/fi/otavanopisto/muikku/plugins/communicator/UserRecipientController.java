@@ -74,9 +74,11 @@ public class UserRecipientController {
       // #3758: Only send messages to active users
       UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(recipient);
       
-      Boolean recipientRole = hasAnyRole(roles, usdi);
-      if (isActiveUser(recipient) && (roles.isEmpty() || recipientRole)) {
-        preparedRecipientList.addRecipient(recipient);
+      if (roles != null) {
+        Boolean recipientRole = hasAnyRole(roles, usdi);
+        if (isActiveUser(recipient) && (roles.isEmpty() || recipientRole)) {
+          preparedRecipientList.addRecipient(recipient);
+        }
       }
     }
     

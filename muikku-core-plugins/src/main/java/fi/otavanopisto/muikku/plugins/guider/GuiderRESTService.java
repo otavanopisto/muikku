@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,6 @@ import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
-import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
@@ -62,9 +60,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
-import fi.otavanopisto.muikku.plugins.communicator.MessageRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.rest.CommunicatorNewMessageRESTModel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
@@ -979,22 +975,29 @@ public class GuiderRESTService extends PluginRESTService {
   @POST
   @Path("/students/contactLogEntries/batch")
   @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
-  public Response createStudentContactLogEntryBatch(CommunicatorNewMessageRESTModel recipients, StudentContactLogEntryRestModel payload) {
+  public Response createMultipleStudentContactLogEntries(fi.otavanopisto.muikku.plugins.guider.StudentContactLogEntriesWithRecipientsRestModel payload) {
+    
+    if (payload == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+      
     String dataSource = sessionController.getLoggedUserSchoolDataSource();
 
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     List<UserEntity> recipientList = new ArrayList<UserEntity>();
-    
-    MessageRecipientList messageRecipientList = new MessageRecipientList();
 
-    for (Long recipientId : recipients.getRecipientIds()) {
-      UserEntity recipient = userEntityController.findUserEntityById(recipientId);
-      
-      if (recipient != null) {
-        recipientList.add(recipient);
-      } else {
-        return Response.status(Status.BAD_REQUEST).build();
+    CommunicatorNewMessageRESTModel recipientPayload = payload.getRecipients();
+    
+    if (recipientPayload != null) {
+      for (Long recipientId : recipientPayload.getRecipientIds()) {
+        UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+        
+        if (recipient != null) {
+          recipientList.add(recipient);
+        } else {
+          return Response.status(Status.BAD_REQUEST).build();
+        }
       }
     }
     
@@ -1003,11 +1006,11 @@ public class GuiderRESTService extends PluginRESTService {
     UserGroupEntity group = null;
     
     // user groups
-    if (!CollectionUtils.isEmpty(recipients.getRecipientGroupIds())) {
+    if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
       if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
         userGroupRecipients = new ArrayList<UserGroupEntity>();
         
-        for (Long groupId : recipients.getRecipientGroupIds()) {
+        for (Long groupId : recipientPayload.getRecipientGroupIds()) {
           group = userGroupEntityController.findUserGroupEntityById(groupId);
           userGroupRecipients.add(group);
         }
@@ -1019,10 +1022,10 @@ public class GuiderRESTService extends PluginRESTService {
     
     // Workspace members
     WorkspaceEntity workspaceEntity = null;
-    if (!CollectionUtils.isEmpty(recipients.getRecipientStudentsWorkspaceIds())) {
+    if (!CollectionUtils.isEmpty(recipientPayload.getRecipientStudentsWorkspaceIds())) {
       workspaceStudentRecipients = new ArrayList<WorkspaceEntity>();
       
-      for (Long workspaceId : recipients.getRecipientStudentsWorkspaceIds()) {
+      for (Long workspaceId : recipientPayload.getRecipientStudentsWorkspaceIds()) {
         workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
   
         if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity))
@@ -1032,14 +1035,32 @@ public class GuiderRESTService extends PluginRESTService {
       }
     }
     
+    // The recipients of contact log entries are always only students
+    List<EnvironmentRoleArchetype> roles = new ArrayList<EnvironmentRoleArchetype>();
+    roles.add(EnvironmentRoleArchetype.STUDENT);
+    
+    // Filter recipients
     CommunicatorMessageRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
-        userEntity, recipientList, userGroupRecipients, workspaceStudentRecipients, null, null);
+        userEntity, recipientList, userGroupRecipients, workspaceStudentRecipients, null, roles);
+
 
     if (!prepareRecipientList.hasRecipients()) {
       return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
     }
     
-    BridgeResponse<List<StudentContactLogEntryRestModel>> response = userSchoolDataController.createStudentContactLogEntryBatch(dataSource, prepareRecipientList.getUserRecipients(), payload);
+    Set<Long> recipientIds = prepareRecipientList.getRecipientIds();
+    List<SchoolDataIdentifier> recipients = new ArrayList<>();
+    
+    
+    // Change list of userEntities to list of ids to make it easier to export the list to Pyramus.
+    if (!recipientIds.isEmpty()) {
+      for (Long recipientId : recipientIds) {
+        UserEntity userEntity2 = userEntityController.findUserEntityById(recipientId);
+        recipients.add(userEntity2.defaultSchoolDataIdentifier());
+      }
+    }
+    
+    BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.createMultipleStudentContactLogEntries(dataSource, recipients, payload.getContactLogEntry());
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
