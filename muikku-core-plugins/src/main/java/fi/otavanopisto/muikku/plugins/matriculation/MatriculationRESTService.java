@@ -121,7 +121,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
     }
     
-    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
