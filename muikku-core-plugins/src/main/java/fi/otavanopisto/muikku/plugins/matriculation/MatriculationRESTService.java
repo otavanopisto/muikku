@@ -466,7 +466,7 @@ public class MatriculationRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Path("/students/{STUDENTIDENTIFIER}/plan")
-  public Response updateHops(MatriculationPlanRESTModel model) {
+  public Response updateStudentsMatriculationPlan(MatriculationPlanRESTModel model) {
     if (model == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing payload").build();
     }

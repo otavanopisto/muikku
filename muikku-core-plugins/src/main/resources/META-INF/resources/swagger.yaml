@@ -14311,6 +14311,7 @@ components:
         - ELIGIBLE
         - PENDING
         - SUPPLEMENTATION_REQUEST
+        - SUPPLEMENTED
         - APPROVED
         - REJECTED
         - CONFIRMED
