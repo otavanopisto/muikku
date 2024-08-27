@@ -126,6 +126,7 @@ import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
 import { loadMatriculationData } from "~/actions/main-function/hops/";
+import GuardianHopsBody from "~/components/guardian_hops/body";
 
 /**
  * MainFunctionProps
@@ -170,6 +171,7 @@ export default class MainFunction extends React.Component<
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderGuardianBody = this.renderGuardianBody.bind(this);
+    this.renderGuardianHopsBody = this.renderGuardianHopsBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
     this.renderHopsBody = this.renderHopsBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
@@ -1063,6 +1065,42 @@ export default class MainFunction extends React.Component<
   }
 
   /**
+   * renderGuardianBody
+   */
+  renderGuardianHopsBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      const [identifier, tab] = hashArray;
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      const state = this.props.store.getState();
+
+      if (state.dependants.state === "WAIT") {
+        this.props.store.dispatch(loadDependants() as Action);
+      }
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
+      this.props.store.dispatch(titleActions.updateTitle("HOPS"));
+
+      // If there's an identifier, we can load records data, otherwise it's done in the hash change
+      if (identifier) {
+        if (tab) {
+          this.loadRecordsData(tab, identifier);
+        } else {
+          this.loadRecordsData("", identifier);
+        }
+      }
+    }
+    return <GuardianHopsBody />;
+  }
+
+  /**
    * renderEvaluationBody
    */
   renderEvaluationBody() {
@@ -1192,6 +1230,10 @@ export default class MainFunction extends React.Component<
               <Route path="/announcer" render={this.renderAnnouncerBody} />
               <Route path="/guider" render={this.renderGuiderBody} />
               <Route path="/guardian" render={this.renderGuardianBody} />
+              <Route
+                path="/guardian_hops"
+                render={this.renderGuardianHopsBody}
+              />
               <Route path="/profile" render={this.renderProfileBody} />
               <Route path="/records" render={this.renderRecordsBody} />
               <Route path="/hops" render={this.renderHopsBody} />
