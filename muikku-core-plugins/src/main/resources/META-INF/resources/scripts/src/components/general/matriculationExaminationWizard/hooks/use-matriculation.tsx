@@ -38,7 +38,7 @@ export const useMatriculation = (
     initialized: boolean;
     savingDraft: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    examId: any;
+    examId: number;
     errorMsg?: string;
     saveState?: SaveState;
     studentInformation: MatriculationStudent;
@@ -46,7 +46,7 @@ export const useMatriculation = (
     examFormChangeLogs: MatriculationExamChangeLogEntry[];
   }>({
     saveState: undefined,
-    examId: undefined,
+    examId,
     initialized: false,
     savingDraft: false,
     errorMsg: undefined,
@@ -269,8 +269,13 @@ export const useMatriculation = (
 
   /**
    * Submits matriculation form
+   * @param onSuccess onSuccess
+   * @param onError onError
    */
-  const onMatriculationFormSubmit = async () => {
+  const onMatriculationFormSubmit = async (
+    onSuccess?: (enrollement: MatriculationExamEnrollment) => void,
+    onError?: () => void
+  ) => {
     setMatriculation((prevState) => ({
       ...prevState,
       saveState: "IN_PROGRESS",
@@ -388,6 +393,9 @@ export const useMatriculation = (
         ...prevState,
         saveState: "SUCCESS",
       }));
+
+      onSuccess &&
+        onSuccess({ ...matriculationForm, enrollmentDate: new Date() });
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;

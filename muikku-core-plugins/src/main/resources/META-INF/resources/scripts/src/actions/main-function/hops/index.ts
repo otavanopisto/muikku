@@ -2,7 +2,7 @@ import actions from "../../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
-import MApi, { isMApiError } from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
   MatriculationExam,
   MatriculationExamChangeLogEntry,
@@ -126,6 +126,17 @@ export interface LoadMatriculationExamHistoryTriggerType {
  */
 export interface SaveMatriculationPlanTriggerType {
   (plan: MatriculationPlan): AnyActionType;
+}
+
+/**
+ * UpdateMatriculationExaminationTriggerType
+ */
+export interface UpdateMatriculationExaminationTriggerType {
+  (data: {
+    examId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -364,6 +375,18 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
         if (!isMApiError(err)) {
           throw err;
         }
+
+        // If there is no history, we can just set the status to ready and empty history
+        if (isResponseError(err) && err.response.status === 404) {
+          dispatch({
+            type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
+            payload: {
+              examId,
+              history: [],
+              status: "READY",
+            },
+          });
+        }
       }
     };
   };
@@ -469,6 +492,22 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
           ...newSubjectEligibilityDataArray,
         ];
 
+        // Calculate updated abistatus with new eligibility data
+        const abistatusData = abistatus(
+          updatedListOfEligibility,
+          state.hopsNew.hopsMatriculation.eligibility.credits,
+          state.hopsNew.hopsMatriculation.eligibility.creditsRequired
+        );
+
+        // Merge eligibility and abistatus data single object
+        const eligibilityWithAbistatus: MatriculationEligibilityWithAbistatus =
+          {
+            ...abistatusData,
+            personHasCourseAssessments:
+              state.hopsNew.hopsMatriculation.eligibility
+                .personHasCourseAssessments,
+          };
+
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_PLAN",
           payload: plan,
@@ -477,6 +516,61 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
           payload: updatedListOfEligibility,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_ELIGIBILITY",
+          payload: eligibilityWithAbistatus,
+        });
+      } catch (err) {
+        // FIX: ADD ERROR HANDLING
+        if (!isMApiError(err)) {
+          throw err;
+        }
+      }
+    };
+  };
+
+/**
+ * Updates matriculation examination
+ * @param data data
+ */
+const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType =
+  function updateMatriculationExamination(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const studentIdentifier = state.status.userSchoolDataIdentifier;
+
+      try {
+        // Load the updated exam enrollment
+        const updatedExam = await matriculationApi.getStudentExamEnrollment({
+          studentIdentifier,
+          examId: data.examId,
+        });
+
+        // copy the exams array
+        const updatedExams = [...state.hopsNew.hopsMatriculation.exams];
+
+        // find the index of the exam to update
+        const examIndex = updatedExams.findIndex(
+          (exam) => exam.id === data.examId
+        );
+
+        // if the exam is not found, endh ere
+        if (examIndex === 1) {
+          return;
+        }
+
+        // update the exam status
+        updatedExams[examIndex].studentStatus = "PENDING";
+        updatedExams[examIndex].enrollment = updatedExam;
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_EXAMS",
+          payload: updatedExams,
         });
       } catch (err) {
         // FIX: ADD ERROR HANDLING
@@ -492,4 +586,5 @@ export {
   verifyMatriculationExam,
   loadMatriculationExamHistory,
   saveMatriculationPlan,
+  updateMatriculationExamination,
 };

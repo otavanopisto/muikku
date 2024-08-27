@@ -243,16 +243,6 @@ export const hopsNew: Reducer<HopsState> = (
       };
     }
 
-    // case "HOPS_MATRICULATION_UPDATE_ABISTATUS": {
-    //   return {
-    //     ...state,
-    //     hopsMatriculation: {
-    //       ...state.hopsMatriculation,
-    //       abistatus: action.payload,
-    //     },
-    //   };
-    // }
-
     case "HOPS_MATRICULATION_UPDATE_RESULTS": {
       return {
         ...state,

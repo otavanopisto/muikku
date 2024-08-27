@@ -32,6 +32,17 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
   const renderMatriculationResults = () => {
     const results = hops.hopsMatriculation.results;
 
+    if (!results || results.length === 0) {
+      return (
+        <div>
+          <p>
+            Sinulla ei ole vielä yo-suorituksista tuloksia. Tulokset merkitään
+            kun kokeet joihin olet osallistunut on arvioitu.
+          </p>
+        </div>
+      );
+    }
+
     return results.map((r) => {
       const subResult = r.attendances;
 

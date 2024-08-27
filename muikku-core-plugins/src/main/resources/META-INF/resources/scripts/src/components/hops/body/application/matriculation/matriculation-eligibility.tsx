@@ -141,6 +141,16 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+              <p>
+                Ainekohtaiset abistatusvaatimukset. Sinun tulee olla suorittanut
+                aineen vaatimat kurssit hyväksytysti, jotta voit ilmoittautua
+                yo-kokeeseen kyseisessä aineessa.
+              </p>
+            </div>
+          </div>
+
+          <div className="application-sub-panel__notification-item">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               {subjectAbistatusEligibilityRows}
             </div>
           </div>

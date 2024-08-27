@@ -1,12 +1,19 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
+import { getNextTermsOptionsByDate } from "~/helper-functions/matriculation-functions";
+import { StateType } from "~/reducers";
+import { StatusType } from "~/reducers/base/status";
 import { MatriculationSubjectCode } from "./matriculation-subject-type";
 
 /**
  * MatriculationSubjectsListProps
  */
 interface MatriculationSubjectsListProps {
+  status: StatusType;
   subjects: MatriculationSubjectCode[];
   selectedSubjects: SelectedMatriculationSubject[];
   /**
@@ -32,7 +39,7 @@ export interface SelectedMatriculationSubject {
  * @param props props
  */
 const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
-  const { onSubjectsChange, selectedSubjects, subjects } = props;
+  const { onSubjectsChange, selectedSubjects, subjects, status } = props;
   const [selectedSubjects2, setSelectedSubjects2] =
     React.useState<SelectedMatriculationSubject[]>(selectedSubjects);
 
@@ -58,7 +65,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       return;
     }
     // Filter out empty values from input array
-    onSubjectsChange(selectedSubjects.filter((s) => s.subjectCode && s.term));
+    onSubjectsChange(selectedSubjects.filter((s) => s.subjectCode));
   };
 
   /**
@@ -110,6 +117,8 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       setSelectedSubjects2(updatedList);
     };
 
+  const termOptions = getNextTermsOptionsByDate(status.profile.studyStartDate);
+
   const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
     <div className="form-element__dropdown-selection-container" key={index}>
       <label
@@ -149,12 +158,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
           {t("labels.select", { ns: "hops" })}
         </option>
 
-        <option key="Syksy2024" value="AUTUMN2024">
-          Syksy 2024
-        </option>
-        <option key="Kevät2025" value="SPRING2025">
-          Kevät 2025
-        </option>
+        {termOptions}
       </select>
       <Button
         buttonModifiers={["primary-function-content", "remove-subject-row"]}
@@ -180,4 +184,25 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   );
 };
 
-export default React.memo(MatriculationSubjectsList);
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    status: state.status,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators({}, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(React.memo(MatriculationSubjectsList));

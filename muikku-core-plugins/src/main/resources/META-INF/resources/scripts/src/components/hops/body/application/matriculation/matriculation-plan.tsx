@@ -56,7 +56,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
     return plan.plannedSubjects.map<SelectedMatriculationSubject>(
       (subject) => ({
         subjectCode: subject.subject,
-        term: `${subject.term}${subject.year}`,
+        term: subject.term ? `${subject.term}${subject.year}` : "",
       })
     );
   }, [plan]);
