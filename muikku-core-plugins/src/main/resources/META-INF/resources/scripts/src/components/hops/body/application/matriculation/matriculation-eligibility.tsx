@@ -31,6 +31,15 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
   }
 
   /**
+   * Check planned subjects for 0 passing grade course credit points
+   * @returns Boolean if any of the planned subjects have 0 passing grade course credit points
+   */
+  const plannedSubjectsNotEligible = () =>
+    hops.hopsMatriculation.subjectsWithEligibility.some(
+      (subject) => subject.passingGradeCourseCreditPoints === 0
+    );
+
+  /**
    * Finds a matriculation subject name by subject value
    *
    * @param code matriculation subject code
@@ -41,24 +50,20 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
   // Abistatus eligibility rows
   const subjectAbistatusEligibilityRows =
-    hops.hopsMatriculation.subjectsWithEligibility.map(
-      (sEligibility, index) => (
-        <MatriculationEligibilityRow
-          key={index}
-          label={getMatriculationSubjectNameByCode(
-            sEligibility.subject.code as MatriculationSubjectCode
-          )}
-          eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
-          description={t("content.matriculationAbistatusEligibility4", {
-            ns: "hops",
-            acceptedCount:
-              sEligibility.acceptedCourseCount +
-              sEligibility.acceptedTransferCreditCount,
-            requiredCount: sEligibility.requirePassingGrades,
-          })}
-        />
-      )
-    );
+    hops.hopsMatriculation.eligibility.subjectStats.map((sAbistatus, index) => (
+      <MatriculationEligibilityRow
+        key={index}
+        label={getMatriculationSubjectNameByCode(
+          sAbistatus.code as MatriculationSubjectCode
+        )}
+        eligibility={sAbistatus.abistatusOk ? "ELIGIBLE" : "NOT_ELIGIBLE"}
+        description={t("content.matriculationAbistatusEligibility4", {
+          ns: "hops",
+          acceptedCount: sAbistatus.doneCredits,
+          requiredCount: sAbistatus.requiredCredits,
+        })}
+      />
+    ));
 
   // Participation rights eligibility rows
   const subjectEligibilityRows =
@@ -72,10 +77,8 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
           description={t("content.matriculationEligibility", {
             ns: "hops",
-            acceptedCount:
-              sEligibility.acceptedCourseCount +
-              sEligibility.acceptedTransferCreditCount,
-            requiredCount: sEligibility.requirePassingGrades,
+            acceptedCount: sEligibility.passingGradeCourseCreditPoints,
+            requiredCount: sEligibility.requiredPassingGradeCourseCreditPoints,
           })}
         />
       )
@@ -89,7 +92,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
         </div>
         <div className="application-sub-panel__body application-sub-panel__body">
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
                 Kun ilmoittaudut yo-kokeeseen ensimmäistä kertaa, on sinulla
                 oltava abistatus eli oikeus ilmoittautua yo-kokeisiin. <br />
@@ -100,20 +103,19 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           </div>
 
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <MatriculationEligibilityRow
                 eligibility={
-                  hops.hopsMatriculation.eligibility.creditPoints >=
-                  hops.hopsMatriculation.eligibility.creditPointsRequired
+                  hops.hopsMatriculation.eligibility.credits >=
+                  hops.hopsMatriculation.eligibility.creditsRequired
                     ? "ELIGIBLE"
                     : "NOT_ELIGIBLE"
                 }
                 description={t("content.matriculationAbistatusEligibility1", {
                   ns: "hops",
-                  acceptedCount:
-                    hops.hopsMatriculation.eligibility.creditPoints,
+                  acceptedCount: hops.hopsMatriculation.eligibility.credits,
                   requiredCount:
-                    hops.hopsMatriculation.eligibility.creditPointsRequired,
+                    hops.hopsMatriculation.eligibility.creditsRequired,
                 })}
               />
               <MatriculationEligibilityRow
@@ -127,18 +129,28 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                 })}
               />
               <MatriculationEligibilityRow
-                eligibility="ELIGIBLE"
+                eligibility={
+                  !plannedSubjectsNotEligible() ? "ELIGIBLE" : "NOT_ELIGIBLE"
+                }
                 description={t("content.matriculationAbistatusEligibility3", {
                   ns: "hops",
-                  acceptedCount: 0,
-                  requiredCount: 20,
                 })}
               />
             </div>
           </div>
 
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+              <p>
+                Ainekohtaiset abistatusvaatimukset. Sinun tulee olla suorittanut
+                aineen vaatimat kurssit hyväksytysti, jotta voit ilmoittautua
+                yo-kokeeseen kyseisessä aineessa.
+              </p>
+            </div>
+          </div>
+
+          <div className="application-sub-panel__notification-item">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               {subjectAbistatusEligibilityRows}
             </div>
           </div>
@@ -149,9 +161,18 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
         <div className="application-sub-panel__header">
           {t("content.participationRights", { ns: "studies" })}
         </div>
-        <div className="application-sub-panel__body application-sub-panel__body--studies-yo-subjects">
+        <div className="application-sub-panel__body application-sub-panel__body">
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body--studies-yo-subjects">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+              <p>
+                Kun osallistut yo-kokeeseen, on sinulla oltava oikeus osallistua
+                yo-kokeisiin kyseisen aineen osalta.
+              </p>
+            </div>
+          </div>
+
+          <div className="application-sub-panel__notification-item">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               {subjectEligibilityRows}
             </div>
           </div>

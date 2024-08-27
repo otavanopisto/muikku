@@ -144,6 +144,17 @@
   }
 }
 
+.application-sub-panel--matriculation-plan-content,
+.application-sub-panel--matriculation-results-content {
+  align-items: flex-start;
+  display: flex;
+}
+
+.application-sub-panel--matriculation-plan-data,
+.application-sub-panel--matriculation-results {
+  border-bottom: unset;
+}
+
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;

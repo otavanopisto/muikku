@@ -2,7 +2,7 @@ import * as React from "react";
 import moment from "moment";
 import { Step1, Step2, Step3, Step4, Step5 } from "./steps";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
@@ -21,6 +21,7 @@ import {
   ExaminationSubject,
   MatriculationFormType,
 } from "~/@types/shared";
+import { AnyActionType } from "~/actions";
 
 moment.locale("fi");
 
@@ -113,9 +114,8 @@ interface MatriculationExaminationWizardProps {
   status: StatusType;
   examId: number;
   compulsoryEducationEligible: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onDone: () => any;
-  updateEnrollemnts: (examId: number) => void;
+  onClose?: () => void;
+  onUpdateExam?: (examId: number) => void;
   hops: HOPSState;
   yo: MatriculationState;
   formType: MatriculationFormType;
@@ -128,7 +128,8 @@ interface MatriculationExaminationWizardProps {
 const MatriculationExaminationWizard = (
   props: MatriculationExaminationWizardProps
 ) => {
-  const { compulsoryEducationEligible, examId, status } = props;
+  const { compulsoryEducationEligible, examId, status, onClose, onUpdateExam } =
+    props;
 
   const useMatriculationValues = useMatriculation(
     examId,
@@ -137,6 +138,21 @@ const MatriculationExaminationWizard = (
     undefined,
     props.formType
   );
+
+  /**
+   * Handles step change. Fires submit if last step
+   * @param step step
+   */
+  const handleStepChange = (step: WizardStep) => {
+    if (step.index === steps.length - 1) {
+      if (useMatriculationValues.matriculation.saveState === "IN_PROGRESS") {
+        return;
+      }
+
+      // Submit form. On success, call onDone (close dialog) and update exam
+      useMatriculationValues.onMatriculationFormSubmit();
+    }
+  };
 
   /**
    * StepZilla steps
@@ -165,23 +181,9 @@ const MatriculationExaminationWizard = (
     {
       index: 4,
       name: "Valmis",
-      component: <Step5 />,
+      component: <Step5 onUpdateExam={onUpdateExam} onClose={onClose} />,
     },
   ];
-
-  /**
-   * Handles step change. Fires submit if last step
-   * @param step step
-   */
-  const handleStepChange = (step: WizardStep) => {
-    if (step.index === steps.length - 1) {
-      if (useMatriculationValues.matriculation.saveState === "IN_PROGRESS") {
-        return;
-      }
-
-      useMatriculationValues.onMatriculationFormSubmit();
-    }
-  };
 
   const { ...useWizardValues } = useWizard({
     preventNextIfInvalid: true,
@@ -217,9 +219,10 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps() {
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 

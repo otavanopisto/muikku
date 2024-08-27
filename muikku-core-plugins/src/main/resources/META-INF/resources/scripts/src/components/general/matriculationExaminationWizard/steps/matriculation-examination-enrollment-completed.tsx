@@ -5,21 +5,24 @@ import "~/sass/elements/matriculation.scss";
 import { useMatriculationContext } from "../context/matriculation-context";
 
 /**
- * MatriculationExaminationEnrollmentCompleted
+ * MatriculationExaminationEnrollmentCompletedProps
  */
-export const MatriculationExaminationEnrollmentCompleted = () => {
+interface MatriculationExaminationEnrollmentCompletedProps {
+  onClose?: () => void;
+  onUpdateExam?: (examId: number) => void;
+}
+
+/**
+ * MatriculationExaminationEnrollmentCompleted
+ * @param props props
+ */
+export const MatriculationExaminationEnrollmentCompleted = (
+  props: MatriculationExaminationEnrollmentCompletedProps
+) => {
+  const { onClose, onUpdateExam } = props;
+
   const { matriculation } = useMatriculationContext();
   const { saveState } = matriculation;
-
-  /**
-   * handleClickClose
-   */
-  // const handleClickClose = () => {
-  //   /* if (saveState === "SUCCESS") {
-  //     this.props.updateEnrollemnts(this.props.examId);
-  //   } */
-  //   //this.props.onDone();
-  // };
 
   /**
    * renderStateMessage
@@ -95,9 +98,15 @@ export const MatriculationExaminationEnrollmentCompleted = () => {
   return (
     <div>
       {renderStateMessage(saveState)}
-      {saveState === "SUCCESS" || saveState === "FAILED" ? (
+      {onClose && (saveState === "SUCCESS" || saveState === "FAILED") ? (
         <Button
-          //onClick={this.handleClickClose}
+          onClick={() => {
+            if (onUpdateExam) {
+              onUpdateExam(matriculation.examId);
+            }
+
+            onClose();
+          }}
           className={`${
             saveState === "SUCCESS" ? "button--success" : "button--error"
           }`}

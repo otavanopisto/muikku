@@ -68,6 +68,24 @@ export const getPastTerms = () =>
 export const getNextTerms = () => resolveTerms(moment().add(1, "years"), 3);
 
 /**
+ * Resolves next 3 terms starting from given date
+ *
+ * @param date date
+ * @returns terms
+ */
+export const getNextTermsByDate = (date: Date | string) =>
+  resolveTerms(moment(date), 6);
+
+/**
+ * Resolves next 3 terms starting from given date
+ *
+ * @param date date
+ * @returns terms
+ */
+export const getNextTermsOptionsByDate = (date: Date | string) =>
+  getTermOptions(getNextTermsByDate(date));
+
+/**
  * Resolves past 6 term options
  *
  * @returns term options

@@ -1,14 +1,15 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import {
-  MatriculationEligibility,
   MatriculationEligibilityStatus,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationPlan,
+  MatriculationResults,
   MatriculationSubject,
-  MatriculationSubjectEligibility,
+  MatriculationSubjectEligibilityOPS2021,
 } from "~/generated/client";
+import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
 /**
  * MatriculationSubjectWithEligibilityStatus
@@ -46,19 +47,28 @@ export interface MatriculationExamWithHistory extends MatriculationExam {
  * MatriculationSubjectWithEligibility
  */
 export interface MatriculationSubjectWithEligibility
-  extends MatriculationSubjectEligibility {
+  extends MatriculationSubjectEligibilityOPS2021 {
   subject: MatriculationSubject;
+}
+
+/**
+ * MatriculationEligibility
+ */
+export interface MatriculationEligibilityWithAbistatus
+  extends MatriculationAbistatus {
+  personHasCourseAssessments: boolean;
 }
 
 /**
  * hopsMatriculation
  */
 interface hopsMatriculation {
-  exams: MatriculationExamWithHistory[] | null;
-  subjects: MatriculationSubject[] | null;
-  subjectsWithEligibility: MatriculationSubjectWithEligibility[] | null;
-  eligibility: MatriculationEligibility | null;
+  exams: MatriculationExamWithHistory[];
+  subjects: MatriculationSubject[];
+  subjectsWithEligibility: MatriculationSubjectWithEligibility[];
+  eligibility: MatriculationEligibilityWithAbistatus | null;
   plan: MatriculationPlan | null;
+  results: MatriculationResults[];
 }
 
 /**
@@ -94,11 +104,12 @@ const initialHopsState: HopsState = {
   hopsStudyPlanState: {},
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
-    exams: null,
-    subjects: null,
+    exams: [],
+    subjects: [],
     eligibility: null,
-    subjectsWithEligibility: null,
+    subjectsWithEligibility: [],
     plan: null,
+    results: [],
   },
   hopsCareerPlanStatus: "IDLE",
   hopsCareerPlanState: {},
@@ -228,6 +239,16 @@ export const hopsNew: Reducer<HopsState> = (
         hopsMatriculation: {
           ...state.hopsMatriculation,
           subjectsWithEligibility: action.payload,
+        },
+      };
+    }
+
+    case "HOPS_MATRICULATION_UPDATE_RESULTS": {
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          results: action.payload,
         },
       };
     }

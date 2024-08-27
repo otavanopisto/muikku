@@ -69,7 +69,6 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
     const enrollmentLinks = filteredExams.map((e) => (
       <div key={e.id}>
         <MatriculationExaminationWizardDialog
-          updateEnrollemnts={() => undefined}
           examId={e.id}
           compulsoryEducationEligible={e.compulsoryEducationEligible}
           formType="initial"
@@ -147,7 +146,6 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
             return (
               <div key={e.id}>
                 <MatriculationExaminationWizardDialog
-                  updateEnrollemnts={() => undefined}
                   examId={e.id}
                   compulsoryEducationEligible={e.compulsoryEducationEligible}
                   formType="edit"
@@ -181,7 +179,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
       const functionByStatus = renderFunctionByStatus();
 
       return (
-        <div className="application-sub-panel__notification-item">
+        <div key={e.id} className="application-sub-panel__notification-item">
           <div className="application-sub-panel__notification-footer">
             <div className="application-sub-panel__notification-content">
               <span className="application-sub-panel__notification-content-title">
