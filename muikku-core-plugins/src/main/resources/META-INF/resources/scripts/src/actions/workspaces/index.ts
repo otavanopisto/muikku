@@ -19,13 +19,11 @@ import {
   reuseExistantValue,
 } from "~/actions/workspaces/helpers";
 import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
 import {
   InterimEvaluationRequest,
   WorkspaceActivity,
   WorkspaceAssessmentStateType,
-} from "~/generated/client";
-import MApi, { isMApiError } from "~/api/api";
-import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
   WorkspaceDetails,
@@ -38,6 +36,7 @@ import {
   MaterialReply,
   MaterialCompositeReplyStateType,
   EducationType,
+  WorkspaceSettings,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
@@ -132,6 +131,11 @@ export type UPDATE_WORKSPACE = SpecificActionType<
     original: WorkspaceDataType;
     update: WorkspaceUpdateType;
   }
+>;
+
+export type UPDATE_WORKSPACE_SETTINGS = SpecificActionType<
+  "UPDATE_WORKSPACE_SETTINGS",
+  WorkspaceSettings
 >;
 
 export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
@@ -1093,6 +1097,18 @@ export interface UpdateWorkspaceTriggerType {
 }
 
 /**
+ * UpdateWorkspaceSettingsTriggerType
+ */
+export interface UpdateWorkspaceSettingsTriggerType {
+  (data: {
+    workspace: WorkspaceDataType;
+    update: WorkspaceSettings;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * LoadUsersOfWorkspaceTriggerType
  */
 export interface LoadUsersOfWorkspaceTriggerType {
@@ -1311,6 +1327,63 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
 
 /**
  * Updates the assignment state of a workspace material.
+ * @param data data
+ */
+const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
+  function updateWorkspaceSettings(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
+      try {
+        await workspaceApi.updateWorkspaceSettings({
+          updateWorkspaceSettingsRequest: data.update,
+          workspaceId: data.workspace.id,
+        });
+        const workspaceUpdate = data.update;
+
+        delete workspaceUpdate["defaultSignupMessage"];
+        delete workspaceUpdate["subjectIdentifier"];
+        delete workspaceUpdate["workspaceTypeIdentifier"];
+        delete workspaceUpdate["organizationEntityId"];
+        delete workspaceUpdate["signupGroups"];
+        delete workspaceUpdate["signupMessages"];
+
+        // Update the visible workspace values
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update: workspaceUpdate,
+          },
+        });
+        // Update the settings
+        dispatch({
+          type: "UPDATE_WORKSPACE_SETTINGS",
+          payload: data.update,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "workspace",
+              context: "settings",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * Updates the assignment state of a workspace material.
 
  * @param data data
  */
@@ -1343,21 +1416,21 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
     delete actualOriginal["activityLogs"];
     delete actualOriginal["permissions"];
     delete actualOriginal["inactiveStudents"];
-    delete actualOriginal["signupMessage"];
+    // delete actualOriginal["defaultSignupMessage"];
 
     try {
       const newDetails = data.update.details;
       const newPermissions = data.update.permissions;
       const appliedProducers = data.update.producers;
       const currentWorkspace = getState().workspaces.currentWorkspace;
-      const newSignupMessage = data.update.signupMessage;
+      // const newSignupMessage = data.update.defaultSignupMessage;
 
       // I left the workspace image out of this, because it never is in the application state anyway
       // These need to be removed from the object for the basic stuff to not fail
       delete data.update["details"];
       delete data.update["permissions"];
       delete data.update["producers"];
-      delete data.update["signupMessage"];
+      // delete data.update["defaultSignupMessage"];
 
       // First update the workspace
       if (data.update) {
@@ -1386,14 +1459,14 @@ const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
       }
 
       // Then signup message - if any
-      if (newSignupMessage) {
-        await workspaceApi.updateWorkspaceSignupMessage({
-          workspaceId: data.workspace.id,
-          updateWorkspaceSignupMessageRequest: newSignupMessage,
-        });
+      // if (newSignupMessage) {
+      //   await workspaceApi.updateWorkspaceSignupMessage({
+      //     workspaceId: data.workspace.id,
+      //     updateWorkspaceSignupMessageRequest: newSignupMessage,
+      //   });
 
-        data.update.signupMessage = newSignupMessage;
-      }
+      //   data.update.defaultSignupMessage = newSignupMessage;
+      // }
 
       // Then permissions - if any
       if (newPermissions) {
@@ -2261,51 +2334,51 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
 /**
  * loadCurrentWorkspaceSignupMessage
  */
-const loadCurrentWorkspaceSignupMessage: LoadCurrentWorkspaceSignupMessageTriggerType =
-  function loadCurrentWorkspaceSignupMessage() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
+// const loadCurrentWorkspaceSignupMessage: LoadCurrentWorkspaceSignupMessageTriggerType =
+//   function loadCurrentWorkspaceSignupMessage() {
+//     return async (
+//       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+//       getState: () => StateType
+//     ) => {
+//       const workspaceApi = MApi.getWorkspaceApi();
 
-      try {
-        const currentWorkspace = getState().workspaces.currentWorkspace;
+//       try {
+//         const currentWorkspace = getState().workspaces.currentWorkspace;
 
-        // Because the signup message is not included in the workspace object, we have to fetch it separately
-        const signupMessage = await workspaceApi.getWorkspaceSignupMessage({
-          workspaceId: currentWorkspace.id,
-        });
+//         // Because the signup message is not included in the workspace object, we have to fetch it separately
+//         const signupMessage = await workspaceApi.getWorkspaceSignupMessage({
+//           workspaceId: currentWorkspace.id,
+//         });
 
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: currentWorkspace,
-            update: {
-              signupMessage:
-                signupMessage.caption === "" || signupMessage.content === ""
-                  ? null
-                  : signupMessage,
-            },
-          },
-        });
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
+//         dispatch({
+//           type: "UPDATE_WORKSPACE",
+//           payload: {
+//             original: currentWorkspace,
+//             update: {
+//               defaultSignupMessage:
+//                 signupMessage.caption === "" || signupMessage.content === ""
+//                   ? null
+//                   : signupMessage,
+//             },
+//           },
+//         });
+//       } catch (err) {
+//         if (!isMApiError(err)) {
+//           throw err;
+//         }
 
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.loadError", {
-              ns: "workspace",
-              context: "permissions",
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
+//         dispatch(
+//           displayNotification(
+//             i18n.t("notifications.loadError", {
+//               ns: "workspace",
+//               context: "permissions",
+//             }),
+//             "error"
+//           )
+//         );
+//       }
+//     };
+//   };
 
 /**
  * loadCurrentWorkspaceUserGroupPermissions
@@ -2391,6 +2464,7 @@ export {
   requestAssessmentAtWorkspace,
   cancelAssessmentAtWorkspace,
   updateWorkspace,
+  updateWorkspaceSettings,
   loadStaffMembersOfWorkspace,
   updateAssignmentState,
   updateLastWorkspaces,
@@ -2410,5 +2484,5 @@ export {
   updateCurrentWorkspaceAssessmentRequest,
   updateCurrentWorkspaceInterimEvaluationRequests,
   setAvailableCurriculums,
-  loadCurrentWorkspaceSignupMessage,
+  // loadCurrentWorkspaceSignupMessage,
 };

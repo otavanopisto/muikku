@@ -106,9 +106,10 @@ export interface WorkspaceDataType {
   numVisits: number;
   published: boolean;
   urlName: string;
+  organizationEntityId: number;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
-  access?: WorkspaceAccess;
+  access?: WorkspaceAccess; // This exists in settings
   //These appear in certain circumstances
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
@@ -121,7 +122,6 @@ export interface WorkspaceDataType {
 
   //These are optional addons, and are usually not available
   settings?: WorkspaceSettings;
-  signupMessage?: WorkspaceSignupMessage;
   activity?: WorkspaceActivity;
   studentActivity?: WorkspaceActivity;
   forumStatistics?: DiscussionWorkspaceStatistic;
@@ -144,6 +144,28 @@ export interface WorkspaceDataType {
   // These are only in organizationlistings
   teachers?: UserStaff[];
   studentCount?: number;
+}
+
+interface comparison {
+  id: number;
+  name: string;
+  nameExtension?: string | null;
+  description: string;
+  published: boolean;
+  materialDefaultLicense: string;
+  hasCustomImage: boolean;
+  curriculumIdentifiers: Array<string>;
+  urlName: string;
+  language: Language;
+  mandatority?: WorkspaceMandatority | null;
+  access?: WorkspaceAccess;
+  organizationEntityId: number;
+
+  defaultSignupMessage?: WorkspaceSignupMessage;
+  subjectIdentifier?: string;
+  workspaceTypeIdentifier?: string;
+  signupGroups?: Array<WorkspaceSettingsSignupGroup>;
+  signupMessages?: Array<WorkspaceSignupMessage>;
 }
 
 export type WorkspaceUpdateType = Partial<WorkspaceDataType>;
@@ -475,6 +497,9 @@ export const workspaces: Reducer<WorkspacesState> = (
 
     case "UPDATE_WORKSPACES_STATE":
       return { ...state, state: action.payload };
+
+    case "UPDATE_WORKSPACE_SETTINGS":
+      return { ...state, settings: action.payload };
 
     case "UPDATE_WORKSPACE": {
       let newCurrent = state.currentWorkspace;

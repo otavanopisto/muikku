@@ -76,8 +76,7 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
   /**
    * Updates custom signup message
    * @param index index of the message
-   * @param field field to update
-   * @param e event
+   * @param text content text
    */
   const updateCustomSignupMessageContent = (index: number, text: string) => {
     const updatedMessages =

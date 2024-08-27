@@ -11,8 +11,8 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/change-image.scss";
 import "~/sass/elements/wcag.scss";
 import {
-  updateWorkspace,
-  UpdateWorkspaceTriggerType,
+  updateWorkspaceSettings,
+  UpdateWorkspaceSettingsTriggerType,
   updateWorkspaceProducersForCurrentWorkspace,
   UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64,
@@ -32,6 +32,7 @@ import {
   WorkspaceAccess,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
+  WorkspaceSettings,
   WorkspaceSignupGroup,
   WorkspaceSignupMessage,
   WorkspaceType,
@@ -55,7 +56,7 @@ import { ManagementImageMemoized } from "./management-image";
 interface ManagementPanelProps extends WithTranslation {
   workspace: WorkspaceDataType;
   workspaceTypes: WorkspaceType[];
-  updateWorkspace: UpdateWorkspaceTriggerType;
+  updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType;
   updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType;
   updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType;
   updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType;
@@ -171,8 +172,8 @@ const ManagementPanel = (props: ManagementPanelProps) => {
           : [],
       workspaceLanguage: workspace ? workspace.language : "fi",
       workspaceSignupMessage:
-        workspace && workspace.signupMessage
-          ? workspace.signupMessage
+        workspace && workspace.settings
+          ? workspace.settings.defaultSignupMessage
           : {
               caption: "",
               content: "",
@@ -425,7 +426,19 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       locked: true,
     }));
 
-    let payload: WorkspaceUpdateType = {};
+    let payload: WorkspaceSettings = {
+      id: workspace.id,
+      name: workspace.name,
+      access: workspace.access,
+      description: workspace.description,
+      published: workspace.published,
+      materialDefaultLicense: workspace.materialDefaultLicense,
+      hasCustomImage: workspace.hasCustomImage,
+      curriculumIdentifiers: workspace.curriculumIdentifiers,
+      language: workspace.language,
+      organizationEntityId: workspace.organizationEntityId,
+      urlName: workspace.urlName,
+    };
     const workspaceUpdate: WorkspaceUpdateType = {
       name: managementState.workspaceName,
       published: managementState.workspacePublished,
@@ -541,9 +554,14 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         : managementState.workspaceSignupMessage;
 
     // Check if signup message has changed
-    if (!equals(workspace.signupMessage, realSignupMessage)) {
+    if (
+      !equals(
+        workspace.settings && workspace.settings.defaultSignupMessage,
+        realSignupMessage
+      )
+    ) {
       payload = Object.assign(
-        { signupMessage: managementState.workspaceSignupMessage },
+        { defaultSignupMessage: managementState.workspaceSignupMessage },
         payload
       );
     }
@@ -566,7 +584,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       return;
     }
 
-    props.updateWorkspace({
+    props.updateWorkspaceSettings({
       workspace: workspace,
       update: payload,
       /**
@@ -754,7 +772,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
     {
-      updateWorkspace,
+      updateWorkspaceSettings,
       updateWorkspaceProducersForCurrentWorkspace,
       updateCurrentWorkspaceImagesB64,
       updateWorkspaceDetailsForCurrentWorkspace,
