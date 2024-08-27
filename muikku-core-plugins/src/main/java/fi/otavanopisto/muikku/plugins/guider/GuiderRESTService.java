@@ -61,7 +61,6 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
-import fi.otavanopisto.muikku.plugins.communicator.rest.CommunicatorNewMessageRESTModel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
@@ -987,7 +986,7 @@ public class GuiderRESTService extends PluginRESTService {
     
     List<UserEntity> recipientList = new ArrayList<UserEntity>();
 
-    CommunicatorNewMessageRESTModel recipientPayload = payload.getRecipients();
+    RecipientListRESTModel recipientPayload = payload.getRecipients();
     
     if (recipientPayload != null) {
       for (Long recipientId : recipientPayload.getRecipientIds()) {

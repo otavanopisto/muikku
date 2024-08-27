@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.guider;
 
-import fi.otavanopisto.muikku.plugins.communicator.rest.CommunicatorNewMessageRESTModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 
 public class StudentContactLogEntriesWithRecipientsRestModel {
@@ -9,7 +8,7 @@ public class StudentContactLogEntriesWithRecipientsRestModel {
     super();
   }
 
-  public StudentContactLogEntriesWithRecipientsRestModel(Long id, StudentContactLogEntryRestModel contactLogEntry, CommunicatorNewMessageRESTModel recipients) {
+  public StudentContactLogEntriesWithRecipientsRestModel(Long id, StudentContactLogEntryRestModel contactLogEntry, RecipientListRESTModel recipients) {
     super();
     this.id = id;
     this.setContactLogEntry(contactLogEntry);
@@ -32,15 +31,15 @@ public class StudentContactLogEntriesWithRecipientsRestModel {
     this.contactLogEntry = contactLogEntry;
   }
 
-  public CommunicatorNewMessageRESTModel getRecipients() {
+  public RecipientListRESTModel getRecipients() {
     return recipients;
   }
 
-  public void setRecipients(CommunicatorNewMessageRESTModel recipients) {
+  public void setRecipients(RecipientListRESTModel recipients) {
     this.recipients = recipients;
   }
 
   private Long id;
   private StudentContactLogEntryRestModel contactLogEntry;
-  private CommunicatorNewMessageRESTModel recipients;
+  private RecipientListRESTModel recipients;
 }
