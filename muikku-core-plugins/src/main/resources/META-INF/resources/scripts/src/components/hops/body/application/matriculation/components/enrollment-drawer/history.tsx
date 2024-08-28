@@ -65,6 +65,9 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
             case "SUPPLEMENTATION_REQUEST":
               return "Päivitti ja pyytää täydennystä lomakkeeseen";
 
+            case "SUPPLEMENTED":
+              return "Päivitti ja täydensi lomaketta";
+
             case "CONFIRMED":
               return "Päivitti ja vahvisti lomakkeen tiedot";
 

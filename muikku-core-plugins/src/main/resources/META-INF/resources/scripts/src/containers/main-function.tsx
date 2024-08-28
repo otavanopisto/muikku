@@ -1088,13 +1088,11 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(titleActions.updateTitle("HOPS"));
 
+      console.log("identifier", identifier);
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
-        if (tab) {
-          this.loadRecordsData(tab, identifier);
-        } else {
-          this.loadRecordsData("", identifier);
-        }
+        console.log("identifier", identifier);
+        this.props.store.dispatch(loadMatriculationData(identifier) as Action);
       }
     }
     return <GuardianHopsBody />;

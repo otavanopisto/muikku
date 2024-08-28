@@ -20,6 +20,7 @@ import { DependantsState } from "~/reducers/main-function/dependants";
 import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { OptionDefault } from "~/components/general/react-select/types";
+import { UseCaseContextProvider } from "~/context/use-case-context";
 
 const UPPERSECONDARY_PROGRAMMES = ["Nettilukio"];
 
@@ -137,10 +138,11 @@ class GuardianHopsApplication extends React.Component<
    */
   onTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
     if (hash) {
+      const user = window.location.hash.replace("#", "").split("/")[0];
       if (typeof hash === "string" || hash instanceof String) {
-        window.location.hash = hash as string;
+        window.location.hash = (user + "/" + hash) as string;
       } else if (typeof hash === "object" && hash !== null) {
-        window.location.hash = hash.hash;
+        window.location.hash = user + "/" + hash.hash;
       }
     }
 
@@ -213,13 +215,15 @@ class GuardianHopsApplication extends React.Component<
     panelTabs = panelTabs.filter(this.isVisible);
 
     return (
-      <ApplicationPanel
-        title="HOPS"
-        onTabChange={this.onTabChange}
-        activeTab={this.state.activeTab}
-        panelTabs={panelTabs}
-        panelOptions={dependantSelect}
-      />
+      <UseCaseContextProvider value="GUARDIAN">
+        <ApplicationPanel
+          title="HOPS"
+          onTabChange={this.onTabChange}
+          activeTab={this.state.activeTab}
+          panelTabs={panelTabs}
+          panelOptions={dependantSelect}
+        />
+      </UseCaseContextProvider>
     );
   }
 }

@@ -100,6 +100,11 @@ export type HOPS_MATRICULATION_UPDATE_RESULTS = SpecificActionType<
   MatriculationResults[]
 >;
 
+export type HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER = SpecificActionType<
+  "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
+  string
+>;
+
 /**
  * loadExamDataTriggerType
  */
@@ -118,7 +123,7 @@ export interface VerifyMatriculationExamTriggerType {
  * LoadMatriculationExamHistoryTriggerType
  */
 export interface LoadMatriculationExamHistoryTriggerType {
-  (examId: number): AnyActionType;
+  (examId: number, userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -158,6 +163,14 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
 
       if (state.hopsNew.hopsMatriculationStatus === "READY") {
         return;
+      }
+
+      // If the student identifier has changed, update it
+      if (state.hopsNew.currentStudentIdentifier !== studentIdentifier) {
+        dispatch({
+          type: "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
+          payload: studentIdentifier,
+        });
       }
 
       dispatch({
@@ -312,10 +325,13 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const state = getState();
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
       try {
         await matriculationApi.setStudentExamEnrollmentState({
           examId,
-          studentIdentifier: getState().status.userSchoolDataIdentifier,
+          studentIdentifier,
           setStudentExamEnrollmentStateRequest: {
             state: "CONFIRMED",
           },
@@ -340,13 +356,17 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
 /**
  * Load matriculation exam history
  * @param examId examId
+ * @param userIdentifier userIdentifier
  */
 const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
-  function matriculationExamHistoryTriggerType(examId) {
+  function loadMatriculationExamHistoryTriggerType(examId, userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const state = getState();
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
       dispatch({
         type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS",
         payload: {
@@ -359,7 +379,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
         const entryLogs =
           await matriculationApi.getStudentExamEnrollmentChangeLog({
             examId,
-            studentIdentifier: getState().status.userSchoolDataIdentifier,
+            studentIdentifier,
           });
 
         dispatch({
@@ -401,9 +421,8 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const studentIdentifier = getState().status.userSchoolDataIdentifier;
-
       const state = getState();
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
 
       try {
         await matriculationApi.setStudentMatriculationPlan({
@@ -542,7 +561,7 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.status.userSchoolDataIdentifier;
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
 
       try {
         // Load the updated exam enrollment
@@ -564,8 +583,9 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
           return;
         }
 
-        // update the exam status
-        updatedExams[examIndex].studentStatus = "PENDING";
+        // update the exam status to SUPPLEMENTED and update the enrollment to list
+        // update is done currently only for suplementation requests only hence the change to SUPPLEMENTED
+        updatedExams[examIndex].studentStatus = "SUPPLEMENTED";
         updatedExams[examIndex].enrollment = updatedExam;
 
         dispatch({

@@ -383,6 +383,11 @@ export const useMatriculation = (
       ],
     };
 
+    // If form is edit, set state to supplemented
+    if (formType === "edit") {
+      matriculationForm.state = "SUPPLEMENTED";
+    }
+
     try {
       await matriculationApi.createEnrollment({
         examId,

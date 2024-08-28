@@ -20,6 +20,7 @@ import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Matriculation from "./application/matriculation/matriculation";
+import { UseCaseContextProvider } from "~/context/use-case-context";
 
 /**
  * StudiesApplicationProps
@@ -85,12 +86,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
   ];
 
   return (
-    <ApplicationPanel
-      title="HOPS"
-      onTabChange={onTabChange}
-      activeTab={activeTab}
-      panelTabs={panelTabs}
-    />
+    <UseCaseContextProvider value="STUDENT">
+      <ApplicationPanel
+        title="HOPS"
+        onTabChange={onTabChange}
+        activeTab={activeTab}
+        panelTabs={panelTabs}
+      />
+    </UseCaseContextProvider>
   );
 };
 

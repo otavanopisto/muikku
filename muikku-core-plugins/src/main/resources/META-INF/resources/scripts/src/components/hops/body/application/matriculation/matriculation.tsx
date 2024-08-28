@@ -14,7 +14,9 @@ import MatriculationPlan from "./matriculation-plan";
 /**
  * MatriculationProps
  */
-interface MatriculationProps {}
+interface MatriculationProps {
+  role?: "guardian" | "student";
+}
 
 /**
  * Matriculation component

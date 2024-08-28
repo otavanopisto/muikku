@@ -18,6 +18,7 @@ import {
 } from "../../../../../actions/main-function/hops/index";
 import MatriculationEnrollmentDrawerList from "./components/enrollment-drawer/enrollment-history-drawer-list";
 import MatriculationEnrollmentDrawerListItem from "./components/enrollment-drawer/enrollment-history-drawer-item";
+import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * MatriculationPlanProps
@@ -35,6 +36,8 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
   const { hops, verifyMatriculationExam } = props;
 
   const { t } = useTranslation(["hops", "guider", "common"]);
+
+  const useCase = useUseCaseContext();
 
   /**
    * Handles verify matriculation exam
@@ -73,7 +76,10 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
           compulsoryEducationEligible={e.compulsoryEducationEligible}
           formType="initial"
         >
-          <Button className="button button--yo-signup">
+          <Button
+            className="button button--yo-signup"
+            disabled={useCase === "GUARDIAN"}
+          >
             {t("actions.signUp", {
               ns: "studies",
               dueDate: new Date(e.ends).toLocaleDateString("fi-Fi"),
@@ -114,6 +120,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
         e.studentStatus === MatriculationExamStudentStatus.Pending ||
         e.studentStatus ===
           MatriculationExamStudentStatus.SupplementationRequest ||
+        e.studentStatus === MatriculationExamStudentStatus.Supplemented ||
         e.studentStatus === MatriculationExamStudentStatus.Approved ||
         e.studentStatus === MatriculationExamStudentStatus.Rejected
     );
@@ -127,6 +134,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
     } = {
       [MatriculationExamStudentStatus.Pending]: "Odottaa hyväksyntää",
       [MatriculationExamStudentStatus.SupplementationRequest]: "Täydennettävä",
+      [MatriculationExamStudentStatus.Supplemented]: "Täydennetty",
       [MatriculationExamStudentStatus.Approved]: "Hyväksytty",
       [MatriculationExamStudentStatus.Rejected]: "Hylätty",
     };
@@ -141,6 +149,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
        * Render function by status
        */
       const renderFunctionByStatus = () => {
+        if (useCase === "GUARDIAN") {
+          return null;
+        }
         switch (e.studentStatus) {
           case MatriculationExamStudentStatus.SupplementationRequest:
             return (

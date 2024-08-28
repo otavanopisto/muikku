@@ -22,6 +22,7 @@ import {
 import { unstable_batchedUpdates } from "react-dom";
 import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 import ItemList from "~/components/general/item-list";
+import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * MatriculationPlanProps
@@ -40,6 +41,8 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
   const { plan, hops, saveMatriculationPlan } = props;
 
   const { t } = useTranslation(["hops", "guider", "common"]);
+
+  const useCase = useUseCaseContext();
 
   const [matriculationPlan, setMatriculationPlan] =
     React.useState<MatriculationPlan>({
@@ -164,6 +167,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
                     type="checkbox"
                     checked={matriculationPlan.goalMatriculationExam}
                     onChange={handleCheckboxChange}
+                    disabled={useCase === "GUARDIAN"}
                   />
                 </div>
               </div>
@@ -175,6 +179,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
               </div>
               <div className="application-sub-panel__item-data">
                 <MatriculationSubjectsList
+                  disabled={useCase === "GUARDIAN"}
                   subjects={selectableSubjects}
                   selectedSubjects={selectedSubjects}
                   onSubjectsChange={handleMatriculationSubjectsChange}

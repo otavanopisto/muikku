@@ -14,6 +14,7 @@ import { MatriculationSubjectCode } from "./matriculation-subject-type";
  */
 interface MatriculationSubjectsListProps {
   status: StatusType;
+  disabled: boolean;
   subjects: MatriculationSubjectCode[];
   selectedSubjects: SelectedMatriculationSubject[];
   /**
@@ -39,7 +40,8 @@ export interface SelectedMatriculationSubject {
  * @param props props
  */
 const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
-  const { onSubjectsChange, selectedSubjects, subjects, status } = props;
+  const { onSubjectsChange, selectedSubjects, subjects, status, disabled } =
+    props;
   const [selectedSubjects2, setSelectedSubjects2] =
     React.useState<SelectedMatriculationSubject[]>(selectedSubjects);
 
@@ -117,6 +119,27 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       setSelectedSubjects2(updatedList);
     };
 
+  /**
+   * Gets option for term by given term value
+   *
+   * @param termValue termValue AUTUMN2022 or SPRING2022 etc...
+   * @returns JSX.Element
+   */
+  const getOptionByValue = (termValue: string) => {
+    const term = termValue.substring(0, 6);
+    const year = termValue.substring(6);
+
+    const termName = term === "SPRING" ? "Kevät" : "Syksy";
+
+    const optionTitle = `${termName} ${year}`;
+
+    return (
+      <option disabled value={termValue}>
+        {optionTitle}
+      </option>
+    );
+  };
+
   const termOptions = getNextTermsOptionsByDate(status.profile.studyStartDate);
 
   const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
@@ -132,6 +155,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         className="form-element__select form-element__select--matriculation-exam"
         value={subject.subjectCode || ""}
         onChange={handleMatriculationSubjectChange(index)}
+        disabled={disabled}
       >
         <option disabled value="">
           {t("labels.select", { ns: "hops" })}
@@ -153,33 +177,39 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         className="form-element__select form-element__select--matriculation-exam"
         value={subject.term || ""}
         onChange={handleMatriculationSubjectTermChange(index)}
+        disabled={disabled}
       >
         <option disabled value="">
           {t("labels.select", { ns: "hops" })}
         </option>
 
-        {termOptions}
+        {!disabled ? termOptions : getOptionByValue(subject.term)}
       </select>
-      <Button
-        buttonModifiers={["primary-function-content", "remove-subject-row"]}
-        onClick={handleMatriculationSubjectRemove(index)}
-      >
-        {t("actions.remove")}
-      </Button>
+
+      {!disabled && (
+        <Button
+          buttonModifiers={["primary-function-content", "remove-subject-row"]}
+          onClick={handleMatriculationSubjectRemove(index)}
+        >
+          {t("actions.remove")}
+        </Button>
+      )}
     </div>
   ));
 
   return (
     <div className="form-element">
       {matriculationSubjectInputs}
-      <div className="form__buttons">
-        <Button
-          buttonModifiers={["primary-function-content", "add-subject-row"]}
-          onClick={handleMatriculationSubjectAdd}
-        >
-          {t("actions.addSubject", { ns: "studies" })}
-        </Button>
-      </div>
+      {!disabled && (
+        <div className="form__buttons">
+          <Button
+            buttonModifiers={["primary-function-content", "add-subject-row"]}
+            onClick={handleMatriculationSubjectAdd}
+          >
+            {t("actions.addSubject", { ns: "studies" })}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
