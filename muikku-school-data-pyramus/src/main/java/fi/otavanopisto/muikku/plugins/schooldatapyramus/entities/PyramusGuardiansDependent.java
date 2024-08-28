@@ -1,12 +1,15 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
+import java.time.LocalDate;
+
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 
 public class PyramusGuardiansDependent implements GuardiansDependent {
 
   public PyramusGuardiansDependent(SchoolDataIdentifier userIdentifier, String firstName, String lastName,
-      String nickname, String studyProgrammeName, String email, String phoneNumber, String address) {
+      String nickname, String studyProgrammeName, String email, String phoneNumber, String address,
+      LocalDate studyStartDate, LocalDate studyTimeEnd, LocalDate studyEndDate) {
     this.userIdentifier = userIdentifier;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -15,6 +18,9 @@ public class PyramusGuardiansDependent implements GuardiansDependent {
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.address = address;
+    this.studyStartDate = studyStartDate;
+    this.studyTimeEnd = studyTimeEnd;
+    this.studyEndDate = studyEndDate;
   }
 
   @Override
@@ -57,6 +63,21 @@ public class PyramusGuardiansDependent implements GuardiansDependent {
     return address;
   }
 
+  @Override
+  public LocalDate getStudyStartDate() {
+    return studyStartDate;
+  }
+
+  @Override
+  public LocalDate getStudyTimeEnd() {
+    return studyTimeEnd;
+  }
+
+  @Override
+  public LocalDate getStudyEndDate() {
+    return studyEndDate;
+  }
+
   private final SchoolDataIdentifier userIdentifier;
   private final String firstName;
   private final String lastName;
@@ -65,4 +86,8 @@ public class PyramusGuardiansDependent implements GuardiansDependent {
   private final String email;
   private final String phoneNumber;
   private final String address;
+  private LocalDate studyStartDate;
+  private LocalDate studyTimeEnd;
+  private LocalDate studyEndDate;
+
 }

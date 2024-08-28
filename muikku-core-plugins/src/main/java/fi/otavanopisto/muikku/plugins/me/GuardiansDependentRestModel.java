@@ -1,11 +1,13 @@
 package fi.otavanopisto.muikku.plugins.me;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class GuardiansDependentRestModel {
 
   public GuardiansDependentRestModel(Long userEntityId, String identifier, String firstName, String lastName, String nickName,
-      String studyProgrammeName, boolean hasImage, String email, String phoneNumber, String address, Date latestLogin) {
+      String studyProgrammeName, boolean hasImage, String email, String phoneNumber, String address, Date latestLogin, 
+      LocalDate studyStartDate, LocalDate studyTimeEnd, LocalDate studyEndDate) {
     super();
     this.userEntityId = userEntityId;
     this.identifier = identifier;
@@ -18,6 +20,9 @@ public class GuardiansDependentRestModel {
     this.phoneNumber = phoneNumber;
     this.address = address;
     this.latestLogin = latestLogin;
+    this.studyStartDate = studyStartDate;
+    this.studyTimeEnd = studyTimeEnd;
+    this.studyEndDate = studyEndDate;
   }
 
   public String getIdentifier() {
@@ -108,6 +113,30 @@ public class GuardiansDependentRestModel {
     this.latestLogin = latestLogin;
   }
 
+  public LocalDate getStudyStartDate() {
+    return studyStartDate;
+  }
+
+  public void setStudyStartDate(LocalDate studyStartDate) {
+    this.studyStartDate = studyStartDate;
+  }
+
+  public LocalDate getStudyTimeEnd() {
+    return studyTimeEnd;
+  }
+
+  public void setStudyTimeEnd(LocalDate studyTimeEnd) {
+    this.studyTimeEnd = studyTimeEnd;
+  }
+
+  public LocalDate getStudyEndDate() {
+    return studyEndDate;
+  }
+
+  public void setStudyEndDate(LocalDate studyEndDate) {
+    this.studyEndDate = studyEndDate;
+  }
+
   private Long userEntityId;
   private String identifier;
   private String firstName;
@@ -119,5 +148,8 @@ public class GuardiansDependentRestModel {
   private String phoneNumber;
   private String address;
   private Date latestLogin;
+  private LocalDate studyStartDate;
+  private LocalDate studyTimeEnd;
+  private LocalDate studyEndDate;
 
 }
