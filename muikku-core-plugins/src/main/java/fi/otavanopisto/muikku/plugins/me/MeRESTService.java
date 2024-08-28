@@ -139,7 +139,10 @@ public class MeRESTService {
           guardiansDependent.getEmail(),
           guardiansDependent.getPhoneNumber(),
           guardiansDependent.getAddress(),
-          userEntity.getLastLogin()
+          userEntity.getLastLogin(),
+          guardiansDependent.getStudyStartDate(),
+          guardiansDependent.getStudyTimeEnd(),
+          guardiansDependent.getStudyEndDate()
       ));
     }
 

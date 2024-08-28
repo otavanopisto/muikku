@@ -16448,6 +16448,18 @@ components:
           type: string
           format: date-time
           nullable: true
+        studyStartDate:
+          type: string
+          format: date
+          nullable: true
+        studyTimeEnd:
+          type: string
+          format: date
+          nullable: true
+        studyEndDate:
+          type: string
+          format: date
+          nullable: true
 
     UserGuardiansDependantWorkspace:
       type: object

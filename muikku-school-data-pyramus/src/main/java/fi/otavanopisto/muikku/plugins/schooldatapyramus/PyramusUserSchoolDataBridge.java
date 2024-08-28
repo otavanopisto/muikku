@@ -1836,7 +1836,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
             student.getStudyProgrammeName(),
             student.getDefaultEmail(),
             student.getDefaultPhoneNumber(),
-            address
+            address,
+            student.getStudyStartDate(),
+            student.getStudyTimeEnd(),
+            student.getStudyEndDate()
         ));
       }
     }
