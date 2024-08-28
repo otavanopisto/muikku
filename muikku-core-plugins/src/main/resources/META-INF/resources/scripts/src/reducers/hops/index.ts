@@ -263,6 +263,21 @@ export const hopsNew: Reducer<HopsState> = (
       };
     }
 
+    case "HOPS_RESET_MATRICULATION_DATA": {
+      return {
+        ...state,
+        hopsMatriculationStatus: "IDLE",
+        hopsMatriculation: {
+          exams: [],
+          subjects: [],
+          eligibility: null,
+          subjectsWithEligibility: [],
+          plan: null,
+          results: [],
+        },
+      };
+    }
+
     default:
       return state;
   }

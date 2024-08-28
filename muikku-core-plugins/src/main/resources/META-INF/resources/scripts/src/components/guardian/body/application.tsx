@@ -347,6 +347,7 @@ class DependantApplication extends React.Component<
       count: this.props.dependants ? this.props.dependants.list.length : 0,
     });
     const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
+
     const dependants = this.props.dependants
       ? this.props.dependants.list.map((student) => ({
           label: getName(student, true),

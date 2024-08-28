@@ -21,8 +21,22 @@ import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { OptionDefault } from "~/components/general/react-select/types";
 import { UseCaseContextProvider } from "~/context/use-case-context";
+import {
+  loadMatriculationData,
+  LoadMatriculationDataTriggerType,
+  resetMatriculationData,
+  ResetMatriculationDataTriggerType,
+} from "~/actions/main-function/hops/";
+import { bindActionCreators } from "redux";
 
-const UPPERSECONDARY_PROGRAMMES = ["Nettilukio"];
+const UPPERSECONDARY_PROGRAMMES = [
+  "Nettilukio",
+  "Aikuislukio",
+  "Nettilukio/yksityisopiskelu (aineopintoina)",
+  "Aineopiskelu/yo-tutkinto",
+  "Aineopiskelu/lukio",
+  "Aineopiskelu/lukio (oppivelvolliset)",
+];
 
 /**
  * StudiesTab
@@ -36,6 +50,8 @@ interface GuardianHopsApplicationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
   status: StatusType;
   dependants: DependantsState;
+  loadMatriculationData: LoadMatriculationDataTriggerType;
+  resetMatriculationData: ResetMatriculationDataTriggerType;
 }
 
 /**
@@ -43,6 +59,7 @@ interface GuardianHopsApplicationProps extends WithTranslation {
  */
 interface GuardianHopsApplicationState {
   activeTab: HopsTab;
+  selectedDependantIdentifier: string;
 }
 
 /**
@@ -62,6 +79,7 @@ class GuardianHopsApplication extends React.Component<
 
     this.state = {
       activeTab: "MATRICULATION",
+      selectedDependantIdentifier: this.getCurrentDependantIdentifier(),
     };
   }
 
@@ -75,6 +93,10 @@ class GuardianHopsApplication extends React.Component<
       const selectedDependantIdentifier =
         this.props.dependants.list[0].identifier;
       window.location.hash = selectedDependantIdentifier;
+
+      this.setState({
+        selectedDependantIdentifier,
+      });
     }
   }
 
@@ -132,11 +154,11 @@ class GuardianHopsApplication extends React.Component<
   };
 
   /**
-   * onTabChange
+   * handleTabChange
    * @param id id
    * @param hash hash
    */
-  onTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
+  handleTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
     if (hash) {
       const user = window.location.hash.replace("#", "").split("/")[0];
       if (typeof hash === "string" || hash instanceof String) {
@@ -158,8 +180,12 @@ class GuardianHopsApplication extends React.Component<
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
 
+    this.props.resetMatriculationData();
+    this.props.loadMatriculationData(option.value);
+
     this.setState({
       activeTab: "MATRICULATION",
+      selectedDependantIdentifier: option.value,
     });
   };
 
@@ -168,17 +194,20 @@ class GuardianHopsApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    // Filter dependants to only show upper secondary dependants
     const dependants = this.props.dependants
-      ? this.props.dependants.list.map((student) => ({
-          label: getName(student, true),
-          value: student.identifier,
-        }))
+      ? this.props.dependants.list
+          .filter((d) =>
+            UPPERSECONDARY_PROGRAMMES.includes(d.studyProgrammeName)
+          )
+          .map((d) => ({
+            label: getName(d, true),
+            value: d.identifier,
+          }))
       : [];
 
-    const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
-
     const selectedDependant = dependants.find(
-      (dependant) => dependant.value === selectedDependantIdentifier
+      (dependant) => dependant.value === this.state.selectedDependantIdentifier
     );
 
     const dependantSelect =
@@ -189,11 +218,11 @@ class GuardianHopsApplication extends React.Component<
           onChange={this.handleDependantSelectChange}
           options={dependants}
           isOptionDisabled={(option) =>
-            option.value === selectedDependantIdentifier
+            option.value === this.state.selectedDependantIdentifier
           }
           value={selectedDependant}
           isSearchable={false}
-        ></Select>
+        />
       ) : (
         <span>{selectedDependant?.label}</span>
       );
@@ -218,7 +247,7 @@ class GuardianHopsApplication extends React.Component<
       <UseCaseContextProvider value="GUARDIAN">
         <ApplicationPanel
           title="HOPS"
-          onTabChange={this.onTabChange}
+          onTabChange={this.handleTabChange}
           activeTab={this.state.activeTab}
           panelTabs={panelTabs}
           panelOptions={dependantSelect}
@@ -245,7 +274,10 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators(
+    { loadMatriculationData, resetMatriculationData },
+    dispatch
+  );
 }
 
 export default withTranslation(["studies", "common"])(

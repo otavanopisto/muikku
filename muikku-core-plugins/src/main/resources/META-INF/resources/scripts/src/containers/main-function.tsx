@@ -237,6 +237,14 @@ export default class MainFunction extends React.Component<
       this.loadRecordsData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/hops")) {
       this.loadHopsData(window.location.hash.replace("#", ""));
+    } else if (window.location.pathname.includes("/guardian_hops")) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [identifier, tab] = hashArray;
+
+      if (identifier) {
+        this.loadHopsData(tab, identifier);
+      }
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
@@ -368,7 +376,7 @@ export default class MainFunction extends React.Component<
     const givenLocation = tab;
 
     if (givenLocation === "matriculation" || !givenLocation) {
-      this.props.store.dispatch(loadMatriculationData() as Action);
+      this.props.store.dispatch(loadMatriculationData(userId) as Action);
     }
   }
 
@@ -1071,6 +1079,7 @@ export default class MainFunction extends React.Component<
     this.updateFirstTime();
     if (this.itsFirstTime) {
       const hashArray = window.location.hash.replace("#", "").split("/");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, tab] = hashArray;
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
@@ -1088,10 +1097,8 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(titleActions.updateTitle("HOPS"));
 
-      console.log("identifier", identifier);
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
-        console.log("identifier", identifier);
         this.props.store.dispatch(loadMatriculationData(identifier) as Action);
       }
     }

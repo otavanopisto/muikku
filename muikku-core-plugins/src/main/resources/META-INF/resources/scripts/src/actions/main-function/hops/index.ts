@@ -105,11 +105,23 @@ export type HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER = SpecificActionType<
   string
 >;
 
+export type HOPS_RESET_MATRICULATION_DATA = SpecificActionType<
+  "HOPS_RESET_MATRICULATION_DATA",
+  undefined
+>;
+
 /**
  * loadExamDataTriggerType
  */
-export interface loadMatriculationDataTriggerType {
+export interface LoadMatriculationDataTriggerType {
   (userIdentifier?: string): AnyActionType;
+}
+
+/**
+ * resetMatriculationDataTriggerType
+ */
+export interface ResetMatriculationDataTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -149,7 +161,7 @@ export interface UpdateMatriculationExaminationTriggerType {
  *
  * @param userIdentifier userIdentifier
  */
-const loadMatriculationData: loadMatriculationDataTriggerType =
+const loadMatriculationData: LoadMatriculationDataTriggerType =
   function loadMatriculationData(userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -601,10 +613,24 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
     };
   };
 
+/**
+ * resetMatriculationData
+ */
+const resetMatriculationData: ResetMatriculationDataTriggerType =
+  function resetMatriculationData() {
+    return (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+      dispatch({
+        type: "HOPS_RESET_MATRICULATION_DATA",
+        payload: undefined,
+      });
+    };
+  };
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
   loadMatriculationExamHistory,
   saveMatriculationPlan,
   updateMatriculationExamination,
+  resetMatriculationData,
 };
