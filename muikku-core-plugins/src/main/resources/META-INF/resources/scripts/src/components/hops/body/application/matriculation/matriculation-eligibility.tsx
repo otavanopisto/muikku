@@ -6,7 +6,7 @@ import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
-import MatriculationEligibilityRow from "./components/matriculation-eligibility-rowV2";
+import MatriculationEligibilityRow from "./components/matriculation-eligibility-row";
 import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 
 /**
@@ -57,7 +57,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           sAbistatus.code as MatriculationSubjectCode
         )}
         eligibility={sAbistatus.abistatusOk ? "ELIGIBLE" : "NOT_ELIGIBLE"}
-        description={t("content.matriculationAbistatusEligibility4", {
+        description={t("content.matriculationEligibility", {
           ns: "hops",
           acceptedCount: sAbistatus.doneCredits,
           requiredCount: sAbistatus.requiredCredits,
@@ -94,10 +94,12 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
-                Kun ilmoittaudut yo-kokeeseen ensimmäistä kertaa, on sinulla
-                oltava abistatus eli oikeus ilmoittautua yo-kokeisiin. <br />
-                <b>Huom.</b> Jos sinulla on ammatillinen perustutkinto, voit
-                hakea yo-kokeeseen tutkintosi pohjalta.
+                Jotta voit <b>ilmoittautua ylioppilaskokeeseen</b>, sinun pitää
+                suorittaa ensin riittävä määrä opintoja. Abistatus tarkoittaa
+                ilmoittautumisoikeutta. <b>Huom.</b> Jos sinulla on ammatillinen
+                perustutkinto, voit hakea yo-kokeeseen tutkintosi pohjalta.
+                <br />
+                Ennen ilmoittautumista sinulla pitää olla suoritettuna
               </p>
             </div>
           </div>
@@ -142,9 +144,11 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
-                Ainekohtaiset abistatusvaatimukset. Sinun tulee olla suorittanut
-                aineen vaatimat kurssit hyväksytysti, jotta voit ilmoittautua
-                yo-kokeeseen kyseisessä aineessa.
+                Lisäksi sinulla pitää olla suoritettuna kirjoitettavasta
+                aineesta tietty määrä opintoja. Jos et ole suorittanut
+                riittävästi opintoja kirjoitettavasta aineesta, voit
+                ilmoittautua myöhemmin pidettävään kokeeseen tai keskustella
+                asiasta ohjaajasi kanssa.
               </p>
             </div>
           </div>
@@ -165,8 +169,11 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
-                Kun osallistut yo-kokeeseen, on sinulla oltava oikeus osallistua
-                yo-kokeisiin kyseisen aineen osalta.
+                Jotta voit <b>osallistua aineen ylioppilaskokeeseen</b>, sinun
+                pitää suorittaa kirjoitettavasta aineesta pakolliset opinnot.
+                Jos aineessa ei ole pakollisia opintoja, reaaliaineista pitää
+                olla suoritettuna neljä opintopistettä ja vieraista kielistä
+                kuusi opintopistettä.
               </p>
             </div>
           </div>

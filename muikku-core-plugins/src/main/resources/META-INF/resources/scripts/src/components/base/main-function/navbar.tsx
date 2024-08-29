@@ -116,6 +116,15 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
+        modifier: "hops",
+        trail: "guardian_hops",
+        text: "Hops",
+        href: "/guardian_hops",
+        icon: "trash",
+        to: true,
+        condition: this.props.status.permissions.GUARDIAN_VIEW,
+      },
+      {
         modifier: "guardian",
         trail: "guardian",
         text: t("labels.dependant", { count: this.props.dependants.length }),

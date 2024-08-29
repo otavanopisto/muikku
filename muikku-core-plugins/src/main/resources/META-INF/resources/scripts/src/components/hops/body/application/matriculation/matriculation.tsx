@@ -65,7 +65,7 @@ const Matriculation = (props: MatriculationProps) => {
     },
     {
       id: "HISTORY",
-      name: "Yo-historia",
+      name: "Yo-koehistoria",
       type: "history",
       component: (
         <ApplicationPanelBody modifier="tabs">

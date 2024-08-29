@@ -13,12 +13,6 @@ import {
   getNextTermOptions,
   getPastTermOptions,
 } from "~/helper-functions/matriculation-functions";
-import {
-  SUBJECT_MAP,
-  EXAMINATION_SUCCESS_GRADES_MAP,
-  FINNISH_SUBJECTS,
-  ADVANCED_SUBJECTS,
-} from "../index";
 import { MatriculationExaminationEnrolledAttendesList } from "../matriculationExaminationSelectLists/matriculation-examination-enrolled-attendes-list";
 import { MatriculationExaminationFinishedAttendesList } from "../matriculationExaminationSelectLists/matriculation-examination-finished-attendes-list";
 import { MatriculationExaminationPlannedAttendesList } from "../matriculationExaminationSelectLists/matriculation-examination-planned-attendes-list";
@@ -35,6 +29,12 @@ import {
   MatriculationExamPlannedSubject,
   MatriculationExamSchoolType,
 } from "~/generated/client";
+import {
+  ADVANCED_SUBJECTS,
+  EXAMINATION_SUCCESS_GRADES_MAP,
+  FINNISH_SUBJECTS,
+  SUBJECT_MAP,
+} from "~/components/general/matriculationExaminationWizard/helper";
 
 //Specific rules for old form
 

@@ -100,11 +100,28 @@ export type HOPS_MATRICULATION_UPDATE_RESULTS = SpecificActionType<
   MatriculationResults[]
 >;
 
+export type HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER = SpecificActionType<
+  "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
+  string
+>;
+
+export type HOPS_RESET_MATRICULATION_DATA = SpecificActionType<
+  "HOPS_RESET_MATRICULATION_DATA",
+  undefined
+>;
+
 /**
  * loadExamDataTriggerType
  */
-export interface loadMatriculationDataTriggerType {
+export interface LoadMatriculationDataTriggerType {
   (userIdentifier?: string): AnyActionType;
+}
+
+/**
+ * resetMatriculationDataTriggerType
+ */
+export interface ResetMatriculationDataTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -118,7 +135,7 @@ export interface VerifyMatriculationExamTriggerType {
  * LoadMatriculationExamHistoryTriggerType
  */
 export interface LoadMatriculationExamHistoryTriggerType {
-  (examId: number): AnyActionType;
+  (examId: number, userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -144,7 +161,7 @@ export interface UpdateMatriculationExaminationTriggerType {
  *
  * @param userIdentifier userIdentifier
  */
-const loadMatriculationData: loadMatriculationDataTriggerType =
+const loadMatriculationData: LoadMatriculationDataTriggerType =
   function loadMatriculationData(userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
@@ -158,6 +175,14 @@ const loadMatriculationData: loadMatriculationDataTriggerType =
 
       if (state.hopsNew.hopsMatriculationStatus === "READY") {
         return;
+      }
+
+      // If the student identifier has changed, update it
+      if (state.hopsNew.currentStudentIdentifier !== studentIdentifier) {
+        dispatch({
+          type: "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
+          payload: studentIdentifier,
+        });
       }
 
       dispatch({
@@ -312,10 +337,13 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const state = getState();
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
       try {
         await matriculationApi.setStudentExamEnrollmentState({
           examId,
-          studentIdentifier: getState().status.userSchoolDataIdentifier,
+          studentIdentifier,
           setStudentExamEnrollmentStateRequest: {
             state: "CONFIRMED",
           },
@@ -340,13 +368,17 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
 /**
  * Load matriculation exam history
  * @param examId examId
+ * @param userIdentifier userIdentifier
  */
 const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
-  function matriculationExamHistoryTriggerType(examId) {
+  function loadMatriculationExamHistoryTriggerType(examId, userIdentifier) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
+      const state = getState();
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
       dispatch({
         type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS",
         payload: {
@@ -359,7 +391,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
         const entryLogs =
           await matriculationApi.getStudentExamEnrollmentChangeLog({
             examId,
-            studentIdentifier: getState().status.userSchoolDataIdentifier,
+            studentIdentifier,
           });
 
         dispatch({
@@ -401,9 +433,8 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
-      const studentIdentifier = getState().status.userSchoolDataIdentifier;
-
       const state = getState();
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
 
       try {
         await matriculationApi.setStudentMatriculationPlan({
@@ -542,7 +573,7 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.status.userSchoolDataIdentifier;
+      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
 
       try {
         // Load the updated exam enrollment
@@ -559,13 +590,13 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
           (exam) => exam.id === data.examId
         );
 
-        // if the exam is not found, endh ere
-        if (examIndex === 1) {
+        // if the exam is not found, end here
+        if (examIndex === -1) {
           return;
         }
 
-        // update the exam status
-        updatedExams[examIndex].studentStatus = "PENDING";
+        // update student status and enrollment with the new data
+        updatedExams[examIndex].studentStatus = updatedExam.state;
         updatedExams[examIndex].enrollment = updatedExam;
 
         dispatch({
@@ -581,10 +612,24 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
     };
   };
 
+/**
+ * resetMatriculationData
+ */
+const resetMatriculationData: ResetMatriculationDataTriggerType =
+  function resetMatriculationData() {
+    return (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+      dispatch({
+        type: "HOPS_RESET_MATRICULATION_DATA",
+        payload: undefined,
+      });
+    };
+  };
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
   loadMatriculationExamHistory,
   saveMatriculationPlan,
   updateMatriculationExamination,
+  resetMatriculationData,
 };

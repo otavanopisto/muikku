@@ -13,7 +13,7 @@ import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
 import MatriculationSubjectsList, {
   SelectedMatriculationSubject,
-} from "./components/matriculation-subjects-listV2";
+} from "./components/matriculation-subjects-list";
 import {
   SaveMatriculationPlanTriggerType,
   saveMatriculationPlan,
@@ -22,6 +22,7 @@ import {
 import { unstable_batchedUpdates } from "react-dom";
 import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 import ItemList from "~/components/general/item-list";
+import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * MatriculationPlanProps
@@ -40,6 +41,8 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
   const { plan, hops, saveMatriculationPlan } = props;
 
   const { t } = useTranslation(["hops", "guider", "common"]);
+
+  const useCase = useUseCaseContext();
 
   const [matriculationPlan, setMatriculationPlan] =
     React.useState<MatriculationPlan>({
@@ -147,6 +150,10 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
     return <div className="loader-empty" />;
   }
 
+  const ilmoLink = (
+    <a href="https://ilmo.ylioppilastutkinto.fi/fi">ILMO-työkalulla</a>
+  );
+
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanel.Header>YO - suunnitelma</ApplicationSubPanel.Header>
@@ -164,6 +171,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
                     type="checkbox"
                     checked={matriculationPlan.goalMatriculationExam}
                     onChange={handleCheckboxChange}
+                    disabled={useCase === "GUARDIAN"}
                   />
                 </div>
               </div>
@@ -175,6 +183,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
               </div>
               <div className="application-sub-panel__item-data">
                 <MatriculationSubjectsList
+                  disabled={useCase === "GUARDIAN"}
                   subjects={selectableSubjects}
                   selectedSubjects={selectedSubjects}
                   onSubjectsChange={handleMatriculationSubjectsChange}
@@ -185,10 +194,12 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
         </ApplicationSubPanel>
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            <p>
-              Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan
-              vähintään kolmesta aineryhmästä:
-            </p>
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+                Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan
+                vähintään kolmesta aineryhmästä:
+              </div>
+            </div>
 
             <ItemList>
               <ItemList.Item icon="icon-check">
@@ -208,16 +219,21 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
               </ItemList.Item>
             </ItemList>
 
-            <p>
-              <b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe
-              (esim. pitkä matematiikka tai A-tason vieras kieli). <br />
-              Kokeile
-              <a href="https://ilmo.ylioppilastutkinto.fi/fi">
-                ILMO-työkalulla
-              </a>
-              , millaisilla aineyhdistelmillä voit suorittaa
-              ylioppilastutkinnon.
-            </p>
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+                <b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe
+                (esim. pitkä matematiikka tai A-tason vieras kieli). <br />
+              </div>
+            </div>
+
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+                <p>
+                  Kokeile {ilmoLink}, millaisilla aineyhdistelmillä voit
+                  suorittaa ylioppilastutkinnon.
+                </p>
+              </div>
+            </div>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </ApplicationSubPanel>

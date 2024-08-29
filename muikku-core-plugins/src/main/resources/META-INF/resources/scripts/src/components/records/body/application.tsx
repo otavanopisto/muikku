@@ -4,7 +4,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import Records from "./application/records";
 import Summary from "./application/summary";
 import Hops from "./application/hops";
-import YO from "./application/yo";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import {
@@ -46,7 +45,6 @@ type StudiesTab =
   | "CURRENT_RECORD"
   | "HOPS"
   | "SUMMARY"
-  | "YO"
   | "STUDY_INFO"
   | "PEDAGOGY_FORM";
 
@@ -116,11 +114,6 @@ class StudiesApplication extends React.Component<
           activeTab: "HOPS",
         });
         break;
-      case "yo":
-        this.setState({
-          activeTab: "YO",
-        });
-        break;
 
       case "pedagogy-form":
         this.setState({
@@ -166,7 +159,6 @@ class StudiesApplication extends React.Component<
                 true))
         );
       case "VOPS":
-      case "YO":
         return (
           this.props.status.isActiveUser &&
           this.props.hops.value &&
@@ -188,10 +180,7 @@ class StudiesApplication extends React.Component<
    * @param id id
    * @param hash hash
    */
-  onTabChange = (
-    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO" | "PEDAGOGY_FORM",
-    hash?: string | Tab
-  ) => {
+  onTabChange = (id: StudiesTab, hash?: string | Tab) => {
     if (hash) {
       if (typeof hash === "string" || hash instanceof String) {
         window.location.hash = hash as string;
@@ -249,17 +238,6 @@ class StudiesApplication extends React.Component<
         component: (
           <ApplicationPanelBody modifier="tabs">
             <Hops />
-          </ApplicationPanelBody>
-        ),
-      },
-      {
-        id: "YO",
-        name: t("labels.matriculationExams", { ns: "studies" }),
-        hash: "yo",
-        type: "yo",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            <YO />
           </ApplicationPanelBody>
         ),
       },

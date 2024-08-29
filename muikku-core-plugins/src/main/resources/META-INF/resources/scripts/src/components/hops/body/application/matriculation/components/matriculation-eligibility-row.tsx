@@ -1,84 +1,58 @@
 import * as React from "react";
-import { MatriculationSubjectWithEligibilityStatus } from "~/reducers/main-function/records/yo";
-import "~/sass/elements/application-sub-panel.scss";
-import { withTranslation, WithTranslation } from "react-i18next";
-import { MatriculationSubjectCode } from "./matriculation-subject-type";
+import { useTranslation } from "react-i18next";
+import { MatriculationEligibilityStatus } from "~/generated/client";
 
 /**
  * MatriculationEligibilityRowProps
  */
-interface MatriculationEligibilityRowProps extends WithTranslation {
-  subject: MatriculationSubjectWithEligibilityStatus;
-}
-
-/**
- * MatriculationEligibilityRowState
- */
-interface MatriculationEligibilityRowState {
-  loading: boolean;
+interface MatriculationEligiblityRowProps {
+  /**
+   * Shows if the subject is eligible or not badge
+   */
+  eligibility: MatriculationEligibilityStatus;
+  /**
+   * Label for the subject
+   */
+  label?: string;
+  /**
+   * Description for the eligibility
+   */
+  description: string;
 }
 
 /**
  * MatriculationEligibilityRow
+ * @param props props
  */
-class MatriculationEligibilityRow extends React.Component<
-  MatriculationEligibilityRowProps,
-  MatriculationEligibilityRowState
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: MatriculationEligibilityRowProps) {
-    super(props);
-  }
+const MatriculationEligibilityRow = (
+  props: MatriculationEligiblityRowProps
+) => {
+  const { eligibility, label, description } = props;
 
-  /**
-   * getMatriculationSubjectNameByCode
-   * @param code code
-   */
-  getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
-    this.props.t(`matriculationSubjects.${code}`, { ns: "hops" });
+  const { t } = useTranslation(["hops", "studies", "common"]);
 
-  /**
-   * render
-   */
-  render() {
-    const { t } = this.props;
-
-    return (
-      <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility">
-        <div
-          className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${
-            this.props.subject.eligibility == "ELIGIBLE"
-              ? "eligible"
-              : "not-eligible"
-          }`}
-        >
-          {this.props.subject.eligibility === "ELIGIBLE"
-            ? t("labels.yes")
-            : t("labels.no")}
-        </div>
-        <div className="application-sub-panel__summary-item-label">
-          {this.getMatriculationSubjectNameByCode(
-            this.props.subject.code as MatriculationSubjectCode
-          )}
-        </div>
-        <div
-          className="application-sub-panel__summary-item-description"
-          dangerouslySetInnerHTML={{
-            __html: t("content.matriculationEligibility", {
-              ns: "hops",
-              acceptedCount: this.props.subject.acceptedCount,
-              requiredCount: this.props.subject.requiredCount,
-            }),
-          }}
-        />
+  return (
+    <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility">
+      <div
+        className={`application-sub-panel__summary-item-state application-sub-panel__summary-item-state--${
+          eligibility == "ELIGIBLE" ? "eligible" : "not-eligible"
+        }`}
+      >
+        {eligibility === "ELIGIBLE" ? t("labels.yes") : t("labels.no")}
       </div>
-    );
-  }
-}
 
-export default withTranslation(["studies", "hops", "common"])(
-  MatriculationEligibilityRow
-);
+      {label && (
+        <div className="application-sub-panel__summary-item-label">{label}</div>
+      )}
+
+      <div
+        className="application-sub-panel__summary-item-description"
+        dangerouslySetInnerHTML={{
+          __html: description,
+        }}
+      />
+    </div>
+  );
+};
+
+export default MatriculationEligibilityRow;
