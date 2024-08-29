@@ -1437,11 +1437,6 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           },
         });
 
-        // dispatch({
-        //   type: "UPDATE_WORKSPACE_SETTINGS",
-        //   payload: data.update,
-        // });
-
         // Update the visible workspace values
       } catch (err) {
         if (!isMApiError(err)) {

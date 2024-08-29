@@ -383,7 +383,8 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     }));
 
     const payload: UpdateSettingsPayload = managementState;
-    delete payload["signupGroups"];
+
+    // delete payload["signupGroups"];
 
     // const workspaceUpdate: WorkspaceUpdateType = {
     //   name: managementState.workspaceName,
