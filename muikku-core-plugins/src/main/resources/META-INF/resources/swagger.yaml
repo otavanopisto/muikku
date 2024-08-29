@@ -6201,7 +6201,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/matriculation/exams/{examId}/initialData/{userIdentifier}:
+  /rest/matriculation/students/{studentIdentifier}/initialData:
     get:
       operationId: getInitialData
       summary: Get initial data
@@ -6209,20 +6209,12 @@ paths:
       tags:
         - Matriculation
       parameters:
-        - name: examId
+        - name: studentIdentifier
           in: path
-          description: Exam id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: userIdentifier
-          in: path
-          description: User id
+          description: Student Identifier
           required: true
           schema:
             type: string
-            format: int64
       responses:
         "200":
           description: Initial data in JSON format

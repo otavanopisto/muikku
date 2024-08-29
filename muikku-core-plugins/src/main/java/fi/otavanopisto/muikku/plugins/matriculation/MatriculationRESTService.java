@@ -251,11 +251,11 @@ public class MatriculationRESTService {
   }
   
   @GET
-  @RESTPermit(handling = Handling.INLINE)
-  @Path("/exams/{EXAMID}/initialData/{USERID}")
-  public Response fetchInitialData(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId) {
+  @RESTPermit(MatriculationPermissions.MATRICULATION_GET_INITIALDATA)
+  @Path("/students/{STUDENTIDENTIFIER}/initialData")
+  public Response fetchInitialData(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
     MatriculationExamInitialData result = new MatriculationExamInitialData();
-    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
     }
