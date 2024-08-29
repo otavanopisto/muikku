@@ -1292,7 +1292,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
     }
 
-    if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
+    if (!workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
 
@@ -1413,6 +1413,11 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
 
+    // Chat
+    
+    String roomName = constructWorkspaceChatRoomName(workspace);
+    chatController.toggleWorkspaceChatRoom(workspaceEntity, roomName, payload.isChatEnabled(), sessionController.getLoggedUserEntity());
+    
     // Reindex the workspace so that Elasticsearch can react to publish and visibility
 
     workspaceIndexer.indexWorkspace(workspaceEntity);
@@ -3900,6 +3905,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         convertWorkspaceCurriculumIds(workspace),
         workspaceTypeIdentifier,
         hasCustomImage,
+        chatController.isChatEnabled(workspaceEntity),
         defaultSignupMessageRestModel,
         groupSignupRestModels,
         restMessages

@@ -17433,6 +17433,7 @@ components:
         - description
         - published
         - hasCustomImage
+        - chatEnabled
         - materialDefaultLicense
         - urlName
         - curriculumIdentifiers
@@ -17475,6 +17476,9 @@ components:
           nullable: true
         published:
           description: If the workspace is published
+          type: boolean
+        chatEnabled:
+          description: Is the workspace chat room enabled
           type: boolean
         subjectIdentifier:
           description: The identifier of the subject

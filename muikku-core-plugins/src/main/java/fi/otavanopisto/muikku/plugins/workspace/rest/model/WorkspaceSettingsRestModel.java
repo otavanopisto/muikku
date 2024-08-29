@@ -18,7 +18,7 @@ public class WorkspaceSettingsRestModel {
       Long organizationEntityId,
       String urlName,
       WorkspaceAccess access,
-      Boolean published,
+      boolean published,
       WorkspaceLanguage language,
       String name,
       String nameExtension,
@@ -32,6 +32,7 @@ public class WorkspaceSettingsRestModel {
       Set<String> curriculumIdentifiers,
       String workspaceTypeIdentifier,
       boolean hasCustomImage,
+      boolean chatEnabled,
       WorkspaceSignupMessageRestModel defaultSignupMessage,
       Collection<WorkspaceSignupGroupRestModel> signupGroups,
       Collection<WorkspaceSignupMessageRestModel> signupMessages) {
@@ -107,11 +108,11 @@ public class WorkspaceSettingsRestModel {
     this.materialDefaultLicense = materialDefaultLicense;
   }
 
-  public Boolean getPublished() {
+  public boolean getPublished() {
     return published;
   }
 
-  public void setPublished(Boolean published) {
+  public void setPublished(boolean published) {
     this.published = published;
   }
 
@@ -227,6 +228,14 @@ public class WorkspaceSettingsRestModel {
     this.signupMessages = signupMessages;
   }
 
+  public boolean isChatEnabled() {
+    return chatEnabled;
+  }
+
+  public void setChatEnabled(boolean chatEnabled) {
+    this.chatEnabled = chatEnabled;
+  }
+
   private Long id;
   private Long organizationEntityId;
   private String workspaceTypeIdentifier;
@@ -237,9 +246,10 @@ public class WorkspaceSettingsRestModel {
   private Mandatority mandatority;
   private WorkspaceAccess access;
   private String materialDefaultLicense;
-  private Boolean published;
+  private boolean published;
   private Set<String> curriculumIdentifiers;
   private boolean hasCustomImage;
+  private boolean chatEnabled;
   private WorkspaceLanguage language;
   private WorkspaceSignupMessageRestModel defaultSignupMessage;
   private Collection<WorkspaceSignupGroupRestModel> signupGroups;
