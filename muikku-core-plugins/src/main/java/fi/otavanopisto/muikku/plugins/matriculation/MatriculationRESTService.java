@@ -260,7 +260,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
     }
     SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!identifier.equals(loggedUserIdentifier)) {
+    if (!identifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), identifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     User user = userController.findUserByIdentifier(identifier);
@@ -280,7 +280,6 @@ public class MatriculationRESTService {
     String locality = "";
     String phoneNumber = "";
     String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false); 
-    String ssn = userController.findUserSsn(user);
     String name = "";
     if (user.getFirstName() != null) {
       name += user.getFirstName();
@@ -302,7 +301,6 @@ public class MatriculationRESTService {
     }
     
     result.setName(name);
-    result.setSsn(ssn);
     result.setEmail(emailAddress);
     result.setPhone(phoneNumber);
     result.setAddress(address);
@@ -375,7 +373,6 @@ public class MatriculationRESTService {
     schoolDataEntity.setId(enrollment.getId());
     schoolDataEntity.setExamId(enrollment.getExamId());
     schoolDataEntity.setName(enrollment.getName());
-    schoolDataEntity.setSsn(enrollment.getSsn());
     schoolDataEntity.setEmail(enrollment.getEmail());
     schoolDataEntity.setPhone(enrollment.getPhone());
     schoolDataEntity.setAddress(enrollment.getAddress());
@@ -592,7 +589,6 @@ public class MatriculationRESTService {
     restModel.setPhone(enrollment.getPhone());
     restModel.setPostalCode(enrollment.getPostalCode());
     restModel.setRestartExam(enrollment.isRestartExam());
-    restModel.setSsn(enrollment.getSsn());
     restModel.setState(enrollment.getState());
 //    restModel.setStudentIdentifier(enrollment.getstudentAddress()); // TODO the id mess
     

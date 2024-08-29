@@ -10,8 +10,6 @@ public interface MatriculationExamEnrollment {
   public void setExamId(Long examId);
   public String getName();
   public void setName(String name);
-  public String getSsn();
-  public void setSsn(String ssn);
   public String getEmail();
   public void setEmail(String email);
   public String getPhone();

@@ -13,14 +13,6 @@ public class MatriculationExamEnrollment {
     this.name = name;
   }
 
-  public String getSsn() {
-    return ssn;
-  }
-
-  public void setSsn(String ssn) {
-    this.ssn = ssn;
-  }
-
   public String getEmail() {
     return email;
   }
@@ -189,10 +181,11 @@ public class MatriculationExamEnrollment {
     this.id = id;
   }
 
+  // TODO Remove fields that come from initialdata ?
+  
   private Long id;
   private Long examId;
   private String name;
-  private String ssn;
   private String email;
   private String phone;
   private String address;

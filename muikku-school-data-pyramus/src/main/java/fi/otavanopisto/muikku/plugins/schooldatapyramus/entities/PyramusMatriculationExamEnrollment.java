@@ -33,16 +33,6 @@ public class PyramusMatriculationExamEnrollment
   }
 
   @Override
-  public String getSsn() {
-    return ssn;
-  }
-
-  @Override
-  public void setSsn(String ssn) {
-    this.ssn = ssn;
-  }
-
-  @Override
   public String getEmail() {
     return email;
   }
@@ -245,7 +235,6 @@ public class PyramusMatriculationExamEnrollment
   public Long id;
   public Long examId;
   public String name;
-  public String ssn;
   public String email;
   public String phone;
   public String address;

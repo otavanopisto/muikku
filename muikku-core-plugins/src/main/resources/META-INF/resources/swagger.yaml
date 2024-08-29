@@ -14237,7 +14237,6 @@ components:
         - examId
         - studentIdentifier
         - name
-        - ssn
         - email
         - phone
         - address
@@ -14264,8 +14263,6 @@ components:
         studentIdentifier:
           type: string
         name:
-          type: string
-        ssn:
           type: string
         email:
           type: string
@@ -14401,7 +14398,6 @@ components:
         - name
         - phone
         - postalCode
-        - ssn
         - studentIdentifier
       properties:
         address:
@@ -14418,8 +14414,6 @@ components:
         phone:
           type: string
         postalCode:
-          type: string
-        ssn:
           type: string
         studentIdentifier:
           type: string
