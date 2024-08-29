@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { SearchFormElement } from "~/components/general/form-element";
-import { WorkspaceSignupGroup } from "~/generated/client";
+import { WorkspaceSettingsSignupGroup } from "~/generated/client";
 import { filterHighlight, filterMatch } from "~/util/modifiers";
 
 /**
@@ -9,12 +9,12 @@ import { filterHighlight, filterMatch } from "~/util/modifiers";
  */
 interface ManagementSignupGroupsProps {
   workspaceName: string;
-  workspaceSignupGroups: WorkspaceSignupGroup[];
+  workspaceSignupGroups: WorkspaceSettingsSignupGroup[];
   /**
    * Handle signup group change
    * @param workspaceSignupGroup workspaceSignupGroup
    */
-  onChange?: (workspaceSignupGroup: WorkspaceSignupGroup) => void;
+  onChange?: (workspaceSignupGroup: WorkspaceSettingsSignupGroup) => void;
 }
 
 /**
@@ -98,9 +98,9 @@ export const ManagementSignupGroupsMemoized = React.memo(
  */
 interface ManagementSignupGroupItem {
   workspaceName: string;
-  workspaceSignupGroup: WorkspaceSignupGroup;
+  workspaceSignupGroup: WorkspaceSettingsSignupGroup;
   workspaceSignupGroupFilter: string;
-  onChange: (signupGroup: WorkspaceSignupGroup) => void;
+  onChange: (signupGroup: WorkspaceSettingsSignupGroup) => void;
 }
 
 /**

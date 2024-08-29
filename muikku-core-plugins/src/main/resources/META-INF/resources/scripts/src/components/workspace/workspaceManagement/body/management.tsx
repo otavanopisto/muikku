@@ -678,13 +678,13 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             onChange={handleWorkspaceCustomSignupMessageChange}
           />
         </section>
-        {/* <section className="application-sub-panel application-sub-panel--workspace-settings">
+        <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementSignupGroupsMemoized
-            workspaceName={workspaceName}
-            workspaceSignupGroups={memoizedPermissions}
+            workspaceName={name}
+            workspaceSignupGroups={memoizedSignupGroups}
             onChange={handleWorkspaceSignupGroupChange}
           />
-        </section> */}
+        </section>
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
           <div className="form__buttons form__buttons--workspace-management">
             <Button
