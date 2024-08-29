@@ -1411,7 +1411,7 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           workspaceId: data.workspace.id,
         });
 
-        const workspaceUpdate = data.update;
+        const workspaceUpdate = { ...data.update };
         delete workspaceUpdate["defaultSignupMessage"];
         delete workspaceUpdate["subjectIdentifier"];
         delete workspaceUpdate["workspaceTypeIdentifier"];
@@ -1419,7 +1419,6 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
         delete workspaceUpdate["signupGroups"];
         delete workspaceUpdate["signupMessages"];
 
-        // Update the visible workspace values
         dispatch({
           type: "UPDATE_WORKSPACE",
           payload: {
@@ -1427,11 +1426,23 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
             update: workspaceUpdate,
           },
         });
+
         // Update the settings
+
         dispatch({
-          type: "UPDATE_WORKSPACE_SETTINGS",
-          payload: data.update,
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update: { settings: data.update },
+          },
         });
+
+        // dispatch({
+        //   type: "UPDATE_WORKSPACE_SETTINGS",
+        //   payload: data.update,
+        // });
+
+        // Update the visible workspace values
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;

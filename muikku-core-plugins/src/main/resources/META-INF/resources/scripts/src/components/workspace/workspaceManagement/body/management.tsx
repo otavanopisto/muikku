@@ -116,10 +116,20 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     if (!workspace || !workspace.settings) {
       return;
     }
+    const { settings } = workspace;
+
+    // Cannot be null for the component
+    if (!settings.defaultSignupMessage) {
+      settings.defaultSignupMessage = {
+        caption: "",
+        content: "",
+        enabled: false,
+      };
+    }
+
     setManagementState({
-      ...workspace.settings,
+      ...settings,
       producers: [],
-      chatEnabled: false,
       locked: false,
     });
   }, [workspace]);
