@@ -5,7 +5,6 @@ import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
-import { StatusType } from "~/reducers/base/status";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
@@ -15,6 +14,7 @@ import MatriculationWizardHeader from "./matriculation-wizard-header";
 import MatriculationWizardFooter from "./matriculation-wizard-footer";
 import { MatriculationFormType } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
+import { HopsState } from "~/reducers/hops";
 
 moment.locale("fi");
 
@@ -22,7 +22,7 @@ moment.locale("fi");
  * MatriculationExaminationWizardProps
  */
 interface MatriculationExaminationWizardProps {
-  status: StatusType;
+  hops: HopsState;
   examId: number;
   compulsoryEducationEligible: boolean;
   onClose?: () => void;
@@ -37,12 +37,12 @@ interface MatriculationExaminationWizardProps {
 const MatriculationExaminationWizard = (
   props: MatriculationExaminationWizardProps
 ) => {
-  const { compulsoryEducationEligible, examId, status, onClose, onUpdateExam } =
+  const { compulsoryEducationEligible, examId, hops, onClose, onUpdateExam } =
     props;
 
   const useMatriculationValues = useMatriculation(
     examId,
-    status.userSchoolDataIdentifier,
+    hops.currentStudentIdentifier,
     compulsoryEducationEligible,
     undefined,
     props.formType
@@ -119,7 +119,7 @@ const MatriculationExaminationWizard = (
  */
 function mapStateToProps(state: StateType) {
   return {
-    status: state.status,
+    hops: state.hopsNew,
   };
 }
 
