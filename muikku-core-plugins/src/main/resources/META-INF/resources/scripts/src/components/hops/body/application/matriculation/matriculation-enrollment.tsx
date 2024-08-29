@@ -123,7 +123,8 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
           MatriculationExamStudentStatus.SupplementationRequest ||
         e.studentStatus === MatriculationExamStudentStatus.Supplemented ||
         e.studentStatus === MatriculationExamStudentStatus.Approved ||
-        e.studentStatus === MatriculationExamStudentStatus.Rejected
+        e.studentStatus === MatriculationExamStudentStatus.Rejected ||
+        e.studentStatus === MatriculationExamStudentStatus.Confirmed
     );
 
     if (filteredExams.length === 0) {
@@ -138,6 +139,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
       [MatriculationExamStudentStatus.Supplemented]: "Täydennetty",
       [MatriculationExamStudentStatus.Approved]: "Hyväksytty",
       [MatriculationExamStudentStatus.Rejected]: "Hylätty",
+      [MatriculationExamStudentStatus.Confirmed]: "Vahvistettu",
     };
 
     /**
