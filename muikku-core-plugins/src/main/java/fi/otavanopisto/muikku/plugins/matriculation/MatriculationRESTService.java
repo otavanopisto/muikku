@@ -251,7 +251,7 @@ public class MatriculationRESTService {
   }
   
   @GET
-  @RESTPermit(MatriculationPermissions.MATRICULATION_GET_INITIALDATA)
+  @RESTPermit(handling = Handling.INLINE)
   @Path("/exams/{EXAMID}/initialData/{USERID}")
   public Response fetchInitialData(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId) {
     MatriculationExamInitialData result = new MatriculationExamInitialData();
