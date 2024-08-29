@@ -4,7 +4,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import { HOPSState } from "../../../reducers/main-function/hops";
-import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
@@ -35,7 +34,6 @@ type HopsTab = "MATRICULATION";
  */
 interface HopsApplicationProps extends WithTranslation {
   hops: HOPSState;
-  status: StatusType;
 }
 
 /**
