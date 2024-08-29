@@ -1261,7 +1261,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
 
-    if (payload.getDefaultSignupMessage() != null) {
+    if (payload.getDefaultSignupMessage() != null && payload.getDefaultSignupMessage().isEnabled()) {
       // Make sure the basic properties are defined
 
       if (StringUtils.isAnyBlank(payload.getDefaultSignupMessage().getCaption(), payload.getDefaultSignupMessage().getContent())) {
@@ -1374,14 +1374,11 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (permitted) {
           if (!existingWorkspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
             workspaceController.addWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
-          } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Signup Group already exists").build();
           }
-        } else {
+        }
+        else {
           if (existingWorkspaceSignupGroups.contains(userGroupEntity.schoolDataIdentifier())) {
             workspaceController.removeWorkspaceSignupGroup(workspaceEntity, userGroupEntity);
-          } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
           }
         }
       }

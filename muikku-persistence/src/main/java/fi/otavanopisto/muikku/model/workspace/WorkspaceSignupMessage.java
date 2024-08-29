@@ -92,12 +92,10 @@ public class WorkspaceSignupMessage {
   private boolean enabled;
 
   @NotNull
-  @NotEmpty
   @Column (nullable = false)
   private String caption;
 
   @NotNull
-  @NotEmpty
   @Column (nullable = false)
   @Lob
   private String content;
