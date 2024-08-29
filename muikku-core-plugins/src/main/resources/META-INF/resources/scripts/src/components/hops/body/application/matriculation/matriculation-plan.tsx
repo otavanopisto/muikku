@@ -13,7 +13,7 @@ import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
 import MatriculationSubjectsList, {
   SelectedMatriculationSubject,
-} from "./components/matriculation-subjects-listV2";
+} from "./components/matriculation-subjects-list";
 import {
   SaveMatriculationPlanTriggerType,
   saveMatriculationPlan,

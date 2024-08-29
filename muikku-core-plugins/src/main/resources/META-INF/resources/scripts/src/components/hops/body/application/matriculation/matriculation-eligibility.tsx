@@ -6,7 +6,7 @@ import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
-import MatriculationEligibilityRow from "./components/matriculation-eligibility-rowV2";
+import MatriculationEligibilityRow from "./components/matriculation-eligibility-row";
 import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 
 /**
