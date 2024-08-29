@@ -13,6 +13,7 @@ import "~/sass/elements/wcag.scss";
 import {
   updateWorkspaceSettings,
   UpdateWorkspaceSettingsTriggerType,
+  UpdateSettingsPayload,
   updateWorkspaceProducersForCurrentWorkspace,
   UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64,
@@ -34,6 +35,7 @@ import {
   WorkspaceMaterialProducer,
   WorkspaceSettings,
   WorkspaceSignupGroup,
+  WorkspaceSettingsSignupGroup,
   WorkspaceSignupMessage,
   WorkspaceType,
 } from "~/generated/client";
@@ -49,6 +51,7 @@ import { ManagementAdditionalInfoMemoized } from "./management-additional-info";
 import { ManagementVisibilityMemoized } from "./management-visibility";
 import { ManagementBasicInfoMemoized } from "./management-basic-info";
 import { ManagementImageMemoized } from "./management-image";
+import license from "../../workspaceHome/license";
 
 /**
  * ManagementPanelProps
@@ -66,25 +69,8 @@ interface ManagementPanelProps extends WithTranslation {
 /**
  * ManagementPanelState
  */
-interface ManagementPanelState {
-  workspaceName: string;
-  workspaceLanguage: Language;
-  workspacePublished: boolean;
-  workspaceAccess: WorkspaceAccess;
-  workspaceExtension: string;
-  workspaceType: string;
-  workspaceStartDate: Date | null;
-  workspaceEndDate: Date | null;
-  workspaceSignupStartDate: Date | null;
-  workspaceSignupEndDate: Date | null;
-  workspaceProducers: Array<WorkspaceMaterialProducer>;
-  workspaceDescription: string;
-  workspaceLicense: string;
-  workspaceHasCustomImage: boolean;
-  workspacePermissions: Array<WorkspaceSignupGroup>;
-  workspaceChatEnabled: boolean;
-  workspaceSignupMessage: WorkspaceSignupMessage;
-  workspaceCustomSignupMessages: WorkspaceSignupMessage[];
+interface ManagementPanelState extends WorkspaceSettings {
+  producers: Array<WorkspaceMaterialProducer>;
   locked: boolean;
 }
 
@@ -97,134 +83,87 @@ const ManagementPanel = (props: ManagementPanelProps) => {
 
   const [managementState, setManagementState] =
     React.useState<ManagementPanelState>({
-      workspaceName: null,
-      workspaceLanguage: "fi",
-      workspacePublished: false,
-      workspaceAccess: null,
-      workspaceExtension: null,
-      workspaceType: null,
-      workspaceStartDate: null,
-      workspaceEndDate: null,
-      workspaceSignupStartDate: null,
-      workspaceSignupEndDate: null,
-      workspaceProducers: null,
-      workspaceDescription: "",
-      workspaceLicense: "",
-      workspaceHasCustomImage: false,
-      workspaceChatEnabled: false,
-      workspacePermissions: [],
-      workspaceSignupMessage: {
+      id: 0,
+      curriculumIdentifiers: [],
+      organizationEntityId: 0,
+      urlName: "",
+      name: "",
+      language: "fi",
+      published: false,
+      access: "ANYONE",
+      nameExtension: "",
+      workspaceTypeIdentifier: "",
+      beginDate: null,
+      endDate: null,
+      signupStart: null,
+      signupEnd: null,
+      description: "",
+      materialDefaultLicense: "",
+      hasCustomImage: false,
+      signupGroups: [],
+      defaultSignupMessage: {
         caption: "",
         content: "",
         enabled: false,
       },
-      workspaceCustomSignupMessages: [],
+      signupMessages: [],
+      producers: [],
+      chatEnabled: false,
       locked: false,
     });
 
   React.useEffect(() => {
-    if (!workspace) {
+    if (!workspace || !workspace.settings) {
       return;
     }
-
-    setManagementState((prev) => ({
-      ...prev,
-      workspaceName: workspace ? workspace.name : null,
-      workspacePublished: workspace ? workspace.published : null,
-      workspaceAccess: workspace ? workspace.access : null,
-      workspaceExtension: workspace ? workspace.nameExtension : null,
-      workspaceType:
-        workspace && workspace.details ? workspace.details.typeId : null,
-      workspaceStartDate:
-        workspace && workspace.details
-          ? workspace.details.beginDate !== null
-            ? moment(workspace.details.beginDate).toDate()
-            : null
-          : null,
-      workspaceEndDate:
-        workspace && workspace.details
-          ? workspace.details.endDate !== null
-            ? moment(workspace.details.endDate).toDate()
-            : null
-          : null,
-      workspaceSignupStartDate:
-        workspace && workspace.details
-          ? workspace.details.signupStart !== null
-            ? moment(workspace.details.signupStart).toDate()
-            : null
-          : null,
-      workspaceSignupEndDate:
-        workspace && workspace.details
-          ? workspace.details.signupEnd !== null
-            ? moment(workspace.details.signupEnd).toDate()
-            : null
-          : null,
-      workspaceProducers:
-        workspace && workspace.producers ? workspace.producers : null,
-      workspaceLicense: workspace ? workspace.materialDefaultLicense : "",
-      workspaceDescription: workspace ? workspace.description || "" : "",
-      workspaceHasCustomImage: workspace ? workspace.hasCustomImage : false,
-      workspacePermissions:
-        workspace && workspace.permissions
-          ? workspace.permissions.map((pr) => ({
-              ...pr,
-            }))
-          : [],
-      workspaceLanguage: workspace ? workspace.language : "fi",
-      workspaceSignupMessage:
-        workspace && workspace.settings
-          ? workspace.settings.defaultSignupMessage
-          : {
-              caption: "",
-              content: "",
-              enabled: false,
-            },
-    }));
+    setManagementState({
+      ...workspace.settings,
+      producers: [],
+      chatEnabled: false,
+      locked: false,
+    });
   }, [workspace]);
 
   const {
-    workspaceName,
-    workspaceLanguage,
-    workspacePublished,
-    workspaceAccess,
-    workspaceExtension,
-    workspaceType,
-    workspaceStartDate,
-    workspaceEndDate,
-    workspaceSignupStartDate,
-    workspaceSignupEndDate,
-    workspaceProducers,
-    workspaceDescription,
-    workspaceLicense,
-    workspaceHasCustomImage,
-    workspacePermissions,
-    workspaceSignupMessage,
-    workspaceCustomSignupMessages,
-    workspaceChatEnabled,
+    name,
+    language,
+    published,
+    access,
+    nameExtension,
+    workspaceTypeIdentifier,
+    beginDate,
+    endDate,
+    signupStart,
+    signupEnd,
+    description,
+    materialDefaultLicense,
+    hasCustomImage,
+    signupGroups,
+    defaultSignupMessage,
+    signupMessages,
+    producers,
+    chatEnabled,
     locked,
   } = managementState;
 
   /**
    * Handles workspace name change
    */
-  const handleWorkspaceNameChange = React.useCallback(
-    (workspaceName: string) => {
-      setManagementState((prevState) => ({
-        ...prevState,
-        workspaceName,
-      }));
-    },
-    []
-  );
+  const handleWorkspaceNameChange = React.useCallback((name: string) => {
+    setManagementState((prevState) => ({
+      ...prevState,
+      name,
+    }));
+  }, []);
 
   /**
    * Handles language change
    */
   const handleWorkspaceLanguageChange = React.useCallback(
-    (language: string) => {
+    (language: Language) => {
       setManagementState((prevState) => ({
         ...prevState,
-        workspaceLanguage: language as Language,
+        language,
       }));
     },
     []
@@ -233,60 +172,60 @@ const ManagementPanel = (props: ManagementPanelProps) => {
   /**
    * Handles description change
    */
-  const handleDescriptionChange = React.useCallback((text: string) => {
+  const handleDescriptionChange = React.useCallback((description: string) => {
     setManagementState((prevState) => ({
       ...prevState,
-      workspaceDescription: text,
+      description,
     }));
   }, []);
 
   /**
    * Handles published change
    */
-  const handlePublishedChange = React.useCallback((value: boolean) => {
+  const handlePublishedChange = React.useCallback((published: boolean) => {
     setManagementState((prevState) => ({
       ...prevState,
-      workspacePublished: value,
+      published,
     }));
   }, []);
 
   /**
    * Handles access change
    */
-  const handleAccessChange = React.useCallback((value: WorkspaceAccess) => {
+  const handleAccessChange = React.useCallback((access: WorkspaceAccess) => {
     setManagementState((prevState) => ({
       ...prevState,
-      workspaceAccess: value,
+      access,
     }));
   }, []);
 
   /**
    * Handles image change
    */
-  const handleImageChange = React.useCallback((status: boolean) => {
+  const handleImageChange = React.useCallback((hasCustomImage: boolean) => {
     setManagementState((prevState) => ({
       ...prevState,
-      workspaceHasCustomImage: status,
+      hasCustomImage,
     }));
   }, []);
 
   /**
    * Handles signup start date change
    */
-  const handleSignupStartDateChange = React.useCallback((date: Date) => {
+  const handleSignupStartDateChange = React.useCallback((signupStart: Date) => {
     setManagementState((prevState) => ({
       ...prevState,
-      workspaceSignupStartDate: date,
+      signupStart,
     }));
   }, []);
 
   /**
    * Handles signup end date change
    */
-  const handleSignupEndDateChange = React.useCallback((date: Date) => {
+  const handleSignupEndDateChange = React.useCallback((signupEnd: Date) => {
     setManagementState((prevState) => ({
       ...prevState,
-      workspaceSignupEndDate: date,
+      signupEnd,
     }));
   }, []);
 
@@ -294,37 +233,43 @@ const ManagementPanel = (props: ManagementPanelProps) => {
    * Handles workspace type change
    * @param type type
    */
-  const handleUpdateWorkspaceTypeChange = React.useCallback((type: string) => {
-    setManagementState((prevState) => ({
-      ...prevState,
-      workspaceType: type,
-    }));
-  }, []);
-
-  /**
-   * Handles workspace extension change
-   */
-  const handleWorkspaceExtensionChange = React.useCallback(
-    (extension: string) => {
+  const handleUpdateWorkspaceTypeChange = React.useCallback(
+    (workspaceTypeIdentifier: string) => {
       setManagementState((prevState) => ({
         ...prevState,
-        workspaceExtension: extension,
+        workspaceTypeIdentifier,
       }));
     },
     []
   );
 
-  const handleWorkspaceStartDateChange = React.useCallback((date: Date) => {
-    setManagementState((prevState) => ({
-      ...prevState,
-      workspaceStartDate: date,
-    }));
-  }, []);
+  /**
+   * Handles workspace extension change
+   */
+  const handleWorkspaceExtensionChange = React.useCallback(
+    (nameExtension: string) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        nameExtension,
+      }));
+    },
+    []
+  );
 
-  const handleWorkspaceEndDateChange = React.useCallback((date: Date) => {
+  const handleWorkspaceStartDateChange = React.useCallback(
+    (beginDate: Date) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        beginDate,
+      }));
+    },
+    []
+  );
+
+  const handleWorkspaceEndDateChange = React.useCallback((endDate: Date) => {
     setManagementState((prevState) => ({
       ...prevState,
-      workspaceEndDate: date,
+      endDate,
     }));
   }, []);
 
@@ -332,14 +277,64 @@ const ManagementPanel = (props: ManagementPanelProps) => {
    * Handles workspace license change
    */
   const handleWorkspaceLicenseChange = React.useCallback(
-    (newLicense: string) => {
+    (materialDefaultLicense: string) => {
       setManagementState((prevState) => ({
         ...prevState,
-        workspaceLicense: newLicense,
+        materialDefaultLicense,
       }));
     },
     []
   );
+
+  /**
+   * Handles signup group message change
+   */
+  const handleWorkspaceSignupMessageChange = React.useCallback(
+    (defaultSignupMessage: WorkspaceSignupMessage) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        defaultSignupMessage,
+      }));
+    },
+    []
+  );
+
+  /**
+   * Handles custom signup group message change
+   */
+  const handleWorkspaceCustomSignupMessageChange = React.useCallback(
+    (signupMessages: WorkspaceSignupMessage[]) => {
+      setManagementState((prevState) => ({
+        ...prevState,
+        signupMessages,
+      }));
+    },
+    []
+  );
+
+  /**
+   * Handles signup group message change
+   */
+  const handleWorkspaceSignupGroupChange = React.useCallback(
+    (group: WorkspaceSignupGroup) => {
+      setManagementState((prevState) => {
+        const signupGroups = prevState.signupGroups.map((pr) => {
+          if (pr.userGroupEntityId === group.userGroupEntityId) {
+            return group;
+          }
+          return pr;
+        });
+
+        return {
+          ...prevState,
+          signupGroups,
+        };
+      });
+    },
+    []
+  );
+
+  // Outside of the settings object
 
   /**
    * Handles workspace producers change
@@ -368,221 +363,162 @@ const ManagementPanel = (props: ManagementPanelProps) => {
   );
 
   /**
-   * Handles signup group message change
-   */
-  const handleWorkspaceSignupMessageChange = React.useCallback(
-    (message: WorkspaceSignupMessage) => {
-      setManagementState((prevState) => ({
-        ...prevState,
-        workspaceSignupMessage: message,
-      }));
-    },
-    []
-  );
-
-  /**
-   * Handles custom signup group message change
-   */
-  const handleWorkspaceCustomSignupMessageChange = React.useCallback(
-    (messages: WorkspaceSignupMessage[]) => {
-      setManagementState((prevState) => ({
-        ...prevState,
-        workspaceCustomSignupMessages: messages,
-      }));
-    },
-    []
-  );
-
-  /**
-   * Handles signup group message change
-   */
-  const handleWorkspaceSignupGroupChange = React.useCallback(
-    (groups: WorkspaceSignupGroup) => {
-      setManagementState((prevState) => {
-        const newPermissions = prevState.workspacePermissions.map((pr) => {
-          if (pr.userGroupEntityId === groups.userGroupEntityId) {
-            return groups;
-          }
-          return pr;
-        });
-
-        return {
-          ...prevState,
-          workspacePermissions: newPermissions,
-        };
-      });
-    },
-    []
-  );
-
-  /**
    * Handles management settings save click
    */
   const handleSaveClick = () => {
     const { t } = props;
-
     setManagementState((prevState) => ({
       ...prevState,
       locked: true,
     }));
 
-    let payload: WorkspaceSettings = {
-      id: workspace.id,
-      name: workspace.name,
-      access: workspace.access,
-      description: workspace.description,
-      published: workspace.published,
-      materialDefaultLicense: workspace.materialDefaultLicense,
-      hasCustomImage: workspace.hasCustomImage,
-      curriculumIdentifiers: workspace.curriculumIdentifiers,
-      language: workspace.language,
-      organizationEntityId: workspace.organizationEntityId,
-      urlName: workspace.urlName,
-    };
-    const workspaceUpdate: WorkspaceUpdateType = {
-      name: managementState.workspaceName,
-      published: managementState.workspacePublished,
-      access: managementState.workspaceAccess,
-      nameExtension: managementState.workspaceExtension,
-      materialDefaultLicense: managementState.workspaceLicense,
-      description: managementState.workspaceDescription,
-      hasCustomImage: managementState.workspaceHasCustomImage,
-      language: managementState.workspaceLanguage,
-    };
-    const currentWorkspaceAsUpdate: WorkspaceUpdateType = {
-      name: workspace.name,
-      published: workspace.published,
-      access: workspace.access,
-      nameExtension: workspace.nameExtension,
-      materialDefaultLicense: workspace.materialDefaultLicense,
-      description: workspace.description,
-      hasCustomImage: workspace.hasCustomImage,
-      language: workspace.language,
-    };
+    const payload: UpdateSettingsPayload = managementState;
+    delete payload["signupGroups"];
 
-    if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)) {
-      payload = Object.assign(workspaceUpdate, payload);
-    }
+    // const workspaceUpdate: WorkspaceUpdateType = {
+    //   name: managementState.workspaceName,
+    //   published: managementState.workspacePublished,
+    //   access: managementState.workspaceAccess,
+    //   nameExtension: managementState.workspaceExtension,
+    //   materialDefaultLicense: managementState.workspaceLicense,
+    //   description: managementState.workspaceDescription,
+    //   hasCustomImage: managementState.workspaceHasCustomImage,
+    //   language: managementState.workspaceLanguage,
+    // };
+    // const currentWorkspaceAsUpdate: WorkspaceUpdateType = {
+    //   name: name,
+    //   published: published,
+    //   access: access,
+    //   nameExtension: nameExtension,
+    //   materialDefaultLicense: materialDefaultLicense,
+    //   description: description,
+    //   hasCustomImage: hasCustomImage,
+    //   language: language,
+    // };
 
-    const workspaceMaterialProducers = managementState.workspaceProducers;
+    // if (!equals(workspaceUpdate, currentWorkspaceAsUpdate)) {
+    //   payload = Object.assign(workspaceUpdate, payload);
+    // }
 
-    if (!equals(workspaceMaterialProducers, workspace.producers)) {
-      payload = Object.assign(
-        { producers: workspaceMaterialProducers },
-        payload
-      );
-    }
+    // const workspaceMaterialProducers = managementState.workspaceProducers;
 
-    const workspaceDetails: WorkspaceDetails = {
-      externalViewUrl: workspace.details.externalViewUrl,
-      typeId: managementState.workspaceType,
-      beginDate:
-        managementState.workspaceStartDate !== null
-          ? managementState.workspaceStartDate.toISOString()
-          : null,
-      endDate:
-        managementState.workspaceEndDate !== null
-          ? managementState.workspaceEndDate.toISOString()
-          : null,
-      rootFolderId: workspace.details.rootFolderId,
-      helpFolderId: workspace.details.helpFolderId,
-      indexFolderId: workspace.details.indexFolderId,
-      signupStart:
-        managementState.workspaceSignupStartDate !== null
-          ? managementState.workspaceSignupStartDate.toISOString()
-          : null,
-      signupEnd:
-        managementState.workspaceSignupEndDate !== null
-          ? managementState.workspaceSignupEndDate.toISOString()
-          : null,
-      chatEnabled: managementState.workspaceChatEnabled,
-    };
+    // if (!equals(workspaceMaterialProducers, workspace.producers)) {
+    //   payload = Object.assign(
+    //     { producers: workspaceMaterialProducers },
+    //     payload
+    //   );
+    // }
 
-    const currentWorkspaceAsDetails: WorkspaceDetails = {
-      externalViewUrl: workspace.details.externalViewUrl,
-      typeId: workspace.details.typeId,
-      beginDate: moment(workspace.details.beginDate).toISOString(),
-      endDate: moment(workspace.details.endDate).toISOString(),
-      rootFolderId: workspace.details.rootFolderId,
-      helpFolderId: workspace.details.helpFolderId,
-      indexFolderId: workspace.details.indexFolderId,
-      signupStart: moment(workspace.details.signupStart).toISOString(),
-      signupEnd: moment(workspace.details.signupEnd).toISOString(),
-      chatEnabled: workspace.details.chatEnabled,
-    };
+    // const workspaceDetails: WorkspaceDetails = {
+    //   externalViewUrl: workspace.details.externalViewUrl,
+    //   typeId: managementState.workspaceType,
+    //   beginDate:
+    //     managementState.workspaceStartDate !== null
+    //       ? managementState.workspaceStartDate.toISOString()
+    //       : null,
+    //   endDate:
+    //     managementState.workspaceEndDate !== null
+    //       ? managementState.workspaceEndDate.toISOString()
+    //       : null,
+    //   rootFolderId: workspace.details.rootFolderId,
+    //   helpFolderId: workspace.details.helpFolderId,
+    //   indexFolderId: workspace.details.indexFolderId,
+    //   signupStart:
+    //     managementState.workspaceSignupStartDate !== null
+    //       ? managementState.workspaceSignupStartDate.toISOString()
+    //       : null,
+    //   signupEnd:
+    //     managementState.workspaceSignupEndDate !== null
+    //       ? managementState.workspaceSignupEndDate.toISOString()
+    //       : null,
+    //   chatEnabled: managementState.workspaceChatEnabled,
+    // };
 
-    if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
-      payload = Object.assign({ details: workspaceDetails }, payload);
-    }
+    // const currentWorkspaceAsDetails: WorkspaceDetails = {
+    //   externalViewUrl: workspace.details.externalViewUrl,
+    //   typeId: workspace.details.typeId,
+    //   beginDate: moment(workspace.details.beginDate).toISOString(),
+    //   endDate: moment(workspace.details.endDate).toISOString(),
+    //   rootFolderId: workspace.details.rootFolderId,
+    //   helpFolderId: workspace.details.helpFolderId,
+    //   indexFolderId: workspace.details.indexFolderId,
+    //   signupStart: moment(workspace.details.signupStart).toISOString(),
+    //   signupEnd: moment(workspace.details.signupEnd).toISOString(),
+    //   chatEnabled: workspace.details.chatEnabled,
+    // };
 
-    let showError = false;
+    // if (!equals(workspaceDetails, currentWorkspaceAsDetails)) {
+    //   payload = Object.assign({ details: workspaceDetails }, payload);
+    // }
+
+    // let showError = false;
 
     // Set signup message to null if caption and content is empty
     // Api does not accept empty values, it must be null. Otherwise if one of the fields is empty,
     // Backend will handle it with error nad notifications will be shown
-    const realPermissions = managementState.workspacePermissions.map((pr) => ({
-      ...pr,
-    }));
+    // const realPermissions = managementState.workspacePermissions.map((pr) => ({
+    //   ...pr,
+    // }));
 
     // Check if permissions have changed
-    if (!equals(workspace.permissions, realPermissions)) {
-      payload = Object.assign(
-        {
-          permissions: realPermissions,
-        },
-        payload
-      );
-    }
+    // if (!equals(workspace.permissions, realPermissions)) {
+    //   payload = Object.assign(
+    //     {
+    //       permissions: realPermissions,
+    //     },
+    //     payload
+    //   );
+    // }
 
     // Prevent saving if signup message is partly empty
-    if (
-      (managementState.workspaceSignupMessage.caption === "" &&
-        managementState.workspaceSignupMessage.content !== "") ||
-      (managementState.workspaceSignupMessage.caption !== "" &&
-        managementState.workspaceSignupMessage.content === "")
-    ) {
-      showError = true;
-    }
+    // if (
+    //   (managementState.workspaceSignupMessage.caption === "" &&
+    //     managementState.workspaceSignupMessage.content !== "") ||
+    //   (managementState.workspaceSignupMessage.caption !== "" &&
+    //     managementState.workspaceSignupMessage.content === "")
+    // ) {
+    //   showError = true;
+    // }
 
     // Set signup message to null if caption or content either is empty
     // signup message object must be null. Otherwise if one of the fields is empty,
     // Backend will handle it with error nad notifications will be shown
-    const realSignupMessage =
-      managementState.workspaceSignupMessage.caption === "" &&
-      managementState.workspaceSignupMessage.content === ""
-        ? null
-        : managementState.workspaceSignupMessage;
+    // const realSignupMessage =
+    //   managementState.workspaceSignupMessage.caption === "" &&
+    //   managementState.workspaceSignupMessage.content === ""
+    //     ? null
+    //     : managementState.workspaceSignupMessage;
 
     // Check if signup message has changed
-    if (
-      !equals(
-        workspace.settings && workspace.settings.defaultSignupMessage,
-        realSignupMessage
-      )
-    ) {
-      payload = Object.assign(
-        { defaultSignupMessage: managementState.workspaceSignupMessage },
-        payload
-      );
-    }
+    // if (
+    //   !equals(
+    //     workspace.settings && workspace.settings.defaultSignupMessage,
+    //     realSignupMessage
+    //   )
+    // ) {
+    //   payload = Object.assign(
+    //     { defaultSignupMessage: managementState.workspaceSignupMessage },
+    //     payload
+    //   );
+    // }
 
     // Show error notification if signup message is partly empty
     // And terminate saving
-    if (showError) {
-      props.displayNotification(
-        t("notifications.updateError", {
-          ns: "workspace",
-          context: "settings",
-        }),
-        "error"
-      );
+    // if (showError) {
+    //   props.displayNotification(
+    //     t("notifications.updateError", {
+    //       ns: "workspace",
+    //       context: "settings",
+    //     }),
+    //     "error"
+    //   );
 
-      setManagementState((prevState) => ({
-        ...prevState,
-        locked: false,
-      }));
-      return;
-    }
+    //   setManagementState((prevState) => ({
+    //     ...prevState,
+    //     locked: false,
+    //   }));
+    //   return;
+    // }
 
     props.updateWorkspaceSettings({
       workspace: workspace,
@@ -613,13 +549,13 @@ const ManagementPanel = (props: ManagementPanelProps) => {
   };
 
   const workspaceSignupStartDateMemoized = React.useMemo(
-    () => workspaceSignupStartDate,
-    [workspaceSignupStartDate]
+    () => signupStart,
+    [signupStart]
   );
 
   const workspaceSignupEndDateMemoized = React.useMemo(
-    () => workspaceSignupEndDate,
-    [workspaceSignupEndDate]
+    () => signupEnd,
+    [signupEnd]
   );
 
   const memoizedWorkspaceTypes = React.useMemo(
@@ -628,22 +564,22 @@ const ManagementPanel = (props: ManagementPanelProps) => {
   );
 
   const memoizedWorkspaceProducers = React.useMemo(
-    () => workspaceProducers,
-    [workspaceProducers]
+    () => producers,
+    [producers]
   );
 
-  const memoizedPermissions = React.useMemo(
-    () => workspacePermissions,
-    [workspacePermissions]
+  const memoizedSignupGroups = React.useMemo(
+    () => signupGroups,
+    [signupGroups]
   );
 
   const memoizedWorkspaceSignupMessage = React.useMemo(
-    () => workspaceSignupMessage,
-    [workspaceSignupMessage]
+    () => defaultSignupMessage,
+    [defaultSignupMessage]
   );
   const memoizedCustomWorkspaceSignupMessage = React.useMemo(
-    () => workspaceCustomSignupMessages,
-    [workspaceCustomSignupMessages]
+    () => signupMessages,
+    [signupMessages]
   );
 
   return (
@@ -654,9 +590,9 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       >
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementBasicInfoMemoized
-            workspaceName={workspaceName}
-            workspaceDescription={workspaceDescription}
-            workspaceLanguage={workspaceLanguage}
+            workspaceName={name}
+            workspaceDescription={description}
+            workspaceLanguage={language}
             externalViewUrl={workspace?.details?.externalViewUrl}
             onWorkspaceNameChange={handleWorkspaceNameChange}
             onWorkspaceDescriptionChange={handleDescriptionChange}
@@ -666,14 +602,14 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         <section className="application-sub-panel application-sub-panel--workspace-settings application-sub-panel--workspace-image-settings">
           <ManagementImageMemoized
             workspaceEntityId={workspace?.id}
-            workspaceHasCustomImage={workspaceHasCustomImage}
+            workspaceHasCustomImage={hasCustomImage}
             onImageStatusChange={handleImageChange}
           />
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementVisibilityMemoized
-            workspacePublished={workspacePublished}
-            workspaceAccess={workspaceAccess}
+            workspacePublished={published}
+            workspaceAccess={access}
             onWorkspacePublishedChange={handlePublishedChange}
             onWorkspaceAccessChange={handleAccessChange}
           />
@@ -688,11 +624,11 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementAdditionalInfoMemoized
-            workspaceNameExtension={workspaceExtension}
-            workspaceType={workspaceType}
+            workspaceNameExtension={nameExtension}
+            workspaceType={workspaceTypeIdentifier}
             workspaceTypes={memoizedWorkspaceTypes}
-            workspaceStartDate={workspaceStartDate}
-            workspaceEndDate={workspaceEndDate}
+            workspaceStartDate={beginDate}
+            workspaceEndDate={endDate}
             onWorkspaceStartDateChange={handleWorkspaceStartDateChange}
             onWorkspaceEndDateChange={handleWorkspaceEndDateChange}
             onWorkspaceTypeChange={handleUpdateWorkspaceTypeChange}
@@ -701,7 +637,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         </section>
         <section className="form-element application-sub-panel application-sub-panel--workspace-settings">
           <ManagementLicenseMemoized
-            workspaceLicense={workspaceLicense}
+            workspaceLicense={materialDefaultLicense}
             onChange={handleWorkspaceLicenseChange}
           />
         </section>
@@ -713,31 +649,31 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementChatSettingsMemoized
-            chatEnabled={workspaceChatEnabled}
+            chatEnabled={chatEnabled}
             onChange={handleWorkspaceChatSettingsChange}
           />
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementSignupMessageMemoized
-            workspaceName={workspaceName}
+            workspaceName={name}
             workspaceSignupMessage={memoizedWorkspaceSignupMessage}
             onChange={handleWorkspaceSignupMessageChange}
           />
         </section>
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementCustomSignupMessageMemoized
-            signupGroups={memoizedPermissions}
+            signupGroups={signupGroups}
             workspaceCustomSignupMessages={memoizedCustomWorkspaceSignupMessage}
             onChange={handleWorkspaceCustomSignupMessageChange}
           />
         </section>
-        <section className="application-sub-panel application-sub-panel--workspace-settings">
+        {/* <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementSignupGroupsMemoized
             workspaceName={workspaceName}
             workspaceSignupGroups={memoizedPermissions}
             onChange={handleWorkspaceSignupGroupChange}
           />
-        </section>
+        </section> */}
         <section className="form-element  application-sub-panel application-sub-panel--workspace-settings">
           <div className="form__buttons form__buttons--workspace-management">
             <Button

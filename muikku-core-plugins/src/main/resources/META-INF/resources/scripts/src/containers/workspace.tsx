@@ -27,6 +27,7 @@ import {
   loadStudentsOfWorkspace,
   loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
+  loadWorkspaceSettings,
   loadCurrentWorkspaceUserGroupPermissions,
   setAvailableCurriculums,
   loadLastWorkspacesFromServer,
@@ -131,8 +132,8 @@ export default class Workspace extends React.Component<
     this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
     this.renderWorkspaceManagement = this.renderWorkspaceManagement.bind(this);
     this.renderWorkspaceEvaluation = this.renderWorkspaceEvaluation.bind(this);
-    this.renderWorkspacePermissions =
-      this.renderWorkspacePermissions.bind(this);
+    // this.renderWorkspacePermissions =
+    // this.updateFirstTime.bind(this);
     this.loadWorkspaceDiscussionData =
       this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData =
@@ -1115,6 +1116,9 @@ export default class Workspace extends React.Component<
       );
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(
+        loadWorkspaceSettings(state.status.currentWorkspaceId) as Action
+      );
+      this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
           /**
@@ -1148,34 +1152,34 @@ export default class Workspace extends React.Component<
    * @param props props
    * @returns JSX.Element
    */
-  renderWorkspacePermissions(props: RouteComponentProps<any>) {
-    this.updateFirstTime();
-    if (this.itsFirstTime) {
-      this.props.websocket && this.props.websocket.restoreEventListeners();
+  // renderWorkspacePermissions(props: RouteComponentProps<any>) {
+  //   this.updateFirstTime();
+  //   if (this.itsFirstTime) {
+  //     this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      const state = this.props.store.getState();
-      this.props.store.dispatch(titleActions.updateTitle("Permissions"));
-      this.props.store.dispatch(
-        setCurrentWorkspace({
-          workspaceId: state.status.currentWorkspaceId,
-          /**
-           * success
-           */
-          success: () => {
-            this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action
-            );
-          },
-        }) as Action
-      );
-    }
+  //     const state = this.props.store.getState();
+  //     this.props.store.dispatch(titleActions.updateTitle("Permissions"));
+  //     this.props.store.dispatch(
+  //       setCurrentWorkspace({
+  //         workspaceId: state.status.currentWorkspaceId,
+  //         /**
+  //          * success
+  //          */
+  //         success: () => {
+  //           this.props.store.dispatch(
+  //             loadCurrentWorkspaceUserGroupPermissions() as Action
+  //           );
+  //         },
+  //       }) as Action
+  //     );
+  //   }
 
-    return (
-      <WorkspacePermissionsBody
-        workspaceUrl={props.match.params["workspaceUrl"]}
-      />
-    );
-  }
+  //   return (
+  //     <WorkspacePermissionsBody
+  //       workspaceUrl={props.match.params["workspaceUrl"]}
+  //     />
+  //   );
+  // }
 
   /**
    * renderWorkspaceEvaluation
@@ -1301,10 +1305,10 @@ export default class Workspace extends React.Component<
                 path="/workspace/:workspaceUrl/workspace-management"
                 render={this.renderWorkspaceManagement}
               />
-              <Route
+              {/* <Route
                 path="/workspace/:workspaceUrl/permissions"
                 render={this.renderWorkspacePermissions}
-              />
+              /> */}
               <Route
                 path="/workspace/:workspaceUrl/evaluation"
                 render={this.renderWorkspaceEvaluation}

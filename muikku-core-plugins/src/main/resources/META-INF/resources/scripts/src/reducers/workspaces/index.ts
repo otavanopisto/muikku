@@ -325,6 +325,7 @@ export interface WorkspacesState {
   types?: WorkspaceType[];
   hasMore: boolean;
   toolbarLock: boolean;
+  settings: WorkspaceSettings;
 
   // Workspace material editor and boolean to indicate if edit mode is active
   editMode?: WorkspaceEditModeStateType;
@@ -367,6 +368,7 @@ const initialWorkspacesState: WorkspacesState = {
   types: null,
   hasMore: false,
   toolbarLock: false,
+  settings: null,
   editMode: {
     active: false,
     available: false,
