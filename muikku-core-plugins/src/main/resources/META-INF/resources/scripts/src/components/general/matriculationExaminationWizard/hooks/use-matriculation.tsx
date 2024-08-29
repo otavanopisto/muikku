@@ -9,7 +9,6 @@ import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
   MatriculationExamAttendance,
-  MatriculationExamChangeLogEntry,
   MatriculationExamEnrollment,
   MatriculationStudent,
 } from "~/generated/client";
@@ -43,7 +42,6 @@ export const useMatriculation = (
     saveState?: SaveState;
     studentInformation: MatriculationStudent;
     examinationInformation: ExaminationInformation;
-    examFormChangeLogs: MatriculationExamChangeLogEntry[];
   }>({
     saveState: undefined,
     examId,
@@ -86,14 +84,8 @@ export const useMatriculation = (
       finishedAttendances: [],
       canPublishName: true,
       degreeStructure: "POST2022",
-      date:
-        new Date().getDate() +
-        "." +
-        (new Date().getMonth() + 1) +
-        "." +
-        new Date().getFullYear(),
+      enrollmentDate: new Date(),
     },
-    examFormChangeLogs: [],
   });
 
   const draftTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
@@ -106,8 +98,7 @@ export const useMatriculation = (
     const loadInitialData = async () => {
       try {
         const intialData = await matriculationApi.getInitialData({
-          examId,
-          userIdentifier: userSchoolDataIdentifier,
+          studentIdentifier: userSchoolDataIdentifier,
         });
 
         setMatriculation((prevState) => ({
@@ -151,18 +142,11 @@ export const useMatriculation = (
     const loadEditableData = async () => {
       try {
         const studentInformation = await matriculationApi.getInitialData({
-          examId,
-          userIdentifier: userSchoolDataIdentifier,
+          studentIdentifier: userSchoolDataIdentifier,
         });
 
         const matriculationData =
           await matriculationApi.getStudentExamEnrollment({
-            examId,
-            studentIdentifier: userSchoolDataIdentifier,
-          });
-
-        const historyEntries =
-          await matriculationApi.getStudentExamEnrollmentChangeLog({
             examId,
             studentIdentifier: userSchoolDataIdentifier,
           });
@@ -194,7 +178,6 @@ export const useMatriculation = (
                 term: `${fSubject.term}${fSubject.year}`,
               })),
           },
-          examFormChangeLogs: historyEntries,
         }));
       } catch (err) {
         if (!isMApiError(err)) {

@@ -81,7 +81,6 @@ export interface Term {
  * Examination
  */
 export interface ExaminationInformation extends MatriculationExamEnrollment {
-  date: string;
   initialized: boolean;
   // These values are used specifically for draft
   changedContactInfo: string;

@@ -150,7 +150,9 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
           <div className="matriculation__form-element-container">
             <TextField
               label="Päivämäärä"
-              value={examinationInformation.date}
+              value={`${examinationInformation.enrollmentDate.getDate()}.${
+                examinationInformation.enrollmentDate.getMonth() + 1
+              }.${examinationInformation.enrollmentDate.getFullYear()}`}
               type="text"
               readOnly
               className="matriculation__input"

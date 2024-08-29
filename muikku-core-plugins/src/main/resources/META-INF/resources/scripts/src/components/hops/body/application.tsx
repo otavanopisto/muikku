@@ -3,10 +3,6 @@ import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
-import {
-  TranscriptOfRecordLocationType,
-  RecordsType,
-} from "../../../reducers/main-function/records/index";
 import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
@@ -26,10 +22,7 @@ import { UseCaseContextProvider } from "~/context/use-case-context";
  * StudiesApplicationProps
  */
 interface HopsApplicationProps extends WithTranslation {
-  location: TranscriptOfRecordLocationType;
   hops: HOPSState;
-  status: StatusType;
-  records: RecordsType;
 }
 
 /**
@@ -41,10 +34,8 @@ type HopsTab = "MATRICULATION";
  * HopsApplicationProps
  */
 interface HopsApplicationProps extends WithTranslation {
-  location: TranscriptOfRecordLocationType;
   hops: HOPSState;
   status: StatusType;
-  records: RecordsType;
 }
 
 /**
@@ -103,10 +94,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    location: state.records.location,
     hops: state.hops,
-    records: state.records,
-    status: state.status,
   };
 }
 

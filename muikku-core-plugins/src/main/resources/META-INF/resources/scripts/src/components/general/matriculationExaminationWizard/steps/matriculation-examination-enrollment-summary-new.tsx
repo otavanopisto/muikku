@@ -38,7 +38,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
     location,
     message,
     canPublishName,
-    date,
+    enrollmentDate,
     degreeType,
     numMandatoryCourses,
     enrolledAttendances,
@@ -377,7 +377,9 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           <div className="matriculation__form-element-container">
             <TextField
               label="Päivämäärä"
-              value={date}
+              value={`${enrollmentDate.getDate()}.${
+                enrollmentDate.getMonth() + 1
+              }.${enrollmentDate.getFullYear()}`}
               type="text"
               readOnly
               className="matriculation__input"

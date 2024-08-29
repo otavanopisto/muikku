@@ -3,8 +3,6 @@ import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
-import { TranscriptOfRecordLocationType } from "../../../reducers/main-function/records/index";
-import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
@@ -47,8 +45,6 @@ type HopsTab = "MATRICULATION";
  * HopsApplicationProps
  */
 interface GuardianHopsApplicationProps extends WithTranslation {
-  location: TranscriptOfRecordLocationType;
-  status: StatusType;
   dependants: DependantsState;
   loadMatriculationData: LoadMatriculationDataTriggerType;
   resetMatriculationData: ResetMatriculationDataTriggerType;
@@ -263,8 +259,6 @@ class GuardianHopsApplication extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
-    location: state.records.location,
-    status: state.status,
     dependants: state.dependants,
   };
 }
