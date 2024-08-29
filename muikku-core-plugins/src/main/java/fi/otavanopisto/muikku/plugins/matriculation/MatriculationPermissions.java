@@ -32,6 +32,10 @@ public class MatriculationPermissions extends AbstractMuikkuPermissionCollection
   public static final String MATRICULATION_SAVE_DRAFT = "MATRICULATION_SAVE_DRAFT";
 
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.STUDENT_PARENT } )
+  public static final String MATRICULATION_FIND_ENROLLMENT = "MATRICULATION_FIND_ENROLLMENT";
+
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.STUDENT } )
   public static final String MATRICULATION_SEND_ENROLLMENT = "MATRICULATION_SEND_ENROLLMENT";
 

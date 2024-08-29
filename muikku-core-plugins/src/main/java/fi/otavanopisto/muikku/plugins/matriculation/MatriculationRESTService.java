@@ -137,7 +137,7 @@ public class MatriculationRESTService {
   }
   
   @GET
-  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @RESTPermit(MatriculationPermissions.MATRICULATION_FIND_ENROLLMENT)
   @Path("/students/{STUDENTIDENTIFIER}/exams/{EXAMID}/enrollment")
   public Response getEnrollment(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
@@ -145,7 +145,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
     }
     
-    if (!studentIdentifier.equals(sessionController.getLoggedUser())) {
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
