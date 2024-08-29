@@ -570,7 +570,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<UserGroupEntity> userGroupRecipients = null;
     List<WorkspaceEntity> workspaceStudentRecipients = null;
     List<WorkspaceEntity> workspaceTeacherRecipients = null;
-    List<EnvironmentRoleArchetype> roleRecipients = null;
     
     if (!CollectionUtils.isEmpty(newMessage.getRecipientGroupIds())) {
       if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
@@ -614,14 +613,6 @@ public class CommunicatorRESTService extends PluginRESTService {
       }
     }
     
-    if (!CollectionUtils.isEmpty(newMessage.getRecipientRoles())) {
-      roleRecipients = new ArrayList<EnvironmentRoleArchetype>();
-      
-      for (EnvironmentRoleArchetype role : newMessage.getRecipientRoles()) {
-        roleRecipients.add(role); 
-      }
-    }
-    
     if (StringUtils.isBlank(newMessage.getCategoryName())) {
       return Response.status(Status.BAD_REQUEST).entity("CategoryName missing").build();
     }
@@ -630,7 +621,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
     CommunicatorMessageRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
-        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, roleRecipients);
+        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, null);
 
     if (!prepareRecipientList.hasRecipients()) {
       return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
