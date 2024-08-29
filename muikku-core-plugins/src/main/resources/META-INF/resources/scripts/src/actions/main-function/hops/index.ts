@@ -590,14 +590,13 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
           (exam) => exam.id === data.examId
         );
 
-        // if the exam is not found, endh ere
-        if (examIndex === 1) {
+        // if the exam is not found, end here
+        if (examIndex === -1) {
           return;
         }
 
-        // update the exam status to SUPPLEMENTED and update the enrollment to list
-        // update is done currently only for suplementation requests only hence the change to SUPPLEMENTED
-        updatedExams[examIndex].studentStatus = "SUPPLEMENTED";
+        // update student status and enrollment with the new data
+        updatedExams[examIndex].studentStatus = updatedExam.state;
         updatedExams[examIndex].enrollment = updatedExam;
 
         dispatch({

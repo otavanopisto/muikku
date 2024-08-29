@@ -150,6 +150,10 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
     return <div className="loader-empty" />;
   }
 
+  const ilmoLink = (
+    <a href="https://ilmo.ylioppilastutkinto.fi/fi">ILMO-työkalulla</a>
+  );
+
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanel.Header>YO - suunnitelma</ApplicationSubPanel.Header>
@@ -190,10 +194,12 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
         </ApplicationSubPanel>
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            <p>
-              Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan
-              vähintään kolmesta aineryhmästä:
-            </p>
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+                Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan
+                vähintään kolmesta aineryhmästä:
+              </div>
+            </div>
 
             <ItemList>
               <ItemList.Item icon="icon-check">
@@ -213,16 +219,21 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
               </ItemList.Item>
             </ItemList>
 
-            <p>
-              <b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe
-              (esim. pitkä matematiikka tai A-tason vieras kieli). <br />
-              Kokeile
-              <a href="https://ilmo.ylioppilastutkinto.fi/fi">
-                ILMO-työkalulla
-              </a>
-              , millaisilla aineyhdistelmillä voit suorittaa
-              ylioppilastutkinnon.
-            </p>
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+                <b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe
+                (esim. pitkä matematiikka tai A-tason vieras kieli). <br />
+              </div>
+            </div>
+
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+                <p>
+                  Kokeile {ilmoLink}, millaisilla aineyhdistelmillä voit
+                  suorittaa ylioppilastutkinnon.
+                </p>
+              </div>
+            </div>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </ApplicationSubPanel>

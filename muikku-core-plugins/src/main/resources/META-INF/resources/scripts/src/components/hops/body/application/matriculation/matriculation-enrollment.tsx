@@ -12,6 +12,7 @@ import {
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops/";
 import MatriculationExaminationWizardDialog from "./dialogs/matriculation-wizard";
+import MatriculationWizardSummaryDialog from "./dialogs/matriculation-summary";
 import {
   VerifyMatriculationExamTriggerType,
   verifyMatriculationExam,
@@ -150,8 +151,30 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
        */
       const renderFunctionByStatus = () => {
         if (useCase === "GUARDIAN") {
-          return null;
+          // Guardians can only view the summary
+          switch (e.studentStatus) {
+            case MatriculationExamStudentStatus.Pending:
+            case MatriculationExamStudentStatus.SupplementationRequest:
+            case MatriculationExamStudentStatus.Supplemented:
+              return (
+                <div key={e.id}>
+                  <MatriculationWizardSummaryDialog
+                    examId={e.id}
+                    compulsoryEducationEligible={e.compulsoryEducationEligible}
+                    formType="edit"
+                  >
+                    <Button className="button button--yo-signup">
+                      Näytä yhteenveto
+                    </Button>
+                  </MatriculationWizardSummaryDialog>
+                </div>
+              );
+
+            default:
+              return null;
+          }
         }
+
         switch (e.studentStatus) {
           case MatriculationExamStudentStatus.SupplementationRequest:
             return (

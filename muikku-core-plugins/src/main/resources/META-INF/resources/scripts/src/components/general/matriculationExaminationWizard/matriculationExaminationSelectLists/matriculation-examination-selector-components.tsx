@@ -2,7 +2,6 @@ import * as React from "react";
 import "~/sass/elements/matriculation.scss";
 import "~/sass/elements/wcag.scss";
 import Button from "~/components/general/button";
-import { SUBJECT_MAP, EXAMINATION_GRADES_MAP } from "../index";
 import {
   MatriculationExamEnrolledSubject,
   MatriculationExamFinishedSubject,
@@ -10,6 +9,7 @@ import {
   MatriculationExamPlannedSubject,
 } from "~/generated/client";
 import { stringToBoolean } from "~/@types/shared";
+import { EXAMINATION_GRADES_MAP, SUBJECT_MAP } from "../helper";
 
 /**
  * MatriculationExaminationSubjectInputGroupProps

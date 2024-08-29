@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ItemList from "~/components/general/item-list";
-import { SUBJECT_MAP } from "~/components/general/matriculationExaminationWizard";
+import { SUBJECT_MAP } from "~/components/general/matriculationExaminationWizard/helper";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
 
@@ -32,18 +32,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
   const renderMatriculationResults = () => {
     const results = hops.hopsMatriculation.results;
 
-    if (!results || results.length === 0) {
-      return (
-        <div>
-          <p>
-            Sinulla ei ole vielä yo-suorituksista tuloksia. Tulokset merkitään
-            kun kokeet joihin olet osallistunut on arvioitu.
-          </p>
-        </div>
-      );
-    }
-
-    return results.map((r) => {
+    const items = results.map((r) => {
       const subResult = r.attendances;
 
       return (
@@ -70,6 +59,36 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
         </ItemList>
       );
     });
+
+    return (
+      <>
+        <div className="application-sub-panel__notification-item">
+          <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+            {hops.hopsMatriculation.results.length === 0 ? (
+              <p>Sinulla ei ole vielä tuloksia yo-kokeista.</p>
+            ) : (
+              <p>Suorittamasi yo-kokeet ja niistä saamasi arvosanat.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="application-sub-panel__notification-item">
+          <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+            <p>
+              <b>Huom.</b> Jos olet osallistunut yo-kokeisiin ennen
+              Nettilukiota, aiemmat yo-koesuorituksesi eivät välttämättä näy
+              täällä.
+            </p>
+          </div>
+        </div>
+
+        <div className="application-sub-panel__notification-item">
+          <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+            {items}
+          </div>
+        </div>
+      </>
+    );
   };
 
   if (hops.hopsMatriculationStatus !== "READY") {
