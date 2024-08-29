@@ -302,6 +302,7 @@ export const useMatriculation = (
      */
     const attendedSubjectListParsed: MatriculationExamAttendance[] =
       enrolledAttendances.map((aSubject) => ({
+        id: aSubject.id,
         subject: aSubject.subject,
         mandatory: aSubject.mandatory,
         repeat: aSubject.repeat,
@@ -314,6 +315,7 @@ export const useMatriculation = (
      */
     const finishedSubjectListParsed: MatriculationExamAttendance[] =
       finishedAttendances.map((fsubject) => ({
+        id: fsubject.id,
         subject: fsubject.subject,
         mandatory: fsubject.mandatory,
         year: parseTermToValues(fsubject.term).year,
@@ -328,6 +330,7 @@ export const useMatriculation = (
      */
     const plannedSubjectListParsed: MatriculationExamAttendance[] =
       plannedAttendances.map((pSubject) => ({
+        id: pSubject.id,
         subject: pSubject.subject,
         mandatory: pSubject.mandatory,
         year: parseTermToValues(pSubject.term).year,
