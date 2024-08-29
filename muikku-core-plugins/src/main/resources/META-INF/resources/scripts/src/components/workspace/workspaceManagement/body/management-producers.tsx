@@ -42,10 +42,11 @@ const ManagementProducers = (props: ManagementProducersProps) => {
    * @param index value
    */
   const handleRemoveProducer = (index: number) => {
-    const updateWorkspaceProducers = workspaceProducers.splice(index, 1);
+    const newProducers = [...workspaceProducers];
+    newProducers.splice(index, 1);
 
     if (onChange) {
-      onChange(updateWorkspaceProducers);
+      onChange(newProducers);
     }
   };
 

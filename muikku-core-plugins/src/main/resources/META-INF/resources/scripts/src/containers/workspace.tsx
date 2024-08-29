@@ -1125,15 +1125,14 @@ export default class Workspace extends React.Component<
            * success
            */
           success: () => {
-            this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action
-            );
-
-            if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
-              this.props.store.dispatch(
-                loadWorkspaceDetailsInCurrentWorkspace() as Action
-              );
-            }
+            // this.props.store.dispatch(
+            //   loadCurrentWorkspaceUserGroupPermissions() as Action
+            // );
+            // if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
+            //   this.props.store.dispatch(
+            //     loadWorkspaceDetailsInCurrentWorkspace() as Action
+            //   );
+            // }
             /* this.props.store.dispatch(loadWorkspaceChatStatus() as Action); */
           },
         }) as Action
