@@ -56,7 +56,6 @@ export const useMatriculation = (
       phone: "",
       address: "",
       postalCode: "",
-      ssn: "",
       studentIdentifier: "",
       guidanceCounselor: "",
       locality: "Mikkeli",
@@ -87,7 +86,6 @@ export const useMatriculation = (
       finishedAttendances: [],
       canPublishName: true,
       degreeStructure: "POST2022",
-      ssn: "",
       date:
         new Date().getDate() +
         "." +
@@ -303,7 +301,6 @@ export const useMatriculation = (
       phone,
       address,
       postalCode,
-      ssn,
       locality,
       guidanceCounselor,
       studentIdentifier,
@@ -359,7 +356,6 @@ export const useMatriculation = (
       id,
       examId,
       name,
-      ssn,
       email,
       phone,
       address,

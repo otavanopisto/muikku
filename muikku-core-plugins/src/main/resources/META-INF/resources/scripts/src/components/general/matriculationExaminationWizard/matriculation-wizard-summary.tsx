@@ -5,11 +5,11 @@ import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
-import { StatusType } from "~/reducers/base/status";
 import { MatriculationProvider } from "./context/matriculation-context";
 import { useMatriculation } from "./hooks/use-matriculation";
 import { MatriculationFormType } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
+import { HopsState } from "~/reducers/hops";
 
 moment.locale("fi");
 
@@ -17,7 +17,7 @@ moment.locale("fi");
  * MatriculationExaminationWizardProps
  */
 interface MatriculationWizardSummaryProps {
-  status: StatusType;
+  hops: HopsState;
   examId: number;
   compulsoryEducationEligible: boolean;
   formType: MatriculationFormType;
@@ -28,11 +28,11 @@ interface MatriculationWizardSummaryProps {
  * @param props props
  */
 const MatriculationWizardSummary = (props: MatriculationWizardSummaryProps) => {
-  const { compulsoryEducationEligible, examId, status } = props;
+  const { compulsoryEducationEligible, examId, hops } = props;
 
   const useMatriculationValues = useMatriculation(
     examId,
-    status.userSchoolDataIdentifier,
+    hops.currentStudentIdentifier,
     compulsoryEducationEligible,
     undefined,
     props.formType
@@ -52,7 +52,7 @@ const MatriculationWizardSummary = (props: MatriculationWizardSummaryProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    status: state.status,
+    hops: state.hopsNew,
   };
 }
 

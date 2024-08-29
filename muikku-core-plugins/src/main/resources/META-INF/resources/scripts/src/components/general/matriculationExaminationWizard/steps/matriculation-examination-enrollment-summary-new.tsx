@@ -117,15 +117,6 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               className="matriculation__input"
             />
           </div>
-          <div className="matriculation__form-element-container">
-            <TextField
-              label="Henkilötunnus"
-              readOnly
-              type="text"
-              value={studentInformation.ssn}
-              className="matriculation__input"
-            />
-          </div>
         </div>
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
