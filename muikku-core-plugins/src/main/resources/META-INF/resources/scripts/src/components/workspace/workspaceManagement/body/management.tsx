@@ -129,7 +129,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
 
     setManagementState({
       ...settings,
-      producers: [],
+      producers: workspace.producers,
       locked: false,
     });
   }, [workspace]);
@@ -353,7 +353,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     (producers: WorkspaceMaterialProducer[]) => {
       setManagementState((prevState) => ({
         ...prevState,
-        workspaceProducers: producers,
+        producers,
       }));
     },
     []
@@ -366,7 +366,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     (chatEnabled: boolean) => {
       setManagementState((prevState) => ({
         ...prevState,
-        workspaceChatEnabled: chatEnabled,
+        chatEnabled,
       }));
     },
     []
