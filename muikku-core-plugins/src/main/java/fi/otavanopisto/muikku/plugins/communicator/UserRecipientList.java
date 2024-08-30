@@ -14,7 +14,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 
-public class CommunicatorMessageRecipientList {
+public class UserRecipientList {
   
   /**
    * Returns true if there is at least one recipient.

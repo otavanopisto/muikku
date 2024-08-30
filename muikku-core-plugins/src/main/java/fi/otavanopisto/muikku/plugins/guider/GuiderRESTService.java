@@ -58,8 +58,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
@@ -1006,7 +1005,7 @@ public class GuiderRESTService extends PluginRESTService {
     
     // user groups
     if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
-      if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
+      if (sessionController.hasEnvironmentPermission(GuiderPermissions.ACCESS_CONTACT_LOG)) {
         userGroupRecipients = new ArrayList<UserGroupEntity>();
         
         for (Long groupId : recipientPayload.getRecipientGroupIds()) {
@@ -1027,7 +1026,7 @@ public class GuiderRESTService extends PluginRESTService {
       for (Long workspaceId : recipientPayload.getRecipientStudentsWorkspaceIds()) {
         workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
   
-        if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity))
+        if (sessionController.hasPermission(GuiderPermissions.ACCESS_CONTACT_LOG, workspaceEntity))
           workspaceStudentRecipients.add(workspaceEntity);
         else
           return Response.status(Status.BAD_REQUEST).build();
@@ -1039,7 +1038,7 @@ public class GuiderRESTService extends PluginRESTService {
     roles.add(EnvironmentRoleArchetype.STUDENT);
     
     // Filter recipients
-    CommunicatorMessageRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+    UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
         userEntity, recipientList, userGroupRecipients, workspaceStudentRecipients, null, roles);
 
 

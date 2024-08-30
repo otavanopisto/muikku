@@ -62,10 +62,10 @@ public class UserRecipientController {
    * @param workspaceTeacherRecipients the workspaces whose teachers should receive the message
    * @return the recipient list
    */
-  public CommunicatorMessageRecipientList prepareRecipientList(UserEntity sender, List<UserEntity> userRecipients, 
+  public UserRecipientList prepareRecipientList(UserEntity sender, List<UserEntity> userRecipients, 
       List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceStudentRecipients, 
       List<WorkspaceEntity> workspaceTeacherRecipients, List<EnvironmentRoleArchetype> roles) {
-    CommunicatorMessageRecipientList preparedRecipientList = new CommunicatorMessageRecipientList();
+    UserRecipientList preparedRecipientList = new UserRecipientList();
     
     // Clean duplicates from recipient list
     cleanDuplicateRecipients(userRecipients);
@@ -136,10 +136,6 @@ public class UserRecipientController {
           for (WorkspaceUserEntity wosu : workspaceUsers) {
             UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
             
-            // Skip if role list is empty or role list doesn't contain wosu's role
-            if (!roles.isEmpty() && !hasAnyRole(roles, wosu.getUserSchoolDataIdentifier())) {
-              continue;
-            }
             // #3758: Workspace teachers are considered active, no need to check
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               preparedRecipientList.addWorkspaceTeacherRecipient(workspaceEntity, recipient);
