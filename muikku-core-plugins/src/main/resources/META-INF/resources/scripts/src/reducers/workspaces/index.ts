@@ -161,11 +161,11 @@ interface comparison {
   access?: WorkspaceAccess;
   organizationEntityId: number;
 
-  defaultSignupMessage?: WorkspaceSignupMessage;
-  subjectIdentifier?: string;
-  workspaceTypeIdentifier?: string;
-  signupGroups?: Array<WorkspaceSettingsSignupGroup>;
-  signupMessages?: Array<WorkspaceSignupMessage>;
+  // defaultSignupMessage?: WorkspaceSignupMessage;
+  // subjectIdentifier?: string;
+  // workspaceTypeIdentifier?: string;
+  // signupGroups?: Array<WorkspaceSettingsSignupGroup>;
+  // signupMessages?: Array<WorkspaceSignupMessage>;
 }
 
 export type WorkspaceUpdateType = Partial<WorkspaceDataType>;

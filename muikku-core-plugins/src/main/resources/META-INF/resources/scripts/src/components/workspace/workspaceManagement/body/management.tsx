@@ -51,7 +51,6 @@ import { ManagementAdditionalInfoMemoized } from "./management-additional-info";
 import { ManagementVisibilityMemoized } from "./management-visibility";
 import { ManagementBasicInfoMemoized } from "./management-basic-info";
 import { ManagementImageMemoized } from "./management-image";
-import license from "../../workspaceHome/license";
 
 /**
  * ManagementPanelProps
@@ -70,6 +69,7 @@ interface ManagementPanelProps extends WithTranslation {
  * ManagementPanelState
  */
 interface ManagementPanelState extends WorkspaceSettings {
+  workspaceType: string;
   producers: Array<WorkspaceMaterialProducer>;
   locked: boolean;
 }
@@ -93,6 +93,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       access: "ANYONE",
       nameExtension: "",
       workspaceTypeIdentifier: "",
+      workspaceType: "",
       beginDate: null,
       endDate: null,
       signupStart: null,
@@ -129,10 +130,14 @@ const ManagementPanel = (props: ManagementPanelProps) => {
 
     setManagementState({
       ...settings,
+      workspaceType:
+        workspaceTypes.find(
+          (type) => type.identifier === settings.workspaceTypeIdentifier
+        )?.name || "",
       producers: workspace.producers,
       locked: false,
     });
-  }, [workspace]);
+  }, [workspace, workspaceTypes]);
 
   const {
     name,
@@ -241,13 +246,13 @@ const ManagementPanel = (props: ManagementPanelProps) => {
 
   /**
    * Handles workspace type change
-   * @param type type
    */
   const handleUpdateWorkspaceTypeChange = React.useCallback(
-    (workspaceTypeIdentifier: string) => {
+    (workspaceType: WorkspaceType) => {
       setManagementState((prevState) => ({
         ...prevState,
-        workspaceTypeIdentifier,
+        workspaceTypeIdentifier: workspaceType.identifier,
+        workspaceType: workspaceType.name,
       }));
     },
     []
@@ -255,6 +260,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
 
   /**
    * Handles workspace extension change
+   *
    */
   const handleWorkspaceExtensionChange = React.useCallback(
     (nameExtension: string) => {

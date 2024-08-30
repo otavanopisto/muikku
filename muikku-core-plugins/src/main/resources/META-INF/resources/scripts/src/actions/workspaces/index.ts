@@ -1097,7 +1097,12 @@ export interface UpdateWorkspaceTriggerType {
 }
 
 // This is because chat and producers are not in the WorkspaceSettings
+
+/**
+ * UpdateSettingsPayload
+ */
 export interface UpdateSettingsPayload extends WorkspaceSettings {
+  workspaceType: string;
   producers: WorkspaceMaterialProducer[];
 }
 /**
@@ -1391,11 +1396,11 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
-
+      const currentWorkspace = getState().workspaces.currentWorkspace;
       try {
         const workspaceEntityId = data.workspace.id;
         const appliedProducers = data.update.producers;
-
+        const additionalInfo = currentWorkspace.additionalInfo;
         if (appliedProducers) {
           const updatedProducersList =
             await workspaceApi.createWorkspaceMaterialProducers({
@@ -1412,6 +1417,15 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
         });
 
         const workspaceUpdate = { ...data.update };
+        const newAdditionalInfo: WorkspaceAdditionalInfo = {
+          ...additionalInfo,
+          beginDate: workspaceUpdate.beginDate,
+          endDate: workspaceUpdate.endDate,
+          signupStart: workspaceUpdate.signupStart,
+          signupEnd: workspaceUpdate.signupEnd,
+          workspaceType: workspaceUpdate.workspaceType,
+        };
+
         delete workspaceUpdate["defaultSignupMessage"];
         delete workspaceUpdate["subjectIdentifier"];
         delete workspaceUpdate["workspaceTypeIdentifier"];
@@ -1424,6 +1438,15 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           payload: {
             original: data.workspace,
             update: workspaceUpdate,
+          },
+        });
+
+        // update additional info
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update: { additionalInfo: newAdditionalInfo },
           },
         });
 
@@ -1460,154 +1483,6 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
       }
     };
   };
-
-// /**
-//  * Updates the assignment state of a workspace material.
-
-//  * @param data data
-//  */
-// const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
-//   data
-// ) {
-//   return async (
-//     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-//     getState: () => StateType
-//   ) => {
-//     const workspaceApi = MApi.getWorkspaceApi();
-
-//     // Note there is a lot of logic related to managing workspace object in this function,
-//     // mostly because how WorkspaceDataType interface was created, so its not one to one with
-//     // api endpoints etc...
-
-//     const actualOriginal: WorkspaceDataType = { ...data.workspace };
-//     delete actualOriginal["activity"];
-//     delete actualOriginal["studentActivity"];
-//     delete actualOriginal["forumStatistics"];
-//     delete actualOriginal["assessmentRequests"];
-//     delete actualOriginal["interimEvaluationRequests"];
-//     delete actualOriginal["additionalInfo"];
-//     delete actualOriginal["staffMembers"];
-//     delete actualOriginal["students"];
-//     delete actualOriginal["details"];
-//     delete actualOriginal["producers"];
-//     delete actualOriginal["contentDescription"];
-//     delete actualOriginal["isCourseMember"];
-//     delete actualOriginal["activityLogs"];
-//     delete actualOriginal["permissions"];
-//     delete actualOriginal["inactiveStudents"];
-//     // delete actualOriginal["defaultSignupMessage"];
-
-//     try {
-//       const newDetails = data.update.details;
-//       const newPermissions = data.update.permissions;
-//       const appliedProducers = data.update.producers;
-//       const currentWorkspace = getState().workspaces.currentWorkspace;
-//       // const newSignupMessage = data.update.defaultSignupMessage;
-
-//       // I left the workspace image out of this, because it never is in the application state anyway
-//       // These need to be removed from the object for the basic stuff to not fail
-//       delete data.update["details"];
-//       delete data.update["permissions"];
-//       delete data.update["producers"];
-//       // delete data.update["defaultSignupMessage"];
-
-//       // First update the workspace
-//       if (data.update) {
-//         await workspaceApi.updateWorkspace({
-//           workspaceId: data.workspace.id,
-//           body: Object.assign(actualOriginal, data.update),
-//         });
-//       }
-
-//       // Then the details - if any
-//       if (newDetails) {
-//         await workspaceApi.updateWorkspaceDetails({
-//           workspaceId: data.workspace.id,
-//           updateWorkspaceDetailsRequest: newDetails,
-//         });
-
-//         // Add details back to the update object
-//         data.update.details = newDetails;
-
-//         // Details affect additionalInfo, so I guess we load that too. It's not a "single source of truth" when there's duplicates in the model, is it?
-//         const additionalInfo = await workspaceApi.getWorkspaceAdditionalInfo({
-//           workspaceId: currentWorkspace.id,
-//         });
-
-//         data.update.additionalInfo = additionalInfo;
-//       }
-
-//       // Then signup message - if any
-//       // if (newSignupMessage) {
-//       //   await workspaceApi.updateWorkspaceSignupMessage({
-//       //     workspaceId: data.workspace.id,
-//       //     updateWorkspaceSignupMessageRequest: newSignupMessage,
-//       //   });
-
-//       //   data.update.defaultSignupMessage = newSignupMessage;
-//       // }
-
-//       // Then permissions - if any
-//       if (newPermissions) {
-//         await workspaceApi.updateWorkspaceSignupGroups({
-//           workspaceEntityId: currentWorkspace.id,
-//           updateWorkspaceSignupGroupsRequest: {
-//             workspaceSignupGroups: newPermissions,
-//           },
-//         });
-
-//         data.update.permissions = newPermissions;
-//       }
-
-//       // Then producers
-//       if (appliedProducers) {
-//         const updatedProducersList =
-//           await workspaceApi.createWorkspaceMaterialProducers({
-//             workspaceEntityId: currentWorkspace.id,
-//             requestBody: appliedProducers.map((p) => p.name),
-//           });
-
-//         data.update.producers = updatedProducersList;
-//       }
-
-//       // All saved and stitched together again, dispatch to state
-
-//       dispatch({
-//         type: "UPDATE_WORKSPACE",
-//         payload: {
-//           original: data.workspace,
-//           update: data.update,
-//         },
-//       });
-
-//       data.success && data.success();
-//     } catch (err) {
-//       dispatch({
-//         type: "UPDATE_WORKSPACE",
-//         payload: {
-//           original: data.workspace,
-//           update: actualOriginal,
-//         },
-//       });
-
-//       if (!isMApiError(err)) {
-//         throw err;
-//       }
-
-//       dispatch(
-//         displayNotification(
-//           i18n.t("notifications.updateError", {
-//             ns: "workspace",
-//             context: "settings",
-//           }),
-//           "error"
-//         )
-//       );
-
-//       data.fail && data.fail();
-//     }
-//   };
-// };
 
 /**
  * loadStaffMembersOfWorkspace
