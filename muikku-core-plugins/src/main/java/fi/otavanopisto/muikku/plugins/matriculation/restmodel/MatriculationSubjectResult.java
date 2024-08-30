@@ -12,14 +12,14 @@ public class MatriculationSubjectResult {
     this.subjectCode = subjectCode;
   }
 
-  public List<MatriculationExamAttendance> getAttendances() {
-    return attendances;
+  public List<MatriculationGrade> getGrades() {
+    return grades;
   }
 
-  public void setAttendances(List<MatriculationExamAttendance> attendances) {
-    this.attendances = attendances;
+  public void setGrades(List<MatriculationGrade> grades) {
+    this.grades = grades;
   }
 
   private String subjectCode;
-  private List<MatriculationExamAttendance> attendances;
+  private List<MatriculationGrade> grades;
 }

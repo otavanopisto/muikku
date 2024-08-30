@@ -14447,15 +14447,9 @@ components:
         - subject
         - grade
         - gradeDate
-        - status
-        - repeat
         - term
         - year
       properties:
-        id:
-          type: integer
-          format: int64
-          description: Id of the subject.
         subject:
           type: string
           description: Subject code. Example "AI" etc...
@@ -14463,16 +14457,11 @@ components:
           $ref: "#/components/schemas/MatriculationExamGrade"
         gradeDate:
           type: string
-          format: date-time
-        repeat:
-          type: boolean
-          description: If exam for that specific subject is already done before.
+          format: date
         term:
           $ref: "#/components/schemas/MatriculationExamTerm"
         year:
           type: integer
-        status:
-          $ref: "#/components/schemas/MatriculationAttendanceStatusType"
 
     MatriculationExamEnrolledSubject:
       type: object
@@ -14612,11 +14601,11 @@ components:
       description: MatriculationResults object
       required:
         - subjectCode
-        - attendances
+        - grades
       properties:
         subjectCode:
           type: string
-        attendances:
+        grades:
           type: array
           items:
             $ref: "#/components/schemas/MatriculationExamEvaluatedSubject"

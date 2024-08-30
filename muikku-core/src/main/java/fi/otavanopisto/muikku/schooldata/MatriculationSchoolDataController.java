@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationGrade;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibilityOPS2021;
 
 public class MatriculationSchoolDataController {
@@ -73,6 +74,10 @@ public class MatriculationSchoolDataController {
 
   public StudentMatriculationEligibilityOPS2021 getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
     return getMatriculationBridge().getStudentMatriculationEligibility(studentIdentifier, subjectCode);
+  }
+  
+  public BridgeResponse<List<MatriculationGrade>> listStudentsMatriculationGrades(SchoolDataIdentifier studentIdentifier) {
+    return getMatriculationBridge().listStudentsGrades(studentIdentifier);
   }
   
 }

@@ -28,6 +28,8 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogType;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamTerm;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationGrade;
 import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.pyramus.rest.model.matriculation.MatriculationExamEnrollmentChangeLog;
 
@@ -224,6 +226,55 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
     } else {
       throw new SchoolDataBridgeInternalException(String.format("Failed to resolve Pyramus user from studentIdentifier %s", studentIdentifier));
     }
+  }
+
+  @Override
+  public BridgeResponse<List<MatriculationGrade>> listStudentsGrades(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    if (pyramusStudentId == null) {
+      throw new IllegalArgumentException();
+    }
+    
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.matriculation.MatriculationGrade[]> response = pyramusClient.responseGet(String.format("/matriculation/students/%d/results", pyramusStudentId), fi.otavanopisto.pyramus.rest.model.matriculation.MatriculationGrade[].class);
+
+    List<MatriculationGrade> grades = null;
+
+    // Typecast the items to the MatriculationExam interface and swap from array to List
+    if (response.getEntity() != null) {
+      grades = new ArrayList<>();
+      
+      for (fi.otavanopisto.pyramus.rest.model.matriculation.MatriculationGrade pyramusGrade : response.getEntity()) {
+        MatriculationGrade grade = new MatriculationGrade();
+
+        grade.setId(pyramusGrade.getId());
+        grade.setSubject(pyramusGrade.getSubject() != null ? pyramusGrade.getSubject().name() : null);
+        grade.setYear(pyramusGrade.getYear());
+        grade.setTerm(translateTerm(pyramusGrade.getTerm()));
+        grade.setGrade(pyramusGrade.getGrade() != null ? pyramusGrade.getGrade().name() : null);
+        grade.setGradeDate(pyramusGrade.getGradeDate());
+        
+        grades.add(grade);
+      }
+    }
+    
+    return new BridgeResponse<List<MatriculationGrade>>(response.getStatusCode(), grades, response.getMessage());
+  }
+
+  private MatriculationExamTerm translateTerm(fi.otavanopisto.pyramus.matriculation.MatriculationExamTerm term) {
+    if (term != null) {
+      switch (term) {
+        case AUTUMN:
+          return MatriculationExamTerm.AUTUMN;
+        case SPRING:
+          return MatriculationExamTerm.SPRING;
+      }
+    }
+    
+    return null;
   }
   
 }
