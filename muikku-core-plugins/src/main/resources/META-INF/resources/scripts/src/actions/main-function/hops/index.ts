@@ -18,6 +18,7 @@ import {
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
+import { displayNotification } from "~/actions/base/notifications";
 
 // Api instances
 const recordsApi = MApi.getRecordsApi();
@@ -363,11 +364,19 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
             newState: "CONFIRMED",
           },
         });
+
+        dispatch(
+          displayNotification("Lomakkeen varmistaminen onnistui", "success")
+        );
       } catch (err) {
         // FIX: ADD ERROR HANDLING
         if (!isMApiError(err)) {
           throw err;
         }
+
+        dispatch(
+          displayNotification("Virhe lomakkeen varmistamisessa", "error")
+        );
       }
     };
   };
@@ -425,7 +434,12 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
               status: "READY",
             },
           });
+          return;
         }
+
+        dispatch(
+          displayNotification(i18n.t("notifications.loadError"), "error")
+        );
       }
     };
   };
@@ -560,11 +574,22 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
           type: "HOPS_MATRICULATION_UPDATE_ELIGIBILITY",
           payload: eligibilityWithAbistatus,
         });
+
+        dispatch(
+          displayNotification(
+            "Yo-tutkintosuunnitelma päivitetty onnistuneesti",
+            "success"
+          )
+        );
       } catch (err) {
         // FIX: ADD ERROR HANDLING
         if (!isMApiError(err)) {
           throw err;
         }
+
+        dispatch(
+          displayNotification(i18n.t("notifications.updateError"), "error")
+        );
       }
     };
   };
@@ -615,6 +640,10 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
         if (!isMApiError(err)) {
           throw err;
         }
+
+        dispatch(
+          displayNotification(i18n.t("notifications.updateError"), "error")
+        );
       }
     };
   };

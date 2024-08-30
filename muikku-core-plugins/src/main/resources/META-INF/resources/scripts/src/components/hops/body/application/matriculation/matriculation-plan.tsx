@@ -156,7 +156,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
 
   return (
     <ApplicationSubPanel>
-      <ApplicationSubPanel.Header>YO - suunnitelma</ApplicationSubPanel.Header>
+      <ApplicationSubPanel.Header>YO-suunnitelma</ApplicationSubPanel.Header>
       <ApplicationSubPanel modifier="matriculation-plan-content">
         <ApplicationSubPanel modifier="matriculation-plan-data">
           <ApplicationSubPanel.Body>
@@ -202,21 +202,12 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
             </div>
 
             <ItemList>
-              <ItemList.Item icon="icon-check">
-                Äidinkieli (tai S2)
-              </ItemList.Item>
-              <ItemList.Item icon="icon-check">
-                Vieras kieli (pitkä tai lyhyt)
-              </ItemList.Item>
-              <ItemList.Item icon="icon-check">
-                Matematiikka (pitkä tai lyhyt)
-              </ItemList.Item>
-              <ItemList.Item icon="icon-check">
+              <ItemList.Item>Vieras kieli (pitkä tai lyhyt)</ItemList.Item>
+              <ItemList.Item>Matematiikka (pitkä tai lyhyt)</ItemList.Item>
+              <ItemList.Item>
                 Toinen kotimainen kieli eli ruotsi (pitkä tai keskipitkä)
               </ItemList.Item>
-              <ItemList.Item icon="icon-check">
-                Yksi reaaliaineen koe
-              </ItemList.Item>
+              <ItemList.Item>Yksi reaaliaineen koe</ItemList.Item>
             </ItemList>
 
             <div className="application-sub-panel__notification-item">
