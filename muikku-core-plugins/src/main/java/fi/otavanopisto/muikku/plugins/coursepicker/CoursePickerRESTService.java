@@ -632,7 +632,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, userIdentifier.toId(), userName);
     String content;
-    if (StringUtils.isEmpty(entity.getMessage())) {
+    if (entity == null || StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
       content = MessageFormat.format(
           content,
