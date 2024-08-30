@@ -327,14 +327,14 @@ public class MatriculationRESTService {
     }
 
     SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(enrollment.getStudentIdentifier());
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(enrollment.getStudentIdentifier());
     if (loggedUserIdentifier == null) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
-    if (!Objects.equals(loggedUserIdentifier, userIdentifier)) {
+    if (!Objects.equals(loggedUserIdentifier, studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-    Long studentId = getStudentIdFromIdentifier(userIdentifier);
+    Long studentId = getStudentIdFromIdentifier(studentIdentifier);
     
     /*
      * Validation
@@ -373,12 +373,6 @@ public class MatriculationRESTService {
     
     schoolDataEntity.setId(enrollment.getId());
     schoolDataEntity.setExamId(enrollment.getExamId());
-    schoolDataEntity.setName(enrollment.getName());
-    schoolDataEntity.setEmail(enrollment.getEmail());
-    schoolDataEntity.setPhone(enrollment.getPhone());
-    schoolDataEntity.setAddress(enrollment.getAddress());
-    schoolDataEntity.setPostalCode(enrollment.getPostalCode());
-    schoolDataEntity.setCity(enrollment.getCity());
     schoolDataEntity.setNationalStudentNumber(enrollment.getNationalStudentNumber());
     schoolDataEntity.setGuider(enrollment.getGuider());
     schoolDataEntity.setEnrollAs(enrollment.getEnrollAs());
@@ -408,11 +402,11 @@ public class MatriculationRESTService {
       attendances.add(resultAttendance);
     }
     schoolDataEntity.setAttendances(attendances);
-    BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.submitMatriculationExamEnrollment(userIdentifier, examId, schoolDataEntity);
+    BridgeResponse<fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment> response = matriculationController.submitMatriculationExamEnrollment(studentIdentifier, examId, schoolDataEntity);
     
     if (response.ok()) {
       try {
-        matriculationNotificationController.sendEnrollmentNotification(enrollment);
+        matriculationNotificationController.sendEnrollmentNotification(enrollment, studentIdentifier);
       } catch (IOException e) {
         logger.log(Level.SEVERE, "Failed to send matriculation enrollment notification email", e);
       }
@@ -568,24 +562,18 @@ public class MatriculationRESTService {
     MatriculationExamEnrollment restModel = new MatriculationExamEnrollment();
 
     restModel.setId(enrollment.getId());
-    restModel.setAddress(enrollment.getAddress());
     restModel.setAttendances(attendances);
     restModel.setCanPublishName(enrollment.isCanPublishName());
-    restModel.setCity(enrollment.getCity());
     restModel.setDegreeStructure(enrollment.getDegreeStructure());
     restModel.setDegreeType(enrollment.getDegreeType());
-    restModel.setEmail(enrollment.getEmail());
     restModel.setEnrollAs(enrollment.getEnrollAs());
     restModel.setEnrollmentDate(enrollment.getEnrollmentDate());
     restModel.setExamId(enrollment.getExamId());
     restModel.setGuider(enrollment.getGuider());
     restModel.setLocation(enrollment.getLocation());
     restModel.setMessage(enrollment.getMessage());
-    restModel.setName(enrollment.getName());
     restModel.setNationalStudentNumber(enrollment.getNationalStudentNumber());
     restModel.setNumMandatoryCourses(enrollment.getNumMandatoryCourses());
-    restModel.setPhone(enrollment.getPhone());
-    restModel.setPostalCode(enrollment.getPostalCode());
     restModel.setRestartExam(enrollment.isRestartExam());
     restModel.setState(enrollment.getState());
 //    restModel.setStudentIdentifier(enrollment.getstudentAddress()); // TODO the id mess

@@ -8,18 +8,6 @@ public interface MatriculationExamEnrollment {
   public void setId(Long id);
   public Long getExamId();
   public void setExamId(Long examId);
-  public String getName();
-  public void setName(String name);
-  public String getEmail();
-  public void setEmail(String email);
-  public String getPhone();
-  public void setPhone(String phone);
-  public String getAddress();
-  public void setAddress(String address);
-  public String getPostalCode();
-  public void setPostalCode(String postalCode);
-  public String getCity();
-  public void setCity(String city);
   public String getNationalStudentNumber();
   public void setNationalStudentNumber(String nationalStudentNumber);
   public String getGuider();
