@@ -67,7 +67,13 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
     const updatedMessages =
       workspaceCustomSignupMessages &&
       workspaceCustomSignupMessages.map((message, i) =>
-        i === index ? { ...message, caption: e.target.value } : message
+        i === index
+          ? {
+              ...message,
+              caption: e.target.value,
+              enabled: e.target.value.length === 0 ? false : message.enabled,
+            }
+          : message
       );
 
     onChange(updatedMessages);
@@ -82,7 +88,13 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
     const updatedMessages =
       workspaceCustomSignupMessages &&
       workspaceCustomSignupMessages.map((message, i) =>
-        i === index ? { ...message, content: text } : message
+        i === index
+          ? {
+              ...message,
+              content: text,
+              enabled: text.length === 0 ? false : message.enabled,
+            }
+          : message
       );
 
     onChange(updatedMessages);
