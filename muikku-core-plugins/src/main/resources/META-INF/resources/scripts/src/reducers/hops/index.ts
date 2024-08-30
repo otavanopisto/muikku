@@ -77,11 +77,12 @@ interface hopsMatriculation {
 interface HopsCareerPlanState {}
 
 /**
- * NoteBookState
+ * HopsState
  */
 export interface HopsState {
   // CURRENT STUDENT IDENTIFIER
   currentStudentIdentifier: string | null;
+  currentStudentStudyProgramme: string | null;
 
   // HOPS BACKGROUND
   hopsBackgroundStatus: ReducerStateType;
@@ -102,6 +103,7 @@ export interface HopsState {
 
 const initialHopsState: HopsState = {
   currentStudentIdentifier: null,
+  currentStudentStudyProgramme: null,
   hopsBackgroundStatus: "IDLE",
   hopsBackgroundState: {},
   hopsStudyPlanStatus: "IDLE",
@@ -120,7 +122,7 @@ const initialHopsState: HopsState = {
 };
 
 /**
- * Reducer function for journals
+ * Reducer function for hopsNew
  *
  * @param state state
  * @param action action
@@ -263,7 +265,7 @@ export const hopsNew: Reducer<HopsState> = (
       };
     }
 
-    case "HOPS_RESET_MATRICULATION_DATA": {
+    case "HOPS_RESET_DATA": {
       return {
         ...state,
         hopsMatriculationStatus: "IDLE",
@@ -277,6 +279,12 @@ export const hopsNew: Reducer<HopsState> = (
         },
       };
     }
+
+    case "HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM":
+      return {
+        ...state,
+        currentStudentStudyProgramme: action.payload,
+      };
 
     default:
       return state;

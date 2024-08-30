@@ -18,7 +18,7 @@ import Matriculation from "./application/matriculation/matriculation";
 import { UseCaseContextProvider } from "~/context/use-case-context";
 
 /**
- * StudiesApplicationProps
+ * HopsApplicationProps
  */
 interface HopsApplicationProps extends WithTranslation {
   hops: HOPSState;

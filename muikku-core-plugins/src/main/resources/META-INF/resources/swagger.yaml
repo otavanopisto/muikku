@@ -14422,7 +14422,7 @@ components:
         - UNKNOWN
         - K
 
-    MatriculationExamEvaluatedSubject:
+    MatriculationGrade:
       type: object
       description: MatriculationEvaluatedSubject object
       required:
@@ -14590,7 +14590,7 @@ components:
         grades:
           type: array
           items:
-            $ref: "#/components/schemas/MatriculationExamEvaluatedSubject"
+            $ref: "#/components/schemas/MatriculationGrade"
 
     MaterialReply:
       type: object
