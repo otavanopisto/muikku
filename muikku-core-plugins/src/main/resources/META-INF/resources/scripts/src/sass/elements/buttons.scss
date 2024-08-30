@@ -1549,6 +1549,8 @@
   flex-grow: 0;
 }
 
+
+
 // Buttons used in Material pages
 .muikku-submit-interim-evaluation,
 .button--muikku-submit-journal,
@@ -1596,7 +1598,7 @@
 }
 
 // Evaluation related
-.button--evaluation-add-assessment {
+.button--add-signup-message {
   background-color: $color-info;
   color: $color-default;
   margin: 5px;

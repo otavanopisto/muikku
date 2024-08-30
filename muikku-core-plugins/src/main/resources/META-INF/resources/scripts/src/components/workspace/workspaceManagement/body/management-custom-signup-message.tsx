@@ -23,7 +23,6 @@ interface ManagementSignupMessageProps {
  */
 const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
   const { workspaceCustomSignupMessages, signupGroups, onChange } = props;
-  const [selectedItems, setSelectedItems] = React.useState<UiSelectItem[]>([]);
   const [signupGroupSearchItems, setSignupGroupSearchItems] = React.useState<
     WorkspaceSignupMessageGroup[]
   >([]);
@@ -296,13 +295,11 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
                       identifier="communicatorRecipients"
                       modifier="signupGroup"
                       loader={(text: string) => groupLoader(text)}
-                      placeholder={t("labels.recipients", {
-                        ns: "messaging",
-                        count: selectedItems.length,
+                      placeholder={t("labels.search_target", {
+                        ns: "workspace",
                       })}
-                      label={t("labels.recipients", {
-                        ns: "messaging",
-                        count: selectedItems.length,
+                      label={t("labels.target", {
+                        ns: "workspace",
                       })}
                       searchItems={translateToSelectItems(
                         signupGroupSearchItems
@@ -324,12 +321,15 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
           <div className="form__row">
             <div className="form-element">
               <button
-                className="button button--secondary"
+                className="button button--add-signup-message"
                 onClick={() => {
                   createWorkspaceSignupMessage();
                 }}
               >
-                Luo uusi kirjautumisviesti
+                {t("actions.create", {
+                  ns: "workspace",
+                  context: "signupMessage",
+                })}
               </button>
             </div>
           </div>
