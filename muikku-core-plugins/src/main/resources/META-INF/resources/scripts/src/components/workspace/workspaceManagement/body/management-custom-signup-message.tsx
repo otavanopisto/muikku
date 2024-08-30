@@ -250,72 +250,74 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
                     </span>
                   </Dropdown>
                 </h3>
-                <div className="form-element">
-                  <label htmlFor="message-caption">
-                    {t("labels.workspaceSignupMessageTitle", {
-                      ns: "workspace",
-                    })}
-                  </label>
-                  <input
-                    id="message-caption"
-                    className="form-element__input"
-                    value={customSignupMessage.caption}
-                    onChange={(e) => updateCustomSignupMessageCaption(index, e)}
-                    style={{
-                      width: "100%",
-                    }}
-                  />
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="message-caption">
+                      {t("labels.workspaceSignupMessageTitle", {
+                        ns: "workspace",
+                      })}
+                    </label>
+                    <input
+                      id="message-caption"
+                      className="form-element__input"
+                      value={customSignupMessage.caption}
+                      onChange={(e) =>
+                        updateCustomSignupMessageCaption(index, e)
+                      }
+                      style={{
+                        width: "100%",
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="form-element">
-                  <label>
-                    {t("labels.workspaceSignupMessageContent", {
-                      ns: "workspace",
-                    })}
-                  </label>
-                  <CKEditor
-                    editorTitle={t("labels.workspaceSignupMessageContent", {
-                      ns: "workspace",
-                    })}
-                    // ancestorHeight={200}
-                    onChange={(text: string) =>
-                      updateCustomSignupMessageContent(index, text)
-                    }
-                  >
-                    {customSignupMessage.content}
-                  </CKEditor>
+                <div className="form__row">
+                  <div className="form-element">
+                    <label>
+                      {t("labels.workspaceSignupMessageContent", {
+                        ns: "workspace",
+                      })}
+                    </label>
+                    <CKEditor
+                      editorTitle={t("labels.workspaceSignupMessageContent", {
+                        ns: "workspace",
+                      })}
+                      // ancestorHeight={200}
+                      onChange={(text: string) =>
+                        updateCustomSignupMessageContent(index, text)
+                      }
+                    >
+                      {customSignupMessage.content}
+                    </CKEditor>
+                  </div>
                 </div>
-                <div className="form-element">
-                  <InputSelectAutoFill
-                    identifier="communicatorRecipients"
-                    modifier="signupGroup"
-                    // key="signupGroup"
-                    loader={(text: string) => groupLoader(text)}
-                    // hasGroupPermission={
-                    //   this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-                    // }
-                    // hasWorkspacePermission={
-                    //   this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING
-                    // }
-
-                    placeholder={t("labels.recipients", {
-                      ns: "messaging",
-                      count: selectedItems.length,
-                    })}
-                    label={t("labels.recipients", {
-                      ns: "messaging",
-                      count: selectedItems.length,
-                    })}
-                    searchItems={translateToSelectItems(signupGroupSearchItems)}
-                    selectedItems={translateToSelectItems(
-                      customSignupMessage.signupGroups || []
-                    )}
-                    onSelect={(select) =>
-                      handleWorkspaceSignupMessageGroupSelect(index, select)
-                    }
-                    onDelete={(select) =>
-                      handleWorkspaceSignupMessageGroupSelect(index, select)
-                    }
-                  />
+                <div className="form__row">
+                  <div className="form-element">
+                    <InputSelectAutoFill
+                      identifier="communicatorRecipients"
+                      modifier="signupGroup"
+                      loader={(text: string) => groupLoader(text)}
+                      placeholder={t("labels.recipients", {
+                        ns: "messaging",
+                        count: selectedItems.length,
+                      })}
+                      label={t("labels.recipients", {
+                        ns: "messaging",
+                        count: selectedItems.length,
+                      })}
+                      searchItems={translateToSelectItems(
+                        signupGroupSearchItems
+                      )}
+                      selectedItems={translateToSelectItems(
+                        customSignupMessage.signupGroups || []
+                      )}
+                      onSelect={(select) =>
+                        handleWorkspaceSignupMessageGroupSelect(index, select)
+                      }
+                      onDelete={(select) =>
+                        handleWorkspaceSignupMessageGroupSelect(index, select)
+                      }
+                    />
+                  </div>
                 </div>
               </div>
             ))}
