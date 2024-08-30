@@ -1437,6 +1437,8 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           },
         });
 
+        data.success && data.success();
+
         // Update the visible workspace values
       } catch (err) {
         if (!isMApiError(err)) {
@@ -1453,6 +1455,8 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
             "error"
           )
         );
+
+        data.fail && data.fail();
       }
     };
   };
