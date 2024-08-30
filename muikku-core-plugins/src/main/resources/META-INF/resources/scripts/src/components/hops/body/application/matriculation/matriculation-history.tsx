@@ -33,7 +33,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
     const results = hops.hopsMatriculation.results;
 
     const items = results.map((r) => {
-      const subResult = r.attendances;
+      const subResult = r.grades;
 
       return (
         <ItemList
@@ -41,9 +41,9 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
           header={SUBJECT_MAP[r.subjectCode]}
           modifier="matriculation-results"
         >
-          {subResult.map((sr) => (
+          {subResult.map((sr, i) => (
             <ItemList.Item
-              key={sr.id}
+              key={i}
               icon="icon-book"
               className="application-sub-panel__notification-content"
             >

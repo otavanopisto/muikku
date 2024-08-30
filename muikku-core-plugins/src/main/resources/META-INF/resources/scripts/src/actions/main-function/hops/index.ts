@@ -105,10 +105,12 @@ export type HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER = SpecificActionType<
   string
 >;
 
-export type HOPS_RESET_MATRICULATION_DATA = SpecificActionType<
-  "HOPS_RESET_MATRICULATION_DATA",
-  undefined
+export type HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM = SpecificActionType<
+  "HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM",
+  string
 >;
+
+export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 
 /**
  * loadExamDataTriggerType
@@ -182,6 +184,11 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
         dispatch({
           type: "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
           payload: studentIdentifier,
+        });
+
+        dispatch({
+          type: "HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM",
+          payload: state.status.profile.studyProgrammeName,
         });
       }
 
@@ -619,7 +626,7 @@ const resetMatriculationData: ResetMatriculationDataTriggerType =
   function resetMatriculationData() {
     return (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
       dispatch({
-        type: "HOPS_RESET_MATRICULATION_DATA",
+        type: "HOPS_RESET_DATA",
         payload: undefined,
       });
     };
