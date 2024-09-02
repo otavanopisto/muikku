@@ -107,14 +107,6 @@ public class MatriculationRESTService {
 
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
-  @Path("/exams")
-  @Deprecated                           // TODO REMOVE THIS AFTER FRONT IS REFACTORED
-  public Response listAvailableExams() {
-    return listStudentsExams(sessionController.getLoggedUser().toId(), MatriculationExamListFilter.ALL);
-  }
-  
-  @GET
-  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
   @Path("/students/{STUDENTIDENTIFIER}/exams")
   public Response listStudentsExams(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("filter") @DefaultValue("ALL") MatriculationExamListFilter filter) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);

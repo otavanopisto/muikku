@@ -5940,28 +5940,6 @@ paths:
           description: Internal server error
 
   #MATRICULATION
-  /rest/matriculation/exams:
-    get:
-      deprecated: true
-      operationId: getExams
-      summary: Get exams
-      description: Get exams --- deprecated, use getStudentExams instead
-      tags:
-        - Matriculation
-      responses:
-        "200":
-          description: Exams
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/MatriculationExam"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/matriculation/students/{studentIdentifier}/plan:
     get:
       operationId: getStudentMatriculationPlan
