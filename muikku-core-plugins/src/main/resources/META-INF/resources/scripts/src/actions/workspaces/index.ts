@@ -2323,7 +2323,6 @@ export {
   setCurrentWorkspace,
   requestAssessmentAtWorkspace,
   cancelAssessmentAtWorkspace,
-  // updateWorkspace,
   loadWorkspaceSettings,
   updateWorkspaceSettings,
   loadStaffMembersOfWorkspace,
@@ -2344,5 +2343,4 @@ export {
   updateCurrentWorkspaceAssessmentRequest,
   updateCurrentWorkspaceInterimEvaluationRequests,
   setAvailableCurriculums,
-  // loadCurrentWorkspaceSignupMessage,
 };
