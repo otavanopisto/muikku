@@ -47,6 +47,11 @@
   flex-flow: row wrap;
 }
 
+.form__row-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 .form__buttons {
   align-items: center;
   display: flex;

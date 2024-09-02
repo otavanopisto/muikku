@@ -317,6 +317,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
    */
   const handleWorkspaceCustomSignupMessageChange = React.useCallback(
     (signupMessages: WorkspaceSignupMessage[]) => {
+      console.log("signupMessages", signupMessages);
       setManagementState((prevState) => ({
         ...prevState,
         signupMessages,
@@ -444,7 +445,8 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     () => defaultSignupMessage,
     [defaultSignupMessage]
   );
-  const memoizedCustomWorkspaceSignupMessage = React.useMemo(
+  
+  const memoizedCustomWorkspaceSignupMessages = React.useMemo(
     () => signupMessages,
     [signupMessages]
   );
@@ -530,7 +532,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementCustomSignupMessageMemoized
             signupGroups={signupGroups}
-            workspaceCustomSignupMessages={memoizedCustomWorkspaceSignupMessage}
+            workspaceCustomSignupMessages={memoizedCustomWorkspaceSignupMessages}
             onChange={handleWorkspaceCustomSignupMessageChange}
           />
         </section>

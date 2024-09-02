@@ -1870,7 +1870,10 @@
   }
 }
 
-.button-pill--material-editor-delete-page {
+
+
+.button-pill--material-editor-delete-page,
+.button-pill--remove-custom-signup-message {
   background: $color-fatal;
   border-color: $color-fatal;
   color: $color-default;

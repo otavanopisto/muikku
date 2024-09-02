@@ -8,6 +8,7 @@ import {
 } from "~/generated/client";
 import InputSelectAutoFill from "~/components/base/input-select-autofill";
 import { UiSelectItem } from "~/components/base/input-select-autofill";
+import Button from "~/components/general/button";
 /**
  * WorkspaceSignupGroups
  */
@@ -54,6 +55,19 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
     ]);
   };
 
+
+    /**
+   * Delete a custom signup message
+   * @param text text
+   */
+    const deleteWorkspaceSignupMessage = (index: number) => {
+      const messages = [...workspaceCustomSignupMessages];
+  
+      messages.splice(index, 1);
+
+      onChange(messages);
+    };
+  
   /**
    * Updates custom signup message
    * @param index index of the message
@@ -202,11 +216,54 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
           {workspaceCustomSignupMessages &&
             workspaceCustomSignupMessages.map((customSignupMessage, index) => (
               <div key={index} className="form__row">
-                <h3 className="form__container-title">
-                  {t("labels.workspaceUserGroupSignupMessage", {
-                    ns: "workspace",
-                    index: index + 1,
-                  })}
+                <div className="form__row-header">
+                  <h3 className="form__container-title">
+                    {t("labels.workspaceUserGroupSignupMessage", {
+                      ns: "workspace",
+                      index: index + 1,
+                    })}
+                    <Dropdown
+                      modifier="instructions"
+                      openByHover
+                      alignSelfVertically="top"
+                      content={
+                        <div>
+                          {t("content.workspaceSignupMessageInfo", {
+                            ns: "workspace",
+                          })}
+                        </div>
+                      }
+                    >
+                      <span>
+                        <label
+                          htmlFor="enable-workspace-signup-message"
+                          className="visually-hidden"
+                        >
+                          {t("labels.activateSignupMessage", {
+                            ns: "workspace",
+                          })}
+                        </label>
+                        <input
+                          id="enable-workspace-signup-message"
+                          type="checkbox"
+                          className={`button-pill button-pill--autoreply-switch ${
+                            customSignupMessage.enabled
+                              ? "button-pill--autoreply-switch-active"
+                              : ""
+                          }`}
+                          checked={customSignupMessage.enabled}
+                          disabled={
+                            customSignupMessage.caption === "" ||
+                            customSignupMessage.content === "" ||
+                            customSignupMessage.signupGroups?.length === 0
+                          }
+                          onClick={() =>
+                            handleWorkspaceSignupMessageToggle(index)
+                          }
+                        />
+                      </span>
+                    </Dropdown>
+                  </h3>
                   <Dropdown
                     modifier="instructions"
                     openByHover
@@ -228,27 +285,10 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
                           ns: "workspace",
                         })}
                       </label>
-                      <input
-                        id="enable-workspace-signup-message"
-                        type="checkbox"
-                        className={`button-pill button-pill--autoreply-switch ${
-                          customSignupMessage.enabled
-                            ? "button-pill--autoreply-switch-active"
-                            : ""
-                        }`}
-                        checked={customSignupMessage.enabled}
-                        disabled={
-                          customSignupMessage.caption === "" ||
-                          customSignupMessage.content === "" ||
-                          customSignupMessage.signupGroups?.length === 0
-                        }
-                        onClick={() =>
-                          handleWorkspaceSignupMessageToggle(index)
-                        }
-                      />
+                      <Button disabled={customSignupMessage.enabled} onClick={() => deleteWorkspaceSignupMessage(index)} className="button-pill button-pill--remove-custom-signup-message icon-trash" />
                     </span>
                   </Dropdown>
-                </h3>
+                </div>
                 <div className="form__row">
                   <div className="form-element">
                     <label htmlFor="message-caption">
