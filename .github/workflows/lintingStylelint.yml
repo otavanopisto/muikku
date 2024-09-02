@@ -6,18 +6,18 @@
 #   stylelint:
 #     name: stylelint
 #     runs-on: ubuntu-latest
-#     steps:
-#       - name: Check out Git repository
-#         uses: actions/checkout@v4
+    # steps:
+    #   - name: Check out Git repository
+    #     uses: actions/checkout@v4
 
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: 20.11.1
+    #   - name: Set up Node.js
+    #     uses: actions/setup-node@v1
+    #     with:
+    #       node-version: 20.11.1
 
-#       - name: Install Node.js dependencies
-#         run: npm ci
-#         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+    #   - name: Install Node.js dependencies
+    #     run: npm ci
+    #     working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
 #       - name: Running Stylelint Code Quality Review
 #         uses: reviewdog/action-stylelint@v1
@@ -30,17 +30,15 @@
 #           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
 name: Stylelint Code Quality Review
-
 on:
   pull_request:
     branches: devel
-
 jobs:
-  run-linters:
+  stylelint:
     name: stylelint
     runs-on: ubuntu-latest
-
     steps:
+        steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
@@ -53,9 +51,8 @@ jobs:
         run: npm ci
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
-      - name: Running linters
-        uses: wearerequired/lint-action@v1
-        with:
-          stylelint: true
-          stylelint_extensions: "scss"
-          stylelint_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src/sass
+      - name: Running Stylelint Code Quality Review
+        uses: moneyforward/stylelint-action@v0
+        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+        reporter_type_notation: github-pr-review
+        files: "scss"
