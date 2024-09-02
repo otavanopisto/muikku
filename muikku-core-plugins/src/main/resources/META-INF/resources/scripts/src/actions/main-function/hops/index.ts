@@ -614,6 +614,12 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
           examId: data.examId,
         });
 
+        const updatedChangeLog =
+          await matriculationApi.getStudentExamEnrollmentChangeLog({
+            examId: data.examId,
+            studentIdentifier,
+          });
+
         // copy the exams array
         const updatedExams = [...state.hopsNew.hopsMatriculation.exams];
 
@@ -634,6 +640,15 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_EXAMS",
           payload: updatedExams,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
+          payload: {
+            examId: data.examId,
+            history: updatedChangeLog,
+            status: "READY",
+          },
         });
       } catch (err) {
         // FIX: ADD ERROR HANDLING
