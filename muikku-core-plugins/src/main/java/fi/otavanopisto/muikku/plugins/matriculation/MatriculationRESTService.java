@@ -263,8 +263,7 @@ public class MatriculationRESTService {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(user);
-    // TODO Should this be message receivers only?
-    UserEntity guidanceCounselor = userGroupGuidanceController.getGuidanceCounselor(identifier, false);
+    UserEntity guidanceCounselor = userGroupGuidanceController.getGuidanceCounselorPreferMessageReceiver(identifier);
     UserEntityName guidanceCounselorName = userEntity != null ? userEntityController.getName(guidanceCounselor, false) : null;
     StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(identifier);
     

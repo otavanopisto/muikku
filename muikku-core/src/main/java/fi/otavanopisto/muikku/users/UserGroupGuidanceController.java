@@ -23,7 +23,27 @@ public class UserGroupGuidanceController {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
+
+  /**
+   * Returns a (pseudo) random Guidance Couselor of given student which is member of any role archetype.
+   * 
+   * Prefers to return a Guidance Counselor which is a message receiver, but if none are found
+   * tries to find one that isn't a message receiver. If none are still found, null is returned.
+   * 
+   * @param studentIdentifier
+   * @return
+   */
+  public UserEntity getGuidanceCounselorPreferMessageReceiver(SchoolDataIdentifier studentIdentifier) {
+    // TODO We are potentially loading two lists in order to just get one member out of them, could this be optimized?
+    List<UserEntity> guidanceCounselors = getGuidanceCounselors(studentIdentifier, true);
+    if (CollectionUtils.isNotEmpty(guidanceCounselors)) {
+      return guidanceCounselors.get(0);
+    }
+    
+    guidanceCounselors = getGuidanceCounselors(studentIdentifier, false);
+    return CollectionUtils.isNotEmpty(guidanceCounselors) ? guidanceCounselors.get(0) : null;
+  }
+
   /**
    * Returns a (pseudo) random Guidance Couselor of given student which is
    * - member of any role archetype
