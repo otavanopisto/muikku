@@ -1504,7 +1504,8 @@
       "signUpInformation": "<p>Ilmoittaudu-painikkeen klikkaamisen jälkeen päädyt kurssin etusivulle ja voit aloittaa opiskelun heti.</p><p>Kurssin opettajan tiedot löydät kurssin etusivulta. Voit lähettää opettajalle Muikku-viestin, jos sinulla on asiaa tai kysyttävää kurssin opiskeluun liittyen.</p>",
       "unArchiveStudent": "Oletko varma että haluat palauttaa arkistoidun opiskelijan {{studentName}}?",
       "workspaceSignupMessageInfo": "Aktivoi kurssikohtainen ilmoittautumisviesti. Aktivointi onnistuu, kun viestillä on otsikko ja sisältö. Jos ryhmäkohtaisia viestejä ei ole asetettu, tämä viesti lähtee kaikille kurssille ilmoittautuneille. Voit myös lähettää räätälöidyn viestin eri ryhmille.",
-      "workspaceSignupGroupMessageInfo": "Aktivoi ryhmäkohtainen ilmoittautumisviesti. Aktivointi onnistuu, kun viestillä on otsikko ja sisältö. Tämä viesti lähtee vain tähän ryhmään kuuluville kurssille ilmoittautuneille."
+      "workspaceSignupGroupMessageInfo": "Aktivoi ryhmäkohtainen ilmoittautumisviesti. Aktivointi onnistuu, kun viestillä on otsikko ja sisältö. Tämä viesti lähtee vain viestiin valikoiduille kohderyhmille.",
+      "workspaceSignupGroupMessageDeleteInfo": "Poista ryhmäkohtainen ilmoittautumisviesti. Poisto onnistuu vain, kun viesti on deaktivoitu."
     },
     "labels": {
       "access": "Pääsy",
@@ -1537,6 +1538,7 @@
       "creating": "Luodaan kurssia",
       "curriculum": "Opetussuunnitelma",
       "dates": "Aika",
+      "deleteCustomSignupMessage": "Poista ilmoittautumisviesti",
       "description": "Kurssin kuvaus",
       "discussions": "Kurssin keskustelualueet",
       "edit": "Muokkaa kurssia {{workspaceName}}",

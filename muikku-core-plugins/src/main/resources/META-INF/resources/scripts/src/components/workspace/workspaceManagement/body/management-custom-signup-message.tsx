@@ -55,19 +55,18 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
     ]);
   };
 
-
-    /**
+  /**
    * Delete a custom signup message
    * @param text text
    */
-    const deleteWorkspaceSignupMessage = (index: number) => {
-      const messages = [...workspaceCustomSignupMessages];
-  
-      messages.splice(index, 1);
+  const deleteWorkspaceSignupMessage = (index: number) => {
+    const messages = [...workspaceCustomSignupMessages];
 
-      onChange(messages);
-    };
-  
+    messages.splice(index, 1);
+
+    onChange(messages);
+  };
+
   /**
    * Updates custom signup message
    * @param index index of the message
@@ -228,7 +227,7 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
                       alignSelfVertically="top"
                       content={
                         <div>
-                          {t("content.workspaceSignupMessageInfo", {
+                          {t("content.workspaceSignupGroupMessageInfo", {
                             ns: "workspace",
                           })}
                         </div>
@@ -270,7 +269,7 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
                     alignSelfVertically="top"
                     content={
                       <div>
-                        {t("content.workspaceSignupMessageInfo", {
+                        {t("content.workspaceSignupGroupMessageDeleteInfo", {
                           ns: "workspace",
                         })}
                       </div>
@@ -281,11 +280,15 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
                         htmlFor="enable-workspace-signup-message"
                         className="visually-hidden"
                       >
-                        {t("labels.activateSignupMessage", {
+                        {t("labels.deleteCustomSignupMessage", {
                           ns: "workspace",
                         })}
                       </label>
-                      <Button disabled={customSignupMessage.enabled} onClick={() => deleteWorkspaceSignupMessage(index)} className="button-pill button-pill--remove-custom-signup-message icon-trash" />
+                      <Button
+                        disabled={customSignupMessage.enabled}
+                        onClick={() => deleteWorkspaceSignupMessage(index)}
+                        className="button-pill button-pill--remove-custom-signup-message icon-trash"
+                      />
                     </span>
                   </Dropdown>
                 </div>
@@ -320,7 +323,6 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
                       editorTitle={t("labels.workspaceSignupMessageContent", {
                         ns: "workspace",
                       })}
-                      // ancestorHeight={200}
                       onChange={(text: string) =>
                         updateCustomSignupMessageContent(index, text)
                       }
