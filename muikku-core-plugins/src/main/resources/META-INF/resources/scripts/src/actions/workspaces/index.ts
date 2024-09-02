@@ -2286,55 +2286,6 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
   };
 
 /**
- * loadCurrentWorkspaceSignupMessage
- */
-// const loadCurrentWorkspaceSignupMessage: LoadCurrentWorkspaceSignupMessageTriggerType =
-//   function loadCurrentWorkspaceSignupMessage() {
-//     return async (
-//       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-//       getState: () => StateType
-//     ) => {
-//       const workspaceApi = MApi.getWorkspaceApi();
-
-//       try {
-//         const currentWorkspace = getState().workspaces.currentWorkspace;
-
-//         // Because the signup message is not included in the workspace object, we have to fetch it separately
-//         const signupMessage = await workspaceApi.getWorkspaceSignupMessage({
-//           workspaceId: currentWorkspace.id,
-//         });
-
-//         dispatch({
-//           type: "UPDATE_WORKSPACE",
-//           payload: {
-//             original: currentWorkspace,
-//             update: {
-//               defaultSignupMessage:
-//                 signupMessage.caption === "" || signupMessage.content === ""
-//                   ? null
-//                   : signupMessage,
-//             },
-//           },
-//         });
-//       } catch (err) {
-//         if (!isMApiError(err)) {
-//           throw err;
-//         }
-
-//         dispatch(
-//           displayNotification(
-//             i18n.t("notifications.loadError", {
-//               ns: "workspace",
-//               context: "permissions",
-//             }),
-//             "error"
-//           )
-//         );
-//       }
-//     };
-//   };
-
-/**
  * loadCurrentWorkspaceUserGroupPermissions
  */
 const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermissionsTriggerType =
