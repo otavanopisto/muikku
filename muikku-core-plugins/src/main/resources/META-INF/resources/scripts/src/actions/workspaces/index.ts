@@ -2286,51 +2286,6 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
   };
 
 /**
- * loadCurrentWorkspaceUserGroupPermissions
- */
-const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermissionsTriggerType =
-  function loadCurrentWorkspaceUserGroupPermissions() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
-      try {
-        const currentWorkspace = getState().workspaces.currentWorkspace;
-
-        const permissions = await workspaceApi.getWorkspaceSignupGroups({
-          workspaceEntityId: getState().workspaces.currentWorkspace.id,
-        });
-
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: currentWorkspace,
-            update: {
-              permissions,
-            },
-          },
-        });
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.loadError", {
-              ns: "workspace",
-              context: "permissions",
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
-
-/**
  * updateWorkspaceEditModeState
  * @param data data
  * @param restoreActiveFromLocalStorage restoreActiveFromLocalStorage
@@ -2383,7 +2338,6 @@ export {
   updateWorkspaceDetailsForCurrentWorkspace,
   updateWorkspaceProducersForCurrentWorkspace,
   updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions,
   loadTemplatesFromServer,
   updateWorkspaceEditModeState,
   updateCurrentWorkspaceActivity,

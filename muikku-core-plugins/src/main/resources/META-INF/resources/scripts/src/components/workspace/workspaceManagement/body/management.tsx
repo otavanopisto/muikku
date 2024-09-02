@@ -1,9 +1,8 @@
 import { StateType } from "~/reducers";
 import { Dispatch, connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceDataType, WorkspaceUpdateType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Button from "~/components/general/button";
-import equals = require("deep-equal");
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
@@ -445,7 +444,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     () => defaultSignupMessage,
     [defaultSignupMessage]
   );
-  
+
   const memoizedCustomWorkspaceSignupMessages = React.useMemo(
     () => signupMessages,
     [signupMessages]
@@ -532,7 +531,9 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         <section className="application-sub-panel application-sub-panel--workspace-settings">
           <ManagementCustomSignupMessageMemoized
             signupGroups={signupGroups}
-            workspaceCustomSignupMessages={memoizedCustomWorkspaceSignupMessages}
+            workspaceCustomSignupMessages={
+              memoizedCustomWorkspaceSignupMessages
+            }
             onChange={handleWorkspaceCustomSignupMessageChange}
           />
         </section>

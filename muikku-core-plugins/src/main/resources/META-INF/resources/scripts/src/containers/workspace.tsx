@@ -18,17 +18,14 @@ import WorkspaceMaterialsBody from "~/components/workspace/workspaceMaterials";
 import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
-import WorkspacePermissionsBody from "~/components/workspace/workspacePermissions";
 import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
-  loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
   loadWorkspaceSettings,
-  loadCurrentWorkspaceUserGroupPermissions,
   setAvailableCurriculums,
   loadLastWorkspacesFromServer,
 } from "~/actions/workspaces";
@@ -105,8 +102,6 @@ export default class Workspace extends React.Component<
   private prevPathName: string;
   private itsFirstTime: boolean;
   private loadedLibs: Array<string>;
-  private subscribedChatSettings = false;
-  private loadedChatSettings = false;
 
   /**
    * constructor
@@ -1121,20 +1116,6 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-          /**
-           * success
-           */
-          success: () => {
-            // this.props.store.dispatch(
-            //   loadCurrentWorkspaceUserGroupPermissions() as Action
-            // );
-            // if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
-            //   this.props.store.dispatch(
-            //     loadWorkspaceDetailsInCurrentWorkspace() as Action
-            //   );
-            // }
-            /* this.props.store.dispatch(loadWorkspaceChatStatus() as Action); */
-          },
         }) as Action
       );
     }
@@ -1145,41 +1126,6 @@ export default class Workspace extends React.Component<
       />
     );
   }
-
-  /**
-   * renderWorkspacePermissions
-   * @param props props
-   * @returns JSX.Element
-   */
-  // renderWorkspacePermissions(props: RouteComponentProps<any>) {
-  //   this.updateFirstTime();
-  //   if (this.itsFirstTime) {
-  //     this.props.websocket && this.props.websocket.restoreEventListeners();
-
-  //     const state = this.props.store.getState();
-  //     this.props.store.dispatch(titleActions.updateTitle("Permissions"));
-  //     this.props.store.dispatch(
-  //       setCurrentWorkspace({
-  //         workspaceId: state.status.currentWorkspaceId,
-  //         /**
-  //          * success
-  //          */
-  //         success: () => {
-  //           this.props.store.dispatch(
-  //             loadCurrentWorkspaceUserGroupPermissions() as Action
-  //           );
-  //         },
-  //       }) as Action
-  //     );
-  //   }
-
-  //   return (
-  //     <WorkspacePermissionsBody
-  //       workspaceUrl={props.match.params["workspaceUrl"]}
-  //     />
-  //   );
-  // }
-
   /**
    * renderWorkspaceEvaluation
    * @param props props
@@ -1210,10 +1156,6 @@ export default class Workspace extends React.Component<
            * @param workspace workspace
            */
           success: (workspace) => {
-            this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action
-            );
-
             this.props.store.dispatch(
               loadEvaluationAssessmentRequestsFromServer(true) as Action
             );
@@ -1304,10 +1246,6 @@ export default class Workspace extends React.Component<
                 path="/workspace/:workspaceUrl/workspace-management"
                 render={this.renderWorkspaceManagement}
               />
-              {/* <Route
-                path="/workspace/:workspaceUrl/permissions"
-                render={this.renderWorkspacePermissions}
-              /> */}
               <Route
                 path="/workspace/:workspaceUrl/evaluation"
                 render={this.renderWorkspaceEvaluation}

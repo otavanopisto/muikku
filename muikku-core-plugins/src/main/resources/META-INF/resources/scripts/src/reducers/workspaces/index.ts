@@ -28,7 +28,6 @@ import {
   WorkspaceAccess,
   WorkspaceMandatority,
   WorkspaceSettings,
-  WorkspaceSignupMessage,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -144,28 +143,6 @@ export interface WorkspaceDataType {
   // These are only in organizationlistings
   teachers?: UserStaff[];
   studentCount?: number;
-}
-
-interface comparison {
-  id: number;
-  name: string;
-  nameExtension?: string | null;
-  description: string;
-  published: boolean;
-  materialDefaultLicense: string;
-  hasCustomImage: boolean;
-  curriculumIdentifiers: Array<string>;
-  urlName: string;
-  language: Language;
-  mandatority?: WorkspaceMandatority | null;
-  access?: WorkspaceAccess;
-  organizationEntityId: number;
-
-  // defaultSignupMessage?: WorkspaceSignupMessage;
-  // subjectIdentifier?: string;
-  // workspaceTypeIdentifier?: string;
-  // signupGroups?: Array<WorkspaceSettingsSignupGroup>;
-  // signupMessages?: Array<WorkspaceSignupMessage>;
 }
 
 export type WorkspaceUpdateType = Partial<WorkspaceDataType>;
