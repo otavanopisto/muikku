@@ -51,7 +51,7 @@ export type SaveState =
  */
 export type AttentionPlace = "Mikkeli" | "Muu";
 
-export type MatriculationFormType = "initial" | "edit";
+export type MatriculationFormType = "initial" | "editable" | "readonly";
 
 /**
  * Grades by string code

@@ -78,7 +78,6 @@ import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
   setLocationToHopsInTranscriptOfRecords,
-  setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
@@ -87,10 +86,6 @@ import {
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
-import {
-  updateYO,
-  updateMatriculationSubjectEligibility,
-} from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
 import EvaluationBody from "../components/evaluation/body";
@@ -339,18 +334,6 @@ export default class MainFunction extends React.Component<
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
-      );
-    } else if (givenLocation === "yo") {
-      this.props.store.dispatch(
-        setLocationToYoInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(
-        updateHops(() => {
-          this.props.store.dispatch(updateYO(userId) as Action);
-          this.props.store.dispatch(
-            updateMatriculationSubjectEligibility(userId) as Action
-          );
-        }, userId) as Action
       );
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(

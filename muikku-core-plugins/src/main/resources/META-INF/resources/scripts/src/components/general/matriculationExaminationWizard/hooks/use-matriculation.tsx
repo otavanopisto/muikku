@@ -138,7 +138,7 @@ export const useMatriculation = (
     /**
      * Loads editable data. Checks if there is draft saved for this user and exam
      */
-    const loadEditableData = async () => {
+    const loadExistingData = async () => {
       try {
         const studentInformation = await matriculationApi.getInitialData({
           studentIdentifier: userSchoolDataIdentifier,
@@ -185,8 +185,8 @@ export const useMatriculation = (
       }
     };
 
-    if (formType === "edit") {
-      loadEditableData();
+    if (formType === "editable" || formType === "readonly") {
+      loadExistingData();
     } else {
       loadInitialData();
     }
@@ -196,7 +196,7 @@ export const useMatriculation = (
    * saveDraft
    */
   const saveDraft = async () => {
-    if (formType === "edit") {
+    if (formType === "editable") {
       return;
     }
 
@@ -270,7 +270,8 @@ export const useMatriculation = (
       degreeStructure,
     } = matriculation.examinationInformation;
 
-    const { guidanceCounselor } = matriculation.studentInformation;
+    const { guidanceCounselor, studentIdentifier } =
+      matriculation.studentInformation;
 
     let modifiedMessage = message;
 
@@ -327,6 +328,7 @@ export const useMatriculation = (
       guider: guidanceCounselor,
       state: "PENDING",
       degreeStructure,
+      studentIdentifier,
       attendances: [
         ...attendedSubjectListParsed,
         ...finishedSubjectListParsed,
@@ -335,7 +337,7 @@ export const useMatriculation = (
     };
 
     // If form is edit, set state to supplemented
-    if (formType === "edit") {
+    if (formType === "editable") {
       matriculationForm.state = "SUPPLEMENTED";
     }
 

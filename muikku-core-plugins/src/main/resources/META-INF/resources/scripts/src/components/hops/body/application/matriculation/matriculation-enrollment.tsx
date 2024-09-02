@@ -13,6 +13,7 @@ import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops/";
 import MatriculationExaminationWizardDialog from "./dialogs/matriculation-wizard";
 import MatriculationWizardSummaryDialog from "./dialogs/matriculation-summary";
+import MatriculationVerifyDialog from "./dialogs/matriculation-verify";
 import {
   VerifyMatriculationExamTriggerType,
   verifyMatriculationExam,
@@ -163,7 +164,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
                   <MatriculationWizardSummaryDialog
                     examId={e.id}
                     compulsoryEducationEligible={e.compulsoryEducationEligible}
-                    formType="edit"
+                    formType="readonly"
                   >
                     <Button className="button button--yo-signup">
                       Näytä yhteenveto
@@ -178,29 +179,53 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
         }
 
         switch (e.studentStatus) {
+          case MatriculationExamStudentStatus.Confirmed:
+          case MatriculationExamStudentStatus.Supplemented:
+          case MatriculationExamStudentStatus.Pending:
+            return (
+              <div key={e.id}>
+                <MatriculationWizardSummaryDialog
+                  examId={e.id}
+                  compulsoryEducationEligible={e.compulsoryEducationEligible}
+                  formType="readonly"
+                >
+                  <Button className="button button--yo-signup">
+                    Näytä yhteenveto
+                  </Button>
+                </MatriculationWizardSummaryDialog>
+              </div>
+            );
+
           case MatriculationExamStudentStatus.SupplementationRequest:
             return (
               <div key={e.id}>
                 <MatriculationExaminationWizardDialog
                   examId={e.id}
                   compulsoryEducationEligible={e.compulsoryEducationEligible}
-                  formType="edit"
+                  formType="editable"
                 >
                   <Button className="button button--yo-signup">
-                    Muokkaa ilmoittautumista
+                    Täydennä ilmoittautumista
                   </Button>
                 </MatriculationExaminationWizardDialog>
               </div>
             );
+
           case MatriculationExamStudentStatus.Approved:
             return (
               <div key={e.id}>
-                <Button
-                  className="button button--yo-signup"
-                  onClick={handleVerifyMatriculationExam(e.id)}
+                <MatriculationVerifyDialog
+                  examId={e.id}
+                  compulsoryEducationEligible={e.compulsoryEducationEligible}
+                  formType="readonly"
                 >
-                  Vahvista ilmoittautuminen
-                </Button>
+                  <Button
+                    className="button button--yo-signup"
+                    onClick={handleVerifyMatriculationExam(e.id)}
+                  >
+                    Vahvista ilmoittautuminen
+                  </Button>
+                </MatriculationVerifyDialog>
               </div>
             );
 
