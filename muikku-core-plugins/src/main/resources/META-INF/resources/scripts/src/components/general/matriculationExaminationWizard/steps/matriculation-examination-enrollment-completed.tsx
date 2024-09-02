@@ -1,6 +1,5 @@
 import * as React from "react";
-import { SaveState } from "~/@types/shared";
-import Button from "~/components/general/button";
+import { SaveState, MatriculationFormType } from "~/@types/shared";
 import "~/sass/elements/matriculation.scss";
 import { useMatriculationContext } from "../context/matriculation-context";
 
@@ -8,8 +7,7 @@ import { useMatriculationContext } from "../context/matriculation-context";
  * MatriculationExaminationEnrollmentCompletedProps
  */
 interface MatriculationExaminationEnrollmentCompletedProps {
-  onClose?: () => void;
-  onUpdateExam?: (examId: number) => void;
+  formType: MatriculationFormType;
 }
 
 /**
@@ -19,8 +17,6 @@ interface MatriculationExaminationEnrollmentCompletedProps {
 export const MatriculationExaminationEnrollmentCompleted = (
   props: MatriculationExaminationEnrollmentCompletedProps
 ) => {
-  const { onClose, onUpdateExam } = props;
-
   const { matriculation } = useMatriculationContext();
   const { saveState } = matriculation;
 
@@ -51,28 +47,46 @@ export const MatriculationExaminationEnrollmentCompleted = (
           <div className="loader-empty" />
         </div>
       ),
-      SUCCESS: (
-        <div className="matriculation-container">
-          <h3 className="matriculation-container__header">
-            Ilmoittautuminen ylioppilaskirjoituksiin lähetetty
-          </h3>
-          <div className="matriculation-container__state state-SUCCESS">
-            <div className="matriculation-container__state-icon icon-notification"></div>
-            <div className="matriculation-container__state-text">
-              <p>
-                Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty
-                onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.
-              </p>
-              <p>
-                Tulosta lomake, allekirjoita ja päivää se ja lähetä skannattuna
-                tai kuvana yo-ilmoittautumiset@otavia.fi tai kirjeitse
-                Otavia/Nettilukio, Otavantie 2B, 50670 Otava.
-              </p>
-              <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
+      SUCCESS:
+        props.formType === "initial" ? (
+          <div className="matriculation-container">
+            <h3 className="matriculation-container__header">
+              Ilmoittautuminen ylioppilaskirjoituksiin lähetetty
+            </h3>
+            <div className="matriculation-container__state state-SUCCESS">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+                <p>
+                  Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty
+                  onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.
+                </p>
+                <p>
+                  Tulosta lomake, allekirjoita ja päivää se ja lähetä
+                  skannattuna tai kuvana yo-ilmoittautumiset@otavia.fi tai
+                  kirjeitse Otavia/Nettilukio, Otavantie 2B, 50670 Otava.
+                </p>
+                <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
+              </div>
             </div>
           </div>
-        </div>
-      ),
+        ) : (
+          <div className="matriculation-container">
+            <h3 className="matriculation-container__header">
+              Ilmoittautumista täydennetty onnistuneesti
+            </h3>
+            <div className="matriculation-container__state state-SUCCESS">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+                <p>
+                  Olet muokannut ilmoittautumistasi ylioppilaskirjoituksiin
+                  onnistuneesti
+                </p>
+
+                <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
+              </div>
+            </div>
+          </div>
+        ),
       FAILED: (
         <div className="matriculation-container">
           <h3 className="matriculation-container__header">
@@ -95,27 +109,7 @@ export const MatriculationExaminationEnrollmentCompleted = (
       undefined: null,
     }[saveState]);
 
-  return (
-    <div>
-      {renderStateMessage(saveState)}
-      {onClose && (saveState === "SUCCESS" || saveState === "FAILED") ? (
-        <Button
-          onClick={() => {
-            if (onUpdateExam) {
-              onUpdateExam(matriculation.examId);
-            }
-
-            onClose();
-          }}
-          className={`${
-            saveState === "SUCCESS" ? "button--success" : "button--error"
-          }`}
-        >
-          Sulje
-        </Button>
-      ) : null}
-    </div>
-  );
+  return <div>{renderStateMessage(saveState)}</div>;
 };
 
 export default MatriculationExaminationEnrollmentCompleted;

@@ -15,6 +15,7 @@ import MatriculationWizardFooter from "./matriculation-wizard-footer";
 import { MatriculationFormType } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import { HopsState } from "~/reducers/hops";
+import Button from "../button";
 
 moment.locale("fi");
 
@@ -90,7 +91,7 @@ const MatriculationExaminationWizard = (
     {
       index: 4,
       name: "Valmis",
-      component: <Step5 onUpdateExam={onUpdateExam} onClose={onClose} />,
+      component: <Step5 formType={props.formType} />,
     },
   ];
 
@@ -100,13 +101,35 @@ const MatriculationExaminationWizard = (
     onStepChange: handleStepChange,
   });
 
+  const footer = (
+    <MatriculationWizardFooter
+      secondLastButtonText={
+        props.formType === "initial" ? "Lähetä" : "Tallenna"
+      }
+      lastStepButton={
+        <Button
+          onClick={() => {
+            onUpdateExam(examId);
+            onClose();
+          }}
+          buttonModifiers={["info"]}
+          disabled={
+            !(
+              useMatriculationValues.matriculation.saveState === "SUCCESS" ||
+              useMatriculationValues.matriculation.saveState === "FAILED"
+            )
+          }
+        >
+          Sulje
+        </Button>
+      }
+    />
+  );
+
   return (
     <MatriculationProvider value={useMatriculationValues}>
       <WizardProvider value={useWizardValues}>
-        <Wizard
-          header={<MatriculationWizardHeader />}
-          footer={<MatriculationWizardFooter />}
-        />
+        <Wizard header={<MatriculationWizardHeader />} footer={footer} />
       </WizardProvider>
     </MatriculationProvider>
   );

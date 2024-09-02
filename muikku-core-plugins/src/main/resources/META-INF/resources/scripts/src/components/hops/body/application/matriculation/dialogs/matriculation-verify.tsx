@@ -12,6 +12,7 @@ import {
   VerifyMatriculationExamTriggerType,
   verifyMatriculationExam,
 } from "~/actions/main-function/hops/";
+import Button from "~/components/general/button";
 
 /**
  * MatriculationVerifyDialogProps
@@ -60,19 +61,24 @@ class MatriculationVerifyDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const footer = (closeDialog: () => void) => (
-      <div>
-        <button
+      <div className="dialog__button-set">
+        <Button
           className="button"
           onClick={() => {
             this.props.verifyMatriculationExam(this.props.examId);
             closeDialog();
           }}
+          buttonModifiers={["success", "standard-ok"]}
         >
           Vahvista
-        </button>
-        <button className="button" onClick={closeDialog}>
+        </Button>
+        <Button
+          className="button"
+          onClick={closeDialog}
+          buttonModifiers={["cancel", "standard-cancel"]}
+        >
           Peruuta
-        </button>
+        </Button>
       </div>
     );
 
