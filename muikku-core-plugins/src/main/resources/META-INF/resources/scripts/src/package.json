@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
     "stylelint": "stylelint \"**/*.scss\"",
+    "stylelint-action": "stylelint \"scss/**/*.scss\" --custom-formatter=node_modules/stylelint-actions-formatters",
     "prettier-format": "prettier --config .prettierrc.json \"**/*.{ts,tsx}\" --write"
   },
   "author": "",
