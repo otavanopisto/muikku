@@ -14228,12 +14228,6 @@ components:
       required:
         - examId
         - studentIdentifier
-        - name
-        - email
-        - phone
-        - address
-        - postalCode
-        - city
         - guider
         - enrollAs
         - degreeType
@@ -14253,18 +14247,6 @@ components:
           type: integer
           format: int64
         studentIdentifier:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        address:
-          type: string
-        postalCode:
-          type: string
-        city:
           type: string
         guider:
           type: string
