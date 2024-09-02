@@ -50,5 +50,5 @@ jobs:
       - run: npm ci
         working-directory: "muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"
 
-      - run: npm run stylelint-actions
+      - run: npm run stylelint-action
         working-directory: "muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"
