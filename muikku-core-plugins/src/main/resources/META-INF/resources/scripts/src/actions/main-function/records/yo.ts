@@ -168,6 +168,7 @@ const updateMatriculationSubjectEligibility: UpdateMatriculationSubjectEligibili
 /**
  * updateYO
  * @param userIdentifier muikku student userIdentifier
+ * @deprecated
  */
 const updateYO: updateYOTriggerType = function updateYO(userIdentifier) {
   return async (
