@@ -38,7 +38,6 @@ jobs:
     name: stylelint
     runs-on: ubuntu-latest
     steps:
-        steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
