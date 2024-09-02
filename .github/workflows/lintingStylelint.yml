@@ -52,6 +52,5 @@ jobs:
 
       - name: Running Stylelint Code Quality Review
         uses: moneyforward/stylelint-action@v0
-        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
-        reporter_type_notation: github-pr-review
+        working_directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
         files: "scss"
