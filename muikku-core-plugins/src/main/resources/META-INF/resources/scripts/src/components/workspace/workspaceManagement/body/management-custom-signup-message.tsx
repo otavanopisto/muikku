@@ -30,9 +30,9 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
   const { t } = useTranslation(["workspace"]);
 
   /**
-   *
-   * @param signupGroups
-   * @returns select items frp, signup groups
+   * translateToSelectItems
+   * @param signupGroups signupGroups
+   * @returns select items from signup groups
    */
   const translateToSelectItems = (
     signupGroups: WorkspaceSignupMessageGroup[]
@@ -43,8 +43,7 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
     }));
 
   /**
-   * Creates a custom signup message
-   * @param text text
+   * createWorkspaceSignupMessage Creates a custom signup message
    */
   const createWorkspaceSignupMessage = () => {
     const messages = workspaceCustomSignupMessages || [];
@@ -56,8 +55,9 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
   };
 
   /**
+   * deleteWorkspaceSignupMessage
    * Delete a custom signup message
-   * @param text text
+   * @param index signup message index
    */
   const deleteWorkspaceSignupMessage = (index: number) => {
     const messages = [...workspaceCustomSignupMessages];
@@ -186,6 +186,10 @@ const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {
     }
   };
 
+  /**
+   * groupLoader
+   * @param textInput search string
+   */
   const groupLoader = (textInput: string) => {
     // Extract IDs of already selected groups
     const selectedGroupIds = workspaceCustomSignupMessages
