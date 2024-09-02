@@ -10,6 +10,7 @@
   &:first-child {
     border-top-color: transparent;
   }
+
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
     padding: 15px 10px;
