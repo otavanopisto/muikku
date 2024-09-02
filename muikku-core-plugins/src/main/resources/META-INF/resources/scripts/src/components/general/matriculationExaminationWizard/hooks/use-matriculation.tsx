@@ -62,11 +62,6 @@ export const useMatriculation = (
     examinationInformation: {
       examId: examId,
       state: "ELIGIBLE",
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-      postalCode: "",
       changedContactInfo: "",
       guider: "",
       enrollAs: "UPPERSECONDARY",
@@ -74,7 +69,6 @@ export const useMatriculation = (
       numMandatoryCourses: 0,
       restartExam: false,
       location: "Mikkeli",
-      city: "",
       message: "",
       studentIdentifier: "",
       initialized: false,
@@ -121,9 +115,14 @@ export const useMatriculation = (
           userIdentifier: userSchoolDataIdentifier,
         });
 
+        const parsedObject = JSON.parse(draft) as ExaminationInformation;
+
         setMatriculation((prevState) => ({
           ...prevState,
-          examinationInformation: JSON.parse(draft) as ExaminationInformation,
+          examinationInformation: {
+            ...parsedObject,
+            enrollmentDate: new Date(parsedObject.enrollmentDate),
+          },
         }));
       } catch (err) {
         if (!isMApiError(err)) {
@@ -263,31 +262,15 @@ export const useMatriculation = (
     }));
 
     const {
-      id,
       changedContactInfo,
       message,
       enrolledAttendances,
       finishedAttendances,
       plannedAttendances,
-      enrollAs,
-      degreeType,
-      restartExam,
-      numMandatoryCourses,
-      location,
-      canPublishName,
       degreeStructure,
     } = matriculation.examinationInformation;
 
-    const {
-      name,
-      email,
-      phone,
-      address,
-      postalCode,
-      locality,
-      guidanceCounselor,
-      studentIdentifier,
-    } = matriculation.studentInformation;
+    const { guidanceCounselor } = matriculation.studentInformation;
 
     let modifiedMessage = message;
 
@@ -339,23 +322,9 @@ export const useMatriculation = (
       }));
 
     const matriculationForm: MatriculationExamEnrollment = {
-      id,
-      examId,
-      name,
-      email,
-      phone,
-      address,
-      postalCode,
-      city: locality,
-      guider: guidanceCounselor,
-      enrollAs,
-      degreeType,
-      restartExam,
-      numMandatoryCourses,
-      location,
+      ...matriculation.examinationInformation,
       message: modifiedMessage,
-      studentIdentifier,
-      canPublishName,
+      guider: guidanceCounselor,
       state: "PENDING",
       degreeStructure,
       attendances: [
