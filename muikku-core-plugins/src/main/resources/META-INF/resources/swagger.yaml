@@ -9471,87 +9471,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceEntityId}/signupGroups:
-    get:
-      operationId: getWorkspaceSignupGroups
-      summary: Returns list of workspace signup groups
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Workspace signup groups results object
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/WorkspaceSignupGroup"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-    put:
-      operationId: updateWorkspaceSignupGroups
-      summary: Updates a set of workspace signup groups
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/WorkspaceSignupGroupsUpdateRequestBody"
-      responses:
-        "204":
-          description: Workspace signup groups updated successfully
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/workspace/workspaces/{workspaceEntityId}/signupGroups/{userGroupId}:
-    put:
-      operationId: updateWorkspaceSignupGroup
-      summary: Updates and returns workspace signup group
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: userGroupId
-          in: path
-          description: User group id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/WorkspaceSignupGroupUpdateRequestBody"
-      responses:
-        "204":
-          description: Workspace signup group updated successfully
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/workspace/workspaces/{workspaceEntityId}/students:
     get:
       operationId: getWorkspaceStudents
@@ -12139,25 +12058,6 @@ components:
                 type: string
               access:
                 $ref: "#/components/schemas/WorkspaceAccess"
-
-    WorkspaceSignupGroupUpdateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/WorkspaceSignupGroup"
-
-    WorkspaceSignupGroupsUpdateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            properties:
-              workspaceSignupGroups:
-                type: array
-                items:
-                  $ref: "#/components/schemas/WorkspaceSignupGroup"
 
     WorkspaceFileCreateRequestBody:
       content:
@@ -16931,30 +16831,6 @@ components:
           description: The id of the producer
           type: integer
           format: int64
-
-    WorkspaceSignupGroup:
-      type: object
-      description: WorkspaceSignupGroup object
-      required:
-        - workspaceEntityId
-        - userGroupEntityId
-        - userGroupName
-        - canSignup
-      properties:
-        workspaceEntityId:
-          description: The id of the workspace
-          type: integer
-          format: int64
-        userGroupEntityId:
-          description: The id of the user group
-          type: integer
-          format: int64
-        userGroupName:
-          description: The name of the user group
-          type: string
-        canSignup:
-          description: If the user can signup
-          type: boolean
 
     WorkspaceSignupMessageGroup:
       type: object
