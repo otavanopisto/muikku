@@ -34,7 +34,8 @@ on:
   pull_request:
     branches: devel
 jobs:
-  build:
+  stylelint:
+    name: stylelint
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
