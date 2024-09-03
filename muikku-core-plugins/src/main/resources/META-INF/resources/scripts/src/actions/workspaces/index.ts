@@ -1096,22 +1096,17 @@ export interface UpdateWorkspaceTriggerType {
   }): AnyActionType;
 }
 
-// This is because chat and producers are not in the WorkspaceSettings
-
-/**
- * UpdateSettingsPayload
- */
-export interface UpdateSettingsPayload extends WorkspaceSettings {
-  workspaceType: string;
-  producers: WorkspaceMaterialProducer[];
-}
 /**
  * UpdateWorkspaceSettingsTriggerType
  */
 export interface UpdateWorkspaceSettingsTriggerType {
   (data: {
     workspace: WorkspaceDataType;
-    update: UpdateSettingsPayload;
+    update: {
+      settings: WorkspaceSettings;
+      workspaceType: string;
+      producers: WorkspaceMaterialProducer[];
+    };
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -1401,6 +1396,16 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
         const workspaceEntityId = data.workspace.id;
         const appliedProducers = data.update.producers;
         const additionalInfo = currentWorkspace.additionalInfo;
+        const workspaceSettings = data.update.settings;
+
+        // To update the workspace app state, we use the settings were there's overlap
+        // This also updates the settings in the workspace app state
+        const workspaceUpdate = {
+          ...workspaceSettings,
+          settings: workspaceSettings,
+        };
+
+        // Update producers to server
         if (appliedProducers) {
           const updatedProducersList =
             await workspaceApi.createWorkspaceMaterialProducers({
@@ -1411,27 +1416,72 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           data.update.producers = updatedProducersList;
         }
 
+        // Update the settings on server
         await workspaceApi.updateWorkspaceSettings({
-          updateWorkspaceSettingsRequest: data.update,
+          updateWorkspaceSettingsRequest: workspaceSettings,
           workspaceId: data.workspace.id,
         });
 
-        const workspaceUpdate = { ...data.update };
+        // For additionalInfo, we use the existing values and update
+        // with the ones that are in the update
         const newAdditionalInfo: WorkspaceAdditionalInfo = {
           ...additionalInfo,
-          beginDate: workspaceUpdate.beginDate,
-          endDate: workspaceUpdate.endDate,
-          signupStart: workspaceUpdate.signupStart,
-          signupEnd: workspaceUpdate.signupEnd,
-          workspaceType: workspaceUpdate.workspaceType,
+          beginDate: workspaceSettings.beginDate,
+          endDate: workspaceSettings.endDate,
+          signupStart: workspaceSettings.signupStart,
+          signupEnd: workspaceSettings.signupEnd,
+          workspaceType: data.update.workspaceType,
         };
 
-        delete workspaceUpdate["defaultSignupMessage"];
-        delete workspaceUpdate["subjectIdentifier"];
-        delete workspaceUpdate["workspaceTypeIdentifier"];
-        delete workspaceUpdate["organizationEntityId"];
-        delete workspaceUpdate["signupGroups"];
-        delete workspaceUpdate["signupMessages"];
+        const WorkspaceDataKeys: (keyof WorkspaceDataType)[] = [
+          "archived",
+          "curriculumIdentifiers",
+          "description",
+          "hasCustomImage",
+          "id",
+          "lastVisit",
+          "materialDefaultLicense",
+          "language",
+          "name",
+          "nameExtension",
+          "numVisits",
+          "published",
+          "urlName",
+          "organizationEntityId",
+          "access",
+          "isCourseMember",
+          "educationTypeName",
+          "subjects",
+          "settings",
+          "activity",
+          "studentActivity",
+          "forumStatistics",
+          "organization",
+          "assessmentRequests",
+          "interimEvaluationRequests",
+          "additionalInfo",
+          "staffMembers",
+          "staffMemberSelect",
+          "producers",
+          "contentDescription",
+          "activityLogs",
+          "students",
+          "inactiveStudents",
+          "studentsSelect",
+          "details",
+          "permissions",
+          "mandatority",
+          "teachers",
+          "studentCount",
+        ];
+
+        // Then from the workspaceUpdate,
+        // we remove the values that do not belong there that are in the settings
+        Object.keys(workspaceUpdate).forEach((key) => {
+          if (!(WorkspaceDataKeys as string[]).includes(key)) {
+            delete workspaceUpdate[key as keyof WorkspaceSettings];
+          }
+        });
 
         dispatch({
           type: "UPDATE_WORKSPACE",
@@ -1447,16 +1497,6 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           payload: {
             original: data.workspace,
             update: { additionalInfo: newAdditionalInfo },
-          },
-        });
-
-        // Update the settings
-
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: data.workspace,
-            update: { settings: data.update },
           },
         });
 

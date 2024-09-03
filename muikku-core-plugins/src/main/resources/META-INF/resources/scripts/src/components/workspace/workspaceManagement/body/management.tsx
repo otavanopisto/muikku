@@ -12,7 +12,6 @@ import "~/sass/elements/wcag.scss";
 import {
   updateWorkspaceSettings,
   UpdateWorkspaceSettingsTriggerType,
-  UpdateSettingsPayload,
   updateWorkspaceProducersForCurrentWorkspace,
   UpdateWorkspaceProducersForCurrentWorkspaceTriggerType,
   updateCurrentWorkspaceImagesB64,
@@ -316,7 +315,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
    */
   const handleWorkspaceCustomSignupMessageChange = React.useCallback(
     (signupMessages: WorkspaceSignupMessage[]) => {
-      console.log("signupMessages", signupMessages);
       setManagementState((prevState) => ({
         ...prevState,
         signupMessages,
@@ -385,11 +383,19 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       locked: true,
     }));
 
-    const payload: UpdateSettingsPayload = managementState;
+    const payload = managementState;
+
+    const settingsPayload: WorkspaceSettings = {
+      ...managementState,
+    };
 
     props.updateWorkspaceSettings({
       workspace: workspace,
-      update: payload,
+      update: {
+        producers: payload.producers,
+        workspaceType: payload.workspaceTypeIdentifier,
+        settings: settingsPayload,
+      },
       /**
        * success
        */
