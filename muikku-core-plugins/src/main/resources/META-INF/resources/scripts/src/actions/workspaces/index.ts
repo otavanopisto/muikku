@@ -1433,6 +1433,7 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           workspaceType: data.update.workspaceType,
         };
 
+        // keys of workspacedatatype
         const WorkspaceDataKeys: (keyof WorkspaceDataType)[] = [
           "archived",
           "curriculumIdentifiers",
@@ -1475,8 +1476,7 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           "studentCount",
         ];
 
-        // Then from the workspaceUpdate,
-        // we remove the values that do not belong there that are in the settings
+        // Then from the workspaceUpdate, we remove the values that do not belong there that are in the settings
         Object.keys(workspaceUpdate).forEach((key) => {
           if (!(WorkspaceDataKeys as string[]).includes(key)) {
             delete workspaceUpdate[key as keyof WorkspaceSettings];
@@ -1491,7 +1491,7 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           },
         });
 
-        // update additional info
+        // update additional info to app state
         dispatch({
           type: "UPDATE_WORKSPACE",
           payload: {
