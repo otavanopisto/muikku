@@ -5,20 +5,22 @@ import { WorkspaceSettingsSignupGroup } from "~/generated/client";
 import { filterHighlight, filterMatch } from "~/util/modifiers";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementSignupGroupsProps
  */
 interface ManagementSignupGroupsProps {
   workspaceName: string;
   workspaceSignupGroups: WorkspaceSettingsSignupGroup[];
   /**
    * Handle signup group change
-   * @param workspaceSignupGroup workspaceSignupGroup
+   * @param signupGroup workspaceSettingsSignupGroup
    */
-  onChange?: (workspaceSignupGroup: WorkspaceSettingsSignupGroup) => void;
+  onChange?: (
+    workspaceSettingsSignupGroup: WorkspaceSettingsSignupGroup
+  ) => void;
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementSignupGroups
  * @param props props
  */
 const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
@@ -38,7 +40,8 @@ const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
   // Expensive operation, memoize the list
   const memoizedList = React.useMemo(
     () =>
-      props.workspaceSignupGroups.filter((permission) =>
+      props.workspaceSignupGroups
+        .filter((permission) =>
           filterMatch(permission.userGroupName, workspaceSignupGroupFilter)
         )
         .sort((a, b) => a.userGroupName.localeCompare(b.userGroupName)),
@@ -126,24 +129,24 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
   };
 
   return (
-      <div>
-        <span className="form-element form-element--checkbox-radiobutton">
-          <input
-            id={`usergroup${workspaceSignupGroup.userGroupEntityId}`}
-            type="checkbox"
-            checked={workspaceSignupGroup.canSignup}
-            onChange={handleToggleWorkspaceSignupGroup}
-          />
+    <div>
+      <span className="form-element form-element--checkbox-radiobutton">
+        <input
+          id={`usergroup${workspaceSignupGroup.userGroupEntityId}`}
+          type="checkbox"
+          checked={workspaceSignupGroup.canSignup}
+          onChange={handleToggleWorkspaceSignupGroup}
+        />
 
-          <label htmlFor={`usergroup${workspaceSignupGroup.userGroupEntityId}`}>
-            {filterHighlight(
-              workspaceSignupGroup.userGroupName,
-              props.workspaceSignupGroupFilter
-            )}
-          </label>
-        </span>
-      </div>  );
-
+        <label htmlFor={`usergroup${workspaceSignupGroup.userGroupEntityId}`}>
+          {filterHighlight(
+            workspaceSignupGroup.userGroupName,
+            props.workspaceSignupGroupFilter
+          )}
+        </label>
+      </span>
+    </div>
+  );
 };
 
 // Memoized component, using deepEqual to compare props for memoization

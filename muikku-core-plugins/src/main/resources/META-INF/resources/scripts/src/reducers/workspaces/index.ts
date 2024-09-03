@@ -7,7 +7,6 @@ import {
   WorkspaceAdditionalInfo,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
-  WorkspaceSignupGroup,
   WorkspaceActivity,
   Curriculum,
   EducationType,
@@ -137,7 +136,6 @@ export interface WorkspaceDataType {
   inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetails;
-  permissions?: WorkspaceSignupGroup[];
   mandatority?: WorkspaceMandatority | null;
 
   // These are only in organizationlistings

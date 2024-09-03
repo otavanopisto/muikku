@@ -10,7 +10,7 @@ import InputSelectAutoFill from "~/components/base/input-select-autofill";
 import { UiSelectItem } from "~/components/base/input-select-autofill";
 import Button from "~/components/general/button";
 /**
- * WorkspaceSignupGroups
+ * ManagementSignupMessageProps
  */
 interface ManagementSignupMessageProps {
   signupGroups: WorkspaceSignupMessageGroup[];
@@ -19,7 +19,7 @@ interface ManagementSignupMessageProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementCustomSignupMessage
  * @param props props
  */
 const ManagementCustomSignupMessage = (props: ManagementSignupMessageProps) => {

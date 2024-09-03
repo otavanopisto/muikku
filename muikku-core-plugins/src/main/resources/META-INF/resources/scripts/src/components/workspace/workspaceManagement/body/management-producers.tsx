@@ -4,7 +4,7 @@ import AddProducer from "~/components/general/add-producer";
 import { WorkspaceMaterialProducer } from "~/generated/client";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementProducersProps
  */
 interface ManagementProducersProps {
   workspaceProducers: WorkspaceMaterialProducer[];
@@ -12,7 +12,7 @@ interface ManagementProducersProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementProducers
  * @param props props
  */
 const ManagementProducers = (props: ManagementProducersProps) => {
