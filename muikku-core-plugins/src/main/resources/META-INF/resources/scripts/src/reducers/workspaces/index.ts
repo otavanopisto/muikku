@@ -476,10 +476,6 @@ export const workspaces: Reducer<WorkspacesState> = (
 
     case "UPDATE_WORKSPACES_STATE":
       return { ...state, state: action.payload };
-
-    case "UPDATE_WORKSPACE_SETTINGS":
-      return { ...state, settings: action.payload };
-
     case "UPDATE_WORKSPACE": {
       let newCurrent = state.currentWorkspace;
       if (newCurrent && newCurrent.id === action.payload.original.id) {
