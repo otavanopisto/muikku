@@ -1464,7 +1464,6 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
           "inactiveStudents",
           "studentsSelect",
           "details",
-          "permissions",
           "mandatority",
           "teachers",
           "studentCount",
