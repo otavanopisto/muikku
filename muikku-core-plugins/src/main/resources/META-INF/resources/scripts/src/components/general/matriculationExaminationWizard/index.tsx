@@ -16,6 +16,11 @@ import { MatriculationFormType } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import { HopsState } from "~/reducers/hops";
 import Button from "../button";
+import { bindActionCreators } from "redux";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 moment.locale("fi");
 
@@ -29,6 +34,7 @@ interface MatriculationExaminationWizardProps {
   onClose?: () => void;
   onUpdateExam?: (examId: number) => void;
   formType: MatriculationFormType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -38,15 +44,22 @@ interface MatriculationExaminationWizardProps {
 const MatriculationExaminationWizard = (
   props: MatriculationExaminationWizardProps
 ) => {
-  const { compulsoryEducationEligible, examId, hops, onClose, onUpdateExam } =
-    props;
+  const {
+    compulsoryEducationEligible,
+    examId,
+    hops,
+    onClose,
+    onUpdateExam,
+    displayNotification,
+    formType,
+  } = props;
 
   const useMatriculationValues = useMatriculation(
     examId,
     hops.currentStudentIdentifier,
     compulsoryEducationEligible,
-    undefined,
-    props.formType
+    displayNotification,
+    formType
   );
 
   /**
@@ -152,7 +165,7 @@ function mapStateToProps(state: StateType) {
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(

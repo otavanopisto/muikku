@@ -286,10 +286,16 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
               payload: eligibilityWithAbistatus,
             });
           } catch (err) {
-            // FIX: ADD ERROR HANDLING
             if (!isMApiError(err)) {
               throw err;
             }
+
+            dispatch(
+              actions.displayNotification(
+                "Virhe ilmoittautumis- ja osallistumisoikeustietojen latauksessa",
+                "error"
+              )
+            );
           }
         }
 
@@ -321,7 +327,7 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
         if (!isMApiError(err)) {
           throw err;
         }
-        // FIX: ADD ERROR HANDLING
+
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.loadError", {
@@ -369,7 +375,6 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
           displayNotification("Lomakkeen varmistaminen onnistui", "success")
         );
       } catch (err) {
-        // FIX: ADD ERROR HANDLING
         if (!isMApiError(err)) {
           throw err;
         }
@@ -419,12 +424,11 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
           },
         });
       } catch (err) {
-        // FIX: ADD ERROR HANDLING
         if (!isMApiError(err)) {
           throw err;
         }
 
-        // If there is no history, we can just set the status to ready and empty history
+        // If there is no history, api responds with 404 and we can just set the history to empty
         if (isResponseError(err) && err.response.status === 404) {
           dispatch({
             type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
@@ -582,7 +586,6 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
           )
         );
       } catch (err) {
-        // FIX: ADD ERROR HANDLING
         if (!isMApiError(err)) {
           throw err;
         }
@@ -651,7 +654,6 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
           },
         });
       } catch (err) {
-        // FIX: ADD ERROR HANDLING
         if (!isMApiError(err)) {
           throw err;
         }
