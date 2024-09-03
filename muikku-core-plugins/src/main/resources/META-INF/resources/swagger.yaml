@@ -16782,7 +16782,6 @@ components:
         - rootFolderId
         - helpFolderId
         - indexFolderId
-        - chatEnabled
       properties:
         beginDate:
           description: OffSetDateTime format
@@ -16814,9 +16813,6 @@ components:
           description: The id of the index folder
           type: integer
           format: int64
-        chatEnabled:
-          description: If the chat is enabled
-          type: boolean
 
     WorkspaceMaterialProducer:
       type: object

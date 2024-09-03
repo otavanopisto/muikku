@@ -895,8 +895,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getViewLink(),
         rootFolder.getId(),
         helpFolder.getId(),
-        frontPage.getParent().getId(),
-        chatController.isChatEnabled(workspaceEntity))).build();
+        frontPage.getParent().getId())).build();
   }
 
   @GET
@@ -1052,9 +1051,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceController.updateWorkspace(workspace);
     }
 
-    String roomName = constructWorkspaceChatRoomName(workspace);
-    chatController.toggleWorkspaceChatRoom(workspaceEntity, roomName, payload.getChatEnabled(), sessionController.getLoggedUserEntity());
-
     String typeId = workspace.getWorkspaceTypeId() != null ? workspace.getWorkspaceTypeId().toId() : null;
 
     WorkspaceFolder helpFolder = workspaceMaterialController.ensureWorkspaceHelpFolderExists(workspaceEntity);
@@ -1069,8 +1065,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspace.getViewLink(),
         payload.getRootFolderId(),
         helpFolder.getId(),
-        frontPage.getParent().getId(),
-        payload.getChatEnabled())).build();
+        frontPage.getParent().getId())).build();
   }
 
   private String constructWorkspaceChatRoomName(Workspace workspace) {
