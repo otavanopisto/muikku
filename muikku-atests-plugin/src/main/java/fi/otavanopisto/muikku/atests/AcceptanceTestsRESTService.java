@@ -459,6 +459,10 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
     }
     
+    List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
+    for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
+      workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
+    }
     List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
     for (WorkspaceSignupMessage signupMessage : signupMessages) {
       workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
@@ -502,6 +506,10 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
       for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
         workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
+      }
+      List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
+      for (WorkspaceSignupMessage signupMessage : signupMessages) {
+        workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
       }
       
       SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
