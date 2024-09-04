@@ -5,23 +5,20 @@ import Dropdown from "~/components/general/dropdown";
 import { WorkspaceSignupMessage } from "~/generated/client";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementSignupMessageProps
  */
 interface ManagementSignupMessageProps {
   workspaceName: string;
   workspaceSignupMessage: WorkspaceSignupMessage;
-  onChange?: (workspaceSignupGroups: WorkspaceSignupMessage) => void;
+  onChange?: (signupMessage: WorkspaceSignupMessage) => void;
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementSignupMessage
  * @param props props
  */
 const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
   const { workspaceSignupMessage, onChange } = props;
-  const [customSignUpMessages, setCustomSignUpMessages] = React.useState<
-    WorkspaceSignupMessage[]
-  >([]);
   const { t } = useTranslation(["workspace"]);
 
   /**
@@ -56,34 +53,6 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
     if (onChange) {
       onChange(updateWorkspaceSignupMessage);
     }
-  };
-
-  /**
-   * Creates a custom signup message
-   * @param text text
-   */
-  const createWorkspaceSignupMessage = () => {
-    setCustomSignUpMessages([
-      ...customSignUpMessages,
-      { caption: "", content: "", enabled: false, signupGroups: [] },
-    ]);
-  };
-
-  /**
-   * Updates custom signup message
-   * @param index index of the message
-   * @param field field to update
-   * @param value value of the field
-   */
-  const updateCustomSignupMessage = (
-    index: number,
-    field: string,
-    value: string
-  ) => {
-    const updatedMessages = customSignUpMessages.map((message, i) =>
-      i === index ? { ...message, [field]: value } : message
-    );
-    setCustomSignUpMessages(updatedMessages);
   };
 
   /**

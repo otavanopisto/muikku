@@ -30,7 +30,7 @@ import {
   WorkspaceAccess,
   WorkspaceMaterialProducer,
   WorkspaceSettings,
-  WorkspaceSignupGroup,
+  WorkspaceSettingsSignupGroup,
   WorkspaceSignupMessage,
   WorkspaceType,
 } from "~/generated/client";
@@ -327,7 +327,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
    * Handles signup group message change
    */
   const handleWorkspaceSignupGroupChange = React.useCallback(
-    (group: WorkspaceSignupGroup) => {
+    (group: WorkspaceSettingsSignupGroup) => {
       setManagementState((prevState) => {
         const signupGroups = prevState.signupGroups.map((pr) => {
           if (pr.userGroupEntityId === group.userGroupEntityId) {
@@ -335,7 +335,6 @@ const ManagementPanel = (props: ManagementPanelProps) => {
           }
           return pr;
         });
-
         return {
           ...prevState,
           signupGroups,

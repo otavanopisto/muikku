@@ -9,10 +9,10 @@
 }
 
 .form__container-title {
-  font-weight: 400;
   align-items: center;
   display: flex;
   flex-flow: row wrap;
+  font-weight: 400;
 }
 
 .form__row {
@@ -235,7 +235,7 @@ legend {
 
 // CHECKBOX or RADIOBUTTON form-element wrapper
 .form-element--checkbox-radiobutton,
-.form-element--icon-with-label{
+.form-element--icon-with-label {
   align-items: center;
   background-color: transparent;
   border-radius: 0;
