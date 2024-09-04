@@ -45,7 +45,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   const [selectedSubjects2, setSelectedSubjects2] =
     React.useState<SelectedMatriculationSubject[]>(selectedSubjects);
 
-  const { t } = useTranslation(["hops", "studies", "guider", "common"]);
+  const { t } = useTranslation(["hops_new", "studies", "guider", "common"]);
 
   /**
    * Finds a matriculation subject name by subject value
@@ -54,7 +54,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    * @returns subject name or empty string if not found
    */
   const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
-    t(`matriculationSubjects.${code}`, { ns: "hops" });
+    t(`matriculationSubjectsYTL.${code}`, { ns: "hops_new" });
 
   /**
    * Method for notifying about matriculation subject changes

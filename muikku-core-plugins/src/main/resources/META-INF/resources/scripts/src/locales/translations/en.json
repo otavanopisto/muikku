@@ -579,7 +579,43 @@
       "trade": "Business",
       "transport": "Transport"
     },
-    "matriculationSubjects": {
+    "notifications": {
+      "loadError": "Loading the HOPS failed. Please try refreshing the page.",
+      "updateError": "Editing the HOPS failed. Please try refreshing the page."
+    }
+  },
+  "hops_new": {
+    "label": {
+      "matriculationPlan": "Plan",
+      "matriculationPlan_title": "Matriculation Examination Plan",
+      "matriculationEligilibity": "Eligibility",
+      "matriculationEligilibity_title1": "Registration rights (Abistatus)",
+      "matriculationEligilibity_title2": "Subject specific participation rights",
+      "matriculationEnrollment": "Registration",
+      "matriculationEnrollment_title": "Registration for the matriculation examination",
+      "matriculationHistory": "History",
+      "matriculationHistory_title": "Matriculation Examination History"
+    },
+    "content": {
+      "matriculationPlanGuides1": "Finnish or Finnish as a second language + 4 other subjects that are selected from three different subject groups.",
+      "matriculationPlanGuides2": "<b>Note.</b> One advanced exam is mandatory (A-level foreign language or advanced mathematics).",
+      "matriculationPlanGuides3": "Try <a href='https://ilmo.ylioppilastutkinto.fi/fi'>ILMO-tool</a>, to see what kind of combinations you can accomplish matriculation examination.",
+      "matriculationPlanGuideSubject1": "Foreign language (A-level or C-level)",
+      "matriculationPlanGuideSubject2": "Mathematics (Advanced or non-advanced)",
+      "matriculationPlanGuideSubject3": "Secondary language (B-level or C-level)",
+      "matriculationPlanGuideSubject4": "One academic subject",
+      "matriculationPlanTarget": "I plan to participate in the matriculation examinations.",
+      "matriculationPlanSubjectGoal": "I plan to participate in the matriculation examinations for the following subjects:",
+      "matriculationEligibilityGuides1": "To be eligible for the matriculation registration, you must complete enough studies in the subjects you wish to participate in the matriculation examination. <b>Note.</b> If you have vocational qualifications, you can participate to the matriculation examination based on your degree.",
+      "matriculationEligibilityGuides2": "Before registration, you must have completed following:",
+      "matriculationEligibilityGuides3": "In addition for every subject you wish to participate in the matriculation examination, you must have completed specific amount of studies. If you have not completed enough studies, you can participate exams that are arranged later or you can discuss your situation with the counselor.",
+      "matriculationEligibilityGuides4": "<b>To participate in exam</b> in the subjects you wish to, you must complete all mandatory studies. In cases where subject doesn't include mandatory studies, academic studies requires four credits and foreign languages requires six credits.",
+      "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
+      "matriculationAbistatusEligibility1": "You have completed at least 40 mandatory credit points. You have <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
+      "matriculationAbistatusEligibility2": "You have completed at least one course in Nettilukio",
+      "matriculationAbistatusEligibility3": "You have completed at least one course of all the subjects included in yours the matriculation plan"
+    },
+    "matriculationSubjectsYTL": {
       "A": "Primary Finnish",
       "A5": "Secondary Finnish",
       "EA": "English, A-level",
@@ -612,38 +648,6 @@
       "GC": "Portugese, C-level",
       "LC": "Latin, C-level",
       "SMC": "Sami, C-level"
-    },
-    "notifications": {
-      "loadError": "Loading the HOPS failed. Please try refreshing the page.",
-      "updateError": "Editing the HOPS failed. Please try refreshing the page."
-    }
-  },
-  "hops_new": {
-    "label": {
-      "matriculationPlan": "Plan",
-      "matriculationPlan_title": "Matriculation Examination Plan",
-      "matriculationEligilibity": "Eligibility",
-      "matriculationEligilibity_title1": "Registration rights (Abistatus)",
-      "matriculationEligilibity_title2": "Subject specific participation rights",
-      "matriculationEnrollment": "Registration",
-      "matriculationEnrollment_title": "Registration for the matriculation examination",
-      "matriculationHistory": "History",
-      "matriculationHistory_title": "Matriculation Examination History"
-    },
-    "content": {
-      "matriculationPlanGuides1": "Finnish or Finnish as a second language + 4 other subjects that are selected from three different subject groups.",
-      "matriculationPlanGuides2": "<b>Note.</b> One advanced exam is mandatory (A-level foreign language or advanced mathematics).",
-      "matriculationPlanGuides3": "Try <a href='https://ilmo.ylioppilastutkinto.fi/fi'>ILMO-tool</a>, to see what kind of combinations you can accomplish matriculation examination.",
-      "matriculationPlanGuideSubject1": "Foreign language (A-level or C-level)",
-      "matriculationPlanGuideSubject2": "Mathematics (Advanced or non-advanced)",
-      "matriculationPlanGuideSubject3": "Secondary language (B-level or C-level)",
-      "matriculationPlanGuideSubject4": "One academic subject",
-      "matriculationPlanTarget": "I plan to participate in the matriculation examinations.",
-      "matriculationPlanSubjectGoal": "I plan to participate in the matriculation examinations for the following subjects:",
-      "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
-      "matriculationAbistatusEligibility1": "You have completed at least 40 mandatory credit points. You have <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
-      "matriculationAbistatusEligibility2": "You have completed at least one course in Nettilukio",
-      "matriculationAbistatusEligibility3": "You have completed at least one course of all the subjects included in yours the matriculation plan"
     },
     "notifications": {}
   },
