@@ -16,7 +16,7 @@ jobs:
           node-version: 20.11.1
 
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm i
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
       - name: Running Typescript Compiler Check
