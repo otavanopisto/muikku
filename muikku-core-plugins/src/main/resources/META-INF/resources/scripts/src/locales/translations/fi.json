@@ -594,23 +594,32 @@
     }
   },
   "hops_new": {
+    "actions": {
+      "confirmRegistration": "Vahvista ilmoittautuminen",
+      "showSummary": "Näytä yhteenveto",
+      "supplementRegistration": "Täydenne ilmoittautumista"
+    },
     "label": {
       "grade": "Arvosana:",
       "grades": "Arvosanat",
+      "hopsMatriculation": "Ylioppilastutkinto",
       "matriculationPlan": "Suunnitelma",
       "matriculationPlan_title": " Yo-tutkintosuunnitelma",
-      "matriculationEligilibity": "Osallistumisoikeus",
-      "matriculationEligilibity_title1": "Ilmoittautumisoikeus eli Abistatus",
-      "matriculationEligilibity_title2": "Ainekohtainen osallistumisoikeus",
+      "matriculationParticipation": "Osallistumisoikeus",
+      "matriculationParticipation_title1": "Ilmoittautumisoikeus eli Abistatus",
+      "matriculationParticipation_title2": "Ainekohtainen osallistumisoikeus",
       "matriculationEnrollment": "Ilmoittautuminen",
       "matriculationEnrollment_title": "Ylioppilaskokeeseen ilmoittautuminen",
+      "matriculationEnrollmentCloses": "Ilmoittautuminen sulkeutuu",
+      "matriculationEnrollmentStatus": "Registration status:",
+      "matriculationEnrollmentHistory": "Ilmoittautumishistoria",
       "matriculationHistory": "Yo-koehistoria",
       "matriculationHistory_title": "Yo-koehistoria"
     },
     "content": {
       "matriculationPlanGuides1": "Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan vähintään kolmesta aineryhmästä:",
       "matriculationPlanGuides2": "<b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe (esim. pitkä matematiikka tai A-tason vieras kieli).",
-      "matriculationPlanGuides3": "Kokeile <a href='https://ilmo.ylioppilastutkinto.fi/fi'>ILMO-työkalulla</a>, millaisilla aineyhdistelmillä voit suorittaa ylioppilastutkinnon.",
+      "matriculationPlanGuides3": "Kokeile <a href='https://ilmo.ylioppilastutkinto.fi/fi'> ILMO-työkalulla</a>, millaisilla aineyhdistelmillä voit suorittaa ylioppilastutkinnon.",
       "matriculationPlanGuideSubject1": "Vieras kieli (pitkä tai lyhyt)",
       "matriculationPlanGuideSubject2": "Matematiikka (pitkä tai lyhyt)",
       "matriculationPlanGuideSubject3": "Toinen kotimainen kieli eli ruotsi (pitkä tai keskipitkä)",
@@ -622,6 +631,9 @@
       "matriculationEligibilityGuides3": "Lisäksi sinulla pitää olla suoritettuna kirjoitettavasta aineesta tietty määrä opintoja. Jos et ole suorittanut riittävästi opintoja kirjoitettavasta aineesta, voit ilmoittautua myöhemmin pidettävään kokeeseen tai keskustella asiasta ohjaajasi kanssa.",
       "matriculationEligibilityGuides4": "Jotta voit <b>osallistua aineen ylioppilaskokeeseen</b>, sinun pitää suorittaa kirjoitettavasta aineesta pakolliset opinnot. Jos aineessa ei ole pakollisia opintoja, reaaliaineista pitää olla suoritettuna neljä opintopistettä ja vieraista kielistä kuusi opintopistettä.",
       "matriculationEligibility": "Olet suorittanut vaadittuja opintoja <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
+      "matriculationEnrollmentDone": "Olet ilmoittatunut Yo-kirjoituksiin ({{term}}) {{date}}.",
+      "matriculationEnrollmentGuides1": "Huom. Tarkasta ennen ilmoittautumista Osallistumisoikeus-välilehdeltä, oletko suorittanut riittävästi opintoja, jotta voit osallistua yo-kirjoituksiin",
+      "matriculationEnrollmentGuides2": "Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavia.fi)",
       "matriculationAbistatusEligibility1": "Vähintään 40 opintopistettä pakollisisa opintoja. Sinulla on <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
       "matriculationAbistatusEligibility2": "Vähintään yksi opintojakso Nettilukiossa",
       "matriculationAbistatusEligibility3": "Kaikista ylioppilastutkintoon suunnittelemistasi aineista vähintään yksi pakollinen opintojakso",

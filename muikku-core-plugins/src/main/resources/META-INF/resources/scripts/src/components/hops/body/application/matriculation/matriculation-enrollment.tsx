@@ -94,9 +94,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
     return (
       <div className="application-sub-panel__notification-item">
         <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-          Huom. Tarkasta ennen ilmoittautumista Osallistumisoikeus-välilehdeltä,
-          oletko suorittanut riittävästi opintoja, jotta voit osallistua
-          yo-kirjoituksiin.
+          {t("content.matriculationEnrollmentGuides1", {
+            ns: "hops_new",
+          })}
         </div>
         <div className="application-sub-panel__notification-footer">
           {enrollmentLinks}
@@ -167,7 +167,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
                     formType="readonly"
                   >
                     <Button className="button button--yo-signup">
-                      Näytä yhteenveto
+                      {t("actions.supplementRegistration", {
+                        ns: "hops_new",
+                      })}
                     </Button>
                   </MatriculationWizardSummaryDialog>
                 </div>
@@ -190,7 +192,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
                   formType="readonly"
                 >
                   <Button className="button button--yo-signup">
-                    Näytä yhteenveto
+                    {t("actions.showSummary", {
+                      ns: "hops_new",
+                    })}
                   </Button>
                 </MatriculationWizardSummaryDialog>
               </div>
@@ -205,7 +209,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
                   formType="editable"
                 >
                   <Button className="button button--yo-signup">
-                    Täydennä ilmoittautumista
+                    {t("actions.supplementRegistration", {
+                      ns: "hops_new",
+                    })}
                   </Button>
                 </MatriculationExaminationWizardDialog>
               </div>
@@ -223,7 +229,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
                     className="button button--yo-signup"
                     onClick={handleVerifyMatriculationExam(e.id)}
                   >
-                    Vahvista ilmoittautuminen
+                    {t("actions.confirmRegistration", {
+                      ns: "hops_new",
+                    })}
                   </Button>
                 </MatriculationVerifyDialog>
               </div>
@@ -244,15 +252,21 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
           <div className="application-sub-panel__notification-footer">
             <div className="application-sub-panel__notification-content">
               <span className="application-sub-panel__notification-content-title">
-                {`Olet ilmoittautunut YO-kirjoituksiin (${term} ${year}) ${new Date(
-                  e.enrollment.enrollmentDate
-                ).toLocaleDateString("fi-Fi")}.`}
+                {t("content.matriculationEnrollmentDone", {
+                  ns: "hops_new",
+                  term: `${term} ${year}`,
+                  date: new Date(
+                    e.enrollment.enrollmentDate
+                  ).toLocaleDateString("fi-Fi"),
+                })}
               </span>
             </div>
 
             <div className="application-sub-panel__notification-content">
               <span className="application-sub-panel__notification-content-label">
-                Ilmoittautuminen sulkeutuu:
+                {t("label.matriculationEnrollmentCloses", {
+                  ns: "hops_new",
+                })}
               </span>
 
               <span className="application-sub-panel__notification-content-data">
@@ -262,7 +276,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
             <div className="application-sub-panel__notification-content">
               <span className="application-sub-panel__notification-content-label">
-                Ilmoittautumistila:
+                {t("label.matriculationEnrollmentStatus", {
+                  ns: "hops_new",
+                })}
               </span>
 
               <span
@@ -302,7 +318,10 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
     <>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          Ylioppilaskirjoituksiin ilmoittautuminen
+          {t("label.matriculationEnrollment", {
+            ns: "hops_new",
+            context: "title",
+          })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {renderEnrollmentLinks()}
@@ -312,8 +331,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
         <ApplicationSubPanel.Body>
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-              Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen
-              (riikka.turpeinen@otavia.fi).
+              {t("content.matriculationEnrollmentGuides2", {
+                ns: "hops_new",
+              })}
             </div>
           </div>
         </ApplicationSubPanel.Body>
@@ -321,7 +341,9 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          Ilmoittautumishistoria
+          {t("label.matriculationEnrollmentHistory", {
+            ns: "hops_new",
+          })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body modifier="studies-yo-subjects">
           <MatriculationEnrollmentDrawerList>

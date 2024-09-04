@@ -88,17 +88,21 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
     <>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          Abistatus eli ilmoittautumisoikeus
+          {t("label.matriculationParticipation", {
+            ns: "hops_new",
+            context: "title1",
+          })}
         </ApplicationSubPanel.Header>
         <div className="application-sub-panel__body application-sub-panel__body">
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-              <p>
-                {t("content.matriculationEligibilityGuides1", {
+            <div
+              className="application-sub-panel__notification-body application-sub-panel__notification-body"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationEligibilityGuides1", {
                   ns: "hops_new",
-                })}
-              </p>
-            </div>
+                }),
+              }}
+            />
           </div>
 
           <div className="application-sub-panel__notification-item">
@@ -121,7 +125,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                     : "NOT_ELIGIBLE"
                 }
                 description={t("content.matriculationAbistatusEligibility1", {
-                  ns: "hops",
+                  ns: "hops_new",
                   acceptedCount: hops.hopsMatriculation.eligibility.credits,
                   requiredCount:
                     hops.hopsMatriculation.eligibility.creditsRequired,
@@ -168,17 +172,21 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {t("content.participationRights", { ns: "studies" })}
+          {t("label.matriculationParticipation", {
+            ns: "hops_new",
+            context: "title2",
+          })}
         </ApplicationSubPanel.Header>
         <div className="application-sub-panel__body application-sub-panel__body">
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-              <p>
-                {t("content.matriculationEligibilityGuides4", {
+            <div
+              className="application-sub-panel__notification-body application-sub-panel__notification-body"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationEligibilityGuides4", {
                   ns: "hops_new",
-                })}
-              </p>
-            </div>
+                }),
+              }}
+            />
           </div>
 
           <div className="application-sub-panel__notification-item">

@@ -5,6 +5,7 @@ import MatriculationEntrollment from "./matriculation-enrollment";
 import MatriculationHistory from "./matriculation-history";
 import MatriculationEligibility from "./matriculation-eligibility";
 import MatriculationPlan from "./matriculation-plan";
+import { useTranslation } from "react-i18next";
 
 /**
  * Type for MatriculationTab
@@ -24,6 +25,8 @@ interface MatriculationProps {}
 const Matriculation = (props: MatriculationProps) => {
   const [activeTab, setActiveTab] = React.useState<string>("PLAN");
 
+  const { t } = useTranslation(["hops_new", "guider", "common"]);
+
   /**
    * Handles tab change
    * @param id tab
@@ -35,7 +38,7 @@ const Matriculation = (props: MatriculationProps) => {
   const panelTabs: Tab[] = [
     {
       id: "PLAN",
-      name: "Suunnitelma",
+      name: t("label.matriculationPlan", { ns: "hops_new" }),
       type: "plan",
       component: (
         <ApplicationPanelBody modifier="tabs">
@@ -45,7 +48,7 @@ const Matriculation = (props: MatriculationProps) => {
     },
     {
       id: "ELIGIBILITY",
-      name: "Osallistumisoikeus",
+      name: t("label.matriculationParticipation", { ns: "hops_new" }),
       type: "eligibility",
       component: (
         <ApplicationPanelBody modifier="tabs">
@@ -55,7 +58,7 @@ const Matriculation = (props: MatriculationProps) => {
     },
     {
       id: "ENROLLMENT",
-      name: "Ilmoittautuminen",
+      name: t("label.matriculationEnrollment", { ns: "hops_new" }),
       type: "enrollment",
       component: (
         <ApplicationPanelBody modifier="tabs">
@@ -65,7 +68,7 @@ const Matriculation = (props: MatriculationProps) => {
     },
     {
       id: "HISTORY",
-      name: "Yo-koehistoria",
+      name: t("label.matriculationHistory", { ns: "hops_new" }),
       type: "history",
       component: (
         <ApplicationPanelBody modifier="tabs">

@@ -100,13 +100,14 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
         </div>
 
         <div className="application-sub-panel__notification-item">
-          <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-            <p>
-              {t("content.matriculationHistoryGuides2", {
+          <div
+            className="application-sub-panel__notification-body application-sub-panel__notification-body"
+            dangerouslySetInnerHTML={{
+              __html: t("content.matriculationHistoryGuides2", {
                 ns: "hops_new",
-              })}
-            </p>
-          </div>
+              }),
+            }}
+          />
         </div>
 
         <div className="application-sub-panel__notification-item">
