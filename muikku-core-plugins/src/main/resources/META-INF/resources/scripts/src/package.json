@@ -8,6 +8,7 @@
     "build-full": "npm run build-client && npm run build",
     "build-client": "openapi-generator-cli generate -i ../../swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
     "clean-dist": "rimraf ../dist/* --glob",
+    "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
     "stylelint": "stylelint \"**/*.scss\"",

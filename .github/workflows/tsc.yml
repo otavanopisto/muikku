@@ -1,0 +1,26 @@
+name: ESlint Code Quality Review
+on:
+  pull_request:
+    branches: devel
+jobs:
+  tsc:
+    name: tsc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 20.11.1
+
+      - name: Install Node.js dependencies
+        run: npm ci
+        working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+
+      - name: Running Typescript Compiler
+        uses: reviewdog/action-eslint@v1
+        with:
+          project: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+
