@@ -61,6 +61,20 @@ public class WorkspaceSignupMessageDAO extends CoreDAO<WorkspaceSignupMessage> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public List<WorkspaceSignupMessage> listByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceSignupMessage> criteria = criteriaBuilder.createQuery(WorkspaceSignupMessage.class);
+    Root<WorkspaceSignupMessage> root = criteria.from(WorkspaceSignupMessage.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(WorkspaceSignupMessage_.workspaceEntity), workspaceEntity)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   /**
    * Lists all group bound signup messages for given workspace.
    * 

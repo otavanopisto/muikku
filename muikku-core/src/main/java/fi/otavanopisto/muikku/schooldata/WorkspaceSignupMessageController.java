@@ -157,6 +157,10 @@ public class WorkspaceSignupMessageController {
   public WorkspaceSignupMessage findSignupMessageById(Long id) {
     return workspaceEntityMessageDAO.findById(id);
   }
+
+  public List<WorkspaceSignupMessage> listByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return workspaceEntityMessageDAO.listByWorkspaceEntity(workspaceEntity);
+  }
   
   public List<WorkspaceSignupMessage> listGroupBoundSignupMessages(WorkspaceEntity workspaceEntity) {
     return workspaceEntityMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
