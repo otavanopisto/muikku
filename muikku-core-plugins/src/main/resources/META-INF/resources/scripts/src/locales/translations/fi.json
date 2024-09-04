@@ -595,6 +595,8 @@
   },
   "hops_new": {
     "label": {
+      "grade": "Arvosana:",
+      "grades": "Arvosanat",
       "matriculationPlan": "Suunnitelma",
       "matriculationPlan_title": " Yo-tutkintosuunnitelma",
       "matriculationEligilibity": "Osallistumisoikeus",
@@ -622,7 +624,15 @@
       "matriculationEligibility": "Olet suorittanut vaadittuja opintoja <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
       "matriculationAbistatusEligibility1": "Vähintään 40 opintopistettä pakollisisa opintoja. Sinulla on <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
       "matriculationAbistatusEligibility2": "Vähintään yksi opintojakso Nettilukiossa",
-      "matriculationAbistatusEligibility3": "Kaikista ylioppilastutkintoon suunnittelemistasi aineista vähintään yksi pakollinen opintojakso"
+      "matriculationAbistatusEligibility3": "Kaikista ylioppilastutkintoon suunnittelemistasi aineista vähintään yksi pakollinen opintojakso",
+      "matriculationHistoryEmpty": "Sinulla ei ole vielä tuloksia yo-kokeista.",
+      "matriculationHistoryGuides1": "Suorittamasi yo-kokeet ja niistä saamasi arvosanat.",
+      "matriculationHistoryGuides2": "<b>Huom.</b> Jos olet osallistunut yo-kokeisiin ennen Nettilukiota, aiemmat yo-koesuorituksesi eivät välttämättä näy täällä."
+    },
+    "matriculationGrades": {
+      "I": "improbatur eli hylätty",
+      "K": "keskeytynyt",
+      "EO": "ei tiedossa"
     },
     "matriculationSubjectsYTL": {
       "A": "Äidinkieli",

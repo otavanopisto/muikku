@@ -586,6 +586,8 @@
   },
   "hops_new": {
     "label": {
+      "grade": "Grade:",
+      "grades": "Grades",
       "matriculationPlan": "Plan",
       "matriculationPlan_title": "Matriculation Examination Plan",
       "matriculationEligilibity": "Eligibility",
@@ -613,7 +615,15 @@
       "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
       "matriculationAbistatusEligibility1": "You have completed at least 40 mandatory credit points. You have <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
       "matriculationAbistatusEligibility2": "You have completed at least one course in Nettilukio",
-      "matriculationAbistatusEligibility3": "You have completed at least one course of all the subjects included in yours the matriculation plan"
+      "matriculationAbistatusEligibility3": "You have completed at least one course of all the subjects included in yours the matriculation plan",
+      "matriculationHistoryEmpty": "You do not have any results from the matriculation examinations yet",
+      "matriculationHistoryGuides1": "Completed exams and results for those",
+      "matriculationHistoryGuides2": "<b>Note:</b> If you have participated in matriculation examinations before Nettilukio, your previous examination results may not be displayed here."
+    },
+    "matriculationGrades": {
+      "I": "improbatur (rejected)",
+      "K": "cancelled",
+      "EO": "unknown"
     },
     "matriculationSubjectsYTL": {
       "A": "Primary Finnish",

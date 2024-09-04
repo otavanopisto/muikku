@@ -10,14 +10,14 @@ import MatriculationEligibilityRow from "./components/matriculation-eligibility-
 import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 
 /**
- * MatriculationPlanProps
+ * MatriculationEligibilityProps
  */
 interface MatriculationEligibilityProps {
   hops: HopsState;
 }
 
 /**
- * MatriculationParticipation
+ * MatriculationEligibility
  * @param props props
  */
 const MatriculationEligibility = (props: MatriculationEligibilityProps) => {

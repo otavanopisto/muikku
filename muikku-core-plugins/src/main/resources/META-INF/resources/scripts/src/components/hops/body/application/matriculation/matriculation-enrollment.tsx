@@ -23,7 +23,7 @@ import MatriculationEnrollmentDrawerListItem from "./components/enrollment-drawe
 import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
- * MatriculationPlanProps
+ * MatriculationEnrollmentProps
  */
 interface MatriculationEnrollmentProps {
   hops: HopsState;
@@ -31,7 +31,7 @@ interface MatriculationEnrollmentProps {
 }
 
 /**
- * MatriculationPlan
+ * MatriculationEntrollment
  * @param props props
  */
 const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
