@@ -16,11 +16,11 @@ jobs:
           node-version: 20.11.1
 
       - name: Install Node.js dependencies
-        run: npm i
+        run: npm ci
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
       - name: Running Typescript Compiler Check
         uses: iCrawl/action-tsc@v1
         with:
-          project: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+          project: "muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"
 
