@@ -40,7 +40,6 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
     canPublishName,
     enrollmentDate,
     degreeType,
-    numMandatoryCourses,
     enrolledAttendances,
     plannedAttendances,
     finishedAttendances,
@@ -209,10 +208,10 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Pakollisia kursseja suoritettuna"
+              label="Pakollisia opintopisteitä suoritettuna"
               readOnly
               type="text"
-              value={numMandatoryCourses}
+              value={studentInformation.completedCreditPointsCount}
               className="matriculation__input"
             />
           </div>

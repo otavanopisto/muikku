@@ -564,6 +564,10 @@
       "italian": "Italia",
       "longSyllabus": "Pitkän oppimäärän",
       "loading": "Ladataan...",
+      "matriculationPlan": "Yo-tutkintosuunnitelma",
+      "matriculationEligilibity": "Osallistumisoikeus",
+      "matriculationEnrollment": "Ylioppilaskokeeseen ilmoittautuminen",
+      "matriculationHistory": "Yo-koehistoria",
       "maybe": "Ehkä",
       "ops2016": "Luonnontieteissä (fysiikka, kemia, biologia ja maantiede) sinun pitää tehdä yhdestä aineesta kaksi pakollista kurssia, muista yksi kurssi. Luonnontiede, josta suoritetaan vähintään 2 kurssia",
       "ops2021": "Luonnontieteissä (fysiikka, kemia, biologia ja maantiede) pitää suorittaa kolmessa oppiaineessa pakollisia opintoja kahden opintopisteen ja yhdessä oppiaineessa neljän opintopisteen verran. Voit valita itse, mistä aineesta suoritat neljä opintopistettä pakollisena ja mitkä valinnaiset opintojaksot suoritat tähän liittyen. Haluan suorittaa neljä opintopistettä pakollisena seuraavasta oppiaineesta:",
@@ -621,6 +625,35 @@
       "loadError": "HOPSin lataus epäonnistui. Yritä ladata sivu uudelleen.",
       "updateError": "HOPSin päivitys epäonnistui. Yritä uudelleen."
     }
+  },
+  "hops_new": {
+    "label": {
+      "matriculationPlan": "Suunnitelma",
+      "matriculationPlan_title": " Yo-tutkintosuunnitelma",
+      "matriculationEligilibity": "Osallistumisoikeus",
+      "matriculationEligilibity_title1": "Ilmoittautumisoikeus eli Abistatus",
+      "matriculationEligilibity_title2": "Ainekohtainen osallistumisoikeus",
+      "matriculationEnrollment": "Ilmoittautuminen",
+      "matriculationEnrollment_title": "Ylioppilaskokeeseen ilmoittautuminen",
+      "matriculationHistory": "Yo-koehistoria",
+      "matriculationHistory_title": "Yo-koehistoria"
+    },
+    "content": {
+      "matriculationPlanGuides1": "Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan vähintään kolmesta aineryhmästä:",
+      "matriculationPlanGuides2": "<b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe (esim. pitkä matematiikka tai A-tason vieras kieli).",
+      "matriculationPlanGuides3": "Kokeile <a href='https://ilmo.ylioppilastutkinto.fi/fi'>ILMO-työkalulla</a>, millaisilla aineyhdistelmillä voit suorittaa ylioppilastutkinnon.",
+      "matriculationPlanGuideSubject1": "Vieras kieli (pitkä tai lyhyt)",
+      "matriculationPlanGuideSubject2": "Matematiikka (pitkä tai lyhyt)",
+      "matriculationPlanGuideSubject3": "Toinen kotimainen kieli eli ruotsi (pitkä tai keskipitkä)",
+      "matriculationPlanGuideSubject4": "Yksi reaaliaineen koe",
+      "matriculationPlanTarget": "Aion osallistua ylioppilaskokeisiin",
+      "matriculationPlanSubjectGoal": "Aion osallistua seuraavien aineiden yo-kokeisiin:",
+      "matriculationEligibility": "Olet suorittanut vaadittuja opintoja <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
+      "matriculationAbistatusEligibility1": "Vähintään 40 opintopistettä pakollisisa opintoja. Sinulla on <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
+      "matriculationAbistatusEligibility2": "Vähintään yksi opintojakso Nettilukiossa",
+      "matriculationAbistatusEligibility3": "Kaikista ylioppilastutkintoon suunnittelemistasi aineista vähintään yksi pakollinen opintojakso"
+    },
+    "notifications": {}
   },
   "organization": {
     "content": {

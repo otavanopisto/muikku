@@ -529,10 +529,6 @@
       "hopsNotActivatedByCounselor": "HOPS has not been actived by the counselor",
       "iHave": "I have",
       "justTransferCredits": "years of previous studies and I want to get transfer credits for them",
-      "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
-      "matriculationAbistatusEligibility1": "You have completed at least 40 mandatory credit points <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
-      "matriculationAbistatusEligibility2": "You have completed at least one course in Nettilukio",
-      "matriculationAbistatusEligibility3": "You have completed at least one course of all the subjects included in yours the matriculation plan",
       "matriculationSubjectsGoal": "I am going to write these subjects in the matriculation exam",
       "mathSyllabus": "Studying math starts with MAY1. After that you can choose if you want to study the long or short syllabus. I want to graduate",
       "otherMandatoryLanguages": "In addition to primary Finnish, the adults will also study mandatory A-english and B-swedish.",
@@ -621,6 +617,35 @@
       "loadError": "Loading the HOPS failed. Please try refreshing the page.",
       "updateError": "Editing the HOPS failed. Please try refreshing the page."
     }
+  },
+  "hops_new": {
+    "label": {
+      "matriculationPlan": "Plan",
+      "matriculationPlan_title": "Matriculation Examination Plan",
+      "matriculationEligilibity": "Eligibility",
+      "matriculationEligilibity_title1": "Registration rights (Abistatus)",
+      "matriculationEligilibity_title2": "Subject specific participation rights",
+      "matriculationEnrollment": "Registration",
+      "matriculationEnrollment_title": "Registration for the matriculation examination",
+      "matriculationHistory": "History",
+      "matriculationHistory_title": "Matriculation Examination History"
+    },
+    "content": {
+      "matriculationPlanGuides1": "Finnish or Finnish as a second language + 4 other subjects that are selected from three different subject groups.",
+      "matriculationPlanGuides2": "<b>Note.</b> One advanced exam is mandatory (A-level foreign language or advanced mathematics).",
+      "matriculationPlanGuides3": "Try <a href='https://ilmo.ylioppilastutkinto.fi/fi'>ILMO-tool</a>, to see what kind of combinations you can accomplish matriculation examination.",
+      "matriculationPlanGuideSubject1": "Foreign language (A-level or C-level)",
+      "matriculationPlanGuideSubject2": "Mathematics (Advanced or non-advanced)",
+      "matriculationPlanGuideSubject3": "Secondary language (B-level or C-level)",
+      "matriculationPlanGuideSubject4": "One academic subject",
+      "matriculationPlanTarget": "I plan to participate in the matriculation examinations.",
+      "matriculationPlanSubjectGoal": "I plan to participate in the matriculation examinations for the following subjects:",
+      "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
+      "matriculationAbistatusEligibility1": "You have completed at least 40 mandatory credit points. You have <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
+      "matriculationAbistatusEligibility2": "You have completed at least one course in Nettilukio",
+      "matriculationAbistatusEligibility3": "You have completed at least one course of all the subjects included in yours the matriculation plan"
+    },
+    "notifications": {}
   },
   "organization": {
     "content": {
