@@ -602,7 +602,7 @@
       "matriculationEnrollment": "Registration",
       "matriculationEnrollment_title": "Registration for the matriculation examination",
       "matriculationEnrollmentCloses": "Registration closes",
-      "matriculationEnrollmentStatus": "Registration status:",
+      "matriculationEnrollmentStatus": "Status of Registration:",
       "matriculationEnrollmentHistory": "Registration history",
       "matriculationHistory": "History",
       "matriculationHistory_title": "Matriculation Examination History"
@@ -631,6 +631,18 @@
       "matriculationHistoryEmpty": "You do not have any results from the matriculation examinations yet",
       "matriculationHistoryGuides1": "Completed exams and results for those",
       "matriculationHistoryGuides2": "<b>Note:</b> If you have participated in matriculation examinations before Nettilukio, your previous examination results may not be displayed here."
+    },
+    "matriculationTerms": {
+      "AUTUMN": "Autumn {{year}}",
+      "SPRING": "Spring {{year}}"
+    },
+    "matriculationEnrollmentStatuses": {
+      "pending": "Waiting for approval",
+      "rejected": "Cancelled",
+      "supplemented": "Supplemented",
+      "Approved": "Approved",
+      "confirmed": "Confirmed",
+      "supplementationRequest": "Needs supplementation"
     },
     "matriculationGrades": {
       "I": "improbatur (rejected)",

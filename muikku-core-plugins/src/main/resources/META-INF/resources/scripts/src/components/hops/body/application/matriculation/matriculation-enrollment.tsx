@@ -135,12 +135,42 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
     const statusMap: {
       [key in MatriculationExamStudentStatus]?: string;
     } = {
-      [MatriculationExamStudentStatus.Pending]: "Odottaa hyväksyntää",
-      [MatriculationExamStudentStatus.SupplementationRequest]: "Täydennettävä",
-      [MatriculationExamStudentStatus.Supplemented]: "Täydennetty",
-      [MatriculationExamStudentStatus.Approved]: "Hyväksytty",
-      [MatriculationExamStudentStatus.Rejected]: "Hylätty",
-      [MatriculationExamStudentStatus.Confirmed]: "Vahvistettu",
+      [MatriculationExamStudentStatus.Pending]: t(
+        "matriculationEnrollmentStatuses.pending",
+        {
+          ns: "hops_new",
+        }
+      ),
+      [MatriculationExamStudentStatus.SupplementationRequest]: t(
+        "matriculationEnrollmentStatuses.supplementationRequest",
+        {
+          ns: "hops_new",
+        }
+      ),
+      [MatriculationExamStudentStatus.Supplemented]: t(
+        "matriculationEnrollmentStatuses.supplemented",
+        {
+          ns: "hops_new",
+        }
+      ),
+      [MatriculationExamStudentStatus.Approved]: t(
+        "matriculationEnrollmentStatuses.Approved",
+        {
+          ns: "hops_new",
+        }
+      ),
+      [MatriculationExamStudentStatus.Rejected]: t(
+        "matriculationEnrollmentStatuses.rejected",
+        {
+          ns: "hops_new",
+        }
+      ),
+      [MatriculationExamStudentStatus.Confirmed]: t(
+        "matriculationEnrollmentStatuses.confirmed",
+        {
+          ns: "hops_new",
+        }
+      ),
     };
 
     /**
@@ -242,9 +272,6 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
         }
       };
 
-      const term = e.term === "AUTUMN" ? "Syksy" : "Kevät";
-      const year = e.year;
-
       const functionByStatus = renderFunctionByStatus();
 
       return (
@@ -254,7 +281,10 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
               <span className="application-sub-panel__notification-content-title">
                 {t("content.matriculationEnrollmentDone", {
                   ns: "hops_new",
-                  term: `${term} ${year}`,
+                  term: t(`matriculationTerms.${e.term}`, {
+                    ns: "hops_new",
+                    year: e.year,
+                  }),
                   date: new Date(
                     e.enrollment.enrollmentDate
                   ).toLocaleDateString("fi-Fi"),

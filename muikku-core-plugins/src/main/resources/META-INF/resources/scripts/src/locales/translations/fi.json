@@ -611,7 +611,7 @@
       "matriculationEnrollment": "Ilmoittautuminen",
       "matriculationEnrollment_title": "Ylioppilaskokeeseen ilmoittautuminen",
       "matriculationEnrollmentCloses": "Ilmoittautuminen sulkeutuu",
-      "matriculationEnrollmentStatus": "Registration status:",
+      "matriculationEnrollmentStatus": "Ilmoittautumisen tila:",
       "matriculationEnrollmentHistory": "Ilmoittautumishistoria",
       "matriculationHistory": "Yo-koehistoria",
       "matriculationHistory_title": "Yo-koehistoria"
@@ -631,7 +631,7 @@
       "matriculationEligibilityGuides3": "Lisäksi sinulla pitää olla suoritettuna kirjoitettavasta aineesta tietty määrä opintoja. Jos et ole suorittanut riittävästi opintoja kirjoitettavasta aineesta, voit ilmoittautua myöhemmin pidettävään kokeeseen tai keskustella asiasta ohjaajasi kanssa.",
       "matriculationEligibilityGuides4": "Jotta voit <b>osallistua aineen ylioppilaskokeeseen</b>, sinun pitää suorittaa kirjoitettavasta aineesta pakolliset opinnot. Jos aineessa ei ole pakollisia opintoja, reaaliaineista pitää olla suoritettuna neljä opintopistettä ja vieraista kielistä kuusi opintopistettä.",
       "matriculationEligibility": "Olet suorittanut vaadittuja opintoja <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
-      "matriculationEnrollmentDone": "Olet ilmoittatunut Yo-kirjoituksiin ({{term}}) {{date}}.",
+      "matriculationEnrollmentDone": "Olet ilmoittautunut ylioppilaskokeeseen ({{term}}) {{date}}.",
       "matriculationEnrollmentGuides1": "Huom. Tarkasta ennen ilmoittautumista Osallistumisoikeus-välilehdeltä, oletko suorittanut riittävästi opintoja, jotta voit osallistua yo-kirjoituksiin",
       "matriculationEnrollmentGuides2": "Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavia.fi)",
       "matriculationAbistatusEligibility1": "Vähintään 40 opintopistettä pakollisisa opintoja. Sinulla on <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
@@ -640,6 +640,18 @@
       "matriculationHistoryEmpty": "Sinulla ei ole vielä tuloksia yo-kokeista.",
       "matriculationHistoryGuides1": "Suorittamasi yo-kokeet ja niistä saamasi arvosanat.",
       "matriculationHistoryGuides2": "<b>Huom.</b> Jos olet osallistunut yo-kokeisiin ennen Nettilukiota, aiemmat yo-koesuorituksesi eivät välttämättä näy täällä."
+    },
+    "matriculationTerms": {
+      "AUTUMN": "Syksy {{year}}",
+      "SPRING": "Kevät {{year}}"
+    },
+    "matriculationEnrollmentStatuses": {
+      "pending": "Odottaa hyväksyntää",
+      "rejected": "Peruttu",
+      "supplemented": "Täydennetty",
+      "Approved": "Hyväksytty",
+      "confirmed": "Vahvistettu",
+      "supplementationRequest": "Täydennettävä"
     },
     "matriculationGrades": {
       "I": "improbatur eli hylätty",

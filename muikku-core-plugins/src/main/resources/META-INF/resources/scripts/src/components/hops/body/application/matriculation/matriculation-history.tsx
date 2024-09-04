@@ -70,7 +70,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
                 {t("label.grade", {
                   ns: "hops_new",
                 })}
-                : {matriculationGradeMap[sr.grade]}
+                {matriculationGradeMap[sr.grade]}
               </span>
             </ItemList.Item>
           ))}

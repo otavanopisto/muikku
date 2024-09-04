@@ -4,6 +4,7 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
+import { MatriculationExamTerm } from "~/generated/client";
 import { getNextTermsOptionsByDate } from "~/helper-functions/matriculation-functions";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -55,6 +56,18 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    */
   const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
     t(`matriculationSubjectsYTL.${code}`, { ns: "hops_new" });
+
+  /**
+   * Finds a matriculation term name by term value
+   *
+   * @param term matriculation subject code
+   * @param year terms year
+   * @returns subject name or empty string if not found
+   */
+  const getMatriculationTermNameByCode = (
+    term: MatriculationExamTerm,
+    year: number
+  ) => t(`matriculationTerms.${term}`, { ns: "hops_new", year: year });
 
   /**
    * Method for notifying about matriculation subject changes
@@ -126,12 +139,10 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    * @returns JSX.Element
    */
   const getOptionByValue = (termValue: string) => {
-    const term = termValue.substring(0, 6);
-    const year = termValue.substring(6);
+    const term = termValue.substring(0, 6) as MatriculationExamTerm;
+    const year = parseInt(termValue.substring(6));
 
-    const termName = term === "SPRING" ? "Kevät" : "Syksy";
-
-    const optionTitle = `${termName} ${year}`;
+    const optionTitle = getMatriculationTermNameByCode(term, year);
 
     return (
       <option disabled value={termValue}>
@@ -140,7 +151,10 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     );
   };
 
-  const termOptions = getNextTermsOptionsByDate(status.profile.studyStartDate);
+  const termOptions = getNextTermsOptionsByDate(
+    status.profile.studyStartDate,
+    t
+  );
 
   const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
     <div className="form-element__dropdown-selection-container" key={index}>
