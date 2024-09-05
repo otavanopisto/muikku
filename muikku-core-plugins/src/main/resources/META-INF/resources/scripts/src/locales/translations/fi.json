@@ -1655,7 +1655,7 @@
       "workspaceTypeSelect": "Kurssityyppien listausvalinta",
       "workspaceUserGroupSignupMessages": "Ryhmäkohtaiset ilmoittautumisviestit",
       "workspaceUserGroupSignupMessage": "Ilmoittautumisviesti {{index}}",
-      "workspaceSignupMessage": "Kurssin ilmoittautuviesti",
+      "workspaceSignupMessage": "Kurssin ilmoittautumisviesti",
       "workspaceSignupMessageTitle": "Viestin otsikko (pakollinen)",
       "workspaceSignupMessageContent": "Viestin sisältö (pakollinen)"
     },

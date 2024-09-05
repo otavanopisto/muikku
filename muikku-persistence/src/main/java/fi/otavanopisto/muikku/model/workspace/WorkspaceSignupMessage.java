@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -81,7 +82,7 @@ public class WorkspaceSignupMessage {
   @ManyToOne
   private WorkspaceEntity workspaceEntity;
 
-  @ManyToMany (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany
   @JoinTable (name = "WorkspaceSignupMessageGroups", joinColumns = @JoinColumn(name = "workspaceSignupMessage_id"), inverseJoinColumns = @JoinColumn(name = "userGroupEntity_id"))
   private List<UserGroupEntity> userGroupEntities;
 
