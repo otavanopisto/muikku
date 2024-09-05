@@ -333,11 +333,13 @@ public class CourseManagementTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForPresent(".license-selector select");
-        scrollIntoView(".license-selector select");
+        scrollTo(".license-selector select", 150);
+        waitForVisible(".license-selector select");
         selectOption(".license-selector select", "CC3");
-        scrollIntoView(".button--primary-function-save");
+        sleep(3000);
+        scrollTo(".button--primary-function-save", 100);
         waitAndClick(".button--primary-function-save");
-        waitForVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__item--success");
         waitForNotVisible(".loading");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);

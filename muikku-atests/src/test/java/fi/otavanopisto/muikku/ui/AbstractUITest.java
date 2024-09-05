@@ -936,9 +936,41 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void selectOption(String selector, String value){
+    waitForClickable(selector);
+
     Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
+        
+    List<WebElement> options = selectField.getAllSelectedOptions();
+    int i = 0;
+    WebElement option = options.get(0);
+    String licenseValue = option.getAttribute("value");
+    while(!licenseValue.equals(value)) {
+      if (i > 4) {
+        break;
+      }
+      i++;
+      
+      waitForClickable(selector);
+      selectField = new Select(findElementByCssSelector(selector));
+      selectField.selectByValue(value);  
+      sleep(500);
+      
+      options = selectField.getAllSelectedOptions();
+      option = options.get(0);
+      licenseValue = option.getAttribute("value");
+      
+      if (licenseValue.equals(value)) {
+        break;
+      }else {
+        options.clear();
+      }
+    }
+    if(options.isEmpty())
+      throw new TimeoutException("Could not select wanted value.");
+      
   }
+  
   
   
   protected boolean isInSelection(String selector, String compare) {
