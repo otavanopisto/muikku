@@ -471,7 +471,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
         assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
         waitAndClick("div.application-list__item.message");
-        assertText(".application-list__item-content-body", "<p>Opiskelija Student Tester (Test Study Programme) on ilmoittautunut kurssille Test (test extension).</p><p>Opiskelijalle ei lähetetty automaattista liittymisviestiä.</p>");
+        assertText(".application-list__item-content-body", "Opiskelija Student Tester (Test Study Programme) on ilmoittautunut kurssille Test (test extension).\nOpiskelijalle ei lähetetty automaattista liittymisviestiä.");
       }finally{
         deleteUserGroupUsers();
         deleteUserGroups();
