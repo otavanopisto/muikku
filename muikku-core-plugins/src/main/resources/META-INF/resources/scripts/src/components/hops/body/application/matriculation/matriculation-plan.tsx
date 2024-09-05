@@ -40,7 +40,7 @@ interface MatriculationPlanProps {
 const MatriculationPlan = (props: MatriculationPlanProps) => {
   const { plan, hops, saveMatriculationPlan } = props;
 
-  const { t } = useTranslation(["hops", "guider", "common"]);
+  const { t } = useTranslation(["hops_new", "guider", "common"]);
 
   const useCase = useUseCaseContext();
 
@@ -150,19 +150,20 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
     return <div className="loader-empty" />;
   }
 
-  const ilmoLink = (
-    <a href="https://ilmo.ylioppilastutkinto.fi/fi">ILMO-työkalulla</a>
-  );
-
   return (
     <ApplicationSubPanel>
-      <ApplicationSubPanel.Header>YO-suunnitelma</ApplicationSubPanel.Header>
+      <ApplicationSubPanel.Header>
+        {t("label.matriculationPlan", {
+          context: "title",
+          ns: "hops_new",
+        })}
+      </ApplicationSubPanel.Header>
       <ApplicationSubPanel modifier="matriculation-plan-content">
         <ApplicationSubPanel modifier="matriculation-plan-data">
           <ApplicationSubPanel.Body>
             <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
               <div className="application-sub-panel__item-title">
-                {t("content.targetMatriculationExam", { ns: "hops" })}
+                {t("content.matriculationPlanTarget", { ns: "hops_new" })}
               </div>
               <div className="application-sub-panel__item-data">
                 <div className="form-element form-element">
@@ -179,7 +180,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
 
             <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
               <div className="application-sub-panel__item-title">
-                {t("content.matriculationSubjectsGoal", { ns: "hops" })}
+                {t("content.matriculationPlanSubjectGoal", { ns: "hops_new" })}
               </div>
               <div className="application-sub-panel__item-data">
                 <MatriculationSubjectsList
@@ -196,34 +197,53 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
           <ApplicationSubPanel.Body>
             <div className="application-sub-panel__notification-item">
               <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-                Äidinkieli tai S2 + vähintään neljä koetta, jotka valitaan
-                vähintään kolmesta aineryhmästä:
+                {t("content.matriculationPlanGuides1", { ns: "hops_new" })}
               </div>
             </div>
 
             <ItemList>
-              <ItemList.Item>Vieras kieli (pitkä tai lyhyt)</ItemList.Item>
-              <ItemList.Item>Matematiikka (pitkä tai lyhyt)</ItemList.Item>
               <ItemList.Item>
-                Toinen kotimainen kieli eli ruotsi (pitkä tai keskipitkä)
+                {t("content.matriculationPlanGuideSubject1", {
+                  ns: "hops_new",
+                })}
               </ItemList.Item>
-              <ItemList.Item>Yksi reaaliaineen koe</ItemList.Item>
+              <ItemList.Item>
+                {t("content.matriculationPlanGuideSubject2", {
+                  ns: "hops_new",
+                })}
+              </ItemList.Item>
+              <ItemList.Item>
+                {t("content.matriculationPlanGuideSubject3", {
+                  ns: "hops_new",
+                })}
+              </ItemList.Item>
+              <ItemList.Item>
+                {t("content.matriculationPlanGuideSubject4", {
+                  ns: "hops_new",
+                })}
+              </ItemList.Item>
             </ItemList>
 
             <div className="application-sub-panel__notification-item">
-              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-                <b>Huom.</b> Tutkintoon vaaditaan yksi pitkän oppimäärän koe
-                (esim. pitkä matematiikka tai A-tason vieras kieli). <br />
-              </div>
+              <div
+                className="application-sub-panel__notification-body application-sub-panel__notification-body"
+                dangerouslySetInnerHTML={{
+                  __html: t("content.matriculationPlanGuides2", {
+                    ns: "hops_new",
+                  }),
+                }}
+              />
             </div>
 
             <div className="application-sub-panel__notification-item">
-              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-                <p>
-                  Kokeile {ilmoLink}, millaisilla aineyhdistelmillä voit
-                  suorittaa ylioppilastutkinnon.
-                </p>
-              </div>
+              <div
+                className="application-sub-panel__notification-body application-sub-panel__notification-body"
+                dangerouslySetInnerHTML={{
+                  __html: t("content.matriculationPlanGuides3", {
+                    ns: "hops_new",
+                  }),
+                }}
+              />
             </div>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>

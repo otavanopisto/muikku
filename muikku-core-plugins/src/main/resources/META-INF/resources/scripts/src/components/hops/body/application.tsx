@@ -13,7 +13,11 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
-import { withTranslation, WithTranslation } from "react-i18next";
+import {
+  useTranslation,
+  withTranslation,
+  WithTranslation,
+} from "react-i18next";
 import Matriculation from "./application/matriculation/matriculation";
 import { UseCaseContextProvider } from "~/context/use-case-context";
 
@@ -42,6 +46,7 @@ interface HopsApplicationProps extends WithTranslation {
  */
 const HopsApplication = (props: HopsApplicationProps) => {
   const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
+  const { t } = useTranslation(["studies", "common", "hops_new"]);
 
   /**
    * onTabChange
@@ -63,7 +68,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const panelTabs: Tab[] = [
     {
       id: "MATRICULATION",
-      name: "Ylioppilastutkinto",
+      name: t("label.hopsMatriculation", { ns: "hops_new" }),
       hash: "matriculation",
       type: "matriculation",
       component: (

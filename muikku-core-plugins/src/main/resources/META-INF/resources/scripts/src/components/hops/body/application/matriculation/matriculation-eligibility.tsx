@@ -10,21 +10,21 @@ import MatriculationEligibilityRow from "./components/matriculation-eligibility-
 import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 
 /**
- * MatriculationPlanProps
+ * MatriculationEligibilityProps
  */
 interface MatriculationEligibilityProps {
   hops: HopsState;
 }
 
 /**
- * MatriculationParticipation
+ * MatriculationEligibility
  * @param props props
  */
 const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
   const { hops } = props;
   const { eligibility } = hops.hopsMatriculation;
 
-  const { t } = useTranslation(["hops", "guider", "common"]);
+  const { t } = useTranslation(["hops_new", "guider", "common"]);
 
   if (hops.hopsMatriculationStatus !== "READY") {
     return <div className="loader-empty" />;
@@ -46,7 +46,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
    * @returns subject name or empty string if not found
    */
   const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
-    t(`matriculationSubjects.${code}`, { ns: "hops" });
+    t(`matriculationSubjectsYTL.${code}`, { ns: "hops_new" });
 
   // Abistatus eligibility rows
   const subjectAbistatusEligibilityRows =
@@ -58,7 +58,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
         )}
         eligibility={sAbistatus.abistatusOk ? "ELIGIBLE" : "NOT_ELIGIBLE"}
         description={t("content.matriculationEligibility", {
-          ns: "hops",
+          ns: "hops_new",
           acceptedCount: sAbistatus.doneCredits,
           requiredCount: sAbistatus.requiredCredits,
         })}
@@ -76,7 +76,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           )}
           eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
           description={t("content.matriculationEligibility", {
-            ns: "hops",
+            ns: "hops_new",
             acceptedCount: sEligibility.passingGradeCourseCreditPoints,
             requiredCount: sEligibility.requiredPassingGradeCourseCreditPoints,
           })}
@@ -87,19 +87,30 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
   return (
     <>
       <ApplicationSubPanel>
-        <div className="application-sub-panel__header">
-          Abistatus eli ilmoittautumisoikeus
-        </div>
+        <ApplicationSubPanel.Header>
+          {t("label.matriculationParticipation", {
+            ns: "hops_new",
+            context: "title1",
+          })}
+        </ApplicationSubPanel.Header>
         <div className="application-sub-panel__body application-sub-panel__body">
+          <div className="application-sub-panel__notification-item">
+            <div
+              className="application-sub-panel__notification-body application-sub-panel__notification-body"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationEligibilityGuides1", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
+          </div>
+
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
-                Jotta voit <b>ilmoittautua ylioppilaskokeeseen</b>, sinun pitää
-                suorittaa ensin riittävä määrä opintoja. Abistatus tarkoittaa
-                ilmoittautumisoikeutta. <b>Huom.</b> Jos sinulla on ammatillinen
-                perustutkinto, voit hakea yo-kokeeseen tutkintosi pohjalta.
-                <br />
-                Ennen ilmoittautumista sinulla pitää olla suoritettuna
+                {t("content.matriculationEligibilityGuides2", {
+                  ns: "hops_new",
+                })}
               </p>
             </div>
           </div>
@@ -114,7 +125,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                     : "NOT_ELIGIBLE"
                 }
                 description={t("content.matriculationAbistatusEligibility1", {
-                  ns: "hops",
+                  ns: "hops_new",
                   acceptedCount: hops.hopsMatriculation.eligibility.credits,
                   requiredCount:
                     hops.hopsMatriculation.eligibility.creditsRequired,
@@ -127,7 +138,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                     : "NOT_ELIGIBLE"
                 }
                 description={t("content.matriculationAbistatusEligibility2", {
-                  ns: "hops",
+                  ns: "hops_new",
                 })}
               />
               <MatriculationEligibilityRow
@@ -135,7 +146,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
                   !plannedSubjectsNotEligible() ? "ELIGIBLE" : "NOT_ELIGIBLE"
                 }
                 description={t("content.matriculationAbistatusEligibility3", {
-                  ns: "hops",
+                  ns: "hops_new",
                 })}
               />
             </div>
@@ -144,11 +155,9 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
-                Lisäksi sinulla pitää olla suoritettuna kirjoitettavasta
-                aineesta tietty määrä opintoja. Jos et ole suorittanut
-                riittävästi opintoja kirjoitettavasta aineesta, voit
-                ilmoittautua myöhemmin pidettävään kokeeseen tai keskustella
-                asiasta ohjaajasi kanssa.
+                {t("content.matriculationEligibilityGuides3", {
+                  ns: "hops_new",
+                })}
               </p>
             </div>
           </div>
@@ -162,20 +171,22 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
       </ApplicationSubPanel>
 
       <ApplicationSubPanel>
-        <div className="application-sub-panel__header">
-          {t("content.participationRights", { ns: "studies" })}
-        </div>
+        <ApplicationSubPanel.Header>
+          {t("label.matriculationParticipation", {
+            ns: "hops_new",
+            context: "title2",
+          })}
+        </ApplicationSubPanel.Header>
         <div className="application-sub-panel__body application-sub-panel__body">
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-              <p>
-                Jotta voit <b>osallistua aineen ylioppilaskokeeseen</b>, sinun
-                pitää suorittaa kirjoitettavasta aineesta pakolliset opinnot.
-                Jos aineessa ei ole pakollisia opintoja, reaaliaineista pitää
-                olla suoritettuna neljä opintopistettä ja vieraista kielistä
-                kuusi opintopistettä.
-              </p>
-            </div>
+            <div
+              className="application-sub-panel__notification-body application-sub-panel__notification-body"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationEligibilityGuides4", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
           </div>
 
           <div className="application-sub-panel__notification-item">

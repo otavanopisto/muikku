@@ -15,6 +15,12 @@ import MatriculationWizardFooter from "./matriculation-wizard-footer";
 import { MatriculationFormType } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import { HopsState } from "~/reducers/hops";
+import Button from "../button";
+import { bindActionCreators } from "redux";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 moment.locale("fi");
 
@@ -28,6 +34,7 @@ interface MatriculationExaminationWizardProps {
   onClose?: () => void;
   onUpdateExam?: (examId: number) => void;
   formType: MatriculationFormType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -37,15 +44,22 @@ interface MatriculationExaminationWizardProps {
 const MatriculationExaminationWizard = (
   props: MatriculationExaminationWizardProps
 ) => {
-  const { compulsoryEducationEligible, examId, hops, onClose, onUpdateExam } =
-    props;
+  const {
+    compulsoryEducationEligible,
+    examId,
+    hops,
+    onClose,
+    onUpdateExam,
+    displayNotification,
+    formType,
+  } = props;
 
   const useMatriculationValues = useMatriculation(
     examId,
     hops.currentStudentIdentifier,
     compulsoryEducationEligible,
-    undefined,
-    props.formType
+    displayNotification,
+    formType
   );
 
   /**
@@ -90,7 +104,7 @@ const MatriculationExaminationWizard = (
     {
       index: 4,
       name: "Valmis",
-      component: <Step5 onUpdateExam={onUpdateExam} onClose={onClose} />,
+      component: <Step5 formType={props.formType} />,
     },
   ];
 
@@ -100,13 +114,35 @@ const MatriculationExaminationWizard = (
     onStepChange: handleStepChange,
   });
 
+  const footer = (
+    <MatriculationWizardFooter
+      secondLastButtonText={
+        props.formType === "initial" ? "Lähetä" : "Tallenna"
+      }
+      lastStepButton={
+        <Button
+          onClick={() => {
+            onUpdateExam(examId);
+            onClose();
+          }}
+          buttonModifiers={["info"]}
+          disabled={
+            !(
+              useMatriculationValues.matriculation.saveState === "SUCCESS" ||
+              useMatriculationValues.matriculation.saveState === "FAILED"
+            )
+          }
+        >
+          Sulje
+        </Button>
+      }
+    />
+  );
+
   return (
     <MatriculationProvider value={useMatriculationValues}>
       <WizardProvider value={useWizardValues}>
-        <Wizard
-          header={<MatriculationWizardHeader />}
-          footer={<MatriculationWizardFooter />}
-        />
+        <Wizard header={<MatriculationWizardHeader />} footer={footer} />
       </WizardProvider>
     </MatriculationProvider>
   );
@@ -129,7 +165,7 @@ function mapStateToProps(state: StateType) {
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(

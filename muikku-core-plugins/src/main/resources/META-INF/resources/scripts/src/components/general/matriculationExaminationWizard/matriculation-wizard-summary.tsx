@@ -10,6 +10,11 @@ import { useMatriculation } from "./hooks/use-matriculation";
 import { MatriculationFormType } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import { HopsState } from "~/reducers/hops";
+import { bindActionCreators } from "redux";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 moment.locale("fi");
 
@@ -21,6 +26,7 @@ interface MatriculationWizardSummaryProps {
   examId: number;
   compulsoryEducationEligible: boolean;
   formType: MatriculationFormType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -28,14 +34,20 @@ interface MatriculationWizardSummaryProps {
  * @param props props
  */
 const MatriculationWizardSummary = (props: MatriculationWizardSummaryProps) => {
-  const { compulsoryEducationEligible, examId, hops } = props;
+  const {
+    compulsoryEducationEligible,
+    examId,
+    hops,
+    displayNotification,
+    formType,
+  } = props;
 
   const useMatriculationValues = useMatriculation(
     examId,
     hops.currentStudentIdentifier,
     compulsoryEducationEligible,
-    undefined,
-    props.formType
+    displayNotification,
+    formType
   );
 
   return (
@@ -62,7 +74,7 @@ function mapStateToProps(state: StateType) {
  * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators({ displayNotification }, dispatch);
 }
 
 export default connect(

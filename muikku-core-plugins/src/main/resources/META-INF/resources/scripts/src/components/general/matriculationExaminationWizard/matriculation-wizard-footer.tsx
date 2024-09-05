@@ -7,7 +7,10 @@ import { useMatriculationContext } from "./context/matriculation-context";
 /**
  * PedagogyFormWizardFooter
  */
-interface MatriculationWizardFooterProps {}
+interface MatriculationWizardFooterProps {
+  secondLastButtonText?: string;
+  lastStepButton?: JSX.Element;
+}
 
 /**
  * PedagogyFormWizardFooter
@@ -16,6 +19,8 @@ interface MatriculationWizardFooterProps {}
  * @returns JSX.Element
  */
 const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
+  const { secondLastButtonText, lastStepButton } = props;
+
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { matriculation } = useMatriculationContext();
 
@@ -61,13 +66,13 @@ const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
         </Button>
       )}
 
-      {isSecondLast ? (
+      {isSecondLast && secondLastButtonText ? (
         <Button
           onClick={handleNextStep}
           buttonModifiers={["info"]}
           disabled={step.isInvalid || saving}
         >
-          Lähetä
+          {secondLastButtonText}
         </Button>
       ) : (
         !isLastStep && (
@@ -80,6 +85,8 @@ const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
           </Button>
         )
       )}
+
+      {isLastStep && lastStepButton && lastStepButton}
     </>
   );
 };

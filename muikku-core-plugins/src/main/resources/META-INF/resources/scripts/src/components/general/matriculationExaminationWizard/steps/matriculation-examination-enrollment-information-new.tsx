@@ -35,6 +35,7 @@ import {
   FINNISH_SUBJECTS,
   SUBJECT_MAP,
 } from "~/components/general/matriculationExaminationWizard/helper";
+import { useTranslation } from "react-i18next";
 
 //Specific rules for old form
 
@@ -115,6 +116,8 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   } = useMatriculationContext();
   const { examinationInformation, studentInformation, saveState, errorMsg } =
     matriculation;
+
+  const { t } = useTranslation(["hops_new", "common"]);
 
   const values = useWizardContext();
 
@@ -1030,7 +1033,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           <MatriculationExaminationFinishedAttendesList
             enrolledAttendances={examinationInformation.enrolledAttendances}
             examinationFinishedList={examinationInformation.finishedAttendances}
-            pastOptions={getPastTermOptions()}
+            pastOptions={getPastTermOptions(t)}
             onChange={handleExaminationFinishedSubjectListChange}
             onDeleteRow={handleDeleteFinishedAttendanceRow}
             useMandatorySelect={false}
@@ -1127,7 +1130,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         </legend>
         <MatriculationExaminationPlannedAttendesList
           examinationPlannedList={examinationInformation.plannedAttendances}
-          nextOptions={getNextTermOptions()}
+          nextOptions={getNextTermOptions(t)}
           onChange={handleExaminationPlannedSubjectListChange}
           onDeleteRow={handleDeletePlannedAttendanceRow}
           useMandatorySelect={false}

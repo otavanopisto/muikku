@@ -132,6 +132,8 @@ export const useMatriculation = (
             ...prevState,
           }));
         }
+
+        displayNotification("Lomakkeen esitietojen haku epäonnistui", "error");
       }
     };
 
@@ -182,6 +184,8 @@ export const useMatriculation = (
         if (!isMApiError(err)) {
           throw err;
         }
+
+        displayNotification("Lomaketietojen haku epäonnistui", "error");
       }
     };
 
