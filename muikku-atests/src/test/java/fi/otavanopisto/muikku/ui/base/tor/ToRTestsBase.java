@@ -31,7 +31,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
-import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class ToRTestsBase extends AbstractUITest {
@@ -236,8 +236,8 @@ public class ToRTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     
-    StudentMatriculationEligibility studentMatriculationEligibilityAI = new StudentMatriculationEligibility(true, 5, 4, 1);
-    StudentMatriculationEligibility studentMatriculationEligibilityMAA = new StudentMatriculationEligibility(false, 8, 5, 1);
+    StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityAI = new StudentMatriculationEligibilityOPS2021(true, 10d, 8d);
+    StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityMAA = new StudentMatriculationEligibilityOPS2021(false, 16d, 10d);
     try{
       mockBuilder
         .addStudent(student)

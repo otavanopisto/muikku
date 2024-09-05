@@ -13,7 +13,6 @@ import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -335,15 +334,6 @@ public interface UserSchoolDataBridge {
   
   public BridgeResponse<CredentialResetPayload> resetCredentials(CredentialResetPayload payload);
 
-  /**
-   * Returns student eligibility to participate matriculation exams
-   * 
-   * @param studentIdentifier student's identifier
-   * @param subjectCode subject code
-   * @return student eligibility to participate matriculation exams
-   */
-  @Deprecated
-  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode);
   fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(
       SchoolDataIdentifier studentIdentifier,
       String educationTypeCode,

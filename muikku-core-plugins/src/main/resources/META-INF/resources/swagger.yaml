@@ -7084,39 +7084,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/records/students/{studentIdentifier}/matriculationEligibility:
-    get:
-      operationId: getMatriculationSubjectEligibilityOld
-      summary: Get matriculation eligibility
-      description: Get matriculation eligibility
-      deprecated: true
-      tags:
-        - Records
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: subjectCode
-          in: query
-          description: Subject code
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Matriculation eligibility
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MatriculationSubjectEligibility"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/records/matriculationSubjects:
     get:
       operationId: getMatriculationSubjects
@@ -14115,35 +14082,6 @@ components:
         personHasCourseAssessments:
           description: True, if the person has ever completed a course
           type: boolean
-
-    MatriculationSubjectEligibility:
-      type: object
-      description: Matriculation eligibility by subject
-      required:
-        - eligible
-        - requirePassingGrades
-        - acceptedCourseCount
-        - acceptedTransferCreditCount
-        - schoolDataSource
-      properties:
-        eligible:
-          description: If the subject is eligible for matriculation exam
-          type: boolean
-        requirePassingGrades:
-          description: Number of required passing grades
-          type: number
-          nullable: true
-        acceptedCourseCount:
-          description: Number of accepted courses
-          type: number
-          nullable: true
-        acceptedTransferCreditCount:
-          description: Number of accepted transfer credits
-          type: number
-          nullable: true
-        schoolDataSource:
-          description: Data source of the school
-          type: string
 
     MatriculationSubjectEligibilityOPS2021:
       type: object
