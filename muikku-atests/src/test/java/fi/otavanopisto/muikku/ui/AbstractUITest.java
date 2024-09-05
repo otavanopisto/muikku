@@ -2055,7 +2055,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       refresh();
       sleep(300);
       title = getAttributeValue("#wokspaceName", "value");
-      if(i < 15)
+      if(i > 15)
         break;
     }
     scrollTo("input#" + workspaceAccess, 300);

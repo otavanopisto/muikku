@@ -343,7 +343,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
           refresh();
           sleep(300);
           title = getAttributeValue("#wokspaceName", "value");
-          if(i < 15)
+          if(i > 15)
             break;
         }
         waitForPresent(".license-selector select");
