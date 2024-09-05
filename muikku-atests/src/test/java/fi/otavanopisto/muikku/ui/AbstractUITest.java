@@ -954,7 +954,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       waitForClickable(selector);
       selectField = new Select(findElementByCssSelector(selector));
       selectField.selectByValue(value);  
-      sleep(500);
+      sleep(1000);
       
       options = selectField.getAllSelectedOptions();
       option = options.get(0);
@@ -966,7 +966,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         options.clear();
       }
     }
-    if(options.isEmpty())
+    if(!licenseValue.equals(value))
       throw new TimeoutException("Could not select wanted value.");
       
   }
@@ -2047,6 +2047,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+    waitForVisible("#wokspaceName");
+    String title = getAttributeValue("#wokspaceName", "value");
+    int i = 0;
+    while (title.isEmpty()) {
+      i++;
+      refresh();
+      sleep(300);
+      title = getAttributeValue("#wokspaceName", "value");
+      if(i < 15)
+        break;
+    }
     scrollTo("input#" + workspaceAccess, 300);
     sleep(500);
     waitAndClick("input#" + workspaceAccess);
