@@ -170,7 +170,6 @@ import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
-import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -230,9 +229,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
-
-  @Inject
-  private UserGroupController userGroupController;
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -3851,6 +3847,9 @@ public class WorkspaceRESTService extends PluginRESTService {
             (String) match.get("name"),
             canSignup));
       }
+      else {
+        logger.warning(String.format("WorkspaceSignupGroup %s not found from Elastic", availableSignupGroup.schoolDataIdentifier().toString()));
+      }
     }
     
     // Signup messages
@@ -3867,6 +3866,9 @@ public class WorkspaceRESTService extends PluginRESTService {
           restGroups.add(new WorkspaceSignupMessageGroupRestModel(
               group.getId(),
               (String) match.get("name")));
+        }
+        else {
+          logger.warning(String.format("WorkspaceSignupMessageGroup %s not found from Elastic", group.schoolDataIdentifier().toString()));
         }
       }
       restMessages.add(new WorkspaceSignupMessageRestModel(message.getId(),
