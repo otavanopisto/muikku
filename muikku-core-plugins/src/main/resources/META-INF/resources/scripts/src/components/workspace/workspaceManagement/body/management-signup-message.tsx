@@ -161,54 +161,6 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
   );
 };
 
-// interface ManagementSignupMessageFormProps {
-//   identifier: string;
-// }
-
-// const ManagementSignupMessageForm = (props: WorkspaceSignupMessage) => {
-//   const { caption, content } = props;
-//   const { t } = useTranslation(["workspace"]);
-//   const handleWorkspaceSignupMessageCaptionChange = () => {};
-//   const handleWorkspaceSignupMessageContentChange = () => {};
-
-//   return (
-//     <div className="form__row">
-//       <div className="form-element">
-//         <label htmlFor="message-caption">
-//           {t("labels.workspaceSignupMessageTitle", {
-//             ns: "workspace",
-//           })}
-//         </label>
-//         <input
-//           id="message-caption"
-//           className="form-element__input"
-//           value={caption}
-//           onChange={handleWorkspaceSignupMessageCaptionChange}
-//           style={{
-//             width: "100%",
-//           }}
-//         />
-//       </div>
-//       <div className="form-element">
-//         <label>
-//           {t("labels.workspaceSignupMessageContent", {
-//             ns: "workspace",
-//           })}
-//         </label>
-//         <CKEditor
-//           editorTitle={t("labels.workspaceSignupMessageContent", {
-//             ns: "workspace",
-//           })}
-//           ancestorHeight={200}
-//           onChange={handleWorkspaceSignupMessageContentChange}
-//         >
-//           {content}
-//         </CKEditor>
-//       </div>
-//     </div>
-//   );
-// };
-
 export const ManagementSignupMessageMemoized = React.memo(
   ManagementSignupMessage
 );
