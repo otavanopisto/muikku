@@ -50,60 +50,88 @@ interface ChangeLogItemProps {
 export const ChangeLogItem: React.FC<ChangeLogItemProps> = (props) => {
   const { logEntry } = props;
 
+  const { t } = useTranslation(["hops_new", "common"]);
+
   /**
-   * Translation
+   * changeTypeString
    */
   const changeTypeString = () => {
     switch (logEntry.changeType) {
       case "ENROLLMENT_CREATED":
-        return "Loi lomakkeen";
+        return t("content.matriculationChangeLogCreated", { ns: "hops_new" });
 
       case "ENROLLMENT_UPDATED": {
         if (logEntry.newState) {
           switch (logEntry.newState) {
             case "APPROVED":
-              return "Päivitti ja hyväksyi lomakkeen";
+              return t("content.matriculationChangeLogApproved", {
+                ns: "hops_new",
+              });
 
             case "REJECTED":
-              return "Päivitti ja hylkäsi lomakkeen";
+              return t("content.matriculationChangeLogCancel", {
+                ns: "hops_new",
+              });
 
             case "SUPPLEMENTATION_REQUEST":
-              return "Päivitti ja pyytää täydennystä lomakkeeseen";
+              return t("content.matriculationChangeLogSupplementationRequest", {
+                ns: "hops_new",
+              });
 
             case "SUPPLEMENTED":
-              return "Päivitti ja täydensi lomaketta";
+              return t("content.matriculationChangeLogSupplemented", {
+                ns: "hops_new",
+              });
 
             case "CONFIRMED":
-              return "Päivitti ja vahvisti lomakkeen tiedot";
+              return t("content.matriculationChangeLogConfirmed", {
+                ns: "hops_new",
+              });
 
             default:
-              return `Päivitti lomaketta`;
+              return t("content.matriculationChangeLogUpdate", {
+                ns: "hops_new",
+              });
           }
         }
-        return "Päivitti lomaketta";
+        return t("content.matriculationChangeLogUpdate", {
+          ns: "hops_new",
+        });
       }
 
       case "STATE_CHANGED": {
         if (logEntry.newState) {
           switch (logEntry.newState) {
             case "APPROVED":
-              return "Hyväksyi lomakkeen";
+              return t("content.matriculationChangeLogApproved", {
+                ns: "hops_new",
+              });
 
             case "REJECTED":
-              return "Peruutti ilmoittautumisen";
+              return t("content.matriculationChangeLogCancel", {
+                ns: "hops_new",
+              });
 
             case "SUPPLEMENTATION_REQUEST":
-              return "Pyytää täydennystä lomakkeeseen";
+              return t("content.matriculationChangeLogSupplementationRequest", {
+                ns: "hops_new",
+              });
 
             case "CONFIRMED":
-              return "Vahvisti lomakkeen tiedot";
+              return t("content.matriculationChangeLogConfirmed", {
+                ns: "hops_new",
+              });
 
             default:
-              return `Muutti lomakkeen tilaa`;
+              return t("content.matriculationChangeLogStateChanged", {
+                ns: "hops_new",
+              });
           }
         }
 
-        return "Muutti lomakkeen tilan";
+        return t("content.matriculationChangeLogStateChanged", {
+          ns: "hops_new",
+        });
       }
 
       default:
