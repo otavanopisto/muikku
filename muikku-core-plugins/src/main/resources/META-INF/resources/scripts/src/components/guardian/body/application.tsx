@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Records from "./application/records";
 import Summary from "./application/summary";

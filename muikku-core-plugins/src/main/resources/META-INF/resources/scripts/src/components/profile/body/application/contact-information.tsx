@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import Button, { IconButton } from "~/components/general/button";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -11,7 +11,7 @@ import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch, bindActionCreators } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,

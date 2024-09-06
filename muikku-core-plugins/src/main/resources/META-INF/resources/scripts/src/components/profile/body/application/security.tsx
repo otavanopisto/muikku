@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import Button from "~/components/general/button";
@@ -8,7 +8,7 @@ import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

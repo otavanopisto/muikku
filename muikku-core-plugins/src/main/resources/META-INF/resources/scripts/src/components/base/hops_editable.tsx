@@ -1,6 +1,5 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { connect, Dispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
 import { StatusType } from "~/reducers/base/status";

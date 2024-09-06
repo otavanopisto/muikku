@@ -255,7 +255,7 @@ async function loadWorkspacePermissions(
           "LIST_WORKSPACE_MEMBERS"
         ),
       },
-      canCurrentWorkspaceSignup,
+      canCurrentWorkspaceSignup: canCurrentWorkspaceSignup.canSignup,
     },
   });
 
