@@ -226,7 +226,7 @@ class GuardianHopsApplication extends React.Component<
     let panelTabs: Tab[] = [
       {
         id: "MATRICULATION",
-        name: "Ylioppilastutkinto",
+        name: this.props.t("label.hopsMatriculation", { ns: "hops_new" }),
         hash: "matriculation",
         type: "matriculation",
         component: (
@@ -274,6 +274,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   );
 }
 
-export default withTranslation(["studies", "common"])(
+export default withTranslation(["studies", "common", "hops_new"])(
   connect(mapStateToProps, mapDispatchToProps)(GuardianHopsApplication)
 );
