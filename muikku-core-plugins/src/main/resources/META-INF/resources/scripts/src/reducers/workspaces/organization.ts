@@ -9,6 +9,7 @@ const initialOrganizationWorkspacesState: WorkspacesState = {
   availableWorkspaces: [],
   templateWorkspaces: [],
   currentWorkspace: null,
+  settings: null,
   availableFilters: {
     educationTypes: [],
     curriculums: [],
