@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
-  <!-- Own table for wignup message user groups -->
+  <!-- Own table for signup message user groups -->
 
   <sql>create table WorkspaceSignupMessageGroups (
        workspaceSignupMessage_id bigint not null,

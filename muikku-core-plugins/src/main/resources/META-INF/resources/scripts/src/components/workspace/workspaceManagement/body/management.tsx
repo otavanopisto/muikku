@@ -392,7 +392,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
       workspace: workspace,
       update: {
         producers: payload.producers,
-        workspaceType: payload.workspaceTypeIdentifier,
+        workspaceType: payload.workspaceType,
         settings: settingsPayload,
       },
       /**

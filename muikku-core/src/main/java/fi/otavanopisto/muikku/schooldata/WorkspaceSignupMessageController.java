@@ -48,7 +48,7 @@ public class WorkspaceSignupMessageController {
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
-  private WorkspaceSignupMessageDAO workspaceEntityMessageDAO;
+  private WorkspaceSignupMessageDAO workspaceSignupMessageDAO;
 
   @Inject
   @Any
@@ -56,11 +56,11 @@ public class WorkspaceSignupMessageController {
 
   public WorkspaceSignupMessage createWorkspaceSignupMessage(WorkspaceEntity workspaceEntity, 
       boolean defaultMessage, boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
-    return workspaceEntityMessageDAO.create(workspaceEntity, defaultMessage, enabled, clean(caption), clean(content), signupGroups);
+    return workspaceSignupMessageDAO.create(workspaceEntity, defaultMessage, enabled, clean(caption), clean(content), signupGroups);
   }
   
   public void deleteWorkspaceSignupMessage(WorkspaceSignupMessage message) {
-    workspaceEntityMessageDAO.delete(message);
+    workspaceSignupMessageDAO.delete(message);
   }
   
   /**
@@ -80,7 +80,7 @@ public class WorkspaceSignupMessageController {
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
     List<Long> userGroupIds = userGroupEntities.stream().map(UserGroupEntity::getId).collect(Collectors.toList());
     if (CollectionUtils.isNotEmpty(userGroupEntities)) {
-      List<WorkspaceSignupMessage> groupMessages = workspaceEntityMessageDAO.listEnabledGroupBoundSignupMessagesBy(workspaceEntity);
+      List<WorkspaceSignupMessage> groupMessages = workspaceSignupMessageDAO.listEnabledGroupBoundSignupMessagesBy(workspaceEntity);
       for (WorkspaceSignupMessage groupMessage: groupMessages) {
         List<Long> messageGroupIds = groupMessage.getUserGroupEntities().stream().map(UserGroupEntity::getId).collect(Collectors.toList());
         if (!Collections.disjoint(userGroupIds, messageGroupIds)) {
@@ -90,7 +90,7 @@ public class WorkspaceSignupMessageController {
       }
     }
     if (applicableMessage == null) {
-      WorkspaceSignupMessage defaultSignupMessage = workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
+      WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
       if (defaultSignupMessage != null && defaultSignupMessage.isEnabled()) {
         applicableMessage = defaultSignupMessage;
       }
@@ -151,20 +151,24 @@ public class WorkspaceSignupMessageController {
   }
 
   public WorkspaceSignupMessage findDefaultSignupMessage(WorkspaceEntity workspaceEntity) {
-    return workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
+    return workspaceSignupMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
   }
   
   public WorkspaceSignupMessage findSignupMessageById(Long id) {
-    return workspaceEntityMessageDAO.findById(id);
+    return workspaceSignupMessageDAO.findById(id);
+  }
+
+  public List<WorkspaceSignupMessage> listByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return workspaceSignupMessageDAO.listByWorkspaceEntity(workspaceEntity);
   }
   
   public List<WorkspaceSignupMessage> listGroupBoundSignupMessages(WorkspaceEntity workspaceEntity) {
-    return workspaceEntityMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
+    return workspaceSignupMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
   }
   
   public WorkspaceSignupMessage updateWorkspaceSignupMessage(WorkspaceSignupMessage workspaceEntityMessage, 
       boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
-    return workspaceEntityMessageDAO.update(workspaceEntityMessage, enabled, clean(caption), clean(content), signupGroups);
+    return workspaceSignupMessageDAO.update(workspaceEntityMessage, enabled, clean(caption), clean(content), signupGroups);
   }
   
   private String clean(String html) {
