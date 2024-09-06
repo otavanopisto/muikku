@@ -19,6 +19,7 @@ import {
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
 import { displayNotification } from "~/actions/base/notifications";
+import { OPS2021SubjectCodesInOrder } from "~/mock/mock-data";
 
 // Api instances
 const recordsApi = MApi.getRecordsApi();
@@ -268,8 +269,15 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
                 })
               );
 
+            // Sort the subjects eligibility data by OPS order that is separted list of subject codes
+            const sortedByOpsOrder = subjectEligibilityDataArray.sort(
+              (a, b) =>
+                OPS2021SubjectCodesInOrder.indexOf(a.subject.subjectCode) -
+                OPS2021SubjectCodesInOrder.indexOf(b.subject.subjectCode)
+            );
+
             const abistatusData = abistatus(
-              subjectEligibilityDataArray,
+              sortedByOpsOrder,
               eligibility.creditPoints,
               eligibility.creditPointsRequired
             );
@@ -284,7 +292,7 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
 
             dispatch({
               type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
-              payload: subjectEligibilityDataArray,
+              payload: sortedByOpsOrder,
             });
 
             dispatch({
@@ -620,6 +628,13 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
           ...updatedListOfEligibility,
           ...newSubjectEligibilityDataArray,
         ];
+
+        // Sort the subjects eligibility data by OPS order that is separted list of subject codes
+        updatedListOfEligibility = updatedListOfEligibility.sort(
+          (a, b) =>
+            OPS2021SubjectCodesInOrder.indexOf(a.subject.subjectCode) -
+            OPS2021SubjectCodesInOrder.indexOf(b.subject.subjectCode)
+        );
 
         // Calculate updated abistatus with new eligibility data
         const abistatusData = abistatus(
