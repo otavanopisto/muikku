@@ -1,33 +1,31 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import CKEditor from "~/components/general/ckeditor";
-import Dropdown from "~/components/general/dropdown";
 import { SearchFormElement } from "~/components/general/form-element";
-import { WorkspaceSignupGroup } from "~/generated/client";
+import { WorkspaceSettingsSignupGroup } from "~/generated/client";
 import { filterHighlight, filterMatch } from "~/util/modifiers";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementSignupGroupsProps
  */
 interface ManagementSignupGroupsProps {
   workspaceName: string;
-  workspaceSignupGroups: WorkspaceSignupGroup[];
+  workspaceSignupGroups: WorkspaceSettingsSignupGroup[];
   /**
    * Handle signup group change
-   * @param workspaceSignupGroup workspaceSignupGroup
+   * @param signupGroup workspaceSettingsSignupGroup
    */
-  onChange?: (workspaceSignupGroup: WorkspaceSignupGroup) => void;
+  onChange?: (
+    workspaceSettingsSignupGroup: WorkspaceSettingsSignupGroup
+  ) => void;
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementSignupGroups
  * @param props props
  */
 const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
   const { t } = useTranslation(["workspace"]);
-
   const { onChange } = props;
-
   const [workspaceSignupGroupFilter, setWorkspaceSignupGroupFilter] =
     React.useState<string>("");
 
@@ -43,19 +41,6 @@ const ManagementSignupGroups = (props: ManagementSignupGroupsProps) => {
   const memoizedList = React.useMemo(
     () =>
       props.workspaceSignupGroups
-        .map((permission) => {
-          if (permission.signupMessage === null) {
-            permission.signupMessage = {
-              caption: "",
-              content: "",
-              enabled: false,
-            };
-
-            return permission;
-          }
-
-          return permission;
-        })
         .filter((permission) =>
           filterMatch(permission.userGroupName, workspaceSignupGroupFilter)
         )
@@ -116,9 +101,9 @@ export const ManagementSignupGroupsMemoized = React.memo(
  */
 interface ManagementSignupGroupItem {
   workspaceName: string;
-  workspaceSignupGroup: WorkspaceSignupGroup;
+  workspaceSignupGroup: WorkspaceSettingsSignupGroup;
   workspaceSignupGroupFilter: string;
-  onChange: (signupGroup: WorkspaceSignupGroup) => void;
+  onChange: (signupGroup: WorkspaceSettingsSignupGroup) => void;
 }
 
 /**
@@ -127,8 +112,6 @@ interface ManagementSignupGroupItem {
  */
 const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
   const { workspaceSignupGroup } = props;
-
-  const { t } = useTranslation(["workspace"]);
 
   /**
    * Handles toggle
@@ -145,158 +128,24 @@ const ManagementSignupGroupItem = (props: ManagementSignupGroupItem) => {
     props.onChange(updatedWorkspaceSignupGroup);
   };
 
-  /**
-   * Handles workspace signup group message caption change
-   * @param signupGroup signupGroup
-   */
-  const handleWorkspaceSignupGroupCaptionChange =
-    (signupGroup: WorkspaceSignupGroup) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const updatedWorkspaceSignupGroup = {
-        ...signupGroup,
-        signupMessage: {
-          ...signupGroup.signupMessage,
-          caption: event.target.value,
-        },
-      };
-
-      props.onChange(updatedWorkspaceSignupGroup);
-    };
-
-  /**
-   * Handles workspace signup group message caption change
-   * @param signupGroup signupGroup
-   */
-  const handleWorkspaceSignupGroupContentChange =
-    (signupGroup: WorkspaceSignupGroup) => (text: string) => {
-      const updatedWorkspaceSignupGroup = {
-        ...signupGroup,
-        signupMessage: {
-          ...signupGroup.signupMessage,
-          content: text,
-        },
-      };
-
-      props.onChange(updatedWorkspaceSignupGroup);
-    };
-
-  /**
-   * Handles workspace signup group enabled change
-   * @param signupGroup signupGroup
-   */
-  const handleWorkspaceSignupGroupMessageToggle =
-    (signupGroup: WorkspaceSignupGroup) => (event: React.ChangeEvent) => {
-      const updatedWorkspaceSignupGroup = {
-        ...signupGroup,
-        signupMessage: {
-          ...signupGroup.signupMessage,
-          enabled: !signupGroup.signupMessage.enabled,
-        },
-      };
-
-      props.onChange(updatedWorkspaceSignupGroup);
-    };
-
   return (
-    <details>
-      <summary>
-        <span className="form-element form-element--checkbox-radiobutton-inside-summary">
-          <input
-            id={`usergroup${workspaceSignupGroup.userGroupEntityId}`}
-            type="checkbox"
-            checked={workspaceSignupGroup.canSignup}
-            onChange={handleToggleWorkspaceSignupGroup}
-          />
+    <div>
+      <span className="form-element form-element--checkbox-radiobutton">
+        <input
+          id={`usergroup${workspaceSignupGroup.userGroupEntityId}`}
+          type="checkbox"
+          checked={workspaceSignupGroup.canSignup}
+          onChange={handleToggleWorkspaceSignupGroup}
+        />
 
-          <label htmlFor={`usergroup${workspaceSignupGroup.userGroupEntityId}`}>
-            {filterHighlight(
-              workspaceSignupGroup.userGroupName,
-              props.workspaceSignupGroupFilter
-            )}
-          </label>
-        </span>
-
-        <Dropdown
-          modifier="instructions"
-          openByHover
-          alignSelfVertically="top"
-          content={
-            <p>
-              {t("content.workspaceSignupGroupMessageInfo", {
-                ns: "workspace",
-              })}
-            </p>
-          }
-        >
-          <span>
-            <label htmlFor="enable-signup-message" className="visually-hidden">
-              {t("labels.activateSignupMessage", {
-                ns: "workspace",
-              })}
-            </label>
-            <input
-              id="enable-signup-message"
-              type="checkbox"
-              className={`button-pill button-pill--autoreply-switch ${
-                workspaceSignupGroup.signupMessage.enabled
-                  ? "button-pill--autoreply-switch-active"
-                  : ""
-              }`}
-              checked={workspaceSignupGroup.signupMessage.enabled}
-              disabled={
-                workspaceSignupGroup.signupMessage.caption === "" ||
-                workspaceSignupGroup.signupMessage.content === ""
-              }
-              onChange={handleWorkspaceSignupGroupMessageToggle(
-                workspaceSignupGroup
-              )}
-            />
-          </span>
-        </Dropdown>
-      </summary>
-
-      <div className="details__content">
-        <div className="form__container">
-          <div className="form__row">
-            <div className="form-element form-element--sign-up-message">
-              <label htmlFor="message-caption">
-                {t("labels.workspaceSignupMessageTitle", {
-                  ns: "workspace",
-                })}
-              </label>
-              <input
-                id="message-caption"
-                className="form-element__input"
-                value={workspaceSignupGroup.signupMessage.caption}
-                onChange={handleWorkspaceSignupGroupCaptionChange(
-                  workspaceSignupGroup
-                )}
-              />
-            </div>
-          </div>
-          <div className="form__row">
-            <div className="form-element form-element--sign-up-message">
-              <label>
-                {t("labels.workspaceSignupMessageContent", {
-                  ns: "workspace",
-                })}
-              </label>
-              <CKEditor
-                editorTitle={t("labels.workspaceSignupMessageContent", {
-                  ns: "workspace",
-                })}
-                ancestorHeight={200}
-                onChange={handleWorkspaceSignupGroupContentChange(
-                  workspaceSignupGroup
-                )}
-              >
-                {workspaceSignupGroup.signupMessage.content}
-              </CKEditor>
-            </div>
-          </div>
-        </div>
-      </div>
-    </details>
+        <label htmlFor={`usergroup${workspaceSignupGroup.userGroupEntityId}`}>
+          {filterHighlight(
+            workspaceSignupGroup.userGroupName,
+            props.workspaceSignupGroupFilter
+          )}
+        </label>
+      </span>
+    </div>
   );
 };
 

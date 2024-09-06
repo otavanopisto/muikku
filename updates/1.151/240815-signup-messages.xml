@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <!-- Own table for signup message user groups -->
+
+  <sql>create table WorkspaceSignupMessageGroups (
+       workspaceSignupMessage_id bigint not null,
+       userGroupEntity_id bigint not null);
+  </sql>
+  <sql>alter table WorkspaceSignupMessageGroups 
+       add constraint FKt021x5ebac6vvnfdniyoouof1 
+       foreign key (userGroupEntity_id) 
+       references UserGroupEntity (id);
+  </sql>
+  <sql>alter table WorkspaceSignupMessageGroups 
+       add constraint FK7c30af13yj19t3qlkusvfxfof 
+       foreign key (workspaceSignupMessage_id) 
+       references WorkspaceSignupMessage (id);
+  </sql>
+  
+  <!-- Move previous user group signup messages to the table -->
+  
+  <sql>insert into WorkspaceSignupMessageGroups (workspaceSignupMessage_id,userGroupEntity_id)
+       select id,signupGroupEntity_id from WorkspaceSignupMessage where signupGroupEntity_id is not null;
+  </sql>
+  
+  <!-- Convert previous default messages to use a new column -->
+  
+  <sql>alter table WorkspaceSignupMessage add column defaultMessage bit not null;</sql>
+  <sql>update WorkspaceSignupMessage set defaultMessage=true where signupGroupEntity_id is null;</sql>
+
+  <!-- Get rid of the deprecated signupGroupEntity_id column -->
+  
+  <sql>alter table WorkspaceSignupMessage drop foreign key FKnuyyyta3griewx7dn7n2l99n2;</sql>
+  <sql>alter table WorkspaceSignupMessage drop foreign key FKm5hl0q0whepafo3yj0uwff6fl;</sql>
+  <sql>alter table WorkspaceSignupMessage drop index UKf93kknycnnqg92ip83pd9kcoi;</sql>
+  <sql>alter table WorkspaceSignupMessage 
+       add constraint FKm5hl0q0whepafo3yj0uwff6fl 
+       foreign key (workspaceEntity_id) 
+       references WorkspaceEntity (id);
+  </sql>
+  <sql>alter table WorkspaceSignupMessage drop column signupGroupEntity_id;</sql>
+  
+</update> 
