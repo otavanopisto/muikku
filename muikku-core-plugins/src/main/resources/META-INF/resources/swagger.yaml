@@ -4626,6 +4626,27 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+          
+  /rest/guider/students/contactLogEntries/batch:
+    post:
+      operationId: createMultipleContactLogEvents
+      summary: Create contact log event for multiple students or student group
+      description: Create contact log event for multiple students or student group
+      tags:
+        - Guider
+      requestBody:
+        $ref: "#/components/requestBodies/ContactLogCreateMultipleEventRequestBody"
+      responses:
+        "200":
+          description: Contact log event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactLogEvent"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   /rest/guider/student/{studentId}/contactLog/{entryId}:
     put:
@@ -11029,6 +11050,22 @@ components:
                 type: string
               entryDate:
                 type: string
+                
+    ContactLogCreateMultipleEventRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: MultipleContactLogCreateEventRequestBody object
+            required:
+              - recipients
+              - contactLogEntry
+            properties:
+              recipients:
+                $ref: "#/components/schemas/ContactLogRecipientList"
+              contactLogEntry:
+                $ref: "#/components/schemas/ContactLogEvent"
 
     ContactLogUpdateEventRequestBody:
       required: true
@@ -12862,6 +12899,7 @@ components:
         - creatorName
         - hasImage
         - text
+        - recipients
       properties:
         id:
           type: integer
@@ -12883,6 +12921,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ContactLogEventComment"
+        recipients:
+          type: array
+          items:
+            type: int64
 
     ContactLogEventComment:
       type: object
@@ -12915,6 +12957,42 @@ components:
         hasImage:
           type: boolean
 
+    ContactLogMultipleEvent:
+      type: object
+      description: GuiderContactLogMultipleEvent object
+      required:
+        - contactLogRecipientList
+        - contactLogEvent
+      properties:
+        contactLogRecipientList:
+          $ref: "#/components/schemas/ContactLogRecipientList"
+        contactLogEvent:
+          $ref: "#/components/schemas/ContactLogEvent"
+    
+    ContactLogRecipientList:
+      type: object
+      description: ContactLogRecipientList
+      required:
+        - recipientIds
+        - recipientGroupIds
+        - recipientStudentsWorkspaceIds
+      properties:
+        recipientIds:
+          description: The list of userEntityIds
+          type: array
+          items:
+            type: integer
+        recipientGroupIds:
+          description: The list of studentGroupIds
+          type: array
+          items:
+            type: integer
+        recipientStudentsWorkspaceIds:
+          description: The list of workspaceIds
+          type: array
+          items:
+            type: integer
+    
     Curriculum:
       type: object
       description: Curriculum object
@@ -15246,7 +15324,7 @@ components:
         urlName:
           description: The url of the workspace
           type: string
-
+          
     RecordsWorkspace:
       allOf:
         - $ref: "#/components/schemas/Workspace"
@@ -17619,3 +17697,4 @@ components:
           format: int32
         message:
           type: string
+          
