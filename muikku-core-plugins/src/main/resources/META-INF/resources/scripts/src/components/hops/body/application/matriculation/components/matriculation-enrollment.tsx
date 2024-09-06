@@ -206,11 +206,7 @@ const MatriculationSubmittedEnrollment = (
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="readonly"
             >
-              <Button
-                className="button button--yo-signup"
-                //onClick={handleVerifyMatriculationExam(e.id)}
-                disabled={past}
-              >
+              <Button className="button button--yo-signup" disabled={past}>
                 {t("actions.confirmRegistration", {
                   ns: "hops_new",
                 })}
