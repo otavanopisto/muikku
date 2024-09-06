@@ -99,8 +99,24 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           Tietojen oikeellisuus
         </h3>
         <p className="matriculation-container__info-item">
-          Tarkista että ilmoittautumistietosi ovat oikein ja korjaa mahdolliset
-          muutokset palaamalla lomakkeessa takaisin
+          Olet ilmoittautumassa tai olet jo ilmoittautunut ylioppilaskokeeseen
+          seuraavilla tiedoilla. Jos haluat tehdä muutoksia tai huomaat
+          virheitä, toimi näin:
+        </p>
+
+        <ul className="matriculation-container__info-item">
+          <li>
+            <b>Ennen lomakkeen lähettämistä:</b> Voit itse korjata tietoja
+            lomakkeella.
+          </li>
+          <li>
+            <b>Lähettämisen jälkeen:</b> Ota yhteyttä opinto-ohjaajaan, jos
+            haluat tehdä muutoksia tietoihin.
+          </li>
+        </ul>
+
+        <p className="matriculation-container__info-item">
+          Huomaa, että ilmoittautuminen on sitova!
         </p>
       </div>
 
