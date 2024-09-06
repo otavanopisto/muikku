@@ -2,7 +2,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementChatSettingsProps
  */
 interface ManagementChatSettingsProps {
   chatEnabled: boolean;
@@ -10,7 +10,7 @@ interface ManagementChatSettingsProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementChatSettings
  * @param props props
  */
 const ManagementChatSettings = (props: ManagementChatSettingsProps) => {

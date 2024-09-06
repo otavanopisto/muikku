@@ -7,7 +7,7 @@ public class WorkspaceDetails {
   public WorkspaceDetails() {
   }
 
-  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, OffsetDateTime signupStart, OffsetDateTime signupEnd, String externalViewUrl, Long rootFolderId, Long helpFolderId, Long indexFolderId, Boolean chatEnabled) {
+  public WorkspaceDetails(String typeId, OffsetDateTime beginDate, OffsetDateTime endDate, OffsetDateTime signupStart, OffsetDateTime signupEnd, String externalViewUrl, Long rootFolderId, Long helpFolderId, Long indexFolderId) {
     super();
     this.typeId = typeId;
     this.beginDate = beginDate;
@@ -18,7 +18,6 @@ public class WorkspaceDetails {
     this.rootFolderId = rootFolderId;
     this.helpFolderId = helpFolderId;
     this.indexFolderId = indexFolderId;
-    this.chatEnabled = chatEnabled;
   }
 
   public String getTypeId() {
@@ -77,14 +76,6 @@ public class WorkspaceDetails {
     this.indexFolderId = indexFolderId;
   }
 
-  public Boolean getChatEnabled() {
-    return chatEnabled;
-  }
-
-  public void setChatEnabled(Boolean chatEnabled) {
-    this.chatEnabled = chatEnabled;
-  }
-
   private String typeId;
   private String externalViewUrl;
   private OffsetDateTime beginDate;
@@ -94,5 +85,5 @@ public class WorkspaceDetails {
   private Long rootFolderId;
   private Long helpFolderId;
   private Long indexFolderId;
-  private Boolean chatEnabled;
+
 }

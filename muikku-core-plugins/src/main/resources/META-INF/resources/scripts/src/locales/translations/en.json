@@ -1452,8 +1452,9 @@
       "copy": " Make a copy",
       "copy_workspace": "Copy course",
       "create": "t(common:actions.create)",
-      "create_workspace": "Create course",
       "create_journal": "New entry",
+      "create_signupMessage": "Create signup message",
+      "create_workspace": "Create course",
       "edit": "Edit course",
       "hide": "$t(common:actions.hide)",
       "hide_supplementationRequest": "Hide supplementation request",
@@ -1503,7 +1504,8 @@
       "signUpInformation": "<p>After clicking the \"Sign up\" button, you will be directed to the front page of the course. You can start studying immediately.</p><p>You can find the teacher's information on the front page of the course. If you have any questions or concerns regarding the course, you can send a message to the teacher via Muikku.</p>",
       "unArchiveStudent": "Are you sure you want to return the user {{studentName}} back to the course?",
       "workspaceSignupMessageInfo": "Activate the course-specific enrollment message. Activation is possible only when the message has a subject and content. If no group-specific messages are set, this message will be sent to all enrolled in the course. You can also send a customized messages to different groups.",
-      "workspaceSignupGroupMessageInfo": "Activate the group-specific enrollment message. Activation is possible only when the message has a subject and content. This message will be sent only to members of this group who enroll in the course."
+      "workspaceSignupGroupMessageInfo": "Activate the group-specific enrollment message. Activation is possible only when the message has a subject and content. This message will be sent only to members of the selected groups.",
+      "workspaceSignupGroupMessageDeleteInfo": "Delete the group-specific enrollment message. Removing is possible only when the message has been deactivated."
     },
     "labels": {
       "access": "Access",
@@ -1536,6 +1538,7 @@
       "creating": "Creating the course",
       "curriculum": "Curriculum",
       "dates": "Time",
+      "deleteCustomSignupMessage": "Delete the sign-up message",
       "description": "Course description",
       "discussions": "Course discussions",
       "edit": "Edit course {{workspaceName}}",
@@ -1608,6 +1611,7 @@
       "schoolLeveleOptional_OPS2016": "Local optional",
       "schoolLeveleOptional_OPS2021": "Local optional",
       "search": "Search courses",
+      "search_target": "Search target group",
       "searchTemplates": "Search course templates",
       "selectedTemplate": "Chosen template",
       "send": "Message from the course",
@@ -1628,6 +1632,7 @@
       "stepLast": "Summary",
       "subject": "Subject",
       "summary": "Course copy summary",
+      "target": "Target group",
       "teacher": "Course teacher",
       "unspecifiedOptional": "Other",
       "unspecifiedOptional_OPS2016": "Other",
@@ -1648,6 +1653,8 @@
       "workspaceCopying": "Course copying",
       "workspaceDates": "{{beginDate}}\u2013{{endDate}}",
       "workspaceTypeSelect": "Type select",
+      "workspaceUserGroupSignupMessages": "User group-specific sign up messages",
+      "workspaceUserGroupSignupMessage": "Sign up message {{index}}",
       "workspaceSignupMessage": "Course sign up message",
       "workspaceSignupMessageTitle": "Message title (mandatory)",
       "workspaceSignupMessageContent": "Message content (mandatory)"

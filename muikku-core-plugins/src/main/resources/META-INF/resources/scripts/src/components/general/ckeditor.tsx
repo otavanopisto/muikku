@@ -404,7 +404,15 @@ export default class CKEditor extends React.Component<
       // Resize
       instance.resize("100%", contentHeight, true);
 
-      instance.setData(props.children || "");
+      // This prevents empty children from overriding current data.
+      // It is a problem in the workspace management where the props
+      // are at an initial empty state when the editor is setup
+      // current data gets overridden by the empty children
+      // I did not find any case where this would break anything
+
+      if (props.children.trim() !== "") {
+        instance.setData(props.children || "");
+      }
 
       //TODO somehow, the autofocus doesn't focus in the last row but in the first
       //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
