@@ -127,37 +127,37 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * @param selectedSubjects list of selected subjects
    * @returns next non selected subject from subjects list
    */
-  const getDefaultSubject = (selectedSubjects: string[]) => {
-    const subjects = Object.keys(SUBJECT_MAP);
+  // const getDefaultSubject = (selectedSubjects: string[]) => {
+  //   const subjects = Object.keys(SUBJECT_MAP);
 
-    for (let i = 0; i < subjects.length; i++) {
-      if (selectedSubjects.indexOf(subjects[i]) === -1) {
-        return subjects[i];
-      }
-    }
+  //   for (let i = 0; i < subjects.length; i++) {
+  //     if (selectedSubjects.indexOf(subjects[i]) === -1) {
+  //       return subjects[i];
+  //     }
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
 
   /**
    * Returns list of enrolled subjects from enrolled attendances lists
    *
    * @returns list of enrolled subjects from enrolled attendances lists
    */
-  const getEnrolledSubjects = () =>
-    examinationInformation.enrolledAttendances.map(
-      (attendance) => attendance.subject
-    );
+  // const getEnrolledSubjects = () =>
+  //   examinationInformation.enrolledAttendances.map(
+  //     (attendance) => attendance.subject
+  //   );
 
   /**
    * Returns list of planned subjects from planned attendances lists
    *
    * @returns list of planned subjects from planned attendances lists
    */
-  const getPlannedSubjects = () =>
-    examinationInformation.plannedAttendances.map(
-      (attendance) => attendance.subject
-    );
+  // const getPlannedSubjects = () =>
+  //   examinationInformation.plannedAttendances.map(
+  //     (attendance) => attendance.subject
+  //   );
 
   /**
    * Returns list of finished subjects from finished attendances lists
@@ -689,7 +689,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         : MatriculationExamFundingType.SelfFunded;
 
     enrolledAttendances.push({
-      subject: getDefaultSubject(getEnrolledSubjects()),
+      subject: "",
       mandatory: false,
       repeat: false,
       status: "ENROLLED",
@@ -723,7 +723,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     finishedAttendances.push({
       term: getDefaultPastTerm().value,
       year: null,
-      subject: getDefaultSubject(getFinishedSubjects()),
+      subject: "",
       mandatory: false,
       grade: "",
       status: "FINISHED",
@@ -747,7 +747,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     plannedAttendances.push({
       term: getDefaultNextTerm().value,
       year: null,
-      subject: getDefaultSubject(getPlannedSubjects()),
+      subject: "",
       mandatory: false,
       status: "PLANNED",
     });
@@ -1023,6 +1023,26 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             </div>
           </div>
         ) : null}
+      </fieldset>
+
+      <fieldset className="matriculation-container__fieldset">
+        <div className="matriculation-container__state state-INFO">
+          <div className="matriculation-container__state-icon icon-notification"></div>
+          <div className="matriculation-container__state-text">
+            {compulsoryEducationEligible ? (
+              <p className="matriculation-container__info-item">
+                Olet laajennetun oppivelvollisuuden piirissä. Mikäli valittuja
+                kokeita on enemmän kuin viisi, valitse kokeista ne jotka
+                suoritat maksuttomana.
+              </p>
+            ) : (
+              <p className="matriculation-container__info-item">
+                Et ole laajennetun oppivelvollisuuden piirissä. Kaikki kokeesi
+                ovat maksullisia.
+              </p>
+            )}
+          </div>
+        </div>
       </fieldset>
 
       {!examinationInformation.restartExam && (

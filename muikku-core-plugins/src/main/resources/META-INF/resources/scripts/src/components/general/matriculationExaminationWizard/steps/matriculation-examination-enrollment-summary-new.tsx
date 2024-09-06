@@ -251,6 +251,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
             examinationFinishedList={finishedAttendances}
             pastOptions={getPastTermOptions(t)}
             useMandatorySelect={false}
+            useFundingSelect={true}
             readOnly={true}
           />
         ) : (

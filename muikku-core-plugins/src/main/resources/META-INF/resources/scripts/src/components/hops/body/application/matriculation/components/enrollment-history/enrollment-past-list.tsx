@@ -2,9 +2,9 @@ import * as React from "react";
 import ApplicationList from "~/components/general/application-list";
 
 /**
- * MatriculationEnrollmentHistoryDrawerProps
+ * MatriculationPastEnrollmentListProps
  */
-interface MatriculationEnrollmentHistoryDrawerProps {
+interface MatriculationPastEnrollmentListProps {
   children?: React.ReactNode;
 }
 
@@ -12,12 +12,12 @@ interface MatriculationEnrollmentHistoryDrawerProps {
  * MatriculationEnrollmentDrawerList
  * @param props props
  */
-const MatriculationEnrollmentDrawerList = (
-  props: MatriculationEnrollmentHistoryDrawerProps
+const MatriculationPastEnrollmentList = (
+  props: MatriculationPastEnrollmentListProps
 ) => {
   const { children } = props;
 
   return <ApplicationList>{children}</ApplicationList>;
 };
 
-export default MatriculationEnrollmentDrawerList;
+export default MatriculationPastEnrollmentList;

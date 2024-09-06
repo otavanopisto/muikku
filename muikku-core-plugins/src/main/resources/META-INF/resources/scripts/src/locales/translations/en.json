@@ -588,6 +588,8 @@
     "actions": {
       "confirmRegistration": "Confirm registration",
       "showSummary": "Show summary",
+      "showOldSummary": "Show old summary",
+      "showChangeLog": "Show change history",
       "supplementRegistration": "Supplement registration"
     },
     "label": {
@@ -608,6 +610,7 @@
       "matriculationHistory_title": "Matriculation Examination History"
     },
     "content": {
+      "matriculationChangeLogEmpty": "No history available for this examination at the moment.",
       "matriculationPlanGuides1": "Finnish or Finnish as a second language + 4 other subjects that are selected from three different subject groups.",
       "matriculationPlanGuides2": "<b>Note.</b> One advanced exam is mandatory (A-level foreign language or advanced mathematics).",
       "matriculationPlanGuides3": "Try <a href='https://ilmo.ylioppilastutkinto.fi/fi'> ILMO-tool</a>, to see what kind of combinations you can accomplish matriculation examination.",
@@ -622,7 +625,7 @@
       "matriculationEligibilityGuides3": "In addition for every subject you wish to participate in the matriculation examination, you must have completed specific amount of studies. If you have not completed enough studies, you can participate exams that are arranged later or you can discuss your situation with the counselor.",
       "matriculationEligibilityGuides4": "<b>To participate in exam</b> in the subjects you wish to, you must complete all mandatory studies. In cases where subject doesn't include mandatory studies, academic studies requires four credits and foreign languages requires six credits.",
       "matriculationEligibility": "Course grades required for the matriculation sign up rights: <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
-      "matriculationEnrollmentDone": "You have registered for the matriculation examination ({{term}}) {{date}}.",
+      "matriculationEnrollmentDone": "You have registered for the matriculation examination <b>({{term}})</b>",
       "matriculationEnrollmentGuides1": "Note. Check before registration from the Participation eligibility tab, if you have completed enough studies to participate in the matriculation examination",
       "matriculationEnrollmentGuides2": "If you have something to ask about the registration, please contact Riikka Turpeinen (riikka.turpeinen@otavia.fi).",
       "matriculationAbistatusEligibility1": "You have completed at least 40 mandatory credit points. You have <b>{{acceptedCount}}</b> / <b>{{requiredCount}}</b>",
@@ -630,7 +633,8 @@
       "matriculationAbistatusEligibility3": "You have completed at least one course of all the subjects included in yours the matriculation plan",
       "matriculationHistoryEmpty": "You do not have any results from the matriculation examinations yet",
       "matriculationHistoryGuides1": "Completed exams and results for those",
-      "matriculationHistoryGuides2": "<b>Note:</b> If you have participated in matriculation examinations before Nettilukio, your previous examination results may not be displayed here."
+      "matriculationHistoryGuides2": "<b>Note:</b> If you have participated in matriculation examinations before Nettilukio, your previous examination results may not be displayed here.",
+      "matriculationNoActiveEnrollment": "Registration for the matriculation examination is not currently open."
     },
     "matriculationTerms": {
       "AUTUMN": "Autumn {{year}}",

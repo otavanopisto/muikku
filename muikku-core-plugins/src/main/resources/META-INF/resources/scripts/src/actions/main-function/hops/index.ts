@@ -57,6 +57,11 @@ export type HOPS_MATRICULATION_UPDATE_EXAMS = SpecificActionType<
   MatriculationExam[]
 >;
 
+export type HOPS_MATRICULATION_UPDATE_PAST_EXAMS = SpecificActionType<
+  "HOPS_MATRICULATION_UPDATE_PAST_EXAMS",
+  MatriculationExam[]
+>;
+
 export type HOPS_MATRICULATION_UPDATE_SUBJECTS = SpecificActionType<
   "HOPS_MATRICULATION_UPDATE_SUBJECTS",
   MatriculationSubject[]
@@ -77,6 +82,7 @@ export type HOPS_MATRICULATION_UPDATE_EXAM_HISTORY = SpecificActionType<
   {
     examId: number;
     status: ReducerStateType;
+    past: boolean;
     history: MatriculationExamChangeLogEntry[];
   }
 >;
@@ -309,14 +315,79 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
           payload: results,
         });
 
-        // Load and dispatch student matriculation exams
-        const matriculationExams = await matriculationApi.getStudentExams({
+        // Load student matriculation exams
+        const matriculationEligibleExams =
+          await matriculationApi.getStudentExams({
+            studentIdentifier,
+            filter: "ELIGIBLE",
+          });
+
+        // Load student past matriculation exams
+        const matriculationPastExams = await matriculationApi.getStudentExams({
           studentIdentifier,
+          filter: "PAST",
         });
+
+        // And dispatch them
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_EXAMS",
-          payload: matriculationExams,
+          payload: matriculationEligibleExams,
         });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_PAST_EXAMS",
+          payload: matriculationPastExams,
+        });
+
+        // If there are eligible exams, load exams history for those
+        if (matriculationEligibleExams.length > 0) {
+          // Load history for every exam that is eligible
+          await Promise.all(
+            matriculationEligibleExams.map(async (exam) => {
+              try {
+                dispatch({
+                  type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS",
+                  payload: {
+                    examId: exam.id,
+                    status: "LOADING",
+                  },
+                });
+
+                const entryLogs =
+                  await matriculationApi.getStudentExamEnrollmentChangeLog({
+                    examId: exam.id,
+                    studentIdentifier,
+                  });
+
+                dispatch({
+                  type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
+                  payload: {
+                    examId: exam.id,
+                    history: entryLogs,
+                    status: "READY",
+                    past: false,
+                  },
+                });
+              } catch (err) {
+                if (!isMApiError(err)) {
+                  throw err;
+                }
+
+                if (isResponseError(err) && err.response.status === 404) {
+                  dispatch({
+                    type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
+                    payload: {
+                      examId: exam.id,
+                      history: [],
+                      status: "READY",
+                      past: false,
+                    },
+                  });
+                }
+              }
+            })
+          );
+        }
 
         // All done
         dispatch({
@@ -421,6 +492,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
             examId,
             history: entryLogs,
             status: "READY",
+            past: true,
           },
         });
       } catch (err) {
@@ -436,6 +508,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
               examId,
               history: [],
               status: "READY",
+              past: true,
             },
           });
           return;
@@ -651,6 +724,7 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
             examId: data.examId,
             history: updatedChangeLog,
             status: "READY",
+            past: false,
           },
         });
       } catch (err) {

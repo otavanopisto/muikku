@@ -131,9 +131,12 @@ export const useMatriculation = (
           setMatriculation((prevState) => ({
             ...prevState,
           }));
+        } else {
+          displayNotification(
+            "Lomakkeen esitietojen haku epäonnistui",
+            "error"
+          );
         }
-
-        displayNotification("Lomakkeen esitietojen haku epäonnistui", "error");
       }
     };
 

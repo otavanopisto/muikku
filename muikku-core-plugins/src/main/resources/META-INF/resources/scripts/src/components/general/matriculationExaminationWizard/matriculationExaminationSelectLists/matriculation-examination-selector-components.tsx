@@ -481,6 +481,7 @@ const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
+        <option value="">Valitse...</option>
         {Object.keys(SUBJECT_MAP).map((subjectCode, index) => {
           const subjectName = SUBJECT_MAP[subjectCode];
           const disabled = selectedValues.indexOf(subjectCode) != -1;

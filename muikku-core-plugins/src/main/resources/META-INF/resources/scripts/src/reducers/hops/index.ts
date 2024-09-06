@@ -64,6 +64,7 @@ export interface MatriculationEligibilityWithAbistatus
  */
 interface hopsMatriculation {
   exams: MatriculationExamWithHistory[];
+  pastExams: MatriculationExamWithHistory[];
   subjects: MatriculationSubject[];
   subjectsWithEligibility: MatriculationSubjectWithEligibility[];
   eligibility: MatriculationEligibilityWithAbistatus | null;
@@ -111,6 +112,7 @@ const initialHopsState: HopsState = {
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
     exams: [],
+    pastExams: [],
     subjects: [],
     eligibility: null,
     subjectsWithEligibility: [],
@@ -156,6 +158,22 @@ export const hopsNew: Reducer<HopsState> = (
           })),
         },
       };
+
+    case "HOPS_MATRICULATION_UPDATE_PAST_EXAMS":
+      return {
+        ...state,
+        hopsMatriculation: {
+          ...state.hopsMatriculation,
+          pastExams: action.payload.map<MatriculationExamWithHistory>(
+            (exam) => ({
+              ...exam,
+              status: "IDLE",
+              changeLogs: [],
+            })
+          ),
+        },
+      };
+
     case "HOPS_MATRICULATION_UPDATE_SUBJECTS":
       return {
         ...state,
@@ -215,6 +233,27 @@ export const hopsNew: Reducer<HopsState> = (
     }
 
     case "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY": {
+      if (action.payload.past) {
+        const updatedExams = state.hopsMatriculation.pastExams.map((exam) => {
+          if (exam.id === action.payload.examId) {
+            return {
+              ...exam,
+              changeLogs: action.payload.history,
+              status: action.payload.status,
+            };
+          }
+          return exam;
+        });
+
+        return {
+          ...state,
+          hopsMatriculation: {
+            ...state.hopsMatriculation,
+            pastExams: updatedExams,
+          },
+        };
+      }
+
       const updatedExams = state.hopsMatriculation.exams.map((exam) => {
         if (exam.id === action.payload.examId) {
           return {
@@ -271,6 +310,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsMatriculationStatus: "IDLE",
         hopsMatriculation: {
           exams: [],
+          pastExams: [],
           subjects: [],
           eligibility: null,
           subjectsWithEligibility: [],

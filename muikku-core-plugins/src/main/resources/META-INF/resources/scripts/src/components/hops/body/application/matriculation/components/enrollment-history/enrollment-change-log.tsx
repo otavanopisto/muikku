@@ -1,48 +1,53 @@
 import moment from "moment";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import Avatar from "~/components/general/avatar";
 import { MatriculationExamChangeLogEntry } from "~/generated/client";
 import "~/sass/elements/hops.scss";
 
 /**
- * HopsHistoryProps
+ * ChangeLogProps
  */
-interface HistoryProps {
+interface ChangeLogProps {
   entryLogs: MatriculationExamChangeLogEntry[];
 }
 
 /**
- * HopsHistory
+ * ChangeLog
  * @param props props
  */
-export const History: React.FC<HistoryProps> = (props) => {
+export const ChangeLog: React.FC<ChangeLogProps> = (props) => {
   const { entryLogs } = props;
 
+  const { t } = useTranslation(["hops_new", "common"]);
+
   if (!entryLogs || entryLogs.length === 0) {
-    return <p>No history available for this examination at the moment.</p>;
+    return (
+      <p>{t("content.matriculationChangeLogEmpty", { ns: "hops_new" })}</p>
+    );
   }
 
   return (
     <div className="hops-container__history">
       {entryLogs.map((logEntry, index) => (
-        <HistoryEntryItem key={index} logEntry={logEntry} />
+        <ChangeLogItem key={index} logEntry={logEntry} />
       ))}
     </div>
   );
 };
 
 /**
- * HopsHistoryEventProps
+ * ChangeLogItemProps
  */
-interface HistoryEntryItemProps {
+interface ChangeLogItemProps {
   logEntry: MatriculationExamChangeLogEntry;
 }
 
 /**
- * HopsHistoryEvent
+ * ChangeLogItem
  * @param props props
  */
-export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
+export const ChangeLogItem: React.FC<ChangeLogItemProps> = (props) => {
   const { logEntry } = props;
 
   /**
