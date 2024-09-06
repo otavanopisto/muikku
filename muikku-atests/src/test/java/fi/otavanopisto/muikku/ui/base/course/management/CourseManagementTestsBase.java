@@ -318,7 +318,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try {
       mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").nameExtension("For test").buildCourse();
       mockBuilder
       .addStaffMember(admin)
       .mockLogin(admin)
@@ -331,13 +331,29 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .build();
       try{
+        navigate(String.format("/workspace/%s/", workspace.getUrlName()), false);
+        waitForVisible(".hero__workspace-name-extension span");
+        assertTextIgnoreCase(".hero__workspace-name-extension span", "For test");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+        waitForVisible("#wokspaceName");
+        String title = getAttributeValue("#wokspaceName", "value");
+        int i = 0;
+        while (title.isEmpty()) {
+          i++;
+          refresh();
+          sleep(300);
+          title = getAttributeValue("#wokspaceName", "value");
+          if(i > 15)
+            break;
+        }
         waitForPresent(".license-selector select");
-        scrollIntoView(".license-selector select");
+        scrollTo(".license-selector select", 150);
+        waitForVisible(".license-selector select");
         selectOption(".license-selector select", "CC3");
-        scrollIntoView(".button--primary-function-save");
+        sleep(3000);
+        scrollTo(".button--primary-function-save", 100);
         waitAndClick(".button--primary-function-save");
-        waitForVisible(".notification-queue__items");
+        waitForVisible(".notification-queue__item--success");
         waitForNotVisible(".loading");
         
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);

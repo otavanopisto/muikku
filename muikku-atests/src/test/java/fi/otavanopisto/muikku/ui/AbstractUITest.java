@@ -936,9 +936,41 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void selectOption(String selector, String value){
+    waitForClickable(selector);
+
     Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
+        
+    List<WebElement> options = selectField.getAllSelectedOptions();
+    int i = 0;
+    WebElement option = options.get(0);
+    String licenseValue = option.getAttribute("value");
+    while(!licenseValue.equals(value)) {
+      if (i > 4) {
+        break;
+      }
+      i++;
+      
+      waitForClickable(selector);
+      selectField = new Select(findElementByCssSelector(selector));
+      selectField.selectByValue(value);  
+      sleep(1000);
+      
+      options = selectField.getAllSelectedOptions();
+      option = options.get(0);
+      licenseValue = option.getAttribute("value");
+      
+      if (licenseValue.equals(value)) {
+        break;
+      }else {
+        options.clear();
+      }
+    }
+    if(!licenseValue.equals(value))
+      throw new TimeoutException("Could not select wanted value.");
+      
   }
+  
   
   
   protected boolean isInSelection(String selector, String compare) {
@@ -2015,6 +2047,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+    waitForVisible("#wokspaceName");
+    String title = getAttributeValue("#wokspaceName", "value");
+    int i = 0;
+    while (title.isEmpty()) {
+      i++;
+      refresh();
+      sleep(300);
+      title = getAttributeValue("#wokspaceName", "value");
+      if(i > 15)
+        break;
+    }
     scrollTo("input#" + workspaceAccess, 300);
     sleep(500);
     waitAndClick("input#" + workspaceAccess);
