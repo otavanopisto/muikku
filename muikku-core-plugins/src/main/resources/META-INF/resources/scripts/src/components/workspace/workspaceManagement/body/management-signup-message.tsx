@@ -5,21 +5,20 @@ import Dropdown from "~/components/general/dropdown";
 import { WorkspaceSignupMessage } from "~/generated/client";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementSignupMessageProps
  */
 interface ManagementSignupMessageProps {
   workspaceName: string;
   workspaceSignupMessage: WorkspaceSignupMessage;
-  onChange?: (workspaceSignupGroups: WorkspaceSignupMessage) => void;
+  onChange?: (signupMessage: WorkspaceSignupMessage) => void;
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementSignupMessage
  * @param props props
  */
 const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
   const { workspaceSignupMessage, onChange } = props;
-
   const { t } = useTranslation(["workspace"]);
 
   /**

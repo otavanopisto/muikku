@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { WorkspaceAccess } from "~/generated/client";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementVisibilityProps
  */
 interface ManagementVisibilityProps {
   workspacePublished: boolean;
@@ -13,7 +13,7 @@ interface ManagementVisibilityProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementVisibility
  * @param props props
  */
 const ManagementVisibility = (props: ManagementVisibilityProps) => {

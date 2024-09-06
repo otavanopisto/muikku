@@ -7,7 +7,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import Button from "~/components/general/button";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementImageProps
  */
 interface ManagementImageProps {
   workspaceEntityId?: number;

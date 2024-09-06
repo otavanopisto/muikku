@@ -6,7 +6,7 @@ import { languageOptions } from "~/reducers/workspaces";
 import CopyWizardDialog from "../dialogs/copy-wizard";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementBasicInfoProps
  */
 interface ManagementBasicInfoProps {
   workspaceName: string;
@@ -21,7 +21,7 @@ interface ManagementBasicInfoProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementBasicInfo
  * @param props props
  */
 const ManagementBasicInfo = (props: ManagementBasicInfoProps) => {
