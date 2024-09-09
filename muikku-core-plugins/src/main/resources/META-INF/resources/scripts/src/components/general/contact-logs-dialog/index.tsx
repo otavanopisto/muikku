@@ -11,6 +11,11 @@ import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import MApi, { isMApiError } from "~/api/api";
 import { StatusType } from "~/reducers/base/status";
 import { ContactRecipientType } from "~/reducers/user-index";
+import moment from "moment";
+import {
+  CreateMultipleContactLogEventsRequest,
+  ContactLogEvent,
+} from "~/generated/client/models/CreateMultipleContactLogEventsRequest";
 
 interface NewContactEventProps {
   status: StatusType;
@@ -27,17 +32,6 @@ type Recipients = {
   recipientGroupIds: number[];
   recipientStudentsWorkspaceIds: number[];
 };
-
-type ContactLogEntry = {
-  text: string;
-  type: ContactType;
-  entryDate: Date;
-};
-
-interface ContactEventPayload {
-  recipients: Recipients;
-  contactLogEntry: ContactLogEntry;
-}
 
 interface NewContactEventState {
   recipientIds: number[];
@@ -106,28 +100,28 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     recipientStudentsWorkspaceIds,
     locked,
   } = state;
-  const { userIdentifier, isOpen, status, selectedItems, children, onClose } =
-    props;
-  const { t } = useTranslation("messaging");
+  const { isOpen, status, selectedItems, children, onClose } = props;
+  const { t } = useTranslation(["common", "messaging"]);
 
   const handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    const workspaceIds = recipients.map((recipient) =>
-      recipient.type === "workspace" ? recipient.value.id : null
-    );
-    const groupIds = recipients.map((recipient) =>
-      recipient.type === "usergroup" ? recipient.value.id : null
-    );
-    const recipientIds = recipients.map((recipient) =>
-      recipient.type === "user" ? recipient.value.id : null
-    );
+    const workspaceIds = recipients
+      .filter((recipient) => recipient.type === "workspace")
+      .map((recipient) => recipient.value.id);
+    const groupIds = recipients
+      .filter((recipient) => recipient.type === "usergroup")
+      .map((recipient) => recipient.value.id);
 
-    if (recipientIds) {
+    const recipientIds = recipients
+      .filter((recipient) => recipient.type === "user")
+      .map((recipient) => recipient.value.id);
+
+    if (recipientIds && recipientIds.length > 0) {
       dispatch({ type: "SET_RECIPIENTS", payload: recipientIds });
     }
-    if (groupIds) {
+    if (groupIds && groupIds.length > 0) {
       dispatch({ type: "SET_RECIPIENT_GROUPS", payload: groupIds });
     }
-    if (workspaceIds) {
+    if (workspaceIds && workspaceIds.length > 0) {
       dispatch({ type: "SET_RECIPIENT_WORKSPACES", payload: workspaceIds });
     }
   };
@@ -166,6 +160,30 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
           includeInactiveStudents: false,
         }),
     };
+  };
+
+  /**
+   * saveContactEvent
+   * @param closeDialog closeDialog
+   */
+  const saveContactEvent = () => {
+    const guiderApi = MApi.getGuiderApi();
+    dispatch({ type: "SET_LOCKED", payload: true });
+    const payload: CreateMultipleContactLogEventsRequest = {
+      recipients: {
+        recipientIds,
+        recipientGroupIds,
+        recipientStudentsWorkspaceIds,
+      },
+      contactLogEntry: {
+        text,
+        entryDate: moment(entryDate).format(),
+        type,
+      },
+    };
+
+    console.log(payload);
+    guiderApi.createMultipleContactLogEvents(payload);
   };
 
   /**
@@ -258,9 +276,14 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    */
   const footer = (closeDialog: () => void) => (
     <div className="env-dialog__actions">
-      <Button buttonModifiers="dialog-execute" disabled={locked}>
+      <Button
+        buttonModifiers="dialog-execute"
+        onClick={saveContactEvent}
+        disabled={locked}
+      >
         {t("actions.send")}
       </Button>
+
       <Button
         buttonModifiers="dialog-cancel"
         onClick={closeDialog}

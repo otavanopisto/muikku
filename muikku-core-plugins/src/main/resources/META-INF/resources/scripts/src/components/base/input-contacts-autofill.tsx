@@ -111,7 +111,7 @@ export default class c extends React.Component<
     this.selectedHeight = null;
     this.onInputChange = this.onInputChange.bind(this);
     this.autocompleteDataFromServer =
-      this.autocompleteDataFromServer.bind(this);
+    this.autocompleteDataFromServer.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
@@ -282,15 +282,20 @@ export default class c extends React.Component<
      * userItems
      */
     const userItems: ContactRecipientType[] = searchResults[0].map(
-      (item: User): ContactRecipientType => ({
-        type: "user",
-        value: {
-          id: item.id,
-          name: getName(item, this.props.showFullNames),
-          email: item.email,
-          studyProgrammeName: item.studyProgrammeName,
-        },
-      })
+      (item: User): ContactRecipientType => {
+        // Yeah, this happens sometimes. The API returns a user with id that is a string.
+        const id = typeof item.id === "number" ? item.id : item.userEntityId;
+
+        return {
+          type: "user",
+          value: {
+            id: id,
+            name: getName(item, this.props.showFullNames),
+            email: item.email,
+            studyProgrammeName: item.studyProgrammeName,
+          },
+        };
+      }
     );
 
     /**
