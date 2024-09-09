@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ItemList from "~/components/general/item-list";
-import { SUBJECT_MAP } from "~/components/general/matriculationExaminationWizard/helper";
 import { MatriculationExamGrade } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
@@ -53,7 +52,10 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
       return (
         <ItemList
           key={r.subjectCode}
-          header={SUBJECT_MAP[r.subjectCode]}
+          header={t(`subjects.${r.subjectCode}`, {
+            ns: "common",
+            defaultValue: r.subjectCode,
+          })}
           modifier="matriculation-results"
         >
           {subResult.map((sr, i) => (

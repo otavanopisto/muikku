@@ -45,8 +45,8 @@ const SUBJECT_MAP: {
     name: "Ruotsi, A-taso",
     requiredCredits: 10,
   },
-  RUB: {
-    subjectCode: "RUB",
+  RUB1: {
+    subjectCode: "RUB1",
     name: "Ruotsi, B-taso",
     requiredCredits: 8,
   },

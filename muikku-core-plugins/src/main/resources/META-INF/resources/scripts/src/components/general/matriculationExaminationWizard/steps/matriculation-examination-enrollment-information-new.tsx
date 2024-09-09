@@ -33,7 +33,6 @@ import {
   ADVANCED_SUBJECTS,
   EXAMINATION_SUCCESS_GRADES_MAP,
   FINNISH_SUBJECTS,
-  SUBJECT_MAP,
 } from "~/components/general/matriculationExaminationWizard/helper";
 import { useTranslation } from "react-i18next";
 
@@ -1122,7 +1121,12 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
                 <div key={index}>
                   <ul>
                     {cGroup.map((cSubject, index) => (
-                      <li key={index}> {SUBJECT_MAP[cSubject]} </li>
+                      <li key={index}>
+                        {t(`subjects.${cSubject}`, {
+                          ns: "common",
+                          defaultValue: cSubject,
+                        })}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -1215,7 +1219,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
               <li>
                 yhden tulee olla äidinkieli / suomi toisena kielenä.
                 {getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES
-                  ? ` (${SUBJECT_MAP[getFinnishAttendance()[0]]} valittu)`
+                  ? ` (${t(`subjects.${getFinnishAttendance()[0]}`, {
+                      ns: "common",
+                      defaultValue: getFinnishAttendance()[0],
+                    })} valittu)`
                   : null}
               </li>
               <li>
