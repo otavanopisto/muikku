@@ -482,9 +482,15 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    StudentMatriculationEligibilityOPS2021 result = matriculationController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
+    BridgeResponse<StudentMatriculationEligibilityOPS2021> result = matriculationController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
 
-    return Response.ok(result).build();
+    if (result.ok()) {
+      return Response.ok(result.getEntity()).build();
+    } 
+    else {
+      Status status = Status.fromStatusCode(result.getStatusCode());
+      return status != null ? Response.status(status).build() : Response.status(result.getStatusCode()).build();
+    }
   }
 
   @GET
