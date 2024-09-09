@@ -11065,7 +11065,7 @@ components:
               recipients:
                 $ref: "#/components/schemas/ContactLogRecipientList"
               contactLogEntry:
-                $ref: "#/components/schemas/ContactLogEvent"
+                $ref: "#/components/schemas/ContactLogMultipleEvents"
 
     ContactLogUpdateEventRequestBody:
       required: true
@@ -12899,7 +12899,6 @@ components:
         - creatorName
         - hasImage
         - text
-        - recipients
       properties:
         id:
           type: integer
@@ -12921,10 +12920,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ContactLogEventComment"
-        recipients:
-          type: array
-          items:
-            type: int64
+    
+    ContactLogMultipleEvents:
+      type: object
+      description: GuiderContactLogMultipleEvents object
+      required:
+        - entryDate
+        - type
+        - text
+      properties:
+        entryDate:
+          type: string
+        type:
+          $ref: "#/components/schemas/ContactType"
+        text:
+          type: string
 
     ContactLogEventComment:
       type: object
