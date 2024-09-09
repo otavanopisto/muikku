@@ -287,6 +287,40 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok().build();
   }
 
+  @GET
+  @Path("/sdi_paramconverter/{SDI}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_path(@PathParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  @GET
+  @Path("/sdi_paramconverter_queryparam")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_query(@QueryParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.noContent().build();
+    }
+  }
+
   @DELETE
   @Path("/communicator/messages")
   @RESTPermit (handling = Handling.UNSECURED)
