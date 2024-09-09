@@ -73,31 +73,36 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
           )}
         </ApplicationSubPanel.Body>
 
-        <ApplicationSubPanel.Body>
-          <ApplicationList>
-            <ApplicationListItem>
-              <ApplicationListItemHeader
-                tabIndex={0}
-                role="button"
-                className="application-list__item-header--course"
-                onClick={handleToggleHistoryClick}
-              >
-                {t("actions.showChangeLog", { ns: "hops_new" })}
-              </ApplicationListItemHeader>
-              <ApplicationListItemBody>
-                <AnimateHeight duration={400} height={showHistory ? "auto" : 0}>
-                  {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
-                    <div className="loader-empty" />
-                  ) : (
-                    <ChangeLog
-                      entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
-                    />
-                  )}
-                </AnimateHeight>
-              </ApplicationListItemBody>
-            </ApplicationListItem>
-          </ApplicationList>
-        </ApplicationSubPanel.Body>
+        {hops.hopsMatriculation.exams[0] && (
+          <ApplicationSubPanel.Body>
+            <ApplicationList>
+              <ApplicationListItem>
+                <ApplicationListItemHeader
+                  tabIndex={0}
+                  role="button"
+                  className="application-list__item-header--course"
+                  onClick={handleToggleHistoryClick}
+                >
+                  {t("actions.showChangeLog", { ns: "hops_new" })}
+                </ApplicationListItemHeader>
+                <ApplicationListItemBody>
+                  <AnimateHeight
+                    duration={400}
+                    height={showHistory ? "auto" : 0}
+                  >
+                    {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
+                      <div className="loader-empty" />
+                    ) : (
+                      <ChangeLog
+                        entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
+                      />
+                    )}
+                  </AnimateHeight>
+                </ApplicationListItemBody>
+              </ApplicationListItem>
+            </ApplicationList>
+          </ApplicationSubPanel.Body>
+        )}
 
         <ApplicationSubPanel.Body>
           <div className="application-sub-panel__notification-item">
