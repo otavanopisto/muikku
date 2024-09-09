@@ -106,9 +106,20 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           </div>
 
           <div className="application-sub-panel__notification-item">
+            <div
+              className="application-sub-panel__notification-body application-sub-panel__notification-body"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationEligibilityGuides2", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
+          </div>
+
+          <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
-                {t("content.matriculationEligibilityGuides2", {
+                {t("content.matriculationEligibilityGuides3", {
                   ns: "hops_new",
                 })}
               </p>
@@ -155,7 +166,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
           <div className="application-sub-panel__notification-item">
             <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
               <p>
-                {t("content.matriculationEligibilityGuides3", {
+                {t("content.matriculationEligibilityGuides4", {
                   ns: "hops_new",
                 })}
               </p>
@@ -182,7 +193,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
             <div
               className="application-sub-panel__notification-body application-sub-panel__notification-body"
               dangerouslySetInnerHTML={{
-                __html: t("content.matriculationEligibilityGuides4", {
+                __html: t("content.matriculationEligibilityGuides5", {
                   ns: "hops_new",
                 }),
               }}
