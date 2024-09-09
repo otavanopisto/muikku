@@ -1,0 +1,138 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.memofield-wrapper {
+  display: block;
+  padding: 0.01em; // This fixes CKEditors top margin but does not affect anything visually
+  position: relative;
+
+  .material-page__field-answer-synchronizer {
+    left: 0;
+  }
+
+  // Necessary evil as material editor uses the same class names to provide wysiwyg experience close to the actualy material page render
+  // but unfortunately it does affect taskfields with ckeditors as well so this is needed to override padding rules.
+
+  /* stylelint-disable selector-class-pattern */
+  .cke_editable.cke_wysiwyg_div {
+    padding: 0 8px;
+  }
+
+  .cke { // This needs to be here so we can override the ckeditor's visuals/size partly
+    background: $color-default;
+    border: 2px solid $taskfield-border-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 4px 0 0;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  .cke_wysiwyg_div {
+    min-height: 150px;
+  }
+  /* stylelint-enable selector-class-pattern */
+}
+
+.memofield-header {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.memofield {
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  line-height: 1.25rem;
+  margin: 4px 0 0;
+  max-width: 100%;
+  min-width: 100%;
+  padding: 4px 8px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
+  }
+}
+
+.memofield--evaluation { // This is for memofield replacement style in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
+  padding: 15px 20px;
+}
+
+.memofield__ckeditor-replacement { // This is for ckeditor replacement div
+  @include taskfield-text;
+  @include taskfield-defaults;
+
+  display: block;
+  line-height: 1.25rem;
+  margin: 4px 0 0;
+  max-width: 100%;
+  min-height: 2.25rem;
+  min-width: 100%;
+  padding: 5px 20px;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+.memofield__ckeditor-replacement--evaluation { // This is for ckeditor replacement div in evaluation views
+  background: $color-evaluation-readonly-taskfield-background;
+  border: 0;
+  border-radius: 2px;
+}
+
+.memofield[readonly],
+.memofield[readonly].memofield--evaluation,
+.memofield__ckeditor-replacement.memofield__ckeditor-replacement--readonly,
+.memofield__ckeditor-replacement.memofield__ckeditor-replacement--evaluation.memofield__ckeditor-replacement--readonly {
+  border-color: $color-disabled-taskfield-border;
+  cursor: not-allowed;
+}
+
+// WORD AND CHARACTER COUNTER
+.memofield__counter-wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 85%;
+  height: 2rem;
+  justify-content: flex-end;
+}
+
+.memofield__word-count-container,
+.memofield__character-count-container {
+  align-items: center;
+  background: lighten($taskfield-border-color, 30%);
+  border-bottom-left-radius: 2px;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding: 2px 6px;
+}
+
+.memofield__word-count-title,
+.memofield__character-count-title {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 4px;
+}
+
+.memofield__word-count,
+.memofield__character-count {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-weight: 400;
+}

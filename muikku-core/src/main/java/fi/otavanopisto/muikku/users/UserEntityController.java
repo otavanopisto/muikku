@@ -57,6 +57,9 @@ public class UserEntityController implements Serializable {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
+  private UserProfilePictureController userProfilePictureController;
+
+  @Inject
   private UserEntityDAO userEntityDAO;
 
   @Inject
@@ -294,6 +297,10 @@ public class UserEntityController implements Serializable {
   
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
     return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
+  }
+
+  public boolean hasProfilePicture(UserEntity userEntity) {
+    return userProfilePictureController.hasProfilePicture(userEntity);
   }
 
   public boolean isStudent(UserEntity userEntity) {

@@ -11,15 +11,18 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemBody,
   ApplicationListItemFooter,
+  ApplicationListItemContentContainer,
 } from "~/components/general/application-list";
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { suitabilityMapHelper } from "~/@shared/suitability";
-import { Curriculum } from "~/generated/client";
+import { Curriculum, WorkspaceAssessmentState } from "~/generated/client";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
+import AssessmentRequestIndicator from "~/components/general/records-history/assessment-request-indicator";
+import RecordsAssessmentIndicator from "~/components/general/records-history/records-assessment-indicator";
 
 /**
  * CourseProps
@@ -36,6 +39,7 @@ interface CourseProps extends WithTranslation<["common"]> {
 interface CourseState {
   expanded: boolean;
   canSignUp?: boolean;
+  assessmentStates: WorkspaceAssessmentState[];
   loading: boolean;
 }
 
@@ -53,6 +57,7 @@ class Course extends React.Component<CourseProps, CourseState> {
     this.state = {
       expanded: false,
       canSignUp: undefined,
+      assessmentStates: [],
       loading: false,
     };
 
@@ -156,7 +161,7 @@ class Course extends React.Component<CourseProps, CourseState> {
           loading: true,
         });
 
-        const canSignUp = await this.checkSignUpStatus();
+        const workspaceCanSignup = await this.checkSignUpStatus();
         /**
          * Timeout for lazier loading because
          * otherwise it will flick loader-spinner
@@ -164,7 +169,8 @@ class Course extends React.Component<CourseProps, CourseState> {
         setTimeout(() => {
           this.setState({
             expanded: true,
-            canSignUp,
+            canSignUp: workspaceCanSignup.canSignup,
+            assessmentStates: workspaceCanSignup.assessmentStates,
             loading: false,
           });
         }, 500);
@@ -201,6 +207,106 @@ class Course extends React.Component<CourseProps, CourseState> {
       e.preventDefault();
       this.toggleExpanded();
     }
+  };
+
+  /**
+   * Render assessment states
+   * @returns JSX.Element
+   */
+  renderAssessmentStates = () => {
+    // If there are no assessment states, there is nothing to show
+    if (this.state.assessmentStates.length === 0) return null;
+
+    // Checking if workspace has more than 1 module and therefore it is combination workspace
+    const isCombinationWorkspace = this.state.assessmentStates.length > 1;
+
+    // Rendering goes differently if workspace is combination workspace and has assessments done for the modules
+    if (isCombinationWorkspace) {
+      // Checking if workspace is combination workspace and if any of it's modules
+      // has been assessed as incomplete or any module has grade/passingGrade set
+      const combinationWorkspaceModulesHasAssessment =
+        this.state.assessmentStates.find(
+          (assessment) =>
+            assessment.state === "pending" ||
+            assessment.state === "incomplete" ||
+            (assessment.grade && assessment.passingGrade)
+        );
+      if (combinationWorkspaceModulesHasAssessment === undefined) {
+        return null;
+      }
+
+      const elements = this.state.assessmentStates.map((assessment, index) => {
+        if (
+          assessment.state === "pending" ||
+          assessment.state === "incomplete" ||
+          (assessment.grade && assessment.passingGrade)
+        ) {
+          const subjectCodeString =
+            assessment.subject &&
+            `${assessment.subject.subjectCode}${
+              assessment.subject.courseNumber
+                ? assessment.subject.courseNumber
+                : ""
+            }`;
+
+          return (
+            <div
+              key={index}
+              className="application-list__item-content-single-item"
+            >
+              {subjectCodeString && (
+                <span className="application-list__item-content-single-item-primary">
+                  {subjectCodeString} -{" "}
+                  {this.props.t("labels.courseCompletionStatus", {
+                    ns: "workspace",
+                  })}
+                </span>
+              )}
+
+              <AssessmentRequestIndicator assessment={assessment} />
+              <RecordsAssessmentIndicator
+                assessment={assessment}
+                isCombinationWorkspace={true}
+              />
+            </div>
+          );
+        }
+      });
+
+      return (
+        <ApplicationListItemContentContainer modifiers="course-assessments">
+          {elements}
+        </ApplicationListItemContentContainer>
+      );
+    }
+
+    // For non-combination workspace
+    const workspaceAssessmentState = this.state.assessmentStates[0];
+
+    if (
+      workspaceAssessmentState.state === "incomplete" ||
+      (workspaceAssessmentState.grade && workspaceAssessmentState.passingGrade)
+    ) {
+      return (
+        <ApplicationListItemContentContainer modifiers="course-assessments">
+          <div className="application-list__item-content-single-item">
+            <span className="application-list__item-content-single-item-primary">
+              {this.props.t("labels.courseCompletionStatus", {
+                ns: "workspace",
+              })}
+            </span>
+            <AssessmentRequestIndicator assessment={workspaceAssessmentState} />
+
+            <RecordsAssessmentIndicator
+              assessment={workspaceAssessmentState}
+              isCombinationWorkspace={false}
+            />
+          </div>
+        </ApplicationListItemContentContainer>
+      );
+    }
+
+    return null;
   };
 
   /**
@@ -265,6 +371,7 @@ class Course extends React.Component<CourseProps, CourseState> {
               content={this.props.workspace.description}
               className="application-list__item-body--course"
             />
+            {this.renderAssessmentStates()}
             <ApplicationListItemFooter className="application-list__item-footer--course">
               <Button
                 aria-label={this.props.t("wcag.continueWorkspace", {

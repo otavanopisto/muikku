@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.communicator;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,10 +71,9 @@ public class CommunicatorAutoReplyController {
           // #5629: Simply don't send message if start/end properties aren't present
           return;
         }
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
-        start = LocalDate.parse(startProperty.getValue(), formatter);
-        end = LocalDate.parse(endProperty.getValue(), formatter);
+
+        start = Instant.parse(startProperty.getValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+        end = Instant.parse(endProperty.getValue()).atZone(ZoneId.systemDefault()).toLocalDate();
         
         if (start == null || end == null) {
           // #5629: Simply don't send message if start/end dates cannot be parsed

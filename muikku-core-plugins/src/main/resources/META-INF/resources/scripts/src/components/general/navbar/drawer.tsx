@@ -345,7 +345,9 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     onClick={this.props.openReadingRuler}
                   >
                     <span className="menu__item-link-icon icon-cogs"></span>
-                    <span className="menu__item-link-text">Ruleri</span>
+                    <span className="menu__item-link-text">
+                      {this.props.t("labels.readingRuler")}
+                    </span>
                   </Link>
                 </li>
                 {this.props.status.loggedIn ? (

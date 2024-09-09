@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.ui.base.discussions;
 
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertTrue;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -162,11 +161,11 @@ public class DiscussionTestsBase extends AbstractUITest {
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
-      DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
+      createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
           "<p>Testing testing daa daa</p>", false, null);
       try{
         navigate("/discussion", false);
-        waitAndClick("a.button-icon--discussion-action");
+        waitAndClick("div.button-icon--discussion-action");
         waitForPresent(".icon-bookmark-full");
         logout();
         mockBuilder.mockLogin(student);
@@ -190,12 +189,12 @@ public class DiscussionTestsBase extends AbstractUITest {
         waitForVisible(".application-list__item-content-main--discussion .button-icon--discussion-subscription.active");
         waitAndClick(".application-list__item-header--discussion");
         assertText(".application-list__item--discussion-reply .application-list__item-body p", "Student checking in.");
+      } finally {
+        archiveUserByEmail(student.getEmail());
+        cleanUpDiscussions();
+      }
     } finally {
-      archiveUserByEmail(student.getEmail());
-      cleanUpDiscussions();
-    }
-  } finally {
-    mockBuilder.wiremockReset();
+      mockBuilder.wiremockReset();
     }
   }
   

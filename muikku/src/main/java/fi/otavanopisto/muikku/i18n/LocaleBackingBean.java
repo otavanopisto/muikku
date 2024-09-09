@@ -9,7 +9,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @Named("i18n")

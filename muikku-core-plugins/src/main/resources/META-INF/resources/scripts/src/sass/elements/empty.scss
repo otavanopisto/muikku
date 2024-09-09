@@ -18,6 +18,14 @@
   }
 }
 
+.empty--chat {
+  > * {
+    font-family: $system-font-family;
+    font-size: 0.875rem;
+    font-weight: 400;
+  }
+}
+
 .empty--dialog-row,
 .empty--sub-panel-data {
   justify-content: left;

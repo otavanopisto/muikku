@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
 import fi.otavanopisto.muikku.notifier.NotifierController;
@@ -88,6 +89,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
@@ -120,6 +122,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
 
   @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
@@ -404,6 +409,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
+    workspaceIndexer.indexWorkspace(workspaceEntity);
+    
     return Response.ok(createRestEntity(workspaceEntity, payload.getName())).build();
   }
   
@@ -425,8 +432,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId) {
+    logger.info(String.format("TESTS Deleting workspace %d", workspaceEntityId));
+    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
+      logger.warning(String.format("TESTS Deleting workspace aborted, workspace %d not found.", workspaceEntityId));
       return Response.status(404).entity("Not found").build();
     }
     try{
@@ -449,10 +459,21 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
     }
     
+    List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
+    for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
+      workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
+    }
+    List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
+    for (WorkspaceSignupMessage signupMessage : signupMessages) {
+      workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
+    }
+    
     SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
     workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);
     workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     
+    logger.info(String.format("TESTS Workspace %d deleted.", workspaceEntityId));
+
     return Response.noContent().build();
   }
 
@@ -460,6 +481,8 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/workspaces")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response deleteWorkspaces() {
+    logger.info(String.format("TESTS Deleting all workspaces"));
+
     List<WorkspaceEntity> workspaceEntities = workspaceEntityDAO.listAll();
     for (WorkspaceEntity workspaceEntity : workspaceEntities) {
       try{
@@ -484,11 +507,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
         workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
       }
+      List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
+      for (WorkspaceSignupMessage signupMessage : signupMessages) {
+        workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
+      }
       
       SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
       workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);  
       workspaceIndexer.removeWorkspace(schoolDataIdentifier);
     }
+    
+    logger.info(String.format("TESTS All workspaces deleted."));
+
     return Response.noContent().build();
   }
   

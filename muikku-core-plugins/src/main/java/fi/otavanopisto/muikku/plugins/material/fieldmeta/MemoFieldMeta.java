@@ -8,7 +8,7 @@ public class MemoFieldMeta extends FieldMeta {
     
   }
   
-  public MemoFieldMeta(String name, Integer columns, Integer rows, String help, String hint, String example, Boolean richedit) {
+  public MemoFieldMeta(String name, Integer columns, Integer rows, String help, String hint, String example, Boolean richedit, Integer maxWords, Integer maxChars) {
     super(name);
     this.columns = columns;
     this.rows = rows;
@@ -16,6 +16,8 @@ public class MemoFieldMeta extends FieldMeta {
     this.hint = hint;
     this.example = example;
     this.richedit = richedit;
+    this.maxChars = maxChars;
+    this.maxWords = maxWords;
   }
 
   @Override
@@ -72,11 +74,29 @@ public class MemoFieldMeta extends FieldMeta {
     this.richedit = richedit;
   }
 
+  public Integer getMaxWords() {
+    return maxWords;
+  }
+
+  public void setMaxWords(Integer maxWords) {
+    this.maxWords = maxWords;
+  }
+
+  public Integer getMaxChars() {
+    return maxChars;
+  }
+
+  public void setMaxChars(Integer maxChars) {
+    this.maxChars = maxChars;
+  }
+
   private Integer columns;
   private Integer rows;
   private String help;
   private String hint;
   private String example;
   private Boolean richedit;
+  private Integer maxWords;
+  private Integer maxChars;
   
 }
