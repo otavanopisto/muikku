@@ -40,7 +40,7 @@ public interface MatriculationSchoolDataBridge {
    * @param subjectCode subject code
    * @return student eligibility to participate matriculation exams
    */
-  public StudentMatriculationEligibilityOPS2021 getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode);
+  public BridgeResponse<StudentMatriculationEligibilityOPS2021> getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode);
 
   public BridgeResponse<List<MatriculationGrade>> listStudentsGrades(SchoolDataIdentifier studentIdentifier);
   

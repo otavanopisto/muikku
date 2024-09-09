@@ -210,19 +210,22 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
   }
 
   @Override
-  public StudentMatriculationEligibilityOPS2021 getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
+  public BridgeResponse<StudentMatriculationEligibilityOPS2021> getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
     if (!StringUtils.equals(studentIdentifier.getDataSource(), getSchoolDataSource())) {
       throw new SchoolDataBridgeInternalException(String.format("Could not evaluate students' matriculation eligibility from school data source %s", studentIdentifier.getDataSource()));
     }
 
     Long pyramusStudentId = pyramusIdentifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     if (pyramusStudentId != null) {
-      fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021 result = pyramusClient.get(String.format("/matriculation/students/%d/matriculationEligibility?subjectCode=%s", pyramusStudentId, subjectCode), fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021.class);
-      if (result == null) {
-        throw new SchoolDataBridgeInternalException(String.format("Could not resolve matriculation eligibility for student %s", studentIdentifier));
+      BridgeResponse<fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021> response = pyramusClient.responseGet(String.format("/matriculation/students/%d/matriculationEligibility?subjectCode=%s", pyramusStudentId, subjectCode), fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021.class);
+      if (response.ok()) {
+        fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021 entity = response.getEntity();
+        PyramusStudentMatriculationEligibilityOPS2021 eligibility = new PyramusStudentMatriculationEligibilityOPS2021(entity.isEligible(), entity.getRequiredPassingGradeCourseCreditPoints(), entity.getPassingGradeCourseCreditPoints());
+        return new BridgeResponse<StudentMatriculationEligibilityOPS2021>(response.getStatusCode(), eligibility, response.getMessage());
       }
-
-      return new PyramusStudentMatriculationEligibilityOPS2021(result.isEligible(), result.getRequiredPassingGradeCourseCreditPoints(), result.getPassingGradeCourseCreditPoints());
+      else {
+        return new BridgeResponse<StudentMatriculationEligibilityOPS2021>(response.getStatusCode(), null, response.getMessage());
+      }
     } else {
       throw new SchoolDataBridgeInternalException(String.format("Failed to resolve Pyramus user from studentIdentifier %s", studentIdentifier));
     }
