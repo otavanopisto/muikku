@@ -20,7 +20,6 @@ import {
 } from "../../../../../actions/main-function/hops/index";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 import ItemList from "~/components/general/item-list";
 import { useUseCaseContext } from "~/context/use-case-context";
 
@@ -63,15 +62,6 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
       })
     );
   }, [plan]);
-
-  // Memoized selectable subjects
-  const selectableSubjects = React.useMemo(() => {
-    if (!hops.hopsMatriculation || !hops.hopsMatriculation.subjects) return [];
-
-    return hops.hopsMatriculation.subjects.map(
-      (s) => s.code as MatriculationSubjectCode
-    );
-  }, [hops.hopsMatriculation]);
 
   // Set initial values and update when plan changes
   React.useEffect(() => {
@@ -185,7 +175,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
               <div className="application-sub-panel__item-data">
                 <MatriculationSubjectsList
                   disabled={useCase === "GUARDIAN"}
-                  subjects={selectableSubjects}
+                  subjects={hops.hopsMatriculation.subjects}
                   selectedSubjects={selectedSubjects}
                   onSubjectsChange={handleMatriculationSubjectsChange}
                 />
