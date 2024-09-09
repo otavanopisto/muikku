@@ -7,7 +7,6 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
 import MatriculationEligibilityRow from "./components/matriculation-eligibility-row";
-import { MatriculationSubjectCode } from "./components/matriculation-subject-type";
 
 /**
  * MatriculationEligibilityProps
@@ -45,17 +44,18 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
    * @param code matriculation subject code
    * @returns subject name or empty string if not found
    */
-  const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
-    t(`matriculationSubjectsYTL.${code}`, { ns: "hops_new" });
+  const getMatriculationSubjectNameByCode = (code: string) =>
+    t(`matriculationSubjectsYTL.${code}`, {
+      ns: "hops_new",
+      defaultValue: code,
+    });
 
   // Abistatus eligibility rows
   const subjectAbistatusEligibilityRows =
     hops.hopsMatriculation.eligibility.subjectStats.map((sAbistatus, index) => (
       <MatriculationEligibilityRow
         key={index}
-        label={getMatriculationSubjectNameByCode(
-          sAbistatus.code as MatriculationSubjectCode
-        )}
+        label={getMatriculationSubjectNameByCode(sAbistatus.code)}
         eligibility={sAbistatus.abistatusOk ? "ELIGIBLE" : "NOT_ELIGIBLE"}
         description={t("content.matriculationEligibility", {
           ns: "hops_new",
@@ -71,9 +71,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
       (sEligibility, index) => (
         <MatriculationEligibilityRow
           key={index}
-          label={getMatriculationSubjectNameByCode(
-            sEligibility.subject.code as MatriculationSubjectCode
-          )}
+          label={getMatriculationSubjectNameByCode(sEligibility.subject.code)}
           eligibility={sEligibility.eligible ? "ELIGIBLE" : "NOT_ELIGIBLE"}
           description={t("content.matriculationEligibility", {
             ns: "hops_new",

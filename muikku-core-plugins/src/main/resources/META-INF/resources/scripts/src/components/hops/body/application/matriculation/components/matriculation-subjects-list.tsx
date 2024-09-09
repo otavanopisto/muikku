@@ -11,7 +11,6 @@ import {
 import { getNextTermsOptionsByDate } from "~/helper-functions/matriculation-functions";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { MatriculationSubjectCode } from "./matriculation-subject-type";
 
 const FINNISH_LANUGAGES = ["ÄI", "S2"];
 
@@ -94,8 +93,11 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    * @param code matriculation subject code
    * @returns subject name or empty string if not found
    */
-  const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
-    t(`matriculationSubjectsYTL.${code}`, { ns: "hops_new" });
+  const getMatriculationSubjectNameByCode = (code: string) =>
+    t(`matriculationSubjectsYTL.${code}`, {
+      ns: "hops_new",
+      defaultValue: code,
+    });
 
   /**
    * Finds a matriculation term name by term value
@@ -197,7 +199,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     .filter((s) => GENERAL_STUDIES_SUBJECTS.includes(s.subjectCode))
     .map((s) => (
       <option key={s.code} value={s.code}>
-        {getMatriculationSubjectNameByCode(s.code as MatriculationSubjectCode)}
+        {getMatriculationSubjectNameByCode(s.code)}
       </option>
     ));
 
@@ -205,7 +207,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     .filter((s) => MATHEMATIC_SUBJECTS.includes(s.subjectCode))
     .map((s) => (
       <option key={s.code} value={s.code}>
-        {getMatriculationSubjectNameByCode(s.code as MatriculationSubjectCode)}
+        {getMatriculationSubjectNameByCode(s.code)}
       </option>
     ));
 
@@ -213,7 +215,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     .filter((s) => FINNISH_LANUGAGES.includes(s.subjectCode))
     .map((s) => (
       <option key={s.code} value={s.code}>
-        {getMatriculationSubjectNameByCode(s.code as MatriculationSubjectCode)}
+        {getMatriculationSubjectNameByCode(s.code)}
       </option>
     ));
 
@@ -221,7 +223,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     .filter((s) => SECOND_FINNISH_LANGUAGES.includes(s.subjectCode))
     .map((s) => (
       <option key={s.code} value={s.code}>
-        {getMatriculationSubjectNameByCode(s.code as MatriculationSubjectCode)}
+        {getMatriculationSubjectNameByCode(s.code)}
       </option>
     ));
 
@@ -229,7 +231,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     .filter((s) => FOREIGN_LANGUAGES.includes(s.subjectCode))
     .map((s) => (
       <option key={s.code} value={s.code}>
-        {getMatriculationSubjectNameByCode(s.code as MatriculationSubjectCode)}
+        {getMatriculationSubjectNameByCode(s.code)}
       </option>
     ));
 
