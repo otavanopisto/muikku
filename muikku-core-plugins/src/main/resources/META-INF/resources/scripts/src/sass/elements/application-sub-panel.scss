@@ -275,7 +275,7 @@
   }
 }
 
-// Subpanel description'
+// Subpanel description
 .application-sub-panel__description {
   font-size: 0.8125rem;
   font-style: italic;
@@ -335,11 +335,20 @@
   flex-basis: 100%;
 }
 
+.application-sub-panel__notification-title {
+  align-items: center;
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 5px 0;
+}
+
 .application-sub-panel__notification-body {
   align-items: center;
   display: flex;
   flex-flow: row wrap;
-  padding: 10px;
+  padding: 10px 0;
 
   p {
     margin: 0 0 10px;
@@ -381,7 +390,10 @@
 }
 
 .application-sub-panel__notification-footer {
-  padding: 10px;
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 10px 0;
 }
 
 .application-sub-panel__card-item {
