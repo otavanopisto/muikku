@@ -252,7 +252,7 @@ const MatriculationSubmittedEnrollment = (
         </ApplicationSubPanelItem>
 
         <ApplicationSubPanelItem
-          title={t("label.matriculationEnrollmentCloses", {
+          title={t("labels.matriculationEnrollmentCloses", {
             ns: "hops_new",
           })}
         >
@@ -261,7 +261,7 @@ const MatriculationSubmittedEnrollment = (
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
         <ApplicationSubPanelItem
-          title={t("label.matriculationEnrollmentStatus", {
+          title={t("labels.matriculationEnrollmentStatus", {
             ns: "hops_new",
           })}
         >

@@ -6,12 +6,7 @@ import { TextField } from "../textfield";
 import { useMatriculationContext } from "../context/matriculation-context";
 import { SavingDraftError } from "../saving-draft-error";
 import { SavingDraftInfo } from "../saving-draft-info";
-import { MatriculationExamFundingType } from "~/generated/client";
-
-/**
- * Required amount attendances for valid Examination (vähintään 5 suoritusta)
- */
-export const REQUIRED_AMOUNT_OF_ATTENDACNES = 5;
+import { useTranslation } from "react-i18next";
 
 /**
  * MatriculationExaminationEnrollmentInformation
@@ -21,6 +16,8 @@ export const MatriculationExaminationStudentInformation = () => {
     useMatriculationContext();
   const { examinationInformation, studentInformation, saveState, errorMsg } =
     matriculation;
+
+  const { t } = useTranslation(["common", "hops_new", "users"]);
 
   /**
    * handles examination information changes and passes it to parent component
@@ -33,60 +30,10 @@ export const MatriculationExaminationStudentInformation = () => {
     key: T,
     value: ExaminationInformation[T]
   ) => {
-    const { degreeType } = examinationInformation;
-
-    let modifiedExamination: ExaminationInformation = {
+    const modifiedExamination: ExaminationInformation = {
       ...examinationInformation,
       [key]: value,
     };
-
-    /**
-     * If user restarts Matriculation examination finishedAttendance should be empty list
-     */
-    if (modifiedExamination.restartExam) {
-      modifiedExamination.finishedAttendances = [];
-    }
-
-    if (
-      modifiedExamination.degreeType !== degreeType &&
-      modifiedExamination.degreeType === "MATRICULATIONEXAMINATIONSUPPLEMENT"
-    ) {
-      modifiedExamination = {
-        ...modifiedExamination,
-        finishedAttendances: modifiedExamination.finishedAttendances.map(
-          (fSubject) => ({
-            ...fSubject,
-            funding: MatriculationExamFundingType.SelfFunded,
-          })
-        ),
-        enrolledAttendances: modifiedExamination.enrolledAttendances.map(
-          (eSubject) => ({
-            ...eSubject,
-            funding: MatriculationExamFundingType.SelfFunded,
-          })
-        ),
-      };
-    }
-    if (
-      modifiedExamination.degreeType !== degreeType &&
-      modifiedExamination.degreeType === "MATRICULATIONEXAMINATION"
-    ) {
-      modifiedExamination = {
-        ...modifiedExamination,
-        finishedAttendances: modifiedExamination.finishedAttendances.map(
-          (fSubject) => ({
-            ...fSubject,
-            funding: undefined,
-          })
-        ),
-        enrolledAttendances: modifiedExamination.enrolledAttendances.map(
-          (eSubject) => ({
-            ...eSubject,
-            funding: undefined,
-          })
-        ),
-      };
-    }
 
     onExaminationInformationChange(modifiedExamination);
   };
@@ -97,12 +44,14 @@ export const MatriculationExaminationStudentInformation = () => {
       <SavingDraftInfo saveState={saveState} />
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Perustiedot
+          {t("labels.matriculationFormStudentInfoSubTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Nimi"
+              label={t("labels.name")}
               readOnly
               type="text"
               defaultValue={studentInformation.name}
@@ -113,7 +62,7 @@ export const MatriculationExaminationStudentInformation = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Sähköpostiosoite"
+              label={t("labels.email")}
               readOnly
               type="text"
               defaultValue={studentInformation.email}
@@ -122,7 +71,7 @@ export const MatriculationExaminationStudentInformation = () => {
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Puhelinnumero"
+              label={t("labels.phone")}
               readOnly
               type="text"
               defaultValue={studentInformation.phone}
@@ -133,7 +82,7 @@ export const MatriculationExaminationStudentInformation = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Osoite"
+              label={t("labels.address")}
               readOnly
               type="text"
               defaultValue={studentInformation.address}
@@ -142,7 +91,7 @@ export const MatriculationExaminationStudentInformation = () => {
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Postinumero"
+              label={t("labels.postalCode")}
               readOnly
               type="text"
               defaultValue={studentInformation.postalCode}
@@ -153,7 +102,7 @@ export const MatriculationExaminationStudentInformation = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Postitoimipaikka"
+              label={t("labels.postOffice")}
               readOnly
               type="text"
               defaultValue={studentInformation.locality}
@@ -164,10 +113,7 @@ export const MatriculationExaminationStudentInformation = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              onChange={(e) =>
-                handleExaminationInformationChange("guider", e.target.value)
-              }
-              label="Ohjaaja"
+              label={t("labels.counselors_one", { ns: "users" })}
               readOnly
               defaultValue={studentInformation.guidanceCounselor}
               className="matriculation__input"
@@ -177,6 +123,9 @@ export const MatriculationExaminationStudentInformation = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <Textarea
+              label={t("content.matriculationFormChangedInformation", {
+                ns: "hops_new",
+              })}
               onChange={(e) =>
                 handleExaminationInformationChange(
                   "changedContactInfo",
@@ -184,7 +133,6 @@ export const MatriculationExaminationStudentInformation = () => {
                 )
               }
               rows={5}
-              label="Jos tietosi ovat muuttuneet, ilmoita siitä tässä"
               value={examinationInformation.changedContactInfo}
               className="matriculation__textarea"
             />

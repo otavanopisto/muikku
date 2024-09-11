@@ -261,7 +261,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
 
         {generalStudyOptions.length > 0 && (
           <optgroup
-            label={t("label.matriculationPlanGeneralStudies", {
+            label={t("labels.matriculationPlanGeneralStudies", {
               ns: "hops_new",
             })}
           >
@@ -270,7 +270,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         )}
         {mathOptions.length > 0 && (
           <optgroup
-            label={t("label.matriculationPlanMath", {
+            label={t("labels.matriculationPlanMath", {
               ns: "hops_new",
             })}
           >
@@ -279,7 +279,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         )}
         {finnishOptions.length > 0 && (
           <optgroup
-            label={t("label.matriculationPlanNativeLng", {
+            label={t("labels.matriculationPlanNativeLng", {
               ns: "hops_new",
             })}
           >
@@ -288,7 +288,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         )}
         {secondFinnishOptions.length > 0 && (
           <optgroup
-            label={t("label.matriculationPlanNativeSecondLng", {
+            label={t("labels.matriculationPlanNativeSecondLng", {
               ns: "hops_new",
             })}
           >
@@ -297,7 +297,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         )}
         {foreignLanguageOptions.length > 0 && (
           <optgroup
-            label={t("label.matriculationPlanForeignLanguages", {
+            label={t("labels.matriculationPlanForeignLanguages", {
               ns: "hops_new",
             })}
           >

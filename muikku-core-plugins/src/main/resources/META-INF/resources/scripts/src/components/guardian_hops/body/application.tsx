@@ -226,7 +226,7 @@ class GuardianHopsApplication extends React.Component<
     let panelTabs: Tab[] = [
       {
         id: "MATRICULATION",
-        name: this.props.t("label.hopsMatriculation", { ns: "hops_new" }),
+        name: this.props.t("labels.hopsMatriculation", { ns: "hops_new" }),
         hash: "matriculation",
         type: "matriculation",
         component: (

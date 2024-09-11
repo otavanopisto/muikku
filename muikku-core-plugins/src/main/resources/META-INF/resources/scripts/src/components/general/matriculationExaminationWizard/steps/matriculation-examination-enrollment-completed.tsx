@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { SaveState, MatriculationFormType } from "~/@types/shared";
 import "~/sass/elements/matriculation.scss";
 import { useMatriculationContext } from "../context/matriculation-context";
@@ -20,6 +21,8 @@ export const MatriculationExaminationEnrollmentCompleted = (
   const { matriculation } = useMatriculationContext();
   const { saveState } = matriculation;
 
+  const { t } = useTranslation(["common", "hops_new"]);
+
   /**
    * renderStateMessage
    * @param saveState saveState
@@ -29,20 +32,31 @@ export const MatriculationExaminationEnrollmentCompleted = (
     ({
       PENDING: (
         <div className="matriculation-container">
-          <h3 className="matriculation-container__header">Odottaa!</h3>
+          <h3 className="matriculation-container__header">
+            {t("labels.matriculationFormSaveStatePendingTitle", {
+              ns: "hops_new",
+            })}
+          </h3>
           <div className="loader-empty" />
         </div>
       ),
       IN_PROGRESS: (
         <div className="matriculation-container">
           <h3 className="matriculation-container__header">
-            Lomaketta tallennetaan
+            {t("labels.matriculationFormSaveStateInProgressTitle", {
+              ns: "hops_new",
+            })}
           </h3>
           <div className="matriculation-container__state state-LOADER">
             <div className="matriculation-container__state-icon icon-notification"></div>
-            <div className="matriculation-container__state-text">
-              <p>Lomakkeen tietoja tallennetaan, odota hetki</p>
-            </div>
+            <div
+              className="matriculation-container__state-text"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationFormSaveStateInProgress", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
           </div>
           <div className="loader-empty" />
         </div>
@@ -51,56 +65,62 @@ export const MatriculationExaminationEnrollmentCompleted = (
         props.formType === "initial" ? (
           <div className="matriculation-container">
             <h3 className="matriculation-container__header">
-              Ilmoittautuminen ylioppilaskirjoituksiin lähetetty
+              {t("labels.matriculationFormSaveStateSuccessTitle", {
+                ns: "hops_new",
+              })}
             </h3>
             <div className="matriculation-container__state state-SUCCESS">
               <div className="matriculation-container__state-icon icon-notification"></div>
-              <div className="matriculation-container__state-text">
-                <p>
-                  Ilmoittautumisesi ylioppilaskirjoituksiin on lähetetty
-                  onnistuneesti. Saat lomakkeesta kopion sähköpostiisi.
-                </p>
-                <p>
-                  Tulosta lomake, allekirjoita ja päivää se ja lähetä
-                  skannattuna tai kuvana yo-ilmoittautumiset@otavia.fi tai
-                  kirjeitse Otavia/Nettilukio, Otavantie 2B, 50670 Otava.
-                </p>
-                <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
-              </div>
+              <div
+                className="matriculation-container__state-text"
+                dangerouslySetInnerHTML={{
+                  __html: t("content.matriculationFormSaveStateSuccess", {
+                    ns: "hops_new",
+                    context: "supplementation",
+                  }),
+                }}
+              />
             </div>
           </div>
         ) : (
           <div className="matriculation-container">
             <h3 className="matriculation-container__header">
-              Ilmoittautumista täydennetty onnistuneesti
+              {t("labels.matriculationFormSaveStateSuccessTitle", {
+                ns: "hops_new",
+                context: "supplementation",
+              })}
             </h3>
             <div className="matriculation-container__state state-SUCCESS">
               <div className="matriculation-container__state-icon icon-notification"></div>
-              <div className="matriculation-container__state-text">
-                <p>
-                  Olet muokannut ilmoittautumistasi ylioppilaskirjoituksiin
-                  onnistuneesti
-                </p>
-
-                <p>Tarkistamme lomakkeen tiedot, ja otamme sinuun yhteyttä.</p>
-              </div>
+              <div
+                className="matriculation-container__state-text"
+                dangerouslySetInnerHTML={{
+                  __html: t("content.matriculationFormSaveStateSuccess", {
+                    ns: "hops_new",
+                    context: "supplementation",
+                  }),
+                }}
+              />
             </div>
           </div>
         ),
       FAILED: (
         <div className="matriculation-container">
           <h3 className="matriculation-container__header">
-            Lomakkeen tallennus epäonnistui
+            {t("labels.matriculationFormSaveStateFailedTitle", {
+              ns: "hops_new",
+            })}
           </h3>
           <div className="matriculation-container__state state-FAILED">
             <div className="matriculation-container__state-icon icon-notification"></div>
-            <div className="matriculation-container__state-text">
-              <p>
-                Lomakkeen tietojen tallennus epäonnistui. Varmista, että olet
-                kirjautunut sisään palaamalla lomakkeelle uudelleen Muikun
-                kautta.
-              </p>
-            </div>
+            <div
+              className="matriculation-container__state-text"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationFormSaveStateFailed", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
           </div>
         </div>
       ),

@@ -143,7 +143,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanel.Header>
-        {t("label.matriculationPlan", {
+        {t("labels.matriculationPlan", {
           context: "title",
           ns: "hops_new",
         })}

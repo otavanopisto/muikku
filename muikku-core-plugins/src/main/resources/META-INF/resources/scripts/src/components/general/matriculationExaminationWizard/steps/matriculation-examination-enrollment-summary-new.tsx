@@ -14,6 +14,10 @@ import { SavingDraftInfo } from "../saving-draft-info";
 import { Textarea } from "../textarea";
 import { TextField } from "../textfield";
 import { useTranslation } from "react-i18next";
+import {
+  MatriculationExamDegreeType,
+  MatriculationExamSchoolType,
+} from "~/generated/client";
 
 /**
  * MatriculationExaminationEnrollmentSummaryProps
@@ -32,7 +36,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   const { examinationInformation, studentInformation, saveState, errorMsg } =
     matriculation;
 
-  const { t } = useTranslation(["common", "hops_new"]);
+  const { t } = useTranslation(["common", "hops_new", "users"]);
 
   const {
     changedContactInfo,
@@ -49,86 +53,94 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   } = examinationInformation;
 
   /**
-   * enrollAsToValue
+   * enrollAsToLocalizedValue
    * @param type type
    * @returns readable value of enroll as
    */
-  const enrollAsToValue = (type: string) => {
-    switch (type) {
-      case "UPPERSECONDARY":
-        return "Lukion opiskelijana";
-
-      case "VOCATIONAL":
-        return "Ammatillisten opintojen perusteella";
-
-      case "UNKNOWN":
-        return "Muu tausta";
-
-      default:
-        return "";
-    }
-  };
+  const enrollAsToLocalizedValue = (type: MatriculationExamSchoolType) =>
+    t(`enrollAsTypes.${type}`, {
+      ns: "hops_new",
+    });
 
   /**
-   * degreeTypeToValue
+   * degreeTypeToLocalizedValue
    * @param type type
    * @returns readable value of degree type
    */
-  const degreeTypeToValue = (type: string) => {
-    switch (type) {
-      case "MATRICULATIONEXAMINATION":
-        return "Yo-tutkinto";
+  const degreeTypeToLocalizedValue = (type: MatriculationExamDegreeType) =>
+    t(`degreeTypes.${type}`, {
+      ns: "hops_new",
+    });
 
-      case "MATRICULATIONEXAMINATIONSUPPLEMENT":
-        return "Tutkinnon korottaja tai täydentäjä";
+  const currentTerm = resolveCurrentTerm();
 
-      case "SEPARATEEXAM":
-        return "Erillinen koe (ilman yo-tutkintoa)";
-
-      default:
-        return "";
-    }
-  };
+  const addesiveTermLocale =
+    currentTerm.value === "AUTUMN"
+      ? t("matriculationTerms.AUTUMN", {
+          ns: "hops_new",
+          context: "adessive",
+          year: currentTerm.year,
+        })
+      : t("matriculationTerms.SPRING", {
+          ns: "hops_new",
+          context: "adessive",
+          year: currentTerm.year,
+        });
 
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
       <SavingDraftInfo saveState={saveState} />
-      <div className="matriculation-container__info">
-        <h3 className="matriculation-container__subheader">
-          Tietojen oikeellisuus
-        </h3>
-        <p className="matriculation-container__info-item">
-          Olet ilmoittautumassa tai olet jo ilmoittautunut ylioppilaskokeeseen
-          seuraavilla tiedoilla. Jos haluat tehdä muutoksia tai huomaat
-          virheitä, toimi näin:
-        </p>
+      <fieldset className="matriculation-container__fieldset">
+        <legend className="matriculation-container__subheader">
+          {t("labels.matriculationFormSummarySubTitle1", { ns: "hops_new" })}
+        </legend>
+        <div className="matriculation-container__info">
+          <p className="matriculation-container__info-item">
+            {t("content.matriculationFormSummaryInfo1", {
+              ns: "hops_new",
+            })}
+          </p>
 
-        <ul className="matriculation-container__info-item">
-          <li>
-            <b>Ennen lomakkeen lähettämistä:</b> Voit itse korjata tietoja
-            lomakkeella.
-          </li>
-          <li>
-            <b>Lähettämisen jälkeen:</b> Ota yhteyttä opinto-ohjaajaan, jos
-            haluat tehdä muutoksia tietoihin.
-          </li>
-        </ul>
+          <ul className="matriculation-container__info-item">
+            <li
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationFormSummaryInfo2", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
+            <li
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationFormSummaryInfo3", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
+          </ul>
 
-        <p className="matriculation-container__info-item">
-          Huomaa, että ilmoittautuminen on sitova!
-        </p>
-      </div>
+          <p
+            className="matriculation-container__info-item"
+            dangerouslySetInnerHTML={{
+              __html: t("content.matriculationFormSummaryInfo4", {
+                ns: "hops_new",
+              }),
+            }}
+          />
+        </div>
+      </fieldset>
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Perustiedot
+          {t("labels.matriculationFormStudentInfoSubTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Nimi"
+              label={t("labels.name")}
               readOnly
               type="text"
               value={studentInformation.name}
@@ -139,7 +151,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Sähköpostiosoite"
+              label={t("labels.email")}
               readOnly
               type="text"
               value={studentInformation.email}
@@ -148,7 +160,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Puhelinnumero"
+              label={t("labels.phone")}
               readOnly
               type="text"
               value={studentInformation.phone}
@@ -159,7 +171,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Osoite"
+              label={t("labels.address")}
               readOnly
               type="text"
               value={studentInformation.address}
@@ -168,7 +180,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Postinumero"
+              label={t("labels.postalCode")}
               readOnly
               type="text"
               value={studentInformation.postalCode}
@@ -179,7 +191,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Postitoimipaikka"
+              label={t("labels.postOffice")}
               readOnly
               type="text"
               value={studentInformation.locality}
@@ -190,7 +202,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Ohjaaja"
+              label={t("labels.counselors_one", { ns: "users" })}
               readOnly
               type="text"
               value={studentInformation.guidanceCounselor}
@@ -201,8 +213,10 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <Textarea
+              label={t("labels.matriculationFormFieldChangedContactInfo", {
+                ns: "hops_new",
+              })}
               readOnly={true}
-              label="Jos tietosi ovat muuttuneet, ilmoita siitä tässä"
               value={changedContactInfo}
               className="matriculation__textarea"
             />
@@ -212,22 +226,28 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Opiskelijatiedot
+          {t("labels.matriculationFormStudentInfoSubTitle2", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Ilmoittautuminen"
+              label={t("labels.matriculationFormFielRegistrationDone", {
+                ns: "hops_new",
+              })}
               readOnly
               type="text"
-              value={enrollAsToValue(enrollAs)}
+              value={enrollAsToLocalizedValue(enrollAs)}
               className="matriculation__input"
             />
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Pakollisia opintopisteitä suoritettuna"
+              label={t("labels.matriculationFormFieldMandotryCreditsDone", {
+                ns: "hops_new",
+              })}
               readOnly
               type="text"
               value={studentInformation.completedCreditPointsCount}
@@ -238,10 +258,12 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Tutkintotyyppi"
+              label={t("labels.matriculationFormFieldDegreeType", {
+                ns: "hops_new",
+              })}
               readOnly
               type="text"
-              value={degreeTypeToValue(degreeType)}
+              value={degreeTypeToLocalizedValue(degreeType)}
               className="matriculation__input"
             />
           </div>
@@ -249,10 +271,12 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
             <label className="matriculation__label">
-              Aloitan tutkinnon suorittamisen uudelleen?
+              {t("labels.matriculationFormFieldRestart", {
+                ns: "hops_new",
+              })}
             </label>
             <label className="matriculation__label">
-              {restartExam ? "Kyllä" : "En"}
+              {restartExam ? t("labels.yes") : t("labels.idont")}
             </label>
           </div>
         </div>
@@ -260,7 +284,9 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Olen jo suorittanut seuraavat ylioppilaskokeet
+          {t("labels.matriculationFormRegistrationSubTitle2", {
+            ns: "hops_new",
+          })}
         </legend>
         {finishedAttendances.length > 0 ? (
           <MatriculationExaminationFinishedAttendesList
@@ -273,19 +299,24 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         ) : (
           <div className="matriculation-container__info">
             <p className="matriculation-container__info-item">
-              Ei suoritettuja kokeita
+              {t("content.matriculationFormEmptyFinishedExams", {
+                ns: "hops_new",
+              })}
             </p>
           </div>
         )}
       </fieldset>
 
       <fieldset className="matriculation-container__fieldset">
-        <legend className="matriculation-container__subheader">
-          {`Ilmoittaudun suorittamaan kokeen seuraavissa aineissa `}
-          <b>
-            {resolveCurrentTerm() ? resolveCurrentTerm().adessive : "Virhe"}
-          </b>
-        </legend>
+        <legend
+          className="matriculation-container__subheader"
+          dangerouslySetInnerHTML={{
+            __html: t("labels.matriculationFormRegistrationSubTitle3", {
+              ns: "hops_new",
+              term: addesiveTermLocale,
+            }),
+          }}
+        />
 
         {enrolledAttendances.length > 0 ? (
           <MatriculationExaminationEnrolledAttendesList
@@ -297,7 +328,9 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         ) : (
           <div className="matriculation-container__info">
             <p className="matriculation-container__info-item">
-              Ei valittuja kokeita
+              {t("content.matriculationFormEmptySelectedExams", {
+                ns: "hops_new",
+              })}
             </p>
           </div>
         )}
@@ -305,7 +338,9 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
+          {t("labels.matriculationFormRegistrationSubTitle4", {
+            ns: "hops_new",
+          })}
         </legend>
         {plannedAttendances.length > 0 ? (
           <MatriculationExaminationPlannedAttendesList
@@ -317,7 +352,9 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         ) : (
           <div className="matriculation-container__info">
             <p className="matriculation-container__info-item">
-              Ei valittuja kokeita
+              {t("content.matriculationFormEmptyPlannedExams", {
+                ns: "hops_new",
+              })}
             </p>
           </div>
         )}
@@ -325,18 +362,26 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Kokeen suorittaminen
+          {t("labels.matriculationFormActSubTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
-            <label className="matriculation__label">Suorituspaikka</label>
+            <label className="matriculation__label">
+              {t("labels.matriculationFormFieldPlace", { ns: "hops_new" })}
+            </label>
             <select
               disabled
               value={location === "Mikkeli" ? "Mikkeli" : ""}
               className="matriculation__select"
             >
               <option>Mikkeli</option>
-              <option value="">Muu</option>
+              <option value="">
+                {t("labels.other", {
+                  ns: "hops_new",
+                })}
+              </option>
             </select>
           </div>
         </div>
@@ -344,7 +389,9 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           <div className="matriculation-container__row">
             <div className="matriculation__form-element-container">
               <TextField
-                label="Muu paikka"
+                label={t("labels.matriculationFormFieldActPlaceOther", {
+                  ns: "hops_new",
+                })}
                 type="text"
                 value={location}
                 readOnly={true}
@@ -357,8 +404,10 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <Textarea
+              label={t("labels.matriculationFormFieldInfoForCouncelor", {
+                ns: "hops_new",
+              })}
               readOnly={true}
-              label="Lisätietoa ohjaajalle"
               rows={5}
               defaultValue={message}
               className="matriculation__textarea"
@@ -374,10 +423,14 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               className="matriculation__select"
             >
               <option value="true">
-                Haluan nimeni julkaistavan valmistujalistauksissa
+                {t("content.matriculationFormPublishNameOptionYes", {
+                  ns: "hops_new",
+                })}
               </option>
               <option value="false">
-                En halua nimeäni julkaistavan valmistujaislistauksissa
+                {t("content.matriculationFormPublishNameOptionNo", {
+                  ns: "hops_new",
+                })}
               </option>
             </select>
           </div>
@@ -386,7 +439,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Nimi"
+              label={t("labels.name")}
               value={studentInformation.name}
               type="text"
               readOnly
@@ -395,7 +448,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Päivämäärä"
+              label={t("labels.date")}
               value={`${enrollmentDate.getDate()}.${
                 enrollmentDate.getMonth() + 1
               }.${enrollmentDate.getFullYear()}`}
