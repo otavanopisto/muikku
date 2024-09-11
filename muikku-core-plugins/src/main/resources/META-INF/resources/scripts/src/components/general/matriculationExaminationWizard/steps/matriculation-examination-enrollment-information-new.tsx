@@ -1256,7 +1256,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             </p>
           </div>
         ) : null}
-        {!isRenewableForFreeChosed() ? (
+        {compulsoryEducationEligible && !isRenewableForFreeChosed() ? (
           <div className="matriculation-container__repeatable-info">
             <div className="matriculation-container__repeatable-info-indicator"></div>
             <p>
