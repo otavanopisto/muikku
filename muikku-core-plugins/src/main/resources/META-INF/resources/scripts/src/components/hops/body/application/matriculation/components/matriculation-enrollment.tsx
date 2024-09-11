@@ -265,7 +265,7 @@ const MatriculationSubmittedEnrollment = (
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
 
-        {exam.changeLogs[0] && (
+        {exam.changeLogs[0] && exam.changeLogs[0].message !== null && (
           <ApplicationSubPanelItem title={"Ohjaajan viesti"}>
             <ApplicationSubPanelItem.Content>
               {exam.changeLogs[0].message}

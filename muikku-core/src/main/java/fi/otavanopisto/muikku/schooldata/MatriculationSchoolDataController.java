@@ -72,7 +72,7 @@ public class MatriculationSchoolDataController {
     return getMatriculationBridge().createMatriculationExamAttendance();
   }
 
-  public StudentMatriculationEligibilityOPS2021 getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
+  public BridgeResponse<StudentMatriculationEligibilityOPS2021> getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
     return getMatriculationBridge().getStudentMatriculationEligibility(studentIdentifier, subjectCode);
   }
   

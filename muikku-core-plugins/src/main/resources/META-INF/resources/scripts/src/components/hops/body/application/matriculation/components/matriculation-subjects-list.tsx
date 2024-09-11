@@ -4,11 +4,50 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
-import { MatriculationExamTerm } from "~/generated/client";
+import {
+  MatriculationExamTerm,
+  MatriculationSubject,
+} from "~/generated/client";
 import { getNextTermsOptionsByDate } from "~/helper-functions/matriculation-functions";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { MatriculationSubjectCode } from "./matriculation-subject-type";
+
+const FINNISH_LANUGAGES = ["ÄI", "S2"];
+
+const SECOND_FINNISH_LANGUAGES = ["RUA", "RUB1"];
+
+const FOREIGN_LANGUAGES = [
+  "ENA",
+  "ENB3",
+  "RAA",
+  "RAB3",
+  "POB3",
+  "LAB3",
+  "EAA",
+  "EAB3",
+  "SAA",
+  "SAB3",
+  "IAB3",
+  "SMB3",
+  "VEA",
+  "VEB3",
+];
+
+const MATHEMATIC_SUBJECTS = ["MAA", "MAB"];
+
+const GENERAL_STUDIES_SUBJECTS = [
+  "BI",
+  "ET",
+  "FI",
+  "FY",
+  "GE",
+  "HI",
+  "KE",
+  "TE",
+  "UE",
+  "UO",
+  "YH",
+];
 
 /**
  * MatriculationSubjectsListProps
@@ -16,7 +55,7 @@ import { MatriculationSubjectCode } from "./matriculation-subject-type";
 interface MatriculationSubjectsListProps {
   status: StatusType;
   disabled: boolean;
-  subjects: MatriculationSubjectCode[];
+  subjects: MatriculationSubject[];
   selectedSubjects: SelectedMatriculationSubject[];
   /**
    * onSubjectsChange
@@ -54,8 +93,11 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    * @param code matriculation subject code
    * @returns subject name or empty string if not found
    */
-  const getMatriculationSubjectNameByCode = (code: MatriculationSubjectCode) =>
-    t(`matriculationSubjectsYTL.${code}`, { ns: "hops_new" });
+  const getMatriculationSubjectNameByCode = (code: string) =>
+    t(`matriculationSubjectsYTL.${code}`, {
+      ns: "hops_new",
+      defaultValue: code,
+    });
 
   /**
    * Finds a matriculation term name by term value
@@ -151,6 +193,48 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     );
   };
 
+  // Subject options by groups
+
+  const generalStudyOptions = subjects
+    .filter((s) => GENERAL_STUDIES_SUBJECTS.includes(s.subjectCode))
+    .map((s) => (
+      <option key={s.code} value={s.code}>
+        {getMatriculationSubjectNameByCode(s.code)}
+      </option>
+    ));
+
+  const mathOptions = subjects
+    .filter((s) => MATHEMATIC_SUBJECTS.includes(s.subjectCode))
+    .map((s) => (
+      <option key={s.code} value={s.code}>
+        {getMatriculationSubjectNameByCode(s.code)}
+      </option>
+    ));
+
+  const finnishOptions = subjects
+    .filter((s) => FINNISH_LANUGAGES.includes(s.subjectCode))
+    .map((s) => (
+      <option key={s.code} value={s.code}>
+        {getMatriculationSubjectNameByCode(s.code)}
+      </option>
+    ));
+
+  const secondFinnishOptions = subjects
+    .filter((s) => SECOND_FINNISH_LANGUAGES.includes(s.subjectCode))
+    .map((s) => (
+      <option key={s.code} value={s.code}>
+        {getMatriculationSubjectNameByCode(s.code)}
+      </option>
+    ));
+
+  const foreignLanguageOptions = subjects
+    .filter((s) => FOREIGN_LANGUAGES.includes(s.subjectCode))
+    .map((s) => (
+      <option key={s.code} value={s.code}>
+        {getMatriculationSubjectNameByCode(s.code)}
+      </option>
+    ));
+
   const termOptions = getNextTermsOptionsByDate(
     status.profile.studyStartDate,
     t
@@ -177,11 +261,52 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         <option disabled value="">
           {t("labels.select", { ns: "hops" })}
         </option>
-        {subjects.map((s) => (
-          <option key={s} value={s}>
-            {getMatriculationSubjectNameByCode(s)}
-          </option>
-        ))}
+
+        {generalStudyOptions.length > 0 && (
+          <optgroup
+            label={t("label.matriculationPlanGeneralStudies", {
+              ns: "hops_new",
+            })}
+          >
+            {generalStudyOptions}
+          </optgroup>
+        )}
+        {mathOptions.length > 0 && (
+          <optgroup
+            label={t("label.matriculationPlanMath", {
+              ns: "hops_new",
+            })}
+          >
+            {mathOptions}
+          </optgroup>
+        )}
+        {finnishOptions.length > 0 && (
+          <optgroup
+            label={t("label.matriculationPlanNativeLng", {
+              ns: "hops_new",
+            })}
+          >
+            {finnishOptions}
+          </optgroup>
+        )}
+        {secondFinnishOptions.length > 0 && (
+          <optgroup
+            label={t("label.matriculationPlanNativeSecondLng", {
+              ns: "hops_new",
+            })}
+          >
+            {secondFinnishOptions}
+          </optgroup>
+        )}
+        {foreignLanguageOptions.length > 0 && (
+          <optgroup
+            label={t("label.matriculationPlanForeignLanguages", {
+              ns: "hops_new",
+            })}
+          >
+            {foreignLanguageOptions}
+          </optgroup>
+        )}
       </select>
       <label
         htmlFor={`matriculationSubject` + index}

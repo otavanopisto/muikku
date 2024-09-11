@@ -9,7 +9,8 @@ import {
   MatriculationExamPlannedSubject,
 } from "~/generated/client";
 import { stringToBoolean } from "~/@types/shared";
-import { EXAMINATION_GRADES_MAP, SUBJECT_MAP } from "../helper";
+import { EXAMINATION_GRADES_MAP, SUBJECT_CODES } from "../helper";
+import { useTranslation } from "react-i18next";
 
 /**
  * MatriculationExaminationSubjectInputGroupProps
@@ -465,6 +466,8 @@ interface SubjectSelectProps
 const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
   const { i, selectedValues, modifier, ...selectProps } = props;
 
+  const { t } = useTranslation(["hops_new", "guider", "common"]);
+
   return (
     <>
       {i == 0 ? (
@@ -482,8 +485,11 @@ const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
         className="matriculation__select"
       >
         <option value="">Valitse...</option>
-        {Object.keys(SUBJECT_MAP).map((subjectCode, index) => {
-          const subjectName = SUBJECT_MAP[subjectCode];
+        {SUBJECT_CODES.map((subjectCode, index) => {
+          const subjectName = t(`subjects.${subjectCode}`, {
+            ns: "common",
+            defaultValue: subjectCode,
+          });
           const disabled = selectedValues.indexOf(subjectCode) != -1;
 
           return (
