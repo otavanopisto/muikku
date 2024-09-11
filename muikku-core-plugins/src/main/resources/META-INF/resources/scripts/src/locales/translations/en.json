@@ -637,6 +637,7 @@
       "otherPlace": "Other place",
       "grade": "Grade:",
       "grades": "Grades",
+      "retake": "Retake",
       "hopsMatriculation": "Matriculation examination",
       "matriculationFormStudentInfoTitle": "Student Information",
       "matriculationFormRegistrationTitle": "Registration",
@@ -660,6 +661,8 @@
       "matriculationFormFieldPlace": "Location of examination",
       "matriculationFormFieldInfoForCouncelor": "Additional information for the guidance counsellor",
       "matriculationFormFieldPublishName": "Permission to publish",
+      "matriculationFormFieldTermDate": "Date",
+      "matriculationFormFieldFunding": "Funding",
       "matriculationFormSaveStatePendingTitle": "Pending!",
       "matriculationFormSaveStateInProgressTitle": "The registration data is being saved",
       "matriculationFormSaveStateSuccessTitle": "The registration for the matriculation exam has been submitted.",
@@ -682,6 +685,7 @@
       "matriculationEnrollmentHistory": "Registration history",
       "matriculationHistory": "History",
       "matriculationHistory_title": "Matriculation Examination History",
+      "matriculationSubject": "Subject",
       "matriculationSubjects": "Subjects:"
     },
     "content": {
@@ -742,6 +746,8 @@
       "matriculationFormInfoBlock4_noSelection": "<b><b>Note:&nbsp;</b> The examination requires one (1) advanced-level exam (e.g., long mathematics or a long, i.e., A-level, foreign language). (0 selected)",
       "matriculationFormPublishNameOptionYes": "I agree to have my name published in the graduation lists",
       "matriculationFormPublishNameOptionNo": "I do not agree to have my name published in the graduation lists",
+      "matriculationFormRepeatOptionFirstTime": "First time",
+      "matriculationFormRepeatOptionRetake": "Retake",
       "matriculationFormSummaryInfo1": "You are either in the process of registering or have already registered for the matriculation exam with the following information. If you wish to make changes or notice any errors, please proceed as follows:",
       "matriculationFormSummaryInfo2": "<b>Before submitting the form:&nbsp;</b> You can make changes directly on the form.",
       "matriculationFormSummaryInfo3": "<b>After submitting the form:&nbsp;</b> Contact your study counselor if you wish to make changes.",
@@ -780,6 +786,11 @@
       "I": "improbatur (rejected)",
       "K": "cancelled",
       "EO": "unknown"
+    },
+    "matriculationExamFundings": {
+      "SELF_FUNDED": "Self-funded",
+      "COMPULSORYEDUCATION_FREE": "Free matriculation exam",
+      "COMPULSORYEDUCATION_FREE_RETRY": "Free matriculation exam (retake)"
     },
     "matriculationSubjectsYTL": {
       "A": "Finnish language and literature",
