@@ -61,6 +61,8 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
     ...useSelectProps
   } = props;
 
+  const { t } = useTranslation(["common"]);
+
   return (
     <>
       {useSelectProps.useSubjectSelect && (
@@ -166,7 +168,7 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
               id="removeMatriculationRowLabelEnrolled"
               className="visually-hidden"
             >
-              Poista
+              {t("labels.remove")}
             </label>
           ) : null}
           <Button
@@ -222,6 +224,8 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
     readOnly,
     ...useSelectsProps
   } = props;
+
+  const { t } = useTranslation(["common"]);
 
   return (
     <>
@@ -323,7 +327,7 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
               id="removeMatriculationRowLabelFinished"
               className="visually-hidden"
             >
-              Poista
+              {t("labels.remove")}
             </label>
           ) : null}
           <Button
@@ -375,6 +379,8 @@ export const MatriculationExaminationPlannedInputGroup: React.FC<
     readOnly,
     ...useSelectsProps
   } = props;
+
+  const { t } = useTranslation(["common"]);
 
   return (
     <>
@@ -433,7 +439,7 @@ export const MatriculationExaminationPlannedInputGroup: React.FC<
               id="removeMatriculationRowLabelPlanned"
               className="visually-hidden"
             >
-              Poista
+              {t("labels.remove")}
             </label>
           ) : null}
           <Button
@@ -475,7 +481,7 @@ const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
           id={`matriculationSubjectSelectLabel${modifier}`}
           className="matriculation__label"
         >
-          Aine
+          {t(`labels.matriculationSubject`, { ns: "hops_new" })}
         </label>
       ) : null}
       <select
@@ -484,7 +490,7 @@ const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
-        <option value="">Valitse...</option>
+        <option value="">{t(`labels.select`)}...</option>
         {SUBJECT_CODES.map((subjectCode, index) => {
           const subjectName = t(`subjects.${subjectCode}`, {
             ns: "common",
@@ -521,6 +527,8 @@ interface TermSelectProps
 const TermSelect: React.FC<TermSelectProps> = (props) => {
   const { i, options, modifier, ...selectProps } = props;
 
+  const { t } = useTranslation(["hops_new", "common"]);
+
   return (
     <>
       {i == 0 ? (
@@ -528,7 +536,7 @@ const TermSelect: React.FC<TermSelectProps> = (props) => {
           id={`matriculationTermSelectLabel${modifier}`}
           className="matriculation__label"
         >
-          Ajankohta
+          {t(`labels.matriculationFormFieldTermDate`, { ns: "hops_new" })}
         </label>
       ) : null}
       <select
@@ -537,7 +545,7 @@ const TermSelect: React.FC<TermSelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
-        <option value="">Valitse...</option>
+        <option value="">{t(`labels.select`)}...</option>
         <>{options}</>
       </select>
     </>
@@ -601,6 +609,7 @@ interface RepeatSelectProps
  */
 const RepeatSelect: React.FC<RepeatSelectProps> = (props) => {
   const { i, modifier, ...selectProps } = props;
+  const { t } = useTranslation(["hops_new", "common"]);
 
   return (
     <>
@@ -609,7 +618,7 @@ const RepeatSelect: React.FC<RepeatSelectProps> = (props) => {
           id={`matriculationRepeatSelectLabel${modifier}`}
           className="matriculation__label"
         >
-          Uusiminen
+          {t("labels.retake", { ns: "hops_new" })}
         </label>
       ) : null}
       <select
@@ -618,8 +627,14 @@ const RepeatSelect: React.FC<RepeatSelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
-        <option value="false">Ensimmäinen suorituskerta</option>
-        <option value="true">Uusinta</option>
+        <option value="false">
+          {t("content.matriculationFormRepeatOptionFirstTime", {
+            ns: "hops_new",
+          })}
+        </option>
+        <option value="true">
+          {t("content.matriculationFormRepeatOptionRetake", { ns: "hops_new" })}
+        </option>
       </select>
     </>
   );
@@ -642,6 +657,8 @@ interface GradeSelectProps
 const GradeSelect: React.FC<GradeSelectProps> = (props) => {
   const { i, modifier, ...selectProps } = props;
 
+  const { t } = useTranslation(["hops_new", "common"]);
+
   return (
     <>
       {i == 0 ? (
@@ -649,7 +666,7 @@ const GradeSelect: React.FC<GradeSelectProps> = (props) => {
           id={`matriculationGradeSelectLabel${modifier}`}
           className="matriculation__label"
         >
-          Arvosana
+          {t(`labels.grade`, { ns: "hops_new" })}
         </label>
       ) : null}
       <select
@@ -658,7 +675,7 @@ const GradeSelect: React.FC<GradeSelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
-        <option>Valitse...</option>
+        <option>{t(`labels.select`)}...</option>
         {Object.keys(EXAMINATION_GRADES_MAP).map((subjectCode, index) => {
           const subjectName = EXAMINATION_GRADES_MAP[subjectCode];
 
@@ -693,6 +710,8 @@ const FundingSelect: React.FC<FundingSelectProps> = (props) => {
   const { i, modifier, isFailedBefore, isSucceedBefore, ...selectProps } =
     props;
 
+  const { t } = useTranslation(["hops_new", "common"]);
+
   return (
     <>
       {i == 0 ? (
@@ -700,7 +719,7 @@ const FundingSelect: React.FC<FundingSelectProps> = (props) => {
           id={`matriculationGradeSelectLabel${modifier}`}
           className="matriculation__label"
         >
-          Rahoitus
+          {t(`labels.matriculationFormFieldFunding`, { ns: "hops_new" })}
         </label>
       ) : null}
       <select
@@ -711,42 +730,52 @@ const FundingSelect: React.FC<FundingSelectProps> = (props) => {
       >
         {isSucceedBefore ? (
           <>
-            <option>Valitse...</option>
+            <option>{t(`labels.select`)}...</option>
             <option value={MatriculationExamFundingType.SelfFunded}>
-              Itserahoitettu
+              {t(`matriculationExamFundings.SELF_FUNDED`, { ns: "hops_new" })}
             </option>
           </>
         ) : null}
 
         {isFailedBefore ? (
           <>
-            <option>Valitse...</option>
+            <option>{t(`labels.select`)}...</option>
             <option value={MatriculationExamFundingType.SelfFunded}>
-              Itserahoitettu
+              {t(`matriculationExamFundings.SELF_FUNDED`, {
+                ns: "hops_new",
+              })}
             </option>
             <option
               value={MatriculationExamFundingType.CompulsoryeducationFreeRetry}
             >
-              Maksuton ylioppilaskoe (uusinta)
+              {t(`matriculationExamFundings.COMPULSORYEDUCATION_FREE_RETRY`, {
+                ns: "hops_new",
+              })}
             </option>
           </>
         ) : null}
 
         {!isFailedBefore && !isSucceedBefore ? (
           <>
-            <option>Valitse...</option>
+            <option>{t(`labels.select`)}...</option>
             <option value={MatriculationExamFundingType.SelfFunded}>
-              Itserahoitettu
+              {t(`matriculationExamFundings.SELF_FUNDED`, {
+                ns: "hops_new",
+              })}
             </option>
             <option
               value={MatriculationExamFundingType.CompulsoryeducationFree}
             >
-              Maksuton ylioppilaskoe
+              {t(`matriculationExamFundings.COMPULSORYEDUCATION_FREE`, {
+                ns: "hops_new",
+              })}
             </option>
             <option
               value={MatriculationExamFundingType.CompulsoryeducationFreeRetry}
             >
-              Maksuton ylioppilaskoe (uusinta)
+              {t(`matriculationExamFundings.COMPULSORYEDUCATION_FREE_RETRY`, {
+                ns: "hops_new",
+              })}
             </option>
           </>
         ) : null}

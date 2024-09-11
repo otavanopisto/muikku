@@ -637,6 +637,7 @@
       "otherPlace": "Muu paikka",
       "grade": "Arvosana:",
       "grades": "Arvosanat",
+      "retake": "Uusiminen",
       "hopsMatriculation": "Ylioppilastutkinto",
       "matriculationFormStudentInfoTitle": "Opiskelijatiedot",
       "matriculationFormRegistrationTitle": "Ilmoittaututuminen",
@@ -660,6 +661,8 @@
       "matriculationFormFieldPlace": "Suorituspaikka",
       "matriculationFormFieldInfoForCouncelor": "Lisätietoa opinto-ohjaajalle",
       "matriculationFormFieldPublishName": "Julkaisulupa",
+      "matriculationFormFieldTermDate": "Ajankohta",
+      "matriculationFormFieldFunding": "Rahoitus",
       "matriculationFormSaveStatePendingTitle": "Odottaa!",
       "matriculationFormSaveStateInProgressTitle": "Ilmoittautumislomakkeen tietoja tallennetaan",
       "matriculationFormSaveStateSuccessTitle": "Ilmoittautuminen ylioppilaskokeeseen on lähetetty",
@@ -682,6 +685,7 @@
       "matriculationEnrollmentHistory": "Ilmoittautumishistoria",
       "matriculationHistory": "Yo-koehistoria",
       "matriculationHistory_title": "Yo-koehistoria",
+      "matriculationSubject": "Aine",
       "matriculationSubjects": "Aineet:"
     },
     "content": {
@@ -742,6 +746,8 @@
       "matriculationFormInfoBlock4_noSelection": "<b>Huom.&nbsp;</b> Tutkintoon vaaditaan yksi (1) pitkän oppimäärän koe (esim. pitkä matematiikka tai pitkä eli A-tason vieras kieli). (valittuna 0).",
       "matriculationFormPublishNameOptionYes": "Haluan nimeni julkaistavan valmistujalistauksissa",
       "matriculationFormPublishNameOptionNo": "En halua nimeäni julkaistavan valmistujaislistauksissa",
+      "matriculationFormRepeatOptionFirstTime": "Ensimmäinen suorituskerta",
+      "matriculationFormRepeatOptionRetake": "Uusinta",
       "matriculationFormSummaryInfo1": "Olet ilmoittautumassa tai olet jo ilmoittautunut ylioppilaskokeeseen seuraavilla tiedoilla. Jos haluat tehdä muutoksia tai huomaat virheitä, toimi näin:",
       "matriculationFormSummaryInfo2": "<b>Ennen lomakkeen lähettämistä:&nbsp;</b> Voit itse korjata tietoja lomakkeella.",
       "matriculationFormSummaryInfo3": "<b>Lähettämisen jälkeen:&nbsp;</b> Ota yhteyttä opinto-ohjaajaan, jos haluat tehdä muutoksia tietoihin.",
@@ -780,6 +786,11 @@
       "I": "improbatur eli hylätty",
       "K": "keskeytynyt",
       "EO": "ei tiedossa"
+    },
+    "matriculationExamFundings": {
+      "SELF_FUNDED": "Itserahoitettu",
+      "COMPULSORYEDUCATION_FREE": "Maksuton ylioppilaskoe",
+      "COMPULSORYEDUCATION_FREE_RETRY": "Maksuton ylioppilaskoe (uusinta)"
     },
     "matriculationSubjectsYTL": {
       "A": "Äidinkieli ja kirjallisuus, suomi",
