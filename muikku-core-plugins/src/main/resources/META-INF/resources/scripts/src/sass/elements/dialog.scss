@@ -420,6 +420,12 @@
   }
 }
 
+.dialog__header--matriculation {
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
+}
+
 .dialog__icon-container {
   align-items: center;
   border-radius: 5px;

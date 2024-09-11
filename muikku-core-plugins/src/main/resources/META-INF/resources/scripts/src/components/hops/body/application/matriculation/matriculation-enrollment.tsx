@@ -75,32 +75,20 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
         {hops.hopsMatriculation.exams[0] && (
           <ApplicationSubPanel.Body>
-            <ApplicationList>
-              <ApplicationListItem>
-                <ApplicationListItemHeader
-                  tabIndex={0}
-                  role="button"
-                  className="application-list__item-header--course"
-                  onClick={handleToggleHistoryClick}
-                >
-                  {t("actions.showChangeLog", { ns: "hops_new" })}
-                </ApplicationListItemHeader>
-                <ApplicationListItemBody>
-                  <AnimateHeight
-                    duration={400}
-                    height={showHistory ? "auto" : 0}
-                  >
-                    {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
-                      <div className="loader-empty" />
-                    ) : (
-                      <ChangeLog
-                        entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
-                      />
-                    )}
-                  </AnimateHeight>
-                </ApplicationListItemBody>
-              </ApplicationListItem>
-            </ApplicationList>
+            <details className="details">
+              <summary className="details__summary">
+                {t("actions.showChangeLog", { ns: "hops_new" })}
+              </summary>
+              <div className="details__content">
+                {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
+                  <div className="loader-empty" />
+                ) : (
+                  <ChangeLog
+                    entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
+                  />
+                )}
+              </div>
+            </details>
           </ApplicationSubPanel.Body>
         )}
 
