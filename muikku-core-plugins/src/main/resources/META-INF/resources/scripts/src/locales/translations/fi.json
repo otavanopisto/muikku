@@ -735,7 +735,7 @@
       "matriculationFormEmptyPlannedExams": "Ei suunniteltuja kokeita",
       "matriculationFormEmptyPlace": "Jos haluat suorittaa kokeen muualla kuin Mikkelissä, siitä on sovittava ensin kyseisen oppilaitoksen kanssa.",
       "matriculationFormConflictingRepeats": "Merkitse koe uusittavaksi, jos olet käynyt tekemässä sen jo aiemmin.",
-      "matriculationFormCanRenewedForFree": "Jos olet saanut kokeesta aiemmin arvosanan IMPROBATUR, voit uusia kokeen maksutta valitsemalla Oppivelvollisuus rahoitus (uusinta).",
+      "matriculationFormCanRenewedForFree": " Jos olet saanut kokeesta aiemmin arvosanan IMPROBATUR, voit uusia kokeen maksutta valitsemalla Maksuton ylioppilaskoe (uusinta).",
       "matriculationFormCompulsoryEligibleInfo": "Merkitse, mitkä viisi koetta ovat sinulle maksuttomia ja mitkä kokeista maksat itse.",
       "matriculationFormExaminationIsValid": "Näillä valinnoilla voit valmistua ylioppilaaksi!",
       "matriculationFormInfoBlock1": "Ylioppilastutkintoon tulee sisältyä vähintään viisi (5) eri kirjoitettua ainetta. Halutessasi voit hajauttaa kirjoitukset enintään kolmelle kirjoituskerralle. (valittuna {{count}} ainetta)",
@@ -785,7 +785,9 @@
     "matriculationGrades": {
       "I": "improbatur eli hylätty",
       "K": "keskeytynyt",
-      "EO": "ei tiedossa"
+      "NO_RIGHT_TO_PARTICIPATE": "Ei osallistumisoikeutta",
+      "INVALIDATED": "Mitätöity",
+      "UNKNOWN": "Ei tiedossa"
     },
     "matriculationExamFundings": {
       "SELF_FUNDED": "Itserahoitettu",

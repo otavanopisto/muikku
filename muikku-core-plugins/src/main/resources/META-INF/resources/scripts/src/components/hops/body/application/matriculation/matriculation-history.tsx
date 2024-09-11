@@ -37,7 +37,13 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
     [MatriculationExamGrade.Approbatur]: "A",
     [MatriculationExamGrade.Improbatur]: "I",
     [MatriculationExamGrade.K]: "K",
-    [MatriculationExamGrade.Unknown]: "EO",
+    [MatriculationExamGrade.NoRightToParticipate]: "EO",
+    [MatriculationExamGrade.Invalidated]: t("matriculationGrades.INVALIDATED", {
+      ns: "hops_new",
+    }),
+    [MatriculationExamGrade.Unknown]: t("matriculationGrades.UNKNOWN", {
+      ns: "hops_new",
+    }),
   };
 
   /**
@@ -166,9 +172,19 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
                   ns: "hops_new",
                 })}`}</p>
                 <p>
-                  {`EO = ${t("matriculationGrades.EO", {
+                  {`EO = ${t("matriculationGrades.NO_RIGHT_TO_PARTICIPATE", {
                     ns: "hops_new",
                   })}`}
+                </p>
+                <p>
+                  {t("matriculationGrades.INVALIDATED", {
+                    ns: "hops_new",
+                  })}
+                </p>
+                <p>
+                  {t("matriculationGrades.UNKNOWN", {
+                    ns: "hops_new",
+                  })}
                 </p>
               </div>
             </div>
