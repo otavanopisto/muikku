@@ -106,7 +106,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
         <ApplicationSubPanel.Body>
           <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+            <div className="application-sub-panel__notification-body">
               {t("content.matriculationEnrollmentGuides2", {
                 ns: "hops_new",
               })}

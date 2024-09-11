@@ -116,6 +116,14 @@
   }
 }
 
+// Component's body which is used inside sub-tabs
+.application-panel__body--sub-tabs {
+  @include breakpoint($breakpoint-pad) {
+    border: solid 1px solid $color-tab-border;
+    border-top: 0;
+  }
+}
+
 // Component's actions row that has .application-panel__actions-aside and .application-panel__actions-main as childs
 .application-panel__actions {
   background: $color-default;

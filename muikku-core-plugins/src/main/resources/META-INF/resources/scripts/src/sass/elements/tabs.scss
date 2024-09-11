@@ -124,6 +124,14 @@
   user-select: none;
   z-index: 1;
 
+  &:first-child {
+    margin: 2px 2px 2px 0;
+  }
+
+  &:last-child {
+    margin: 2px 0 2px 2px;
+  }
+
   &.active {
     background: $color-tab-focus-background;
     border-left: 1px solid $color-tab-border;

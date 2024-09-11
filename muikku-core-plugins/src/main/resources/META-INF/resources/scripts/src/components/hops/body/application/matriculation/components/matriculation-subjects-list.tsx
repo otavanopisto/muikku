@@ -241,7 +241,10 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   );
 
   const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
-    <div className="form-element__dropdown-selection-container" key={index}>
+    <div
+      className="form-element__dropdown-selection-container form-element__dropdown-selection-container--nowrap"
+      key={index}
+    >
       <label
         htmlFor={`matriculationSubject` + index}
         className="visually-hidden"
@@ -326,12 +329,20 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       </select>
 
       {!disabled && (
-        <Button
-          buttonModifiers={["primary-function-content", "remove-subject-row"]}
-          onClick={handleMatriculationSubjectRemove(index)}
-        >
-          {t("actions.remove")}
-        </Button>
+        <>
+          <label
+            id="removeMatriculationRowLabelSubject"
+            className="visually-hidden"
+          >
+            {t("actions.remove")}
+          </label>
+          <Button
+            buttonModifiers={["button-has-icon", "remove-matriculation-row"]}
+            onClick={handleMatriculationSubjectRemove(index)}
+            icon="trash"
+            aria-labelledby="removeMatriculationRowLabelSubject"
+          ></Button>
+        </>
       )}
     </div>
   ));
@@ -342,8 +353,9 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       {!disabled && (
         <div className="form__buttons">
           <Button
-            buttonModifiers={["primary-function-content", "add-subject-row"]}
+            buttonModifiers={["button-has-icon", "add-matriculation-row"]}
             onClick={handleMatriculationSubjectAdd}
+            icon="plus"
           >
             {t("actions.addSubject", { ns: "studies" })}
           </Button>

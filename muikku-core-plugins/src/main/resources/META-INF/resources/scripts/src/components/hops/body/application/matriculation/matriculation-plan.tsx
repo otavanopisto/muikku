@@ -151,28 +151,32 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
       <ApplicationSubPanel modifier="matriculation-plan-content">
         <ApplicationSubPanel modifier="matriculation-plan-data">
           <ApplicationSubPanel.Body>
-            <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-              <div className="application-sub-panel__item-title">
-                {t("content.matriculationPlanTarget", { ns: "hops_new" })}
-              </div>
-              <div className="application-sub-panel__item-data">
-                <div className="form-element form-element">
-                  <input
-                    id={"goalMatriculationExam"}
-                    type="checkbox"
-                    checked={matriculationPlan.goalMatriculationExam}
-                    onChange={handleCheckboxChange}
-                    disabled={useCase === "GUARDIAN"}
-                  />
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body">
+                <div className="form__row">
+                  <div className="form-element form-element--checkbox-radiobutton">
+                    <input
+                      id={"goalMatriculationExam"}
+                      type="checkbox"
+                      checked={matriculationPlan.goalMatriculationExam}
+                      onChange={handleCheckboxChange}
+                      disabled={useCase === "GUARDIAN"}
+                    />
+                    <label htmlFor="goalMatriculationExam">
+                      {t("content.matriculationPlanTarget", { ns: "hops_new" })}
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-              <div className="application-sub-panel__item-title">
-                {t("content.matriculationPlanSubjectGoal", { ns: "hops_new" })}
-              </div>
-              <div className="application-sub-panel__item-data">
+            <div className=" application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body">
+                <div className="application-sub-panel__notification-title">
+                  {t("content.matriculationPlanSubjectGoal", {
+                    ns: "hops_new",
+                  })}
+                </div>
                 <MatriculationSubjectsList
                   disabled={useCase === "GUARDIAN"}
                   subjects={hops.hopsMatriculation.subjects}
@@ -183,57 +187,54 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
             </div>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
-        <ApplicationSubPanel>
+        <ApplicationSubPanel modifier="matriculation-plan-info">
           <ApplicationSubPanel.Body>
-            <div className="application-sub-panel__notification-item">
-              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-                {t("content.matriculationPlanGuides1", { ns: "hops_new" })}
+            <div className="matriculation-container__state state-INFO">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+                <p>
+                  {t("content.matriculationPlanGuides1", { ns: "hops_new" })}
+                </p>
+
+                <ul>
+                  <li>
+                    {t("content.matriculationPlanGuideSubject1", {
+                      ns: "hops_new",
+                    })}
+                  </li>
+                  <li>
+                    {t("content.matriculationPlanGuideSubject2", {
+                      ns: "hops_new",
+                    })}
+                  </li>
+                  <li>
+                    {t("content.matriculationPlanGuideSubject3", {
+                      ns: "hops_new",
+                    })}
+                  </li>
+                  <li>
+                    {t("content.matriculationPlanGuideSubject4", {
+                      ns: "hops_new",
+                    })}
+                  </li>
+                </ul>
+
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: t("content.matriculationPlanGuides2", {
+                      ns: "hops_new",
+                    }),
+                  }}
+                ></p>
+
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: t("content.matriculationPlanGuides3", {
+                      ns: "hops_new",
+                    }),
+                  }}
+                ></p>
               </div>
-            </div>
-
-            <ItemList>
-              <ItemList.Item>
-                {t("content.matriculationPlanGuideSubject1", {
-                  ns: "hops_new",
-                })}
-              </ItemList.Item>
-              <ItemList.Item>
-                {t("content.matriculationPlanGuideSubject2", {
-                  ns: "hops_new",
-                })}
-              </ItemList.Item>
-              <ItemList.Item>
-                {t("content.matriculationPlanGuideSubject3", {
-                  ns: "hops_new",
-                })}
-              </ItemList.Item>
-              <ItemList.Item>
-                {t("content.matriculationPlanGuideSubject4", {
-                  ns: "hops_new",
-                })}
-              </ItemList.Item>
-            </ItemList>
-
-            <div className="application-sub-panel__notification-item">
-              <div
-                className="application-sub-panel__notification-body application-sub-panel__notification-body"
-                dangerouslySetInnerHTML={{
-                  __html: t("content.matriculationPlanGuides2", {
-                    ns: "hops_new",
-                  }),
-                }}
-              />
-            </div>
-
-            <div className="application-sub-panel__notification-item">
-              <div
-                className="application-sub-panel__notification-body application-sub-panel__notification-body"
-                dangerouslySetInnerHTML={{
-                  __html: t("content.matriculationPlanGuides3", {
-                    ns: "hops_new",
-                  }),
-                }}
-              />
             </div>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>

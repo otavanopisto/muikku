@@ -68,23 +68,18 @@ const MatriculationEnrollmentLink = (
         })}
       </div>
       <div className="application-sub-panel__notification-footer">
-        <div key={exam.id}>
-          <MatriculationExaminationWizardDialog
-            examId={exam.id}
-            compulsoryEducationEligible={exam.compulsoryEducationEligible}
-            formType="initial"
-          >
-            <Button
-              className="button button--yo-signup"
-              disabled={useCase === "GUARDIAN"}
-            >
-              {t("actions.signUp", {
-                ns: "studies",
-                dueDate: new Date(exam.ends).toLocaleDateString("fi-Fi"),
-              })}
-            </Button>
-          </MatriculationExaminationWizardDialog>
-        </div>
+        <MatriculationExaminationWizardDialog
+          examId={exam.id}
+          compulsoryEducationEligible={exam.compulsoryEducationEligible}
+          formType="initial"
+        >
+          <Button buttonModifiers={["info"]} disabled={useCase === "GUARDIAN"}>
+            {t("actions.signUp", {
+              ns: "studies",
+              dueDate: new Date(exam.ends).toLocaleDateString("fi-Fi"),
+            })}
+          </Button>
+        </MatriculationExaminationWizardDialog>
       </div>
     </div>
   );
@@ -124,7 +119,7 @@ const MatriculationSubmittedEnrollment = (
             compulsoryEducationEligible={exam.compulsoryEducationEligible}
             formType="readonly"
           >
-            <Button className="button button--yo-signup">
+            <Button buttonModifiers={["info"]}>
               {t("actions.showOldSummary", {
                 ns: "hops_new",
               })}
@@ -147,7 +142,7 @@ const MatriculationSubmittedEnrollment = (
                 compulsoryEducationEligible={exam.compulsoryEducationEligible}
                 formType="readonly"
               >
-                <Button className="button button--yo-signup" disabled={past}>
+                <Button buttonModifiers={["info"]} disabled={past}>
                   {t("actions.supplementRegistration", {
                     ns: "hops_new",
                   })}
@@ -172,7 +167,7 @@ const MatriculationSubmittedEnrollment = (
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="readonly"
             >
-              <Button className="button button--yo-signup" disabled={past}>
+              <Button buttonModifiers={["info"]} disabled={past}>
                 {t("actions.showSummary", {
                   ns: "hops_new",
                 })}
@@ -189,7 +184,7 @@ const MatriculationSubmittedEnrollment = (
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="editable"
             >
-              <Button className="button button--yo-signup" disabled={past}>
+              <Button buttonModifiers={["info"]} disabled={past}>
                 {t("actions.supplementRegistration", {
                   ns: "hops_new",
                 })}
@@ -206,7 +201,7 @@ const MatriculationSubmittedEnrollment = (
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="readonly"
             >
-              <Button className="button button--yo-signup" disabled={past}>
+              <Button buttonModifiers={["info"]} disabled={past}>
                 {t("actions.confirmRegistration", {
                   ns: "hops_new",
                 })}

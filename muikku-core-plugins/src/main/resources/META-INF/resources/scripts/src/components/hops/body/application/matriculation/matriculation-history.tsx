@@ -143,29 +143,35 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
 
         <ApplicationSubPanel>
           <ApplicationSubPanel.Body>
-            <ItemList
-              header={t("labels.grades", {
-                ns: "hops_new",
-              })}
-            >
-              <ItemList.Item>L = laudatur</ItemList.Item>
-              <ItemList.Item>E = eximia cum laude approbatur</ItemList.Item>
-              <ItemList.Item>M = magna cum laude approbatur</ItemList.Item>
-              <ItemList.Item>C = cum laude approbatur</ItemList.Item>
-              <ItemList.Item>B = lubenter approbatur</ItemList.Item>
-              <ItemList.Item>A = approbatur</ItemList.Item>
-              <ItemList.Item>{`I = ${t("matriculationGrades.I", {
-                ns: "hops_new",
-              })}`}</ItemList.Item>
-              <ItemList.Item>{`K = ${t("matriculationGrades.K", {
-                ns: "hops_new",
-              })}`}</ItemList.Item>
-              <ItemList.Item>
-                {`EO = ${t("matriculationGrades.EO", {
+            <div className="matriculation-container__state state-INFO">
+              <div className="matriculation-container__state-icon icon-notification"></div>
+              <div className="matriculation-container__state-text">
+                <p>
+                  <b>
+                    {t("labels.grades", {
+                      ns: "hops_new",
+                    })}
+                  </b>
+                </p>
+                <p>L = laudatur</p>
+                <p>E = eximia cum laude approbatur</p>
+                <p>M = magna cum laude approbatur</p>
+                <p>C = cum laude approbatur</p>
+                <p>B = lubenter approbatur</p>
+                <p>A = approbatur</p>
+                <p>{`I = ${t("matriculationGrades.I", {
                   ns: "hops_new",
-                })}`}
-              </ItemList.Item>
-            </ItemList>
+                })}`}</p>
+                <p>{`K = ${t("matriculationGrades.K", {
+                  ns: "hops_new",
+                })}`}</p>
+                <p>
+                  {`EO = ${t("matriculationGrades.EO", {
+                    ns: "hops_new",
+                  })}`}
+                </p>
+              </div>
+            </div>
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
       </ApplicationSubPanel>
