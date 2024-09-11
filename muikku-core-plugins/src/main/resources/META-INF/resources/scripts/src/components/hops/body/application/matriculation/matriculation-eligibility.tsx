@@ -86,7 +86,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
     <>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {t("label.matriculationParticipation", {
+          {t("labels.matriculationParticipation", {
             ns: "hops_new",
             context: "title1",
           })}
@@ -181,7 +181,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {t("label.matriculationParticipation", {
+          {t("labels.matriculationParticipation", {
             ns: "hops_new",
             context: "title2",
           })}

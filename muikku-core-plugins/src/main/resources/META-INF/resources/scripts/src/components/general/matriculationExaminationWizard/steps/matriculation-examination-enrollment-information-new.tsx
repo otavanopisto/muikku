@@ -100,6 +100,14 @@ const REQUIRED_GROUPS = [
 ];
 
 /**
+ * OptionType
+ */
+interface OptionType<T> {
+  value: T;
+  label: string;
+}
+
+/**
  * MatriculationExaminationEnrollmentInformationProps
  */
 //interface MatriculationExaminationEnrollmentInformationNewProps {}
@@ -119,44 +127,6 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const { t } = useTranslation(["hops_new", "common"]);
 
   const values = useWizardContext();
-
-  /**
-   * Returns next non selected subject from subjects list
-   *
-   * @param selectedSubjects list of selected subjects
-   * @returns next non selected subject from subjects list
-   */
-  // const getDefaultSubject = (selectedSubjects: string[]) => {
-  //   const subjects = Object.keys(SUBJECT_MAP);
-
-  //   for (let i = 0; i < subjects.length; i++) {
-  //     if (selectedSubjects.indexOf(subjects[i]) === -1) {
-  //       return subjects[i];
-  //     }
-  //   }
-
-  //   return null;
-  // };
-
-  /**
-   * Returns list of enrolled subjects from enrolled attendances lists
-   *
-   * @returns list of enrolled subjects from enrolled attendances lists
-   */
-  // const getEnrolledSubjects = () =>
-  //   examinationInformation.enrolledAttendances.map(
-  //     (attendance) => attendance.subject
-  //   );
-
-  /**
-   * Returns list of planned subjects from planned attendances lists
-   *
-   * @returns list of planned subjects from planned attendances lists
-   */
-  // const getPlannedSubjects = () =>
-  //   examinationInformation.plannedAttendances.map(
-  //     (attendance) => attendance.subject
-  //   );
 
   /**
    * Returns list of finished subjects from finished attendances lists
@@ -926,6 +896,63 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     values.isInvalid(isInvalid(), values.currentStepIndex);
   }, [isInvalid, values]);
 
+  const currentTerm = resolveCurrentTerm();
+
+  const addesiveTermLocale =
+    currentTerm.value === "AUTUMN"
+      ? t("matriculationTerms.AUTUMN", {
+          ns: "hops_new",
+          context: "adessive",
+          year: currentTerm.year,
+        })
+      : t("matriculationTerms.SPRING", {
+          ns: "hops_new",
+          context: "adessive",
+          year: currentTerm.year,
+        });
+
+  const enrollAsOptions: OptionType<MatriculationExamSchoolType>[] = [
+    {
+      value: "UPPERSECONDARY",
+      label: t("enrollAsTypes.UPPERSECONDARY", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "VOCATIONAL",
+      label: t("enrollAsTypes.VOCATIONAL", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "UNKNOWN",
+      label: t("enrollAsTypes.UNKNOWN", {
+        ns: "hops_new",
+      }),
+    },
+  ];
+
+  const degreeTypeOptions: OptionType<MatriculationExamDegreeType>[] = [
+    {
+      value: "MATRICULATIONEXAMINATION",
+      label: t("degreeTypes.MATRICULATIONEXAMINATION", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "MATRICULATIONEXAMINATIONSUPPLEMENT",
+      label: t("degreeTypes.MATRICULATIONEXAMINATIONSUPPLEMENT", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "SEPARATEEXAM",
+      label: t("degreeTypes.SEPARATEEXAM", {
+        ns: "hops_new",
+      }),
+    },
+  ];
+
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
@@ -933,13 +960,17 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Ilmoittautuminen
+          {t("labels.matriculationFormRegistrationSubTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container matriculation__form-element-container--single-row">
             <label className="matriculation__label">
-              Aloitan tutkinnon suorittamisen uudelleen
+              {t("labels.matriculationFormFieldRestart", {
+                ns: "hops_new",
+              })}
             </label>
             <input
               onChange={(e) =>
@@ -957,7 +988,11 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
-            <label className="matriculation__label">Ilmoittautuminen</label>
+            <label className="matriculation__label">
+              {t("labels.matriculationFormFielRegistrationDone", {
+                ns: "hops_new",
+              })}
+            </label>
             <select
               onChange={(e) =>
                 handleExaminationInformationChange(
@@ -968,18 +1003,20 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
               value={examinationInformation.enrollAs}
               className="matriculation__select"
             >
-              <option value="UPPERSECONDARY">Lukion opiskelijana</option>
-              <option value="VOCATIONAL">
-                Ammatillisten opintojen perusteella
-              </option>
-              <option value="UNKNOWN">Muu tausta</option>
+              {enrollAsOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
           <div className="matriculation__form-element-container">
             <TextField
               type="number"
               readOnly
-              label="Pakollisia opintopisteitä suoritettuna"
+              label={t("labels.matriculationFormFieldMandotryCreditsDone", {
+                ns: "hops_new",
+              })}
               defaultValue={studentInformation.completedCreditPointsCount}
               className="matriculation__input"
             />
@@ -987,7 +1024,11 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         </div>
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
-            <label className="matriculation__label">Tutkintotyyppi</label>
+            <label className="matriculation__label">
+              {t("labels.matriculationFormFieldDegreeType", {
+                ns: "hops_new",
+              })}
+            </label>
             <select
               onChange={(e) =>
                 handleExaminationInformationChange(
@@ -998,13 +1039,11 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
               value={examinationInformation.degreeType}
               className="matriculation__select"
             >
-              <option value="MATRICULATIONEXAMINATION">Yo-tutkinto</option>
-              <option value="MATRICULATIONEXAMINATIONSUPPLEMENT">
-                Tutkinnon korottaja tai täydentäjä
-              </option>
-              <option value="SEPARATEEXAM">
-                Erillinen koe (ilman yo-tutkintoa)
-              </option>
+              {degreeTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -1017,7 +1056,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             <div className="matriculation-container__state-icon icon-notification"></div>
             <div className="matriculation-container__state-text">
               <p>
-                Sinulla ei ole tarpeeksi pakollisia opintopisteitä suoritettuna.
+                {t("content.matriculationFormNotEnoughMandatoryStudies", {
+                  ns: "hops_new",
+                })}
               </p>
             </div>
           </div>
@@ -1030,14 +1071,15 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           <div className="matriculation-container__state-text">
             {compulsoryEducationEligible ? (
               <p className="matriculation-container__info-item">
-                Olet laajennetun oppivelvollisuuden piirissä. Mikäli valittuja
-                kokeita on enemmän kuin viisi, valitse kokeista ne jotka
-                suoritat maksuttomana.
+                {t("content.matriculationFormCompulsoryEligible", {
+                  ns: "hops_new",
+                })}
               </p>
             ) : (
               <p className="matriculation-container__info-item">
-                Et ole laajennetun oppivelvollisuuden piirissä. Kaikki kokeesi
-                ovat maksullisia.
+                {t("content.matriculationFormCompulsoryEligibleNot", {
+                  ns: "hops_new",
+                })}
               </p>
             )}
           </div>
@@ -1047,7 +1089,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
       {!examinationInformation.restartExam && (
         <fieldset className="matriculation-container__fieldset">
           <legend className="matriculation-container__subheader">
-            Olen jo suorittanut seuraavat ylioppilaskokeet
+            {t("labels.matriculationFormRegistrationSubTitle2", {
+              ns: "hops_new",
+            })}
           </legend>
           <MatriculationExaminationFinishedAttendesList
             enrolledAttendances={examinationInformation.enrolledAttendances}
@@ -1068,19 +1112,25 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
               onClick={handleNewFinishedAttendanceClick}
               icon="plus"
             >
-              Lisää uusi rivi
+              {t("actions.addNewRow", {
+                ns: "hops_new",
+              })}
             </Button>
           </div>
         </fieldset>
       )}
 
       <fieldset className="matriculation-container__fieldset">
-        <legend className="matriculation-container__subheader">
-          {`Ilmoittaudun suorittamaan kokeen seuraavissa aineissa `}
-          <b>
-            {resolveCurrentTerm() ? resolveCurrentTerm().adessive : "Virhe"}
-          </b>
-        </legend>
+        <legend
+          className="matriculation-container__subheader"
+          dangerouslySetInnerHTML={{
+            __html: t("labels.matriculationFormRegistrationSubTitle3", {
+              ns: "hops_new",
+              term: addesiveTermLocale,
+            }),
+          }}
+        />
+
         <MatriculationExaminationEnrolledAttendesList
           isConflictingRepeat={isConflictingRepeat}
           conflictingAttendancesGroup={isConflictingAttendances()}
@@ -1102,7 +1152,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             onClick={handleNewEnrolledAttendanceClick}
             icon="plus"
           >
-            Lisää uusi rivi
+            {t("actions.addNewRow", {
+              ns: "hops_new",
+            })}
           </Button>
         </div>
 
@@ -1111,11 +1163,16 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             <div className="matriculation-container__state-icon icon-notification"></div>
             <div className="matriculation-container__state-text">
               <p>
-                Olet ilmoittautumassa kokeisiin, joita ei voi valita
-                samanaikaisesti. Kysy tarvittaessa lisää ohjaajalta.
+                {t("content.matriculationFormConflictingAttendances", {
+                  ns: "hops_new",
+                })}
               </p>
               <p>
-                <b>Aineet:</b>
+                <b>
+                  {t("labels.matriculationSubjects", {
+                    ns: "hops_new",
+                  })}
+                </b>
               </p>
               {isConflictingAttendances().map((cGroup, index) => (
                 <div key={index}>
@@ -1140,8 +1197,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             <div className="matriculation-container__state-icon icon-notification"></div>
             <div className="matriculation-container__state-text">
               <p>
-                Tarkista maksullisuus tiedot. Vain viisi maksutonta
-                koesuoritusta
+                {t("content.matriculationFormFundingInvalid", {
+                  ns: "hops_new",
+                })}
               </p>
             </div>
           </div>
@@ -1150,7 +1208,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Aion suorittaa seuraavat ylioppilaskokeet tulevaisuudessa
+          {t("labels.matriculationFormRegistrationSubTitle4", {
+            ns: "hops_new",
+          })}
         </legend>
         <MatriculationExaminationPlannedAttendesList
           examinationPlannedList={examinationInformation.plannedAttendances}
@@ -1165,7 +1225,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             onClick={handleNewPlannedAttendanceClick}
             icon="plus"
           >
-            Lisää uusi rivi
+            {t("actions.addNewRow", {
+              ns: "hops_new",
+            })}
           </Button>
         </div>
 
@@ -1173,7 +1235,11 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           <div className="matriculation-container__state state-WARNING">
             <div className="matriculation-container__state-icon icon-notification"></div>
             <div className="matriculation-container__state-text">
-              <p>Ole hyvä ja täytä kaikki rivit</p>
+              <p>
+                {t("content.matriculationFormEmptyFields", {
+                  ns: "hops_new",
+                })}
+              </p>
             </div>
           </div>
         ) : null}
@@ -1184,7 +1250,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           <div className="matriculation-container__repeat-conflicts">
             <div className="matriculation-container__repeat-conflicts-indicator"></div>
             <p>
-              Aine on merkittävä uusittavaksi, kun siitä on aiempi suorituskerta
+              {t("content.matriculationFormConflictingRepeats", {
+                ns: "hops_new",
+              })}
             </p>
           </div>
         ) : null}
@@ -1192,8 +1260,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           <div className="matriculation-container__repeatable-info">
             <div className="matriculation-container__repeatable-info-indicator"></div>
             <p>
-              Arvosanalla IMPROBATUR suorituksen voi uusia maksutta
-              Oppivelvollisuus rahoitus (uusinta) -valinnalla
+              {t("content.matriculationFormCanRenewedForFree", {
+                ns: "hops_new",
+              })}
             </p>
           </div>
         ) : null}
@@ -1207,45 +1276,80 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           <div className="matriculation-container__state-icon icon-notification"></div>
           <div className="matriculation-container__state-text">
             <p>
-              Ylioppilastutkintoon tulee sisältyä vähintään viisi eri
-              kirjoitettua ainetta. Halutessasi voit hajauttaa kirjoitukset
-              enintään kolmelle kirjoituskerralle.
-              {` (Valittuna ${
-                getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
-                  .length
-              })`}
+              {t("content.matriculationFormInfoBlock1", {
+                ns: "hops_new",
+                count:
+                  getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
+                    .length,
+              })}
             </p>
+
+            <p
+              dangerouslySetInnerHTML={{
+                __html:
+                  getAmountOfFinnishAttendances() ==
+                  REQUIRED_FINNISH_ATTENDANCES
+                    ? t("content.matriculationFormInfoBlock2", {
+                        ns: "hops_new",
+                        subject: t(`subjects.${getFinnishAttendance()[0]}`, {
+                          ns: "common",
+                          defaultValue: getFinnishAttendance()[0],
+                        }),
+                      })
+                    : t("content.matriculationFormInfoBlock2", {
+                        ns: "hops_new",
+                      }),
+              }}
+            />
+
+            <p>
+              {t("content.matriculationFormInfoBlock3", {
+                ns: "hops_new",
+              })}
+            </p>
+
             <ul>
               <li>
-                yhden tulee olla äidinkieli / suomi toisena kielenä.
-                {getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES
-                  ? ` (${t(`subjects.${getFinnishAttendance()[0]}`, {
-                      ns: "common",
-                      defaultValue: getFinnishAttendance()[0],
-                    })} valittu)`
-                  : null}
+                {t("content.matriculationPlanGuideSubject1", {
+                  ns: "hops_new",
+                })}
               </li>
               <li>
-                neljä muuta ainetta kolmesta seuraavasta aineryhmästä:
-                <ul>
-                  <li>vieras kieli</li>
-                  <li>toinen kotimainen kieli</li>
-                  <li>matematiikka</li>
-                  <li>reaali</li>
-                </ul>
+                {t("content.matriculationPlanGuideSubject2", {
+                  ns: "hops_new",
+                })}
               </li>
-              <li className="matriculation__hightlighted">
-                lisäksi yhden kokeen tulee olla A-tason koe
-                {getAmountOfAdvancedSubjectAttendances() > 0
-                  ? ""
-                  : ` (valittuna ${getAmountOfAdvancedSubjectAttendances()})`}
+              <li>
+                {t("content.matriculationPlanGuideSubject3", {
+                  ns: "hops_new",
+                })}
+              </li>
+              <li>
+                {t("content.matriculationPlanGuideSubject4", {
+                  ns: "hops_new",
+                })}
               </li>
             </ul>
 
+            <p
+              dangerouslySetInnerHTML={{
+                __html:
+                  getAmountOfAdvancedSubjectAttendances() > 0
+                    ? t("content.matriculationFormInfoBlock4", {
+                        ns: "hops_new",
+                      })
+                    : t("content.matriculationFormInfoBlock4", {
+                        ns: "hops_new",
+                        context: "noSelection",
+                      }),
+              }}
+            />
+
             {compulsoryEducationEligible && (
               <p className="matriculation__hightlighted">
-                Merkitse, mitkä viisi koetta ovat sinulle maksuttomia ja mitkä
-                kokeista maksat itse.
+                {t("content.matriculationFormCompulsoryEligibleInfo", {
+                  ns: "hops_new",
+                })}
               </p>
             )}
           </div>
@@ -1258,7 +1362,11 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         <div className="matriculation-container__state state-SUCCESS">
           <div className="matriculation-container__state-icon icon-notification"></div>
           <div className="matriculation-container__state-text">
-            <p>Näillä valinnoilla voit valmistua ylioppilaaksi!</p>
+            <p>
+              {t("content.matriculationFormExaminationIsValid", {
+                ns: "hops_new",
+              })}
+            </p>
           </div>
         </div>
       ) : null}

@@ -68,7 +68,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const panelTabs: Tab[] = [
     {
       id: "MATRICULATION",
-      name: t("label.hopsMatriculation", { ns: "hops_new" }),
+      name: t("labels.hopsMatriculation", { ns: "hops_new" }),
       hash: "matriculation",
       type: "matriculation",
       component: (

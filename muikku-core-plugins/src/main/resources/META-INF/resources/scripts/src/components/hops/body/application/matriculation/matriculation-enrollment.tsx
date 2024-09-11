@@ -55,7 +55,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
     <>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {t("label.matriculationEnrollment", {
+          {t("labels.matriculationEnrollment", {
             ns: "hops_new",
             context: "title",
           })}
@@ -105,7 +105,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          {t("label.matriculationEnrollmentHistory", {
+          {t("labels.matriculationEnrollmentHistory", {
             ns: "hops_new",
           })}
         </ApplicationSubPanel.Header>

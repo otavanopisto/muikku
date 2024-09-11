@@ -69,7 +69,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
               </span>
 
               <span className="application-sub-panel__notification-content-data">
-                {t("label.grade", {
+                {t("labels.grade", {
                   ns: "hops_new",
                 })}
                 {matriculationGradeMap[sr.grade]}
@@ -86,7 +86,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
           <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
             {hops.hopsMatriculation.results.length === 0 ? (
               <p>
-                {t("label.matriculationHistory", {
+                {t("labels.matriculationHistory", {
                   ns: "hops_new",
                   context: "title",
                 })}
@@ -128,7 +128,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanel.Header>
-        {t("label.matriculationHistory", {
+        {t("labels.matriculationHistory", {
           ns: "hops_new",
           context: "title",
         })}
@@ -148,7 +148,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
               <div className="matriculation-container__state-text">
                 <p>
                   <b>
-                    {t("label.grades", {
+                    {t("labels.grades", {
                       ns: "hops_new",
                     })}
                   </b>

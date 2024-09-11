@@ -6,6 +6,7 @@ import { SavingDraftError } from "../saving-draft-error";
 import { SavingDraftInfo } from "../saving-draft-info";
 import { Textarea } from "../textarea";
 import { TextField } from "../textfield";
+import { useTranslation } from "react-i18next";
 
 /**
  * MatriculationExaminationEnrollmentAct
@@ -15,6 +16,8 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
     useMatriculationContext();
   const { examinationInformation, studentInformation, saveState, errorMsg } =
     matriculation;
+
+  const { t } = useTranslation(["common"]);
 
   /**
    * Handles examination information changes and passes it to parent component
@@ -41,11 +44,17 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
       <SavingDraftInfo saveState={saveState} />
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
-          Kokeen suorittaminen
+          {t("labels.matriculationFormActSubTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
-            <label className="matriculation__label">Suorituspaikka</label>
+            <label className="matriculation__label">
+              {t("labels.matriculationFormFieldPlace", {
+                ns: "hops_new",
+              })}
+            </label>
             <select
               onChange={(e) =>
                 handleExaminationInformationChange(
@@ -59,7 +68,11 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
               className="matriculation__select"
             >
               <option>Mikkeli</option>
-              <option value="">Muu</option>
+              <option value="">
+                {t("labels.other", {
+                  ns: "hops_new",
+                })}
+              </option>
             </select>
           </div>
         </div>
@@ -69,7 +82,9 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
             <div className="matriculation-container__row">
               <div className="matriculation__form-element-container">
                 <TextField
-                  label="Muu paikka"
+                  label={t("labels.otherPlace", {
+                    ns: "hops_new",
+                  })}
                   value={examinationInformation.location}
                   type="text"
                   placeholder="Kirjoita tähän oppilaitoksen nimi"
@@ -89,8 +104,9 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
                 <div className="matriculation-container__state-icon icon-notification"></div>
                 <div className="matriculation-container__state-text">
                   <p>
-                    Jos haluat suorittaa kokeen muualla, siitä on sovittava
-                    ensin kyseisen oppilaitoksen kanssa.
+                    {t("content.matriculationFormEmptyPlace", {
+                      ns: "hops_new",
+                    })}
                   </p>
                 </div>
               </div>
@@ -101,7 +117,9 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <Textarea
-              label="Lisätietoa ohjaajalle"
+              label={t("labels.matriculationFormFieldInfoForCouncelor", {
+                ns: "hops_new",
+              })}
               rows={5}
               onChange={(e) =>
                 handleExaminationInformationChange(
@@ -116,7 +134,11 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
         </div>
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
-            <label className="matriculation__label">Julkaisulupa</label>
+            <label className="matriculation__label">
+              {t("labels.matriculationFormFieldPublishName", {
+                ns: "hops_new",
+              })}
+            </label>
             <select
               onChange={(e) =>
                 handleExaminationInformationChange(
@@ -128,10 +150,14 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
               className="matriculation__select"
             >
               <option value="true">
-                Haluan nimeni julkaistavan valmistujalistauksissa
+                {t("content.matriculationFormPublishNameOptionYes", {
+                  ns: "hops_new",
+                })}
               </option>
               <option value="false">
-                En halua nimeäni julkaistavan valmistujaislistauksissa
+                {t("content.matriculationFormPublishNameOptionNo", {
+                  ns: "hops_new",
+                })}
               </option>
             </select>
           </div>
@@ -140,7 +166,7 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label="Nimi"
+              label={t("labels.name")}
               value={studentInformation.name}
               type="text"
               readOnly
@@ -149,7 +175,7 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
           </div>
           <div className="matriculation__form-element-container">
             <TextField
-              label="Päivämäärä"
+              label={t("labels.date")}
               value={`${examinationInformation.enrollmentDate.getDate()}.${
                 examinationInformation.enrollmentDate.getMonth() + 1
               }.${examinationInformation.enrollmentDate.getFullYear()}`}

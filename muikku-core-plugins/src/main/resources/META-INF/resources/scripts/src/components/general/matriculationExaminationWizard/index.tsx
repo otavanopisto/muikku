@@ -21,6 +21,7 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import { useTranslation } from "react-i18next";
 
 moment.locale("fi");
 
@@ -54,6 +55,8 @@ const MatriculationExaminationWizard = (
     formType,
   } = props;
 
+  const { t } = useTranslation(["common", "hops_new"]);
+
   const useMatriculationValues = useMatriculation(
     examId,
     hops.currentStudentIdentifier,
@@ -83,27 +86,27 @@ const MatriculationExaminationWizard = (
   const steps: WizardStep[] = [
     {
       index: 0,
-      name: "Opiskelijatiedot",
+      name: t("labels.matriculationFormStudentInfoTitle", { ns: "hops_new" }),
       component: <Step1 />,
     },
     {
       index: 1,
-      name: "Ilmoittautuminen",
+      name: t("labels.matriculationFormRegistrationTitle", { ns: "hops_new" }),
       component: <Step2 />,
     },
     {
       index: 2,
-      name: "Suorituspaikka",
+      name: t("labels.matriculationFormActTitle", { ns: "hops_new" }),
       component: <Step3 />,
     },
     {
       index: 3,
-      name: "Yhteenveto",
+      name: t("labels.matriculationFormSummaryTitle", { ns: "hops_new" }),
       component: <Step4 />,
     },
     {
       index: 4,
-      name: "Valmis",
+      name: t("labels.matriculationFormCompleteTitle", { ns: "hops_new" }),
       component: <Step5 formType={props.formType} />,
     },
   ];

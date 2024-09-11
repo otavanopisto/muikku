@@ -38,7 +38,7 @@ const Matriculation = (props: MatriculationProps) => {
   const panelTabs: Tab[] = [
     {
       id: "PLAN",
-      name: t("label.matriculationPlan", { ns: "hops_new" }),
+      name: t("labels.matriculationPlan", { ns: "hops_new" }),
       type: "plan",
       component: (
         <ApplicationPanelBody modifier="sub-tabs">
@@ -48,7 +48,7 @@ const Matriculation = (props: MatriculationProps) => {
     },
     {
       id: "ELIGIBILITY",
-      name: t("label.matriculationParticipation", { ns: "hops_new" }),
+      name: t("labels.matriculationParticipation", { ns: "hops_new" }),
       type: "eligibility",
       component: (
         <ApplicationPanelBody modifier="sub-tabs">
@@ -58,7 +58,7 @@ const Matriculation = (props: MatriculationProps) => {
     },
     {
       id: "ENROLLMENT",
-      name: t("label.matriculationEnrollment", { ns: "hops_new" }),
+      name: t("labels.matriculationEnrollment", { ns: "hops_new" }),
       type: "enrollment",
       component: (
         <ApplicationPanelBody modifier="sub-tabs">
@@ -68,7 +68,7 @@ const Matriculation = (props: MatriculationProps) => {
     },
     {
       id: "HISTORY",
-      name: t("label.matriculationHistory", { ns: "hops_new" }),
+      name: t("labels.matriculationHistory", { ns: "hops_new" }),
       type: "history",
       component: (
         <ApplicationPanelBody modifier="sub-tabs">
