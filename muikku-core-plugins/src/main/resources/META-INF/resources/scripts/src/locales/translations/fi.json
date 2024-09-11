@@ -729,7 +729,7 @@
       "matriculationFormEmptyFinishedExams": "Ei suoritettuja kokeita",
       "matriculationFormEmptySelectedExams": "Ei valittuja kokeita",
       "matriculationFormEmptyPlannedExams": "Ei suunniteltuja kokeita",
-      "matriculationFormEmptyPlace": "Jos haluat suorittaa kokeen muualla, siitä on sovittava ensin kyseisen oppilaitoksen kanssa.",
+      "matriculationFormEmptyPlace": "Jos haluat suorittaa kokeen muualla kuin Mikkelissä, siitä on sovittava ensin kyseisen oppilaitoksen kanssa.",
       "matriculationFormConflictingRepeats": "Aine on merkittävä uusittavaksi, kun siitä on aiempi suorituskerta",
       "matriculationFormCanRenewedForFree": "Arvosanalla IMPROBATUR suorituksen voi uusia maksutta Oppivelvollisuus rahoitus (uusinta) -valinnalla",
       "matriculationFormCompulsoryEligibleInfo": "Merkitse, mitkä viisi koetta ovat sinulle maksuttomia ja mitkä kokeista maksat itse.",

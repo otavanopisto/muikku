@@ -95,38 +95,42 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <legend className="matriculation-container__subheader">
           {t("labels.matriculationFormSummarySubTitle1", { ns: "hops_new" })}
         </legend>
-        <div className="matriculation-container__info">
-          <p className="matriculation-container__info-item">
-            {t("content.matriculationFormSummaryInfo1", {
-              ns: "hops_new",
-            })}
-          </p>
 
-          <ul className="matriculation-container__info-item">
-            <li
-              dangerouslySetInnerHTML={{
-                __html: t("content.matriculationFormSummaryInfo2", {
-                  ns: "hops_new",
-                }),
-              }}
-            />
-            <li
-              dangerouslySetInnerHTML={{
-                __html: t("content.matriculationFormSummaryInfo3", {
-                  ns: "hops_new",
-                }),
-              }}
-            />
-          </ul>
-
-          <p
-            className="matriculation-container__info-item"
-            dangerouslySetInnerHTML={{
-              __html: t("content.matriculationFormSummaryInfo4", {
+        <div className="matriculation-container__state state-INFO">
+          <div className="matriculation-container__state-icon icon-notification"></div>
+          <div className="matriculation-container__state-text">
+            <p className="matriculation-container__info-item">
+              {t("content.matriculationFormSummaryInfo1", {
                 ns: "hops_new",
-              }),
-            }}
-          />
+              })}
+            </p>
+
+            <ul className="matriculation-container__info-item">
+              <li
+                dangerouslySetInnerHTML={{
+                  __html: t("content.matriculationFormSummaryInfo2", {
+                    ns: "hops_new",
+                  }),
+                }}
+              />
+              <li
+                dangerouslySetInnerHTML={{
+                  __html: t("content.matriculationFormSummaryInfo3", {
+                    ns: "hops_new",
+                  }),
+                }}
+              />
+            </ul>
+
+            <p
+              className="matriculation-container__info-item"
+              dangerouslySetInnerHTML={{
+                __html: t("content.matriculationFormSummaryInfo4", {
+                  ns: "hops_new",
+                }),
+              }}
+            />
+          </div>
         </div>
       </fieldset>
 
