@@ -43,6 +43,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
@@ -1494,7 +1495,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public BridgeResponse<StudentContactLogEntryRestModel> createMultipleStudentContactLogEntries(List<SchoolDataIdentifier> recipients, StudentContactLogEntryRestModel payload){
+  public BridgeResponse<StudentContactLogWithRecipientsRestModel> createMultipleStudentContactLogEntries(List<SchoolDataIdentifier> recipients, StudentContactLogEntryRestModel payload){
+    StudentContactLogWithRecipientsRestModel entry = new StudentContactLogWithRecipientsRestModel();
+    entry.setEntryDate(payload.getEntryDate());
+    entry.setText(payload.getText());
+    entry.setType(payload.getType());
+    
     List<Long> recipientList = new ArrayList<>();
     if (!recipients.isEmpty()) {
       for (SchoolDataIdentifier studentIdentifier : recipients) {
@@ -1502,8 +1508,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
     }
     
-    payload.setRecipients(recipientList);
-    BridgeResponse<StudentContactLogEntryRestModel> response =  pyramusClient.responsePost(String.format("/students/students/contactLogEntries/batch"), Entity.entity(payload, MediaType.APPLICATION_JSON), StudentContactLogEntryRestModel.class);
+    entry.setRecipients(recipientList);
+    BridgeResponse<StudentContactLogWithRecipientsRestModel> response =  pyramusClient.responsePost(String.format("/students/students/contactLogEntries/batch"), Entity.entity(entry, MediaType.APPLICATION_JSON), StudentContactLogWithRecipientsRestModel.class);
     
     if (response.getEntity() != null) {
         
@@ -1521,7 +1527,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         }
     }
       
-    return new BridgeResponse<StudentContactLogEntryRestModel>(response.getStatusCode(), response.getEntity());
+    return new BridgeResponse<StudentContactLogWithRecipientsRestModel>(response.getStatusCode(), response.getEntity());
   }
 
   @Override

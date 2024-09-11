@@ -58,8 +58,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
@@ -77,6 +77,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -1005,16 +1006,11 @@ public class GuiderRESTService extends PluginRESTService {
     
     // user groups
     if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
-      if (sessionController.hasEnvironmentPermission(GuiderPermissions.ACCESS_CONTACT_LOG)) {
-        userGroupRecipients = new ArrayList<UserGroupEntity>();
-        
-        for (Long groupId : recipientPayload.getRecipientGroupIds()) {
-          group = userGroupEntityController.findUserGroupEntityById(groupId);
-          userGroupRecipients.add(group);
-        }
-      } else {
-        // Trying to feed group ids when you don't have permission greets you with bad request
-        return Response.status(Status.BAD_REQUEST).build();
+      userGroupRecipients = new ArrayList<UserGroupEntity>();
+      
+      for (Long groupId : recipientPayload.getRecipientGroupIds()) {
+        group = userGroupEntityController.findUserGroupEntityById(groupId);
+        userGroupRecipients.add(group);
       }
     }
     
@@ -1026,7 +1022,7 @@ public class GuiderRESTService extends PluginRESTService {
       for (Long workspaceId : recipientPayload.getRecipientStudentsWorkspaceIds()) {
         workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
   
-        if (sessionController.hasPermission(GuiderPermissions.ACCESS_CONTACT_LOG, workspaceEntity))
+        if (sessionController.hasPermission(GuiderPermissions.ACCESS_CONTACT_LOG_FOR_WORKSPACES, workspaceEntity))
           workspaceStudentRecipients.add(workspaceEntity);
         else
           return Response.status(Status.BAD_REQUEST).build();
@@ -1058,7 +1054,7 @@ public class GuiderRESTService extends PluginRESTService {
       }
     }
     
-    BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.createMultipleStudentContactLogEntries(dataSource, recipients, payload.getContactLogEntry());
+    BridgeResponse<StudentContactLogWithRecipientsRestModel> response = userSchoolDataController.createMultipleStudentContactLogEntries(dataSource, recipients, payload.getContactLogEntry());
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }

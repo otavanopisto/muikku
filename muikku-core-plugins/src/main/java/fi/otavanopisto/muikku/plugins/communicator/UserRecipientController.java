@@ -18,10 +18,8 @@ import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -30,13 +28,12 @@ public class UserRecipientController {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-
-
-  @Inject
-  private CommunicatorMessageIdDAO communicatorMessageIdDAO;
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -44,9 +41,6 @@ public class UserRecipientController {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  public CommunicatorMessageId createMessageId() {
-    return communicatorMessageIdDAO.create();
-  }
   
   /**
    * Prepares a communicator message recipient list.
@@ -74,13 +68,19 @@ public class UserRecipientController {
       // #3758: Only send messages to active users
       UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(recipient);
       
+      Boolean isActiveUser = userEntityController.isActiveUser(recipient);
       if (roles != null) {
         Boolean recipientRole = hasAnyRole(roles, usdi);
-        if (isActiveUser(recipient) && (roles.isEmpty() || recipientRole)) {
+        
+        if (isActiveUser && (roles.isEmpty() || recipientRole)) {
+          preparedRecipientList.addRecipient(recipient);
+        }
+      } else {
+        if (isActiveUser) {
           preparedRecipientList.addRecipient(recipient);
         }
       }
-    }
+    } 
     
     if (!CollectionUtils.isEmpty(userGroupRecipients)) {
       for (UserGroupEntity userGroup : userGroupRecipients) {
@@ -92,7 +92,9 @@ public class UserRecipientController {
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier)) {
+            Boolean isActiveUser = userEntityController.isActiveUser(recipient);
+
+            if (!isActiveUser) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -114,10 +116,19 @@ public class UserRecipientController {
             UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             
-            Boolean recipientRole = hasAnyRole(roles, userSchoolDataIdentifier);
+            if (roles != null) {
+              Boolean recipientRole = hasAnyRole(roles, userSchoolDataIdentifier);
+              
+              if (!recipientRole) {
+                continue;
+              }
+            }
+            
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier) && (!roles.isEmpty() && !recipientRole)) {
+            Boolean isActiveUser = userEntityController.isActiveUser(recipient);
+
+            if (!isActiveUser) {
               continue;
             }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
@@ -136,6 +147,13 @@ public class UserRecipientController {
           for (WorkspaceUserEntity wosu : workspaceUsers) {
             UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
             
+            if (roles != null) {
+              Boolean recipientRole = hasAnyRole(roles, wosu.getUserSchoolDataIdentifier());
+              
+              if (!recipientRole) {
+                continue;
+              }
+            }
             // #3758: Workspace teachers are considered active, no need to check
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               preparedRecipientList.addWorkspaceTeacherRecipient(workspaceEntity, recipient);
@@ -148,9 +166,7 @@ public class UserRecipientController {
     return preparedRecipientList;
   }
   
-  public boolean isActiveUser(UserEntity userEntity) {
-    return isActiveUser(userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier()));
-  }
+  
   
   private boolean hasAnyRole (List<EnvironmentRoleArchetype> roles, UserSchoolDataIdentifier userSchoolDataIdentifier) { 
 
@@ -159,33 +175,7 @@ public class UserRecipientController {
     return userSchoolDataIdentifier.hasAnyRole(roleArray);
   }
   
-  private boolean isActiveUser(UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    EnvironmentRoleArchetype[] staffRoles = {
-        EnvironmentRoleArchetype.ADMINISTRATOR, 
-        EnvironmentRoleArchetype.MANAGER, 
-        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
-        EnvironmentRoleArchetype.STUDY_GUIDER,
-        EnvironmentRoleArchetype.TEACHER
-    };
-    
-    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
-      SearchProvider searchProvider = getProvider("elastic-search");
-      if (searchProvider != null) {
-        SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
-        return searchResult.getTotalHitCount() > 0;
-      }
-    }
-    return true;
-  }
   
-  private SearchProvider getProvider(String name) {
-    for (SearchProvider searchProvider : searchProviders) {
-      if (name.equals(searchProvider.getName())) {
-        return searchProvider;
-      }
-    }
-    return null;
-  }
   
   /**
    * Cleans list of UserEntities so that there are no duplicates present. Returns the original list.
