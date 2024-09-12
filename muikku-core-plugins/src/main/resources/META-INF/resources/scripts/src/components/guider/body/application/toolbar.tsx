@@ -217,7 +217,6 @@ class GuiderToolbar extends React.Component<
               buttonModifiers="new-message"
             />
           </NewMessage>
-
           <NewContactEvent
             userIdentifier={this.props.status.userSchoolDataIdentifier}
             selectedItems={turnSelectedUsersToContacts(
@@ -225,18 +224,12 @@ class GuiderToolbar extends React.Component<
               !this.props.status.isStudent
             )}
             status={this.props.status}
-            onRecipientsChange={this.onContactsChange}
-
-            // extraNamespace="guider"
-            // refreshInitialSelectedItemsOnOpen
-            // onRecipientChange={this.onContactsChange}
-            // initialSelectedItems={this.turnSelectedUsersToContacts(
-            //   this.props.guider.selectedStudents
-            // )}
           >
-            <ButtonPill icon="envelope" buttonModifiers="new-message" />
+            <ButtonPill
+              icon="bubbles"
+              buttonModifiers="create-contact-log-entry"
+            />
           </NewContactEvent>
-
           <ButtonPill
             buttonModifiers="toggle"
             icon="check"

@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import CKEditor from "~/components/general/ckeditor";
@@ -12,16 +12,12 @@ import MApi, { isMApiError } from "~/api/api";
 import { StatusType } from "~/reducers/base/status";
 import { ContactRecipientType } from "~/reducers/user-index";
 import moment from "moment";
-import {
-  CreateMultipleContactLogEventsRequest,
-  ContactLogEvent,
-} from "~/generated/client/models/CreateMultipleContactLogEventsRequest";
-
+import { CreateMultipleContactLogEventsRequest } from "~/generated/client/models/CreateMultipleContactLogEventsRequest";
+import { useLocalStorage } from "usehooks-ts";
 interface NewContactEventProps {
   status: StatusType;
   userIdentifier: string;
   selectedItems: ContactRecipientType[];
-  onRecipientsChange: (students: Student[]) => void;
   isOpen?: boolean;
   onClose?: () => void;
   children: any;
@@ -34,32 +30,30 @@ type Recipients = {
 };
 
 interface NewContactEventState {
-  recipientIds: number[];
-  recipientGroupIds: number[];
-  recipientStudentsWorkspaceIds: number[];
+  recipients: ContactRecipientType[];
   text: string;
   type: ContactType;
   entryDate: Date;
+  draft: boolean;
   locked: boolean;
 }
 
 type Action =
-  | { type: "SET_RECIPIENTS"; payload: number[] }
-  | { type: "SET_RECIPIENT_GROUPS"; payload: number[] }
-  | { type: "SET_RECIPIENT_WORKSPACES"; payload: number[] }
+  | { type: "SET_RECIPIENTS"; payload: ContactRecipientType[] }
   | { type: "SET_CONTACT_LOG_ENTRY_DATE"; payload: Date }
   | { type: "SET_CONTACT_LOG_ENTRY_TYPE"; payload: ContactType }
   | { type: "SET_CONTACT_LOG_ENTRY_TEXT"; payload: string }
   | { type: "SET_LOCKED"; payload: boolean }
+  | { type: "SET_ALL"; payload: NewContactEventState }
+  | { type: "SET_DRAFT"; payload: boolean }
   | { type: "RESET" };
 
 const initialState: NewContactEventState = {
-  recipientIds: [],
-  recipientGroupIds: [],
-  recipientStudentsWorkspaceIds: [],
+  recipients: [],
   text: "",
   type: "OTHER",
   entryDate: new Date(),
+  draft: false,
   locked: false,
 };
 
@@ -69,11 +63,7 @@ const reducer = (
 ): NewContactEventState => {
   switch (action.type) {
     case "SET_RECIPIENTS":
-      return { ...state, recipientIds: action.payload };
-    case "SET_RECIPIENT_GROUPS":
-      return { ...state, recipientGroupIds: action.payload };
-    case "SET_RECIPIENT_WORKSPACES":
-      return { ...state, recipientStudentsWorkspaceIds: action.payload };
+      return { ...state, recipients: action.payload };
     case "SET_CONTACT_LOG_ENTRY_DATE":
       return { ...state, entryDate: action.payload };
     case "SET_CONTACT_LOG_ENTRY_TYPE":
@@ -82,8 +72,13 @@ const reducer = (
       return { ...state, text: action.payload };
     case "SET_LOCKED":
       return { ...state, locked: action.payload };
+    case "SET_ALL":
+      return { ...state, ...action.payload };
+    case "SET_DRAFT":
+      return { ...state, draft: action.payload };
     case "RESET":
       return initialState;
+
     default:
       return state;
   }
@@ -91,58 +86,111 @@ const reducer = (
 
 const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const {
-    text,
-    type,
-    entryDate,
-    recipientIds,
-    recipientGroupIds,
-    recipientStudentsWorkspaceIds,
-    locked,
-  } = state;
+  const { text, type, entryDate, recipients, draft, locked } = state;
+
   const { isOpen, status, selectedItems, children, onClose } = props;
   const { t } = useTranslation(["common", "messaging"]);
 
+  const [newContactEventState, setNewContactEventState] =
+    useLocalStorage<NewContactEventState>("new-contact-event", initialState);
+
+  useEffect(() => {
+    // If there's a local storage state, dispatch it to the state
+    if (localStorage.getItem("new-contact-event")) {
+      const state = { ...newContactEventState };
+
+      state.entryDate = new Date(newContactEventState.entryDate);
+      state.draft = true;
+      dispatch({ type: "SET_ALL", payload: state });
+    }
+
+    if (selectedItems.length > 0) {
+      const existing = [...newContactEventState.recipients];
+
+      // If there are recipients in the local storage, check is the selected recipients overlap
+      // then combine them
+      if (existing.length > 0) {
+        const newItems = selectedItems.filter(
+          (selectedItem) =>
+            !existing.find(
+              (existingItem) => existingItem.value.id === selectedItem.value.id
+            )
+        );
+
+        dispatch({
+          type: "SET_RECIPIENTS",
+          payload: [...newItems, ...existing],
+        });
+      } else {
+        // ohterwise, just set the selected items
+        dispatch({ type: "SET_RECIPIENTS", payload: selectedItems });
+      }
+    }
+  }, [selectedItems]);
+
+  /**
+   * handleRecipientsChange
+   * @param recipients
+   */
   const handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    const workspaceIds = recipients
-      .filter((recipient) => recipient.type === "workspace")
-      .map((recipient) => recipient.value.id);
-    const groupIds = recipients
-      .filter((recipient) => recipient.type === "usergroup")
-      .map((recipient) => recipient.value.id);
-
-    const recipientIds = recipients
-      .filter((recipient) => recipient.type === "user")
-      .map((recipient) => recipient.value.id);
-
-    if (recipientIds && recipientIds.length > 0) {
-      dispatch({ type: "SET_RECIPIENTS", payload: recipientIds });
-    }
-    if (groupIds && groupIds.length > 0) {
-      dispatch({ type: "SET_RECIPIENT_GROUPS", payload: groupIds });
-    }
-    if (workspaceIds && workspaceIds.length > 0) {
-      dispatch({ type: "SET_RECIPIENT_WORKSPACES", payload: workspaceIds });
-    }
+    dispatch({ type: "SET_RECIPIENTS", payload: recipients });
+    setNewContactEventState((prevState) => ({
+      ...prevState,
+      recipients,
+    }));
+    dispatch({ type: "SET_DRAFT", payload: true });
   };
 
+  /**
+   * handleDateChange
+   * @param date
+   */
   const handleDateChange = (date: Date) => {
     dispatch({ type: "SET_CONTACT_LOG_ENTRY_DATE", payload: date });
+    setNewContactEventState((prevState) => ({
+      ...prevState,
+      entryDate: date,
+    }));
+    dispatch({ type: "SET_DRAFT", payload: true });
   };
 
+  /**
+   * handleTypeChange
+   * @param e
+   */
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch({
       type: "SET_CONTACT_LOG_ENTRY_TYPE",
       payload: e.target.value as ContactType,
     });
+    setNewContactEventState((prevState) => ({
+      ...prevState,
+      type: e.target.value as ContactType,
+    }));
+    dispatch({ type: "SET_DRAFT", payload: true });
   };
 
+  /**
+   * handleCkEditorChange
+   * @param text
+   */
   const handleCkEditorChange = (text: string) => {
     dispatch({ type: "SET_CONTACT_LOG_ENTRY_TEXT", payload: text });
+    setNewContactEventState((prevState) => ({
+      ...prevState,
+      text,
+    }));
+
+    dispatch({ type: "SET_DRAFT", payload: true });
   };
 
+  /**
+   * handleReset
+   */
   const handleReset = () => {
     dispatch({ type: "RESET" });
+    localStorage.removeItem("new-contact-event");
+    dispatch({ type: "SET_DRAFT", payload: false });
   };
 
   const contactTypesArray = Object.values(ContactType);
@@ -166,9 +214,20 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * saveContactEvent
    * @param closeDialog closeDialog
    */
-  const saveContactEvent = () => {
+  const saveContactEvent = (closeDialog: () => void) => {
     const guiderApi = MApi.getGuiderApi();
     dispatch({ type: "SET_LOCKED", payload: true });
+
+    const recipientStudentsWorkspaceIds = recipients
+      .filter((recipient) => recipient.type === "workspace")
+      .map((recipient) => recipient.value.id);
+    const recipientGroupIds = recipients
+      .filter((recipient) => recipient.type === "usergroup")
+      .map((recipient) => recipient.value.id);
+    const recipientIds = recipients
+      .filter((recipient) => recipient.type === "user")
+      .map((recipient) => recipient.value.id);
+
     const payload: CreateMultipleContactLogEventsRequest = {
       recipients: {
         recipientIds,
@@ -183,7 +242,15 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     };
 
     console.log(payload);
-    guiderApi.createMultipleContactLogEvents(payload);
+
+    guiderApi
+      .createMultipleContactLogEvents({
+        createMultipleContactLogEventsRequest: payload,
+      })
+      .then(() => {
+        dispatch({ type: "RESET" });
+        closeDialog();
+      });
   };
 
   /**
@@ -205,9 +272,9 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
           placeholder={t("labels.search", { context: "recipients" })}
           label={t("labels.recipients", {
             ns: "messaging",
-            count: recipientIds.length,
+            count: recipients.length,
           })}
-          selectedItems={selectedItems}
+          selectedItems={recipients}
           onChange={handleRecipientsChange}
           // autofocus={!this.props.initialSelectedItems}
         />
@@ -278,12 +345,11 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     <div className="env-dialog__actions">
       <Button
         buttonModifiers="dialog-execute"
-        onClick={saveContactEvent}
+        onClick={() => saveContactEvent(closeDialog)}
         disabled={locked}
       >
         {t("actions.send")}
       </Button>
-
       <Button
         buttonModifiers="dialog-cancel"
         onClick={closeDialog}
@@ -291,17 +357,18 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       >
         {t("actions.cancel")}
       </Button>
-      {/* {recovered ? (
+      {draft && (
         <Button
           buttonModifiers="dialog-clear"
-          onClick={clearUp}
+          onClick={handleReset}
           disabled={locked}
         >
           {t("actions.remove", { context: "draft" })}
         </Button>
-      ) : null} */}
+      )}
     </div>
   );
+
   return (
     <EnvironmentDialog
       modifier="new-contact-event"
@@ -311,7 +378,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       })}
       content={content}
       footer={footer}
-      //   onOpen={checkAgainstStoredState}
       //   onClose={this.props.onClose}
       isOpen={isOpen}
     >
