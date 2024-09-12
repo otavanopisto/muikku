@@ -22,6 +22,8 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { useTranslation } from "react-i18next";
+import { AnimatePresence } from "framer-motion";
+import AnimatedStep from "../wizard/AnimateStep";
 
 moment.locale("fi");
 
@@ -65,6 +67,8 @@ const MatriculationExaminationWizard = (
     formType
   );
 
+  const previousStep = React.useRef<number>(0);
+
   /**
    * Handles step change. Fires submit if last step
    * @param step step
@@ -87,27 +91,47 @@ const MatriculationExaminationWizard = (
     {
       index: 0,
       name: t("labels.matriculationFormStudentInfoTitle", { ns: "hops_new" }),
-      component: <Step1 />,
+      component: (
+        <AnimatedStep previousStep={previousStep}>
+          <Step1 />
+        </AnimatedStep>
+      ),
     },
     {
       index: 1,
       name: t("labels.matriculationFormRegistrationTitle", { ns: "hops_new" }),
-      component: <Step2 />,
+      component: (
+        <AnimatedStep previousStep={previousStep}>
+          <Step2 />
+        </AnimatedStep>
+      ),
     },
     {
       index: 2,
       name: t("labels.matriculationFormActTitle", { ns: "hops_new" }),
-      component: <Step3 />,
+      component: (
+        <AnimatedStep previousStep={previousStep}>
+          <Step3 />
+        </AnimatedStep>
+      ),
     },
     {
       index: 3,
       name: t("labels.matriculationFormSummaryTitle", { ns: "hops_new" }),
-      component: <Step4 />,
+      component: (
+        <AnimatedStep previousStep={previousStep}>
+          <Step4 />
+        </AnimatedStep>
+      ),
     },
     {
       index: 4,
       name: t("labels.matriculationFormCompleteTitle", { ns: "hops_new" }),
-      component: <Step5 formType={props.formType} />,
+      component: (
+        <AnimatedStep previousStep={previousStep}>
+          <Step5 formType={props.formType} />
+        </AnimatedStep>
+      ),
     },
   ];
 
@@ -120,7 +144,7 @@ const MatriculationExaminationWizard = (
   const footer = (
     <MatriculationWizardFooter
       secondLastButtonText={
-        props.formType === "initial" ? "Lähetä" : "Tallenna"
+        props.formType === "initial" ? t("actions.sent") : t("actions.save")
       }
       lastStepButton={
         <Button
@@ -145,7 +169,11 @@ const MatriculationExaminationWizard = (
   return (
     <MatriculationProvider value={useMatriculationValues}>
       <WizardProvider value={useWizardValues}>
-        <Wizard header={<MatriculationWizardHeader />} footer={footer} />
+        <Wizard
+          header={<MatriculationWizardHeader />}
+          footer={footer}
+          wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
+        />
       </WizardProvider>
     </MatriculationProvider>
   );
