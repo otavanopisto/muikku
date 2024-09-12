@@ -56,33 +56,37 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
       const subResult = r.grades;
 
       return (
-        <ItemList
+        <div
+          className="application-sub-panel__notification-item"
           key={r.subjectCode}
-          header={t(`subjects.${r.subjectCode}`, {
-            ns: "common",
-            defaultValue: r.subjectCode,
-          })}
-          modifier="matriculation-results"
         >
-          {subResult.map((sr, i) => (
-            <ItemList.Item
-              key={i}
-              icon="icon-book"
-              className="application-sub-panel__notification-content"
-            >
-              <span className="application-sub-panel__notification-content-label">
-                {new Date(sr.gradeDate).toLocaleDateString("fi-Fi")}
-              </span>
+          <div className="application-sub-panel__notification-body">
+            <div className="application-sub-panel__notification-title">
+              {t(`subjects.${r.subjectCode}`, {
+                ns: "common",
+                defaultValue: r.subjectCode,
+              })}
+            </div>
 
-              <span className="application-sub-panel__notification-content-data">
-                {t("labels.grade", {
-                  ns: "hops_new",
-                })}
-                {matriculationGradeMap[sr.grade]}
-              </span>
-            </ItemList.Item>
-          ))}
-        </ItemList>
+            {subResult.map((sr, i) => (
+              <div
+                className="application-sub-panel__notification-content"
+                key={i}
+              >
+                <span className="application-sub-panel__notification-content-label">
+                  {new Date(sr.gradeDate).toLocaleDateString("fi-Fi")}
+                </span>
+
+                <span className="application-sub-panel__notification-content-data">
+                  {t("labels.grade", {
+                    ns: "hops_new",
+                  })}{" "}
+                  {matriculationGradeMap[sr.grade]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       );
     });
 

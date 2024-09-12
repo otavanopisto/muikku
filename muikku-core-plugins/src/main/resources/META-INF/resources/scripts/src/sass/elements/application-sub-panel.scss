@@ -336,18 +336,11 @@
 }
 
 .application-sub-panel__notification-title {
-  align-items: center;
-  display: flex;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
+  font-weight: 600;
   padding: 5px 0;
 }
 
 .application-sub-panel__notification-body {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
   padding: 10px 0;
 
   p {
@@ -368,11 +361,10 @@
 }
 
 .application-sub-panel__notification-content {
-  margin: 0 0 10px;
-
-  &:last-child {
-    margin: 0;
-  }
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px;
 }
 
 .application-sub-panel__notification-content-title {
