@@ -163,6 +163,17 @@
   }
 }
 
+.wizard--matriculation-exam-form {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  .wizard__container {
+    flex-basis: 100%;
+    overflow: auto;
+  }
+}
+
 .wizard__summary-row {
   font-size: 1rem;
   padding: 15px 0;

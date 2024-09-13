@@ -145,7 +145,11 @@ const MatriculationExaminationWizard = (
   return (
     <MatriculationProvider value={useMatriculationValues}>
       <WizardProvider value={useWizardValues}>
-        <Wizard header={<MatriculationWizardHeader />} footer={footer} />
+        <Wizard
+          modifiers={["matriculation-exam-form"]}
+          header={<MatriculationWizardHeader />}
+          footer={footer}
+        />
       </WizardProvider>
     </MatriculationProvider>
   );

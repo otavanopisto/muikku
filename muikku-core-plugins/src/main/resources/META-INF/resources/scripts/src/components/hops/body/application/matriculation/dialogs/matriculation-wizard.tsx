@@ -46,7 +46,7 @@ class MatriculationExaminationWizardDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>
+      <>
         <MatriculationExaminationWizard
           examId={this.props.examId}
           compulsoryEducationEligible={this.props.compulsoryEducationEligible}
@@ -58,7 +58,7 @@ class MatriculationExaminationWizardDialog extends React.Component<
           }}
           formType={this.props.formType}
         />
-      </div>
+      </>
     );
     return (
       <Dialog
