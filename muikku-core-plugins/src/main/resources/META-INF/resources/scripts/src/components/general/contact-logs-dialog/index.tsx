@@ -5,6 +5,7 @@ import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import DatePicker from "react-datepicker";
 import Button from "~/components/general/button";
+
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { ContactType, Student } from "~/generated/client";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
@@ -14,6 +15,14 @@ import { ContactRecipientType } from "~/reducers/user-index";
 import moment from "moment";
 import { CreateMultipleContactLogEventsRequest } from "~/generated/client/models/CreateMultipleContactLogEventsRequest";
 import { useLocalStorage } from "usehooks-ts";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+
+import { AnyActionType } from "~/actions";
+import { connect } from "react-redux";
+import { Dispatch, bindActionCreators } from "redux";
 interface NewContactEventProps {
   status: StatusType;
   userIdentifier: string;
@@ -21,6 +30,7 @@ interface NewContactEventProps {
   isOpen?: boolean;
   onClose?: () => void;
   children: any;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 type Recipients = {
@@ -88,7 +98,9 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { text, type, entryDate, recipients, draft, locked } = state;
 
-  const { isOpen, status, selectedItems, children, onClose } = props;
+  const { isOpen, status, selectedItems, children, displayNotification } =
+    props;
+
   const { t } = useTranslation(["common", "messaging"]);
 
   const [newContactEventState, setNewContactEventState] =
@@ -248,8 +260,15 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         createMultipleContactLogEventsRequest: payload,
       })
       .then(() => {
-        dispatch({ type: "RESET" });
         closeDialog();
+        handleReset();
+        displayNotification(
+          t("notifications.createSuccess", {
+            ns: "messaging",
+            context: "contactLog",
+          }),
+          "success"
+        );
       });
   };
 
@@ -386,4 +405,16 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   );
 };
 
-export default NewContactEvent;
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    {
+      displayNotification,
+    },
+    dispatch
+  );
+}
+export default connect(null, mapDispatchToProps)(NewContactEvent);
