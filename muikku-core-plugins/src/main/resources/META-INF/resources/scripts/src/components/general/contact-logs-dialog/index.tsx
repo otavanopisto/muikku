@@ -269,6 +269,18 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
           }),
           "success"
         );
+      })
+      .catch((error) => {
+        if (!isMApiError(error)) {
+          throw error;
+        }
+        displayNotification(
+          t("notifications.createError", {
+            ns: "messaging",
+            context: "contactLog",
+          }),
+          "error"
+        );
       });
   };
 
