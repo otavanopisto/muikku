@@ -5,6 +5,7 @@
  */
 
 import * as React from "react";
+import { WithTranslation } from "react-i18next";
 import $ from "~/lib/jquery";
 import "~/sass/elements/content-panel.scss";
 import "~/sass/elements/loaders.scss";
@@ -12,7 +13,7 @@ import "~/sass/elements/loaders.scss";
 /**
  * ContentPanelProps
  */
-interface ContentPanelProps {
+interface ContentPanelProps extends WithTranslation {
   modifier: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   title?: React.ReactElement<any> | string;
@@ -55,7 +56,7 @@ export default class ContentPanel extends React.Component<
   ContentPanelProps,
   ContentPanelState
 > {
-  private myRef = React.createRef<HTMLDivElement>();
+  myRef = React.createRef<HTMLDivElement>();
 
   private touchCordX: number;
   private touchCordY: number;
@@ -216,6 +217,27 @@ export default class ContentPanel extends React.Component<
   }
 
   /**
+   * handleNavigationButtonKeyDown
+   * @param e e
+   */
+  handleNavigationButtonKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      this.openNavigation();
+    }
+  };
+
+  /**
+   * handleNavigationButtonKeyDown
+   * @param e e
+   */
+  handleNavigationKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    e.stopPropagation();
+    if (e.key === "Enter" || e.key === " ") {
+      this.closeNavigation();
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -240,6 +262,13 @@ export default class ContentPanel extends React.Component<
                 <div
                   className="content-panel__navigation-open"
                   onClick={this.openNavigation}
+                  onKeyDown={this.handleNavigationButtonKeyDown}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={this.props.t("labels.tableOfContents", {
+                    ns: "materials",
+                  })}
+                  aria-hidden={!this.state.open}
                 >
                   <span className="icon-arrow-left"></span>
                 </div>
@@ -255,6 +284,7 @@ export default class ContentPanel extends React.Component<
                     this.state.dragging ? "dragging" : ""
                   }`}
                   onClick={this.closeNavigationByOverlay}
+                  onKeyDown={this.handleNavigationKeyDown}
                 >
                   <div
                     className="content-panel__navigation-content"
