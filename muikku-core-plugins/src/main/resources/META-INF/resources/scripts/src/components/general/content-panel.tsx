@@ -9,6 +9,7 @@ import { WithTranslation } from "react-i18next";
 import $ from "~/lib/jquery";
 import "~/sass/elements/content-panel.scss";
 import "~/sass/elements/loaders.scss";
+import { IconButton } from "~/components/general/button";
 
 /**
  * ContentPanelProps
@@ -220,7 +221,7 @@ export default class ContentPanel extends React.Component<
    * handleNavigationButtonKeyDown
    * @param e e
    */
-  handleNavigationButtonKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  handleNavigationOpenKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" || e.key === " ") {
       this.openNavigation();
     }
@@ -230,8 +231,26 @@ export default class ContentPanel extends React.Component<
    * handleNavigationButtonKeyDown
    * @param e e
    */
+  handleNavigationCloseKeyDown = (
+    e: React.KeyboardEvent<HTMLAnchorElement>
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      this.closeNavigation();
+    }
+  };
+
+  /**
+   * handleNavigationButtonKeyDown
+   * @param e e
+   */
   handleNavigationKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     e.stopPropagation();
+    const isOverlay = e.target === e.currentTarget;
+
+    if (!isOverlay) {
+      return;
+    }
+
     if (e.key === "Enter" || e.key === " ") {
       this.closeNavigation();
     }
@@ -262,7 +281,7 @@ export default class ContentPanel extends React.Component<
                 <div
                   className="content-panel__navigation-open"
                   onClick={this.openNavigation}
-                  onKeyDown={this.handleNavigationButtonKeyDown}
+                  onKeyDown={this.handleNavigationOpenKeyDown}
                   tabIndex={0}
                   role="button"
                   aria-label={this.props.t("labels.tableOfContents", {
@@ -292,6 +311,16 @@ export default class ContentPanel extends React.Component<
                       right: this.state.drag !== null ? -this.state.drag : null,
                     }}
                   >
+                    <div className="content-panel__navigation-close">
+                      <IconButton
+                        icon="cross"
+                        onClick={this.closeNavigation}
+                        onKeyDown={this.handleNavigationCloseKeyDown}
+                        aria-label={this.props.t("wcag.closeContentPanel", {
+                          ns: "workspace",
+                        })}
+                      />
+                    </div>
                     {this.props.navigation}
                   </div>
                 </nav>
