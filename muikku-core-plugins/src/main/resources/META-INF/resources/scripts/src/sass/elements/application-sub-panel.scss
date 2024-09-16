@@ -1095,7 +1095,6 @@
 }
 
 // Sub panel item sub item
-
 .application-sub-panel__item-sub-item--organization-previous-bills {
   display: flex;
 
@@ -1106,6 +1105,11 @@
   div:not(:first-child) {
     margin-left: 10px;
   }
+}
+
+// Removing single-enty background
+.application-sub-panel__item-data-content--no-bg .application-sub-panel__single-entry {
+  background-color: transparent;
 }
 
 // Subpanel item data for worklist entries total
@@ -1129,11 +1133,11 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date.application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }
