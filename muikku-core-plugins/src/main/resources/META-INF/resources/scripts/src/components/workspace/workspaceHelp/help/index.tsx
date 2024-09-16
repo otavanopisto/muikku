@@ -17,7 +17,7 @@ import ContentPanel, {
   ContentPanelItem,
 } from "~/components/general/content-panel";
 import HelpMaterial from "./help-material-page";
-import { ButtonPill, IconButton } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
@@ -32,13 +32,10 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
-import {
-  useTranslation,
-  withTranslation,
-  WithTranslation,
-} from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialViewRestriction } from "~/generated/client";
 import ReadSpeakerReader from "~/components/general/readspeaker";
+import { BackToToc } from "~/components/general/toc";
 
 /**
  * HelpMaterialsProps
@@ -75,6 +72,8 @@ const DEFAULT_OFFSET = 67;
  */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  private contentPanelRef = React.createRef<ContentPanel>();
+
   /**
    * constructor
    * @param props props
@@ -719,6 +718,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   anchorItem={
                     <BackToToc
                       tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
                     />
                   }
                 />
@@ -795,6 +798,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                     ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
                     : `tocTopic-${section.workspaceMaterialId}`
                 }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
               />
             </div>
           </h2>
@@ -820,13 +827,16 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         modifier="workspace-instructions"
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
-        ref="content-panel"
         readspeakerComponent={
           <ReadSpeakerReader
             readParameterType="readid"
             readParameters={readSpeakerParameters}
           />
         }
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
       >
         {results}
         {emptyMessage}
@@ -875,38 +885,3 @@ const componentWithTranslation = withTranslation(
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
 })(componentWithTranslation);
-
-/**
- * BackToTocProps
- */
-interface BackToTocProps {
-  tocElementId: string;
-}
-
-/**
- * BackToToc
- * @param props props
- */
-const BackToToc = (props: BackToTocProps) => {
-  const { t } = useTranslation(["materials"]);
-
-  /**
-   * handleLinkClick
-   */
-  const handleLinkClick = () => {
-    const tocElement = document.getElementById(props.tocElementId);
-
-    if (tocElement) {
-      tocElement.focus();
-    }
-  };
-
-  return (
-    <IconButton
-      icon="forward"
-      onClick={handleLinkClick}
-      buttonModifiers={["back-to-toc"]}
-      aria-label={t("wcag.focusToToc", { ns: "materials" })}
-    />
-  );
-};
