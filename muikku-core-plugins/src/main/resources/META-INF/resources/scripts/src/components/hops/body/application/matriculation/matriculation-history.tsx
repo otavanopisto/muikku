@@ -96,9 +96,8 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
           <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
             {hops.hopsMatriculation.results.length === 0 ? (
               <p>
-                {t("labels.matriculationHistory", {
+                {t("content.matriculationHistoryEmpty", {
                   ns: "hops_new",
-                  context: "title",
                 })}
               </p>
             ) : (
