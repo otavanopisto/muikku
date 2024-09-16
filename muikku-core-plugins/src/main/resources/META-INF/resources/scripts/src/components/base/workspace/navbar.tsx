@@ -461,7 +461,6 @@ class WorkspaceNavbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    title: state.title,
     currentWorkspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };

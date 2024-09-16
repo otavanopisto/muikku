@@ -9,46 +9,35 @@ import Application from "./body/application";
 import Aside from "./body/aside";
 
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * CommunicatorBody
  */
-export default class CommunicatorBody extends React.Component<
-  Record<string, unknown>,
-  Record<string, unknown>
-> {
+const CommunicatorBody = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  myRef: any;
+  const ref = React.useRef<any>();
 
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: Record<string, unknown>) {
-    super(props);
-
-    this.myRef = React.createRef();
-
-    this.openSignatureDialog = this.openSignatureDialog.bind(this);
-  }
+  const { t } = useTranslation("common");
 
   /**
    * openSignatureDialog
    */
-  openSignatureDialog() {
-    this.myRef.current.getWrappedInstance().openDialogSignature();
-  }
+  const openSignatureDialog = () => {
+    ref.current && ref.current.getWrappedInstance().openDialogSignature();
+  };
 
-  /**
-   * render
-   */
-  render() {
-    const aside = <Aside openSignatureDialog={this.openSignatureDialog} />;
-    return (
-      <div>
-        <MainFunctionNavbar activeTrail="communicator" navigation={aside} />
-        <Application aside={aside} ref={this.myRef} />
-      </div>
-    );
-  }
-}
+  const aside = <Aside openSignatureDialog={openSignatureDialog} />;
+  return (
+    <div>
+      <MainFunctionNavbar
+        title={t("labels.communicator")}
+        activeTrail="communicator"
+        navigation={aside}
+      />
+      <Application aside={aside} ref={ref} />
+    </div>
+  );
+};
+
+export default CommunicatorBody;
