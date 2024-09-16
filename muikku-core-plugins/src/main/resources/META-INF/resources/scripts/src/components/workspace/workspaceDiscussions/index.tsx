@@ -7,6 +7,7 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Application from "~/components/discussion/body/application";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceDiscussionBodyProps
@@ -17,41 +18,21 @@ interface WorkspaceDiscussionBodyProps {
 
 /**
  * WorkspaceDiscussionBody
+ * @param props props
  */
-export default class WorkspaceDiscussionBody extends React.Component<
-  WorkspaceDiscussionBodyProps,
-  Record<string, unknown>
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: WorkspaceDiscussionBodyProps) {
-    super(props);
+const WorkspaceDiscussionBody = (props: WorkspaceDiscussionBodyProps) => {
+  const { t } = useTranslation(["common"]);
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
-  }
+  return (
+    <div>
+      <WorkspaceNavbar
+        title={t("labels.discussion")}
+        activeTrail="workspace-discussions"
+        workspaceUrl={props.workspaceUrl}
+      />
+      <Application />
+    </div>
+  );
+};
 
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.refs.content as any).getWrappedInstance().refresh();
-  }
-
-  /**
-   * render
-   */
-  render() {
-    return (
-      <div>
-        <WorkspaceNavbar
-          activeTrail="workspace-discussions"
-          workspaceUrl={this.props.workspaceUrl}
-        />
-        <Application />
-      </div>
-    );
-  }
-}
+export default WorkspaceDiscussionBody;
