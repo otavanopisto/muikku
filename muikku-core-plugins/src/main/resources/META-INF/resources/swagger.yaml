@@ -13115,12 +13115,16 @@ components:
             $ref: "#/components/schemas/WorkspaceSubject"
         enrollmentDate:
           type: string
+          format: date-time
         evaluationDate:
           type: string
+          format: date-time
         assessmentRequestDate:
           type: string
+          format: date-time
         supplementationRequestDate:
           type: string
+          format: date-time
         assignmentsDone:
           type: integer
         assignmentsTotal:
@@ -13157,7 +13161,7 @@ components:
         hasPedagogyForm:
           type: boolean
         state:
-          $ref: "#/components/schemas/WorkspaceAssessmentStateType" 
+          $ref: "#/components/schemas/WorkspaceAssessmentStateType"
 
     EvaluationSupplementationRequest:
       type: object
