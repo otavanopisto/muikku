@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 import Button from "~/components/general/button";
 
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { ContactType, Student } from "~/generated/client";
+import { ContactType } from "~/generated/client";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import MApi, { isMApiError } from "~/api/api";
 import { StatusType } from "~/reducers/base/status";
@@ -24,13 +24,16 @@ import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { Dispatch, bindActionCreators } from "redux";
 
+/**
+ * NewContactEventProps
+ */
 interface NewContactEventProps {
   status: StatusType;
   userIdentifier: string;
   selectedItems: ContactRecipientType[];
   isOpen?: boolean;
   onClose?: () => void;
-  children: any;
+  children?: React.ReactElement;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -59,6 +62,12 @@ const initialState: NewContactEventState = {
   locked: false,
 };
 
+/**
+ * reducer
+ * @param state reducer state
+ * @param action reducer action
+ * @returns a new state
+ */
 const reducer = (
   state: NewContactEventState,
   action: Action
@@ -68,15 +77,18 @@ const reducer = (
       return { ...state, draft: action.payload };
     case "SET_LOCKED":
       return { ...state, locked: action.payload };
-
     default:
       return state;
   }
 };
 
+/**
+ * NewContactEvent
+ * @param props component props
+ * @returns a React component
+ */
 const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
   const { draft, locked } = state;
   const { isOpen, status, selectedItems, children, displayNotification } =
     props;
@@ -125,7 +137,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   /**
    * handleRecipientsChange
-   * @param recipients
+   * @param recipients recipients
    */
   const handleRecipientsChange = (recipients: ContactRecipientType[]) => {
     setNewContactEventState((prevState) => ({
@@ -137,7 +149,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   /**
    * handleDateChange
-   * @param date
+   * @param date date
    */
   const handleDateChange = (date: Date) => {
     setNewContactEventState((prevState) => ({
@@ -149,7 +161,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   /**
    * handleTypeChange
-   * @param e
+   * @param e event
    */
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setNewContactEventState((prevState) => ({
@@ -161,7 +173,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   /**
    * handleCkEditorChange
-   * @param text
+   * @param text text
    */
   const handleCkEditorChange = (text: string) => {
     setNewContactEventState((prevState) => ({
@@ -190,6 +202,11 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     const guiderApi = MApi.getGuiderApi();
 
     return {
+      /**
+       * studentsLoader
+       * @param searchString search term
+       * @returns a function that returns a promise
+       */
       studentsLoader: (searchString: string) => () =>
         guiderApi.getGuiderStudents({
           q: searchString,
