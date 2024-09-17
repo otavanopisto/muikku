@@ -162,8 +162,12 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const value = props.initialValue || "";
     // and get the raw text if it's richedit
 
-    // Function to check if a string is valid HTML
-    const isValidHTML = (str: string) => {
+    /**
+     * Checks if the string is a valid HTML
+     * @param str
+     * @returns boolean
+     */
+    const isValidHTML = (str: string): boolean => {
       const doc = new DOMParser().parseFromString(str, "text/html");
       return Array.from(doc.body.childNodes).some(
         (node) => node.nodeType === 1
