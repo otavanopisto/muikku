@@ -175,6 +175,22 @@ public class RestAssessmentRequest {
     this.hasPedagogyForm = hasPedagogyForm;
   }
 
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
+
+  public Date getSupplementationRequestDate() {
+    return supplementationRequestDate;
+  }
+
+  public void setSupplementationRequestDate(Date supplementationRequestDate) {
+    this.supplementationRequestDate = supplementationRequestDate;
+  }
+
   private Long id;
   private Long userEntityId;
   private String firstName;
@@ -189,12 +205,14 @@ public class RestAssessmentRequest {
   private boolean isInterimEvaluationRequest;
   private Date enrollmentDate;
   private Date assessmentRequestDate;
+  private Date supplementationRequestDate;
   private Date evaluationDate;
   private Boolean graded;
   private Boolean passing;
   private Long assignmentsDone;
   private Long assignmentsTotal;
-
   private List<WorkspaceSubjectRestModel> subjects;
   private Boolean hasPedagogyForm;
+  private String state; // essentially state string of WorkspaceAssessmentState
+
 }

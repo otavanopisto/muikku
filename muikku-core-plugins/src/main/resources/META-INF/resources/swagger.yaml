@@ -13088,6 +13088,7 @@ components:
         - enrollmentDate
         - evaluationDate
         - assessmentRequestDate
+        - supplementationRequestDate
         - assignmentsDone
         - assignmentsTotal
         - graded
@@ -13117,6 +13118,8 @@ components:
         evaluationDate:
           type: string
         assessmentRequestDate:
+          type: string
+        supplementationRequestDate:
           type: string
         assignmentsDone:
           type: integer
@@ -13153,6 +13156,8 @@ components:
           type: string
         hasPedagogyForm:
           type: boolean
+        state:
+          $ref: "#/components/schemas/WorkspaceAssessmentStateType" 
 
     EvaluationSupplementationRequest:
       type: object
