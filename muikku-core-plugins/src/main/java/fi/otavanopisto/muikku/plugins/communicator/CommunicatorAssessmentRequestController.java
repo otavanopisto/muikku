@@ -103,7 +103,7 @@ public class CommunicatorAssessmentRequestController {
       String workspaceSubjectsBody = "";
       
       for (WorkspaceAssessmentState assessmentState : assessmentStates) {
-        SchoolDataIdentifier assessmentStateWorkspaceSubjectIdentifier = SchoolDataIdentifier.fromId(assessmentState.getSubject().getIdentifier());
+        SchoolDataIdentifier assessmentStateWorkspaceSubjectIdentifier = SchoolDataIdentifier.fromId(assessmentState.getSubjectIdentifier());
         String subjectName = "";
         if (CollectionUtils.isNotEmpty(workspace.getSubjects())) {
           WorkspaceSubject workspaceSubject = workspace.getSubjects().stream()
