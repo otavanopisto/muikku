@@ -16585,7 +16585,6 @@ components:
         - gradeDate
         - passingGrade
         - text
-        - workspaceSubjectIdentifier
         - subject
       properties:
         date:
@@ -16608,10 +16607,6 @@ components:
           nullable: true
         text:
           description: The text (description) of the assessment
-          type: string
-          nullable: true
-        workspaceSubjectIdentifier:
-          description: The identifier of the workspace subject
           type: string
           nullable: true
         subject:
