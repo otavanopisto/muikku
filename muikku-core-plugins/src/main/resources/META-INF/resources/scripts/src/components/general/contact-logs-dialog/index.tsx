@@ -23,6 +23,7 @@ import {
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { Dispatch, bindActionCreators } from "redux";
+
 interface NewContactEventProps {
   status: StatusType;
   userIdentifier: string;
@@ -33,12 +34,9 @@ interface NewContactEventProps {
   displayNotification: DisplayNotificationTriggerType;
 }
 
-type Recipients = {
-  recipientIds: number[];
-  recipientGroupIds: number[];
-  recipientStudentsWorkspaceIds: number[];
-};
-
+/**
+ * NewContactEventState
+ */
 interface NewContactEventState {
   recipients: ContactRecipientType[];
   text: string;
@@ -49,14 +47,8 @@ interface NewContactEventState {
 }
 
 type Action =
-  | { type: "SET_RECIPIENTS"; payload: ContactRecipientType[] }
-  | { type: "SET_CONTACT_LOG_ENTRY_DATE"; payload: Date }
-  | { type: "SET_CONTACT_LOG_ENTRY_TYPE"; payload: ContactType }
-  | { type: "SET_CONTACT_LOG_ENTRY_TEXT"; payload: string }
-  | { type: "SET_LOCKED"; payload: boolean }
-  | { type: "SET_ALL"; payload: NewContactEventState }
   | { type: "SET_DRAFT"; payload: boolean }
-  | { type: "RESET" };
+  | { type: "SET_LOCKED"; payload: boolean };
 
 const initialState: NewContactEventState = {
   recipients: [],
@@ -72,22 +64,10 @@ const reducer = (
   action: Action
 ): NewContactEventState => {
   switch (action.type) {
-    case "SET_RECIPIENTS":
-      return { ...state, recipients: action.payload };
-    case "SET_CONTACT_LOG_ENTRY_DATE":
-      return { ...state, entryDate: action.payload };
-    case "SET_CONTACT_LOG_ENTRY_TYPE":
-      return { ...state, type: action.payload };
-    case "SET_CONTACT_LOG_ENTRY_TEXT":
-      return { ...state, text: action.payload };
-    case "SET_LOCKED":
-      return { ...state, locked: action.payload };
-    case "SET_ALL":
-      return { ...state, ...action.payload };
     case "SET_DRAFT":
       return { ...state, draft: action.payload };
-    case "RESET":
-      return initialState;
+    case "SET_LOCKED":
+      return { ...state, locked: action.payload };
 
     default:
       return state;
@@ -96,24 +76,25 @@ const reducer = (
 
 const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { text, type, entryDate, recipients, draft, locked } = state;
 
+  const { draft, locked } = state;
   const { isOpen, status, selectedItems, children, displayNotification } =
     props;
 
   const { t } = useTranslation(["common", "messaging"]);
 
-  const [newContactEventState, setNewContactEventState] =
-    useLocalStorage<NewContactEventState>("new-contact-event", initialState);
+  const [
+    newContactEventState,
+    setNewContactEventState,
+    removeContactEventState,
+  ] = useLocalStorage<NewContactEventState>("new-contact-event", initialState);
+
+  const { text, type, entryDate, recipients } = newContactEventState;
 
   useEffect(() => {
-    // If there's a local storage state, dispatch it to the state
+    // If there's a local storage state this is a draft
     if (localStorage.getItem("new-contact-event")) {
-      const state = { ...newContactEventState };
-
-      state.entryDate = new Date(newContactEventState.entryDate);
-      state.draft = true;
-      // dispatch({ type: "SET_ALL", payload: state });
+      dispatch({ type: "SET_DRAFT", payload: true });
     }
 
     if (selectedItems.length > 0) {
@@ -129,23 +110,24 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
             )
         );
 
-        dispatch({
-          type: "SET_RECIPIENTS",
-          payload: [...newItems, ...existing],
-        });
+        setNewContactEventState((prevState) => ({
+          ...prevState,
+          recipients: [...newItems, ...existing],
+        }));
       } else {
-        // ohterwise, just set the selected items
-        dispatch({ type: "SET_RECIPIENTS", payload: selectedItems });
+        setNewContactEventState((prevState) => ({
+          ...prevState,
+          recipients: selectedItems,
+        }));
       }
     }
-  }, [selectedItems]);
+  }, [selectedItems, newContactEventState, setNewContactEventState]);
 
   /**
    * handleRecipientsChange
    * @param recipients
    */
   const handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    // dispatch({ type: "SET_RECIPIENTS", payload: recipients });
     setNewContactEventState((prevState) => ({
       ...prevState,
       recipients,
@@ -158,7 +140,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param date
    */
   const handleDateChange = (date: Date) => {
-    // dispatch({ type: "SET_CONTACT_LOG_ENTRY_DATE", payload: date });
     setNewContactEventState((prevState) => ({
       ...prevState,
       entryDate: date,
@@ -171,10 +152,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param e
    */
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // dispatch({
-    //   type: "SET_CONTACT_LOG_ENTRY_TYPE",
-    //   payload: e.target.value as ContactType,
-    // });
     setNewContactEventState((prevState) => ({
       ...prevState,
       type: e.target.value as ContactType,
@@ -187,7 +164,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param text
    */
   const handleCkEditorChange = (text: string) => {
-    // dispatch({ type: "SET_CONTACT_LOG_ENTRY_TEXT", payload: text });
     setNewContactEventState((prevState) => ({
       ...prevState,
       text,
@@ -200,8 +176,8 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * handleReset
    */
   const handleReset = () => {
-    // dispatch({ type: "RESET" });
-    localStorage.removeItem("new-contact-event");
+    setNewContactEventState(initialState);
+    removeContactEventState();
     dispatch({ type: "SET_DRAFT", payload: false });
   };
 
@@ -268,7 +244,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
           "success"
         );
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         if (!isMApiError(error)) {
           throw error;
         }
@@ -321,7 +297,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
             id="contactEventdate"
             onChange={handleDateChange}
             locale={outputCorrectDatePickerLocale(localize.language)}
-            selected={entryDate}
+            selected={new Date(entryDate)}
             dateFormat="P"
           ></DatePicker>
         </div>
