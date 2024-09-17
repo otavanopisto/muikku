@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import LicenseSelector from "~/components/general/license-selector";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementLicenseProps
  */
 interface ManagementLicenseProps {
   workspaceLicense: string;
@@ -11,7 +11,7 @@ interface ManagementLicenseProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementLicense
  * @param props props
  */
 const ManagementLicense = (props: ManagementLicenseProps) => {

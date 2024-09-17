@@ -866,6 +866,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
+  protected void waitForExpectedText(String elementToLookFor, String textToAppear, int timesToTry, int interval) {
+    waitForPresent(elementToLookFor);
+    String currentText = getElementText(elementToLookFor);
+    int i = 0;
+    while(!currentText.equalsIgnoreCase(textToAppear)) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      refresh();
+      waitForPresent(elementToLookFor);
+      sleep(interval);
+      currentText = getElementText(elementToLookFor);
+    }
+    if(!currentText.equalsIgnoreCase(textToAppear))
+      throw new TimeoutException("Could not find expected text in a given timeout period.");
+  }
+  
   protected void waitAndClickAndConfirmTextChanges(String clickSelector, String elementWithText, String newText, int timesToTry, int interval) {
     String text = findElement(elementWithText).getText();
     int i = 0;
@@ -936,9 +954,41 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void selectOption(String selector, String value){
+    waitForClickable(selector);
+
     Select selectField = new Select(findElementByCssSelector(selector));
     selectField.selectByValue(value);
+        
+    List<WebElement> options = selectField.getAllSelectedOptions();
+    int i = 0;
+    WebElement option = options.get(0);
+    String optionValue = option.getAttribute("value");
+    while(!optionValue.equals(value)) {
+      if (i > 4) {
+        break;
+      }
+      i++;
+      
+      waitForClickable(selector);
+      selectField = new Select(findElementByCssSelector(selector));
+      selectField.selectByValue(value);  
+      sleep(1000);
+      
+      options = selectField.getAllSelectedOptions();
+      option = options.get(0);
+      optionValue = option.getAttribute("value");
+      
+      if (optionValue.equals(value)) {
+        break;
+      }else {
+        options.clear();
+      }
+    }
+    if(!optionValue.equals(value))
+      throw new TimeoutException("Could not select wanted value.");
+      
   }
+  
   
   
   protected boolean isInSelection(String selector, String compare) {
@@ -2015,6 +2065,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
   protected void updateWorkspaceAccessInUI(String workspaceAccess, Workspace workspace) {
     navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
+    waitForVisible("#wokspaceName");
+    String title = getAttributeValue("#wokspaceName", "value");
+    int i = 0;
+    while (title.isEmpty()) {
+      i++;
+      refresh();
+      sleep(500);
+      title = getAttributeValue("#wokspaceName", "value");
+      if(i > 15)
+        break;
+    }
     scrollTo("input#" + workspaceAccess, 300);
     sleep(500);
     waitAndClick("input#" + workspaceAccess);

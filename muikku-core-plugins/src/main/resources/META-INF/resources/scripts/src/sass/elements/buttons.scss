@@ -1596,8 +1596,9 @@
 }
 
 // Evaluation related
-.button--evaluation-add-assessment {
+.button--add-signup-message {
   background-color: $color-info;
+  border: 0;
   color: $color-default;
   margin: 5px;
 }
@@ -1868,7 +1869,8 @@
   }
 }
 
-.button-pill--material-editor-delete-page {
+.button-pill--material-editor-delete-page,
+.button-pill--remove-custom-signup-message {
   background: $color-fatal;
   border-color: $color-fatal;
   color: $color-default;

@@ -1,14 +1,13 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
-public class WorkspaceSignupGroupRestModel {
+public class WorkspaceSignupMessageGroupRestModel {
 
-  public WorkspaceSignupGroupRestModel() {
+  public WorkspaceSignupMessageGroupRestModel() {
   }
 
-  public WorkspaceSignupGroupRestModel(Long userGroupEntityId, String userGroupName, Boolean canSignup) {
+  public WorkspaceSignupMessageGroupRestModel(Long userGroupEntityId, String userGroupName) {
     this.userGroupEntityId = userGroupEntityId;
     this.userGroupName = userGroupName;
-    this.canSignup = canSignup;
   }
 
   public Long getUserGroupEntityId() {
@@ -27,16 +26,7 @@ public class WorkspaceSignupGroupRestModel {
     this.userGroupName = userGroupName;
   }
 
-  public Boolean getCanSignup() {
-    return canSignup;
-  }
-
-  public void setCanSignup(Boolean canSignup) {
-    this.canSignup = canSignup;
-  }
-
   private Long userGroupEntityId;
   private String userGroupName;
-  private Boolean canSignup;
 
 }

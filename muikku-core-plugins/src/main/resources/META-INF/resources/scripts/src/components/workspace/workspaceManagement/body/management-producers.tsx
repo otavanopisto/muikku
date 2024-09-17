@@ -4,7 +4,7 @@ import AddProducer from "~/components/general/add-producer";
 import { WorkspaceMaterialProducer } from "~/generated/client";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementProducersProps
  */
 interface ManagementProducersProps {
   workspaceProducers: WorkspaceMaterialProducer[];
@@ -12,7 +12,7 @@ interface ManagementProducersProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementProducers
  * @param props props
  */
 const ManagementProducers = (props: ManagementProducersProps) => {
@@ -42,10 +42,11 @@ const ManagementProducers = (props: ManagementProducersProps) => {
    * @param index value
    */
   const handleRemoveProducer = (index: number) => {
-    const updateWorkspaceProducers = workspaceProducers.splice(index, 1);
+    const newProducers = [...workspaceProducers];
+    newProducers.splice(index, 1);
 
     if (onChange) {
-      onChange(updateWorkspaceProducers);
+      onChange(newProducers);
     }
   };
 

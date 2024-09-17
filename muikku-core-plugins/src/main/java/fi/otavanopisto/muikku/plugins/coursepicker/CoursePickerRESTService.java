@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
@@ -612,17 +613,18 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), null);
 
-    /**
-     * Send workspace signup message to student
-     */
-    boolean studentsSignupMessageSent = workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
-    String studentsSignupMessageSentNotification = studentsSignupMessageSent
+    // (Possibly) send signup message to student and prepare to add it to the notification sent to workspace's teachers
+
+    WorkspaceSignupMessage sentMessage = workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
+    String studentsSignupMessageSentNotification = sentMessage != null
         ? localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageSent")
         : localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageNotSent");
+    if (sentMessage != null) {
+      studentsSignupMessageSentNotification = MessageFormat.format(studentsSignupMessageSentNotification, sentMessage.getCaption(), sentMessage.getContent());
+    }
+    
+    // Setup the message which goes to the workspace's teachers
 
-    /**
-     * Setup the message which goes to the teachers
-     */
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, userName, workspaceName);
 
@@ -630,9 +632,23 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, userIdentifier.toId(), userName);
     String content;
-
-    content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
-    content = MessageFormat.format(content, studentLink, workspaceLink, studentsSignupMessageSentNotification);
+    if (entity == null || StringUtils.isEmpty(entity.getMessage())) {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
+      content = MessageFormat.format(
+          content,
+          studentLink,
+          workspaceLink,
+          studentsSignupMessageSentNotification);
+    }
+    else {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
+      content = MessageFormat.format(
+          content,
+          studentLink,
+          workspaceLink,
+          StringUtils.replace(entity.getMessage(), "\n", "<br/>"),
+          studentsSignupMessageSentNotification);
+    }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
       // TODO: Category?
