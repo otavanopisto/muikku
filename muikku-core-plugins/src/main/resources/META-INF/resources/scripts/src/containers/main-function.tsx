@@ -8,7 +8,6 @@ import { StateType } from "~/reducers";
 import { Action } from "redux";
 import Websocket from "~/util/websocket";
 import * as queryString from "query-string";
-import titleActions from "~/actions/base/title";
 import IndexBody from "../components/index/body";
 import { loadAnnouncementsAsAClient } from "~/actions/announcements";
 import { loadLastMessageThreadsFromServer } from "~/actions/main-function/messages";
@@ -536,9 +535,6 @@ export default class MainFunction extends React.Component<
         loadUserWorkspaceOrganizationFiltersFromServer() as Action
       );
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.coursepicker"))
-      );
       const currentLocationData = queryString.parse(
         window.location.hash.split("?")[1] || "",
         { arrayFormat: "bracket" }
@@ -633,10 +629,6 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
       this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
-
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.site"))
-      );
     }
     return <IndexBody />;
   }
@@ -664,9 +656,7 @@ export default class MainFunction extends React.Component<
           }),
         },
       ];
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.organizationManagament"))
-      );
+
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
         setWorkspaceStateFilters(true, stateFilters) as Action
@@ -771,9 +761,6 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.communicator"))
-      );
       this.props.store.dispatch(loadSignature() as Action);
 
       const currentLocation = window.location.hash.replace("#", "").split("/");
@@ -812,10 +799,6 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.discussion"))
-      );
-
       this.props.store.dispatch(setDiscussionWorkpaceId(null) as Action);
 
       this.props.store.dispatch(
@@ -839,11 +822,6 @@ export default class MainFunction extends React.Component<
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          i18n.t("labels.announcements", { ns: "messaging" })
-        )
-      );
       this.props.store.dispatch(
         loadAnnouncementsAsAClient(
           { hideWorkspaceAnnouncements: false },
@@ -879,10 +857,6 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.announcer"))
-      );
-
       if (!window.location.hash) {
         window.location.hash = "#active";
       } else {
@@ -909,9 +883,6 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.guider"))
-      );
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
 
@@ -932,10 +903,6 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.personalInfo"))
-      );
 
       this.props.store.dispatch(loadProfileUsername() as Action);
 
@@ -972,9 +939,6 @@ export default class MainFunction extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.studies"))
-      );
-      this.props.store.dispatch(
         loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
       );
       this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
@@ -1007,10 +971,6 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.dependant", { count: 0 }))
-      );
-
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
         if (tab) {
@@ -1036,9 +996,7 @@ export default class MainFunction extends React.Component<
       );
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.evaluation"))
-      );
+
       this.props.store.dispatch(
         loadEvaluationAssessmentRequestsFromServer() as Action
       );

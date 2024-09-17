@@ -2,9 +2,6 @@ import App from "~/containers/error";
 import reducer from "~/reducers/error";
 import runApp from "../run";
 import mainFunctionDefault from "~/util/base-main-function";
-
-import titleActions from "~/actions/base/title";
-
 import { updateError } from "~/actions/base/error";
 
 (async () => {
@@ -13,10 +10,11 @@ import { updateError } from "~/actions/base/error";
     return { websocket };
   });
 
-  store.dispatch(titleActions.updateTitle((window as any).MUIKKU_ERROR_TITLE));
   store.dispatch(
     updateError({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       title: (window as any).MUIKKU_ERROR_TITLE,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       description: (window as any).MUIKKU_ERROR_DESCRIPTION,
     })
   );
