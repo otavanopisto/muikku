@@ -161,11 +161,19 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     //get the initial value
     const value = props.initialValue || "";
     // and get the raw text if it's richedit
-    const rawText = this.props.content
-      ? this.props.content.richedit
+
+    // Function to check if a string is valid HTML
+    const isValidHTML = (str: string) => {
+      const doc = new DOMParser().parseFromString(str, "text/html");
+      return Array.from(doc.body.childNodes).some(
+        (node) => node.nodeType === 1
+      );
+    };
+
+    const rawText =
+      this.props.content && this.props.content.richedit && isValidHTML(value)
         ? $(value).text()
-        : value
-      : value;
+        : value;
 
     // set the state with the counts
     this.state = {
