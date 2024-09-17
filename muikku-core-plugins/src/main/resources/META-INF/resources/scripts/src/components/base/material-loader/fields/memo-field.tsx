@@ -24,6 +24,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import "~/sass/elements/memofield.scss";
+import { isValidHTML } from "~/util/html";
 
 /**
  * MemoFieldProps
@@ -162,22 +163,10 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     const value = props.initialValue || "";
     // and get the raw text if it's richedit
 
-    /**
-     * Checks if the string is a valid HTML
-     * @param str
-     * @returns boolean
-     */
-    const isValidHTML = (str: string): boolean => {
-      const doc = new DOMParser().parseFromString(str, "text/html");
-      return Array.from(doc.body.childNodes).some(
-        (node) => node.nodeType === 1
-      );
-    };
+    const isRichEditHtml =
+      this.props.content && this.props.content.richedit && isValidHTML(value);
 
-    const rawText =
-      this.props.content && this.props.content.richedit && isValidHTML(value)
-        ? $(value).text()
-        : value;
+    const rawText = isRichEditHtml ? $(value).text() : value;
 
     // set the state with the counts
     this.state = {
@@ -200,6 +189,15 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
   }
+
+  /**
+   * replaceNewlinesWithBreaks
+   * @param str
+   * @returns
+   */
+  replaceNewlinesWithBreaks = (str: string): string => {
+    return str.replace(/\n/g, "<br />");
+  };
 
   /**
    * onFieldSavedStateChange
@@ -468,6 +466,11 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    */
   render() {
     const { t } = this.props;
+    // This is for if someone changes the memofield to ckeditor when it's answered
+    // It turns text to html for the ckeditor
+    const ckeditorValue = isValidHTML(this.state.value)
+      ? this.state.value
+      : "<p>" + this.replaceNewlinesWithBreaks(this.state.value) + "</p>";
 
     // we have a right answer example for when
     // we are asked for displaying right answer
@@ -499,7 +502,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     ) {
       let unloadedField;
       if (this.props.readOnly) {
-        unloadedField = !this.props.content.richedit ? (
+        const value = (unloadedField = !this.props.content.richedit ? (
           <textarea
             readOnly
             maxLength={
@@ -512,9 +515,9 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         ) : (
           <span
             className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: this.state.value }}
+            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
           />
-        );
+        ));
       } else {
         unloadedField = (
           <textarea
@@ -563,7 +566,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         ) : (
           <span
             className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: this.state.value }}
+            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
           />
         );
       } else {
@@ -592,7 +595,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
               parseInt(this.props.content.maxWords)
             }
           >
-            {this.state.value}
+            {ckeditorValue}
           </CKEditor>
         );
       }
@@ -611,7 +614,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         ) : (
           <div
             className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly memofield__ckeditor-replacement--evaluation"
-            dangerouslySetInnerHTML={{ __html: this.state.value }}
+            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
           />
         );
       }
