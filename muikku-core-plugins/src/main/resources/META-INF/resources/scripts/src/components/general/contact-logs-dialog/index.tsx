@@ -113,7 +113,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
       state.entryDate = new Date(newContactEventState.entryDate);
       state.draft = true;
-      dispatch({ type: "SET_ALL", payload: state });
+      // dispatch({ type: "SET_ALL", payload: state });
     }
 
     if (selectedItems.length > 0) {
@@ -145,7 +145,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param recipients
    */
   const handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    dispatch({ type: "SET_RECIPIENTS", payload: recipients });
+    // dispatch({ type: "SET_RECIPIENTS", payload: recipients });
     setNewContactEventState((prevState) => ({
       ...prevState,
       recipients,
@@ -158,7 +158,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param date
    */
   const handleDateChange = (date: Date) => {
-    dispatch({ type: "SET_CONTACT_LOG_ENTRY_DATE", payload: date });
+    // dispatch({ type: "SET_CONTACT_LOG_ENTRY_DATE", payload: date });
     setNewContactEventState((prevState) => ({
       ...prevState,
       entryDate: date,
@@ -171,10 +171,10 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param e
    */
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch({
-      type: "SET_CONTACT_LOG_ENTRY_TYPE",
-      payload: e.target.value as ContactType,
-    });
+    // dispatch({
+    //   type: "SET_CONTACT_LOG_ENTRY_TYPE",
+    //   payload: e.target.value as ContactType,
+    // });
     setNewContactEventState((prevState) => ({
       ...prevState,
       type: e.target.value as ContactType,
@@ -187,7 +187,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * @param text
    */
   const handleCkEditorChange = (text: string) => {
-    dispatch({ type: "SET_CONTACT_LOG_ENTRY_TEXT", payload: text });
+    // dispatch({ type: "SET_CONTACT_LOG_ENTRY_TEXT", payload: text });
     setNewContactEventState((prevState) => ({
       ...prevState,
       text,
@@ -200,7 +200,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * handleReset
    */
   const handleReset = () => {
-    dispatch({ type: "RESET" });
+    // dispatch({ type: "RESET" });
     localStorage.removeItem("new-contact-event");
     dispatch({ type: "SET_DRAFT", payload: false });
   };
@@ -252,8 +252,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         type,
       },
     };
-
-    console.log(payload);
 
     guiderApi
       .createMultipleContactLogEvents({
