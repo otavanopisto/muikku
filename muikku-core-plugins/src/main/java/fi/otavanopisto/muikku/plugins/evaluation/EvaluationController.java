@@ -69,6 +69,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
@@ -208,9 +209,10 @@ public class EvaluationController {
       // Supplementation request, if one exists and is newer than activity date so far
 
       for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
-        SchoolDataIdentifier workspaceSubjectIdentifier = assessment.getWorkspaceSubjectIdentifier() == null
+        WorkspaceActivitySubject subject = assessment.getSubject();
+        SchoolDataIdentifier workspaceSubjectIdentifier = subject == null || StringUtils.isBlank(subject.getIdentifier())
             ? null
-            : SchoolDataIdentifier.fromId(assessment.getWorkspaceSubjectIdentifier());
+            : SchoolDataIdentifier.fromId(subject.getIdentifier());
         SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
             userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
         if (supplementationRequest != null && supplementationRequest.getRequestDate().after(assessment.getDate())) {

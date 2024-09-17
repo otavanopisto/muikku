@@ -734,7 +734,7 @@ public class GuiderRESTService extends PluginRESTService {
                 
                 // Check for courses that contains multiple coursemodules. WorkspaceActivitySubjectIdentifier should match assessmentState's workspaceSubjectIdentifier
                 if (activity.getId() != null) {
-                  if (!assessmentState.getWorkspaceSubjectIdentifier().equals(workspaceActivitySubject.getIdentifier())) {
+                  if (!StringUtils.equals(assessmentState.getSubject().getIdentifier(), workspaceActivitySubject.getIdentifier())) {
                     continue;
                   }
                 }

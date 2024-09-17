@@ -55,16 +55,6 @@ public class WorkspaceAssessmentState {
     this.gradeDate = gradeDate;
   }
 
-  @Deprecated
-  public String getWorkspaceSubjectIdentifier() {
-    return workspaceSubjectIdentifier;
-  }
-
-  @Deprecated
-  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-  }
-
   public Boolean isPassingGrade() {
     return passingGrade;
   }
@@ -87,8 +77,6 @@ public class WorkspaceAssessmentState {
   private Boolean passingGrade;
   private Date gradeDate;
   private String text;
-  // TODO Refactor front-end to make use of subject instead
-  private String workspaceSubjectIdentifier;
   private WorkspaceActivitySubject subject;
   
 }
