@@ -50,8 +50,6 @@ interface HelpMaterialsProps extends WithTranslation {
   workspaceEditMode: WorkspaceEditModeStateType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation: () => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -86,7 +84,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       redirect: null,
     };
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
@@ -344,13 +341,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         this.flattenedMaterial.push(subnode);
       });
     });
-  }
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    this.props.onOpenNavigation();
   }
 
   /**
@@ -823,7 +813,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     return (
       <ContentPanel
-        onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-instructions"
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
