@@ -49,6 +49,9 @@ interface NewContactEventState {
   locked: boolean;
 }
 
+/**
+ * Action
+ */
 type Action =
   | { type: "SET_DRAFT"; payload: boolean }
   | { type: "SET_LOCKED"; payload: boolean };
@@ -300,7 +303,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         />
       </div>
       <div className="env-dialog__row env-dialog__row--new-contact-event">
-        <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
+        <div className="env-dialog__form-element-container">
           <label htmlFor="contactEventdate" className="env-dialog__label">
             {t("labels.create", {
               ns: "messaging",
@@ -354,6 +357,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
           </CKEditor>
         </div>
       </div>
+      ,
     </>
   );
 
