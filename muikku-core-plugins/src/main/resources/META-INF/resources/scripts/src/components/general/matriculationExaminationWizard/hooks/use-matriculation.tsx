@@ -336,6 +336,8 @@ export const useMatriculation = (
       state: "PENDING",
       degreeStructure,
       studentIdentifier,
+      numMandatoryCourses:
+        matriculation.studentInformation.completedCreditPointsCount,
       attendances: [
         ...attendedSubjectListParsed,
         ...finishedSubjectListParsed,
