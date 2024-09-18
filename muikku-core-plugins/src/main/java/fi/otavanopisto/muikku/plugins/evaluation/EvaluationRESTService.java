@@ -295,32 +295,6 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @DELETE
-  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/interimevaluationrequest/{ID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteInterimEvaluationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ID") Long interimEvaluationRequestId) {
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
-    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-    UserEntity studentEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-    InterimEvaluationRequest request = evaluationController.findInterimEvaluationRequestById(interimEvaluationRequestId);
-    if (request == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    if (!request.getUserEntityId().equals(studentEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Student mismatch").build();
-    }
-    if (!request.getWorkspaceEntityId().equals(workspaceEntity.getId())) {
-      return Response.status(Status.BAD_REQUEST).entity("Workspace mismatch").build();
-    }
-    evaluationController.archiveInterimEvaluationRequest(request);
-
-    return Response.noContent().build();
-  }
-
-  @DELETE
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/supplementationrequest/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteSupplementationRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ID") Long supplementationRequestId) {

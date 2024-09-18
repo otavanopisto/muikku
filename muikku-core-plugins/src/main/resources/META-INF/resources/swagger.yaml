@@ -2648,7 +2648,6 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  #/rest/evaluation/workspace/{workspaceId}/interimEvaluationRequest:
   /rest/evaluation/workspace/{workspaceId}/interimEvaluationRequests:
     get:
       operationId: getWorkspaceInterimEvaluationRequests
@@ -3208,38 +3207,6 @@ paths:
       responses:
         "204":
           description: Workspace user supplementation request deleted successfully
-        "400":
-          description: Invalid request was sent to the server
-        "403":
-          description: Attempted to make a call with unauthorized client
-        "500":
-          description: Internal server error
-
-  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/interimevaluationrequest/{interimEvaluationRequestId}:
-    delete:
-      operationId: deleteWorkspaceUserInterimEvaluationRequest
-      summary: Delete workspace user interim evaluation request
-      description: Delete workspace user interim evaluation request
-      tags:
-        - Evaluation
-      parameters:
-        - name: workspaceUserEntityId
-          in: path
-          description: Workspace user entity id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: interimEvaluationRequestId
-          in: path
-          description: Interim evaluation request id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "204":
-          description: Workspace user interim evalaution request deleted successfully
         "400":
           description: Invalid request was sent to the server
         "403":
