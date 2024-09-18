@@ -13123,9 +13123,6 @@ components:
         - assessmentRequestDate
         - assignmentsDone
         - assignmentsTotal
-        - graded
-        - passing
-        - interimEvaluationRequest
         - userEntityId
         - firstName
         - lastName
@@ -13155,12 +13152,6 @@ components:
           type: integer
         assignmentsTotal:
           type: integer
-        graded:
-          type: boolean
-        passing:
-          type: boolean
-        interimEvaluationRequest:
-          type: boolean
         userEntityId:
           type: integer
           format: int64
