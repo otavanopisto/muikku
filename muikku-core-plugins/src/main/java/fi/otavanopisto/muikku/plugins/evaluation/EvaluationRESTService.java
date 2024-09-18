@@ -1401,7 +1401,7 @@ public class EvaluationRESTService extends PluginRESTService {
           
           restAssessmentRequest.setId(interimEvaluationRequest.getId());
           restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
-          restAssessmentRequest.setInterimEvaluationRequest(true);
+          restAssessmentRequest.setState(WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST);
         }
       }
     }
@@ -1729,8 +1729,6 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(compositeAssessmentRequest.getAssessmentRequestDate());
     restAssessmentRequest.setEvaluationDate(evaluationDate);
-    restAssessmentRequest.setPassing(passing);
-    restAssessmentRequest.setGraded(graded);
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
     restAssessmentRequest.setEnrollmentDate(compositeAssessmentRequest.getCourseEnrollmentDate());
@@ -1741,7 +1739,6 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceName(compositeAssessmentRequest.getCourseName());
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
-    restAssessmentRequest.setInterimEvaluationRequest(Boolean.FALSE);
     if (!resolvedState) {
       if (graded) {
         if (passing) {
@@ -1823,8 +1820,6 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(interimEvaluationRequest.getRequestDate());
     restAssessmentRequest.setEvaluationDate(null);
-    restAssessmentRequest.setPassing(Boolean.FALSE);
-    restAssessmentRequest.setGraded(Boolean.FALSE);
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
     if (workspaceUser != null && workspaceUser.getEnrolmentTime() != null) {
@@ -1841,7 +1836,6 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceName(workspaceEntityName.getName());
     restAssessmentRequest.setWorkspaceNameExtension(workspaceEntityName.getNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
-    restAssessmentRequest.setInterimEvaluationRequest(Boolean.TRUE);
     restAssessmentRequest.setState(WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST);
 
     Workspace workspace = workspaceCache.get(workspaceEntity.getId());
@@ -1900,8 +1894,6 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceUserIdentifier(workspaceUserEntity.getIdentifier());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setEvaluationDate(supplementationRequest.getRequestDate());
-    restAssessmentRequest.setPassing(Boolean.FALSE);
-    restAssessmentRequest.setGraded(Boolean.FALSE);
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
     if (workspaceUser != null && workspaceUser.getEnrolmentTime() != null) {
@@ -1918,7 +1910,6 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceName(workspaceEntityName.getName());
     restAssessmentRequest.setWorkspaceNameExtension(workspaceEntityName.getNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
-    restAssessmentRequest.setInterimEvaluationRequest(Boolean.FALSE);
     restAssessmentRequest.setState(WorkspaceAssessmentState.INCOMPLETE);
 
     Workspace workspace = workspaceCache.get(workspaceEntity.getId());
