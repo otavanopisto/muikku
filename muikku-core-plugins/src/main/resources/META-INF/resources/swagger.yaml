@@ -3068,9 +3068,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
-      operationId: archiveEvaluationWorkspaceUser
+      operationId: archiveWorkspaceUserEvaluationRequest
       summary: Archive workspace user evaluation
-      description: Archive workspace user evaluation
+      description: Archive workspace user evaluation request
       tags:
         - Evaluation
       parameters:
