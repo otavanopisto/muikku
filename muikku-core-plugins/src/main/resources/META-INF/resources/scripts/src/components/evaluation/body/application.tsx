@@ -21,6 +21,7 @@ import {
 } from "~/components/general/react-select/types";
 import Select from "react-select";
 import "~/sass/elements/react-select-override.scss";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
 
 /**
  * EvaluationApplicationProps
@@ -171,9 +172,56 @@ class EvaluationApplication extends React.Component<
         toolbar={toolBar}
       >
         <EvaluationSorters />
-        <div className="evaluation-cards-wrapper">
-          <EvaluationList />
-        </div>
+
+        {selectedOptions.value === "" ? (
+          <>
+            <ApplicationSubPanel>
+              <ApplicationSubPanel.Header>
+                Arviointipyynnöt
+              </ApplicationSubPanel.Header>
+              <div className="evaluation-cards-wrapper">
+                <EvaluationList
+                  filterByState="pending"
+                  emptyMessage="Arviointipyyntöjä ei löytynyt"
+                  emptySearchMessage="Hakuehdoilla ei löytynyt arviointipyyntöjä"
+                />
+              </div>
+            </ApplicationSubPanel>
+
+            <ApplicationSubPanel>
+              <ApplicationSubPanel.Header>
+                Välipalautepyynnöt
+              </ApplicationSubPanel.Header>
+              <div className="evaluation-cards-wrapper">
+                <EvaluationList
+                  filterByState="interim_evaluation_request"
+                  emptyMessage="Välipalautepyyntöjä ei löytynyt"
+                  emptySearchMessage="Hakuehdoilla ei löytynyt välipalautepyyntöjä"
+                />
+              </div>
+            </ApplicationSubPanel>
+
+            <ApplicationSubPanel>
+              <ApplicationSubPanel.Header>
+                Täydennyspyynnöt (opettajan opiskelijalle laittamat)
+              </ApplicationSubPanel.Header>
+              <div className="evaluation-cards-wrapper">
+                <EvaluationList
+                  filterByState="incomplete"
+                  emptyMessage="Täydennyspyyntöjä ei löytynyt"
+                  emptySearchMessage="Hakuehdoilla ei löytynyt täydennyspyyntöjä"
+                />
+              </div>
+            </ApplicationSubPanel>
+          </>
+        ) : (
+          <div className="evaluation-cards-wrapper">
+            <EvaluationList
+              emptyMessage="Kurssikohtaisia arviointitapahtumia ei löytynyt"
+              emptySearchMessage="Suodattimilla ei löytynyt arviointitapahtumia"
+            />
+          </div>
+        )}
       </ApplicationPanel>
     );
   }

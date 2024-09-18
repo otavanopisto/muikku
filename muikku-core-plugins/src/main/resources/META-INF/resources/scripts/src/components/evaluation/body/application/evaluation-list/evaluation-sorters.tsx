@@ -52,17 +52,13 @@ class EvaluationSorters extends React.Component<
   handleClickSorter =
     (sortBy: SortBy) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      /**
-       * Checking whether sorting workspace or all values
-       */
+      // Checking whether sorting workspace or all values
       const sortKey = this.props.evaluations.selectedWorkspaceId
         ? "evaluation-workspace-sort"
         : "evaluation-default-sort";
 
       if (this.props.evaluations.evaluationSort.value === sortBy) {
-        /**
-         * If same sort is clicked again, set sort to no-sort
-         */
+        // If same sort is clicked again, set sort to no-sort
         const sortFunction: EvaluationSort = {
           key: sortKey,
           value: "no-sort",
@@ -70,9 +66,7 @@ class EvaluationSorters extends React.Component<
 
         this.props.updateEvaluationSortFunctionToServer({ sortFunction });
       } else {
-        /**
-         * Otherwise select clicked new sort
-         */
+        // Otherwise select clicked new sort
         const sortFunction: EvaluationSort = {
           key: sortKey,
           value: sortBy,

@@ -84,15 +84,17 @@ class EvaluationToolbar extends React.Component<
     const { t } = this.props;
 
     const checkboxes = [
-      <div key="evaluated" className="filter-item">
+      <div key="interimRequest" className="filter-item">
         <input
-          onChange={this.handleCheckboxClick("evaluated")}
-          checked={this.props.evaluations.evaluationFilters.evaluated}
+          onChange={this.handleCheckboxClick("interimRequest")}
+          checked={this.props.evaluations.evaluationFilters.interimRequest}
           type="checkbox"
-          id="filterEvaluated"
+          id="filterNotEvaluated"
         />
-        <label htmlFor="filterEvaluated">
-          {t("labels.evaluated", { ns: "evaluation" })}
+        <label htmlFor="filterNotEvaluated">
+          {t("labels.interimEvaluationFilter2", {
+            ns: "evaluation",
+          })}
         </label>
       </div>,
       <div key="requestEvaluation" className="filter-item">
@@ -119,6 +121,31 @@ class EvaluationToolbar extends React.Component<
           {t("labels.withSupplementationRequest", { ns: "evaluation" })}
         </label>
       </div>,
+      <div key="interimEvaluation" className="filter-item">
+        <input
+          onChange={this.handleCheckboxClick("interimEvaluation")}
+          checked={this.props.evaluations.evaluationFilters.interimEvaluation}
+          type="checkbox"
+          id="filterNotEvaluated"
+        />
+        <label htmlFor="filterNotEvaluated">
+          {t("labels.interimEvaluationFilter1", {
+            ns: "evaluation",
+          })}
+        </label>
+      </div>,
+      <div key="evaluated" className="filter-item">
+        <input
+          onChange={this.handleCheckboxClick("evaluated")}
+          checked={this.props.evaluations.evaluationFilters.evaluated}
+          type="checkbox"
+          id="filterEvaluated"
+        />
+        <label htmlFor="filterEvaluated">
+          {t("labels.evaluated", { ns: "evaluation" })}
+        </label>
+      </div>,
+
       <div key="noevaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("notEvaluated")}

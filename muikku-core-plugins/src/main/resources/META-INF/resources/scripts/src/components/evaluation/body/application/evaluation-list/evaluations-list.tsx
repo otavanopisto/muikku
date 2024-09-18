@@ -17,13 +17,29 @@ import {
 import { UpdateImportanceObject } from "~/@types/evaluation";
 import "~/sass/elements/empty.scss";
 import { AnyActionType } from "~/actions";
-import { EvaluationAssessmentRequest } from "~/generated/client";
+import {
+  EvaluationAssessmentRequest,
+  WorkspaceAssessmentStateType,
+} from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**
  * EvaluationListProps
  */
 interface EvaluationListProps extends WithTranslation {
+  /**
+   * Can be used to filter assessments by state to make specific list
+   */
+  filterByState?: WorkspaceAssessmentStateType;
+  /**
+   * Empty message to show when there are no assessments
+   */
+  emptyMessage?: string;
+  /**
+   * Empty search message to show when search does not return any results
+   */
+  emptySearchMessage?: string;
+  // Redux props
   setSelectedWorkspaceId: SetEvaluationSelectedWorkspace;
   evaluations: EvaluationState;
   updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction;
@@ -56,17 +72,13 @@ export class EvaluationList extends React.Component<
    */
   handleClickSorter =
     (sortBy: SortBy) => (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      /**
-       * Checking whether sorting workspace or all values
-       */
+      // Checking whether sorting workspace or all values
       const sortKey = this.props.evaluations.selectedWorkspaceId
         ? "evaluation-workspace-sort"
         : "evaluation-default-sort";
 
       if (this.props.evaluations.evaluationSort.value === sortBy) {
-        /**
-         * If same sort is clicked again, set sort to no-sort
-         */
+        // If same sort is clicked again, set sort to no-sort
         const sortFunction: EvaluationSort = {
           key: sortKey,
           value: "no-sort",
@@ -74,9 +86,7 @@ export class EvaluationList extends React.Component<
 
         this.props.updateEvaluationSortFunctionToServer({ sortFunction });
       } else {
-        /**
-         * Otherwise select clicked new sort
-         */
+        // Otherwise select clicked new sort
         const sortFunction: EvaluationSort = {
           key: sortKey,
           value: sortBy,
@@ -94,12 +104,6 @@ export class EvaluationList extends React.Component<
    */
   filterAndSortAssessments = (assessments?: EvaluationAssessmentRequest[]) => {
     const {
-      evaluated,
-      notEvaluated,
-      assessmentRequest,
-      supplementationRequest,
-    } = this.props.evaluations.evaluationFilters;
-    const {
       importantRequests,
       unimportantRequests,
       evaluationSearch,
@@ -108,17 +112,13 @@ export class EvaluationList extends React.Component<
 
     let filteredAssessment = assessments;
 
-    /**
-     * By search string if  given
-     */
+    // By search string if  given
     if (evaluationSearch !== "" && evaluationSearch.length > 0) {
       filteredAssessment =
         this.filterAssessmentsBySearchString(filteredAssessment);
     }
 
-    /**
-     * By sort function if given
-     */
+    // By sort function if given
     if (evaluationSort !== undefined) {
       filteredAssessment = this.sortAssessmentsBySortBy(
         filteredAssessment,
@@ -126,24 +126,19 @@ export class EvaluationList extends React.Component<
       );
     }
 
-    /**
-     * By selection if given
-     */
-    if (
-      evaluated ||
-      notEvaluated ||
-      assessmentRequest ||
-      supplementationRequest
-    ) {
-      filteredAssessment =
-        this.filterAssessmentsBySelections(filteredAssessment);
-    }
+    // By selections aka checkboxes, if nothing is selected, show all
+    filteredAssessment = this.filterAssessmentsBySelections(filteredAssessment);
 
-    /**
-     * By importance if given
-     */
+    // By importance if given
     if (importantRequests.length > 0 || unimportantRequests.length > 0) {
       filteredAssessment = this.sortByImportance(filteredAssessment);
+    }
+
+    // By state if specific state prop is given
+    if (this.props.filterByState) {
+      filteredAssessment = filteredAssessment.filter(
+        (aItem) => aItem.state === this.props.filterByState
+      );
     }
 
     return filteredAssessment;
@@ -161,23 +156,45 @@ export class EvaluationList extends React.Component<
     let filteredAssessments = assessments;
 
     if (evaluationFilters.evaluated) {
+      // This includes incomplete assessments as that state is seen as evaluated and evaluationDate exists
       filteredAssessments = filteredAssessments.filter(
         (aItem) => aItem.evaluationDate !== null
       );
     }
+
+    // Pending related states
     if (evaluationFilters.assessmentRequest) {
       filteredAssessments = filteredAssessments.filter(
-        (aItem) => aItem.assessmentRequestDate !== null
+        (aItem) =>
+          aItem.state === "pending" ||
+          aItem.state === "pending_fail" ||
+          aItem.state === "pending_pass"
       );
     }
+
+    // Only incomplete state
     if (evaluationFilters.supplementationRequest) {
       filteredAssessments = filteredAssessments.filter(
-        (aItem) => aItem.evaluationDate && !aItem.graded
+        (aItem) => aItem.state === "incomplete"
       );
     }
+
+    // Untouched assessments, meaning no evaluation date
     if (evaluationFilters.notEvaluated) {
       filteredAssessments = filteredAssessments.filter(
         (aItem) => aItem.evaluationDate === null
+      );
+    }
+
+    if (evaluationFilters.interimRequest) {
+      filteredAssessments = filteredAssessments.filter(
+        (aItem) => aItem.state === "interim_evaluation_request"
+      );
+    }
+
+    if (evaluationFilters.interimEvaluation) {
+      filteredAssessments = filteredAssessments.filter(
+        (aItem) => aItem.state === "interim_evaluation"
       );
     }
 
@@ -252,22 +269,16 @@ export class EvaluationList extends React.Component<
     assessments: EvaluationAssessmentRequest[]
   ) => {
     const filteredAssessments = assessments.filter((aItem) => {
-      /**
-       * Building checkable student name
-       */
+      // Building checkable student name
       const studentName = `${aItem.firstName} ${aItem.lastName}`
         .trim()
         .toLowerCase()
         .split(" ");
 
-      /**
-       * Building checkable workspace name
-       */
+      // Building checkable workspace name
       const workspace = aItem.workspaceName.trim().toLowerCase().split(" ");
 
-      /**
-       * Check if part of name matches with search string
-       */
+      // Check if part of name matches with search string
       for (const element1 of studentName) {
         if (
           element1.includes(
@@ -278,9 +289,7 @@ export class EvaluationList extends React.Component<
         }
       }
 
-      /**
-       * If not, check same with workspace name
-       */
+      // If not, check same with workspace name
       for (const element2 of workspace) {
         if (
           element2.includes(
@@ -303,32 +312,24 @@ export class EvaluationList extends React.Component<
     const { importantRequests, unimportantRequests, evaluationSort } =
       this.props.evaluations;
 
-    /**
-     * Filtering assessments that are marked as important
-     */
+    // Filtering assessments that are marked as important
     let importantAssessmentSelected = assessments.filter((item) =>
       importantRequests.includes(item.workspaceUserEntityId)
     );
 
-    /**
-     * Filtering assessments that are marked as unmportant
-     */
+    // Filtering assessments that are marked as unmportant
     let unimportantAssessmentSelected = assessments.filter((item) =>
       unimportantRequests.includes(item.workspaceUserEntityId)
     );
 
-    /**
-     * Filtering everything else expect important or unimportant
-     */
+    // Filtering everything else expect important or unimportant
     let notImportantNorUnimportant = assessments.filter(
       (item) =>
         !importantRequests.includes(item.workspaceUserEntityId) &&
         !unimportantRequests.includes(item.workspaceUserEntityId)
     );
 
-    /**
-     * Here sorting these arrays by any active sort method
-     */
+    // Here sorting these arrays by any active sort method
     if (evaluationSort !== undefined) {
       importantAssessmentSelected = this.sortAssessmentsBySortBy(
         importantAssessmentSelected,
@@ -344,9 +345,7 @@ export class EvaluationList extends React.Component<
       );
     }
 
-    /**
-     * composing sorted list of assessments
-     */
+    // composing sorted list of assessments
     return [
       ...importantAssessmentSelected,
       ...notImportantNorUnimportant,
@@ -386,34 +385,24 @@ export class EvaluationList extends React.Component<
   render() {
     const { t } = this.props;
 
-    const {
-      evaluationRequests,
-      importantRequests,
-      unimportantRequests,
-      selectedWorkspaceId,
-    } = this.props.evaluations;
+    const { evaluationRequests, importantRequests, unimportantRequests } =
+      this.props.evaluations;
 
-    /**
-     * If assessmentsRequests are not yet passed or are still loading
-     * show loader
-     */
+    // If assessmentsRequests are not yet passed or are still loading
+    // show loader
     if (
       evaluationRequests.data === undefined ||
       evaluationRequests.state === "LOADING"
     ) {
       return <div className="loader-empty" />;
     } else {
-      /**
-       * Otherwise filter, parse, etc -> show data
-       * with corresponding messages
-       */
+      // Otherwise filter, parse, etc -> show data
+      // with corresponding messages
       const filteredAssessment = this.filterAndSortAssessments(
         evaluationRequests.data
       );
 
-      /**
-       * renderEvaluationCards
-       */
+      // renderEvaluationCards
       const renderEvaluationCards = filteredAssessment.map((aItem, i) => {
         let important: EvaluationImportantStatus = "nostatus";
 
@@ -426,7 +415,7 @@ export class EvaluationList extends React.Component<
         return (
           <EvaluationCard
             key={i}
-            {...aItem}
+            evaluationAssessmentRequest={aItem}
             selectedWorkspaceId={this.props.evaluations.selectedWorkspaceId}
             setSelectedWorkspaceId={this.props.setSelectedWorkspaceId}
             updateEvaluationImportance={this.handleUpdateImportance}
@@ -440,29 +429,31 @@ export class EvaluationList extends React.Component<
         );
       });
 
-      /**
-       * renders card list
-       */
-      let renderEvaluationCardList = <>{renderEvaluationCards}</>;
+      // renders card list
+      let content = <>{renderEvaluationCards}</>;
 
-      /**
-       * If there are no assessments, lets give message about that
-       */
-      if (evaluationRequests.data.length <= 0) {
-        renderEvaluationCardList = (
+      // If there are no assessments, lets give message about that
+      if (renderEvaluationCards.length <= 0) {
+        let message =
+          this.props.emptyMessage ||
+          t("content.evaluationRequestsHandled", { ns: "evaluation" });
+
+        if (this.props.evaluations.evaluationSearch !== "") {
+          message =
+            this.props.emptySearchMessage ||
+            t("content.notFound", {
+              ns: "evaluation",
+            });
+        }
+
+        content = (
           <div className="empty">
-            <span>
-              {selectedWorkspaceId === undefined
-                ? t("content.evaluationRequestsHandled", { ns: "evaluation" })
-                : t("content.notFound", {
-                    ns: "evaluation",
-                  })}
-            </span>
+            <span>{message}</span>
           </div>
         );
       }
 
-      return <>{renderEvaluationCardList}</>;
+      return <>{content}</>;
     }
   }
 }

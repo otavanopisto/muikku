@@ -17,11 +17,10 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * ArchiveDialogProps
  */
-interface DeleteRequestDialogProps
-  extends EvaluationAssessmentRequest,
-    WithTranslation {
+interface DeleteRequestDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
+  evaluationAssessmentRequest: EvaluationAssessmentRequest;
   isOpen?: boolean;
   onClose?: () => void;
   deleteAssessmentRequest: DeleteAssessmentRequest;
@@ -64,13 +63,18 @@ class DeleteRequestDialog extends React.Component<
    * @param closeDialog closeDialog
    */
   deleteRequest(closeDialog: () => void) {
-    if (this.props.interimEvaluationRequest) {
+    const { state, id, workspaceUserEntityId } =
+      this.props.evaluationAssessmentRequest;
+
+    const isInterimRequest = state === "interim_evaluation_request";
+
+    if (isInterimRequest) {
       this.props.deleteInterimEvaluationRequest({
-        interimEvaluatiomRequestId: this.props.id,
+        interimEvaluatiomRequestId: id,
       });
     } else {
       this.props.deleteAssessmentRequest({
-        workspaceUserEntityId: this.props.workspaceUserEntityId,
+        workspaceUserEntityId: workspaceUserEntityId,
       });
     }
 
@@ -82,8 +86,15 @@ class DeleteRequestDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { firstName, lastName, workspaceName, workspaceNameExtension } =
-      this.props;
+    const {
+      firstName,
+      lastName,
+      workspaceName,
+      workspaceNameExtension,
+      state,
+    } = this.props.evaluationAssessmentRequest;
+
+    const isInterimRequest = state === "interim_evaluation_request";
 
     const studentNameString = `${lastName}, ${firstName}`;
 
@@ -103,7 +114,7 @@ class DeleteRequestDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteRequest.bind(this, closeDialog)}
         >
-          {this.props.interimEvaluationRequest
+          {isInterimRequest
             ? this.props.t("actions.remove", {
                 context: "interimEvaluationRequest",
               })
@@ -128,9 +139,7 @@ class DeleteRequestDialog extends React.Component<
       <div
         dangerouslySetInnerHTML={this.createHtmlMarkup(
           this.props.t("content.removing", {
-            context: this.props.interimEvaluationRequest
-              ? "interimRequest"
-              : "evaluationRequest",
+            context: isInterimRequest ? "interimRequest" : "evaluationRequest",
             student: studentNameString,
             workspace: workspaceNameString,
           })
@@ -143,7 +152,7 @@ class DeleteRequestDialog extends React.Component<
         onClose={this.props.onClose}
         modifier="evaluation-archive-request"
         title={this.props.t("labels.remove", {
-          context: this.props.interimEvaluationRequest
+          context: isInterimRequest
             ? "interimEvaluationRequest"
             : "evaluationRequest",
           student: studentNameString,

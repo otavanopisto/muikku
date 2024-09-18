@@ -7,7 +7,7 @@
   margin: 5px;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 0 -5px -5px;
+    margin: 0 -5px;
   }
 }
 
