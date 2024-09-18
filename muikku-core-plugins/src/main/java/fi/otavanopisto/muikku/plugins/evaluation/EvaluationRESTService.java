@@ -1716,7 +1716,7 @@ public class EvaluationRESTService extends PluginRESTService {
       if (supplementationRequest != null && (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate()))) {
         graded = Boolean.FALSE;
         passing = Boolean.FALSE;
-        restAssessmentRequest.setEvaluationDate(supplementationRequest.getRequestDate());
+        evaluationDate = supplementationRequest.getRequestDate();
         restAssessmentRequest.setState(WorkspaceAssessmentState.INCOMPLETE);
         resolvedState = true;
       }
