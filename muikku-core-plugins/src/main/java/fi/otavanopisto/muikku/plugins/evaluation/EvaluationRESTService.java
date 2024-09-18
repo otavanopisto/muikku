@@ -1716,7 +1716,7 @@ public class EvaluationRESTService extends PluginRESTService {
       if (supplementationRequest != null && (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate()))) {
         graded = Boolean.FALSE;
         passing = Boolean.FALSE;
-        restAssessmentRequest.setSupplementationRequestDate(supplementationRequest.getRequestDate());
+        restAssessmentRequest.setEvaluationDate(supplementationRequest.getRequestDate());
         restAssessmentRequest.setState(WorkspaceAssessmentState.INCOMPLETE);
         resolvedState = true;
       }
@@ -1897,8 +1897,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(workspaceUserEntity.getIdentifier());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
-    restAssessmentRequest.setSupplementationRequestDate(supplementationRequest.getRequestDate());
-    restAssessmentRequest.setEvaluationDate(null);
+    restAssessmentRequest.setEvaluationDate(supplementationRequest.getRequestDate());
     restAssessmentRequest.setPassing(Boolean.FALSE);
     restAssessmentRequest.setGraded(Boolean.FALSE);
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);

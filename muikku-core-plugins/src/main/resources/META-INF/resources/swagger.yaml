@@ -13121,7 +13121,6 @@ components:
         - enrollmentDate
         - evaluationDate
         - assessmentRequestDate
-        - supplementationRequestDate
         - assignmentsDone
         - assignmentsTotal
         - graded
@@ -13156,10 +13155,6 @@ components:
           format: date-time
           nullable: true
         assessmentRequestDate:
-          type: string
-          format: date-time
-          nullable: true
-        supplementationRequestDate:
           type: string
           format: date-time
           nullable: true
