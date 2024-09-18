@@ -1840,7 +1840,8 @@
       "remove": "$t(common:actions.remove)",
       "remove_evaluation": "Poista arviointi",
       "remove_evaluationRequest": "Poista arviointipyyntö",
-      "remove_interimEvaluationRequest": "Poista välipalautepyyntö"
+      "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
+      "remove_supplementationRequest": "Poista täydennyspyyntö"
     },
     "content": {
       "archive_student": "Haluatko arkistoida opiskelijan <b>{{studentName}}</b> kurssilta?",
@@ -1872,6 +1873,7 @@
       "removing_entry": "Oletko varma, että haluat poistaa merkinnän opiskelijalta {{studentName}}?",
       "removing_evaluationRequest": "Oletko varma, että haluat poistaa opiskelijan <b>{{student}}</b> arviointipyynnön kurssilta <b>{{workspace}}</b>?",
       "removing_interimRequest": "Oletko varma, että haluat poistaa opiskelijan <b>{{student}}</b> välipalautepyynnön kurssilta <b>{{workspace}}</b>?",
+      "removing_supplementationRequest": "Oletko varma, että haluat poistaa opiskelijalle <b>{{student}}</b> tehdyn täydennyspyynnön kurssilta <b>{{workspace}}</b>?",
       "removing_verbalEvaluation": "Oletko varma, että haluat poistaa äänitetyn palautteen?",
       "supplementationRequest1": "pyysi",
       "supplementationRequest2": "täydennystä",
@@ -1923,6 +1925,7 @@
       "remove_verbalEvaluation": "Poista äänitetty palaute",
       "remove_evaluationRequest": "Poista arviointipyyntö",
       "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
+      "remove_supplementationRequest": "Poista täydennyspyyntö",
       "search": "Hae opiskelijoita",
       "undone": "Tekemätön",
       "unsavedverbalEvaluations": "Tallentamattomia äänitettyjä palautteita",

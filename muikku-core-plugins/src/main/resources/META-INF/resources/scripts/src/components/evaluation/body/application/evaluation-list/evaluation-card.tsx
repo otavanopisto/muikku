@@ -206,46 +206,73 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       </div>
     ) : null;
 
-  // Render archive or delete dialog button
-  // Delete if assessment request exists and workspace is not the selected one
-  const renderArchiveOrDeleteDialogButton =
-    evaluationAssessmentRequest.assessmentRequestDate ? (
-      evaluationAssessmentRequest.workspaceEntityId === selectedWorkspaceId ? (
+  /**
+   * renderArchiveOrDelete
+   * @returns JSX.Element
+   */
+  const renderArchiveOrDelete = () => {
+    let buttonAriaLabel = t("actions.remove", {
+      context: "evaluationRequest",
+    });
+
+    if (evaluationAssessmentRequest.workspaceEntityId === selectedWorkspaceId) {
+      buttonAriaLabel = t("actions.archive", {
+        context: "student",
+      });
+
+      return (
         <ArchiveDialog
           place="card"
           evaluationAssessmentRequest={evaluationAssessmentRequest}
         >
           <ButtonPill
-            aria-label={t("actions.archive", {
-              ns: "evaluation",
-              context: "student",
-            })}
+            aria-label={buttonAriaLabel}
             buttonModifiers="archive-student"
             icon="archive"
           />
         </ArchiveDialog>
-      ) : (
-        <DeleteRequestDialog
-          evaluationAssessmentRequest={evaluationAssessmentRequest}
-        >
-          <ButtonPill
-            aria-label={
-              evaluationAssessmentRequest.state === "interim_evaluation_request"
-                ? t("actions.remove", {
-                    ns: "evaluation",
-                    context: "interimEvaluationRequest",
-                  })
-                : t("actions.remove", {
-                    ns: "evaluation",
-                    context: "evaluationRequest",
-                  })
-            }
-            buttonModifiers="archive-request"
-            icon="trash"
-          />
-        </DeleteRequestDialog>
-      )
-    ) : null;
+      );
+    }
+
+    switch (evaluationAssessmentRequest.state) {
+      case "incomplete":
+        buttonAriaLabel = t("actions.remove", {
+          context: "supplementationRequest",
+        });
+        break;
+
+      case "interim_evaluation_request":
+        buttonAriaLabel = t("actions.remove", {
+          context: "interimEvaluationRequest",
+        });
+        break;
+
+      case "pending":
+      case "pending_fail":
+      case "pending_pass":
+      default:
+        buttonAriaLabel = t("actions.remove", {
+          context: "evaluationRequest",
+        });
+        break;
+    }
+
+    const button = (
+      <ButtonPill
+        aria-label={buttonAriaLabel}
+        buttonModifiers="archive-request"
+        icon="trash"
+      />
+    );
+
+    return (
+      <DeleteRequestDialog
+        evaluationAssessmentRequest={evaluationAssessmentRequest}
+      >
+        {button}
+      </DeleteRequestDialog>
+    );
+  };
 
   // Card modifier map
   const cardModifierMap: {
@@ -297,7 +324,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
         </div>
 
         <div className="evaluation-card__button-set">
-          {renderArchiveOrDeleteDialogButton}
+          {renderArchiveOrDelete()}
 
           <EvaluateDialog
             assessment={evaluationAssessmentRequest}

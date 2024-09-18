@@ -1840,7 +1840,8 @@
       "remove": "$t(common:actions.remove)",
       "remove_evaluation": "Remove evaluation",
       "remove_evaluationRequest": "Delete the evaluation request",
-      "remove_interimEvaluationRequest": "Delete the interim evaluation request"
+      "remove_interimEvaluationRequest": "Delete the interim evaluation request",
+      "remove_supplementationRequest": "Delete the supplementation request"
     },
     "content": {
       "archive_student": "Do you wish to archive the student <b>{{studentName}}</b> from the workspace?",
@@ -1872,6 +1873,7 @@
       "removing_entry": "Are you sure you want to delete the entry from student: {{studentName}}?",
       "removing_evaluationRequest": "Are you sure you want to delete the evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
       "removing_interimRequest": "Are you sure you want to delete the interim evaluation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
+      "removing_supplementationRequest": "Are you sure you want to delete the supplementation request for student <b>{{student}}</b> from the course <b>{{workspace}}</b>?",
       "removing_verbalEvaluation": "Are you sure you want to remove the recorded feedback?",
       "supplementationRequest1": "asked",
       "supplementationRequest2": "for supplementation",
@@ -1923,6 +1925,7 @@
       "remove_verbalEvaluation": "Delete recorded feedback",
       "remove_evaluationRequest": "Delete evaluation request",
       "remove_interimEvaluationRequest": "Delete interim evaluation request",
+      "remove_supplementationRequest": "Delete supplementation request",
       "search": "Search for students",
       "undone": "Undone",
       "unsavedverbalEvaluations": "Unsaved recorded feedbacks",
