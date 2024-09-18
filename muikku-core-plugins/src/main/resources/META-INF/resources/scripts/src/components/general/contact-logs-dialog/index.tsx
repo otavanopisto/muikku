@@ -108,7 +108,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     if (localStorage.getItem("new-contact-event")) {
       dispatch({ type: "SET_DRAFT", payload: true });
     }
-
     if (selectedItems.length > 0) {
       const existing = [...newContactEventState.recipients];
 
@@ -121,7 +120,6 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
               (existingItem) => existingItem.value.id === selectedItem.value.id
             )
         );
-
         setNewContactEventState((prevState) => ({
           ...prevState,
           recipients: [...newItems, ...existing],
@@ -133,7 +131,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         }));
       }
     }
-  }, [selectedItems, newContactEventState, setNewContactEventState]);
+  }, [selectedItems]);
 
   /**
    * handleRecipientsChange
