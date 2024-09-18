@@ -13109,6 +13109,7 @@ components:
         id:
           type: integer
           format: int64
+          nullable: true
         subjects:
           type: array
           items:
@@ -13116,19 +13117,25 @@ components:
         enrollmentDate:
           type: string
           format: date-time
+          nullable: true
         evaluationDate:
           type: string
           format: date-time
+          nullable: true
         assessmentRequestDate:
           type: string
           format: date-time
+          nullable: true
         supplementationRequestDate:
           type: string
           format: date-time
+          nullable: true
         assignmentsDone:
           type: integer
+          nullable: true
         assignmentsTotal:
           type: integer
+          nullable: true
         graded:
           type: boolean
         passing:
@@ -13151,6 +13158,7 @@ components:
           type: string
         workspaceNameExtension:
           type: string
+          nullable: true
         workspaceUrlName:
           type: string
         workspaceUserEntityId:
