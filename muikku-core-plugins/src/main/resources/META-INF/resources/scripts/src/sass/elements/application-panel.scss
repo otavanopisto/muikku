@@ -118,6 +118,7 @@
 
 // Component's body which is used inside sub-tabs
 .application-panel__body--sub-tabs {
+  border: 0;
   box-shadow: none;
 
   @include breakpoint($breakpoint-pad) {
