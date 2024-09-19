@@ -1717,6 +1717,7 @@
     },
     "wcag": {
       "announcementSelect": "Select announcement",
+      "closeContentPanel": "Close content panel",
       "collapseWorkspaceInfo": "Collapse course {{workspaceName}} info",
       "continueWorkspace": "Continue course {{workspaceName}}",
       "editingMasterSwitch": "Master switch for editing",

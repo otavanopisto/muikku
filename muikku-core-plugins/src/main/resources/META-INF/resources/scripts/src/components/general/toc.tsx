@@ -9,6 +9,7 @@ import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { useLocalStorage } from "usehooks-ts";
 import "~/sass/elements/toc.scss";
+import { IconButton } from "~/components/general/button";
 
 /**
  * TocProps
@@ -288,3 +289,44 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
 );
 
 TocElement.displayName = "TocElement";
+
+/**
+ * BackToTocProps
+ */
+interface BackToTocProps {
+  tocElementId: string;
+  openToc?: () => void;
+}
+
+/**
+ * BackToToc
+ * @param props props
+ */
+export const BackToToc = (props: BackToTocProps) => {
+  const { t } = useTranslation(["materials"]);
+
+  /**
+   * handleLinkClick
+   */
+  const handleLinkClick = () => {
+    props.openToc && props.openToc();
+
+    // Focus the element after a short delay to ensure that the navigation is open
+    setTimeout(() => {
+      const tocElement = document.getElementById(props.tocElementId);
+
+      if (tocElement) {
+        tocElement.focus();
+      }
+    }, 100);
+  };
+
+  return (
+    <IconButton
+      icon="forward"
+      onClick={handleLinkClick}
+      buttonModifiers={["back-to-toc rs_skip_always"]}
+      aria-label={t("wcag.focusToToc", { ns: "materials" })}
+    />
+  );
+};
