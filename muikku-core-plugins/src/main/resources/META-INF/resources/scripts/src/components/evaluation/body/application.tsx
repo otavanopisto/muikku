@@ -181,7 +181,7 @@ class EvaluationApplication extends React.Component<
               </ApplicationSubPanel.Header>
               <div className="evaluation-cards-wrapper">
                 <EvaluationList
-                  filterByState="pending"
+                  filterByStates={["pending", "pending_fail", "pending_pass"]}
                   emptyMessage="Arviointipyyntöjä ei löytynyt"
                   emptySearchMessage="Hakuehdoilla ei löytynyt arviointipyyntöjä"
                 />
@@ -194,7 +194,7 @@ class EvaluationApplication extends React.Component<
               </ApplicationSubPanel.Header>
               <div className="evaluation-cards-wrapper">
                 <EvaluationList
-                  filterByState="interim_evaluation_request"
+                  filterByStates={["interim_evaluation_request"]}
                   emptyMessage="Välipalautepyyntöjä ei löytynyt"
                   emptySearchMessage="Hakuehdoilla ei löytynyt välipalautepyyntöjä"
                 />
@@ -207,7 +207,7 @@ class EvaluationApplication extends React.Component<
               </ApplicationSubPanel.Header>
               <div className="evaluation-cards-wrapper">
                 <EvaluationList
-                  filterByState="incomplete"
+                  filterByStates={["incomplete"]}
                   emptyMessage="Täydennyspyyntöjä ei löytynyt"
                   emptySearchMessage="Hakuehdoilla ei löytynyt täydennyspyyntöjä"
                 />

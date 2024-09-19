@@ -30,7 +30,7 @@ interface EvaluationListProps extends WithTranslation {
   /**
    * Can be used to filter assessments by state to make specific list
    */
-  filterByState?: WorkspaceAssessmentStateType;
+  filterByStates?: WorkspaceAssessmentStateType[];
   /**
    * Empty message to show when there are no assessments
    */
@@ -135,9 +135,9 @@ export class EvaluationList extends React.Component<
     }
 
     // By state if specific state prop is given
-    if (this.props.filterByState) {
-      filteredAssessment = filteredAssessment.filter(
-        (aItem) => aItem.state === this.props.filterByState
+    if (this.props.filterByStates && this.props.filterByStates.length > 0) {
+      filteredAssessment = filteredAssessment.filter((aItem) =>
+        this.props.filterByStates.includes(aItem.state)
       );
     }
 
