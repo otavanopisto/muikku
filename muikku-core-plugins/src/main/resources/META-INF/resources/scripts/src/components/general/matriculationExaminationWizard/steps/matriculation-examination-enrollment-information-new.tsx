@@ -622,7 +622,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
       isIncompleteAttendances() ||
       examinationInformation.enrolledAttendances.length <= 0,
     [
-      examinationInformation.enrolledAttendances.length,
+      examinationInformation,
       hasConflictingRepeats,
       isConflictingAttendances,
       isIncompleteAttendances,
@@ -882,6 +882,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
   React.useEffect(() => {
     values.isInvalid(isInvalid(), values.currentStepIndex);
+    // For sake of when step transition happens currentStepIndex is not wrongly updated with invalid step
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInvalid]);
 
