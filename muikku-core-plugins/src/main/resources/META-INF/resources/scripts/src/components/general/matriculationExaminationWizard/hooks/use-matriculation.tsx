@@ -200,9 +200,10 @@ export const useMatriculation = (
   }, [displayNotification, examId, formType, userSchoolDataIdentifier]);
 
   /**
-   * saveDraft
+   * Saves given examination information as draft
+   * @param examinationInformation examinationInformation
    */
-  const saveDraft = async () => {
+  const saveDraft = async (examinationInformation: ExaminationInformation) => {
     if (formType === "editable") {
       return;
     }
@@ -216,7 +217,7 @@ export const useMatriculation = (
       await matriculationApi.updateEnrollmentDraft({
         examId,
         userIdentifier: userSchoolDataIdentifier,
-        body: JSON.stringify(matriculation.examinationInformation),
+        body: JSON.stringify(examinationInformation),
       });
 
       await sleep(3000);
@@ -393,7 +394,7 @@ export const useMatriculation = (
       draftTimer.current = undefined;
     }
 
-    draftTimer.current = setTimeout(saveDraft, 5000);
+    draftTimer.current = setTimeout(() => saveDraft(examination), 5000);
   };
 
   return {

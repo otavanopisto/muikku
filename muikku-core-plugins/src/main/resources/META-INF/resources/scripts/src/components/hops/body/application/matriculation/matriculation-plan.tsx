@@ -20,7 +20,6 @@ import {
 } from "../../../../../actions/main-function/hops/index";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import ItemList from "~/components/general/item-list";
 import { useUseCaseContext } from "~/context/use-case-context";
 
 /**

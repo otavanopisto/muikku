@@ -139,12 +139,13 @@ const MatriculationExaminationWizard = (
     preventNextIfInvalid: true,
     steps: steps,
     onStepChange: handleStepChange,
+    preventStepperNavigation: true,
   });
 
   const footer = (
     <MatriculationWizardFooter
       secondLastButtonText={
-        props.formType === "initial" ? t("actions.sent") : t("actions.save")
+        props.formType === "initial" ? t("actions.send") : t("actions.save")
       }
       lastStepButton={
         <Button

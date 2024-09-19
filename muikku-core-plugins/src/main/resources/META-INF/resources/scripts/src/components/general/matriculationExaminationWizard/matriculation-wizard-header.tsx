@@ -14,7 +14,13 @@ interface MatriculationWizardHeaderProps {}
  * @returns JSX.Element
  */
 const MatriculationWizardHeader = (props: MatriculationWizardHeaderProps) => {
-  const { goTo, currentStepIndex, steps, disabledSteps } = useWizardContext();
+  const {
+    goTo,
+    currentStepIndex,
+    steps,
+    disabledSteps,
+    preventStepperNavigation,
+  } = useWizardContext();
   const { matriculation } = useMatriculationContext();
   const { saveState } = matriculation;
 
@@ -33,7 +39,9 @@ const MatriculationWizardHeader = (props: MatriculationWizardHeaderProps) => {
           key={index}
           index={index}
           label={step.name}
-          onClick={handleStepClick(index)}
+          onClick={
+            !preventStepperNavigation ? handleStepClick(index) : undefined
+          }
           // If the previous step is invalid, disable all the following steps
           disabled={disabledSteps.includes(index) || saving}
           active={currentStepIndex === index}
