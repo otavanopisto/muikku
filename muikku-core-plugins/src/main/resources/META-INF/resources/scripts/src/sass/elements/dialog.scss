@@ -202,6 +202,7 @@
   position: fixed;
   right: 0;
   top: 0;
+  width: auto;
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 10px;
@@ -211,7 +212,6 @@
     position: fixed;
     right: 20px;
     top: 20px;
-    width: auto;
   }
 
   .dialog__content {
