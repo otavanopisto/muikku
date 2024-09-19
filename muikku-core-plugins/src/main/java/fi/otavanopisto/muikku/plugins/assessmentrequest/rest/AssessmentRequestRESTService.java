@@ -253,6 +253,8 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     paymentUrl.append(httpRequest.getScheme());
     paymentUrl.append("://");
     paymentUrl.append(httpRequest.getServerName());
+    paymentUrl.append(":");
+    paymentUrl.append(httpRequest.getServerPort());
     paymentUrl.append("/ceepos/pay?order=");
     paymentUrl.append(order.getId());
     paymentUrl.append("&hash=");

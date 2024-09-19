@@ -29,7 +29,6 @@
 .tabs--workspace-materials {
   height: 100%;
   margin: 0;
-  padding: 1px 0 0;
 }
 
 .tabs__header-actions {
@@ -211,7 +210,11 @@
   left: 0;
   position: absolute;
   right: 0;
-  top: calc(2.25rem + 1px); // Same value as .tabs__tab-labels height + one pixel for the border
+  top: calc(4.25rem + 1px); // Same value as .tabs__tab-labels + content-panel close height + one pixel for the border
+
+  @include breakpoint($breakpoint-desktop) {
+    top: calc(2.25rem + 1px); // Same value as .tabs__tab-labels height + one pixel for the border
+  }
 }
 
 .tabs__tab-data--guider-student {

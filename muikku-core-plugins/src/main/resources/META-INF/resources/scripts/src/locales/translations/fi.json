@@ -1930,6 +1930,7 @@
     },
     "wcag": {
       "announcementSelect": "Aseta tiedote valituksi",
+      "closeContentPanel": "Sulje sisältöpaneeli",
       "collapseWorkspaceInfo": "Pienennä kurssin {{workspaceName}} tiedot",
       "continueWorkspace": "Jatka kurssia {{workspaceName}}",
       "editingMasterSwitch": "Editointitilan valitsin",
