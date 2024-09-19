@@ -449,19 +449,28 @@ public class MatriculationRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Path("/students/{STUDENTIDENTIFIER}/plan")
-  public Response updateStudentsMatriculationPlan(MatriculationPlanRESTModel model) {
+  public Response updateStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam, MatriculationPlanRESTModel model) {
     if (model == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing payload").build();
     }
+
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    if (!loggedUserIdentifier.equals(studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
+    }
     
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
     if (userSchoolDataIdentifier == null || !userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
     }
 
     try {
-      userEntityController.setUserIdentifierProperty(userIdentifier.getIdentifier(), "matriculationPlan", new ObjectMapper().writeValueAsString(model));
+      userEntityController.setUserIdentifierProperty(studentIdentifier.getIdentifier(), "matriculationPlan", new ObjectMapper().writeValueAsString(model));
     }
     catch (Exception e) {
       logger.log(Level.SEVERE, "Error serializing matriculation plan", e);
@@ -480,6 +489,11 @@ public class MatriculationRESTService {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    if (!studentIdentifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
     BridgeResponse<StudentMatriculationEligibilityOPS2021> result = matriculationController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
@@ -500,6 +514,11 @@ public class MatriculationRESTService {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
     if (studentIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    if (!studentIdentifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
     BridgeResponse<List<MatriculationGrade>> bridgeResponse = matriculationController.listStudentsMatriculationGrades(studentIdentifier);
