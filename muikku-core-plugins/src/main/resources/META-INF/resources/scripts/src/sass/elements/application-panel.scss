@@ -118,6 +118,8 @@
 
 // Component's body which is used inside sub-tabs
 .application-panel__body--sub-tabs {
+  box-shadow: none;
+
   @include breakpoint($breakpoint-pad) {
     border: 1px solid $color-tab-border;
     border-top: 0;
@@ -249,6 +251,10 @@
 
 .application-panel__content--tabs {
   padding: 1rem 0 0;
+}
+
+.application-panel__content--sub-tabs {
+  padding: 5px;
 }
 
 // Component's content header (h2 level header)

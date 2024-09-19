@@ -53,7 +53,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
   return (
     <>
-      <ApplicationSubPanel>
+      <ApplicationSubPanel modifier="sub-tabs">
         <ApplicationSubPanel.Header>
           {t("labels.matriculationEnrollment", {
             ns: "hops_new",
@@ -62,9 +62,13 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {hops.hopsMatriculation.exams.length === 0 ? (
-            <p>
-              {t("content.matriculationNoActiveEnrollment", { ns: "hops_new" })}
-            </p>
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body">
+                {t("content.matriculationNoActiveEnrollment", {
+                  ns: "hops_new",
+                })}
+              </div>
+            </div>
           ) : (
             <MatriculationEnrollment
               exam={hops.hopsMatriculation.exams[0]}
@@ -103,7 +107,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
         </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
 
-      <ApplicationSubPanel>
+      <ApplicationSubPanel modifier="sub-tabs">
         <ApplicationSubPanel.Header>
           {t("labels.matriculationEnrollmentHistory", {
             ns: "hops_new",

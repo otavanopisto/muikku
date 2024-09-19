@@ -120,12 +120,13 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
             }}
           />
         </div>
-
-        <div className="application-sub-panel__notification-item">
-          <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-            {items}
+        {items.length > 0 && (
+          <div className="application-sub-panel__notification-item">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+              {items}
+            </div>
           </div>
-        </div>
+        )}
       </>
     );
   };
@@ -150,7 +151,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
 
-        <ApplicationSubPanel>
+        <ApplicationSubPanel modifier="matriculation-plan-info">
           <ApplicationSubPanel.Body>
             <div className="matriculation-container__state state-INFO">
               <div className="matriculation-container__state-icon icon-notification"></div>

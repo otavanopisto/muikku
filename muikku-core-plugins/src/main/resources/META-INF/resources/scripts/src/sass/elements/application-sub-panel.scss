@@ -38,6 +38,14 @@
   flex-basis: 100%;
 }
 
+.application-sub-panel--sub-tabs {
+  padding: 0 0 30px;
+
+  &:last-child {
+    padding: 0;
+  }
+}
+
 .application-sub-panel--header-main {
   align-items: flex-start;
   border-bottom: none;
@@ -148,11 +156,31 @@
 .application-sub-panel--matriculation-results-content {
   align-items: flex-start;
   display: flex;
+  flex-flow: row wrap;
 }
 
 .application-sub-panel--matriculation-plan-data,
 .application-sub-panel--matriculation-results {
   border-bottom: unset;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
+.application-sub-panel--matriculation-plan-info {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
 }
 
 // Subpanel header
@@ -341,7 +369,11 @@
 }
 
 .application-sub-panel__notification-body {
-  padding: 10px 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
 
   p {
     margin: 0 0 10px;
