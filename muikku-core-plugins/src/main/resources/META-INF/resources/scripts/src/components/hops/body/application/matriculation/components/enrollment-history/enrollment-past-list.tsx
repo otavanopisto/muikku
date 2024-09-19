@@ -17,7 +17,7 @@ const MatriculationPastEnrollmentList = (
 ) => {
   const { children } = props;
 
-  return <ApplicationList>{children}</ApplicationList>;
+  return <>{children}</>;
 };
 
 export default MatriculationPastEnrollmentList;
