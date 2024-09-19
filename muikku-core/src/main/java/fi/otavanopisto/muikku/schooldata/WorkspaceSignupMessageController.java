@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.schooldata;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,15 +48,19 @@ public class WorkspaceSignupMessageController {
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
-  private WorkspaceSignupMessageDAO workspaceEntityMessageDAO;
+  private WorkspaceSignupMessageDAO workspaceSignupMessageDAO;
 
   @Inject
   @Any
   private Instance<MessagingWidget> messagingWidgets;
 
   public WorkspaceSignupMessage createWorkspaceSignupMessage(WorkspaceEntity workspaceEntity, 
-      UserGroupEntity signupGroupEntity, boolean enabled, String caption, String content) {
-    return workspaceEntityMessageDAO.create(workspaceEntity, signupGroupEntity, enabled, clean(caption), clean(content));
+      boolean defaultMessage, boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
+    return workspaceSignupMessageDAO.create(workspaceEntity, defaultMessage, enabled, clean(caption), clean(content), signupGroups);
+  }
+  
+  public void deleteWorkspaceSignupMessage(WorkspaceSignupMessage message) {
+    workspaceSignupMessageDAO.delete(message);
   }
   
   /**
@@ -71,23 +76,26 @@ public class WorkspaceSignupMessageController {
    * @return
    */
   public WorkspaceSignupMessage getApplicableSignupMessage(SchoolDataIdentifier userIdentifier, WorkspaceEntity workspaceEntity) {
+    WorkspaceSignupMessage applicableMessage = null;
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
-    
+    List<Long> userGroupIds = userGroupEntities.stream().map(UserGroupEntity::getId).collect(Collectors.toList());
     if (CollectionUtils.isNotEmpty(userGroupEntities)) {
-      /*
-       * List the group bound signup messages that match any of the user groups the user is member of.
-       * If we find any, return the first one - there's no priorities to pick "a better one"
-      */
-      List<WorkspaceSignupMessage> groupBoundSignupMessages = workspaceEntityMessageDAO.listEnabledGroupBoundSignupMessagesBy(workspaceEntity, userGroupEntities);
-      
-      // If we found any groups, we'll use the first one. There's no way to 
-      if (CollectionUtils.isNotEmpty(groupBoundSignupMessages)) {
-        return groupBoundSignupMessages.get(0);
+      List<WorkspaceSignupMessage> groupMessages = workspaceSignupMessageDAO.listEnabledGroupBoundSignupMessagesBy(workspaceEntity);
+      for (WorkspaceSignupMessage groupMessage: groupMessages) {
+        List<Long> messageGroupIds = groupMessage.getUserGroupEntities().stream().map(UserGroupEntity::getId).collect(Collectors.toList());
+        if (!Collections.disjoint(userGroupIds, messageGroupIds)) {
+          applicableMessage = groupMessage;
+          break;
+        }
       }
     }
-    
-    WorkspaceSignupMessage defaultSignupMessage = workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
-    return defaultSignupMessage != null && defaultSignupMessage.isEnabled() ? defaultSignupMessage : null;
+    if (applicableMessage == null) {
+      WorkspaceSignupMessage defaultSignupMessage = workspaceSignupMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
+      if (defaultSignupMessage != null && defaultSignupMessage.isEnabled()) {
+        applicableMessage = defaultSignupMessage;
+      }
+    }
+    return applicableMessage;
   }
   
   /**
@@ -95,9 +103,9 @@ public class WorkspaceSignupMessageController {
    * 
    * @param studentUserSchoolDataIdentifier student's UserSchoolDataIdentifier
    * @param workspaceEntity Workspace
-   * @return true if the signup message was sent, false otherwise
+   * @return message sent to student, <code>null</code> if nothing was sent
    */
-  public boolean sendApplicableSignupMessage(UserSchoolDataIdentifier studentUserSchoolDataIdentifier, WorkspaceEntity workspaceEntity) {
+  public WorkspaceSignupMessage sendApplicableSignupMessage(UserSchoolDataIdentifier studentUserSchoolDataIdentifier, WorkspaceEntity workspaceEntity) {
     WorkspaceSignupMessage workspaceSignupMessage = getApplicableSignupMessage(studentUserSchoolDataIdentifier.schoolDataIdentifier(), workspaceEntity);
 
     if (workspaceSignupMessage != null && workspaceSignupMessage.isEnabled()) {
@@ -136,28 +144,31 @@ public class WorkspaceSignupMessageController {
             workspaceSignupMessage.getContent()
         );
       }
-      
-      return true;
+      return workspaceSignupMessage;
     }
     
-    return false;
+    return null;
   }
 
   public WorkspaceSignupMessage findDefaultSignupMessage(WorkspaceEntity workspaceEntity) {
-    return workspaceEntityMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
+    return workspaceSignupMessageDAO.findDefaultSignupMessageBy(workspaceEntity);
   }
   
-  public WorkspaceSignupMessage findGroupSignupMessage(WorkspaceEntity workspaceEntity, UserGroupEntity signupGroupEntity) {
-    return workspaceEntityMessageDAO.findBy(workspaceEntity, signupGroupEntity);
+  public WorkspaceSignupMessage findSignupMessageById(Long id) {
+    return workspaceSignupMessageDAO.findById(id);
+  }
+
+  public List<WorkspaceSignupMessage> listByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return workspaceSignupMessageDAO.listByWorkspaceEntity(workspaceEntity);
   }
   
   public List<WorkspaceSignupMessage> listGroupBoundSignupMessages(WorkspaceEntity workspaceEntity) {
-    return workspaceEntityMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
+    return workspaceSignupMessageDAO.listGroupBoundSignupMessagesBy(workspaceEntity);
   }
   
   public WorkspaceSignupMessage updateWorkspaceSignupMessage(WorkspaceSignupMessage workspaceEntityMessage, 
-      boolean enabled, String caption, String content) {
-    return workspaceEntityMessageDAO.update(workspaceEntityMessage, enabled, clean(caption), clean(content));
+      boolean enabled, String caption, String content, List<UserGroupEntity> signupGroups) {
+    return workspaceSignupMessageDAO.update(workspaceEntityMessage, enabled, clean(caption), clean(content), signupGroups);
   }
   
   private String clean(String html) {

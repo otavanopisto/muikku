@@ -16,7 +16,7 @@ interface ManagementAdditionalInfoProps {
   workspaceEndDate: Date | null;
 
   onWorkspaceNameExtensionChange?: (workspaceNameExtension: string) => void;
-  onWorkspaceTypeChange?: (workspaceType: string) => void;
+  onWorkspaceTypeChange?: (workspaceType: WorkspaceType) => void;
   onWorkspaceStartDateChange?: (date: Date) => void;
   onWorkspaceEndDateChange?: (date: Date) => void;
 }
@@ -60,7 +60,10 @@ const ManagementAdditionalInfo = (props: ManagementAdditionalInfoProps) => {
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     if (onWorkspaceTypeChange) {
-      onWorkspaceTypeChange(e.target.value);
+      const selectedType = workspaceTypes?.find(
+        (type) => type.identifier === e.target.value
+      );
+      onWorkspaceTypeChange(selectedType);
     }
   };
 

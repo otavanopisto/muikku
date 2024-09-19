@@ -5,8 +5,9 @@ import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import DatePicker from "react-datepicker";
 import Button from "~/components/general/button";
+
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { ContactType, Student } from "~/generated/client";
+import { ContactType } from "~/generated/client";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import MApi, { isMApiError } from "~/api/api";
 import { StatusType } from "~/reducers/base/status";
@@ -14,21 +15,31 @@ import { ContactRecipientType } from "~/reducers/user-index";
 import moment from "moment";
 import { CreateMultipleContactLogEventsRequest } from "~/generated/client/models/CreateMultipleContactLogEventsRequest";
 import { useLocalStorage } from "usehooks-ts";
+import {
+  displayNotification,
+  DisplayNotificationTriggerType,
+} from "~/actions/base/notifications";
+
+import { AnyActionType } from "~/actions";
+import { connect } from "react-redux";
+import { Dispatch, bindActionCreators } from "redux";
+
+/**
+ * NewContactEventProps
+ */
 interface NewContactEventProps {
   status: StatusType;
   userIdentifier: string;
   selectedItems: ContactRecipientType[];
   isOpen?: boolean;
   onClose?: () => void;
-  children: any;
+  children?: React.ReactElement;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
-type Recipients = {
-  recipientIds: number[];
-  recipientGroupIds: number[];
-  recipientStudentsWorkspaceIds: number[];
-};
-
+/**
+ * NewContactEventState
+ */
 interface NewContactEventState {
   recipients: ContactRecipientType[];
   text: string;
@@ -38,15 +49,12 @@ interface NewContactEventState {
   locked: boolean;
 }
 
+/**
+ * Action
+ */
 type Action =
-  | { type: "SET_RECIPIENTS"; payload: ContactRecipientType[] }
-  | { type: "SET_CONTACT_LOG_ENTRY_DATE"; payload: Date }
-  | { type: "SET_CONTACT_LOG_ENTRY_TYPE"; payload: ContactType }
-  | { type: "SET_CONTACT_LOG_ENTRY_TEXT"; payload: string }
-  | { type: "SET_LOCKED"; payload: boolean }
-  | { type: "SET_ALL"; payload: NewContactEventState }
   | { type: "SET_DRAFT"; payload: boolean }
-  | { type: "RESET" };
+  | { type: "SET_LOCKED"; payload: boolean };
 
 const initialState: NewContactEventState = {
   recipients: [],
@@ -57,53 +65,52 @@ const initialState: NewContactEventState = {
   locked: false,
 };
 
+/**
+ * reducer
+ * @param state reducer state
+ * @param action reducer action
+ * @returns a new state
+ */
 const reducer = (
   state: NewContactEventState,
   action: Action
 ): NewContactEventState => {
   switch (action.type) {
-    case "SET_RECIPIENTS":
-      return { ...state, recipients: action.payload };
-    case "SET_CONTACT_LOG_ENTRY_DATE":
-      return { ...state, entryDate: action.payload };
-    case "SET_CONTACT_LOG_ENTRY_TYPE":
-      return { ...state, type: action.payload };
-    case "SET_CONTACT_LOG_ENTRY_TEXT":
-      return { ...state, text: action.payload };
-    case "SET_LOCKED":
-      return { ...state, locked: action.payload };
-    case "SET_ALL":
-      return { ...state, ...action.payload };
     case "SET_DRAFT":
       return { ...state, draft: action.payload };
-    case "RESET":
-      return initialState;
-
+    case "SET_LOCKED":
+      return { ...state, locked: action.payload };
     default:
       return state;
   }
 };
 
+/**
+ * NewContactEvent
+ * @param props component props
+ * @returns a React component
+ */
 const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { text, type, entryDate, recipients, draft, locked } = state;
+  const { draft, locked } = state;
+  const { isOpen, status, selectedItems, children, displayNotification } =
+    props;
 
-  const { isOpen, status, selectedItems, children, onClose } = props;
   const { t } = useTranslation(["common", "messaging"]);
 
-  const [newContactEventState, setNewContactEventState] =
-    useLocalStorage<NewContactEventState>("new-contact-event", initialState);
+  const [
+    newContactEventState,
+    setNewContactEventState,
+    removeContactEventState,
+  ] = useLocalStorage<NewContactEventState>("new-contact-event", initialState);
+
+  const { text, type, entryDate, recipients } = newContactEventState;
 
   useEffect(() => {
-    // If there's a local storage state, dispatch it to the state
+    // If there's a local storage state this is a draft
     if (localStorage.getItem("new-contact-event")) {
-      const state = { ...newContactEventState };
-
-      state.entryDate = new Date(newContactEventState.entryDate);
-      state.draft = true;
-      dispatch({ type: "SET_ALL", payload: state });
+      dispatch({ type: "SET_DRAFT", payload: true });
     }
-
     if (selectedItems.length > 0) {
       const existing = [...newContactEventState.recipients];
 
@@ -116,24 +123,24 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
               (existingItem) => existingItem.value.id === selectedItem.value.id
             )
         );
-
-        dispatch({
-          type: "SET_RECIPIENTS",
-          payload: [...newItems, ...existing],
-        });
+        setNewContactEventState((prevState) => ({
+          ...prevState,
+          recipients: [...newItems, ...existing],
+        }));
       } else {
-        // ohterwise, just set the selected items
-        dispatch({ type: "SET_RECIPIENTS", payload: selectedItems });
+        setNewContactEventState((prevState) => ({
+          ...prevState,
+          recipients: selectedItems,
+        }));
       }
     }
   }, [selectedItems]);
 
   /**
    * handleRecipientsChange
-   * @param recipients
+   * @param recipients recipients
    */
   const handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    dispatch({ type: "SET_RECIPIENTS", payload: recipients });
     setNewContactEventState((prevState) => ({
       ...prevState,
       recipients,
@@ -143,10 +150,9 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   /**
    * handleDateChange
-   * @param date
+   * @param date date
    */
   const handleDateChange = (date: Date) => {
-    dispatch({ type: "SET_CONTACT_LOG_ENTRY_DATE", payload: date });
     setNewContactEventState((prevState) => ({
       ...prevState,
       entryDate: date,
@@ -156,13 +162,9 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   /**
    * handleTypeChange
-   * @param e
+   * @param e event
    */
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch({
-      type: "SET_CONTACT_LOG_ENTRY_TYPE",
-      payload: e.target.value as ContactType,
-    });
     setNewContactEventState((prevState) => ({
       ...prevState,
       type: e.target.value as ContactType,
@@ -172,10 +174,9 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   /**
    * handleCkEditorChange
-   * @param text
+   * @param text text
    */
   const handleCkEditorChange = (text: string) => {
-    dispatch({ type: "SET_CONTACT_LOG_ENTRY_TEXT", payload: text });
     setNewContactEventState((prevState) => ({
       ...prevState,
       text,
@@ -188,8 +189,8 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    * handleReset
    */
   const handleReset = () => {
-    dispatch({ type: "RESET" });
-    localStorage.removeItem("new-contact-event");
+    setNewContactEventState(initialState);
+    removeContactEventState();
     dispatch({ type: "SET_DRAFT", payload: false });
   };
 
@@ -202,6 +203,11 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     const guiderApi = MApi.getGuiderApi();
 
     return {
+      /**
+       * studentsLoader
+       * @param searchString search term
+       * @returns a function that returns a promise
+       */
       studentsLoader: (searchString: string) => () =>
         guiderApi.getGuiderStudents({
           q: searchString,
@@ -241,15 +247,32 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       },
     };
 
-    console.log(payload);
-
     guiderApi
       .createMultipleContactLogEvents({
         createMultipleContactLogEventsRequest: payload,
       })
       .then(() => {
-        dispatch({ type: "RESET" });
         closeDialog();
+        handleReset();
+        displayNotification(
+          t("notifications.createSuccess", {
+            ns: "messaging",
+            context: "contactLog",
+          }),
+          "success"
+        );
+      })
+      .catch((error: unknown) => {
+        if (!isMApiError(error)) {
+          throw error;
+        }
+        displayNotification(
+          t("notifications.createError", {
+            ns: "messaging",
+            context: "contactLog",
+          }),
+          "error"
+        );
       });
   };
 
@@ -280,7 +303,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         />
       </div>
       <div className="env-dialog__row env-dialog__row--new-contact-event">
-        <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
+        <div className="env-dialog__form-element-container">
           <label htmlFor="contactEventdate" className="env-dialog__label">
             {t("labels.create", {
               ns: "messaging",
@@ -292,7 +315,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
             id="contactEventdate"
             onChange={handleDateChange}
             locale={outputCorrectDatePickerLocale(localize.language)}
-            selected={entryDate}
+            selected={new Date(entryDate)}
             dateFormat="P"
           ></DatePicker>
         </div>
@@ -334,6 +357,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
           </CKEditor>
         </div>
       </div>
+      ,
     </>
   );
 
@@ -386,4 +410,16 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   );
 };
 
-export default NewContactEvent;
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return bindActionCreators(
+    {
+      displayNotification,
+    },
+    dispatch
+  );
+}
+export default connect(null, mapDispatchToProps)(NewContactEvent);

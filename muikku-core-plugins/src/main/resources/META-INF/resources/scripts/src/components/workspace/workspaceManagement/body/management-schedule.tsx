@@ -5,7 +5,7 @@ import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
- * WorkspaceSignupGroups
+ * ManagementScheduleProps
  */
 interface ManagementScheduleProps {
   workspaceSignupStartDate: Date | null;
@@ -15,7 +15,7 @@ interface ManagementScheduleProps {
 }
 
 /**
- * WorkspaceSignupGroup
+ * ManagementSchedule
  * @param props props
  */
 const ManagementSchedule = (props: ManagementScheduleProps) => {

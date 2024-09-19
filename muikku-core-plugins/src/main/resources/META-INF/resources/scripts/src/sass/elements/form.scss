@@ -8,6 +8,13 @@
   width: 100%;
 }
 
+.form__container-title {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-weight: 400;
+}
+
 .form__row {
   margin: 0 0 15px;
   position: relative;
@@ -38,6 +45,11 @@
 .form__row--split {
   display: flex;
   flex-flow: row wrap;
+}
+
+.form__row-header {
+  display: flex;
+  justify-content: space-between;
 }
 
 .form__buttons {
@@ -223,8 +235,7 @@ legend {
 
 // CHECKBOX or RADIOBUTTON form-element wrapper
 .form-element--checkbox-radiobutton,
-.form-element--icon-with-label,
-.form-element--checkbox-radiobutton-inside-summary {
+.form-element--icon-with-label {
   align-items: center;
   background-color: transparent;
   border-radius: 0;
@@ -237,11 +248,6 @@ legend {
     font-weight: 400;
     padding: 0;
   }
-}
-
-.form-element--checkbox-radiobutton-inside-summary {
-  margin: 0;
-  padding: 0;
 }
 
 .form-element--edit-label {
