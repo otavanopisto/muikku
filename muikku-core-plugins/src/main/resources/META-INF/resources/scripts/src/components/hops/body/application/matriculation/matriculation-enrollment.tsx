@@ -1,14 +1,8 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import ApplicationList, {
-  ApplicationListItem,
-  ApplicationListItemBody,
-  ApplicationListItemHeader,
-} from "~/components/general/application-list";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops/";
@@ -36,16 +30,7 @@ interface MatriculationEnrollmentProps {
 const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
   const { hops } = props;
 
-  const [showHistory, setShowHistory] = React.useState(false);
-
   const { t } = useTranslation(["hops", "guider", "common"]);
-
-  /**
-   * handleToggleHistoryClick
-   */
-  const handleToggleHistoryClick = () => {
-    setShowHistory(!showHistory);
-  };
 
   if (hops.hopsMatriculationStatus !== "READY") {
     return <div className="loader-empty" />;

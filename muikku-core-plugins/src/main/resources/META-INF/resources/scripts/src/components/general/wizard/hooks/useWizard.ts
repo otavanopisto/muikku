@@ -32,6 +32,7 @@ export const useWizard = (props: UseWizardProps) => {
    * @param index step index
    */
   const isInvalid = React.useCallback((value: boolean, index: number) => {
+    console.log("isInvalid", value, index);
     setSteps((oldValues) => {
       if (value !== oldValues[index].isInvalid) {
         const newValues = [...oldValues];

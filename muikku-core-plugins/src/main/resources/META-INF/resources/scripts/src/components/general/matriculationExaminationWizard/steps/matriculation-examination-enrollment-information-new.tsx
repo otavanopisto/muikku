@@ -36,8 +36,6 @@ import {
 } from "~/components/general/matriculationExaminationWizard/helper";
 import { useTranslation } from "react-i18next";
 
-//Specific rules for old form
-
 /**
  * Required amount attendances for valid Examination (vähintään 5 suoritusta)
  */
@@ -62,11 +60,6 @@ const REQUIRED_AMOUNT_DIFFERENT_ATTENDACE_GROUPS = 3;
  * Required amount advanced subject (A-tason koe)
  */
 const REQUIRED_AMOUNT_ADVANCED_SUBJECT = 1;
-
-/**
- * Required num of courses for to attend examination
- */
-//const REQUIRED_NUM_OF_COURSES = 20;
 
 /**
  * CHANGE
@@ -106,11 +99,6 @@ interface OptionType<T> {
   value: T;
   label: string;
 }
-
-/**
- * MatriculationExaminationEnrollmentInformationProps
- */
-//interface MatriculationExaminationEnrollmentInformationNewProps {}
 
 /**
  * MatriculationExaminationEnrollmentInformation
@@ -894,7 +882,8 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
   React.useEffect(() => {
     values.isInvalid(isInvalid(), values.currentStepIndex);
-  }, [isInvalid, values]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInvalid]);
 
   const currentTerm = resolveCurrentTerm();
 
@@ -1298,6 +1287,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
                       })
                     : t("content.matriculationFormInfoBlock2", {
                         ns: "hops_new",
+                        context: "noSelection",
                       }),
               }}
             />

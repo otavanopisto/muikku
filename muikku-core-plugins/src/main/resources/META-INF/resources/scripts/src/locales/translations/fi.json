@@ -479,8 +479,7 @@
     "actions": {
       "addSubject": "Lisää aine",
       "alreadySignedUp": "Olet jo ilmoittautunut YO-kirjoituksiin.",
-      "assignments": "Tehtävät",
-      "signUp": " Ilmoittaudu YO-kirjoituksiin ({{dueDate}} asti)"
+      "assignments": "Tehtävät"
     },
     "content": {
       "abiStatus": "Abistatuksestasi ei puutu kursseja. Voit nyt ilmoittautua YO-kirjoituksiin.",
@@ -629,7 +628,8 @@
       "confirmRegistration": "Vahvista ilmoittautuminen",
       "showSummary": "Näytä yhteenveto",
       "showOldSummary": "Näytä vanha yhteenveto",
-      "showChangeLog": "Näytä tapahtumamuutokset",
+      "showChangeLog": "Näytä ilmoittautumisen muutoshistoria",
+      "signUp": " Ilmoittaudu YO-kirjoituksiin ({{dueDate}} asti)",
       "supplementRegistration": "Täydennä ilmoittautumista"
     },
     "labels": {
@@ -640,7 +640,7 @@
       "retake": "Uusiminen",
       "hopsMatriculation": "Ylioppilastutkinto",
       "matriculationFormStudentInfoTitle": "Opiskelijatiedot",
-      "matriculationFormRegistrationTitle": "Ilmoittaututuminen",
+      "matriculationFormRegistrationTitle": "Ilmoittautuminen",
       "matriculationFormActTitle": "Suorituspaikka",
       "matriculationFormSummaryTitle": "Yhteenveto",
       "matriculationFormCompleteTitle": "Valmis",
@@ -680,8 +680,10 @@
       "matriculationParticipation_title2": "Ainekohtainen osallistumisoikeus",
       "matriculationEnrollment": "Ilmoittautuminen",
       "matriculationEnrollment_title": "Ylioppilaskokeeseen ilmoittautuminen",
-      "matriculationEnrollmentCloses": "Ilmoittautuminen sulkeutuu",
+      "matriculationEnrollmentCloses": "Ilmoittautuminen sulkeutuu:",
+      "matriculationEnrollmentInfo": "Ilmoittautumisen tiedot:",
       "matriculationEnrollmentStatus": "Ilmoittautumisen tila:",
+      "matriculationEnrollmentMessage": "Ohjaajan viesti:",
       "matriculationEnrollmentHistory": "Ilmoittautumishistoria",
       "matriculationHistory": "Yo-koehistoria",
       "matriculationHistory_title": "Yo-koehistoria",
@@ -700,15 +702,15 @@
       "matriculationChangeLogApproved": "hyväksyi ilmoittautumisen.",
       "matriculationFormChangedInformation": "Jos tietosi ovat muuttuneet, ilmoita siitä tässä",
       "matriculationPlanGuides1": "Äidinkieli ja kirjallisuus, suomi tai Suomi toisena kielenä kirjallisuus (S2) + vähintään neljä (4) koetta, jotka valitaan vähintään kolmesta (3) aineryhmästä:",
-      "matriculationPlanGuides2": "<b>Huom.&nbsp;</b> Tutkintoon vaaditaan yksi (1) pitkän oppimäärän koe (esim. pitkä matematiikka tai A-tason vieras kieli).",
-      "matriculationPlanGuides3": "<p>Kokeile&nbsp;<a href='https://ilmo.ylioppilastutkinto.fi/fi'>ILMO-työkalulla</a>, millaisilla aineyhdistelmillä voit suorittaa ylioppilastutkinnon.</p>",
+      "matriculationPlanGuides2": "<b>Huom.&nbsp;</b>Tutkintoon vaaditaan yksi (1) pitkän oppimäärän koe (esim. pitkä matematiikka tai A-tason vieras kieli).",
+      "matriculationPlanGuides3": "<p>Kokeile&nbsp;<a href='https://ilmo.ylioppilastutkinto.fi/fi' target='_blank'>ILMO-työkalulla</a>, millaisilla aineyhdistelmillä voit suorittaa ylioppilastutkinnon.</p>",
       "matriculationPlanGuideSubject1": "Vieras kieli (pitkä tai lyhyt)",
       "matriculationPlanGuideSubject2": "Matematiikka (pitkä tai lyhyt)",
       "matriculationPlanGuideSubject3": "Toinen kotimainen kieli eli ruotsi (pitkä tai keskipitkä)",
       "matriculationPlanGuideSubject4": "Yksi reaaliaineen koe",
       "matriculationPlanTarget": "Aion osallistua ylioppilaskokeisiin",
       "matriculationPlanSubjectGoal": "Aion osallistua seuraavien aineiden yo-kokeisiin:",
-      "matriculationEligibilityGuides1": "Jotta voit&nbsp;<b>ilmoittautua ylioppilaskokeeseen</b>&nbsp;sinun pitää suorittaa ensin riittävä määrä opintoja. Abistatus tarkoittaa ilmoittautumisoikeutta.",
+      "matriculationEligibilityGuides1": "Jotta voit&nbsp;<b>ilmoittautua ylioppilaskokeeseen</b>,&nbsp;sinun pitää suorittaa ensin riittävä määrä opintoja. Abistatus tarkoittaa ilmoittautumisoikeutta.",
       "matriculationEligibilityGuides2": "<b>Huom.&nbsp;</b> Jos sinulla on ammatillinen perustutkinto, voit hakea yo-kokeeseen tutkintosi pohjalta.",
       "matriculationEligibilityGuides3": "Ennen ilmoittautumista sinulla pitää olla suoritettuna:",
       "matriculationEligibilityGuides4": "Lisäksi sinulla pitää olla suoritettuna kirjoitettavasta aineesta tietty määrä opintoja. Jos et ole suorittanut riittävästi opintoja kirjoitettavasta aineesta, voit ilmoittautua myöhemmin pidettävään kokeeseen tai keskustella asiasta ohjaajasi kanssa.",
@@ -717,7 +719,7 @@
       "matriculationEnrollmentDone": "Olet ilmoittautunut ylioppilaskokeeseen <b>({{term}})</b>",
       "matriculationEnrollmentGuides1": "Huom. Tarkasta ennen ilmoittautumista Osallistumisoikeus-välilehdeltä, oletko suorittanut riittävästi opintoja, jotta voit osallistua yo-kirjoituksiin",
       "matriculationEnrollmentGuides2": "Jos sinulla on kysyttävää, ota yhteyttä Riikka Turpeiseen (riikka.turpeinen@otavia.fi)",
-      "matriculationAbistatusEligibility1": "Vähintään 40 opintopistettä pakollisisa opintoja. Sinulla on <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
+      "matriculationAbistatusEligibility1": "Vähintään 40 opintopistettä pakollisia opintoja. Sinulla on <b>{{acceptedCount}}</b> / <b>{{requiredCount}} op</b>",
       "matriculationAbistatusEligibility2": "Vähintään yksi opintojakso Nettilukiossa",
       "matriculationAbistatusEligibility3": "Kaikista ylioppilastutkintoon suunnittelemistasi aineista vähintään yksi pakollinen opintojakso",
       "matriculationHistoryEmpty": "Sinulla ei ole vielä tuloksia yo-kokeista.",
@@ -759,9 +761,9 @@
     },
     "matriculationTerms": {
       "AUTUMN": "Syksy {{year}}",
-      "AUTUMN_adessive": "<b>in autumn {{year}}</b>",
+      "AUTUMN_adessive": "<b>Syksyllä {{year}}</b>",
       "SPRING": "Kevät {{year}}",
-      "SPRING_adessive": "<b>in spring {{year}}</b>"
+      "SPRING_adessive": "<b>Keväällä {{year}}</b>"
     },
     "enrollAsTypes": {
       "UPPERSECONDARY": "Lukion opiskelijana",
