@@ -13101,6 +13101,7 @@ components:
         - workspaceUserEntityId
         - workspaceUserIdentifier
         - hasPedagogyForm
+        - state
       properties:
         id:
           type: integer
