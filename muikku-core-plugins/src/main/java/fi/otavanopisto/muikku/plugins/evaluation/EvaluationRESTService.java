@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1309,6 +1310,34 @@ public class EvaluationRESTService extends PluginRESTService {
           }
         }
       }
+
+      Collections.sort(restAssessmentRequests, new Comparator<RestAssessmentRequest>() {
+        @Override
+        public int compare(RestAssessmentRequest a1, RestAssessmentRequest a2) {
+          Date d1, d2;
+          String[] s1 = {WorkspaceAssessmentState.INCOMPLETE, WorkspaceAssessmentState.PASS, WorkspaceAssessmentState.FAIL};
+          String[] s2 = {WorkspaceAssessmentState.PENDING, WorkspaceAssessmentState.PENDING_FAIL, WorkspaceAssessmentState.PENDING_PASS, WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST};
+          if (Arrays.stream(s1).anyMatch(a1.getState()::equals)) {
+            d1 = a1.getEvaluationDate();
+          }
+          else if (Arrays.stream(s2).anyMatch(a1.getState()::equals)) {
+            d1 = a1.getAssessmentRequestDate();
+          }
+          else {
+            d1 = a1.getEnrollmentDate();
+          }
+          if (Arrays.stream(s1).anyMatch(a2.getState()::equals)) {
+            d2 = a2.getEvaluationDate();
+          }
+          else if (Arrays.stream(s2).anyMatch(a2.getState()::equals)) {
+            d2 = a2.getAssessmentRequestDate();
+          }
+          else {
+            d2 = a2.getEnrollmentDate();
+          }
+          return d1 == null && d2 == null ? 0 : d1 == null ? -1 : d2 == null ? 1 : d1.compareTo(d2); 
+        }
+      });
       
     }
     else {
@@ -1378,6 +1407,8 @@ public class EvaluationRESTService extends PluginRESTService {
           restAssessmentRequest.setState(WorkspaceAssessmentState.INTERIM_EVALUATION_REQUEST);
         }
       }
+      
+      restAssessmentRequests.sort(Comparator.comparing(RestAssessmentRequest::getLastName).thenComparing(RestAssessmentRequest::getFirstName));
     }
     
     return Response.ok(restAssessmentRequests).build();
@@ -1714,7 +1745,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     if (!resolvedState) {
-      if (graded) {
+      if (graded && evaluationDate.after(compositeAssessmentRequest.getAssessmentRequestDate())) {
         if (passing) {
           restAssessmentRequest.setState(WorkspaceAssessmentState.PASS);
         }
