@@ -479,8 +479,7 @@
     "actions": {
       "addSubject": "Add a subject",
       "alreadySignedUp": "Already signed up",
-      "assignments": "Assignments",
-      "signUp": "Sign up for the matriculation exam due ({{dueDate}})"
+      "assignments": "Assignments"
     },
     "content": {
       "abiStatus": "You do not lack any courses from your Abi status. You may sign up for the matriculation examination.",
@@ -629,7 +628,8 @@
       "confirmRegistration": "Confirm registration",
       "showSummary": "Show summary",
       "showOldSummary": "Show old summary",
-      "showChangeLog": "Show change history",
+      "showChangeLog": "Show registration change history",
+      "signUp": "Register for the matriculation exams (until {{dueDate}})",
       "supplementRegistration": "Supplement registration"
     },
     "labels": {
@@ -680,8 +680,10 @@
       "matriculationParticipation_title2": "Subject-specific eligibility",
       "matriculationEnrollment": "Registration",
       "matriculationEnrollment_title": "Registration for the matriculation examination",
-      "matriculationEnrollmentCloses": "Registration closes",
-      "matriculationEnrollmentStatus": "Status of Registration:",
+      "matriculationEnrollmentCloses": "Registration closes:",
+      "matriculationEnrollmentInfo": "Registration details:",
+      "matriculationEnrollmentStatus": "Status of registration:",
+      "matriculationEnrollmentMessage": "Message from councelor:",
       "matriculationEnrollmentHistory": "Registration history",
       "matriculationHistory": "History",
       "matriculationHistory_title": "Matriculation Examination History",
@@ -700,11 +702,11 @@
       "matriculationChangeLogApproved": "approved the registration.",
       "matriculationFormChangedInformation": "If your information has changed, please report it here",
       "matriculationPlanGuides1": "Finnish language and literature or Finnish as a second language and literature (S2) + at least four (4) other exams, chosen from at least three (3) subject groups:",
-      "matriculationPlanGuides2": "<b>Note.&nbsp;</b> The examination required one (1) advanced level eam (e.g., advanved (long) mathematics or an A-level (long) foreign language).",
-      "matriculationPlanGuides3": "<p>Try using&nbsp;<a href='https://ilmo.ylioppilastutkinto.fi/fi'>the ILMO tool</a> to explore different subject combinations for completing the matriculation examination.</p>",
+      "matriculationPlanGuides2": "<b>Note.&nbsp;</b>The examination required one (1) advanced level exam (e.g., advanced (long) mathematics or an A-level (long) foreign language).",
+      "matriculationPlanGuides3": "<p>Try using&nbsp;<a href='https://ilmo.ylioppilastutkinto.fi/fi' target='_blank'>the ILMO tool</a> to explore different subject combinations for completing the matriculation examination.</p>",
       "matriculationPlanGuideSubject1": "Foreign language (long or short)",
       "matriculationPlanGuideSubject2": "Mathematics (long or short)",
-      "matriculationPlanGuideSubject3": "The second national language, Swedish (long or itermediate)",
+      "matriculationPlanGuideSubject3": "The second national language, Swedish (long or intermediate)",
       "matriculationPlanGuideSubject4": "One exam in a subject of general studies",
       "matriculationPlanTarget": "I plan to participate in the matriculation examinations.",
       "matriculationPlanSubjectGoal": "I plan to participate in the matriculation examinations for the following subjects:",
@@ -715,7 +717,7 @@
       "matriculationEligibilityGuides5": "<p>In order to take the matriculation exam for a subject, you must complete the compulsory studies in that subject. If there are no compulsory studies in the subject, you must have completed four (4) credits for general studies and six (6) credits for foreign languages.</p>",
       "matriculationEligibility": "You have completed the required studies: <b>{{acceptedCount}}</b> / <b>{{requiredCount}} credits</b>",
       "matriculationEnrollmentDone": "You have registered for the matriculation examination <b>({{term}})</b>",
-      "matriculationEnrollmentGuides1": "Note. Check before registration from the Participation eligibility tab, if you have completed enough studies to participate in the matriculation examination",
+      "matriculationEnrollmentGuides1": "Note. Check before registration from the Right to participate tab, if you have completed enough studies to participate in the matriculation examination",
       "matriculationEnrollmentGuides2": "If you have something to ask about the registration, please contact Riikka Turpeinen (riikka.turpeinen@otavia.fi).",
       "matriculationAbistatusEligibility1": "At least 40 credits of compulsory studies. You have <b>{{acceptedCount}}</b> / <b>{{requiredCount}} credits</b>",
       "matriculationAbistatusEligibility2": "At least one course in the Nettilukio",
@@ -824,7 +826,7 @@
       "SC": "German, C-level",
       "VC": "Russian, C-level",
       "TC": "Italian, C-level",
-      "GC": "Portugese, C-level",
+      "GC": "Portuguese, C-level",
       "LC": "Latin, C-level",
       "SMC": "Sami, C-level"
     },

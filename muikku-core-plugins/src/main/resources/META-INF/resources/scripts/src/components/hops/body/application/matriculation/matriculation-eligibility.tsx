@@ -25,10 +25,6 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
   const { t } = useTranslation(["hops_new", "guider", "common"]);
 
-  if (hops.hopsMatriculationStatus !== "READY") {
-    return <div className="loader-empty" />;
-  }
-
   /**
    * Check planned subjects for 0 passing grade course credit points
    * @returns Boolean if any of the planned subjects have 0 passing grade course credit points
@@ -44,26 +40,53 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
    * @param code matriculation subject code
    * @returns subject name or empty string if not found
    */
-  const getMatriculationSubjectNameByCode = (code: string) =>
-    t(`matriculationSubjectsYTL.${code}`, {
-      ns: "hops_new",
-      defaultValue: code,
-    });
+  const getMatriculationSubjectNameByCode = React.useCallback(
+    (code: string) =>
+      t(`matriculationSubjectsYTL.${code}`, {
+        ns: "hops_new",
+        defaultValue: code,
+      }),
+    [t]
+  );
 
-  // Abistatus eligibility rows
-  const subjectAbistatusEligibilityRows =
-    hops.hopsMatriculation.eligibility.subjectStats.map((sAbistatus, index) => (
-      <MatriculationEligibilityRow
-        key={index}
-        label={getMatriculationSubjectNameByCode(sAbistatus.code)}
-        eligibility={sAbistatus.abistatusOk ? "ELIGIBLE" : "NOT_ELIGIBLE"}
-        description={t("content.matriculationEligibility", {
-          ns: "hops_new",
-          acceptedCount: sAbistatus.doneCredits,
-          requiredCount: sAbistatus.requiredCredits,
-        })}
-      />
-    ));
+  // Sorted by subjectsWithEligibility list so they are in the same order as in the UI
+  const abistatusEligibilitySortedRows = React.useMemo(() => {
+    if (
+      hops.hopsMatriculationStatus !== "READY" ||
+      !hops.hopsMatriculation.eligibility
+    ) {
+      return [];
+    }
+
+    return hops.hopsMatriculation.eligibility.subjectStats
+      .sort(
+        (a, b) =>
+          hops.hopsMatriculation.subjectsWithEligibility.findIndex(
+            (s) => s.subject.subjectCode === a.subjectCode
+          ) -
+          hops.hopsMatriculation.subjectsWithEligibility.findIndex(
+            (s) => s.subject.subjectCode === b.subjectCode
+          )
+      )
+      .map((sAbistatus, index) => (
+        <MatriculationEligibilityRow
+          key={index}
+          label={getMatriculationSubjectNameByCode(sAbistatus.code)}
+          eligibility={sAbistatus.abistatusOk ? "ELIGIBLE" : "NOT_ELIGIBLE"}
+          description={t("content.matriculationEligibility", {
+            ns: "hops_new",
+            acceptedCount: sAbistatus.doneCredits,
+            requiredCount: sAbistatus.requiredCredits,
+          })}
+        />
+      ));
+  }, [
+    getMatriculationSubjectNameByCode,
+    hops.hopsMatriculation.eligibility,
+    hops.hopsMatriculation.subjectsWithEligibility,
+    hops.hopsMatriculationStatus,
+    t,
+  ]);
 
   // Participation rights eligibility rows
   const subjectEligibilityRows =
@@ -81,6 +104,10 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
         />
       )
     );
+
+  if (hops.hopsMatriculationStatus !== "READY") {
+    return <div className="loader-empty" />;
+  }
 
   return (
     <>
@@ -171,10 +198,10 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
             </div>
           </div>
 
-          {subjectAbistatusEligibilityRows.length > 0 && (
+          {abistatusEligibilitySortedRows.length > 0 && (
             <div className="application-sub-panel__notification-item">
               <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-                {subjectAbistatusEligibilityRows}
+                {abistatusEligibilitySortedRows}
               </div>
             </div>
           )}
