@@ -11,7 +11,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 public class WorkspaceSettingsRestModel {
 
 
-public WorkspaceSettingsRestModel() {
+  public WorkspaceSettingsRestModel() {
+	  
   }
 
   public WorkspaceSettingsRestModel(
