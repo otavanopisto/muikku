@@ -206,7 +206,7 @@ public class MatriculationRESTService {
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_LOAD_DRAFT)
   @Path("/exams/{EXAMID}/savedEnrollments/{USERID}")
-  public Response fetchSavedEnrollment(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId) {
+  public Response fetchEnrollmentDraft(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId) {
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
@@ -225,7 +225,7 @@ public class MatriculationRESTService {
   @PUT
   @RESTPermit(MatriculationPermissions.MATRICULATION_SAVE_DRAFT)
   @Path("/exams/{EXAMID}/savedEnrollments/{USERID}")
-  public Response saveEnrollment(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId, String body) {
+  public Response saveEnrollmentDraft(@PathParam("EXAMID") Long examId, @PathParam("USERID") String userId, String body) {
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(userId);
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
