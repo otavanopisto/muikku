@@ -241,109 +241,108 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   );
 
   const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
-    <div
-      className="form-element__dropdown-selection-container form-element__dropdown-selection-container--nowrap"
-      key={index}
-    >
-      <label
-        htmlFor={`matriculationSubject` + index}
-        className="visually-hidden"
-      >
-        {t("wcag.select", { ns: "guider" })}
-      </label>
-      <select
-        id={`matriculationSubject` + index}
-        className="form-element__select form-element__select--matriculation-exam"
-        value={subject.subjectCode || ""}
-        onChange={handleMatriculationSubjectChange(index)}
-        disabled={disabled}
-      >
-        <option disabled value="">
-          {t("labels.select", { ns: "hops" })}
-        </option>
+    <div className="form__row" key={index}>
+      <div className="form-element__dropdown-selection-container form-element__dropdown-selection-container--nowrap">
+        <label
+          htmlFor={`matriculationSubject` + index}
+          className="visually-hidden"
+        >
+          {t("wcag.select", { ns: "guider" })}
+        </label>
+        <select
+          id={`matriculationSubject` + index}
+          className="form-element__select form-element__select--matriculation-exam"
+          value={subject.subjectCode || ""}
+          onChange={handleMatriculationSubjectChange(index)}
+          disabled={disabled}
+        >
+          <option disabled value="">
+            {t("labels.select", { ns: "hops" })}
+          </option>
 
-        {generalStudyOptions.length > 0 && (
-          <optgroup
-            label={t("labels.matriculationPlanGeneralStudies", {
-              ns: "hops_new",
-            })}
-          >
-            {generalStudyOptions}
-          </optgroup>
-        )}
-        {mathOptions.length > 0 && (
-          <optgroup
-            label={t("labels.matriculationPlanMath", {
-              ns: "hops_new",
-            })}
-          >
-            {mathOptions}
-          </optgroup>
-        )}
-        {finnishOptions.length > 0 && (
-          <optgroup
-            label={t("labels.matriculationPlanNativeLng", {
-              ns: "hops_new",
-            })}
-          >
-            {finnishOptions}
-          </optgroup>
-        )}
-        {secondFinnishOptions.length > 0 && (
-          <optgroup
-            label={t("labels.matriculationPlanNativeSecondLng", {
-              ns: "hops_new",
-            })}
-          >
-            {secondFinnishOptions}
-          </optgroup>
-        )}
-        {foreignLanguageOptions.length > 0 && (
-          <optgroup
-            label={t("labels.matriculationPlanForeignLanguages", {
-              ns: "hops_new",
-            })}
-          >
-            {foreignLanguageOptions}
-          </optgroup>
-        )}
-      </select>
-      <label
-        htmlFor={`matriculationSubject` + index}
-        className="visually-hidden"
-      >
-        {t("wcag.select", { ns: "guider" })}
-      </label>
-      <select
-        id={`matriculationSubject` + index}
-        className="form-element__select form-element__select--matriculation-exam"
-        value={subject.term || ""}
-        onChange={handleMatriculationSubjectTermChange(index)}
-        disabled={disabled}
-      >
-        <option disabled value="">
-          {t("labels.select", { ns: "hops" })}
-        </option>
+          {generalStudyOptions.length > 0 && (
+            <optgroup
+              label={t("labels.matriculationPlanGeneralStudies", {
+                ns: "hops_new",
+              })}
+            >
+              {generalStudyOptions}
+            </optgroup>
+          )}
+          {mathOptions.length > 0 && (
+            <optgroup
+              label={t("labels.matriculationPlanMath", {
+                ns: "hops_new",
+              })}
+            >
+              {mathOptions}
+            </optgroup>
+          )}
+          {finnishOptions.length > 0 && (
+            <optgroup
+              label={t("labels.matriculationPlanNativeLng", {
+                ns: "hops_new",
+              })}
+            >
+              {finnishOptions}
+            </optgroup>
+          )}
+          {secondFinnishOptions.length > 0 && (
+            <optgroup
+              label={t("labels.matriculationPlanNativeSecondLng", {
+                ns: "hops_new",
+              })}
+            >
+              {secondFinnishOptions}
+            </optgroup>
+          )}
+          {foreignLanguageOptions.length > 0 && (
+            <optgroup
+              label={t("labels.matriculationPlanForeignLanguages", {
+                ns: "hops_new",
+              })}
+            >
+              {foreignLanguageOptions}
+            </optgroup>
+          )}
+        </select>
+        <label
+          htmlFor={`matriculationSubject` + index}
+          className="visually-hidden"
+        >
+          {t("wcag.select", { ns: "guider" })}
+        </label>
+        <select
+          id={`matriculationSubject` + index}
+          className="form-element__select form-element__select--matriculation-exam"
+          value={subject.term || ""}
+          onChange={handleMatriculationSubjectTermChange(index)}
+          disabled={disabled}
+        >
+          <option disabled value="">
+            {t("labels.select", { ns: "hops" })}
+          </option>
 
-        {!disabled ? termOptions : getOptionByValue(subject.term)}
-      </select>
+          {!disabled ? termOptions : getOptionByValue(subject.term)}
+        </select>
 
-      {!disabled && (
-        <>
-          <label
-            id="removeMatriculationRowLabelSubject"
-            className="visually-hidden"
-          >
-            {t("actions.remove")}
-          </label>
-          <Button
-            buttonModifiers={["button-has-icon", "remove-matriculation-row"]}
-            onClick={handleMatriculationSubjectRemove(index)}
-            icon="trash"
-            aria-labelledby="removeMatriculationRowLabelSubject"
-          ></Button>
-        </>
-      )}
+        {!disabled && (
+          <>
+            <label
+              id="removeMatriculationRowLabelSubject"
+              className="visually-hidden"
+            >
+              {t("actions.remove")}
+            </label>
+            <Button
+              buttonModifiers={["button-has-icon", "remove-matriculation-row"]}
+              onClick={handleMatriculationSubjectRemove(index)}
+              icon="trash"
+              aria-labelledby="removeMatriculationRowLabelSubject"
+            ></Button>
+          </>
+        )}
+      </div>
     </div>
   ));
 
@@ -351,14 +350,16 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
     <div className="form-element">
       {matriculationSubjectInputs}
       {!disabled && (
-        <div className="form__buttons">
-          <Button
-            buttonModifiers={["button-has-icon", "add-matriculation-row"]}
-            onClick={handleMatriculationSubjectAdd}
-            icon="plus"
-          >
-            {t("actions.addSubject", { ns: "studies" })}
-          </Button>
+        <div className="form__row">
+          <div className="form__buttons">
+            <Button
+              buttonModifiers={["button-has-icon", "add-matriculation-row"]}
+              onClick={handleMatriculationSubjectAdd}
+              icon="plus"
+            >
+              {t("actions.addSubject", { ns: "studies" })}
+            </Button>
+          </div>
         </div>
       )}
     </div>

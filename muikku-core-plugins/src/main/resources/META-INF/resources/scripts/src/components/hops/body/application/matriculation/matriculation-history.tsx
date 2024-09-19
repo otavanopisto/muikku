@@ -37,7 +37,13 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
     [MatriculationExamGrade.Approbatur]: "A",
     [MatriculationExamGrade.Improbatur]: "I",
     [MatriculationExamGrade.K]: "K",
-    [MatriculationExamGrade.Unknown]: "EO",
+    [MatriculationExamGrade.NoRightToParticipate]: "EO",
+    [MatriculationExamGrade.Invalidated]: t("matriculationGrades.INVALIDATED", {
+      ns: "hops_new",
+    }),
+    [MatriculationExamGrade.Unknown]: t("matriculationGrades.UNKNOWN", {
+      ns: "hops_new",
+    }),
   };
 
   /**
@@ -50,33 +56,37 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
       const subResult = r.grades;
 
       return (
-        <ItemList
+        <div
+          className="application-sub-panel__notification-item"
           key={r.subjectCode}
-          header={t(`subjects.${r.subjectCode}`, {
-            ns: "common",
-            defaultValue: r.subjectCode,
-          })}
-          modifier="matriculation-results"
         >
-          {subResult.map((sr, i) => (
-            <ItemList.Item
-              key={i}
-              icon="icon-book"
-              className="application-sub-panel__notification-content"
-            >
-              <span className="application-sub-panel__notification-content-label">
-                {new Date(sr.gradeDate).toLocaleDateString("fi-Fi")}
-              </span>
+          <div className="application-sub-panel__notification-body">
+            <div className="application-sub-panel__notification-title">
+              {t(`subjects.${r.subjectCode}`, {
+                ns: "common",
+                defaultValue: r.subjectCode,
+              })}
+            </div>
 
-              <span className="application-sub-panel__notification-content-data">
-                {t("labels.grade", {
-                  ns: "hops_new",
-                })}
-                {matriculationGradeMap[sr.grade]}
-              </span>
-            </ItemList.Item>
-          ))}
-        </ItemList>
+            {subResult.map((sr, i) => (
+              <div
+                className="application-sub-panel__notification-content"
+                key={i}
+              >
+                <span className="application-sub-panel__notification-content-label">
+                  {new Date(sr.gradeDate).toLocaleDateString("fi-Fi")}
+                </span>
+
+                <span className="application-sub-panel__notification-content-data">
+                  {t("labels.grade", {
+                    ns: "hops_new",
+                  })}{" "}
+                  {matriculationGradeMap[sr.grade]}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       );
     });
 
@@ -86,9 +96,8 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
           <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
             {hops.hopsMatriculation.results.length === 0 ? (
               <p>
-                {t("labels.matriculationHistory", {
+                {t("content.matriculationHistoryEmpty", {
                   ns: "hops_new",
-                  context: "title",
                 })}
               </p>
             ) : (
@@ -111,12 +120,13 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
             }}
           />
         </div>
-
-        <div className="application-sub-panel__notification-item">
-          <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-            {items}
+        {items.length > 0 && (
+          <div className="application-sub-panel__notification-item">
+            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+              {items}
+            </div>
           </div>
-        </div>
+        )}
       </>
     );
   };
@@ -141,7 +151,7 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
           </ApplicationSubPanel.Body>
         </ApplicationSubPanel>
 
-        <ApplicationSubPanel>
+        <ApplicationSubPanel modifier="matriculation-plan-info">
           <ApplicationSubPanel.Body>
             <div className="matriculation-container__state state-INFO">
               <div className="matriculation-container__state-icon icon-notification"></div>
@@ -166,9 +176,19 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
                   ns: "hops_new",
                 })}`}</p>
                 <p>
-                  {`EO = ${t("matriculationGrades.EO", {
+                  {`EO = ${t("matriculationGrades.NO_RIGHT_TO_PARTICIPATE", {
                     ns: "hops_new",
                   })}`}
+                </p>
+                <p>
+                  {t("matriculationGrades.INVALIDATED", {
+                    ns: "hops_new",
+                  })}
+                </p>
+                <p>
+                  {t("matriculationGrades.UNKNOWN", {
+                    ns: "hops_new",
+                  })}
                 </p>
               </div>
             </div>

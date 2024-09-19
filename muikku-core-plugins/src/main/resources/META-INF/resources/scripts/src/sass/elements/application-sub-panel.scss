@@ -38,6 +38,14 @@
   flex-basis: 100%;
 }
 
+.application-sub-panel--sub-tabs {
+  padding: 0 0 30px;
+
+  &:last-child {
+    padding: 0;
+  }
+}
+
 .application-sub-panel--header-main {
   align-items: flex-start;
   border-bottom: none;
@@ -148,11 +156,31 @@
 .application-sub-panel--matriculation-results-content {
   align-items: flex-start;
   display: flex;
+  flex-flow: row wrap;
 }
 
 .application-sub-panel--matriculation-plan-data,
 .application-sub-panel--matriculation-results {
   border-bottom: unset;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
+.application-sub-panel--matriculation-plan-info {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
 }
 
 // Subpanel header
@@ -336,19 +364,16 @@
 }
 
 .application-sub-panel__notification-title {
-  align-items: center;
-  display: flex;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
+  font-weight: 600;
   padding: 5px 0;
 }
 
 .application-sub-panel__notification-body {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  padding: 10px 0;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
 
   p {
     margin: 0 0 10px;
@@ -368,11 +393,10 @@
 }
 
 .application-sub-panel__notification-content {
-  margin: 0 0 10px;
-
-  &:last-child {
-    margin: 0;
-  }
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px;
 }
 
 .application-sub-panel__notification-content-title {
@@ -1103,7 +1127,6 @@
 }
 
 // Sub panel item sub item
-
 .application-sub-panel__item-sub-item--organization-previous-bills {
   display: flex;
 
@@ -1114,6 +1137,11 @@
   div:not(:first-child) {
     margin-left: 10px;
   }
+}
+
+// Removing single-enty background
+.application-sub-panel__item-data-content--no-bg .application-sub-panel__single-entry {
+  background-color: transparent;
 }
 
 // Subpanel item data for worklist entries total
@@ -1137,11 +1165,11 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date.application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }

@@ -275,7 +275,7 @@ const MatriculationSubmittedEnrollment = (
 
         {functionByStatus && (
           <ApplicationSubPanelItem title="Toiminto">
-            <ApplicationSubPanelItem.Content>
+            <ApplicationSubPanelItem.Content modifier="no-bg">
               {functionByStatus}
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>

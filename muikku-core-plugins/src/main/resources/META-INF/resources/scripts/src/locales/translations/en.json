@@ -722,7 +722,7 @@
       "matriculationAbistatusEligibility3": "At least one compulsory course in each subject you plan to include in your matriculation examination.",
       "matriculationHistoryEmpty": "You do not have any results from the matriculation examinations yet",
       "matriculationHistoryGuides1": "Completed exams and results for those",
-      "matriculationHistoryGuides2": "<b>Note:&nbsp;</b> If you have participated in matriculation examinations before Nettilukio, your previous examination results may not be displayed here.",
+      "matriculationHistoryGuides2": "<b>Note:</b> If you have participated in matriculation examinations before Nettilukio, your previous examination results may not be displayed here.",
       "matriculationNoActiveEnrollment": "Registration for the matriculation examination is not currently open.",
       "matriculationFormNotEnoughMandatoryStudies": "You have not completed enough mandatory studies.",
       "matriculationFormCompulsoryEligible": "You are under extended compulsory education. If you have chosen more than five exams, select the ones you will take free of charge.",
@@ -735,7 +735,7 @@
       "matriculationFormEmptyPlannedExams": "No planned exams",
       "matriculationFormEmptyPlace": "If you wish to take the exam somewhere other than Mikkeli, you must first arrange it with the respective educational institution.",
       "matriculationFormConflictingRepeats": "Mark the exam for retaking if you have already taken it before.",
-      "matriculationFormCanRenewedForFree": "If you previously received a grade of IMPROBATUR in the exam, you can retake it for free by selecting Compulsory education funding (retake).",
+      "matriculationFormCanRenewedForFree": "If you have previously received a grade of IMPROBATUR in the exam, you can retake the exam free of charge by choosing Free matriculation exam (retake).",
       "matriculationFormCompulsoryEligibleInfo": "Select the five exams that are free for you and those that you will pay for yourself.",
       "matriculationFormExaminationIsValid": "With these choices, you can graduate as a secondary school graduate!",
       "matriculationFormInfoBlock1": "The matriculation examination must include at least five (5) different written subjects. If you wish, you can spread the exams over a maximum of three exam sessions. ({{count}} subjects selected)",
@@ -785,7 +785,9 @@
     "matriculationGrades": {
       "I": "improbatur (rejected)",
       "K": "cancelled",
-      "EO": "unknown"
+      "NO_RIGHT_TO_PARTICIPATE": "no right to participate",
+      "INVALIDATED": "Voided",
+      "UNKNOWN": "Unknown"
     },
     "matriculationExamFundings": {
       "SELF_FUNDED": "Self-funded",

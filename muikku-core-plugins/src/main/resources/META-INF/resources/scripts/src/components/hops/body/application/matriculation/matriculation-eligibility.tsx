@@ -84,7 +84,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
   return (
     <>
-      <ApplicationSubPanel>
+      <ApplicationSubPanel modifier="sub-tabs">
         <ApplicationSubPanel.Header>
           {t("labels.matriculationParticipation", {
             ns: "hops_new",
@@ -171,15 +171,17 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
             </div>
           </div>
 
-          <div className="application-sub-panel__notification-item">
-            <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
-              {subjectAbistatusEligibilityRows}
+          {subjectAbistatusEligibilityRows.length > 0 && (
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body application-sub-panel__notification-body">
+                {subjectAbistatusEligibilityRows}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </ApplicationSubPanel>
 
-      <ApplicationSubPanel>
+      <ApplicationSubPanel modifier="sub-tabs">
         <ApplicationSubPanel.Header>
           {t("labels.matriculationParticipation", {
             ns: "hops_new",
