@@ -66,10 +66,10 @@ public class UserRecipientController {
      
     for (UserEntity recipient : userRecipients) {
       // #3758: Only send messages to active users
-      UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(recipient);
       
       Boolean isActiveUser = userEntityController.isActiveUser(recipient);
       if (roles != null) {
+        UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(recipient);
         Boolean recipientRole = hasAnyRole(roles, usdi);
         
         if (isActiveUser && (roles.isEmpty() || recipientRole)) {
@@ -97,6 +97,15 @@ public class UserRecipientController {
             if (!isActiveUser) {
               continue;
             }
+            
+            if (roles != null) {
+              Boolean recipientRole = hasAnyRole(roles, userSchoolDataIdentifier);
+              
+              if (!recipientRole) {
+                continue;
+              }
+            }
+            
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               preparedRecipientList.addUserGroupRecipient(userGroup, recipient);
             }
