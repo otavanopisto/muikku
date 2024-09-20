@@ -13,20 +13,9 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
-import {
-  useTranslation,
-  withTranslation,
-  WithTranslation,
-} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import Matriculation from "./application/matriculation/matriculation";
 import { UseCaseContextProvider } from "~/context/use-case-context";
-
-/**
- * HopsApplicationProps
- */
-interface HopsApplicationProps extends WithTranslation {
-  hops: HOPSState;
-}
 
 /**
  * StudiesTab
@@ -36,7 +25,7 @@ type HopsTab = "MATRICULATION";
 /**
  * HopsApplicationProps
  */
-interface HopsApplicationProps extends WithTranslation {
+interface HopsApplicationProps {
   hops: HOPSState;
 }
 
@@ -109,6 +98,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return {};
 }
 
-export default withTranslation(["studies", "common"])(
-  connect(mapStateToProps, mapDispatchToProps)(HopsApplication)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(HopsApplication);
