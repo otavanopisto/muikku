@@ -172,6 +172,10 @@
     flex-basis: 100%;
     overflow: auto;
   }
+
+  ol.progtrckr li {
+    cursor: default;
+  }
 }
 
 .wizard__summary-row {
