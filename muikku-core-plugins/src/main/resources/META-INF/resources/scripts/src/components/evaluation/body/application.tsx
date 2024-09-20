@@ -175,43 +175,49 @@ class EvaluationApplication extends React.Component<
 
         {selectedOptions.value === "" ? (
           <>
-            <ApplicationSubPanel>
+            <ApplicationSubPanel modifier="evaluation-cards">
               <ApplicationSubPanel.Header>
                 Arviointipyynnöt
               </ApplicationSubPanel.Header>
-              <div className="evaluation-cards-wrapper">
-                <EvaluationList
-                  filterByStates={["pending", "pending_fail", "pending_pass"]}
-                  emptyMessage="Arviointipyyntöjä ei löytynyt"
-                  emptySearchMessage="Hakuehdoilla ei löytynyt arviointipyyntöjä"
-                />
-              </div>
+              <ApplicationSubPanel.Body modifier="evaluation-cards">
+                <div className="evaluation-cards-wrapper">
+                  <EvaluationList
+                    filterByStates={["pending", "pending_fail", "pending_pass"]}
+                    emptyMessage="Arviointipyyntöjä ei löytynyt"
+                    emptySearchMessage="Hakuehdoilla ei löytynyt arviointipyyntöjä"
+                  />
+                </div>
+              </ApplicationSubPanel.Body>
             </ApplicationSubPanel>
 
-            <ApplicationSubPanel>
+            <ApplicationSubPanel modifier="evaluation-cards">
               <ApplicationSubPanel.Header>
                 Välipalautepyynnöt
               </ApplicationSubPanel.Header>
-              <div className="evaluation-cards-wrapper">
-                <EvaluationList
-                  filterByStates={["interim_evaluation_request"]}
-                  emptyMessage="Välipalautepyyntöjä ei löytynyt"
-                  emptySearchMessage="Hakuehdoilla ei löytynyt välipalautepyyntöjä"
-                />
-              </div>
+              <ApplicationSubPanel.Body modifier="evaluation-cards">
+                <div className="evaluation-cards-wrapper">
+                  <EvaluationList
+                    filterByStates={["interim_evaluation_request"]}
+                    emptyMessage="Välipalautepyyntöjä ei löytynyt"
+                    emptySearchMessage="Hakuehdoilla ei löytynyt välipalautepyyntöjä"
+                  />
+                </div>
+              </ApplicationSubPanel.Body>
             </ApplicationSubPanel>
 
-            <ApplicationSubPanel>
+            <ApplicationSubPanel modifier="evaluation-cards">
               <ApplicationSubPanel.Header>
                 Täydennyspyynnöt (opettajan opiskelijalle laittamat)
               </ApplicationSubPanel.Header>
-              <div className="evaluation-cards-wrapper">
-                <EvaluationList
-                  filterByStates={["incomplete"]}
-                  emptyMessage="Täydennyspyyntöjä ei löytynyt"
-                  emptySearchMessage="Hakuehdoilla ei löytynyt täydennyspyyntöjä"
-                />
-              </div>
+              <ApplicationSubPanel.Body modifier="evaluation-cards">
+                <div className="evaluation-cards-wrapper">
+                  <EvaluationList
+                    filterByStates={["incomplete"]}
+                    emptyMessage="Täydennyspyyntöjä ei löytynyt"
+                    emptySearchMessage="Hakuehdoilla ei löytynyt täydennyspyyntöjä"
+                  />
+                </div>
+              </ApplicationSubPanel.Body>
             </ApplicationSubPanel>
           </>
         ) : (

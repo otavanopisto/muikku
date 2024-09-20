@@ -144,6 +144,11 @@
   }
 }
 
+.application-sub-panel--evaluation-cards {
+  margin: 0 0 15px;
+  padding: 0 0 15px;
+}
+
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
@@ -264,7 +269,7 @@
   }
 }
 
-// Subpanel description'
+// Subpanel description
 .application-sub-panel__description {
   font-size: 0.8125rem;
   font-style: italic;
@@ -318,6 +323,10 @@
 .application-sub-panel__body--guidance-relation {
   display: flex;
   flex-flow: wrap;
+}
+
+.application-sub-panel__body--evaluation-cards {
+  padding: 10px 0 0;
 }
 
 .application-sub-panel__notification-item {

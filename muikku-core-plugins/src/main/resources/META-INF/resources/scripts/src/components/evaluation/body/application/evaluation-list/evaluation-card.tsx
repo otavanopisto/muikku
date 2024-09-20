@@ -278,20 +278,49 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
   const cardModifierMap: {
     [key in WorkspaceAssessmentStateType]: string;
   } = {
-    pending: "state-PENDING",
-    pending_fail: "state-FAILED",
-    pending_pass: "state-PASSED",
+    pending: "state-REQUESTED",
+    pending_fail: "state-REQUESTED",
+    pending_pass: "state-REQUESTED",
     incomplete: "state-INCOMPLETE",
     pass: "state-PASSED",
     fail: "state-FAILED",
-    interim_evaluation_request: "state-INTERIM_EVALUATION_REQUEST",
+    interim_evaluation_request: "state-INTERIM-EVALUATION-REQUEST",
     unassessed: "",
     interim_evaluation: "",
     transferred: "",
   };
 
+  let cardTypeLabel = "";
+
+  switch (evaluationAssessmentRequest.state) {
+    case "incomplete":
+      cardTypeLabel = t("labels.supplementationRequest", {
+        ns: "evaluation",
+      });
+      break;
+
+    case "interim_evaluation_request":
+      cardTypeLabel = t("labels.interimEvaluationRequest", {
+        ns: "evaluation",
+      });
+      break;
+
+    case "pending":
+    case "pending_fail":
+    case "pending_pass":
+    default:
+      cardTypeLabel = t("labels.evaluationRequest", {
+        ns: "evaluation",
+      });
+      break;
+  }
+
   return (
     <div className={`evaluation-card ${cardModifierMap[state]}`}>
+      {evaluationAssessmentRequest.state && (
+        <div className="evaluation-card__type">{cardTypeLabel}</div>
+      )}
+
       <EvaluationCardHeader
         evaluationAssessmentRequest={evaluationAssessmentRequest}
       />
@@ -363,7 +392,7 @@ const EvaluationCardHeader = (props: EvaluationCardHeaderProps) => {
     <div className="evaluation-card__header">
       <div className="evaluation-card__header-primary">
         <div className="evaluation-card__header-title">{studentName}</div>
-        <div className="evaluation-card__heder-description">
+        <div className="evaluation-card__header-description">
           {evaluationAssessmentRequest.studyProgramme}
         </div>
       </div>
