@@ -179,7 +179,7 @@ class EvaluationApplication extends React.Component<
               <ApplicationSubPanel.Header>
                 Arviointipyynnöt
               </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body modifier="evaluation-cards">
+              <ApplicationSubPanel.Body>
                 <div className="evaluation-cards-wrapper">
                   <EvaluationList
                     filterByStates={["pending", "pending_fail", "pending_pass"]}
@@ -194,7 +194,7 @@ class EvaluationApplication extends React.Component<
               <ApplicationSubPanel.Header>
                 Välipalautepyynnöt
               </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body modifier="evaluation-cards">
+              <ApplicationSubPanel.Body>
                 <div className="evaluation-cards-wrapper">
                   <EvaluationList
                     filterByStates={["interim_evaluation_request"]}
@@ -209,7 +209,7 @@ class EvaluationApplication extends React.Component<
               <ApplicationSubPanel.Header>
                 Täydennyspyynnöt (opettajan opiskelijalle laittamat)
               </ApplicationSubPanel.Header>
-              <ApplicationSubPanel.Body modifier="evaluation-cards">
+              <ApplicationSubPanel.Body>
                 <div className="evaluation-cards-wrapper">
                   <EvaluationList
                     filterByStates={["incomplete"]}
