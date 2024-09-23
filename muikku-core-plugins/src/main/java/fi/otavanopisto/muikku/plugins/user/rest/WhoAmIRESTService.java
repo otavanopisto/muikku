@@ -34,6 +34,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.worklist.WorklistController;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.model.UserWhoAmIInfo;
@@ -112,6 +113,9 @@ public class WhoAmIRESTService extends AbstractRESTService {
   
   @Inject
   private WorklistController worklistController;
+
+  @Inject
+  private HopsController hopsController;
 
   @GET
   @Path("/whoami")
@@ -227,10 +231,16 @@ public class WhoAmIRESTService extends AbstractRESTService {
      */
     boolean environmentForumAvailable = forumController.isEnvironmentForumActive() && sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
 
+    /*
+     * Hops - the NEW Hops view availability
+     */
+    boolean hopsAvailable = hopsController.isNewHopsViewAvailable(userIdentifier);
+    
     UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
         chatAvailable,
         worklistAvailable,
-        environmentForumAvailable
+        environmentForumAvailable,
+        hopsAvailable
     );
     
     // Result object

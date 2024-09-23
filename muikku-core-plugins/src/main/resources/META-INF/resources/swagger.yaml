@@ -16374,6 +16374,7 @@ components:
       required:
         - chat
         - environmentForum
+        - hops
         - worklist
       properties:
         chat:
@@ -16384,6 +16385,13 @@ components:
             isAvailable:
               type: boolean
         environmentForum:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+        hops:
           type: object
           required:
             - isAvailable

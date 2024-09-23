@@ -81,6 +81,16 @@ public class HopsController {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
+  /**
+   * Returns true if the NEW Hops View is available for the given student.
+   * 
+   * @param studentIdentifier
+   * @return
+   */
+  public boolean isNewHopsViewAvailable(SchoolDataIdentifier studentIdentifier) {
+    return true;
+  }
+  
   public boolean isHopsAvailable(String studentIdentifierStr) {
     if (sessionController.isLoggedIn()) {
       SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
