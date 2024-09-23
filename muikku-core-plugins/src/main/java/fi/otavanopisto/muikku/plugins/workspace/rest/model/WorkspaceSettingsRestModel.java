@@ -240,11 +240,11 @@ public class WorkspaceSettingsRestModel {
   }
   
   public String getExternalViewLink()  {
-	  return externalViewLink;
+	return externalViewLink;
   }
 
   public void setExternalViewLink(String externalViewLink)  {
-	  this.externalViewLink = externalViewLink;
+	this.externalViewLink = externalViewLink;
   }
   
   private Long id;
