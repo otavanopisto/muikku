@@ -58,11 +58,6 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
 
   const isCombinationWorkspace = props.subjects && props.subjects.length > 1;
 
-  /**
-   * getAssessmentData
-   * @param assessment assessment
-   */
-
   return (
     <>
       {props.evaluation.map((assessment, index) => {
