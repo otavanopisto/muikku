@@ -1,6 +1,5 @@
 import { locales } from "./base/locales";
 import status from "./base/status";
-import { title } from "./base/title";
 import { messages } from "./main-function/messages";
 import { error } from "~/reducers/base/error";
 
@@ -11,5 +10,4 @@ export default combineReducers({
   locales,
   messages,
   status,
-  title,
 });

@@ -3,6 +3,7 @@ import * as React from "react";
 import Application from "./body/application";
 import Aside from "./body/aside";
 import ScreenContainer from "../general/screen-container";
+import { useTranslation } from "react-i18next";
 
 /**
  * OrganizationManagementBodyProps
@@ -10,29 +11,24 @@ import ScreenContainer from "../general/screen-container";
 interface OrganizationManagementBodyProps {}
 
 /**
- * OrganizationManagementBodyState
- */
-interface OrganizationManagementBodyState {}
-
-/**
  * OrganizationManagementBody
+ * @param props props
  */
-export default class OrganizationManagementBody extends React.Component<
-  OrganizationManagementBodyProps,
-  OrganizationManagementBodyState
-> {
-  /**
-   * render
-   */
-  render() {
-    const aside = <Aside />;
-    return (
-      <div>
-        <MainFunctionNavbar navigation={aside} activeTrail="organization" />
-        <ScreenContainer>
-          <Application aside={aside} />
-        </ScreenContainer>
-      </div>
-    );
-  }
-}
+const OrganizationManagementBody = (props: OrganizationManagementBodyProps) => {
+  const { t } = useTranslation(["common"]);
+  const aside = <Aside />;
+  return (
+    <div>
+      <MainFunctionNavbar
+        title={t("labels.organizationManagament")}
+        navigation={aside}
+        activeTrail="organization"
+      />
+      <ScreenContainer>
+        <Application aside={aside} />
+      </ScreenContainer>
+    </div>
+  );
+};
+
+export default OrganizationManagementBody;
