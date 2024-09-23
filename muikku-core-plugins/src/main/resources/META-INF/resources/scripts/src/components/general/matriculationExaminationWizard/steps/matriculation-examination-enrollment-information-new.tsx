@@ -132,7 +132,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   /**
    * getNonDuplicateAttendanceEnrolledAndPlanned
    */
-  const getNonDuplicateAttendanceEnrolledAndPlanned = () => {
+  const getNonDuplicateAttendanceEnrolledAndPlanned = React.useCallback(() => {
     const attendances = [].concat(
       examinationInformation.enrolledAttendances,
       examinationInformation.plannedAttendances
@@ -149,36 +149,53 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return attendances;
-  };
+  }, [examinationInformation]);
+
+  /**
+   * getSuccesfulFinishedExams
+   * @returns list of exams that ure completed with succesful grade
+   */
+  const getSuccesfulFinishedExams = React.useCallback(() => {
+    const succesfulFinishedExams: string[] = [];
+
+    examinationInformation.finishedAttendances.forEach((item) => {
+      if (EXAMINATION_SUCCESS_GRADES_MAP.includes(item.grade)) {
+        succesfulFinishedExams.push(item.subject);
+      }
+    });
+
+    return succesfulFinishedExams;
+  }, [examinationInformation.finishedAttendances]);
 
   /**
    * getNonDuplicateAttendanceEnrolledAndPlanned
    */
-  const getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed = () => {
-    const attendances = [
-      ...examinationInformation.enrolledAttendances,
-      ...examinationInformation.plannedAttendances,
-    ];
+  const getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed =
+    React.useCallback(() => {
+      const attendances = [
+        ...examinationInformation.enrolledAttendances,
+        ...examinationInformation.plannedAttendances,
+      ];
 
-    const succesfullyFinishedExams = getSuccesfulFinishedExams();
+      const succesfullyFinishedExams = getSuccesfulFinishedExams();
 
-    const attendedSubjects = attendances
-      .map((attendance) => attendance.subject)
-      .filter((subject) => succesfullyFinishedExams.indexOf(subject) !== -1);
+      const attendedSubjects = attendances
+        .map((attendance) => attendance.subject)
+        .filter((subject) => succesfullyFinishedExams.indexOf(subject) !== -1);
 
-    examinationInformation.finishedAttendances
-      .filter(
-        (fAttendance) =>
-          succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1
-      )
-      .forEach((finishedAttendance) => {
-        if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
-          attendances.push(finishedAttendance);
-        }
-      });
+      examinationInformation.finishedAttendances
+        .filter(
+          (fAttendance) =>
+            succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1
+        )
+        .forEach((finishedAttendance) => {
+          if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
+            attendances.push(finishedAttendance);
+          }
+        });
 
-    return attendances;
-  };
+      return attendances;
+    }, [examinationInformation, getSuccesfulFinishedExams]);
 
   /**
    * getFailedExamsBySomeOtherReason
@@ -197,26 +214,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   };
 
   /**
-   * getSuccesfulFinishedExams
-   * @returns list of exams that ure completed with succesful grade
-   */
-  const getSuccesfulFinishedExams = () => {
-    const succesfulFinishedExams: string[] = [];
-
-    examinationInformation.finishedAttendances.forEach((item) => {
-      if (EXAMINATION_SUCCESS_GRADES_MAP.includes(item.grade)) {
-        succesfulFinishedExams.push(item.subject);
-      }
-    });
-
-    return succesfulFinishedExams;
-  };
-
-  /**
    * getRenewableForFreeFinishedAttendances
    * @returns Array of failed attendaces with IMPROBATUR GRADE
    */
-  const getRenewableForFreeFinishedAttendances = () => {
+  const getRenewableForFreeFinishedAttendances = React.useCallback(() => {
     const renewableForFree: string[] = [];
 
     examinationInformation.finishedAttendances.forEach((item) => {
@@ -226,7 +227,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return renewableForFree;
-  };
+  }, [examinationInformation.finishedAttendances]);
 
   /**
    * getNonRenewableForFreeFinishedAttendances
@@ -245,20 +246,17 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     getNonDuplicateAttendanceEnrolledAndPlanned().length;
 
   /**
-   *getAmountOfChoosedAttendancesEnrolledAndPlanned
-   */
-  const getAmountOfChoosedAttendancesEnrolledAndPlanned = () =>
-    getNonDuplicateAttendanceEnrolledAndPlanned().length;
-
-  /**
    * Returns count of attendances in finnish courses.
    *
    * @returns count of attendances in finnish courses
    */
-  const getAmountOfFinnishAttendances = () =>
-    getNonDuplicateAttendanceEnrolledAndPlanned().filter(
-      (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1
-    ).length;
+  const getAmountOfFinnishAttendances = React.useCallback(
+    () =>
+      getNonDuplicateAttendanceEnrolledAndPlanned().filter(
+        (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1
+      ).length,
+    [getNonDuplicateAttendanceEnrolledAndPlanned]
+  );
 
   /**
    * getFinnishAttendance
@@ -294,7 +292,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * getAmountOfSucceedExams
    * @returns amount of succeed exams
    */
-  const getAmountOfSucceedExams = () => {
+  const getAmountOfSucceedExams = React.useCallback(() => {
     let amountOfExamsWithOtherThanImprobatur = 0;
     let amountOFailedForOtherReasons = 0;
 
@@ -308,13 +306,13 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return amountOfExamsWithOtherThanImprobatur - amountOFailedForOtherReasons;
-  };
+  }, [examinationInformation.finishedAttendances]);
 
   /**
    * getAmountOfFreeAttendances
    * @returns amountOfFreeAttendances
    */
-  const getAmountOfFreeAttendances = () => {
+  const getAmountOfFreeAttendances = React.useCallback(() => {
     const nonDublicatedAttendance:
       | MatriculationExamEnrolledSubject[]
       | MatriculationExamFinishedSubject[] =
@@ -331,13 +329,13 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return amountOfFreeAttendances;
-  };
+  }, [getNonDuplicateAttendanceEnrolledAndPlanned]);
 
   /**
    * getAmountOfFreeRepeats
    * @returns amountOfFreeRepeats
    */
-  const getAmountOfFreeRepeats = () => {
+  const getAmountOfFreeRepeats = React.useCallback(() => {
     const nonDublicatedAttendance:
       | MatriculationExamEnrolledSubject[]
       | MatriculationExamFinishedSubject[] =
@@ -358,7 +356,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return amountOfFreeRepeats;
-  };
+  }, [
+    getNonDuplicateAttendanceEnrolledAndPlanned,
+    getRenewableForFreeFinishedAttendances,
+  ]);
 
   /**
    * Returns whether user has valid amount of attendances in mandatory advanced subjects
@@ -367,15 +368,18 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    *
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
-  const getAmountOfMandatoryAdvancedSubjectAttendances = () =>
-    getNonDuplicateAttendanceEnrolledAndPlanned().filter(
-      (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
-    ).length;
+  const getAmountOfMandatoryAdvancedSubjectAttendances = React.useCallback(
+    () =>
+      getNonDuplicateAttendanceEnrolledAndPlanned().filter(
+        (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
+      ).length,
+    [getNonDuplicateAttendanceEnrolledAndPlanned]
+  );
 
   /**
    * getAmountOfChoosedGroups
    */
-  const getAmountOfChoosedGroups = () => {
+  const getAmountOfChoosedGroups = React.useCallback(() => {
     const nonDublicatedAttendaces =
       getNonDuplicateAttendanceEnrolledAndPlanned();
 
@@ -405,36 +409,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     }
 
     return choosedGroups.length;
-  };
-
-  /**
-   * isValidExamination
-   * @returns whether examination is valid, and with selection student can graduate from
-   */
-  const isValidExamination = () => {
-    // Difference when finnish language or finnish as secondary language
-    // is subracted from enrolled and succesfully finished exams and
-    // planned exams
-    const difference =
-      getSuccesfulFinishedExams().length +
-      getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
-      getAmountOfFinnishAttendances();
-
-    const sum =
-      getAmountOfSucceedExams() +
-      (getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
-        getAmountOfSucceedExams());
-
-    return (
-      getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
-      sum >= REQUIRED_AMOUNT_OF_ATTENDACNES &&
-      getAmountOfMandatoryAdvancedSubjectAttendances() >=
-        REQUIRED_AMOUNT_ADVANCED_SUBJECT &&
-      getAmountOfChoosedGroups() >=
-        REQUIRED_AMOUNT_DIFFERENT_ATTENDACE_GROUPS &&
-      difference >= REQUIRED_AMOUNT_OTHER_ATTENDANCES
-    );
-  };
+  }, [getNonDuplicateAttendanceEnrolledAndPlanned]);
 
   /**
    * isConflictingAttendances
@@ -588,7 +563,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   /**
    * isFundingsValid
    */
-  const isFundingsValid = () => {
+  const isFundingsValid = React.useCallback(() => {
     if (compulsoryEducationEligible) {
       const amountOfFreeAttendances = getAmountOfFreeAttendances();
       const amountOfFreeRepeats = getAmountOfFreeRepeats();
@@ -599,25 +574,95 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     }
 
     return true;
-  };
+  }, [
+    compulsoryEducationEligible,
+    getAmountOfFreeAttendances,
+    getAmountOfFreeRepeats,
+  ]);
 
   /**
-   * Checks if form has any conflicted courses selected
-   * @returns boolean
+   * isValidExamination
+   * @returns whether examination is valid, and with selection student can graduate from
    */
-  const isInvalid = React.useCallback(
-    () =>
-      isConflictingAttendances().length > 0 ||
-      hasConflictingRepeats() ||
-      isIncompleteAttendances() ||
-      examinationInformation.enrolledAttendances.length <= 0,
-    [
-      examinationInformation,
-      hasConflictingRepeats,
-      isConflictingAttendances,
-      isIncompleteAttendances,
-    ]
-  );
+  const isValidExamination = React.useCallback(() => {
+    // Difference when finnish language or finnish as secondary language
+    // is subracted from enrolled and succesfully finished exams and
+    // planned exams
+    const difference =
+      getSuccesfulFinishedExams().length +
+      getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
+      getAmountOfFinnishAttendances();
+
+    const sum =
+      getAmountOfSucceedExams() +
+      (getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
+        getAmountOfSucceedExams());
+
+    return (
+      getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
+      sum >= REQUIRED_AMOUNT_OF_ATTENDACNES &&
+      getAmountOfMandatoryAdvancedSubjectAttendances() >=
+        REQUIRED_AMOUNT_ADVANCED_SUBJECT &&
+      getAmountOfChoosedGroups() >=
+        REQUIRED_AMOUNT_DIFFERENT_ATTENDACE_GROUPS &&
+      difference >= REQUIRED_AMOUNT_OTHER_ATTENDANCES &&
+      isFundingsValid() &&
+      !isIncompleteAttendances()
+    );
+  }, [
+    getAmountOfChoosedGroups,
+    getAmountOfFinnishAttendances,
+    getAmountOfMandatoryAdvancedSubjectAttendances,
+    getAmountOfSucceedExams,
+    getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed,
+    getSuccesfulFinishedExams,
+    isFundingsValid,
+    isIncompleteAttendances,
+  ]);
+
+  /**
+   * Checks if form is invalid and can't be submitted. Conditions are different
+   * based on degree type value.
+   * @returns boolean if form step is invalid
+   */
+  const isInvalid = React.useCallback(() => {
+    switch (examinationInformation.degreeType) {
+      case MatriculationExamDegreeType.Matriculationexamination:
+        return (
+          isConflictingAttendances().length > 0 ||
+          hasConflictingRepeats() ||
+          isIncompleteAttendances() ||
+          examinationInformation.enrolledAttendances.length <= 0 ||
+          !isValidExamination()
+        );
+
+      case MatriculationExamDegreeType.Matriculationexaminationsupplement:
+        return (
+          isConflictingAttendances().length > 0 ||
+          hasConflictingRepeats() ||
+          isIncompleteAttendances() ||
+          examinationInformation.enrolledAttendances.length <= 0
+        );
+
+      case MatriculationExamDegreeType.Separateexam:
+        return (
+          isConflictingAttendances().length > 0 ||
+          hasConflictingRepeats() ||
+          isIncompleteAttendances() ||
+          examinationInformation.enrolledAttendances.length <= 0
+        );
+
+      default:
+        return false;
+    }
+  }, [
+    examinationInformation.degreeType,
+    examinationInformation.enrolledAttendances.length,
+    hasConflictingRepeats,
+    isConflictingAttendances,
+    isIncompleteAttendances,
+    isValidExamination,
+  ]);
 
   /**
    * handles adding new enrolled attendes to list and passed modfied examination information to parent
@@ -876,6 +921,183 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isInvalid]);
 
+  /**
+   * Renders validation warning box based on degree type
+   * @returns JSX.Element
+   */
+  const renderValidationWarningBoxByDegreeType = () => {
+    switch (examinationInformation.degreeType) {
+      case MatriculationExamDegreeType.Matriculationexamination:
+        return isValidExamination() ? (
+          <div className="matriculation-container__state state-SUCCESS">
+            <div className="matriculation-container__state-icon icon-notification"></div>
+            <div className="matriculation-container__state-text">
+              <p>
+                {t("content.matriculationFormExaminationIsValid", {
+                  ns: "hops_new",
+                })}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="matriculation-container__state state-WARNING">
+            <div className="matriculation-container__state-icon icon-notification"></div>
+            <div className="matriculation-container__state-text">
+              <p>
+                {t("content.matriculationFormExaminationIsNotValid", {
+                  ns: "hops_new",
+                })}
+              </p>
+            </div>
+          </div>
+        );
+
+      case MatriculationExamDegreeType.Matriculationexaminationsupplement:
+      case MatriculationExamDegreeType.Separateexam:
+        return examinationInformation.enrolledAttendances.length <= 0 ? (
+          <div className="matriculation-container__state state-WARNING">
+            <div className="matriculation-container__state-icon icon-notification"></div>
+            <div className="matriculation-container__state-text">
+              <p>
+                {t("content.matriculationFormInsufficientEnrolledAttendances", {
+                  ns: "hops_new",
+                })}
+              </p>
+            </div>
+          </div>
+        ) : null;
+
+      default:
+        return null;
+    }
+  };
+
+  /**
+   * Renders correct info box based on degree type
+   * @returns JSX.Element
+   */
+  const renderInfoBoxByDegreeType = () => {
+    switch (examinationInformation.degreeType) {
+      case MatriculationExamDegreeType.Matriculationexamination:
+        return (
+          <div className="matriculation-container__state state-INFO">
+            <div className="matriculation-container__state-icon icon-notification"></div>
+            <div className="matriculation-container__state-text">
+              <p>
+                {t("content.matriculationFormInfoBlock1", {
+                  ns: "hops_new",
+                  count:
+                    getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
+                      .length,
+                })}
+              </p>
+
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    getAmountOfFinnishAttendances() ==
+                    REQUIRED_FINNISH_ATTENDANCES
+                      ? t("content.matriculationFormInfoBlock2", {
+                          ns: "hops_new",
+                          subject: t(`subjects.${getFinnishAttendance()[0]}`, {
+                            ns: "common",
+                            defaultValue: getFinnishAttendance()[0],
+                          }),
+                        })
+                      : t("content.matriculationFormInfoBlock2", {
+                          ns: "hops_new",
+                          context: "noSelection",
+                        }),
+                }}
+              />
+
+              <p>
+                {t("content.matriculationFormInfoBlock3", {
+                  ns: "hops_new",
+                })}
+              </p>
+
+              <ul>
+                <li>
+                  {t("content.matriculationPlanGuideSubject1", {
+                    ns: "hops_new",
+                  })}
+                </li>
+                <li>
+                  {t("content.matriculationPlanGuideSubject2", {
+                    ns: "hops_new",
+                  })}
+                </li>
+                <li>
+                  {t("content.matriculationPlanGuideSubject3", {
+                    ns: "hops_new",
+                  })}
+                </li>
+                <li>
+                  {t("content.matriculationPlanGuideSubject4", {
+                    ns: "hops_new",
+                  })}
+                </li>
+              </ul>
+
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    getAmountOfAdvancedSubjectAttendances() > 0
+                      ? t("content.matriculationFormInfoBlock4", {
+                          ns: "hops_new",
+                        })
+                      : t("content.matriculationFormInfoBlock4", {
+                          ns: "hops_new",
+                          context: "noSelection",
+                        }),
+                }}
+              />
+
+              {compulsoryEducationEligible && (
+                <p className="matriculation__hightlighted">
+                  {t("content.matriculationFormCompulsoryEligibleInfo", {
+                    ns: "hops_new",
+                  })}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+
+      case MatriculationExamDegreeType.Matriculationexaminationsupplement:
+        return (
+          <div className="matriculation-container__state state-INFO">
+            <div className="matriculation-container__state-icon icon-notification"></div>
+            <div className="matriculation-container__state-text">
+              <p>
+                {t("content.matriculationFormSupplementationTypeInfo", {
+                  ns: "hops_new",
+                })}
+              </p>
+            </div>
+          </div>
+        );
+
+      case MatriculationExamDegreeType.Separateexam:
+        return (
+          <div className="matriculation-container__state state-INFO">
+            <div className="matriculation-container__state-icon icon-notification"></div>
+            <div className="matriculation-container__state-text">
+              <p>
+                {t("content.matriculationFormSeparteExamTypeInfo", {
+                  ns: "hops_new",
+                })}
+              </p>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const currentTerm = resolveCurrentTerm();
 
   const addesiveTermLocale =
@@ -1064,6 +1286,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             )}
           </div>
         </div>
+        {renderInfoBoxByDegreeType()}
       </fieldset>
 
       {!examinationInformation.restartExam && (
@@ -1210,19 +1433,6 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             })}
           </Button>
         </div>
-
-        {isIncompleteAttendances() ? (
-          <div className="matriculation-container__state state-WARNING">
-            <div className="matriculation-container__state-icon icon-notification"></div>
-            <div className="matriculation-container__state-text">
-              <p>
-                {t("content.matriculationFormEmptyFields", {
-                  ns: "hops_new",
-                })}
-              </p>
-            </div>
-          </div>
-        ) : null}
       </fieldset>
 
       <div className="matriculation-container__indicator-examples">
@@ -1248,109 +1458,19 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         ) : null}
       </div>
 
-      {!isValidExamination() ||
-      isInvalid() ||
-      getAmountOfChoosedAttendancesEnrolledAndPlanned() >=
-        REQUIRED_AMOUNT_OF_ATTENDACNES ? (
-        <div className="matriculation-container__state state-INFO">
+      {isIncompleteAttendances() ? (
+        <div className="matriculation-container__state state-WARNING">
           <div className="matriculation-container__state-icon icon-notification"></div>
           <div className="matriculation-container__state-text">
             <p>
-              {t("content.matriculationFormInfoBlock1", {
-                ns: "hops_new",
-                count:
-                  getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed()
-                    .length,
-              })}
-            </p>
-
-            <p
-              dangerouslySetInnerHTML={{
-                __html:
-                  getAmountOfFinnishAttendances() ==
-                  REQUIRED_FINNISH_ATTENDANCES
-                    ? t("content.matriculationFormInfoBlock2", {
-                        ns: "hops_new",
-                        subject: t(`subjects.${getFinnishAttendance()[0]}`, {
-                          ns: "common",
-                          defaultValue: getFinnishAttendance()[0],
-                        }),
-                      })
-                    : t("content.matriculationFormInfoBlock2", {
-                        ns: "hops_new",
-                        context: "noSelection",
-                      }),
-              }}
-            />
-
-            <p>
-              {t("content.matriculationFormInfoBlock3", {
-                ns: "hops_new",
-              })}
-            </p>
-
-            <ul>
-              <li>
-                {t("content.matriculationPlanGuideSubject1", {
-                  ns: "hops_new",
-                })}
-              </li>
-              <li>
-                {t("content.matriculationPlanGuideSubject2", {
-                  ns: "hops_new",
-                })}
-              </li>
-              <li>
-                {t("content.matriculationPlanGuideSubject3", {
-                  ns: "hops_new",
-                })}
-              </li>
-              <li>
-                {t("content.matriculationPlanGuideSubject4", {
-                  ns: "hops_new",
-                })}
-              </li>
-            </ul>
-
-            <p
-              dangerouslySetInnerHTML={{
-                __html:
-                  getAmountOfAdvancedSubjectAttendances() > 0
-                    ? t("content.matriculationFormInfoBlock4", {
-                        ns: "hops_new",
-                      })
-                    : t("content.matriculationFormInfoBlock4", {
-                        ns: "hops_new",
-                        context: "noSelection",
-                      }),
-              }}
-            />
-
-            {compulsoryEducationEligible && (
-              <p className="matriculation__hightlighted">
-                {t("content.matriculationFormCompulsoryEligibleInfo", {
-                  ns: "hops_new",
-                })}
-              </p>
-            )}
-          </div>
-        </div>
-      ) : null}
-
-      {isFundingsValid() &&
-      !isIncompleteAttendances() &&
-      isValidExamination() ? (
-        <div className="matriculation-container__state state-SUCCESS">
-          <div className="matriculation-container__state-icon icon-notification"></div>
-          <div className="matriculation-container__state-text">
-            <p>
-              {t("content.matriculationFormExaminationIsValid", {
+              {t("content.matriculationFormEmptyFields", {
                 ns: "hops_new",
               })}
             </p>
           </div>
         </div>
       ) : null}
+      {renderValidationWarningBoxByDegreeType()}
     </div>
   );
 };
