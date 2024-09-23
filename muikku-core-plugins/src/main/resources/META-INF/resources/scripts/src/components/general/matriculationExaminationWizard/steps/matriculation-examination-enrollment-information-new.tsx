@@ -132,7 +132,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   /**
    * getNonDuplicateAttendanceEnrolledAndPlanned
    */
-  const getNonDuplicateAttendanceEnrolledAndPlanned = () => {
+  const getNonDuplicateAttendanceEnrolledAndPlanned = React.useCallback(() => {
     const attendances = [].concat(
       examinationInformation.enrolledAttendances,
       examinationInformation.plannedAttendances
@@ -149,36 +149,53 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return attendances;
-  };
+  }, [examinationInformation]);
+
+  /**
+   * getSuccesfulFinishedExams
+   * @returns list of exams that ure completed with succesful grade
+   */
+  const getSuccesfulFinishedExams = React.useCallback(() => {
+    const succesfulFinishedExams: string[] = [];
+
+    examinationInformation.finishedAttendances.forEach((item) => {
+      if (EXAMINATION_SUCCESS_GRADES_MAP.includes(item.grade)) {
+        succesfulFinishedExams.push(item.subject);
+      }
+    });
+
+    return succesfulFinishedExams;
+  }, [examinationInformation.finishedAttendances]);
 
   /**
    * getNonDuplicateAttendanceEnrolledAndPlanned
    */
-  const getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed = () => {
-    const attendances = [
-      ...examinationInformation.enrolledAttendances,
-      ...examinationInformation.plannedAttendances,
-    ];
+  const getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed =
+    React.useCallback(() => {
+      const attendances = [
+        ...examinationInformation.enrolledAttendances,
+        ...examinationInformation.plannedAttendances,
+      ];
 
-    const succesfullyFinishedExams = getSuccesfulFinishedExams();
+      const succesfullyFinishedExams = getSuccesfulFinishedExams();
 
-    const attendedSubjects = attendances
-      .map((attendance) => attendance.subject)
-      .filter((subject) => succesfullyFinishedExams.indexOf(subject) !== -1);
+      const attendedSubjects = attendances
+        .map((attendance) => attendance.subject)
+        .filter((subject) => succesfullyFinishedExams.indexOf(subject) !== -1);
 
-    examinationInformation.finishedAttendances
-      .filter(
-        (fAttendance) =>
-          succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1
-      )
-      .forEach((finishedAttendance) => {
-        if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
-          attendances.push(finishedAttendance);
-        }
-      });
+      examinationInformation.finishedAttendances
+        .filter(
+          (fAttendance) =>
+            succesfullyFinishedExams.indexOf(fAttendance.subject) !== -1
+        )
+        .forEach((finishedAttendance) => {
+          if (attendedSubjects.indexOf(finishedAttendance.subject) === -1) {
+            attendances.push(finishedAttendance);
+          }
+        });
 
-    return attendances;
-  };
+      return attendances;
+    }, [examinationInformation, getSuccesfulFinishedExams]);
 
   /**
    * getFailedExamsBySomeOtherReason
@@ -194,22 +211,6 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return failedExamsBySomeOtherReason;
-  };
-
-  /**
-   * getSuccesfulFinishedExams
-   * @returns list of exams that ure completed with succesful grade
-   */
-  const getSuccesfulFinishedExams = () => {
-    const succesfulFinishedExams: string[] = [];
-
-    examinationInformation.finishedAttendances.forEach((item) => {
-      if (EXAMINATION_SUCCESS_GRADES_MAP.includes(item.grade)) {
-        succesfulFinishedExams.push(item.subject);
-      }
-    });
-
-    return succesfulFinishedExams;
   };
 
   /**
@@ -255,10 +256,13 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    *
    * @returns count of attendances in finnish courses
    */
-  const getAmountOfFinnishAttendances = () =>
-    getNonDuplicateAttendanceEnrolledAndPlanned().filter(
-      (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1
-    ).length;
+  const getAmountOfFinnishAttendances = React.useCallback(
+    () =>
+      getNonDuplicateAttendanceEnrolledAndPlanned().filter(
+        (attendance) => FINNISH_SUBJECTS.indexOf(attendance.subject) !== -1
+      ).length,
+    [getNonDuplicateAttendanceEnrolledAndPlanned]
+  );
 
   /**
    * getFinnishAttendance
@@ -294,7 +298,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * getAmountOfSucceedExams
    * @returns amount of succeed exams
    */
-  const getAmountOfSucceedExams = () => {
+  const getAmountOfSucceedExams = React.useCallback(() => {
     let amountOfExamsWithOtherThanImprobatur = 0;
     let amountOFailedForOtherReasons = 0;
 
@@ -308,7 +312,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     });
 
     return amountOfExamsWithOtherThanImprobatur - amountOFailedForOtherReasons;
-  };
+  }, [examinationInformation.finishedAttendances]);
 
   /**
    * getAmountOfFreeAttendances
@@ -367,15 +371,18 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    *
    * @returns whether user has valid amount of attendances in mandatory advanced subjects
    */
-  const getAmountOfMandatoryAdvancedSubjectAttendances = () =>
-    getNonDuplicateAttendanceEnrolledAndPlanned().filter(
-      (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
-    ).length;
+  const getAmountOfMandatoryAdvancedSubjectAttendances = React.useCallback(
+    () =>
+      getNonDuplicateAttendanceEnrolledAndPlanned().filter(
+        (attendance) => ADVANCED_SUBJECTS.indexOf(attendance.subject) !== -1
+      ).length,
+    [getNonDuplicateAttendanceEnrolledAndPlanned]
+  );
 
   /**
    * getAmountOfChoosedGroups
    */
-  const getAmountOfChoosedGroups = () => {
+  const getAmountOfChoosedGroups = React.useCallback(() => {
     const nonDublicatedAttendaces =
       getNonDuplicateAttendanceEnrolledAndPlanned();
 
@@ -405,36 +412,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     }
 
     return choosedGroups.length;
-  };
-
-  /**
-   * isValidExamination
-   * @returns whether examination is valid, and with selection student can graduate from
-   */
-  const isValidExamination = () => {
-    // Difference when finnish language or finnish as secondary language
-    // is subracted from enrolled and succesfully finished exams and
-    // planned exams
-    const difference =
-      getSuccesfulFinishedExams().length +
-      getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
-      getAmountOfFinnishAttendances();
-
-    const sum =
-      getAmountOfSucceedExams() +
-      (getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
-        getAmountOfSucceedExams());
-
-    return (
-      getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
-      sum >= REQUIRED_AMOUNT_OF_ATTENDACNES &&
-      getAmountOfMandatoryAdvancedSubjectAttendances() >=
-        REQUIRED_AMOUNT_ADVANCED_SUBJECT &&
-      getAmountOfChoosedGroups() >=
-        REQUIRED_AMOUNT_DIFFERENT_ATTENDACE_GROUPS &&
-      difference >= REQUIRED_AMOUNT_OTHER_ATTENDANCES
-    );
-  };
+  }, [getNonDuplicateAttendanceEnrolledAndPlanned]);
 
   /**
    * isConflictingAttendances
@@ -602,22 +580,83 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   };
 
   /**
+   * isValidExamination
+   * @returns whether examination is valid, and with selection student can graduate from
+   */
+  const isValidExamination = React.useCallback(() => {
+    // Difference when finnish language or finnish as secondary language
+    // is subracted from enrolled and succesfully finished exams and
+    // planned exams
+    const difference =
+      getSuccesfulFinishedExams().length +
+      getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
+      getAmountOfFinnishAttendances();
+
+    const sum =
+      getAmountOfSucceedExams() +
+      (getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
+        getAmountOfSucceedExams());
+
+    return (
+      getAmountOfFinnishAttendances() == REQUIRED_FINNISH_ATTENDANCES &&
+      sum >= REQUIRED_AMOUNT_OF_ATTENDACNES &&
+      getAmountOfMandatoryAdvancedSubjectAttendances() >=
+        REQUIRED_AMOUNT_ADVANCED_SUBJECT &&
+      getAmountOfChoosedGroups() >=
+        REQUIRED_AMOUNT_DIFFERENT_ATTENDACE_GROUPS &&
+      difference >= REQUIRED_AMOUNT_OTHER_ATTENDANCES
+    );
+  }, [
+    getAmountOfChoosedGroups,
+    getAmountOfFinnishAttendances,
+    getAmountOfMandatoryAdvancedSubjectAttendances,
+    getAmountOfSucceedExams,
+    getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed,
+    getSuccesfulFinishedExams,
+  ]);
+
+  /**
    * Checks if form has any conflicted courses selected
    * @returns boolean
    */
-  const isInvalid = React.useCallback(
-    () =>
-      isConflictingAttendances().length > 0 ||
-      hasConflictingRepeats() ||
-      isIncompleteAttendances() ||
-      examinationInformation.enrolledAttendances.length <= 0,
-    [
-      examinationInformation,
-      hasConflictingRepeats,
-      isConflictingAttendances,
-      isIncompleteAttendances,
-    ]
-  );
+  const isInvalid = React.useCallback(() => {
+    switch (examinationInformation.degreeType) {
+      case MatriculationExamDegreeType.Matriculationexamination:
+        return (
+          isConflictingAttendances().length > 0 ||
+          hasConflictingRepeats() ||
+          isIncompleteAttendances() ||
+          examinationInformation.enrolledAttendances.length <= 0 ||
+          !isValidExamination()
+        );
+
+      case MatriculationExamDegreeType.Matriculationexaminationsupplement:
+        return (
+          isConflictingAttendances().length > 0 ||
+          hasConflictingRepeats() ||
+          isIncompleteAttendances() ||
+          examinationInformation.enrolledAttendances.length <= 0
+        );
+
+      case MatriculationExamDegreeType.Separateexam:
+        return (
+          isConflictingAttendances().length > 0 ||
+          hasConflictingRepeats() ||
+          isIncompleteAttendances() ||
+          examinationInformation.enrolledAttendances.length <= 0
+        );
+
+      default:
+        return false;
+    }
+  }, [
+    examinationInformation.degreeType,
+    examinationInformation.enrolledAttendances.length,
+    hasConflictingRepeats,
+    isConflictingAttendances,
+    isIncompleteAttendances,
+    isValidExamination,
+  ]);
 
   /**
    * handles adding new enrolled attendes to list and passed modfied examination information to parent
