@@ -317,9 +317,9 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
 
   return (
     <div className={`evaluation-card ${cardModifierMap[state]}`}>
-      {evaluationAssessmentRequest.state && (
+      {evaluationAssessmentRequest.state && selectedWorkspaceId ? (
         <div className="evaluation-card__type">{cardTypeLabel}</div>
-      )}
+      ) : null}
 
       <EvaluationCardHeader
         evaluationAssessmentRequest={evaluationAssessmentRequest}
