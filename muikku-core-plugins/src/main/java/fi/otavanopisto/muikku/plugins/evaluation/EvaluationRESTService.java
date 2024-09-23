@@ -1729,10 +1729,11 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
     
+    Date requestDate = compositeAssessmentRequest.getAssessmentRequestDate();
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
-    restAssessmentRequest.setAssessmentRequestDate(compositeAssessmentRequest.getAssessmentRequestDate());
+    restAssessmentRequest.setAssessmentRequestDate(requestDate);
     restAssessmentRequest.setEvaluationDate(evaluationDate);
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
@@ -1745,7 +1746,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
     if (!resolvedState) {
-      if (graded && evaluationDate.after(compositeAssessmentRequest.getAssessmentRequestDate())) {
+      if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
         if (passing) {
           restAssessmentRequest.setState(WorkspaceAssessmentState.PASS);
         }
@@ -1753,7 +1754,7 @@ public class EvaluationRESTService extends PluginRESTService {
           restAssessmentRequest.setState(WorkspaceAssessmentState.FAIL);
         }
       }
-      else if (compositeAssessmentRequest.getAssessmentRequestDate() != null) {
+      else if (requestDate != null) {
         if (evaluationDate == null) {
           restAssessmentRequest.setState(WorkspaceAssessmentState.PENDING);
         }
