@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import CKEditor from "~/components/general/ckeditor";
@@ -49,13 +49,6 @@ interface NewContactEventState {
   locked: boolean;
 }
 
-/**
- * Action
- */
-type Action =
-  | { type: "SET_DRAFT"; payload: boolean }
-  | { type: "SET_LOCKED"; payload: boolean };
-
 const initialState: NewContactEventState = {
   recipients: [],
   text: "",
@@ -66,33 +59,15 @@ const initialState: NewContactEventState = {
 };
 
 /**
- * reducer
- * @param state reducer state
- * @param action reducer action
- * @returns a new state
- */
-const reducer = (
-  state: NewContactEventState,
-  action: Action
-): NewContactEventState => {
-  switch (action.type) {
-    case "SET_DRAFT":
-      return { ...state, draft: action.payload };
-    case "SET_LOCKED":
-      return { ...state, locked: action.payload };
-    default:
-      return state;
-  }
-};
-
-/**
  * NewContactEvent
  * @param props component props
  * @returns a React component
  */
 const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { draft, locked } = state;
+  const [draft, setDraft] = useState(false);
+  const [locked, setLocked] = useState(false);
+
+  // const { draft, locked } = state;
   const { isOpen, status, selectedItems, children, displayNotification } =
     props;
 
@@ -106,10 +81,12 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   const { text, type, entryDate, recipients } = newContactEventState;
 
+  const localeStorageExists = localStorage.getItem("new-contact-event");
+
   useEffect(() => {
     // If there's a local storage state this is a draft
-    if (localStorage.getItem("new-contact-event")) {
-      dispatch({ type: "SET_DRAFT", payload: true });
+    if (localeStorageExists) {
+      setDraft(true);
     }
     if (selectedItems.length > 0) {
       const existing = [...newContactEventState.recipients];
@@ -134,7 +111,12 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         }));
       }
     }
-  }, [selectedItems]);
+  }, [
+    localeStorageExists,
+    selectedItems,
+    newContactEventState.recipients,
+    setNewContactEventState,
+  ]);
 
   /**
    * handleRecipientsChange
@@ -145,7 +127,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       ...prevState,
       recipients,
     }));
-    dispatch({ type: "SET_DRAFT", payload: true });
+    setDraft(true);
   };
 
   /**
@@ -157,7 +139,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       ...prevState,
       entryDate: date,
     }));
-    dispatch({ type: "SET_DRAFT", payload: true });
+    setDraft(true);
   };
 
   /**
@@ -169,7 +151,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       ...prevState,
       type: e.target.value as ContactType,
     }));
-    dispatch({ type: "SET_DRAFT", payload: true });
+    setDraft(true);
   };
 
   /**
@@ -182,7 +164,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
       text,
     }));
 
-    dispatch({ type: "SET_DRAFT", payload: true });
+    setDraft(true);
   };
 
   /**
@@ -191,7 +173,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
   const handleReset = () => {
     setNewContactEventState(initialState);
     removeContactEventState();
-    dispatch({ type: "SET_DRAFT", payload: false });
+    setDraft(false);
   };
 
   const contactTypesArray = Object.values(ContactType);
@@ -222,7 +204,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
    */
   const saveContactEvent = (closeDialog: () => void) => {
     const guiderApi = MApi.getGuiderApi();
-    dispatch({ type: "SET_LOCKED", payload: true });
+    setLocked(true);
 
     const recipientStudentsWorkspaceIds = recipients
       .filter((recipient) => recipient.type === "workspace")
