@@ -33,6 +33,7 @@ public class WorkspaceSettingsRestModel {
       String workspaceTypeIdentifier,
       boolean hasCustomImage,
       boolean chatEnabled,
+      String externalViewLink,
       WorkspaceSignupMessageRestModel defaultSignupMessage,
       Collection<WorkspaceSignupGroupRestModel> signupGroups,
       Collection<WorkspaceSignupMessageRestModel> signupMessages) {
@@ -48,6 +49,7 @@ public class WorkspaceSettingsRestModel {
     this.nameExtension = nameExtension;
     this.description = description;
     this.beginDate = beginDate;
+    this.chatEnabled = chatEnabled;
     this.endDate = endDate;
     this.signupStart = signupStart;
     this.signupEnd = signupEnd;
@@ -58,6 +60,7 @@ public class WorkspaceSettingsRestModel {
     this.defaultSignupMessage = defaultSignupMessage;
     this.signupGroups = signupGroups;
     this.signupMessages = signupMessages;
+    this.externalViewLink = externalViewLink; 
   }
 
   public Long getId() {
@@ -235,7 +238,15 @@ public class WorkspaceSettingsRestModel {
   public void setChatEnabled(boolean chatEnabled) {
     this.chatEnabled = chatEnabled;
   }
+  
+  public String getExternalViewLink()  {
+    return externalViewLink;
+  }
 
+  public void setExternalViewLink(String externalViewLink)  {
+    this.externalViewLink = externalViewLink;
+  }
+  
   private Long id;
   private Long organizationEntityId;
   private String workspaceTypeIdentifier;
@@ -243,6 +254,7 @@ public class WorkspaceSettingsRestModel {
   private String name;
   private String nameExtension;
   private String description;
+  private String externalViewLink;
   private Mandatority mandatority;
   private WorkspaceAccess access;
   private String materialDefaultLicense;
@@ -258,5 +270,5 @@ public class WorkspaceSettingsRestModel {
   private OffsetDateTime signupStart;
   private OffsetDateTime signupEnd;
   private Collection<WorkspaceSignupMessageRestModel> signupMessages;
-  
+
 }

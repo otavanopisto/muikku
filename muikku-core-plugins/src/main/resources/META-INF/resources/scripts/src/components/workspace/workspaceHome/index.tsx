@@ -9,6 +9,7 @@ import WorkspaceAnnouncements from "./announcements";
 import WorkspaceLicense from "./license";
 import WorkspaceProducers from "./producers";
 import MaterialEditor from "~/components/base/material-editor";
+import WorkspaceEvaluation from "./evaluation";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/footer.scss";
 
@@ -29,6 +30,7 @@ const WorkspaceHomeBody = (props: WorkspaceHomeBodyProps) => (
     <ScreenContainer viewModifiers="workspace">
       <MaterialEditor locationPage="Home" />
       <WorkspaceHomeHeader />
+      <WorkspaceEvaluation />
       <div className="panel-group panel-group--workspace-main">
         <WorkspaceDescription />
         <div className="panel-group panel-group--workspace-aside">
