@@ -470,7 +470,9 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
       : "-";
 
   const enrollmentDateRow = (
-    <EvaluationCardContentRow>
+    <EvaluationCardContentRow
+      hightlight={evaluationAssessmentRequest.state === "unassessed"}
+    >
       <span className="evaluation-card__content-label">
         {t("labels.isInWorkspace", { ns: "evaluation" })}
       </span>
@@ -481,7 +483,14 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
   );
 
   const evaluationRequestRow = (
-    <EvaluationCardContentRow hightlight={evaluationDate === null}>
+    <EvaluationCardContentRow
+      hightlight={
+        evaluationAssessmentRequest.state === "pending" ||
+        evaluationAssessmentRequest.state === "pending_fail" ||
+        evaluationAssessmentRequest.state === "pending_pass" ||
+        evaluationAssessmentRequest.state === "interim_evaluation_request"
+      }
+    >
       <span className="evaluation-card__content-label">
         {evaluationAssessmentRequest.state === "interim_evaluation_request"
           ? t("labels.hasInterimEvaluationRequest", { ns: "evaluation" })
@@ -494,7 +503,13 @@ const EvaluationCardContent = (props: EvaluationCardContentProps) => {
   );
 
   const evaluatedRow = (
-    <EvaluationCardContentRow hightlight={evaluationDate !== null}>
+    <EvaluationCardContentRow
+      hightlight={
+        evaluationAssessmentRequest.state === "pass" ||
+        evaluationAssessmentRequest.state === "fail" ||
+        evaluationAssessmentRequest.state === "incomplete"
+      }
+    >
       <span className="evaluation-card__content-label">
         {t("labels.evaluated", { ns: "workspace" })}
       </span>
