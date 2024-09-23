@@ -143,7 +143,7 @@ const MatriculationSubmittedEnrollment = (
                 formType="readonly"
               >
                 <Button buttonModifiers={["info"]} disabled={past}>
-                  {t("actions.supplementRegistration", {
+                  {t("actions.showSummary", {
                     ns: "hops_new",
                   })}
                 </Button>

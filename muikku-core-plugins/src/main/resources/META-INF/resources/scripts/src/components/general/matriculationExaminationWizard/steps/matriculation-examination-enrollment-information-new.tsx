@@ -412,11 +412,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * @returns whether examination is valid, and with selection student can graduate from
    */
   const isValidExamination = () => {
-    /**
-     * Difference when finnish language or finnish as secondary language
-     * is subracted from enrolled and succesfully finished exams and
-     * planned exams
-     */
+    // Difference when finnish language or finnish as secondary language
+    // is subracted from enrolled and succesfully finished exams and
+    // planned exams
     const difference =
       getSuccesfulFinishedExams().length +
       getNonDuplicateAttendanceEnrolledAndPlannedExcludingNotSucceed().length -
@@ -454,19 +452,15 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
     const subjectCodes: string[] = [];
 
-    /**
-     * Creates array of string from attendance subject codes
-     */
+    // Creates array of string from attendance subject codes
     for (const attendance of examinationInformation.enrolledAttendances) {
       subjectCodes.push(attendance.subject);
     }
 
     let conflictedGroups = [];
 
-    /**
-     * Creates list of conflicted group by subject that conflicts together
-     * will create duplicated of same items to array that are removed later
-     */
+    // Creates list of conflicted group by subject that conflicts together
+    // will create duplicated of same items to array that are removed later
     for (const group of conflictingGroups) {
       for (const subject1 of subjectCodes) {
         for (const subject2 of subjectCodes) {
@@ -483,9 +477,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
     const tmp: string[] = [];
 
-    /**
-     * Remove dublicated conflicted groups
-     */
+    // Remove dublicated conflicted groups
     conflictedGroups = conflictedGroups.filter((v) => {
       if (tmp.indexOf(v.toString()) < 0) {
         tmp.push(v.toString());
@@ -495,9 +487,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
     const conflictSubjectGroups: string[][] = [];
 
-    /**
-     * Returns list of subject that conflict together by conflictgroup
-     */
+    // Returns list of subject that conflict together by conflictgroup
     for (const cGroup of conflictedGroups) {
       const array: string[] = [];
 

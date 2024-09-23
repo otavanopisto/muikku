@@ -63,34 +63,38 @@ const MatriculationPastListItem = (props: MatriculationPastListItemProps) => {
   };
 
   return (
-    <details className="details">
-      <summary className="details__summary">
-        <b>{headerTitle}</b>
-      </summary>
-      <div className="details__content">
-        <ApplicationSubPanel>
-          <ApplicationSubPanel>
-            <MatriculationEnrollment exam={exam} past />
-          </ApplicationSubPanel>
-          <ApplicationSubPanel>
-            <ApplicationSubPanel.Body>
-              <details className="details">
-                <summary className="details__summary">
-                  {t("actions.showChangeLog", { ns: "hops_new" })}
-                </summary>
-                <div className="details__content">
-                  {props.exam.status === "LOADING" ? (
-                    <div className="loader-empty" />
-                  ) : (
-                    <ChangeLog entryLogs={exam.changeLogs} />
-                  )}
-                </div>
-              </details>
-            </ApplicationSubPanel.Body>
-          </ApplicationSubPanel>
-        </ApplicationSubPanel>
+    <div className="application-sub-panel__notification-item">
+      <div className="application-sub-panel__notification-body">
+        <details className="details">
+          <summary className="details__summary">
+            <b>{headerTitle}</b>
+          </summary>
+          <div className="details__content">
+            <ApplicationSubPanel>
+              <ApplicationSubPanel>
+                <MatriculationEnrollment exam={exam} past />
+              </ApplicationSubPanel>
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Body>
+                  <details className="details">
+                    <summary className="details__summary">
+                      {t("actions.showChangeLog", { ns: "hops_new" })}
+                    </summary>
+                    <div className="details__content">
+                      {props.exam.status === "LOADING" ? (
+                        <div className="loader-empty" />
+                      ) : (
+                        <ChangeLog entryLogs={exam.changeLogs} />
+                      )}
+                    </div>
+                  </details>
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
+            </ApplicationSubPanel>
+          </div>
+        </details>
       </div>
-    </details>
+    </div>
   );
 };
 

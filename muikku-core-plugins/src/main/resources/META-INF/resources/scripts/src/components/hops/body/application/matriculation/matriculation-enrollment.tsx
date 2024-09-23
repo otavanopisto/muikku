@@ -64,20 +64,24 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
         {hops.hopsMatriculation.exams[0] && (
           <ApplicationSubPanel.Body>
-            <details className="details">
-              <summary className="details__summary">
-                {t("actions.showChangeLog", { ns: "hops_new" })}
-              </summary>
-              <div className="details__content">
-                {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
-                  <div className="loader-empty" />
-                ) : (
-                  <ChangeLog
-                    entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
-                  />
-                )}
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body">
+                <details className="details">
+                  <summary className="details__summary">
+                    {t("actions.showChangeLog", { ns: "hops_new" })}
+                  </summary>
+                  <div className="details__content">
+                    {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
+                      <div className="loader-empty" />
+                    ) : (
+                      <ChangeLog
+                        entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
+                      />
+                    )}
+                  </div>
+                </details>
               </div>
-            </details>
+            </div>
           </ApplicationSubPanel.Body>
         )}
 
@@ -98,7 +102,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
             ns: "hops_new",
           })}
         </ApplicationSubPanel.Header>
-        <ApplicationSubPanel.Body modifier="studies-yo-subjects">
+        <ApplicationSubPanel.Body>
           <MatriculationPastEnrollmentList>
             {hops.hopsMatriculation.pastExams.map((e) => (
               <MatriculationPastListItem key={e.id} exam={e} />

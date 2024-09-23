@@ -8,11 +8,6 @@ import MatriculationPlan from "./matriculation-plan";
 import { useTranslation } from "react-i18next";
 
 /**
- * Type for MatriculationTab
- */
-//type MatriculationTab = "PLAN" | "PARTICIPATION" | "ENROLLMENT" | "HISTORY";
-
-/**
  * MatriculationProps
  */
 interface MatriculationProps {}
