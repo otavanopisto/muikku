@@ -195,9 +195,8 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
    * @param str
    * @returns string with \ replaced with <br />
    */
-  replaceNewlinesWithBreaks = (str: string): string => {
-    return str.replace(/\n/g, "<br />");
-  };
+  replaceNewlinesWithBreaks = (str: string): string =>
+    str.replace(/\n/g, "<br />");
 
   /**
    * onFieldSavedStateChange
