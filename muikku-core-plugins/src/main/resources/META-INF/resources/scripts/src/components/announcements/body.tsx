@@ -3,6 +3,7 @@ import * as React from "react";
 import Application from "./body/application";
 import Aside from "./body/aside";
 import { useTranslation } from "react-i18next";
+import ScreenContainer from "~/components/general/screen-container";
 
 /**
  * AnnouncementsBodyProps
@@ -28,7 +29,9 @@ const AnnouncementsBody = (props: AnnouncementsBodyProps) => {
         activeTrail="announcements"
         navigation={aside}
       />
-      <Application aside={aside} />
+      <ScreenContainer viewModifiers="announcements">
+        <Application aside={aside} />
+      </ScreenContainer>
     </div>
   );
 };
