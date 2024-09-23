@@ -16,7 +16,7 @@ import fi.otavanopisto.security.Scope;
 public class MatriculationPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.STUDENT } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.STUDENT_PARENT } )
   public static final String MATRICULATION_LIST_EXAMS = "MATRICULATION_LIST_EXAMS";
   
   @Scope (PermissionScope.ENVIRONMENT)
