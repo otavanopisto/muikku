@@ -5,6 +5,7 @@
 
   <sql>drop table SentMatriculationEnrollment;</sql>
   
+  <sql>insert into RolePermission (permission_id, role_id) values ((select id from Permission where name='MATRICULATION_LIST_EXAMS'), (select id from RoleEntity where name='STUDENT_PARENT'));</sql>
   <sql>insert into RolePermission (permission_id, role_id) values ((select id from Permission where name='MATRICULATION_GET_INITIALDATA'), (select id from RoleEntity where name='STUDENT_PARENT'));</sql>
   
 </update> 

@@ -176,7 +176,7 @@ public class MatriculationRESTService {
   }
   
   @PUT
-  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @RESTPermit(MatriculationPermissions.MATRICULATION_SEND_ENROLLMENT)
   @Path("/students/{STUDENTIDENTIFIER}/exams/{EXAMID}/enrollment/state")
   public Response setEnrollmentState(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId, MatriculationEnrollmentStateChangePayload payload) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
