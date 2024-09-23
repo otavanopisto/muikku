@@ -87,7 +87,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    */
   const handleCancelSaveWithExtraDetailsClick = () => setExtraDetails("");
 
-  if (userRole !== "STUDENT") {
+  if (userRole !== "STUDENT" && userRole !== "STUDENT_PARENT") {
     switch (data.state) {
       case "INACTIVE":
         return userRole === "SPECIAL_ED_TEACHER" ? (
@@ -176,28 +176,29 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         return <></>;
     }
   }
+  if (userRole === "STUDENT") {
+    switch (data.state) {
+      case "PENDING":
+        return (
+          <div className="pedagogy-form__toolbar">
+            <ApprovalDialog
+              formIsApproved={formIsApproved}
+              saveButtonDisabled={!formIsApproved}
+              onSaveClick={approveForm}
+              onApproveChange={handleApproveValueChange}
+            >
+              <Button buttonModifiers={["info"]}>
+                {t("actions.approve", {
+                  ns: "pedagogySupportPlan",
+                })}
+              </Button>
+            </ApprovalDialog>
+          </div>
+        );
 
-  switch (data.state) {
-    case "PENDING":
-      return (
-        <div className="pedagogy-form__toolbar">
-          <ApprovalDialog
-            formIsApproved={formIsApproved}
-            saveButtonDisabled={!formIsApproved}
-            onSaveClick={approveForm}
-            onApproveChange={handleApproveValueChange}
-          >
-            <Button buttonModifiers={["info"]}>
-              {t("actions.approve", {
-                ns: "pedagogySupportPlan",
-              })}
-            </Button>
-          </ApprovalDialog>
-        </div>
-      );
-
-    default:
-      return <></>;
+      default:
+        return <></>;
+    }
   }
 };
 

@@ -1,12 +1,10 @@
 package fi.otavanopisto.muikku.ui.base.newevaluation;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -14,10 +12,14 @@ import java.time.format.DateTimeFormatter;
 
 import org.junit.Test;
 
-import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.hash.Hashing;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
+import fi.otavanopisto.muikku.atests.CeeposPaymentConfirmationRestModel;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
@@ -33,9 +35,9 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
+import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
-import fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel;
 
 public class NewEvaluationTestsBase extends AbstractUITest {
   
@@ -91,11 +93,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     
       navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
       selectFinnishLocale();
-      waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-      assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-      waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-      waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-      waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+      waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+      assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+      waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+      waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+      waitForPresent(".textfield-wrapper.state-SAVED");
       waitAndClick(".button--muikku-submit-assignment");
 
       waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -243,11 +245,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
@@ -267,8 +269,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--evaluate");
         waitAndClick(".evaluation-modal__item-header-title--assignment");
         waitUntilAnimationIsDone(".rah-static");
-        waitUntilHasText(".evaluation-modal__item-body span.material-page__textfield--evaluation");
-        assertText(".evaluation-modal__item-body span.material-page__textfield--evaluation", "field value");
+        waitUntilHasText(".evaluation-modal__item-body span.textfield--evaluation");
+        assertText(".evaluation-modal__item-body span.textfield--evaluation", "field value");
         String srcUrl = getAttributeValue(".evaluation-modal__item-body span.image img", "src");
         assertEquals(srcUrl, getAppUrl(false) + "/workspace/testcourse/materials/test-course-material-folder/test-exercise/5T0EHUR.gif");
         waitAndClick(".evaluation-modal__item-header .button-pill--evaluate");
@@ -495,11 +497,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
-        waitForPresent(".material-page__textfield-wrapper.state-SAVED");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
         waitAndClick(".button--muikku-submit-assignment");
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
@@ -615,10 +617,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             
             navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
             waitForPresent(".content-panel__chapter-title-text");
-            addTextToCKEditor(".material-page__journalfield-wrapper", contentInput);
+            addTextToCKEditor(".journalfield-wrapper", contentInput);
             waitForPresent(".material-page__field-answer-synchronizer--saved");
             waitAndClick(".button--muikku-submit-journal");
-            waitForPresent(".material-page__journalfield-wrapper .material-page__ckeditor-replacement--readonly p");
+            waitForPresent(".journalfield-wrapper .journalfield__ckeditor-replacement--readonly p");
             
             mockBuilder.removeMockCourseStudent(mockCourseStudent);
             mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
@@ -667,7 +669,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             mockBuilder
             .addStudent(student)
             .mockStudentCourseStats(student.getId(), 25)
-            .mockMatriculationEligibility(true)
+            .mockMatriculationEligibility(student.getId(), true)
             .mockMatriculationExam(true)
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityAI, "ÄI")
             .mockStudentsMatriculationEligibility(studentMatriculationEligibilityMAA, "MAA")
@@ -697,4 +699,229 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       }
     }
   
+  @Test
+  public void evaluationPaymentTest() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    OffsetDateTime dateNow = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
+    Builder mockBuilder = mocker();
+    MockStudent student = new MockStudent(10l, 10l, "Rawring", "Reptile", "rawr@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "101010-1212", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
+    try {
+      mockBuilder
+        .addStaffMember(admin)
+        .addStudent(student)
+        .mockLogin(admin)
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, true, false, null))
+        .addStudentToStudentGroup(2l, student)
+        .mockStudyProgrammes()
+        .mockStudentGroups()
+        .mockPersons()
+        .mockStudents()
+        .mockEmptyStudyActivity()
+        .mockCompositeGradingScales()
+        .build();
+      Course course1 = new CourseBuilder().name("Pay me").id((long) 10).description("test course for testing evaluation payment").buildCourse();
+      Double price = 150d;
+      CourseAssessmentPrice cap = new CourseAssessmentPrice(price);
+      mockBuilder
+      .addCourse(course1)
+      .mockCourseAssessmentPrice(course1.getId(), cap)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+        "Test", "text/html;editor=CKEditor", 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
+        "EVALUATED");      
+      logout();
+      MockCourseStudent mcs = new MockCourseStudent(10l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {      
+        mockBuilder.mockLogin(student);
+        login();
+
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        selectFinnishLocale();
+        waitForVisible(".content-panel__container .material-page--assignment input");
+        assertValue(".content-panel__container .material-page--assignment input", "");
+        waitAndClick(".content-panel__container .material-page--assignment input");
+        waitAndSendKeys(".content-panel__container .material-page--assignment input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
+        waitAndClick(".button--muikku-submit-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");
+        waitAndClick(".link--workspace-assessment");
+        waitForVisible(".dialog .dialog__content");
+
+        mcs = new MockCourseStudent(10l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
+        
+//      Order is created as entity clicks themselves to the store, so we need to anticipate the orderNo to be able to mock it in time.
+        String orderNo = getNextCeeposOrderId();
+        String refNo = "456";
+        String cSalt = "xxxxxx";
+        int ceeposStatus = 1;
+        StringBuilder sb = new StringBuilder();
+        sb.append(orderNo);
+        sb.append("&");
+        sb.append(ceeposStatus); // ceepos payment state
+        sb.append("&");
+        sb.append(refNo);
+        sb.append("&");
+        sb.append(cSalt);  // secret ceepos salt for hashing
+        String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+        
+        mockBuilder
+          .mockAssessmentRequests(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, dateNow)
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, course1, student, dateNow)
+          .mockCompositeCourseAssessmentRequests()
+          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
+          .mockStaffCompositeCourseAssessmentRequests()
+          .mockWorkspaceBilledPriceUpdate(String.valueOf(cap.getPrice()))
+          .addCourseStudent(course1.getId(), mcs)
+          .mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl(), ceeposStatus)
+          .build();     
+        
+        sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+        waitAndClick(".button--standard-ok");
+        
+        assertText(".card__text-row--ceepos-feedback", "Tilauksen maksutapahtuma onnistui");
+        assertText(".card__text-row .card__text-highlight--ceepos", "150 €");
+        waitAndClick(".button--back-to-muikku");
+        
+        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel(orderNo, ceeposStatus, refNo, expectedHash);
+
+        int status = TestUtilities.sendHttpPOSTRequest(getAppUrl(false) + "/rest/ceepos/paymentConfirmation", objectMapper.writeValueAsString(cpcrm));
+        if (status == 200) {
+          assertPresent(".icon-assessment-pending");
+          logout();
+          
+          mockBuilder.mockLogin(admin);
+          login();
+          
+          assertPresent(".navbar__item--communicator .indicator");
+          navigate("/communicator", false);
+          waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
+          assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Rawring Reptile (Aineopiskelu/yo-tutkinto)");
+          waitAndClick("div.application-list__item.message");
+          assertText(".application-list__item-content-body", "Rawring Reptile (Aineopiskelu/yo-tutkinto) lähetti arviointipyynnön kurssilta Pay me (test extension).\n" + 
+              "Arviointipyynnön teksti\n" + 
+              "Hello!");
+        }else {
+          assertTrue("paymentConfirmation status not 200", false);
+        }
+      }finally {
+        deleteUserGroupUsers();
+        archiveUserByEmail(student.getEmail());
+        deleteWorkspace(workspace.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void evaluationCancelledPaymentTest() throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    OffsetDateTime dateNow = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
+    Builder mockBuilder = mocker();
+    MockStudent student = new MockStudent(11l, 11l, "Seething", "Salamander", "seethingsala@example.com", 2l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111210-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextWeek());
+    try {
+      mockBuilder
+        .addStaffMember(admin)
+        .addStudent(student)
+        .mockLogin(admin)
+        .addStudyProgramme(new StudyProgramme(2l, 1l, "test_lukio", "Aineopiskelu/yo-tutkinto", 1l, null, true, false, null))
+        .addStudentToStudentGroup(2l, student)
+        .mockStudyProgrammes()
+        .mockStudentGroups()
+        .mockPersons()
+        .mockStudents()
+        .mockEmptyStudyActivity()
+        .mockCompositeGradingScales()
+        .build();
+      Course course1 = new CourseBuilder().name("Pay me").id((long) 10).description("test course for testing evaluation payment").buildCourse();
+      Double price = 150d;
+      CourseAssessmentPrice cap = new CourseAssessmentPrice(price);
+      mockBuilder
+      .addCourse(course1)
+      .mockCourseAssessmentPrice(course1.getId(), cap)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+        "Test", "text/html;editor=CKEditor", 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 
+        "EVALUATED");      
+      logout();
+      MockCourseStudent mcs = new MockCourseStudent(11l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStudent(course1.getId(), mcs)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {      
+        mockBuilder.mockLogin(student);
+        login();
+
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        selectFinnishLocale();
+        waitForVisible(".content-panel__container .material-page--assignment input");
+        assertValue(".content-panel__container .material-page--assignment input", "");
+        waitAndClick(".content-panel__container .material-page--assignment input");
+        waitAndSendKeys(".content-panel__container .material-page--assignment input", "field value");
+        waitForPresent(".textfield-wrapper.state-SAVED");
+        waitAndClick(".button--muikku-submit-assignment");
+
+        waitForElementToBeClickable(".button--muikku-withdraw-assignment");
+        waitAndClick(".link--workspace-assessment");
+        waitForVisible(".dialog .dialog__content");
+
+//      Order is created as entity clicks themselves to the store, so we need to anticipate the orderNo to be able to mock it in time.
+        String orderNo = getNextCeeposOrderId();
+        String refNo = "457";
+        String cSalt = "xxxxxx";
+        int ceeposStatus = 0;
+        StringBuilder sb = new StringBuilder();
+        sb.append(orderNo);
+        sb.append("&");
+        sb.append(ceeposStatus); // ceepos payment state
+        sb.append("&");
+        sb.append(refNo);
+        sb.append("&");
+        sb.append(cSalt);  // secret ceepos salt for hashing
+        String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
+        mockBuilder.mockCeeposRequestPayment(orderNo, refNo, cSalt, expectedHash, getAppUrl(), ceeposStatus);
+        
+        sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+        waitAndClick(".button--standard-ok");
+        
+        assertText(".card__text-row--ceepos-feedback", "Keskeytit tilauksen maksutapahtuman. Ole hyvä ja ota yhteyttä ohjaajaasi.");
+        assertText(".card__text-row .card__text-highlight--ceepos", "150 €");
+        waitAndClick(".button--back-to-muikku");
+        CeeposPaymentConfirmationRestModel cpcrm = new CeeposPaymentConfirmationRestModel(orderNo, 0, refNo, expectedHash);
+        int status = TestUtilities.sendHttpPOSTRequest(getAppUrl(false) + "/rest/ceepos/paymentConfirmation", objectMapper.writeValueAsString(cpcrm));
+
+        if (status == 200) {
+          navigate("/profile#purchases", false);
+          assertText(".application-list__item--product .application-list__header-primary-description", "Tilaus on peruttu.");
+        }else {
+          assertTrue("paymentConfirmation status not 200", false);
+        }
+        
+      }finally {
+        deleteUserGroupUsers();
+        archiveUserByEmail(student.getEmail());
+        deleteWorkspace(workspace.getId());      
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
 }

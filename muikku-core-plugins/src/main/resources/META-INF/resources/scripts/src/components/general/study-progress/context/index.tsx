@@ -32,7 +32,7 @@ type DataToLoad = "studentActivity" | "studentChoices" | "optionalSuggestions";
 interface StudyProgressStaticDataContext {
   studentId: string;
   studentUserEntityId: number;
-  user: "supervisor" | "student";
+  user: "supervisor" | "student" | "guardian";
   useCase: "state-of-studies" | "hops-planning";
   websocketState: WebsocketStateType;
   displayNotification: DisplayNotificationTriggerType;
@@ -126,7 +126,7 @@ const useStudyProgressContextUpdater = () => {
 interface StudyProgresContextProviderProps {
   studentId: string;
   studentUserEntityId: number;
-  user: "supervisor" | "student";
+  user: "supervisor" | "student" | "guardian";
   useCase: "state-of-studies" | "hops-planning";
   dataToLoad: DataToLoad[];
   websocketState: WebsocketStateType;
@@ -392,7 +392,6 @@ const StudyProgressContextProvider = (
             const studentChoicesList = await hopsApi.getStudentCourseChoices({
               studentIdentifier: studentId,
             });
-
             return studentChoicesList;
           })(),
           (async () => {
@@ -446,7 +445,7 @@ const StudyProgressContextProvider = (
     };
 
     loadStudentActivityListData(studentId);
-  }, [dataToLoad, displayNotification, studentId]);
+  }, [dataToLoad, displayNotification, studentId, user]);
 
   React.useEffect(() => {
     /**

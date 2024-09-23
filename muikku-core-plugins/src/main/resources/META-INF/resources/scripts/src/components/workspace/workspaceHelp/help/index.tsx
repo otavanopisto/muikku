@@ -35,6 +35,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialViewRestriction } from "~/generated/client";
 import ReadSpeakerReader from "~/components/general/readspeaker";
+import { BackToToc } from "~/components/general/toc";
 
 /**
  * HelpMaterialsProps
@@ -71,6 +72,8 @@ const DEFAULT_OFFSET = 67;
  */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  private contentPanelRef = React.createRef<ContentPanel>();
+
   /**
    * constructor
    * @param props props
@@ -667,14 +670,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             let contentToRead = [
               ...this.props.materials
                 .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
-                .map((section) => `sectionId${section.workspaceMaterialId}`),
+                .map((section) => `s-${section.workspaceMaterialId}`),
             ];
 
             if (pageI !== 0) {
               contentToRead = [
                 ...section.children
                   .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
-                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                  .map((page) => `p-${page.workspaceMaterialId}`),
                 ...contentToRead,
               ];
             }
@@ -694,7 +697,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           const material =
             !this.props.workspace || (!isEditable && node.hidden) ? null : (
               <ContentPanelItem
-                id={`pageId${node.workspaceMaterialId}`}
+                id={`p-${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
               >
@@ -712,6 +715,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   workspace={this.props.workspace}
                   isViewRestricted={false}
                   readspeakerComponent={readSpeakerComponent}
+                  anchorItem={
+                    <BackToToc
+                      tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
+                    />
+                  }
                 />
               </ContentPanelItem>
             );
@@ -728,7 +740,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
-          id={`sectionId${section.workspaceMaterialId}`}
+          id={`s-${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -780,6 +792,17 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               lang={section.titleLanguage || this.props.workspace.language}
             >
               {section.title}
+              <BackToToc
+                tocElementId={
+                  this.props.status.loggedIn
+                    ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                    : `tocTopic-${section.workspaceMaterialId}`
+                }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
+              />
             </div>
           </h2>
 
@@ -804,13 +827,16 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         modifier="workspace-instructions"
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
-        ref="content-panel"
         readspeakerComponent={
           <ReadSpeakerReader
             readParameterType="readid"
             readParameters={readSpeakerParameters}
           />
         }
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
       >
         {results}
         {emptyMessage}

@@ -374,4 +374,7 @@ const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
   if (pedagogyFormAvailable.guidanceCounselor) {
     return "GUIDANCE_COUNSELOR";
   }
+  if (pedagogyFormAvailable.studentParent) {
+    return "STUDENT_PARENT";
+  }
 };

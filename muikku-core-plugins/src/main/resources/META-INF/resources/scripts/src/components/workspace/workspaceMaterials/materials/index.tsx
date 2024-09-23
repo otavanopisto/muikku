@@ -45,9 +45,9 @@ import {
 } from "~/actions/base/notifications";
 import {
   MaterialCompositeReply,
-  MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
+import { BackToToc } from "~/components/general/toc";
 
 /**
  * WorkspaceMaterialsProps
@@ -90,6 +90,8 @@ class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsState
 > {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  private contentPanelRef = React.createRef<ContentPanel>();
+
   /**
    * constructor
    * @param props props
@@ -730,14 +732,14 @@ class WorkspaceMaterials extends React.Component<
             let contentToRead = [
               ...this.props.materials
                 .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
-                .map((section) => `sectionId${section.workspaceMaterialId}`),
+                .map((section) => `s-${section.workspaceMaterialId}`),
             ];
 
             if (pageI !== 0) {
               contentToRead = [
                 ...section.children
                   .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
-                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                  .map((page) => `p-${page.workspaceMaterialId}`),
                 ...contentToRead,
               ];
             }
@@ -759,17 +761,11 @@ class WorkspaceMaterials extends React.Component<
             !this.props.materialReplies ||
             (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
               <ContentPanelItem
-                id={`pageId${node.workspaceMaterialId}`}
+                id={`p-${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
+                scrollMarginTopOffset={this.state.defaultOffset}
               >
-                <div
-                  id={"p-" + node.workspaceMaterialId}
-                  style={{
-                    transform:
-                      "translateY(" + -this.state.defaultOffset + "px)",
-                  }}
-                />
                 {/*TOP OF THE PAGE*/}
                 <WorkspaceMaterial
                   folder={section}
@@ -779,6 +775,15 @@ class WorkspaceMaterials extends React.Component<
                   isViewRestricted={false}
                   showEvenIfHidden={showEvenIfHidden}
                   readspeakerComponent={readSpeakerComponent}
+                  anchorItem={
+                    <BackToToc
+                      tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
+                    />
+                  }
                 />
               </ContentPanelItem>
             );
@@ -795,15 +800,11 @@ class WorkspaceMaterials extends React.Component<
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
-          id={`sectionId${section.workspaceMaterialId}`}
+          id={`s-${section.workspaceMaterialId}`}
+          style={{
+            scrollMarginTop: this.state.defaultOffset + "px",
+          }}
         >
-          <div
-            id={"s-" + section.workspaceMaterialId}
-            style={{
-              transform: "translateY(" + -this.state.defaultOffset + "px)",
-            }}
-          />
-
           {/*TOP OF THE CHAPTER*/}
           <h2
             className={`content-panel__chapter-title ${
@@ -848,6 +849,17 @@ class WorkspaceMaterials extends React.Component<
               lang={section.titleLanguage || this.props.workspace.language}
             >
               {section.title}
+              <BackToToc
+                tocElementId={
+                  this.props.status.loggedIn
+                    ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                    : `tocTopic-${section.workspaceMaterialId}`
+                }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
+              />
             </div>
           </h2>
 
@@ -888,7 +900,10 @@ class WorkspaceMaterials extends React.Component<
             readParameters={readSpeakerParameters}
           />
         }
-        ref="content-panel"
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
       >
         {results}
         {emptyMessage}

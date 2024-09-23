@@ -54,6 +54,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -71,8 +72,8 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
@@ -173,7 +174,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     // Access
     
-    if (!userSchoolDataIdentifier.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId())) {
+    if (!userSchoolDataIdentifier.getUserEntity().getId().equals(sessionController.getLoggedUserEntity().getId()) &&
+        !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
@@ -289,7 +291,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       Long userEntityId = sessionController.getLoggedUserEntity().getId();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
       if (userEntity == null || !userEntity.getId().equals(userEntityId)) {
-        return Response.status(Status.FORBIDDEN).build();
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
       }
     }
 
@@ -410,14 +414,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @GET
   @Path("/files/{ID}/content")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Produces("*/*")
   public Response getFileContent(@PathParam("ID") Long fileId) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
 
     TranscriptOfRecordsFile file = transcriptOfRecordsFileController.findFileById(fileId);
@@ -482,46 +481,41 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/hopseligibility")
-  @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveHopsEligibility(){
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+  @Path("/hopseligibility/{STUDENTIDENTIFIER}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier) {
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
     }
-
-    MatriculationEligibilities eligibilities = matriculationSchoolDataController.listEligibilities();
-    return Response.ok(eligibilities).build();
+    
+    try {
+      BridgeResponse<MatriculationEligibilities> eligibilities = matriculationSchoolDataController.listEligibilities(studentIdentifier);
+      if (eligibilities.ok()) {
+        return Response.ok(eligibilities.getEntity()).build();
+      }
+      else {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+    } catch (IllegalArgumentException iae) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
   }
 
   @GET
   @Path("/hops")
-  @RESTPermit(handling=Handling.INLINE)
+  @RESTPermit(handling=Handling.INLINE, requireLoggedIn = true)
   public Response retrieveHops(){
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-
-    HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
-
+    HopsRESTModel response = createHopsRESTModelForStudent(sessionController.getLoggedUser());
     if (response == null) {
       return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
     }
-
     return Response.ok(response).build();
   }
 
   @GET
   @Path("/hops/{USERIDENTIFIER}")
-  @RESTPermit(handling=Handling.INLINE)
+  @RESTPermit(handling=Handling.INLINE, requireLoggedIn = true)
   public Response retrieveHops(@PathParam("USERIDENTIFIER") String userIdentifierString){
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierString);
     if (userIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Malformed identifier").build();
@@ -531,7 +525,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
+    
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM)
+        && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), userIdentifier)
         && !Objects.equals(sessionController.getLoggedUser(), userIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
@@ -548,12 +544,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @PUT
   @Consumes("application/json")
   @Path("/hops")
-  @RESTPermit(handling=Handling.INLINE)
+  @RESTPermit(handling=Handling.INLINE, requireLoggedIn = true)
   public Response updateHops(HopsRESTModel model) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     if (userSchoolDataIdentifier == null || !userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
@@ -581,7 +573,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
     }
 
-    if (!identifier.equals(sessionController.getLoggedUser())) {
+    if (!identifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), identifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -622,24 +614,23 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
    */
   @GET
   @Path("/matriculationSubjects")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listMatriculationSubjects() {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
     return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
   }
 
   @GET
-  @Path("/matriculationEligibility")
-  @RESTPermit(handling = Handling.INLINE)
-  public Response findMatriculationEligibility(@QueryParam ("subjectCode") String subjectCode) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+  @Path("/students/{STUDENTIDENTIFIER}/matriculationEligibility")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response findMatriculationEligibility(
+      @PathParam("STUDENTIDENTIFIER") String studentIdentifierParam,
+      @QueryParam ("subjectCode") String subjectCode) {
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
     }
 
-    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(sessionController.getLoggedUser(), subjectCode);
+    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
 
     return Response.ok(result).build();
   }

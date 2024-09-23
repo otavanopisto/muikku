@@ -82,10 +82,49 @@
   @include breakpoint($breakpoint-desktop-xl) {
     min-height: 270px;
   }
+
+  &.STATE-passed::before {
+    background-image: inherit;
+    background-position: center center;
+    background-size: cover;
+    bottom: 0;
+    content: "";
+    filter: grayscale(100%);
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 0;
+  }
+}
+
+.hero__workspace-assessment-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+  justify-content: end;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+.hero__workspace-assessment {
+  align-items: center;
+  background: $color-passed;
+  border: 5px solid $color-default;
+  color: $color-default;
+  display: flex;
+  font-size: 5rem;
+  height: 150px;
+  justify-content: center;
+  margin-right: 20px;
+  width: 150px;
 }
 
 .hero__workspace-title {
   display: none;
+  z-index: 1;
 
   @include breakpoint($breakpoint-pad) {
     background: $color-default;
@@ -116,6 +155,7 @@
   font-weight: 400;
   padding: 5px 10px;
   width: auto;
+  z-index: 1;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
@@ -139,6 +179,7 @@
   margin: 10px 0 0;
   padding: 5px 10px;
   width: auto;
+  z-index: 1;
 
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;

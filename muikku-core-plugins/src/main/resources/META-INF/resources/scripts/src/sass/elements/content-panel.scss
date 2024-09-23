@@ -110,6 +110,7 @@
   z-index: 99;
 
   .content-panel__navigation-content {
+    background-color: $color-default;
     right: -90%;
   }
 
@@ -119,6 +120,10 @@
 
   &.visible {
     background-color: $color-toc-overlay-mobile-background;
+
+    @include breakpoint($breakpoint-desktop) {
+      background-color: transparent;
+    }
 
     .content-panel__navigation-content {
       right: 0;
@@ -181,6 +186,16 @@
   @include breakpoint($breakpoint-desktop) {
     box-shadow: none;
     width: 100%;
+  }
+}
+
+.content-panel__navigation-close {
+  background-color: $color-default;
+  display: flex;
+  justify-content: flex-end;
+
+  @include breakpoint($breakpoint-desktop) {
+    display: none;
   }
 }
 

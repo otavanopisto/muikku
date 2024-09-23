@@ -19,19 +19,15 @@ import {
   reuseExistantValue,
 } from "~/actions/workspaces/helpers";
 import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
 import {
   InterimEvaluationRequest,
   WorkspaceActivity,
   WorkspaceAssessmentStateType,
-} from "~/generated/client";
-import MApi, { isMApiError } from "~/api/api";
-import {
   AssessmentRequest,
   WorkspaceAdditionalInfo,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
-  WorkspaceSignupGroup,
   Curriculum,
   WorkspaceStudent,
   UserStaffSearchResult,
@@ -40,6 +36,7 @@ import {
   MaterialReply,
   MaterialCompositeReplyStateType,
   EducationType,
+  WorkspaceSettings,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
@@ -135,7 +132,6 @@ export type UPDATE_WORKSPACE = SpecificActionType<
     update: WorkspaceUpdateType;
   }
 >;
-
 export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
   SpecificActionType<
     "UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
@@ -457,22 +453,17 @@ export interface UpdateCurrentWorkspaceImagesB64TriggerType {
 }
 
 /**
- * LoadCurrentWorkspaceUserGroupPermissionsTriggerType
+ * LoadCUrrentWorkspaceSignupMessageTriggerType
  */
-export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
+export interface LoadCurrentWorkspaceSignupMessageTriggerType {
   (): AnyActionType;
 }
 
 /**
- * UpdateCurrentWorkspaceUserGroupPermissionTriggerType
+ * LoadCurrentWorkspaceUserGroupPermissionsTriggerType
  */
-export interface UpdateCurrentWorkspaceUserGroupPermissionTriggerType {
-  (data?: {
-    original: WorkspaceSignupGroup;
-    update: WorkspaceSignupGroup;
-    success?: () => void;
-    fail?: () => void;
-  }): AnyActionType;
+export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -503,7 +494,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const chatApi = MApi.getChatApi();
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
       const evaluationApi = MApi.getEvaluationApi();
@@ -540,7 +530,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         let producers: WorkspaceMaterialProducer[];
         let isCourseMember: boolean;
         let details: WorkspaceDetails;
-        let chatStatus: WorkspaceChatStatus;
         const status = state.status;
 
         [
@@ -561,8 +550,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           isCourseMember,
           // eslint-disable-next-line prefer-const
           details,
-          // eslint-disable-next-line prefer-const
-          chatStatus,
         ] = (await Promise.all([
           reuseExistantValue(true, workspace, () =>
             workspaceApi.getWorkspace({
@@ -649,14 +636,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
                 })
               )
             : null,
-
-          state.status.loggedIn
-            ? reuseExistantValue(true, workspace && workspace.chatStatus, () =>
-                chatApi.getWorkspaceChatSettings({
-                  workspaceEntityId: data.workspaceId,
-                })
-              )
-            : null,
         ])) as any;
 
         workspace.assessmentRequests = assessmentRequests;
@@ -667,7 +646,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.producers = producers;
         workspace.isCourseMember = isCourseMember;
         workspace.details = details;
-        workspace.chatStatus = chatStatus;
 
         dispatch({
           type: "SET_CURRENT_WORKSPACE",
@@ -1048,7 +1026,6 @@ export interface SignupIntoWorkspaceTriggerType {
     success: () => void;
     fail: () => void;
     workspace: WorkspaceSignUpDetails;
-    message: string;
   }): AnyActionType;
 }
 
@@ -1111,6 +1088,29 @@ export interface UpdateWorkspaceTriggerType {
     executeOnSuccess?: () => void;
     fail?: () => void;
   }): AnyActionType;
+}
+
+/**
+ * UpdateWorkspaceSettingsTriggerType
+ */
+export interface UpdateWorkspaceSettingsTriggerType {
+  (data: {
+    workspace: WorkspaceDataType;
+    update: {
+      settings: WorkspaceSettings;
+      workspaceType: string;
+      producers: WorkspaceMaterialProducer[];
+    };
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * LoadWorkspaceSettingsTriggerType
+ */
+export interface LoadWorkspaceSettingsTriggerType {
+  (id: number): AnyActionType;
 }
 
 /**
@@ -1305,9 +1305,6 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
       try {
         await coursepickerApi.workspaceSignUp({
           workspaceId: data.workspace.id,
-          workspaceSignUpRequest: {
-            message: data.message,
-          },
         });
 
         window.location.href = `${getState().status.contextPath}/workspace/${
@@ -1334,173 +1331,191 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
   };
 
 /**
- * updateWorkspace
+ * Loads workspace settings.
+ * @param id workspace id
+ */
+const loadWorkspaceSettings: LoadWorkspaceSettingsTriggerType =
+  function loadWorkspaceSettings(id) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
+      try {
+        // Update the settings
+        const payload = await workspaceApi.getWorkspaceSettings({
+          workspaceId: id,
+        });
+        const currentWorkspace = getState().workspaces.currentWorkspace;
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: currentWorkspace,
+            update: { settings: payload },
+          },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            // Does not exist in the i18n files
+            i18n.t("notifications.loadError", {
+              ns: "workspace",
+              context: "settings",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * Updates the assignment state of a workspace material.
  * @param data data
  */
-const updateWorkspace: UpdateWorkspaceTriggerType = function updateWorkspace(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-    getState: () => StateType
-  ) => {
-    const chatApi = MApi.getChatApi();
-    const workspaceApi = MApi.getWorkspaceApi();
-
-    const actualOriginal: WorkspaceDataType = { ...data.workspace };
-    delete actualOriginal["activity"];
-    delete actualOriginal["studentActivity"];
-    delete actualOriginal["forumStatistics"];
-    delete actualOriginal["assessmentRequests"];
-    delete actualOriginal["interimEvaluationRequests"];
-    delete actualOriginal["additionalInfo"];
-    delete actualOriginal["staffMembers"];
-    delete actualOriginal["students"];
-    delete actualOriginal["details"];
-    delete actualOriginal["producers"];
-    delete actualOriginal["contentDescription"];
-    delete actualOriginal["isCourseMember"];
-    delete actualOriginal["activityLogs"];
-    delete actualOriginal["permissions"];
-    delete actualOriginal["chatStatus"];
-    delete actualOriginal["inactiveStudents"];
-
-    try {
-      const newDetails = data.update.details;
-      const newPermissions = data.update.permissions;
-      const appliedProducers = data.update.producers;
-      const unchangedPermissions: WorkspaceSignupGroup[] = [];
+const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
+  function updateWorkspaceSettings(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
       const currentWorkspace = getState().workspaces.currentWorkspace;
-      const newChatStatus = data.update.chatStatus;
+      try {
+        const workspaceEntityId = data.workspace.id;
+        const appliedProducers = data.update.producers;
+        const additionalInfo = currentWorkspace.additionalInfo;
+        const workspaceSettings = data.update.settings;
 
-      // I left the workspace image out of this, because it never is in the application state anyway
-      // These need to be removed from the object for the basic stuff to not fail
-      delete data.update["details"];
-      delete data.update["permissions"];
-      delete data.update["producers"];
-      delete data.update["chatStatus"];
+        // To update the workspace app state, we use the settings were there's overlap
+        // This also updates the settings in the workspace app state
+        const workspaceUpdate = {
+          ...workspaceSettings,
+          settings: workspaceSettings,
+        };
 
-      if (data.update) {
-        await workspaceApi.updateWorkspace({
+        // Update producers to server
+        if (appliedProducers) {
+          const updatedProducersList =
+            await workspaceApi.createWorkspaceMaterialProducers({
+              workspaceEntityId,
+              requestBody: appliedProducers.map((p) => p.name),
+            });
+
+          data.update.producers = updatedProducersList;
+        }
+
+        // Update the settings on server
+        await workspaceApi.updateWorkspaceSettings({
+          updateWorkspaceSettingsRequest: workspaceSettings,
           workspaceId: data.workspace.id,
-          body: Object.assign(actualOriginal, data.update),
-        });
-      }
-
-      // Then the details - if any
-      if (newDetails) {
-        await workspaceApi.updateWorkspaceDetails({
-          workspaceId: data.workspace.id,
-          updateWorkspaceDetailsRequest: newDetails,
         });
 
-        // Add details back to the update object
-        data.update.details = newDetails;
+        // For additionalInfo, we use the existing values and update
+        // with the ones that are in the update
+        const newAdditionalInfo: WorkspaceAdditionalInfo = {
+          ...additionalInfo,
+          beginDate: workspaceSettings.beginDate,
+          endDate: workspaceSettings.endDate,
+          signupStart: workspaceSettings.signupStart,
+          signupEnd: workspaceSettings.signupEnd,
+          workspaceType: data.update.workspaceType,
+        };
 
-        // Details affect additionalInfo, so I guess we load that too. It's not a "single source of truth" when there's duplicates in the model, is it?
-        const additionalInfo = await workspaceApi.getWorkspaceAdditionalInfo({
-          workspaceId: currentWorkspace.id,
+        // keys of workspacedatatype
+        const WorkspaceDataKeys: (keyof WorkspaceDataType)[] = [
+          "archived",
+          "curriculumIdentifiers",
+          "description",
+          "hasCustomImage",
+          "id",
+          "lastVisit",
+          "materialDefaultLicense",
+          "language",
+          "name",
+          "nameExtension",
+          "numVisits",
+          "published",
+          "urlName",
+          "organizationEntityId",
+          "access",
+          "isCourseMember",
+          "educationTypeName",
+          "subjects",
+          "settings",
+          "activity",
+          "studentActivity",
+          "forumStatistics",
+          "organization",
+          "assessmentRequests",
+          "interimEvaluationRequests",
+          "additionalInfo",
+          "staffMembers",
+          "staffMemberSelect",
+          "producers",
+          "contentDescription",
+          "activityLogs",
+          "students",
+          "inactiveStudents",
+          "studentsSelect",
+          "details",
+          "mandatority",
+          "teachers",
+          "studentCount",
+        ];
+
+        // Then from the workspaceUpdate, we remove the values that do not belong there that are in the settings
+        Object.keys(workspaceUpdate).forEach((key) => {
+          if (!(WorkspaceDataKeys as string[]).includes(key)) {
+            delete workspaceUpdate[key as keyof WorkspaceSettings];
+          }
         });
 
-        data.update.additionalInfo = additionalInfo;
-      }
-
-      // Update workspace chat status (enabled/disabled)
-      if (newChatStatus) {
-        await chatApi.updateWorkspaceChatSettings({
-          workspaceEntityId: data.workspace.id,
-          updateWorkspaceChatSettingsRequest: {
-            chatStatus: newChatStatus,
-            workspaceEntityId: data.workspace.id,
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update: workspaceUpdate,
           },
         });
 
-        // Add chat status back to the update object
-        data.update.chatStatus = newChatStatus;
-      }
-
-      // Then permissions - if any
-      if (newPermissions) {
-        // Lets weed out the unchanged permissions for later
-        data.workspace.permissions.map((permission) => {
-          if (
-            !newPermissions.find(
-              (p) => p.userGroupEntityId === permission.userGroupEntityId
-            )
-          ) {
-            unchangedPermissions.push(permission);
-          }
+        // update additional info to app state
+        dispatch({
+          type: "UPDATE_WORKSPACE",
+          payload: {
+            original: data.workspace,
+            update: { additionalInfo: newAdditionalInfo },
+          },
         });
-        await Promise.all(
-          newPermissions.map((permission) => {
-            const originalPermission = currentWorkspace.permissions.find(
-              (p) => p.userGroupEntityId === permission.userGroupEntityId
-            );
 
-            workspaceApi.updateWorkspaceSignupGroup({
-              workspaceEntityId: currentWorkspace.id,
-              userGroupId: originalPermission.userGroupEntityId,
-              updateWorkspaceSignupGroupRequest: permission,
-            });
-          })
+        data.success && data.success();
+
+        // Update the visible workspace values
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            // Does not exist in the i18n files
+            i18n.t("notifications.updateError", {
+              ns: "workspace",
+              context: "settings",
+            }),
+            "error"
+          )
         );
 
-        // Here we have to combine the new permissions with old ones for dispatch, because otherwise there will be missing options in the app state
-
-        // TODO: this mixes up the order of the checkboxes, maybe reload them or sort them here.
-
-        data.update.permissions = unchangedPermissions.concat(newPermissions);
+        data.fail && data.fail();
       }
-
-      // Then producers
-      if (appliedProducers) {
-        const updatedProducersList =
-          await workspaceApi.createWorkspaceMaterialProducers({
-            workspaceEntityId: currentWorkspace.id,
-            requestBody: appliedProducers.map((p) => p.name),
-          });
-
-        data.update.producers = updatedProducersList;
-      }
-
-      // All saved and stitched together again, dispatch to state
-
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: data.workspace,
-          update: data.update,
-        },
-      });
-
-      data.success && data.success();
-    } catch (err) {
-      dispatch({
-        type: "UPDATE_WORKSPACE",
-        payload: {
-          original: data.workspace,
-          update: actualOriginal,
-        },
-      });
-
-      if (!isMApiError(err)) {
-        throw err;
-      }
-
-      dispatch(
-        displayNotification(
-          i18n.t("notifications.updateError", {
-            ns: "workspace",
-            context: "settings",
-          }),
-          "error"
-        )
-      );
-
-      data.fail && data.fail();
-    }
+    };
   };
-};
 
 /**
  * loadStaffMembersOfWorkspace
@@ -1892,49 +1907,6 @@ export type UpdateWorkspaceStateType =
   | "add-teachers"
   | "remove-teachers"
   | "done";
-
-/**
- * loadWorkspaceChatStatus
- */
-const loadWorkspaceChatStatus: LoadWorkspaceChatStatusTriggerType =
-  function loadWorkspaceChatStatus() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const chatApi = MApi.getChatApi();
-
-      try {
-        const chatStatus = await chatApi.getWorkspaceChatSettings({
-          workspaceEntityId: getState().workspaces.currentWorkspace.id,
-        });
-
-        const currentWorkspace = getState().workspaces.currentWorkspace;
-
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: currentWorkspace,
-            update: { chatStatus },
-          },
-        });
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.loadError", {
-              ns: "workspace",
-              context: "chatSettings",
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
 
 /**
  * loadWorkspaceDetailsInCurrentWorkspace
@@ -2347,51 +2319,6 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
   };
 
 /**
- * loadCurrentWorkspaceUserGroupPermissions
- */
-const loadCurrentWorkspaceUserGroupPermissions: LoadCurrentWorkspaceUserGroupPermissionsTriggerType =
-  function loadCurrentWorkspaceUserGroupPermissions() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
-      try {
-        const currentWorkspace = getState().workspaces.currentWorkspace;
-
-        const permissions = await workspaceApi.getWorkspaceSignupGroups({
-          workspaceEntityId: getState().workspaces.currentWorkspace.id,
-        });
-
-        dispatch({
-          type: "UPDATE_WORKSPACE",
-          payload: {
-            original: currentWorkspace,
-            update: {
-              permissions,
-            },
-          },
-        });
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.loadError", {
-              ns: "workspace",
-              context: "permissions",
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
-
-/**
  * updateWorkspaceEditModeState
  * @param data data
  * @param restoreActiveFromLocalStorage restoreActiveFromLocalStorage
@@ -2429,9 +2356,9 @@ export {
   setCurrentWorkspace,
   requestAssessmentAtWorkspace,
   cancelAssessmentAtWorkspace,
-  updateWorkspace,
+  loadWorkspaceSettings,
+  updateWorkspaceSettings,
   loadStaffMembersOfWorkspace,
-  loadWorkspaceChatStatus,
   updateAssignmentState,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
@@ -2443,7 +2370,6 @@ export {
   updateWorkspaceDetailsForCurrentWorkspace,
   updateWorkspaceProducersForCurrentWorkspace,
   updateCurrentWorkspaceImagesB64,
-  loadCurrentWorkspaceUserGroupPermissions,
   loadTemplatesFromServer,
   updateWorkspaceEditModeState,
   updateCurrentWorkspaceActivity,

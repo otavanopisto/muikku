@@ -10,14 +10,13 @@ import javax.persistence.criteria.Root;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
-import fi.otavanopisto.muikku.plugins.forum.wall.ForumAreaSubscription;
 
 
 public class ForumAreaSubscriptionDAO extends CorePluginsDAO<ForumAreaSubscription> {
 
-	private static final long serialVersionUID = 2496199219925814980L;
+  private static final long serialVersionUID = 2496199219925814980L;
 
-	public ForumAreaSubscription create(UserEntity user, ForumArea forumArea) {
+  public ForumAreaSubscription create(UserEntity user, ForumArea forumArea) {
     ForumAreaSubscription forumSubscription = new ForumAreaSubscription();
     
     forumSubscription.setUser(user.getId());

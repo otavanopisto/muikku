@@ -8,6 +8,13 @@
   width: 100%;
 }
 
+.form__container-title {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-weight: 400;
+}
+
 .form__row {
   margin: 0 0 15px;
   position: relative;
@@ -38,6 +45,11 @@
 .form__row--split {
   display: flex;
   flex-flow: row wrap;
+}
+
+.form__row-header {
+  display: flex;
+  justify-content: space-between;
 }
 
 .form__buttons {
@@ -103,6 +115,8 @@ legend {
 .form__fieldset {
   border: 0;
   margin: 0;
+  max-width: 100%;
+  min-width: 0;
   padding: 0;
 }
 
@@ -157,6 +171,7 @@ legend {
   input[type="checkbox"] {
     align-items: center;
     appearance: none;
+    background: $color-default;
     border: solid 2px $color-form-element-border;
     border-radius: 3px;
     display: flex;
@@ -202,6 +217,15 @@ legend {
 
 .form-element--user-group-name {
   width: 100%;
+}
+
+.form-element--sign-up-message {
+  max-width: 100%;
+  width: 100%;
+
+  .form-element__input {
+    width: 100%;
+  }
 }
 
 // Application-list item selector
@@ -383,6 +407,8 @@ legend {
   &.VALID {
     border-color: $color-success;
   }
+
+  @include form-focus;
 }
 
 .form-element__input--note-title {
@@ -567,6 +593,8 @@ legend {
       no-repeat right 5px center;
     border: 2px solid lighten($color-disabled, 20%);
   }
+
+  @include form-focus;
 }
 
 .form-element__select--guider-hops {
@@ -650,6 +678,8 @@ legend {
   @include breakpoint($breakpoint-desktop) {
     font-size: $text-desktop-font-size;
   }
+
+  @include form-focus;
 }
 
 .form-element__dropdown-selection-container {

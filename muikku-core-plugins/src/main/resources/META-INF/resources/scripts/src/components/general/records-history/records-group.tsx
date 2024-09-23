@@ -38,6 +38,19 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
     );
   };
 
+  /**
+   * handleWorkspaceSortDirectionKeyDown
+   * @param e e
+   */
+  const handleWorkspaceSortDirectionKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setWorkspaceSortDirection((oldValue) =>
+        oldValue === "asc" ? "desc" : "asc"
+      );
+    }
+  };
+
   const sortedCredits = recordGroup.credits.sort((a, b) => {
     const aString = a.activity.name.toLowerCase();
     const bString = b.activity.name.toLowerCase();
@@ -83,7 +96,9 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   return (
     <ApplicationList>
       <div
+        tabIndex={0}
         onClick={handleWorkspaceSortDirectionClick}
+        onKeyDown={handleWorkspaceSortDirectionKeyDown}
         className="application-list__header-container application-list__header-container--sorter"
       >
         <h3 className="application-list__header application-list__header--sorter">
@@ -103,7 +118,7 @@ export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
 
             return (
               <RecordsGroupItem
-                key={`credit-item-${i}`}
+                key={`credit-item-${credit.activity.id}`}
                 credit={credit}
                 isCombinationWorkspace={isCombinationWorkspace}
               />
