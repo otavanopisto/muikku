@@ -147,7 +147,6 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       {localize.date(a.date)}
                     </span>
                   </div>
-
                   <div className="workspace-assessment__grade">
                     <span className="workspace-assessment__grade-label">
                       {t("labels.grade", {

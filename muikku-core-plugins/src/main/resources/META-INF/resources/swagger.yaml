@@ -17754,6 +17754,9 @@ components:
         chatEnabled:
           description: Is the workspace chat room enabled
           type: boolean
+        externalViewLink:
+          description: View the workspace in an external location
+          type: string
         subjectIdentifier:
           description: The identifier of the subject
           type: string
