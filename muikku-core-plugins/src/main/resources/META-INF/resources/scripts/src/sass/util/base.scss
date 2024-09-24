@@ -1,6 +1,7 @@
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
+@import "../base/breakpoints";
 @import "../base/print";
 
 *,
@@ -123,5 +124,9 @@ details {
 
 .details__content {
   font-weight: 300;
-  padding: 15px;
+  padding: 5px 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 15px;
+  }
 }
