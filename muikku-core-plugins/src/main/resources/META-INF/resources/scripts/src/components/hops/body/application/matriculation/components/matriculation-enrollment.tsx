@@ -135,6 +135,7 @@ const MatriculationSubmittedEnrollment = (
         case MatriculationExamStudentStatus.Pending:
         case MatriculationExamStudentStatus.SupplementationRequest:
         case MatriculationExamStudentStatus.Supplemented:
+        case MatriculationExamStudentStatus.Confirmed:
           return (
             <div key={exam.id}>
               <MatriculationWizardSummaryDialog
