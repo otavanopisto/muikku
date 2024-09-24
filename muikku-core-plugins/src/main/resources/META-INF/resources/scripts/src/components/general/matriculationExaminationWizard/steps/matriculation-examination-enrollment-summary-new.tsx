@@ -1,6 +1,5 @@
 import * as React from "react";
 import "~/sass/elements/matriculation.scss";
-import { resolveCurrentTerm } from "~/helper-functions/matriculation-functions";
 import {
   getNextTermOptions,
   getPastTermOptions,
@@ -32,8 +31,8 @@ interface MatriculationExaminationEnrollmentSummaryProps {}
 export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   MatriculationExaminationEnrollmentSummaryProps
 > = (props) => {
-  const { matriculation } = useMatriculationContext();
-  const { examinationInformation, studentInformation, saveState, errorMsg } =
+  const { exam, matriculation } = useMatriculationContext();
+  const { examinationInformation, studentInformation, draftState, errorMsg } =
     matriculation;
 
   const { t } = useTranslation(["common", "hops_new", "users"]);
@@ -72,25 +71,24 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
       ns: "hops_new",
     });
 
-  const currentTerm = resolveCurrentTerm();
-
-  const addesiveTermLocale =
-    currentTerm.value === "AUTUMN"
+  const addesiveTermLocale = exam.term
+    ? exam.term === "AUTUMN"
       ? t("matriculationTerms.AUTUMN", {
           ns: "hops_new",
           context: "adessive",
-          year: currentTerm.year,
+          year: exam.year || null,
         })
       : t("matriculationTerms.SPRING", {
           ns: "hops_new",
           context: "adessive",
-          year: currentTerm.year,
-        });
+          year: exam.year || null,
+        })
+    : null;
 
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
-      <SavingDraftInfo saveState={saveState} />
+      <SavingDraftInfo draftState={draftState} />
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
           {t("labels.matriculationFormSummarySubTitle1", { ns: "hops_new" })}

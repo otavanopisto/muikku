@@ -12,6 +12,7 @@ import {
   updateMatriculationExamination,
 } from "../../../../../../actions/main-function/hops/index";
 import { StateType } from "~/reducers";
+import { MatriculationExam } from "~/generated/client";
 
 /**
  * MatriculationExaminationWizardDialogProps
@@ -19,7 +20,7 @@ import { StateType } from "~/reducers";
 interface MatriculationExaminationWizardDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  examId: number;
+  exam: MatriculationExam;
   compulsoryEducationEligible: boolean;
   formType: MatriculationFormType;
   updateMatriculationExamination: UpdateMatriculationExaminationTriggerType;
@@ -48,7 +49,7 @@ class MatriculationExaminationWizardDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <>
         <MatriculationExaminationWizard
-          examId={this.props.examId}
+          exam={this.props.exam}
           compulsoryEducationEligible={this.props.compulsoryEducationEligible}
           onClose={closeDialog}
           onUpdateExam={(examId) => {

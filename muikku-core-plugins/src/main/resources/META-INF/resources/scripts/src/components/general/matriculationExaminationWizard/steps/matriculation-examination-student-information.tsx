@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 export const MatriculationExaminationStudentInformation = () => {
   const { matriculation, onExaminationInformationChange } =
     useMatriculationContext();
-  const { examinationInformation, studentInformation, saveState, errorMsg } =
+  const { examinationInformation, studentInformation, draftState, errorMsg } =
     matriculation;
 
   const { t } = useTranslation(["common", "hops_new", "users"]);
@@ -41,7 +41,7 @@ export const MatriculationExaminationStudentInformation = () => {
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
-      <SavingDraftInfo saveState={saveState} />
+      <SavingDraftInfo draftState={draftState} />
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
           {t("labels.matriculationFormStudentInfoSubTitle1", {

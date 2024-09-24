@@ -8,6 +8,7 @@ import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
+import { MatriculationExam } from "~/generated/client";
 
 /**
  * MatriculationWizardSummaryDialogProps
@@ -15,7 +16,7 @@ import { StateType } from "~/reducers";
 interface MatriculationWizardSummaryDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  examId: number;
+  exam: MatriculationExam;
   compulsoryEducationEligible: boolean;
   formType: MatriculationFormType;
 }
@@ -43,7 +44,7 @@ class MatriculationWizardSummaryDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <MatriculationWizardSummary
-          examId={this.props.examId}
+          exam={this.props.exam}
           compulsoryEducationEligible={this.props.compulsoryEducationEligible}
           formType={this.props.formType}
         />

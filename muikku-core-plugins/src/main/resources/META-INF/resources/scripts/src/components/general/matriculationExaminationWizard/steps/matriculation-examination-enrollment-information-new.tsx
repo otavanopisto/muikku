@@ -5,11 +5,8 @@ import {
   getDefaultNextTerm,
   getDefaultPastTerm,
 } from "~/helper-functions/matriculation-functions";
-
 import { ExaminationInformation } from "~/@types/shared";
-
 import {
-  resolveCurrentTerm,
   getNextTermOptions,
   getPastTermOptions,
 } from "~/helper-functions/matriculation-functions";
@@ -105,11 +102,12 @@ interface OptionType<T> {
  */
 export const MatriculationExaminationEnrollmentInformationNew = () => {
   const {
+    exam,
     matriculation,
     compulsoryEducationEligible,
     onExaminationInformationChange,
   } = useMatriculationContext();
-  const { examinationInformation, studentInformation, saveState, errorMsg } =
+  const { examinationInformation, studentInformation, draftState, errorMsg } =
     matriculation;
 
   const { t } = useTranslation(["hops_new", "common"]);
@@ -1098,19 +1096,17 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     }
   };
 
-  const currentTerm = resolveCurrentTerm();
-
   const addesiveTermLocale =
-    currentTerm.value === "AUTUMN"
+    exam?.term === "AUTUMN"
       ? t("matriculationTerms.AUTUMN", {
           ns: "hops_new",
           context: "adessive",
-          year: currentTerm.year,
+          year: exam.year,
         })
       : t("matriculationTerms.SPRING", {
           ns: "hops_new",
           context: "adessive",
-          year: currentTerm.year,
+          year: exam.year,
         });
 
   const enrollAsOptions: OptionType<MatriculationExamSchoolType>[] = [
@@ -1158,7 +1154,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
-      <SavingDraftInfo saveState={saveState} />
+      <SavingDraftInfo draftState={draftState} />
 
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">

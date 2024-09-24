@@ -123,8 +123,6 @@ export const MatriculationExaminationEnrollmentCompleted = (
           </div>
         </div>
       ),
-      SAVING_DRAFT: null,
-      DRAFT_SAVED: null,
       undefined: null,
     }[saveState]);
 
