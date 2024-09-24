@@ -1155,7 +1155,10 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         }
 
         let showRemoveAnswersDialogForDelete = false;
-        if (!data.removeAnswers && isResponseError(err)) {
+
+        // If conditional here relyis boolean value of removeAnswers
+        // we need to check that removeAnswers value really exists
+        if (data.removeAnswers && !data.removeAnswers && isResponseError(err)) {
           const errorObject = await err.response.json();
           try {
             if (errorObject.reason === "CONTAINS_ANSWERS") {
@@ -1173,7 +1176,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         }
 
         data.fail && data.fail();
-        if (!showRemoveAnswersDialogForDelete) {
+        if (!showRemoveAnswersDialogForDelete && isResponseError(err)) {
           if (data.material.children && data.material.children.length) {
             // ERROR section has child nodes
 
@@ -1183,15 +1186,14 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
                 "error"
               )
             );
-          } else {
-            // ERROR generic delete failure
-            dispatch(
-              displayNotification(
-                i18n.t("notifications.removeError", { ns: "materials" }),
-                "error"
-              )
-            );
           }
+        } else {
+          dispatch(
+            displayNotification(
+              i18n.t("notifications.removeError", { ns: "materials" }),
+              "error"
+            )
+          );
         }
       }
     };

@@ -8,7 +8,6 @@ import { Store } from "react-redux";
 import { StateType } from "~/reducers";
 import { Action } from "redux";
 import Websocket from "~/util/websocket";
-import titleActions from "~/actions/base/title";
 import WorkspaceHomeBody from "~/components/workspace/workspaceHome";
 import WorkspaceHelpBody from "~/components/workspace/workspaceHelp";
 import WorkspaceDiscussionBody from "~/components/workspace/workspaceDiscussions";
@@ -407,7 +406,6 @@ export default class Workspace extends React.Component<
                 loadStaffMembersOfWorkspace({ workspace }) as Action
               );
             }
-            this.props.store.dispatch(titleActions.updateTitle(workspace.name));
           },
         }) as Action
       );
@@ -452,11 +450,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          i18n.t("labels.instructions", { ns: "workspace" })
-        )
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -511,9 +505,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.discussion"))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -551,11 +543,6 @@ export default class Workspace extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          i18n.t("labels.announcements", { ns: "messaging" })
-        )
-      );
 
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(
@@ -596,9 +583,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.announcer"))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -840,11 +825,7 @@ export default class Workspace extends React.Component<
       }
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          i18n.t("labels.materials", { ns: "materials" })
-        )
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1007,9 +988,6 @@ export default class Workspace extends React.Component<
         }
       );
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.users", { ns: "users" }))
-      );
       this.loadWorkspaceUsersData();
     }
 
@@ -1038,9 +1016,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.journal", { ns: "journal" }))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1104,9 +1080,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.settings", { ns: "common" }))
-      );
+
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
       this.props.store.dispatch(
         loadWorkspaceSettings(state.status.currentWorkspaceId) as Action
@@ -1143,9 +1117,7 @@ export default class Workspace extends React.Component<
       );
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.evaluation"))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,

@@ -3899,6 +3899,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceTypeIdentifier,
         hasCustomImage,
         chatController.isChatEnabled(workspaceEntity),
+        workspace.getViewLink(),
         defaultSignupMessageRestModel,
         groupSignupRestModels,
         restMessages

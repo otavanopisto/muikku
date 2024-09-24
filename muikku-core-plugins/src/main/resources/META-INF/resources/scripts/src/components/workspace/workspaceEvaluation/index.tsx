@@ -2,6 +2,7 @@ import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Application from "~/components/evaluation/body/application";
 import Aside from "~/components/evaluation/body/aside";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceDiscussionBodyProps
@@ -11,41 +12,23 @@ interface WorkspaceEvaluationBodyProps {
 }
 
 /**
- * WorkspaceDiscussionBodyState
+ * WorkspaceEvaluationBody
+ * @param props props
  */
-interface WorkspaceEvaluationBodyState {}
+const WorkspaceEvaluationBody = (props: WorkspaceEvaluationBodyProps) => {
+  const { t } = useTranslation(["common"]);
+  const aside = <Aside />;
+  return (
+    <div>
+      <WorkspaceNavbar
+        title={t("labels.evaluation")}
+        navigation={aside}
+        activeTrail="workspace-evaluation"
+        workspaceUrl={props.workspaceUrl}
+      />
+      <Application />
+    </div>
+  );
+};
 
-/**
- * WorkspaceDiscussionBody
- */
-export default class WorkspaceEvaluationBody extends React.Component<
-  WorkspaceEvaluationBodyProps,
-  WorkspaceEvaluationBodyState
-> {
-  /**
-   * Constructor method
-   * @param props props
-   */
-  constructor(props: WorkspaceEvaluationBodyProps) {
-    super(props);
-  }
-
-  /**
-   * Component render method
-   * @returns JSX.Element
-   */
-  render() {
-    const aside = <Aside />;
-
-    return (
-      <div>
-        <WorkspaceNavbar
-          navigation={aside}
-          activeTrail="workspace-evaluation"
-          workspaceUrl={this.props.workspaceUrl}
-        />
-        <Application />
-      </div>
-    );
-  }
-}
+export default WorkspaceEvaluationBody;

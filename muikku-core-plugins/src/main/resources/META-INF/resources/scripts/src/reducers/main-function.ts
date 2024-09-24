@@ -2,7 +2,6 @@ import { easyToUse } from "./easy-to-use-functions/index";
 import { notifications } from "./base/notifications";
 import { locales } from "./base/locales";
 import status from "./base/status";
-import { title } from "./base/title";
 import websocket from "./util/websocket";
 import { messages } from "./main-function/messages";
 import { workspaces } from "./workspaces";
@@ -50,7 +49,6 @@ export default combineReducers({
   status,
   studyprogrammes,
   summary,
-  title,
   userGroups,
   userIndex,
   userSelect,

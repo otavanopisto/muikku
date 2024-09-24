@@ -33,7 +33,7 @@ class ErrorBody extends React.Component<ErrorBodyProps, ErrorBodyState> {
   render() {
     return (
       <div>
-        <MainFunctionNavbar />
+        <MainFunctionNavbar title={this.props.error.title} />
         <ScreenContainer viewModifiers="error">
           <div className="panel panel--error">
             <div className="panel__header">

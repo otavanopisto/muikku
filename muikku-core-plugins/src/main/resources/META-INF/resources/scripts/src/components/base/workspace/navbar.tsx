@@ -51,7 +51,7 @@ interface WorkspaceNavbarProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
-  title: string;
+  title?: string;
   workspaceUrl: string;
   currentWorkspace: WorkspaceDataType;
   workspaceEditMode: WorkspaceEditModeStateType;
@@ -337,7 +337,10 @@ class WorkspaceNavbar extends React.Component<
 
     return (
       <Navbar
-        mobileTitle={this.props.title}
+        // By default title comes from props but if it's not set, then use current workspace name or empty string
+        mobileTitle={
+          this.props.title || this.props.currentWorkspace?.name || ""
+        }
         isProfileContainedInThisApp={false}
         modifier={navbarModifiers}
         navigation={this.props.navigation}
@@ -461,7 +464,6 @@ class WorkspaceNavbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    title: state.title,
     currentWorkspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };

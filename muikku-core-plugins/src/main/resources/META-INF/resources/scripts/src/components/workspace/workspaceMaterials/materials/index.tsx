@@ -63,8 +63,6 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   workspaceEditMode: WorkspaceEditModeStateType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation: () => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -104,7 +102,6 @@ class WorkspaceMaterials extends React.Component<
       redirect: null,
     };
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
@@ -370,13 +367,6 @@ class WorkspaceMaterials extends React.Component<
   handleOpenMaterialExtraToolsDrawerClick = () => {
     this.props.materialShowOrHideExtraTools();
   };
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    this.props.onOpenNavigation();
-  }
 
   /**
    * onScroll
@@ -890,7 +880,6 @@ class WorkspaceMaterials extends React.Component<
     return (
       <ContentPanel
         aside={progressData}
-        onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-materials"
         navigation={this.props.navigation}
         title={t("labels.materials", { ns: "materials" })}

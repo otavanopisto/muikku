@@ -102,6 +102,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
         content: "",
         enabled: false,
       },
+      externalViewLink: "",
       signupMessages: [],
       producers: [],
       chatEnabled: false,
@@ -150,6 +151,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
     hasCustomImage,
     signupGroups,
     defaultSignupMessage,
+    externalViewLink,
     signupMessages,
     producers,
     chatEnabled,
@@ -466,7 +468,7 @@ const ManagementPanel = (props: ManagementPanelProps) => {
             workspaceName={name}
             workspaceDescription={description}
             workspaceLanguage={language}
-            externalViewUrl={workspace?.details?.externalViewUrl}
+            externalViewUrl={externalViewLink}
             onWorkspaceNameChange={handleWorkspaceNameChange}
             onWorkspaceDescriptionChange={handleDescriptionChange}
             onWorkspaceLanguageChange={handleWorkspaceLanguageChange}

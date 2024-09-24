@@ -1,6 +1,7 @@
 import MainFunctionNavbar from "~/components/base/main-function/navbar";
 import * as React from "react";
 import Application from "./body/application";
+import { useTranslation } from "react-i18next";
 
 /**
  * DiscussionBodyProps
@@ -8,26 +9,21 @@ import Application from "./body/application";
 interface DiscussionBodyProps {}
 
 /**
- * DiscussionBodyState
+ * CoursepickerBody
+ * @param props props
  */
-interface DiscussionBodyState {}
+const DiscussionBody = (props: DiscussionBodyProps) => {
+  const { t } = useTranslation("common");
 
-/**
- * DiscussionBody
- */
-export default class DiscussionBody extends React.Component<
-  DiscussionBodyProps,
-  DiscussionBodyState
-> {
-  /**
-   * render
-   */
-  render() {
-    return (
-      <div>
-        <MainFunctionNavbar activeTrail="discussion" />
-        <Application />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <MainFunctionNavbar
+        title={t("labels.discussion")}
+        activeTrail="discussion"
+      />
+      <Application />
+    </div>
+  );
+};
+
+export default DiscussionBody;
