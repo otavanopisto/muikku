@@ -90,6 +90,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
     }
     // Check if the selectedItems have changed
     if (selectedItems.length !== prevSelectedItemsCountRef.current) {
+      // Update the previous selected items count
       prevSelectedItemsCountRef.current = selectedItems.length;
       const existing = [...recipients];
 
