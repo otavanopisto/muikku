@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 import CKEditor from "~/components/general/ckeditor";
@@ -81,15 +81,17 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
 
   const { text, type, entryDate, recipients } = newContactEventState;
 
-  const localeStorageExists = localStorage.getItem("new-contact-event");
+  const prevSelectedItemsCountRef = useRef(selectedItems.length);
 
   useEffect(() => {
     // If there's a local storage state this is a draft
-    if (localeStorageExists) {
+    if (localStorage.getItem("new-contact-event")) {
       setDraft(true);
     }
-    if (selectedItems.length > 0) {
-      const existing = [...newContactEventState.recipients];
+    // Check if the selectedItems have changed
+    if (selectedItems.length !== prevSelectedItemsCountRef.current) {
+      prevSelectedItemsCountRef.current = selectedItems.length;
+      const existing = [...recipients];
 
       // If there are recipients in the local storage, check is the selected recipients overlap
       // then combine them
@@ -111,12 +113,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
         }));
       }
     }
-  }, [
-    localeStorageExists,
-    selectedItems,
-    newContactEventState.recipients,
-    setNewContactEventState,
-  ]);
+  }, [selectedItems, recipients, setNewContactEventState]);
 
   /**
    * handleRecipientsChange
