@@ -24,6 +24,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { AnimatePresence } from "framer-motion";
 import AnimatedStep from "../wizard/AnimateStep";
+import { MatriculationExam } from "~/generated/client";
 
 moment.locale("fi");
 
@@ -32,7 +33,7 @@ moment.locale("fi");
  */
 interface MatriculationExaminationWizardProps {
   hops: HopsState;
-  examId: number;
+  exam: MatriculationExam;
   compulsoryEducationEligible: boolean;
   onClose?: () => void;
   onUpdateExam?: (examId: number) => void;
@@ -49,7 +50,7 @@ const MatriculationExaminationWizard = (
 ) => {
   const {
     compulsoryEducationEligible,
-    examId,
+    exam,
     hops,
     onClose,
     onUpdateExam,
@@ -60,7 +61,7 @@ const MatriculationExaminationWizard = (
   const { t } = useTranslation(["common", "hops_new"]);
 
   const useMatriculationValues = useMatriculation(
-    examId,
+    exam,
     hops.currentStudentIdentifier,
     compulsoryEducationEligible,
     displayNotification,
@@ -150,7 +151,7 @@ const MatriculationExaminationWizard = (
       lastStepButton={
         <Button
           onClick={() => {
-            onUpdateExam(examId);
+            onUpdateExam(exam.id);
             onClose();
           }}
           buttonModifiers={["info"]}

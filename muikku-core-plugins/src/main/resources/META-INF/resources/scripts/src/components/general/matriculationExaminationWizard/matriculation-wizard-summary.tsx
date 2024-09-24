@@ -15,6 +15,7 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import { MatriculationExam } from "~/generated/client";
 
 moment.locale("fi");
 
@@ -23,7 +24,7 @@ moment.locale("fi");
  */
 interface MatriculationWizardSummaryProps {
   hops: HopsState;
-  examId: number;
+  exam: MatriculationExam;
   compulsoryEducationEligible: boolean;
   formType: MatriculationFormType;
   displayNotification: DisplayNotificationTriggerType;
@@ -36,14 +37,14 @@ interface MatriculationWizardSummaryProps {
 const MatriculationWizardSummary = (props: MatriculationWizardSummaryProps) => {
   const {
     compulsoryEducationEligible,
-    examId,
+    exam,
     hops,
     displayNotification,
     formType,
   } = props;
 
   const useMatriculationValues = useMatriculation(
-    examId,
+    exam,
     hops.currentStudentIdentifier,
     compulsoryEducationEligible,
     displayNotification,

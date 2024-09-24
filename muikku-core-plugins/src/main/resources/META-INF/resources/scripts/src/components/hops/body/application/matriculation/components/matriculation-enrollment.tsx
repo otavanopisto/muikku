@@ -69,7 +69,7 @@ const MatriculationEnrollmentLink = (
       </div>
       <div className="application-sub-panel__notification-footer">
         <MatriculationExaminationWizardDialog
-          examId={exam.id}
+          exam={exam}
           compulsoryEducationEligible={exam.compulsoryEducationEligible}
           formType="initial"
         >
@@ -115,7 +115,7 @@ const MatriculationSubmittedEnrollment = (
       return (
         <div key={exam.id}>
           <MatriculationWizardSummaryDialog
-            examId={exam.id}
+            exam={exam}
             compulsoryEducationEligible={exam.compulsoryEducationEligible}
             formType="readonly"
           >
@@ -139,7 +139,7 @@ const MatriculationSubmittedEnrollment = (
           return (
             <div key={exam.id}>
               <MatriculationWizardSummaryDialog
-                examId={exam.id}
+                exam={exam}
                 compulsoryEducationEligible={exam.compulsoryEducationEligible}
                 formType="readonly"
               >
@@ -164,7 +164,7 @@ const MatriculationSubmittedEnrollment = (
         return (
           <div key={exam.id}>
             <MatriculationWizardSummaryDialog
-              examId={exam.id}
+              exam={exam}
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="readonly"
             >
@@ -181,7 +181,7 @@ const MatriculationSubmittedEnrollment = (
         return (
           <div key={exam.id}>
             <MatriculationExaminationWizardDialog
-              examId={exam.id}
+              exam={exam}
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="editable"
             >

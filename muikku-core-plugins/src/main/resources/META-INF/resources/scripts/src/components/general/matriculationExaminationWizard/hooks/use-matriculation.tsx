@@ -8,6 +8,7 @@ import {
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
+  MatriculationExam,
   MatriculationExamAttendance,
   MatriculationExamEnrollment,
   MatriculationStudent,
@@ -20,14 +21,14 @@ const matriculationApi = MApi.getMatriculationApi();
 
 /**
  * useMatriculation
- * @param examId examId
+ * @param exam exam
  * @param userSchoolDataIdentifier userSchoolDataIdentifier
  * @param compulsoryEducationEligible compulsoryEducationEligible
  * @param displayNotification displayNotification
  * @param formType formType
  */
 export const useMatriculation = (
-  examId: number,
+  exam: MatriculationExam,
   userSchoolDataIdentifier: string,
   compulsoryEducationEligible: boolean,
   displayNotification: DisplayNotificationTriggerType,
@@ -44,7 +45,7 @@ export const useMatriculation = (
     examinationInformation: ExaminationInformation;
   }>({
     saveState: undefined,
-    examId,
+    examId: exam.id,
     initialized: false,
     savingDraft: false,
     errorMsg: undefined,
@@ -60,7 +61,7 @@ export const useMatriculation = (
       completedCreditPointsCount: 0,
     },
     examinationInformation: {
-      examId: examId,
+      examId: exam.id,
       state: "ELIGIBLE",
       changedContactInfo: "",
       guider: "",
@@ -111,7 +112,7 @@ export const useMatriculation = (
 
       try {
         const draft = await matriculationApi.getSavedEnrollmentDraft({
-          examId,
+          examId: exam.id,
           userIdentifier: userSchoolDataIdentifier,
         });
 
@@ -151,7 +152,7 @@ export const useMatriculation = (
 
         const matriculationData =
           await matriculationApi.getStudentExamEnrollment({
-            examId,
+            examId: exam.id,
             studentIdentifier: userSchoolDataIdentifier,
           });
 
@@ -197,7 +198,7 @@ export const useMatriculation = (
     } else {
       loadInitialData();
     }
-  }, [displayNotification, examId, formType, userSchoolDataIdentifier]);
+  }, [displayNotification, exam.id, formType, userSchoolDataIdentifier]);
 
   /**
    * Saves given examination information as draft
@@ -215,7 +216,7 @@ export const useMatriculation = (
 
     try {
       await matriculationApi.updateEnrollmentDraft({
-        examId,
+        examId: exam.id,
         userIdentifier: userSchoolDataIdentifier,
         body: JSON.stringify(examinationInformation),
       });
@@ -353,7 +354,7 @@ export const useMatriculation = (
 
     try {
       await matriculationApi.createEnrollment({
-        examId,
+        examId: exam.id,
         matriculationExamEnrollment: matriculationForm,
       });
 
@@ -398,6 +399,7 @@ export const useMatriculation = (
   };
 
   return {
+    exam,
     matriculation,
     compulsoryEducationEligible,
     onExaminationInformationChange,
