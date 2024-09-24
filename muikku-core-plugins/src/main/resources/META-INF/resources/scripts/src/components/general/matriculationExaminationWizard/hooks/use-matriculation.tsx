@@ -40,10 +40,12 @@ export const useMatriculation = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     examId: number;
     errorMsg?: string;
+    draftState?: "SAVING_DRAFT" | "DRAFT_SAVED";
     saveState?: SaveState;
     studentInformation: MatriculationStudent;
     examinationInformation: ExaminationInformation;
   }>({
+    draftState: undefined,
     saveState: undefined,
     examId: exam.id,
     initialized: false,
@@ -211,7 +213,7 @@ export const useMatriculation = (
 
     setMatriculation((prevState) => ({
       ...prevState,
-      saveState: "SAVING_DRAFT",
+      draftState: "SAVING_DRAFT",
     }));
 
     try {
@@ -225,14 +227,14 @@ export const useMatriculation = (
 
       setMatriculation((prevState) => ({
         ...prevState,
-        saveState: "DRAFT_SAVED",
+        draftState: "DRAFT_SAVED",
       }));
 
       await sleep(3000);
 
       setMatriculation((prevState) => ({
         ...prevState,
-        saveState: undefined,
+        draftState: undefined,
       }));
     } catch (err) {
       if (!isMApiError(err)) {

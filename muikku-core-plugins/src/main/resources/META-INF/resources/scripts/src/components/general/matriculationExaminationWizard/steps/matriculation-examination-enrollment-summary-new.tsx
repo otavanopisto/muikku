@@ -32,7 +32,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   MatriculationExaminationEnrollmentSummaryProps
 > = (props) => {
   const { exam, matriculation } = useMatriculationContext();
-  const { examinationInformation, studentInformation, saveState, errorMsg } =
+  const { examinationInformation, studentInformation, draftState, errorMsg } =
     matriculation;
 
   const { t } = useTranslation(["common", "hops_new", "users"]);
@@ -88,7 +88,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
-      <SavingDraftInfo saveState={saveState} />
+      <SavingDraftInfo draftState={draftState} />
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
           {t("labels.matriculationFormSummarySubTitle1", { ns: "hops_new" })}

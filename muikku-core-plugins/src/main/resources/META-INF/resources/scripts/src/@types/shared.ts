@@ -38,13 +38,7 @@ export type FieldStateStatus = "SAVED" | "SAVING" | "ERROR";
 /**
  * Loading state type
  */
-export type SaveState =
-  | "PENDING"
-  | "IN_PROGRESS"
-  | "SUCCESS"
-  | "FAILED"
-  | "SAVING_DRAFT"
-  | "DRAFT_SAVED";
+export type SaveState = "PENDING" | "IN_PROGRESS" | "SUCCESS" | "FAILED";
 
 /**
  * AttentionPlace
