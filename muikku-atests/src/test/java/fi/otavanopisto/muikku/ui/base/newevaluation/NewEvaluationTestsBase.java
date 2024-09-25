@@ -34,7 +34,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
-import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
@@ -664,8 +664,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             assertTextIgnoreCase(".evaluation-modal__item-meta-item-data", evaluationDateString);
             
             logout();
-            StudentMatriculationEligibility studentMatriculationEligibilityAI = new StudentMatriculationEligibility(true, 5, 4, 1);
-            StudentMatriculationEligibility studentMatriculationEligibilityMAA = new StudentMatriculationEligibility(false, 8, 5, 1);
+            StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityAI = new StudentMatriculationEligibilityOPS2021(true, 10d, 8d);
+            StudentMatriculationEligibilityOPS2021 studentMatriculationEligibilityMAA = new StudentMatriculationEligibilityOPS2021(false, 16d, 10d);
             mockBuilder
             .addStudent(student)
             .mockStudentCourseStats(student.getId(), 25)

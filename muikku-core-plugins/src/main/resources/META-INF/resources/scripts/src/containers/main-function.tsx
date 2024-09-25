@@ -60,6 +60,7 @@ import { GuiderActiveFiltersType } from "~/reducers/main-function/guider";
 import { loadStudents, loadStudent } from "~/actions/main-function/guider";
 import GuiderBody from "../components/guider/body";
 import ProfileBody from "../components/profile/body";
+import HopsBody from "../components/hops/body";
 import {
   loadProfilePropertiesSet,
   loadProfileUsername,
@@ -76,7 +77,6 @@ import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
   setLocationToHopsInTranscriptOfRecords,
-  setLocationToYoInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
@@ -85,10 +85,6 @@ import {
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
-import {
-  updateYO,
-  updateMatriculationSubjectEligibility,
-} from "~/actions/main-function/records/yo";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
 import EvaluationBody from "../components/evaluation/body";
@@ -123,6 +119,8 @@ import { Announcement, User } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
+import { loadMatriculationData } from "~/actions/main-function/hops/";
+import GuardianHopsBody from "~/components/guardian_hops/body";
 
 /**
  * MainFunctionProps
@@ -167,7 +165,9 @@ export default class MainFunction extends React.Component<
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
     this.renderGuardianBody = this.renderGuardianBody.bind(this);
+    this.renderGuardianHopsBody = this.renderGuardianHopsBody.bind(this);
     this.renderProfileBody = this.renderProfileBody.bind(this);
+    this.renderHopsBody = this.renderHopsBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
     this.renderCeeposDoneBody = this.renderCeeposDoneBody.bind(this);
@@ -229,6 +229,16 @@ export default class MainFunction extends React.Component<
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")) {
       this.loadRecordsData(window.location.hash.replace("#", ""));
+    } else if (window.location.pathname.includes("/hops")) {
+      this.loadHopsData(window.location.hash.replace("#", ""));
+    } else if (window.location.pathname.includes("/guardian_hops")) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [identifier, tab] = hashArray;
+
+      if (identifier) {
+        this.loadHopsData(tab, identifier);
+      }
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
@@ -324,18 +334,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
       );
-    } else if (givenLocation === "yo") {
-      this.props.store.dispatch(
-        setLocationToYoInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(
-        updateHops(() => {
-          this.props.store.dispatch(updateYO(userId) as Action);
-          this.props.store.dispatch(
-            updateMatriculationSubjectEligibility(userId) as Action
-          );
-        }, userId) as Action
-      );
     } else if (givenLocation === "statistics") {
       this.props.store.dispatch(
         setLocationToStatisticsInTranscriptOfRecords() as Action
@@ -349,6 +347,19 @@ export default class MainFunction extends React.Component<
     }
     // Hops needs to be loaded for correct tabs to be seen
     this.props.store.dispatch(updateHops(null, userId) as Action);
+  }
+
+  /**
+   * loadHopsData
+   * @param tab tab
+   * @param userId userId
+   */
+  loadHopsData(tab: string, userId?: string) {
+    const givenLocation = tab;
+
+    if (givenLocation === "matriculation" || !givenLocation) {
+      this.props.store.dispatch(loadMatriculationData(userId) as Action);
+    }
   }
 
   /**
@@ -925,6 +936,27 @@ export default class MainFunction extends React.Component<
   }
 
   /**
+   * renderHopsBody
+   */
+  renderHopsBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
+      this.props.store.dispatch(titleActions.updateTitle("HOPS"));
+      this.loadHopsData(window.location.hash.replace("#", ""));
+    }
+
+    return <HopsBody />;
+  }
+
+  /**
    * renderRecordsBody
    */
   renderRecordsBody() {
@@ -981,6 +1013,39 @@ export default class MainFunction extends React.Component<
       }
     }
     return <GuardianBody />;
+  }
+
+  /**
+   * renderGuardianBody
+   */
+  renderGuardianHopsBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      const hashArray = window.location.hash.replace("#", "").split("/");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [identifier, tab] = hashArray;
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      const state = this.props.store.getState();
+
+      if (state.dependants.state === "WAIT") {
+        this.props.store.dispatch(loadDependants() as Action);
+      }
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+
+      this.props.store.dispatch(titleActions.updateTitle("HOPS"));
+
+      // If there's an identifier, we can load records data, otherwise it's done in the hash change
+      if (identifier) {
+        this.props.store.dispatch(loadMatriculationData(identifier) as Action);
+      }
+    }
+    return <GuardianHopsBody />;
   }
 
   /**
@@ -1111,8 +1176,13 @@ export default class MainFunction extends React.Component<
               <Route path="/announcer" render={this.renderAnnouncerBody} />
               <Route path="/guider" render={this.renderGuiderBody} />
               <Route path="/guardian" render={this.renderGuardianBody} />
+              <Route
+                path="/guardian_hops"
+                render={this.renderGuardianHopsBody}
+              />
               <Route path="/profile" render={this.renderProfileBody} />
               <Route path="/records" render={this.renderRecordsBody} />
+              <Route path="/hops" render={this.renderHopsBody} />
               <Route path="/evaluation" render={this.renderEvaluationBody} />
               <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
               <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />

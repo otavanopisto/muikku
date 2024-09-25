@@ -20,7 +20,7 @@ const useIsAtBreakpoint = (breakPoint: number): boolean => {
      * @param e - UIEvent
      */
     const handleResize = (e: UIEvent) => {
-      const width = Math.round(window.innerWidth / 16); // Width on resize
+      const width = window.innerWidth / 16; // Width on resize
       const direction = countRef.current < width ? "out" : "in"; // Direction of the resize
 
       /**

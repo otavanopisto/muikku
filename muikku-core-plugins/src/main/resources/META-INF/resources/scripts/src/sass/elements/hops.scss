@@ -207,12 +207,16 @@
   align-items: center;
   display: flex;
   flex-basis: 100%;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
   padding: 4px 0;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
 }
 
 .hops-container__history-event-secondary {
@@ -234,12 +238,19 @@
 .hops-container__history-event-author {
   align-items: center;
   display: flex;
-  flex-basis: auto;
+  flex-basis: 100%;
   flex-flow: row nowrap;
-  flex-grow: 0;
-  flex-shrink: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   justify-content: flex-start;
-  margin: 0 7px 0 0;
+  margin: 0 7px 7px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 7px 0 0;
+  }
 
   .avatar-container {
     border: 2px solid $color-application-dialog-border-color;

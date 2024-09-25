@@ -607,7 +607,11 @@ legend {
 }
 
 .form-element__select--matriculation-exam {
+  flex-basis: 50%;
+  flex-grow: 0;
+  flex-shrink: 1;
   margin-right: 5px;
+  max-width: 50%;
 }
 
 .form-element__select--hops-selector {
@@ -684,6 +688,12 @@ legend {
 
 .form-element__dropdown-selection-container {
   padding: 3px 0;
+}
+
+.form-element__dropdown-selection-container--nowrap {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 .form-element__autocomplete-highlight {

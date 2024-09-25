@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -21,6 +23,40 @@ public class UserGroupGuidanceController {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  /**
+   * Returns a (pseudo) random Guidance Couselor of given student which is member of any role archetype.
+   * 
+   * Prefers to return a Guidance Counselor which is a message receiver, but if none are found
+   * tries to find one that isn't a message receiver. If none are still found, null is returned.
+   * 
+   * @param studentIdentifier
+   * @return
+   */
+  public UserEntity getGuidanceCounselorPreferMessageReceiver(SchoolDataIdentifier studentIdentifier) {
+    // TODO We are potentially loading two lists in order to just get one member out of them, could this be optimized?
+    List<UserEntity> guidanceCounselors = getGuidanceCounselors(studentIdentifier, true);
+    if (CollectionUtils.isNotEmpty(guidanceCounselors)) {
+      return guidanceCounselors.get(0);
+    }
+    
+    guidanceCounselors = getGuidanceCounselors(studentIdentifier, false);
+    return CollectionUtils.isNotEmpty(guidanceCounselors) ? guidanceCounselors.get(0) : null;
+  }
+
+  /**
+   * Returns a (pseudo) random Guidance Couselor of given student which is
+   * - member of any role archetype
+   * - specified as message receiver if so wanted
+   * 
+   * @param studentIdentifier
+   * @param onlyMessageReceivers
+   * @return
+   */
+  public UserEntity getGuidanceCounselor(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+    List<UserEntity> guidanceCounselors = getGuidanceCounselors(studentIdentifier, onlyMessageReceivers);
+    return CollectionUtils.isNotEmpty(guidanceCounselors) ? guidanceCounselors.get(0) : null;
+  }
   
   /**
    * Returns Guidance Couselors of given student which are

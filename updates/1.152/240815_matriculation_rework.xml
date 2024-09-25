@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>delete from SavedMatriculationEnrollment;</sql>
+
+  <sql>drop table SentMatriculationEnrollment;</sql>
+  
+  <sql>insert into RolePermission (permission_id, role_id) values ((select id from Permission where name='MATRICULATION_LIST_EXAMS'), (select id from RoleEntity where name='STUDENT_PARENT'));</sql>
+  <sql>insert into RolePermission (permission_id, role_id) values ((select id from Permission where name='MATRICULATION_GET_INITIALDATA'), (select id from RoleEntity where name='STUDENT_PARENT'));</sql>
+  
+</update> 

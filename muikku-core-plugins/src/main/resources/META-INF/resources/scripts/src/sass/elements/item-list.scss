@@ -37,10 +37,13 @@
   }
 }
 
+.item-list--matriculation-results {
+  width: 100%;
+}
+
 // Item-list items BASE
 .item-list__item {
   align-items: flex-start;
-  background-color: $color-item-list-item-background;
   color: $color-text-default;
   cursor: pointer;
   display: flex;
