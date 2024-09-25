@@ -1,5 +1,4 @@
 import * as React from "react";
-import moment from "moment";
 import { Step4 } from "./steps";
 import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/wizard.scss";
@@ -16,8 +15,6 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { MatriculationExam } from "~/generated/client";
-
-moment.locale("fi");
 
 /**
  * MatriculationExaminationWizardProps

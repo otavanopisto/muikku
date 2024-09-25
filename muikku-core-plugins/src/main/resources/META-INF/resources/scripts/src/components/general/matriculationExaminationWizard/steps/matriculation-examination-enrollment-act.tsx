@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 /**
  * MatriculationExaminationEnrollmentAct
  */
-const MatrMatriculationExaminationEnrollmentAct = () => {
+const MatriculationExaminationEnrollmentAct = () => {
   const { matriculation, onExaminationInformationChange } =
     useMatriculationContext();
   const { examinationInformation, studentInformation, draftState, errorMsg } =
@@ -190,4 +190,4 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
   );
 };
 
-export default MatrMatriculationExaminationEnrollmentAct;
+export default MatriculationExaminationEnrollmentAct;

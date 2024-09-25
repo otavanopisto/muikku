@@ -1,5 +1,4 @@
 import * as React from "react";
-import moment from "moment";
 import { Step1, Step2, Step3, Step4, Step5 } from "./steps";
 import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/wizard.scss";
@@ -25,8 +24,6 @@ import { useTranslation } from "react-i18next";
 import { AnimatePresence } from "framer-motion";
 import AnimatedStep from "../wizard/AnimateStep";
 import { MatriculationExam } from "~/generated/client";
-
-moment.locale("fi");
 
 /**
  * MatriculationExaminationWizardProps
