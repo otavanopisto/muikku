@@ -246,8 +246,8 @@
   margin: 0 7px 7px 0;
 
   @include breakpoint($breakpoint-pad) {
-    flex-grow: 0;
     flex-basis: auto;
+    flex-grow: 0;
     flex-shrink: 0;
     margin: 0 7px 0 0;
   }
