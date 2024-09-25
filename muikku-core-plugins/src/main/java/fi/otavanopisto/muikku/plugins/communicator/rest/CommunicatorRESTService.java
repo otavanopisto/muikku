@@ -51,8 +51,9 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentControl
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAutoReplyController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -108,6 +109,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private CommunicatorController communicatorController;
+  
+  @Inject
+  private UserRecipientController userRecipientController;
   
   @Inject
   private CommunicatorAttachmentController communicatorAttachmentController;
@@ -616,8 +620,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    CommunicatorMessageRecipientList prepareRecipientList = communicatorController.prepareRecipientList(
-        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients);
+    UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, null);
 
     if (!prepareRecipientList.hasRecipients()) {
       return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
@@ -796,8 +800,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    CommunicatorMessageRecipientList prepareRecipientList = communicatorController.prepareRecipientList(
-        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients);
+    UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, null);
 
     if (!prepareRecipientList.hasRecipients()) {
       return Response.status(Status.BAD_REQUEST).entity("No recipients").build();

@@ -105,7 +105,7 @@ public class CommunicatorAutoReplyController {
             replySubject = localeController.getText(sessionController.getLocale(), "plugin.communicator.autoreply", new String[] { startDate,endDate});
           }
 
-          CommunicatorMessageRecipientList recipientsList = new CommunicatorMessageRecipientList();
+          UserRecipientList recipientsList = new UserRecipientList();
           recipientsList.addRecipient(sender);
 
           VacationNotifications vacationNotification = communicatorController.findVacationNotification(sender, recipient);
