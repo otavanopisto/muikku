@@ -198,7 +198,7 @@ const MatriculationSubmittedEnrollment = (
         return (
           <div key={exam.id}>
             <MatriculationVerifyDialog
-              examId={exam.id}
+              exam={exam}
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="readonly"
             >

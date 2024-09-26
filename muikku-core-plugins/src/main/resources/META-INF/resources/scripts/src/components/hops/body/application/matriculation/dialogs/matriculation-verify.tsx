@@ -13,6 +13,7 @@ import {
   verifyMatriculationExam,
 } from "~/actions/main-function/hops/";
 import Button from "~/components/general/button";
+import { MatriculationExam } from "~/generated/client";
 
 /**
  * MatriculationVerifyDialogProps
@@ -20,7 +21,7 @@ import Button from "~/components/general/button";
 interface MatriculationVerifyDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
-  examId: number;
+  exam: MatriculationExam;
   compulsoryEducationEligible: boolean;
   formType: MatriculationFormType;
   verifyMatriculationExam: VerifyMatriculationExamTriggerType;
@@ -49,7 +50,7 @@ class MatriculationVerifyDialog extends React.Component<
     const content = (closeDialog: () => void) => (
       <div>
         <MatriculationWizardSummary
-          examId={this.props.examId}
+          exam={this.props.exam}
           compulsoryEducationEligible={this.props.compulsoryEducationEligible}
           formType={this.props.formType}
         />
@@ -65,7 +66,7 @@ class MatriculationVerifyDialog extends React.Component<
         <Button
           className="button"
           onClick={() => {
-            this.props.verifyMatriculationExam(this.props.examId);
+            this.props.verifyMatriculationExam(this.props.exam.id);
             closeDialog();
           }}
           buttonModifiers={["success", "standard-ok"]}
