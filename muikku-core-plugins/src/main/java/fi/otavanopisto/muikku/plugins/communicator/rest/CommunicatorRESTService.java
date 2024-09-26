@@ -387,7 +387,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           
           if (recipient != null) {
             communicatorMessageRead = recipient.getReadByReceiver();
-            if (recipient.getArchivedByReceiver()) {
+            if (Boolean.TRUE.equals(recipient.getTrashedByReceiver())) {
               folder = CommunicatorMessageFolder.TRASH;
             }
           } else {
