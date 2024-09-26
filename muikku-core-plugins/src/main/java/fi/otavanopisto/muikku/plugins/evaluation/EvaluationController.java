@@ -28,7 +28,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestCancellationDAO;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -507,7 +507,7 @@ public class EvaluationController {
 
       CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
       
-      CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+      UserRecipientList recipients = new UserRecipientList();
       recipients.addRecipient(student);
       
       CommunicatorMessage communicatorMessage = communicatorController.createMessage(
@@ -807,7 +807,7 @@ public class EvaluationController {
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
 
-    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    UserRecipientList recipients = new UserRecipientList();
     recipients.addRecipient(student);
     
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(
@@ -934,7 +934,7 @@ public class EvaluationController {
 
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
 
-    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    UserRecipientList recipients = new UserRecipientList();
     recipients.addRecipient(student);
     
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(

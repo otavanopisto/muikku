@@ -55,7 +55,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
@@ -410,7 +410,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(payload.getCategoryName());
     
-    CommunicatorMessageRecipientList recipientsList = new CommunicatorMessageRecipientList();
+    UserRecipientList recipientsList = new UserRecipientList();
     recipients.forEach(recipient -> recipientsList.addRecipient(recipient));
 
     fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipientsList, 

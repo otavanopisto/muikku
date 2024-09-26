@@ -11,6 +11,10 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamAttendance;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationGrade;
+import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibilityOPS2021;
 
 public class MatriculationSchoolDataController {
 
@@ -40,20 +44,40 @@ public class MatriculationSchoolDataController {
     return getMatriculationBridge().listEligibilities(studentIdentifier);
   }
   
-  public List<MatriculationExam> listMatriculationExams(boolean onlyEligible) {
-    return getMatriculationBridge().listMatriculationExams(onlyEligible);
+  public BridgeResponse<List<MatriculationExam>> listStudentsExams(SchoolDataIdentifier studentIdentifier, MatriculationExamListFilter type) {
+    return getMatriculationBridge().listStudentsExams(studentIdentifier, type);
+  }
+  
+  public BridgeResponse<MatriculationExamEnrollment> getEnrollment(SchoolDataIdentifier studentIdentifier, Long examId) {
+    return getMatriculationBridge().getEnrollment(studentIdentifier, examId);
+  }
+  
+  public BridgeResponse<List<MatriculationExamEnrollmentChangeLogEntry>> getEnrollmentChangeLog(SchoolDataIdentifier studentIdentifier, Long examId) {
+    return getMatriculationBridge().getEnrollmentChangeLog(studentIdentifier, examId);
+  }
+  
+  public BridgeResponse<MatriculationExamEnrollment> setEnrollmentState(SchoolDataIdentifier studentIdentifier, Long examId, MatriculationExamEnrollmentState newState) {
+    return getMatriculationBridge().setEnrollmentState(studentIdentifier, examId, newState);
   }
   
   public MatriculationExamEnrollment createMatriculationExamEnrollment() {
     return getMatriculationBridge().createMatriculationExamEnrollment();
   }
   
-  public void submitMatriculationExamEnrollment(Long examId, MatriculationExamEnrollment enrollment) {
-    getMatriculationBridge().submitMatriculationExamEnrollment(examId, enrollment);
+  public BridgeResponse<MatriculationExamEnrollment> submitMatriculationExamEnrollment(SchoolDataIdentifier studentIdentifier, Long examId, MatriculationExamEnrollment enrollment) {
+    return getMatriculationBridge().submitMatriculationExamEnrollment(studentIdentifier, examId, enrollment);
   }
   
   public MatriculationExamAttendance createMatriculationExamAttendance() {
     return getMatriculationBridge().createMatriculationExamAttendance();
   }
 
+  public BridgeResponse<StudentMatriculationEligibilityOPS2021> getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
+    return getMatriculationBridge().getStudentMatriculationEligibility(studentIdentifier, subjectCode);
+  }
+  
+  public BridgeResponse<List<MatriculationGrade>> listStudentsMatriculationGrades(SchoolDataIdentifier studentIdentifier) {
+    return getMatriculationBridge().listStudentsGrades(studentIdentifier);
+  }
+  
 }

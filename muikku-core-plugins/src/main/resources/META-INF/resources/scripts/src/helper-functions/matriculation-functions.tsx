@@ -1,5 +1,7 @@
+import { TFunction } from "i18next";
 import moment from "moment";
 import * as React from "react";
+import { MatriculationExamTerm } from "~/generated/client";
 import { Term } from "../@types/shared";
 
 /**
@@ -11,6 +13,7 @@ const resolveTerm = (from: moment.Moment): Term => {
   const quarter = from.quarter();
   return {
     value: (quarter < 3 ? "SPRING" : "AUTUMN") + from.year(),
+    year: from.year(),
     name: (quarter < 3 ? "Kevät " : "Syksy ") + from.year(),
     adessive: (quarter < 3 ? "keväällä " : "syksyllä ") + from.year(),
   };
@@ -18,7 +21,6 @@ const resolveTerm = (from: moment.Moment): Term => {
 
 /**
  * Resolves current term
- * @returns {object} term details
  */
 export const resolveCurrentTerm = () => resolveTerm(moment().add(6, "months"));
 
@@ -43,14 +45,22 @@ const resolveTerms = (from: moment.Moment, count: number) => {
  * Returns term options for term
  *
  * @param {Array} terms terms
+ * @param {TFunction} t translation function
  * @returns {Array} term options
  */
-const getTermOptions = (terms: Term[]) =>
-  terms.map((term, i) => (
-    <option key={i} value={term.value}>
-      {term.name}
-    </option>
-  ));
+const getTermOptions = (terms: Term[], t: TFunction) =>
+  terms.map((term, i) => {
+    const termValue = term.value.substring(0, 6) as MatriculationExamTerm;
+
+    return (
+      <option key={i} value={term.value}>
+        {t(`matriculationTerms.${termValue}`, {
+          ns: "hops_new",
+          year: term.year,
+        })}
+      </option>
+    );
+  });
 
 /**
  * Resolves past 6 terms
@@ -68,18 +78,39 @@ export const getPastTerms = () =>
 export const getNextTerms = () => resolveTerms(moment().add(1, "years"), 3);
 
 /**
- * Resolves past 6 term options
+ * Resolves next 6 terms starting from given date
  *
+ * @param date date
+ * @returns terms
+ */
+export const getNextTermsByDate = (date: Date | string) =>
+  resolveTerms(moment(date), 6);
+
+/**
+ * Resolves next 3 terms starting from given date
+ *
+ * @param date date
+ * @param t t
+ * @returns terms
+ */
+export const getNextTermsOptionsByDate = (date: Date | string, t: TFunction) =>
+  getTermOptions(getNextTermsByDate(date), t);
+
+/**
+ * Resolves past 6 term options
+ * @param t t
  * @returns term options
  */
-export const getPastTermOptions = () => getTermOptions(getPastTerms());
+export const getPastTermOptions = (t: TFunction) =>
+  getTermOptions(getPastTerms(), t);
 
 /**
  * Resolves next 3 term options
- *
+ * @param t t
  * @returns term options
  */
-export const getNextTermOptions = () => getTermOptions(getNextTerms());
+export const getNextTermOptions = (t: TFunction) =>
+  getTermOptions(getNextTerms(), t);
 
 /**
  * Returns default past term
@@ -94,3 +125,15 @@ export const getDefaultPastTerm = () => getPastTerms()[0];
  * @returns default next term
  */
 export const getDefaultNextTerm = () => getNextTerms()[0];
+
+/**
+ * Returns parsed term values
+ *
+ * @param termString Term + year. Example: "SPRING2021"
+ */
+export const parseTermToValues = (termString: string) => {
+  const term = termString ? termString.substring(0, 6) : null;
+  const year = term ? Number(termString.substring(6)) : null;
+
+  return { term, year };
+};

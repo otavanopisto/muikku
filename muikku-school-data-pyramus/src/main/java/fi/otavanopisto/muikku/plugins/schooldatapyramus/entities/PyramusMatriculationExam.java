@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamStudentStatus;
+import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamTerm;
 
 public class PyramusMatriculationExam implements MatriculationExam {
 
@@ -31,33 +34,6 @@ public class PyramusMatriculationExam implements MatriculationExam {
   }
 
   @Override
-  public boolean isEligible() {
-    return eligible;
-  }
-  
-  public void setEligible(boolean eligible) {
-    this.eligible = eligible;
-  }
-
-  @Override
-  public boolean isEnrolled() {
-    return enrolled;
-  }
-
-  public void setEnrolled(boolean enrolled) {
-    this.enrolled = enrolled;
-  }
-
-  @Override
-  public long getEnrollmentDate() {
-    return enrollmentDate;
-  }
-
-  public void setEnrollmentDate(long enrollmentDate) {
-    this.enrollmentDate = enrollmentDate;
-  }
-
-  @Override
   public boolean isCompulsoryEducationEligible() {
     return compulsoryEducationEligible;
   }
@@ -66,11 +42,48 @@ public class PyramusMatriculationExam implements MatriculationExam {
     this.compulsoryEducationEligible = compulsoryEducationEligible;
   }
 
+  @Override
+  public MatriculationExamStudentStatus getStudentStatus() {
+    return studentStatus;
+  }
+
+  public void setStudentStatus(MatriculationExamStudentStatus studentStatus) {
+    this.studentStatus = studentStatus;
+  }
+
+  @Override
+  public Integer getYear() {
+    return year;
+  }
+
+  public void setYear(Integer year) {
+    this.year = year;
+  }
+
+  @Override
+  public MatriculationExamTerm getTerm() {
+    return term;
+  }
+
+  public void setTerm(MatriculationExamTerm term) {
+    this.term = term;
+  }
+
+  @Override
+  public MatriculationExamEnrollment getEnrollment() {
+    return enrollment;
+  }
+
+  public void setEnrollment(PyramusMatriculationExamEnrollment enrollment) {
+    this.enrollment = enrollment;
+  }
+
   private long id;
+  private Integer year;
+  private MatriculationExamTerm term;
   private long startTime;
   private long endTime;
-  private boolean eligible; 
-  private boolean enrolled; 
-  private long enrollmentDate;
   private boolean compulsoryEducationEligible;
+  private MatriculationExamStudentStatus studentStatus;
+  private PyramusMatriculationExamEnrollment enrollment;
 }

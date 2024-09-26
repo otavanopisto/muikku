@@ -73,7 +73,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentCourseStats;
 import fi.otavanopisto.pyramus.rest.model.StudentGroup;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupStudent;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
-import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibility;
+import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
 import fi.otavanopisto.pyramus.rest.model.Subject;
@@ -1348,9 +1348,9 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockStudentsMatriculationEligibility(StudentMatriculationEligibility studentMatriculationEligibility, String subjectCode) throws JsonProcessingException {
+      public Builder mockStudentsMatriculationEligibility(StudentMatriculationEligibilityOPS2021 studentMatriculationEligibility, String subjectCode) throws JsonProcessingException {
         String matriculationSubjectJson = pmock.objectMapper.writeValueAsString(studentMatriculationEligibility);
-        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/students/students/.*/matriculationEligibility"), true);
+        UrlPathPattern urlPattern = new UrlPathPattern(matching("/1/matriculation/students/.*/matriculationEligibility"), true);
         stubFor(get(urlPattern)
             .withQueryParam("subjectCode", matching(subjectCode))
           .willReturn(aResponse()

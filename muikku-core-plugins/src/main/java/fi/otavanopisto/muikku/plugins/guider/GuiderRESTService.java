@@ -59,6 +59,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
@@ -76,6 +78,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -227,6 +230,9 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private UserRecipientController userRecipientController;
 
   @GET
   @Path("/students")
@@ -958,6 +964,98 @@ public class GuiderRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
 
     BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.createStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  
+  @POST
+  @Path("/students/contactLogEntries/batch")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response createMultipleStudentContactLogEntries(fi.otavanopisto.muikku.plugins.guider.StudentContactLogEntriesWithRecipientsRestModel payload) {
+    
+    if (payload == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+      
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    List<UserEntity> recipientList = new ArrayList<UserEntity>();
+
+    RecipientListRESTModel recipientPayload = payload.getRecipients();
+    
+    if (recipientPayload != null) {
+      for (Long recipientId : recipientPayload.getRecipientIds()) {
+        UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+        
+        if (recipient != null) {
+          recipientList.add(recipient);
+        } else {
+          return Response.status(Status.BAD_REQUEST).build();
+        }
+      }
+    }
+    
+    List<UserGroupEntity> userGroupRecipients = null;
+    List<WorkspaceEntity> workspaceStudentRecipients = null;
+    UserGroupEntity group = null;
+    
+    // user groups
+    if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
+      userGroupRecipients = new ArrayList<UserGroupEntity>();
+      
+      for (Long groupId : recipientPayload.getRecipientGroupIds()) {
+        group = userGroupEntityController.findUserGroupEntityById(groupId);
+        userGroupRecipients.add(group);
+      }
+    }
+    
+    // Workspace members
+    WorkspaceEntity workspaceEntity = null;
+    if (!CollectionUtils.isEmpty(recipientPayload.getRecipientStudentsWorkspaceIds())) {
+      workspaceStudentRecipients = new ArrayList<WorkspaceEntity>();
+      
+      for (Long workspaceId : recipientPayload.getRecipientStudentsWorkspaceIds()) {
+        workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+  
+        if (sessionController.hasPermission(GuiderPermissions.ACCESS_CONTACT_LOG_FOR_WORKSPACES, workspaceEntity))
+          workspaceStudentRecipients.add(workspaceEntity);
+        else
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
+    
+    // The recipients of contact log entries are always only students
+    List<EnvironmentRoleArchetype> roles = new ArrayList<EnvironmentRoleArchetype>();
+    roles.add(EnvironmentRoleArchetype.STUDENT);
+    
+    // Filter recipients
+    UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+        userEntity, recipientList, userGroupRecipients, workspaceStudentRecipients, null, roles);
+
+
+    if (!prepareRecipientList.hasRecipients()) {
+      return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+    }
+    
+    Set<Long> recipientIds = prepareRecipientList.getRecipientIds();
+    List<SchoolDataIdentifier> recipients = new ArrayList<>();
+    
+    
+    // Change list of userEntities to list of ids to make it easier to export the list to Pyramus.
+    if (!recipientIds.isEmpty()) {
+      for (Long recipientId : recipientIds) {
+        UserEntity userEntity2 = userEntityController.findUserEntityById(recipientId);
+        recipients.add(userEntity2.defaultSchoolDataIdentifier());
+      }
+    }
+    
+    BridgeResponse<StudentContactLogWithRecipientsRestModel> response = userSchoolDataController.createMultipleStudentContactLogEntries(dataSource, recipients, payload.getContactLogEntry());
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }

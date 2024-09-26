@@ -1,4 +1,7 @@
 package fi.otavanopisto.muikku.plugins.matriculation.restmodel;
+
+import java.time.OffsetDateTime;
+
 public class MatriculationExamAttendance {
 
   public String getSubject() {
@@ -65,6 +68,23 @@ public class MatriculationExamAttendance {
     this.funding = funding;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public OffsetDateTime getGradeDate() {
+    return gradeDate;
+  }
+
+  public void setGradeDate(OffsetDateTime gradeDate) {
+    this.gradeDate = gradeDate;
+  }
+
+  private Long id;
   private String subject;
   private Boolean mandatory;
   private Boolean repeat;
@@ -72,6 +92,7 @@ public class MatriculationExamAttendance {
   private String term;
   private String status;
   private String grade;
+  private OffsetDateTime gradeDate;
   private String funding;
 
 }

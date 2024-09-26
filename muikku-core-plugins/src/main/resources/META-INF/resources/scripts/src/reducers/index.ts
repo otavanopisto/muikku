@@ -32,6 +32,7 @@ import { JournalsState } from "./workspaces/journals";
 import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
 import { DependantsState } from "./main-function/dependants";
+import { HopsState } from "./hops";
 
 /**
  * StateType
@@ -68,4 +69,5 @@ export interface StateType {
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
   notebook?: NoteBookState;
+  hopsNew?: HopsState;
 }

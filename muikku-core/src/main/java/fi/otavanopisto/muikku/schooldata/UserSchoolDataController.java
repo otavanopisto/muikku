@@ -20,6 +20,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
@@ -28,7 +29,6 @@ import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -121,6 +121,10 @@ public class UserSchoolDataController {
 
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload) {
     return getUserBridge(dataSource).createStudentContactLogEntry(userIdentifier,payload);
+  }
+  
+  public BridgeResponse<StudentContactLogWithRecipientsRestModel> createMultipleStudentContactLogEntries(String dataSource, List<SchoolDataIdentifier> recipientList, StudentContactLogEntryRestModel payload) {
+    return getUserBridge(dataSource).createMultipleStudentContactLogEntries(recipientList, payload);
   }
 
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
@@ -441,22 +445,6 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listStudentStudyPeriods(userIdentifier);
-  }
-
-  /**
-   * Returns student eligibility to participate matriculation exams
-   *
-   * @param studentIdentifier student identifier
-   * @param subjectCode subject code
-   * @return student eligibility to participate matriculation exams
-   */
-  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
-    if (schoolDataSource == null) {
-      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
-    }
-
-    return getUserBridge(schoolDataSource).getStudentMatriculationEligibility(studentIdentifier, subjectCode);
   }
 
   private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
