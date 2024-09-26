@@ -2648,7 +2648,6 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  #/rest/evaluation/workspace/{workspaceId}/interimEvaluationRequest:
   /rest/evaluation/workspace/{workspaceId}/interimEvaluationRequests:
     get:
       operationId: getWorkspaceInterimEvaluationRequests
@@ -3068,9 +3067,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
-      operationId: archiveEvaluationWorkspaceUser
+      operationId: archiveWorkspaceUserEvaluationRequest
       summary: Archive workspace user evaluation
-      description: Archive workspace user evaluation
+      description: Archive workspace user evaluation request
       tags:
         - Evaluation
       parameters:
@@ -3203,7 +3202,8 @@ paths:
           description: Supplementation request id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "204":
           description: Workspace user supplementation request deleted successfully
@@ -3214,7 +3214,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/workspaceassessment/{workspaceAssessmentId}:
+  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/workspaceassessment/{workspaceAssessmentIdentifier}:
     delete:
       operationId: deleteWorkspaceUserWorkspaceAssessment
       summary: Delete workspace user workspace assessment
@@ -3229,9 +3229,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: workspaceAssessmentId
+        - name: workspaceAssessmentIdentifier
           in: path
-          description: Workspace assessment id
+          description: Workspace assessment identifier
           required: true
           schema:
             type: string
@@ -13425,9 +13425,6 @@ components:
         - assessmentRequestDate
         - assignmentsDone
         - assignmentsTotal
-        - graded
-        - passing
-        - interimEvaluationRequest
         - userEntityId
         - firstName
         - lastName
@@ -13439,30 +13436,33 @@ components:
         - workspaceUserEntityId
         - workspaceUserIdentifier
         - hasPedagogyForm
+        - state
       properties:
         id:
           type: integer
           format: int64
+          nullable: true
         subjects:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceSubject"
         enrollmentDate:
           type: string
+          format: date-time
+          nullable: true
         evaluationDate:
           type: string
+          format: date-time
+          nullable: true
         assessmentRequestDate:
           type: string
+          format: date-time
+          nullable: true
         assignmentsDone:
           type: integer
+          nullable: true
         assignmentsTotal:
           type: integer
-        graded:
-          type: boolean
-        passing:
-          type: boolean
-        interimEvaluationRequest:
-          type: boolean
         userEntityId:
           type: integer
           format: int64
@@ -13479,6 +13479,7 @@ components:
           type: string
         workspaceNameExtension:
           type: string
+          nullable: true
         workspaceUrlName:
           type: string
         workspaceUserEntityId:
@@ -13488,6 +13489,8 @@ components:
           type: string
         hasPedagogyForm:
           type: boolean
+        state:
+          $ref: "#/components/schemas/WorkspaceAssessmentStateType"
 
     EvaluationSupplementationRequest:
       type: object
@@ -17066,7 +17069,6 @@ components:
         - gradeDate
         - passingGrade
         - text
-        - workspaceSubjectIdentifier
         - subject
       properties:
         date:
@@ -17089,10 +17091,6 @@ components:
           nullable: true
         text:
           description: The text (description) of the assessment
-          type: string
-          nullable: true
-        workspaceSubjectIdentifier:
-          description: The identifier of the workspace subject
           type: string
           nullable: true
         subject:
