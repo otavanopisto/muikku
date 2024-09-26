@@ -16,7 +16,7 @@ export default class HopsBody extends React.Component<
   render() {
     return (
       <div>
-        <MainFunctionNavbar activeTrail="hops" />
+        <MainFunctionNavbar title="HOPS" activeTrail="hops" />
         <ScreenContainer>
           <Application />
         </ScreenContainer>
