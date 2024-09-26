@@ -16,7 +16,7 @@ export default class GuardianHopsBody extends React.Component<
   render() {
     return (
       <div>
-        <MainFunctionNavbar activeTrail="guardian_hops" />
+        <MainFunctionNavbar title="HOPS" activeTrail="guardian_hops" />
         <ScreenContainer>
           <Application />
         </ScreenContainer>

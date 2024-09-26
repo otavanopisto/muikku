@@ -949,7 +949,6 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(titleActions.updateTitle("HOPS"));
       this.loadHopsData(window.location.hash.replace("#", ""));
     }
 
@@ -1037,8 +1036,6 @@ export default class MainFunction extends React.Component<
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-
-      this.props.store.dispatch(titleActions.updateTitle("HOPS"));
 
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
