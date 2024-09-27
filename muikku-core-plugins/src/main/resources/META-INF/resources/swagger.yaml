@@ -14081,6 +14081,7 @@ components:
         - restartExam
         - numMandatoryCourses
         - location
+        - contactInfoChange
         - message
         - degreeStructure
         - canPublishName
@@ -14106,6 +14107,8 @@ components:
         numMandatoryCourses:
           type: integer
         location:
+          type: string
+        contactInfoChange:
           type: string
         message:
           type: string

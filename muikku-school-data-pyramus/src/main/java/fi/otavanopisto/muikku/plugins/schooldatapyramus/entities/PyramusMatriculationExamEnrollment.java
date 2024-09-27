@@ -172,6 +172,16 @@ public class PyramusMatriculationExamEnrollment
     this.enrollmentDate = enrollmentDate;
   }
 
+  @Override
+  public String getContactInfoChange() {
+    return contactInfoChange;
+  }
+
+  @Override
+  public void setContactInfoChange(String contactInfoChange) {
+    this.contactInfoChange = contactInfoChange;
+  }
+
   public Long id;
   public Long examId;
   public String nationalStudentNumber;
@@ -182,6 +192,7 @@ public class PyramusMatriculationExamEnrollment
   public int numMandatoryCourses;
   public String location;
   public boolean canPublishName;
+  public String contactInfoChange;
   public String message;
   public Long studentId;
   public String state;

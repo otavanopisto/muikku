@@ -22,6 +22,8 @@ public interface MatriculationExamEnrollment {
   public void setLocation(String location);
   boolean isCanPublishName();
   void setCanPublishName(boolean canPublishName);
+  public String getContactInfoChange();
+  public void setContactInfoChange(String contactInfoChange);
   public String getMessage();
   public void setMessage(String message);
   public Long getStudentId();

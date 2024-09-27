@@ -133,6 +133,14 @@ public class MatriculationExamEnrollment {
     this.id = id;
   }
 
+  public String getContactInfoChange() {
+    return contactInfoChange;
+  }
+
+  public void setContactInfoChange(String contactInfoChange) {
+    this.contactInfoChange = contactInfoChange;
+  }
+
   private Long id;
   private Long examId;
   private String nationalStudentNumber;
@@ -142,6 +150,7 @@ public class MatriculationExamEnrollment {
   private int numMandatoryCourses;
   private boolean restartExam;
   private String location;
+  private String contactInfoChange;
   private String message;
   private boolean canPublishName;
   private String studentIdentifier;
