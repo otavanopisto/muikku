@@ -128,12 +128,12 @@ export const MatriculationExaminationStudentInformation = () => {
               })}
               onChange={(e) =>
                 handleExaminationInformationChange(
-                  "changedContactInfo",
+                  "contactInfoChange",
                   e.target.value
                 )
               }
               rows={5}
-              value={examinationInformation.changedContactInfo}
+              value={examinationInformation.contactInfoChange}
               className="matriculation__textarea"
             />
           </div>

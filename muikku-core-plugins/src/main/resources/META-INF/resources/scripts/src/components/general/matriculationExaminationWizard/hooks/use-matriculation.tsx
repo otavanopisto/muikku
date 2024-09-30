@@ -65,7 +65,7 @@ export const useMatriculation = (
     examinationInformation: {
       examId: exam.id,
       state: "ELIGIBLE",
-      changedContactInfo: "",
+      contactInfoChange: "",
       guider: "",
       enrollAs: "UPPERSECONDARY",
       degreeType: "MATRICULATIONEXAMINATION",
@@ -272,24 +272,11 @@ export const useMatriculation = (
       saveState: "IN_PROGRESS",
     }));
 
-    const {
-      changedContactInfo,
-      message,
-      enrolledAttendances,
-      finishedAttendances,
-      plannedAttendances,
-      degreeStructure,
-    } = matriculation.examinationInformation;
+    const { enrolledAttendances, finishedAttendances, plannedAttendances } =
+      matriculation.examinationInformation;
 
     const { guidanceCounselor, studentIdentifier } =
       matriculation.studentInformation;
-
-    let modifiedMessage = message;
-
-    if (changedContactInfo) {
-      modifiedMessage =
-        "Yhteystiedot:\n" + changedContactInfo + "\n\n" + message;
-    }
 
     /**
      * Parsed list of enrolled Attendances
@@ -335,10 +322,8 @@ export const useMatriculation = (
 
     const matriculationForm: MatriculationExamEnrollment = {
       ...matriculation.examinationInformation,
-      message: modifiedMessage,
       guider: guidanceCounselor,
       state: "PENDING",
-      degreeStructure,
       studentIdentifier,
       numMandatoryCourses:
         matriculation.studentInformation.completedCreditPointsCount,

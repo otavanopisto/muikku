@@ -77,7 +77,6 @@ export interface Term {
 export interface ExaminationInformation extends MatriculationExamEnrollment {
   initialized: boolean;
   // These values are used specifically for draft
-  changedContactInfo: string;
   enrolledAttendances: Array<MatriculationExamEnrolledSubject>;
   finishedAttendances: Array<MatriculationExamFinishedSubject>;
   plannedAttendances: Array<MatriculationExamPlannedSubject>;
