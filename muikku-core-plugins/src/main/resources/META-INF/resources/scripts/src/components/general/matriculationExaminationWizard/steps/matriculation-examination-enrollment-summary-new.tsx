@@ -38,7 +38,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   const { t } = useTranslation(["common", "hops_new", "users"]);
 
   const {
-    changedContactInfo,
+    contactInfoChange,
     restartExam,
     enrollAs,
     location,
@@ -219,7 +219,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
                 ns: "hops_new",
               })}
               readOnly={true}
-              value={changedContactInfo}
+              value={contactInfoChange}
               className="matriculation__textarea"
             />
           </div>
