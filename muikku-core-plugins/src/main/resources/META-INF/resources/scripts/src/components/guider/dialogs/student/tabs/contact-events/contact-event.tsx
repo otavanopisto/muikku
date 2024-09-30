@@ -14,7 +14,6 @@ import Link from "~/components/general/link";
 import { ContactLogEvent } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
-import { kMaxLength } from "buffer";
 
 /**
  * ContactEventProps
