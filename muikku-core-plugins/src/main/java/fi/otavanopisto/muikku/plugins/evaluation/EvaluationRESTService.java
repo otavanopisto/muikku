@@ -1416,9 +1416,9 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @PUT
-  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment/lock")
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment/{ASSESSMENTREQUESTIDENTIFIER}/lock")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response toggleAssessmentRequestLock(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ASSESSMENTREQUESTID") String assessmentRequestId, RestAssessmentRequest payload) {
+  public Response toggleAssessmentRequestLock(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ASSESSMENTREQUESTIDENTIFIER") String assessmentRequestId, RestAssessmentRequest payload) {
     
     // Access check
     

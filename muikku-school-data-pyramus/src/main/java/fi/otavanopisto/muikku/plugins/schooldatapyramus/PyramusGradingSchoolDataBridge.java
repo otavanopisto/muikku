@@ -764,6 +764,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     courseAssessmentRequest.setId(id);
     courseAssessmentRequest.setLocked(locked);
     courseAssessmentRequest.setCourseStudentId(courseStudentId);
+    
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d/lock", studentId, courseId, id), courseAssessmentRequest));
   
   }
