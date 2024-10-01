@@ -290,36 +290,12 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
     transferred: "",
   };
 
-  let cardTypeLabel = "";
-
-  switch (evaluationAssessmentRequest.state) {
-    case "incomplete":
-      cardTypeLabel = t("labels.supplementationRequest", {
-        ns: "evaluation",
-      });
-      break;
-
-    case "interim_evaluation_request":
-      cardTypeLabel = t("labels.interimEvaluationRequest", {
-        ns: "evaluation",
-      });
-      break;
-
-    case "pending":
-    case "pending_fail":
-    case "pending_pass":
-    default:
-      cardTypeLabel = t("labels.evaluationRequest", {
-        ns: "evaluation",
-      });
-      break;
-  }
-
   return (
     <div className={`evaluation-card ${cardModifierMap[state]}`}>
-      {evaluationAssessmentRequest.state && selectedWorkspaceId ? (
-        <div className="evaluation-card__type">{cardTypeLabel}</div>
-      ) : null}
+      <EvaluationCardLabel
+        show={!!selectedWorkspaceId}
+        evaluationAssessmentRequest={evaluationAssessmentRequest}
+      />
 
       <EvaluationCardHeader
         evaluationAssessmentRequest={evaluationAssessmentRequest}
@@ -369,6 +345,55 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
       </EvaluationCardFooter>
     </div>
   );
+};
+
+/**
+ * EvaluationCardLabelProps
+ */
+interface EvaluationCardLabelProps {
+  show: boolean;
+  evaluationAssessmentRequest: EvaluationAssessmentRequest;
+}
+
+/**
+ * EvaluationCardLabel
+ * @param props props
+ * @returns JSX.Element
+ */
+const EvaluationCardLabel = (props: EvaluationCardLabelProps) => {
+  const { t } = useTranslation(["common", "evaluation"]);
+
+  let cardTypeLabel = undefined;
+
+  switch (props.evaluationAssessmentRequest.state) {
+    case "incomplete":
+      cardTypeLabel = t("labels.supplementationRequest", {
+        ns: "evaluation",
+      });
+      break;
+
+    case "interim_evaluation_request":
+      cardTypeLabel = t("labels.interimEvaluationRequest", {
+        ns: "evaluation",
+      });
+      break;
+
+    case "pending":
+    case "pending_fail":
+    case "pending_pass":
+      cardTypeLabel = t("labels.evaluationRequest", {
+        ns: "evaluation",
+      });
+      break;
+    default:
+      break;
+  }
+
+  if (!props.show || !cardTypeLabel) {
+    return null;
+  }
+
+  return <div className="evaluation-card__type">{cardTypeLabel}</div>;
 };
 
 /**
