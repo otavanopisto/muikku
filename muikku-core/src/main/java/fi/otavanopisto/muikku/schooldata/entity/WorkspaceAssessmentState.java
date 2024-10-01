@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class WorkspaceAssessmentState {
 
   public static final String UNASSESSED = "unassessed";                                   // no request, no grade
@@ -14,37 +16,6 @@ public class WorkspaceAssessmentState {
   public static final String INTERIM_EVALUATION_REQUEST = "interim_evaluation_request";   // interim evaluation request
   public static final String INTERIM_EVALUATION = "interim_evaluation";                   // interim evaluation
   public static final String TRANSFERRED = "transferred";                                 // transfer credit
-
-  public WorkspaceAssessmentState() {
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-    this.date = date;
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-    this.date = date;
-    this.text = text;
-  }
-
-  public WorkspaceAssessmentState(String workspaceSubjectIdentifier, String state, Date date, String text, String grade, Date gradeDate, Boolean passingGrade) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-    this.state = state;
-    this.date = date;
-    this.text = text;
-    this.grade = grade;
-    this.gradeDate = gradeDate;
-    this.passingGrade = passingGrade;
-  }
 
   public String getState() {
     return state;
@@ -86,14 +57,6 @@ public class WorkspaceAssessmentState {
     this.gradeDate = gradeDate;
   }
 
-  public String getWorkspaceSubjectIdentifier() {
-    return workspaceSubjectIdentifier;
-  }
-
-  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-  }
-
   public Boolean isPassingGrade() {
     return passingGrade;
   }
@@ -102,12 +65,25 @@ public class WorkspaceAssessmentState {
     this.passingGrade = passingGrade;
   }
 
+  public WorkspaceActivitySubject getSubject() {
+    return subject;
+  }
+
+  public void setSubject(WorkspaceActivitySubject subject) {
+    this.subject = subject;
+  }
+  
+  @JsonIgnore
+  public String getSubjectIdentifier() {
+    return subject == null ? null : subject.getIdentifier();
+  }
+
   private Date date;
   private String state;
   private String grade;
   private Boolean passingGrade;
   private Date gradeDate;
   private String text;
-  private String workspaceSubjectIdentifier;
+  private WorkspaceActivitySubject subject;
   
 }

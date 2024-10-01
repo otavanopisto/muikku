@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
@@ -510,20 +511,26 @@ public class CoursePickerRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response getCanSignup(@PathParam("ID") Long workspaceEntityId) {
     
+    CanSignupRestModel restModel = new CanSignupRestModel();
+    
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    boolean canSignup = getCanSignup(workspaceEntity);
+    // Student may not have been evaluated yet (also populates return object with assessment states)
     
-    if (canSignup) {
-      canSignup = !getIsAlreadyEvaluated(workspaceEntity);
+    restModel.setCanSignup(!getIsAlreadyEvaluated(workspaceEntity, restModel));
+    
+    // Allowed user groups must match 
+    
+    if (restModel.getCanSignup()) {
+      restModel.setCanSignup(getCanSignup(workspaceEntity));
     }
     
     // #5950: If both student and workspace have curriculum(s), they have to match
     
-    if (canSignup) {
+    if (restModel.getCanSignup()) {
       Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
       if (searchProviderIterator.hasNext()) {
         SearchProvider searchProvider = searchProviderIterator.next();
@@ -538,7 +545,7 @@ public class CoursePickerRESTService extends PluginRESTService {
               @SuppressWarnings("unchecked")
               List<String> workspaceCurriculums = (List<String>) result.get("curriculumIdentifiers");
               if (workspaceCurriculums != null && workspaceCurriculums.size() > 0) {
-                canSignup = workspaceCurriculums.contains(studentCurriculum);
+                restModel.setCanSignup(workspaceCurriculums.contains(studentCurriculum));
               }
             }
           }
@@ -546,7 +553,11 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     }
     
-    return Response.ok(canSignup).build();
+    if (restModel.getAssessmentStates() == null) {
+      restModel.setAssessmentStates(Collections.emptyList());
+    }
+    
+    return Response.ok(restModel).build();
   }
   
   @POST
@@ -602,17 +613,18 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     workspaceController.createWorkspaceUserSignup(workspaceEntity, userSchoolDataIdentifier.getUserEntity(), new Date(), null);
 
-    /**
-     * Send workspace signup message to student
-     */
-    boolean studentsSignupMessageSent = workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
-    String studentsSignupMessageSentNotification = studentsSignupMessageSent
+    // (Possibly) send signup message to student and prepare to add it to the notification sent to workspace's teachers
+
+    WorkspaceSignupMessage sentMessage = workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
+    String studentsSignupMessageSentNotification = sentMessage != null
         ? localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageSent")
         : localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageNotSent");
+    if (sentMessage != null) {
+      studentsSignupMessageSentNotification = MessageFormat.format(studentsSignupMessageSentNotification, sentMessage.getCaption(), sentMessage.getContent());
+    }
+    
+    // Setup the message which goes to the workspace's teachers
 
-    /**
-     * Setup the message which goes to the teachers
-     */
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
     caption = MessageFormat.format(caption, userName, workspaceName);
 
@@ -620,9 +632,23 @@ public class CoursePickerRESTService extends PluginRESTService {
     
     String studentLink = String.format("<a href=\"%s/guider#?c=%s\" >%s</a>", baseUrl, userIdentifier.toId(), userName);
     String content;
-
-    content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
-    content = MessageFormat.format(content, studentLink, workspaceLink, studentsSignupMessageSentNotification);
+    if (entity == null || StringUtils.isEmpty(entity.getMessage())) {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
+      content = MessageFormat.format(
+          content,
+          studentLink,
+          workspaceLink,
+          studentsSignupMessageSentNotification);
+    }
+    else {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
+      content = MessageFormat.format(
+          content,
+          studentLink,
+          workspaceLink,
+          StringUtils.replace(entity.getMessage(), "\n", "<br/>"),
+          studentsSignupMessageSentNotification);
+    }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
       // TODO: Category?
@@ -659,23 +685,29 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
   }
   
-  private boolean getIsAlreadyEvaluated(WorkspaceEntity workspaceEntity) {
+  private boolean getIsAlreadyEvaluated(WorkspaceEntity workspaceEntity, CanSignupRestModel restModel) {
     Boolean isEvaluated = false;
     if (sessionController.isLoggedIn()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUserEntity().defaultSchoolDataIdentifier());
-      if (workspaceUserEntity != null) {
-        WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
-        WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
-        if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
-          List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
-          for (WorkspaceAssessmentState assessmentState : assessmentStates) {
-            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
-              isEvaluated = true;
-              break;
+      List<WorkspaceAssessmentState> states = new ArrayList<>();
+      List<UserSchoolDataIdentifier> usdis = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(sessionController.getLoggedUserEntity());
+      for (UserSchoolDataIdentifier usdi : usdis) {
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, usdi.schoolDataIdentifier());
+        if (workspaceUserEntity != null) {
+          WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
+          WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
+          if (archetype.equals(WorkspaceRoleArchetype.STUDENT)) {
+            List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+            states.addAll(assessmentStates);
+            for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+              if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.FAIL) {
+                isEvaluated = true;
+                break;
+              }
             }
-          }
-        }  
+          }  
+        }
       }
+      restModel.setAssessmentStates(states);
     }
     return isEvaluated;
   }

@@ -28,7 +28,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestCancellationDAO;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -208,9 +208,7 @@ public class EvaluationController {
       // Supplementation request, if one exists and is newer than activity date so far
 
       for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
-        SchoolDataIdentifier workspaceSubjectIdentifier = assessment.getWorkspaceSubjectIdentifier() == null
-            ? null
-            : SchoolDataIdentifier.fromId(assessment.getWorkspaceSubjectIdentifier());
+        SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(assessment.getSubjectIdentifier());
         SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
             userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
         if (supplementationRequest != null && supplementationRequest.getRequestDate().after(assessment.getDate())) {
@@ -422,6 +420,30 @@ public class EvaluationController {
     handleSupplementationNotifications(supplementationRequest);
     return supplementationRequest;
   }
+  
+  public void markSupplementationRequestHandled(Long studentEntityId, Long workspaceEntityId) {
+    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, Boolean.FALSE, Boolean.FALSE);
+    for (SupplementationRequest supplementationRequest : supplementationRequests) {
+      supplementationRequestDAO.updateHandled(supplementationRequest, Boolean.TRUE);
+    }
+  }
+
+  public void markSupplementationRequestHandled(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier) {
+    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectAndHandledAndArchived(
+        studentEntityId,
+        workspaceEntityId,
+        workspaceSubjectIdentifier.toId(),
+        Boolean.FALSE,
+        Boolean.FALSE);
+        
+    for (SupplementationRequest supplementationRequest : supplementationRequests) {
+      supplementationRequestDAO.updateHandled(supplementationRequest, Boolean.TRUE);
+    }
+  }
+  
+  public void markSupplementationRequestUnhandled(SupplementationRequest supplementationRequest ) {
+    supplementationRequestDAO.updateHandled(supplementationRequest, Boolean.FALSE);
+  }
 
   public AssessmentRequestCancellation createAssessmentRequestCancellation(Long studentEntityId, Long workspaceEntityId, Date cancellationDate) {
     AssessmentRequestCancellation assessmentRequestCancellation = assessmentRequestCancellationDAO.createAssessmentRequestCancellation(
@@ -485,7 +507,7 @@ public class EvaluationController {
 
       CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
       
-      CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+      UserRecipientList recipients = new UserRecipientList();
       recipients.addRecipient(student);
       
       CommunicatorMessage communicatorMessage = communicatorController.createMessage(
@@ -530,16 +552,24 @@ public class EvaluationController {
     return supplementationRequestDAO.findById(supplementationRequestId);
   }
 
+  public List<SupplementationRequest> listSupplementationRequestsByWorkspaceAndHandledAndArchived(Long workspaceEntityId, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.listByWorkspaceAndHandledAndArchived(workspaceEntityId, handled, archived);
+  }
+
   public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
   }
 
-  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
-    return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
+  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndSubjectAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectAndHandledAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier.toId(), handled, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  }
+
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
@@ -575,7 +605,7 @@ public class EvaluationController {
   
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
     SchoolDataIdentifier workspaceSubjectIdentifier = supplementationRequest.getWorkspaceSubjectIdentifier() != null ? SchoolDataIdentifier.fromId(supplementationRequest.getWorkspaceSubjectIdentifier()) : null;
-    supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(
+    supplementationRequest = supplementationRequestDAO.update(
         supplementationRequest,
         userEntityId,
         supplementationRequest.getStudentEntityId(),
@@ -777,7 +807,7 @@ public class EvaluationController {
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
 
-    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    UserRecipientList recipients = new UserRecipientList();
     recipients.addRecipient(student);
     
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(
@@ -904,7 +934,7 @@ public class EvaluationController {
 
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
 
-    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    UserRecipientList recipients = new UserRecipientList();
     recipients.addRecipient(student);
     
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(

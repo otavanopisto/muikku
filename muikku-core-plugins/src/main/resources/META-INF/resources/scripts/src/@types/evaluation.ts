@@ -81,6 +81,8 @@ export interface EvaluationFilters {
   notEvaluated: boolean;
   assessmentRequest: boolean;
   supplementationRequest: boolean;
+  interimRequest: boolean;
+  interimEvaluation: boolean;
 }
 
 /**

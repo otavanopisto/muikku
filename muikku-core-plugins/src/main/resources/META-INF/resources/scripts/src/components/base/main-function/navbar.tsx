@@ -107,6 +107,24 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
+        modifier: "hops",
+        trail: "hops",
+        text: "Hops",
+        href: "/hops",
+        icon: "compass",
+        to: true,
+        condition: this.props.status.services.hops.isAvailable,
+      },
+      {
+        modifier: "hops",
+        trail: "guardian_hops",
+        text: "Hops",
+        href: "/guardian_hops",
+        icon: "compass",
+        to: true,
+        condition: this.props.status.permissions.GUARDIAN_VIEW,
+      },
+      {
         modifier: "guardian",
         trail: "guardian",
         text: t("labels.dependant", { count: this.props.dependants.length }),
@@ -245,7 +263,6 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
-    title: state.title,
     dependants: (state.dependants && state.dependants.list) || [],
   };
 }

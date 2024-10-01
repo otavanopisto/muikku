@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -26,7 +25,6 @@ import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -177,101 +175,9 @@ public class CommunicatorController {
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
   }
-  
-  /**
-   * Prepares a communicator message recipient list.
-   * 
-   * Drops recipients that are considered duplicates, inactive users or 
-   * the sender (as a group recipient - the sender can send messages to 
-   * themselves if they're listed as individual recipients).
-   * 
-   * @param sender the user sending the message
-   * @param userRecipients the individual user recipients
-   * @param userGroupRecipients the user groups whose members should receive the message
-   * @param workspaceStudentRecipients the workspaces whose students should receive the message
-   * @param workspaceTeacherRecipients the workspaces whose teachers should receive the message
-   * @return the recipient list
-   */
-  public CommunicatorMessageRecipientList prepareRecipientList(UserEntity sender, List<UserEntity> userRecipients, 
-      List<UserGroupEntity> userGroupRecipients, List<WorkspaceEntity> workspaceStudentRecipients, 
-      List<WorkspaceEntity> workspaceTeacherRecipients) {
-    CommunicatorMessageRecipientList preparedRecipientList = new CommunicatorMessageRecipientList();
-    
-    // Clean duplicates from recipient list
-    cleanDuplicateRecipients(userRecipients);
-     
-    for (UserEntity recipient : userRecipients) {
-      // #3758: Only send messages to active users
-      if (isActiveUser(recipient)) {
-        preparedRecipientList.addRecipient(recipient);
-      }
-    }
-    
-    if (!CollectionUtils.isEmpty(userGroupRecipients)) {
-      for (UserGroupEntity userGroup : userGroupRecipients) {
-        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup);
-
-        if (!CollectionUtils.isEmpty(groupUsers)) {
-          for (UserGroupUserEntity groupUser : groupUsers) {
-            UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-            UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
-            // #3758: Only send messages to active students
-            // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier)) {
-              continue;
-            }
-            if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
-              preparedRecipientList.addUserGroupRecipient(userGroup, recipient);
-            }
-          }
-        }
-      }
-    }
-
-    // Workspace members
-
-    if (!CollectionUtils.isEmpty(workspaceStudentRecipients)) {
-      for (WorkspaceEntity workspaceEntity : workspaceStudentRecipients) {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
-
-        if (!CollectionUtils.isEmpty(workspaceUsers)) {
-          for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
-            UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
-            UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
-            // #3758: Only send messages to active students
-            // #4920: Only message students' current study programmes
-            if (!isActiveUser(userSchoolDataIdentifier)) {
-              continue;
-            }
-            if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
-              preparedRecipientList.addWorkspaceStudentRecipient(workspaceEntity, recipient);
-            }
-          }
-        }
-      }
-    }
-
-    if (!CollectionUtils.isEmpty(workspaceTeacherRecipients)) {
-      for (WorkspaceEntity workspaceEntity : workspaceTeacherRecipients) {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
-        
-        if (!CollectionUtils.isEmpty(workspaceUsers)) {
-          for (WorkspaceUserEntity wosu : workspaceUsers) {
-            UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
-            // #3758: Workspace teachers are considered active, no need to check
-            if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
-              preparedRecipientList.addWorkspaceTeacherRecipient(workspaceEntity, recipient);
-            }
-          }
-        }
-      }
-    }
-
-    return preparedRecipientList;
-  }
 
   public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, 
-      CommunicatorMessageRecipientList recipients, CommunicatorMessageCategory category, 
+      UserRecipientList recipients, CommunicatorMessageCategory category, 
       String caption, String content, Set<Tag> tags) {
     CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, clean(content), new Date(), tags);
     
@@ -611,7 +517,7 @@ public class CommunicatorController {
     // TODO Category not existing at this point would technically indicate an invalid state 
     CommunicatorMessageCategory categoryEntity = persistCategory(category);
     
-    CommunicatorMessageRecipientList recipientsList = new CommunicatorMessageRecipientList();
+    UserRecipientList recipientsList = new UserRecipientList();
     recipients.forEach(recipient -> recipientsList.addRecipient(recipient));
     
     return createMessage(communicatorMessageId, sender, recipientsList, categoryEntity, subject, content, null);
@@ -620,7 +526,7 @@ public class CommunicatorController {
   public CommunicatorMessage replyToMessage(UserEntity sender, String category, String subject, String content, List<UserEntity> recipients, CommunicatorMessageId communicatorMessageId) {
     CommunicatorMessageCategory categoryEntity = persistCategory(category);
     
-    CommunicatorMessageRecipientList recipientsList = new CommunicatorMessageRecipientList();
+    UserRecipientList recipientsList = new UserRecipientList();
     recipients.forEach(recipient -> recipientsList.addRecipient(recipient));
     
     return createMessage(communicatorMessageId, sender, recipientsList, categoryEntity, subject, content, null);

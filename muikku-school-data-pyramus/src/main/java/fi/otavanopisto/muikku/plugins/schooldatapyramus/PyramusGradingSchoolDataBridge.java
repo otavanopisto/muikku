@@ -459,7 +459,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
           assessment.setGrade(caa.getGrade());
           assessment.setGradeDate(caa.getGradeDate());
           if (caa.getCourseModuleId() != null) {
-            assessment.setWorkspaceSubjectIdentifier(identifierMapper.getCourseModuleIdentifier(caa.getCourseModuleId()).toId());
+            // #7002: Assessment state per course module now contains full information about the subject of the module 
+            String courseModuleIdentifier = identifierMapper.getCourseModuleIdentifier(caa.getCourseModuleId()).toId();
+            WorkspaceActivitySubject subject = subjects.stream().filter(s -> StringUtils.equals(s.getIdentifier(), courseModuleIdentifier)).findFirst().orElse(null);
+            assessment.setSubject(subject);
           }
           assessment.setPassingGrade(caa.getPassingGrade());
           assessment.setState(caa.getState().toString());

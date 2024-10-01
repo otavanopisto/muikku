@@ -26,7 +26,7 @@ import javax.ws.rs.ext.ContextResolver;
 import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @ApplicationScoped
 @Singleton
@@ -114,7 +114,7 @@ public class ClientPool {
     @Override
     public ObjectMapper getContext(Class<?> type) {
       ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.registerModule(new JSR310Module());
+      objectMapper.registerModule(new JavaTimeModule());
       
       return objectMapper;
     }

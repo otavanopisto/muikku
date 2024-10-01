@@ -16,8 +16,8 @@ import {
 import { ButtonPill } from "~/components/general/button";
 import { SearchFormElement } from "~/components/general/form-element";
 import NewMessage from "~/components/communicator/dialogs/new-message";
+import NewContactEvent from "~/components/general/contact-logs-dialog";
 import { ContactRecipientType } from "~/reducers/user-index";
-import { getName } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
 
 import {
@@ -27,9 +27,9 @@ import {
   ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
 import { bindActionCreators } from "redux";
-import { Student } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { turnSelectedUsersToContacts } from "~/util/users";
 
 /**
  * GuiderToolbarProps
@@ -161,27 +161,6 @@ class GuiderToolbar extends React.Component<
   }
 
   /**
-   * turnSelectedUsersToContacts
-   * @param users array of GuiderStudents
-   * @returns {Array} an Array of ContactRecipientType
-   */
-  turnSelectedUsersToContacts = (users: Student[]): ContactRecipientType[] => {
-    const contacts: ContactRecipientType[] = [];
-    users.map((user) => {
-      contacts.push({
-        type: "user",
-        value: {
-          id: user.userEntityId,
-          name: getName(user, !this.props.status.isStudent),
-          identifier: user.id,
-          email: user.email,
-        },
-      });
-    });
-    return contacts;
-  };
-
-  /**
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
    * @param selectedUsers is an Array of ContactRecipientType
    */
@@ -227,8 +206,9 @@ class GuiderToolbar extends React.Component<
             extraNamespace="guider"
             refreshInitialSelectedItemsOnOpen
             onRecipientChange={this.onContactsChange}
-            initialSelectedItems={this.turnSelectedUsersToContacts(
-              this.props.guider.selectedStudents
+            initialSelectedItems={turnSelectedUsersToContacts(
+              this.props.guider.selectedStudents,
+              !this.props.status.isStudent
             )}
           >
             <ButtonPill
@@ -237,7 +217,19 @@ class GuiderToolbar extends React.Component<
               buttonModifiers="new-message"
             />
           </NewMessage>
-
+          <NewContactEvent
+            userIdentifier={this.props.status.userSchoolDataIdentifier}
+            selectedItems={turnSelectedUsersToContacts(
+              this.props.guider.selectedStudents,
+              !this.props.status.isStudent
+            )}
+            status={this.props.status}
+          >
+            <ButtonPill
+              icon="bubbles"
+              buttonModifiers="create-contact-log-entry"
+            />
+          </NewContactEvent>
           <ButtonPill
             buttonModifiers="toggle"
             icon="check"

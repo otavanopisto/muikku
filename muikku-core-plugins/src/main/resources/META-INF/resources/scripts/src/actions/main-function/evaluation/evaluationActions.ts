@@ -429,6 +429,18 @@ export interface DeleteInterimEvaluationRequest {
 }
 
 /**
+ * DeleteSupplementationRequest
+ */
+export interface DeleteSupplementationRequest {
+  (data: {
+    workspaceUserEntityId: number;
+    supplementationRequestId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * ArchiveStudent
  */
 export interface ArchiveStudent {
@@ -1655,7 +1667,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
               workspaceUserEntityId:
                 state.evaluations.evaluationSelectedAssessmentId
                   .workspaceUserEntityId,
-              workspaceAssessmentId: identifier,
+              workspaceAssessmentIdentifier: identifier,
             })
             .then(() => {
               dispatch(
@@ -1711,7 +1723,9 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
               workspaceUserEntityId:
                 state.evaluations.evaluationSelectedAssessmentId
                   .workspaceUserEntityId,
-              supplementationRequestId: identifier,
+              // Note that in case of deleting supplementation request, identifier is tecnhinically type number
+              // but EvaluationEvent object has it as string. So we have to parse it to int
+              supplementationRequestId: parseInt(identifier),
             })
             .then(() => {
               dispatch(
@@ -2143,7 +2157,7 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
 
       try {
         await evaluationApi
-          .archiveEvaluationWorkspaceUser({
+          .archiveWorkspaceUserEvaluationRequest({
             workspaceUserEntityId: workspaceUserEntityId,
           })
           .then(() => {
@@ -2179,7 +2193,7 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
  * @param param0.interimEvaluatiomRequestId interimEvaluatiomRequestId
  */
 const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
-  function deleteAssessmentRequest({ interimEvaluatiomRequestId }) {
+  function deleteInterimEvaluationRequest({ interimEvaluatiomRequestId }) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -2211,6 +2225,49 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
               context: "interimRequest",
               error: err.message,
             }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * Deletes supplementation request
+ * @param data data
+ */
+const deleteSupplementationRequest: DeleteSupplementationRequest =
+  function deleteSupplementationRequest(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const { workspaceUserEntityId, supplementationRequestId } = data;
+
+      const evaluationApi = MApi.getEvaluationApi();
+
+      try {
+        await evaluationApi
+          .deleteWorkspaceUserSupplementationRequest({
+            workspaceUserEntityId,
+            supplementationRequestId,
+          })
+          .then(() => {
+            notificationActions.displayNotification(
+              "Täydennyspyyntö poistettu onnistuneesti",
+              "success"
+            );
+
+            dispatch(loadEvaluationAssessmentRequestsFromServer());
+          });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            "Virhe poistettaessa täydennyspyyntöä",
             "error"
           )
         );
@@ -2687,4 +2744,5 @@ export {
   loadEvaluationJournalFeedbackFromServer,
   createOrUpdateEvaluationJournalFeedback,
   deleteEvaluationJournalFeedback,
+  deleteSupplementationRequest,
 };

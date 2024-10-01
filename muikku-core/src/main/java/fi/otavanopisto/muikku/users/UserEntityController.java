@@ -302,6 +302,38 @@ public class UserEntityController implements Serializable {
   public boolean hasProfilePicture(UserEntity userEntity) {
     return userProfilePictureController.hasProfilePicture(userEntity);
   }
+  
+  public boolean isActiveUser(UserEntity userEntity) {
+    return isActiveUser(userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier()));
+  }
+  
+  private boolean isActiveUser(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    EnvironmentRoleArchetype[] staffRoles = {
+        EnvironmentRoleArchetype.ADMINISTRATOR, 
+        EnvironmentRoleArchetype.MANAGER, 
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.TEACHER
+    };
+    
+    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
+      SearchProvider searchProvider = getProvider("elastic-search");
+      if (searchProvider != null) {
+        SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
+        return searchResult.getTotalHitCount() > 0;
+      }
+    }
+    return true;
+  }
+  
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
+  }
 
   public boolean isStudent(UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);

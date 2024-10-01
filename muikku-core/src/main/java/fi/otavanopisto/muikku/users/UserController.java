@@ -15,7 +15,6 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -126,17 +125,6 @@ public class UserController {
     return userSchoolDataController.findUserSsn(userIdentifier);
   }
   
-  /**
-   * Returns student eligibility to participate matriculation exams
-   * 
-   * @param studentIdentifier student identifier
-   * @param subjectCode subject code
-   * @return student eligibility to participate matriculation exams
-   */
-  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
-    return userSchoolDataController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
-  }
-
   public List<UserEmail> listUserEmails(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserEmails(userIdentifier);
   }

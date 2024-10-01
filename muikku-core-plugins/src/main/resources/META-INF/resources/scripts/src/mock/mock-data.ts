@@ -3159,3 +3159,8 @@ export const schoolCourseTableUppersecondary2021: SchoolCurriculumMatrix = {
     },
   ],
 };
+
+export const OPS2021SubjectCodesInOrder =
+  schoolCourseTableUppersecondary2021.subjectsTable.map(
+    (subject) => subject.subjectCode
+  );

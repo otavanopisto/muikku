@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserSignup;
 import fi.otavanopisto.muikku.notifier.NotifierController;
@@ -54,7 +55,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
@@ -88,6 +89,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
@@ -120,6 +122,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
 
   @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
@@ -282,6 +287,40 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok().build();
   }
 
+  @GET
+  @Path("/sdi_paramconverter/{SDI}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_path(@PathParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  @GET
+  @Path("/sdi_paramconverter_queryparam")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_query(@QueryParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.noContent().build();
+    }
+  }
+
   @DELETE
   @Path("/communicator/messages")
   @RESTPermit (handling = Handling.UNSECURED)
@@ -371,7 +410,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(payload.getCategoryName());
     
-    CommunicatorMessageRecipientList recipientsList = new CommunicatorMessageRecipientList();
+    UserRecipientList recipientsList = new UserRecipientList();
     recipients.forEach(recipient -> recipientsList.addRecipient(recipient));
 
     fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipientsList, 
@@ -454,6 +493,15 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
     }
     
+    List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
+    for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
+      workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
+    }
+    List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
+    for (WorkspaceSignupMessage signupMessage : signupMessages) {
+      workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
+    }
+    
     SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();
     workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);
     workspaceIndexer.removeWorkspace(schoolDataIdentifier);
@@ -492,6 +540,10 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       List<WorkspaceUserSignup> workspaceUserSignups = workspaceController.listWorkspaceUserSignups();
       for (WorkspaceUserSignup workspaceUserSignup : workspaceUserSignups) {
         workspaceController.deleteWorkspaceUserSignup(workspaceUserSignup);
+      }
+      List<WorkspaceSignupMessage> signupMessages = workspaceSignupMessageController.listByWorkspaceEntity(workspaceEntity);
+      for (WorkspaceSignupMessage signupMessage : signupMessages) {
+        workspaceSignupMessageController.deleteWorkspaceSignupMessage(signupMessage);
       }
       
       SchoolDataIdentifier schoolDataIdentifier = workspaceEntity.schoolDataIdentifier();

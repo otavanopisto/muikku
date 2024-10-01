@@ -10,14 +10,6 @@ public class MatriculationExamInitialData {
     this.name = name;
   }
 
-  public String getSsn() {
-    return ssn;
-  }
-
-  public void setSsn(String ssn) {
-    this.ssn = ssn;
-  }
-
   public String getEmail() {
     return email;
   }
@@ -74,16 +66,15 @@ public class MatriculationExamInitialData {
     this.studentIdentifier = studentIdentifier;
   }
 
-  public boolean isEnrollmentSent() {
-    return enrollmentSent;
+  public Double getCompletedCreditPointsCount() {
+    return completedCreditPointsCount;
   }
 
-  public void setEnrollmentSent(boolean enrollmentSent) {
-    this.enrollmentSent = enrollmentSent;
+  public void setCompletedCreditPointsCount(Double completedCreditPointsCount) {
+    this.completedCreditPointsCount = completedCreditPointsCount;
   }
 
   private String name;
-  private String ssn;
   private String email;
   private String phone;
   private String address;
@@ -91,7 +82,7 @@ public class MatriculationExamInitialData {
   private String locality;
   private String guidanceCounselor;
   private String studentIdentifier;
-  private boolean enrollmentSent;
+  private Double completedCreditPointsCount;
 
 }
 

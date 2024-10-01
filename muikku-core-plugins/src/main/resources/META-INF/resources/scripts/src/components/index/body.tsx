@@ -24,12 +24,14 @@ interface IndexBodyProps {
  */
 const IndexBody: React.FC<IndexBodyProps> = (props) => {
   const status = props.status;
-  const { t } = useTranslation("frontPage");
+  const { t } = useTranslation(["common", "frontPage"]);
   return (
     <div>
-      <MainFunctionNavbar activeTrail="index" />
+      <MainFunctionNavbar title={t("labels.site")} activeTrail="index" />
       <ScreenContainer viewModifiers="index">
-        <h1 className="visually-hidden">{t("wcag.indexViewHeader")}</h1>
+        <h1 className="visually-hidden">
+          {t("wcag.indexViewHeader", { ns: "frontPage" })}
+        </h1>
         {status.isStudent ? (
           <StudentComponent studiesEnded={!status.isActiveUser} />
         ) : (
