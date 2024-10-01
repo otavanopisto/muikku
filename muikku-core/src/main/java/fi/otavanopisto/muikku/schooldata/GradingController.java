@@ -311,6 +311,18 @@ public class GradingController {
         archived,
         handled);
   }
+  
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentLock(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
+      String workspaceIdentifier, String studentIdentifier, Boolean locked) {
+    return gradingSchoolDataController.updateWorkspaceAssessmentRequestLock(
+        schoolDataSource,
+        identifier,
+        workspaceUserIdentifier,
+        workspaceUserSchoolDataSource,
+        workspaceIdentifier,
+        studentIdentifier,
+        locked);
+  }
 
   public void deleteWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {
     gradingSchoolDataController.deleteWorkspaceAssessmentRequest(schoolDataSource, identifier, workspaceIdentifier, studentIdentifier);

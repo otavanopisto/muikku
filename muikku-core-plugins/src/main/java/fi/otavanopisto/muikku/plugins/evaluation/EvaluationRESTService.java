@@ -39,6 +39,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
@@ -1360,6 +1361,58 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     
     return Response.ok(restAssessmentRequests).build();
+  }
+  
+  @PUT
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment/lock")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleAssessmentRequestLock(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ASSESSMENTREQUESTID") String assessmentRequestId, RestAssessmentRequest payload) {
+    
+    // Access check
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (payload.getId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
+    }
+
+    // Entities and identifiers
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
+    if (workspaceUser == null) {
+      logger.warning(String.format("Workspace user for workspaceUserEntityId %d not found", workspaceUserEntityId));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
+
+    WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceEntity.schoolDataIdentifier(), workspaceUser.getUserIdentifier());
+    
+    if (assessmentRequest == null) {
+      logger.warning(String.format("Workspace assessment request for workspaceUserEntityId %d not found", workspaceUserEntityId));
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    WorkspaceAssessmentRequest request = gradingController.updateWorkspaceAssessmentLock(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), workspaceUserEntity.getIdentifier(), payload.getLocked());
+    
+    RestAssessmentRequest restAssessment = new RestAssessmentRequest();
+    
+    restAssessment.setAssessmentRequestDate(request.getDate());
+    
+    AssessmentRequestRESTModel restModel = assessmentRequestController.restModel(request);
+
+    return Response.ok(restModel).build();
   }
   
   @PUT

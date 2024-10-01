@@ -175,6 +175,14 @@ public class RestAssessmentRequest {
     this.hasPedagogyForm = hasPedagogyForm;
   }
 
+  public Boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(Boolean locked) {
+    this.locked = locked;
+  }
+
   private Long id;
   private Long userEntityId;
   private String firstName;
@@ -197,4 +205,5 @@ public class RestAssessmentRequest {
 
   private List<WorkspaceSubjectRestModel> subjects;
   private Boolean hasPedagogyForm;
+  private Boolean locked;
 }
