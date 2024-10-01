@@ -253,6 +253,8 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     paymentUrl.append(httpRequest.getScheme());
     paymentUrl.append("://");
     paymentUrl.append(httpRequest.getServerName());
+    paymentUrl.append(":");
+    paymentUrl.append(httpRequest.getServerPort());
     paymentUrl.append("/ceepos/pay?order=");
     paymentUrl.append(order.getId());
     paymentUrl.append("&hash=");
@@ -311,19 +313,19 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
     
-    if(assessmentRequestIdentifier == null){
+    if (assessmentRequestIdentifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid assessmentRequestIdentifier").build();
     }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     
-    if(workspaceEntity == null){
+    if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
     }
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());    
     
-    if(workspaceUserEntity == null){
+    if (workspaceUserEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Workspace user entity not found").build();
     }
     
@@ -331,7 +333,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
     
-    if(!sessionController.getLoggedUser().equals(studentIdentifier)){
+    if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -344,10 +346,12 @@ public class AssessmentRequestRESTService extends PluginRESTService {
         assessmentRequestController.archiveWorkspaceAssessmentRequest(assessmentRequest, workspaceEntity, studentEntity);
         communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(sessionController.getLocale(), workspaceUserEntity);
         evaluationController.createAssessmentRequestCancellation(studentEntity.getId(), workspaceEntityId, new Date());
-      } else {
+      }
+      else {
         return Response.status(Status.FORBIDDEN).build();
       }
-    } else {
+    }
+    else {
       return Response.status(Status.NOT_FOUND).entity("Could not find assessment request").build();
     }
     

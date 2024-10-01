@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 export const MatriculationExaminationStudentInformation = () => {
   const { matriculation, onExaminationInformationChange } =
     useMatriculationContext();
-  const { examinationInformation, studentInformation, saveState, errorMsg } =
+  const { examinationInformation, studentInformation, draftState, errorMsg } =
     matriculation;
 
   const { t } = useTranslation(["common", "hops_new", "users"]);
@@ -41,7 +41,7 @@ export const MatriculationExaminationStudentInformation = () => {
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
-      <SavingDraftInfo saveState={saveState} />
+      <SavingDraftInfo draftState={draftState} />
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
           {t("labels.matriculationFormStudentInfoSubTitle1", {
@@ -113,7 +113,7 @@ export const MatriculationExaminationStudentInformation = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label={t("labels.counselors_one", { ns: "users" })}
+              label={t("labels.groupAdvisor_one", { ns: "users" })}
               readOnly
               defaultValue={studentInformation.guidanceCounselor}
               className="matriculation__input"
@@ -128,12 +128,12 @@ export const MatriculationExaminationStudentInformation = () => {
               })}
               onChange={(e) =>
                 handleExaminationInformationChange(
-                  "changedContactInfo",
+                  "contactInfoChange",
                   e.target.value
                 )
               }
               rows={5}
-              value={examinationInformation.changedContactInfo}
+              value={examinationInformation.contactInfoChange}
               className="matriculation__textarea"
             />
           </div>

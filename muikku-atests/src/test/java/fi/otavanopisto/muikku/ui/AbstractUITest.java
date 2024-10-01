@@ -866,6 +866,24 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
   }
   
+  protected void waitForExpectedText(String elementToLookFor, String textToAppear, int timesToTry, int interval) {
+    waitForPresent(elementToLookFor);
+    String currentText = getElementText(elementToLookFor);
+    int i = 0;
+    while(!currentText.equalsIgnoreCase(textToAppear)) {
+      if (i > timesToTry) {
+        break;
+      }
+      i++;
+      refresh();
+      waitForPresent(elementToLookFor);
+      sleep(interval);
+      currentText = getElementText(elementToLookFor);
+    }
+    if(!currentText.equalsIgnoreCase(textToAppear))
+      throw new TimeoutException("Could not find expected text in a given timeout period.");
+  }
+  
   protected void waitAndClickAndConfirmTextChanges(String clickSelector, String elementWithText, String newText, int timesToTry, int interval) {
     String text = findElement(elementWithText).getText();
     int i = 0;
@@ -944,8 +962,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     List<WebElement> options = selectField.getAllSelectedOptions();
     int i = 0;
     WebElement option = options.get(0);
-    String licenseValue = option.getAttribute("value");
-    while(!licenseValue.equals(value)) {
+    String optionValue = option.getAttribute("value");
+    while(!optionValue.equals(value)) {
       if (i > 4) {
         break;
       }
@@ -958,15 +976,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       
       options = selectField.getAllSelectedOptions();
       option = options.get(0);
-      licenseValue = option.getAttribute("value");
+      optionValue = option.getAttribute("value");
       
-      if (licenseValue.equals(value)) {
+      if (optionValue.equals(value)) {
         break;
       }else {
         options.clear();
       }
     }
-    if(!licenseValue.equals(value))
+    if(!optionValue.equals(value))
       throw new TimeoutException("Could not select wanted value.");
       
   }
@@ -2053,7 +2071,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     while (title.isEmpty()) {
       i++;
       refresh();
-      sleep(300);
+      sleep(500);
       title = getAttributeValue("#wokspaceName", "value");
       if(i > 15)
         break;

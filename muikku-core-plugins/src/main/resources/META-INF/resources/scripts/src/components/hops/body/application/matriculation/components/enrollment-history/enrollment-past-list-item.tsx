@@ -63,52 +63,38 @@ const MatriculationPastListItem = (props: MatriculationPastListItemProps) => {
   };
 
   return (
-    <ApplicationListItem>
-      <ApplicationListItemHeader
-        tabIndex={0}
-        role="button"
-        className="application-list__item-header--course"
-        onClick={handleToggleDrawerClick}
-      >
-        <span className={`application-list__header-icon icon-books`}></span>
-        <span className="application-list__header-primary">{headerTitle}</span>
-      </ApplicationListItemHeader>
-      <ApplicationListItemBody>
-        <AnimateHeight duration={400} height={isOpen ? "auto" : 0}>
-          <ApplicationSubPanel>
+    <div className="application-sub-panel__notification-item">
+      <div className="application-sub-panel__notification-body">
+        <details className="details">
+          <summary className="details__summary">
+            <b>{headerTitle}</b>
+          </summary>
+          <div className="details__content">
             <ApplicationSubPanel>
-              <MatriculationEnrollment exam={exam} past />
-            </ApplicationSubPanel>
-            <ApplicationSubPanel>
-              <ApplicationList>
-                <ApplicationListItem>
-                  <ApplicationListItemHeader
-                    tabIndex={0}
-                    role="button"
-                    className="application-list__item-header--course"
-                    onClick={handleToggleHistoryClick}
-                  >
-                    {t("actions.showChangeLog", { ns: "hops_new" })}
-                  </ApplicationListItemHeader>
-                  <ApplicationListItemBody>
-                    <AnimateHeight
-                      duration={400}
-                      height={showHistory ? "auto" : 0}
-                    >
+              <ApplicationSubPanel>
+                <MatriculationEnrollment exam={exam} past />
+              </ApplicationSubPanel>
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Body>
+                  <details className="details">
+                    <summary className="details__summary">
+                      {t("actions.showChangeLog", { ns: "hops_new" })}
+                    </summary>
+                    <div className="details__content">
                       {props.exam.status === "LOADING" ? (
                         <div className="loader-empty" />
                       ) : (
                         <ChangeLog entryLogs={exam.changeLogs} />
                       )}
-                    </AnimateHeight>
-                  </ApplicationListItemBody>
-                </ApplicationListItem>
-              </ApplicationList>
+                    </div>
+                  </details>
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
             </ApplicationSubPanel>
-          </ApplicationSubPanel>
-        </AnimateHeight>
-      </ApplicationListItemBody>
-    </ApplicationListItem>
+          </div>
+        </details>
+      </div>
+    </div>
   );
 };
 

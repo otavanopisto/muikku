@@ -102,6 +102,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
    * @param e e
    */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
       e.preventDefault();
     }

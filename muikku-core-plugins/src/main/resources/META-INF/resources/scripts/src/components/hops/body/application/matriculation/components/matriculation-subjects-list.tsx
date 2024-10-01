@@ -40,9 +40,9 @@ const GENERAL_STUDIES_SUBJECTS = [
   "ET",
   "FI",
   "FY",
-  "GE",
   "HI",
   "KE",
+  "GE",
   "TE",
   "UE",
   "UO",
@@ -195,8 +195,16 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
 
   // Subject options by groups
 
+  // General studies, also sorted subject name
   const generalStudyOptions = subjects
     .filter((s) => GENERAL_STUDIES_SUBJECTS.includes(s.subjectCode))
+    .sort((a, b) => {
+      // Note that we need to cast the name to string because the type of the name is that is returned
+      // by the getMatriculationSubjectNameByCode function (i18next t function) is never
+      const aName = getMatriculationSubjectNameByCode(a.code) as string;
+      const bName = getMatriculationSubjectNameByCode(b.code) as string;
+      return aName.localeCompare(bName);
+    })
     .map((s) => (
       <option key={s.code} value={s.code}>
         {getMatriculationSubjectNameByCode(s.code)}

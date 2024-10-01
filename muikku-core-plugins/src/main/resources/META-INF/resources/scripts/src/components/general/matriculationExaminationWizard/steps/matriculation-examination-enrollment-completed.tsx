@@ -76,7 +76,6 @@ export const MatriculationExaminationEnrollmentCompleted = (
                 dangerouslySetInnerHTML={{
                   __html: t("content.matriculationFormSaveStateSuccess", {
                     ns: "hops_new",
-                    context: "supplementation",
                   }),
                 }}
               />
@@ -124,8 +123,6 @@ export const MatriculationExaminationEnrollmentCompleted = (
           </div>
         </div>
       ),
-      SAVING_DRAFT: null,
-      DRAFT_SAVED: null,
       undefined: null,
     }[saveState]);
 

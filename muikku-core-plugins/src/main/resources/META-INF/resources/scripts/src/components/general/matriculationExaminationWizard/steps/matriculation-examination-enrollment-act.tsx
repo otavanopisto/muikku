@@ -11,10 +11,10 @@ import { useTranslation } from "react-i18next";
 /**
  * MatriculationExaminationEnrollmentAct
  */
-const MatrMatriculationExaminationEnrollmentAct = () => {
+const MatriculationExaminationEnrollmentAct = () => {
   const { matriculation, onExaminationInformationChange } =
     useMatriculationContext();
-  const { examinationInformation, studentInformation, saveState, errorMsg } =
+  const { examinationInformation, studentInformation, draftState, errorMsg } =
     matriculation;
 
   const { t } = useTranslation(["common"]);
@@ -41,7 +41,7 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
   return (
     <div className="matriculation-container">
       <SavingDraftError draftSaveErrorMsg={errorMsg} />
-      <SavingDraftInfo saveState={saveState} />
+      <SavingDraftInfo draftState={draftState} />
       <fieldset className="matriculation-container__fieldset">
         <legend className="matriculation-container__subheader">
           {t("labels.matriculationFormActSubTitle1", {
@@ -190,4 +190,4 @@ const MatrMatriculationExaminationEnrollmentAct = () => {
   );
 };
 
-export default MatrMatriculationExaminationEnrollmentAct;
+export default MatriculationExaminationEnrollmentAct;

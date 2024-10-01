@@ -2648,7 +2648,6 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  #/rest/evaluation/workspace/{workspaceId}/interimEvaluationRequest:
   /rest/evaluation/workspace/{workspaceId}/interimEvaluationRequests:
     get:
       operationId: getWorkspaceInterimEvaluationRequests
@@ -3068,9 +3067,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
-      operationId: archiveEvaluationWorkspaceUser
+      operationId: archiveWorkspaceUserEvaluationRequest
       summary: Archive workspace user evaluation
-      description: Archive workspace user evaluation
+      description: Archive workspace user evaluation request
       tags:
         - Evaluation
       parameters:
@@ -3203,7 +3202,8 @@ paths:
           description: Supplementation request id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "204":
           description: Workspace user supplementation request deleted successfully
@@ -3214,7 +3214,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/workspaceassessment/{workspaceAssessmentId}:
+  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/workspaceassessment/{workspaceAssessmentIdentifier}:
     delete:
       operationId: deleteWorkspaceUserWorkspaceAssessment
       summary: Delete workspace user workspace assessment
@@ -3229,9 +3229,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: workspaceAssessmentId
+        - name: workspaceAssessmentIdentifier
           in: path
-          description: Workspace assessment id
+          description: Workspace assessment identifier
           required: true
           schema:
             type: string
@@ -4615,6 +4615,27 @@ paths:
             format: int64
       requestBody:
         $ref: "#/components/requestBodies/ContactLogCreateEventRequestBody"
+      responses:
+        "200":
+          description: Contact log event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactLogEvent"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+          
+  /rest/guider/students/contactLogEntries/batch:
+    post:
+      operationId: createMultipleContactLogEvents
+      summary: Create contact log event for multiple students or student group
+      description: Create contact log event for multiple students or student group
+      tags:
+        - Guider
+      requestBody:
+        $ref: "#/components/requestBodies/ContactLogCreateMultipleEventRequestBody"
       responses:
         "200":
           description: Contact log event created successfully
@@ -11117,6 +11138,22 @@ components:
                 type: string
               entryDate:
                 type: string
+                
+    ContactLogCreateMultipleEventRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: MultipleContactLogCreateEventRequestBody object
+            required:
+              - recipients
+              - contactLogEntry
+            properties:
+              recipients:
+                $ref: "#/components/schemas/ContactLogRecipientList"
+              contactLogEntry:
+                $ref: "#/components/schemas/ContactLogMultipleEvents"
 
     ContactLogUpdateEventRequestBody:
       required: true
@@ -12970,6 +13007,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ContactLogEventComment"
+    
+    ContactLogMultipleEvents:
+      type: object
+      description: GuiderContactLogMultipleEvents object
+      required:
+        - entryDate
+        - type
+        - text
+      properties:
+        entryDate:
+          type: string
+        type:
+          $ref: "#/components/schemas/ContactType"
+        text:
+          type: string
 
     ContactLogEventComment:
       type: object
@@ -13002,6 +13054,42 @@ components:
         hasImage:
           type: boolean
 
+    ContactLogMultipleEvent:
+      type: object
+      description: GuiderContactLogMultipleEvent object
+      required:
+        - contactLogRecipientList
+        - contactLogEvent
+      properties:
+        contactLogRecipientList:
+          $ref: "#/components/schemas/ContactLogRecipientList"
+        contactLogEvent:
+          $ref: "#/components/schemas/ContactLogEvent"
+    
+    ContactLogRecipientList:
+      type: object
+      description: ContactLogRecipientList
+      required:
+        - recipientIds
+        - recipientGroupIds
+        - recipientStudentsWorkspaceIds
+      properties:
+        recipientIds:
+          description: The list of userEntityIds
+          type: array
+          items:
+            type: integer
+        recipientGroupIds:
+          description: The list of studentGroupIds
+          type: array
+          items:
+            type: integer
+        recipientStudentsWorkspaceIds:
+          description: The list of workspaceIds
+          type: array
+          items:
+            type: integer
+    
     Curriculum:
       type: object
       description: Curriculum object
@@ -13337,9 +13425,6 @@ components:
         - assessmentRequestDate
         - assignmentsDone
         - assignmentsTotal
-        - graded
-        - passing
-        - interimEvaluationRequest
         - userEntityId
         - firstName
         - lastName
@@ -13351,30 +13436,33 @@ components:
         - workspaceUserEntityId
         - workspaceUserIdentifier
         - hasPedagogyForm
+        - state
       properties:
         id:
           type: integer
           format: int64
+          nullable: true
         subjects:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceSubject"
         enrollmentDate:
           type: string
+          format: date-time
+          nullable: true
         evaluationDate:
           type: string
+          format: date-time
+          nullable: true
         assessmentRequestDate:
           type: string
+          format: date-time
+          nullable: true
         assignmentsDone:
           type: integer
+          nullable: true
         assignmentsTotal:
           type: integer
-        graded:
-          type: boolean
-        passing:
-          type: boolean
-        interimEvaluationRequest:
-          type: boolean
         userEntityId:
           type: integer
           format: int64
@@ -13391,6 +13479,7 @@ components:
           type: string
         workspaceNameExtension:
           type: string
+          nullable: true
         workspaceUrlName:
           type: string
         workspaceUserEntityId:
@@ -13400,6 +13489,8 @@ components:
           type: string
         hasPedagogyForm:
           type: boolean
+        state:
+          $ref: "#/components/schemas/WorkspaceAssessmentStateType"
 
     EvaluationSupplementationRequest:
       type: object
@@ -13990,6 +14081,7 @@ components:
         - restartExam
         - numMandatoryCourses
         - location
+        - contactInfoChange
         - message
         - degreeStructure
         - canPublishName
@@ -14015,6 +14107,8 @@ components:
         numMandatoryCourses:
           type: integer
         location:
+          type: string
+        contactInfoChange:
           type: string
         message:
           type: string
@@ -15444,7 +15538,7 @@ components:
         urlName:
           description: The url of the workspace
           type: string
-
+          
     RecordsWorkspace:
       allOf:
         - $ref: "#/components/schemas/Workspace"
@@ -16374,6 +16468,7 @@ components:
       required:
         - chat
         - environmentForum
+        - hops
         - worklist
       properties:
         chat:
@@ -16384,6 +16479,13 @@ components:
             isAvailable:
               type: boolean
         environmentForum:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+        hops:
           type: object
           required:
             - isAvailable
@@ -16970,7 +17072,6 @@ components:
         - gradeDate
         - passingGrade
         - text
-        - workspaceSubjectIdentifier
         - subject
       properties:
         date:
@@ -16993,10 +17094,6 @@ components:
           nullable: true
         text:
           description: The text (description) of the assessment
-          type: string
-          nullable: true
-        workspaceSubjectIdentifier:
-          description: The identifier of the workspace subject
           type: string
           nullable: true
         subject:
@@ -17746,6 +17843,9 @@ components:
         chatEnabled:
           description: Is the workspace chat room enabled
           type: boolean
+        externalViewLink:
+          description: View the workspace in an external location
+          type: string
         subjectIdentifier:
           description: The identifier of the subject
           type: string
@@ -17850,3 +17950,4 @@ components:
           format: int32
         message:
           type: string
+          

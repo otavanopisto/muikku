@@ -1,5 +1,4 @@
 import * as React from "react";
-import moment from "moment";
 import { Step1, Step2, Step3, Step4, Step5 } from "./steps";
 import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/wizard.scss";
@@ -24,15 +23,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { AnimatePresence } from "framer-motion";
 import AnimatedStep from "../wizard/AnimateStep";
-
-moment.locale("fi");
+import { MatriculationExam } from "~/generated/client";
 
 /**
  * MatriculationExaminationWizardProps
  */
 interface MatriculationExaminationWizardProps {
   hops: HopsState;
-  examId: number;
+  exam: MatriculationExam;
   compulsoryEducationEligible: boolean;
   onClose?: () => void;
   onUpdateExam?: (examId: number) => void;
@@ -49,7 +47,7 @@ const MatriculationExaminationWizard = (
 ) => {
   const {
     compulsoryEducationEligible,
-    examId,
+    exam,
     hops,
     onClose,
     onUpdateExam,
@@ -60,7 +58,7 @@ const MatriculationExaminationWizard = (
   const { t } = useTranslation(["common", "hops_new"]);
 
   const useMatriculationValues = useMatriculation(
-    examId,
+    exam,
     hops.currentStudentIdentifier,
     compulsoryEducationEligible,
     displayNotification,
@@ -139,17 +137,18 @@ const MatriculationExaminationWizard = (
     preventNextIfInvalid: true,
     steps: steps,
     onStepChange: handleStepChange,
+    preventStepperNavigation: true,
   });
 
   const footer = (
     <MatriculationWizardFooter
       secondLastButtonText={
-        props.formType === "initial" ? t("actions.sent") : t("actions.save")
+        props.formType === "initial" ? t("actions.send") : t("actions.save")
       }
       lastStepButton={
         <Button
           onClick={() => {
-            onUpdateExam(examId);
+            onUpdateExam(exam.id);
             onClose();
           }}
           buttonModifiers={["info"]}

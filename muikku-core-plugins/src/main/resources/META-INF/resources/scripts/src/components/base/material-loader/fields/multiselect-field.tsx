@@ -260,6 +260,9 @@ class MultiSelectField extends React.Component<
 
     // the summary component if necessary
     let correctAnswersummaryComponent = null;
+
+    const tooltipId = "multiSelectFieldTooltip-" + uuidv4();
+
     // The answer is right if it is not unknown and has no fails in it
     const answerIsBeingCheckedAndItisCorrect =
       this.props.checkAnswers &&
@@ -292,12 +295,18 @@ class MultiSelectField extends React.Component<
             {this.props.content.explanation ? (
               <span className="material-page__field-explanation-wrapper">
                 <Dropdown
+                  tooltipId={tooltipId}
                   modifier="material-page-field-explanation"
                   content={
                     <StrMathJAX>{this.props.content.explanation}</StrMathJAX>
                   }
                 >
-                  <span className="material-page__field-explanation-button icon-question" />
+                  <span
+                    className="material-page__field-explanation-button icon-question"
+                    tabIndex={0}
+                    aria-describedby={tooltipId}
+                    role="button"
+                  />
                 </Dropdown>
               </span>
             ) : null}

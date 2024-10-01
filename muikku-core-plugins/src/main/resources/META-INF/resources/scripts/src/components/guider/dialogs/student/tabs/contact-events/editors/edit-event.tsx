@@ -196,7 +196,10 @@ class EditContactLogEventEvent extends SessionStateComponent<
             >
               {contactTypesArray.map((contactType) => (
                 <option key={contactType} value={contactType}>
-                  {this.props.i18n.t("labels.type", { context: contactType })}
+                  {this.props.i18n.t("labels.type", {
+                    ns: "messaging",
+                    context: contactType,
+                  })}
                 </option>
               ))}
             </select>

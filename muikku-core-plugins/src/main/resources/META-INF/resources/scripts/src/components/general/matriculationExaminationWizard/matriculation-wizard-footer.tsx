@@ -50,8 +50,6 @@ const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
     previous();
   };
 
-  const saving = saveState === "IN_PROGRESS";
-
   const isSecondLast = currentStepIndex === steps.length - 2;
 
   return (
@@ -60,7 +58,11 @@ const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
         <Button
           buttonModifiers={["info"]}
           onClick={handlePreviousStep}
-          disabled={isFirstStep || saving}
+          disabled={
+            isFirstStep ||
+            saveState === "IN_PROGRESS" ||
+            saveState === "SUCCESS"
+          }
         >
           {t("actions.previous", { ns: "common" })}
         </Button>
@@ -70,7 +72,7 @@ const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
         <Button
           onClick={handleNextStep}
           buttonModifiers={["info"]}
-          disabled={step.isInvalid || saving}
+          disabled={step.isInvalid || saveState === "IN_PROGRESS"}
         >
           {secondLastButtonText}
         </Button>
@@ -79,7 +81,9 @@ const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
           <Button
             onClick={handleNextStep}
             buttonModifiers={["info"]}
-            disabled={isLastStep || step.isInvalid || saving}
+            disabled={
+              isLastStep || step.isInvalid || saveState === "IN_PROGRESS"
+            }
           >
             {t("actions.next", { ns: "common" })}
           </Button>

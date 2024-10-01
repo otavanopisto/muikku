@@ -8,6 +8,7 @@ import {
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
+  MatriculationExam,
   MatriculationExamAttendance,
   MatriculationExamEnrollment,
   MatriculationStudent,
@@ -20,14 +21,14 @@ const matriculationApi = MApi.getMatriculationApi();
 
 /**
  * useMatriculation
- * @param examId examId
+ * @param exam exam
  * @param userSchoolDataIdentifier userSchoolDataIdentifier
  * @param compulsoryEducationEligible compulsoryEducationEligible
  * @param displayNotification displayNotification
  * @param formType formType
  */
 export const useMatriculation = (
-  examId: number,
+  exam: MatriculationExam,
   userSchoolDataIdentifier: string,
   compulsoryEducationEligible: boolean,
   displayNotification: DisplayNotificationTriggerType,
@@ -39,12 +40,14 @@ export const useMatriculation = (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     examId: number;
     errorMsg?: string;
+    draftState?: "SAVING_DRAFT" | "DRAFT_SAVED";
     saveState?: SaveState;
     studentInformation: MatriculationStudent;
     examinationInformation: ExaminationInformation;
   }>({
+    draftState: undefined,
     saveState: undefined,
-    examId,
+    examId: exam.id,
     initialized: false,
     savingDraft: false,
     errorMsg: undefined,
@@ -60,9 +63,9 @@ export const useMatriculation = (
       completedCreditPointsCount: 0,
     },
     examinationInformation: {
-      examId: examId,
+      examId: exam.id,
       state: "ELIGIBLE",
-      changedContactInfo: "",
+      contactInfoChange: "",
       guider: "",
       enrollAs: "UPPERSECONDARY",
       degreeType: "MATRICULATIONEXAMINATION",
@@ -111,7 +114,7 @@ export const useMatriculation = (
 
       try {
         const draft = await matriculationApi.getSavedEnrollmentDraft({
-          examId,
+          examId: exam.id,
           userIdentifier: userSchoolDataIdentifier,
         });
 
@@ -151,7 +154,7 @@ export const useMatriculation = (
 
         const matriculationData =
           await matriculationApi.getStudentExamEnrollment({
-            examId,
+            examId: exam.id,
             studentIdentifier: userSchoolDataIdentifier,
           });
 
@@ -197,40 +200,41 @@ export const useMatriculation = (
     } else {
       loadInitialData();
     }
-  }, [displayNotification, examId, formType, userSchoolDataIdentifier]);
+  }, [displayNotification, exam.id, formType, userSchoolDataIdentifier]);
 
   /**
-   * saveDraft
+   * Saves given examination information as draft
+   * @param examinationInformation examinationInformation
    */
-  const saveDraft = async () => {
+  const saveDraft = async (examinationInformation: ExaminationInformation) => {
     if (formType === "editable") {
       return;
     }
 
     setMatriculation((prevState) => ({
       ...prevState,
-      saveState: "SAVING_DRAFT",
+      draftState: "SAVING_DRAFT",
     }));
 
     try {
       await matriculationApi.updateEnrollmentDraft({
-        examId,
+        examId: exam.id,
         userIdentifier: userSchoolDataIdentifier,
-        body: JSON.stringify(matriculation.examinationInformation),
+        body: JSON.stringify(examinationInformation),
       });
 
       await sleep(3000);
 
       setMatriculation((prevState) => ({
         ...prevState,
-        saveState: "DRAFT_SAVED",
+        draftState: "DRAFT_SAVED",
       }));
 
       await sleep(3000);
 
       setMatriculation((prevState) => ({
         ...prevState,
-        saveState: undefined,
+        draftState: undefined,
       }));
     } catch (err) {
       if (!isMApiError(err)) {
@@ -268,24 +272,11 @@ export const useMatriculation = (
       saveState: "IN_PROGRESS",
     }));
 
-    const {
-      changedContactInfo,
-      message,
-      enrolledAttendances,
-      finishedAttendances,
-      plannedAttendances,
-      degreeStructure,
-    } = matriculation.examinationInformation;
+    const { enrolledAttendances, finishedAttendances, plannedAttendances } =
+      matriculation.examinationInformation;
 
     const { guidanceCounselor, studentIdentifier } =
       matriculation.studentInformation;
-
-    let modifiedMessage = message;
-
-    if (changedContactInfo) {
-      modifiedMessage =
-        "Yhteystiedot:\n" + changedContactInfo + "\n\n" + message;
-    }
 
     /**
      * Parsed list of enrolled Attendances
@@ -331,10 +322,8 @@ export const useMatriculation = (
 
     const matriculationForm: MatriculationExamEnrollment = {
       ...matriculation.examinationInformation,
-      message: modifiedMessage,
       guider: guidanceCounselor,
       state: "PENDING",
-      degreeStructure,
       studentIdentifier,
       numMandatoryCourses:
         matriculation.studentInformation.completedCreditPointsCount,
@@ -352,7 +341,7 @@ export const useMatriculation = (
 
     try {
       await matriculationApi.createEnrollment({
-        examId,
+        examId: exam.id,
         matriculationExamEnrollment: matriculationForm,
       });
 
@@ -393,10 +382,11 @@ export const useMatriculation = (
       draftTimer.current = undefined;
     }
 
-    draftTimer.current = setTimeout(saveDraft, 5000);
+    draftTimer.current = setTimeout(() => saveDraft(examination), 5000);
   };
 
   return {
+    exam,
     matriculation,
     compulsoryEducationEligible,
     onExaminationInformationChange,

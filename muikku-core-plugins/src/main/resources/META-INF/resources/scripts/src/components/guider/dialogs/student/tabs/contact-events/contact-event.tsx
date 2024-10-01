@@ -13,6 +13,7 @@ import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
 import { ContactLogEvent } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * ContactEventProps
@@ -45,6 +46,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
   const [commentEditOpen, setCommentEditOpen] = React.useState<number[]>([]);
+  const { date } = localize;
   const { t } = useTranslation(["messaging", "common"]);
   return (
     <div
@@ -65,7 +67,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
             {t("labels.type", { context: type })}
           </div>
           <div className="contact-event__date">
-            {moment(entryDate).format("dddd, MMMM Do YYYY")}
+            {date(entryDate, "dddd, MMMM Do YYYY")}
           </div>
         </div>
       </div>
@@ -130,7 +132,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     {comment.creatorName}
                   </div>
                   <div className="contact-event__date">
-                    {moment(comment.commentDate).format("dddd, MMMM Do YYYY")}
+                    {date(comment.commentDate, "dddd, MMMM Do YYYY")}
                   </div>
                 </div>
               </div>

@@ -800,7 +800,6 @@ public class WorkspaceRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
-
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -3900,6 +3899,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceTypeIdentifier,
         hasCustomImage,
         chatController.isChatEnabled(workspaceEntity),
+        workspace.getViewLink(),
         defaultSignupMessageRestModel,
         groupSignupRestModels,
         restMessages

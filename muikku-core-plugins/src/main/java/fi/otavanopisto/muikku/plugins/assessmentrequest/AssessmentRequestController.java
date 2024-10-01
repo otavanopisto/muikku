@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentReq
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
@@ -53,6 +54,12 @@ public class AssessmentRequestController {
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
 
     activityLogController.createActivityLog(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), ActivityLogType.EVALUATION_REQUESTED, workspaceEntity.getId(), null);
+    
+    // #7000: Since we now have a new assessment request, mark all supplementation requests of the user + workspace as handled
+    
+    evaluationController.markSupplementationRequestHandled(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), workspaceEntity.getId());
+    
+    // Return object
 
     return gradingController.createWorkspaceAssessmentRequest(
         dataSource,
@@ -123,6 +130,19 @@ public class AssessmentRequestController {
   }
   
   public WorkspaceAssessmentRequest archiveWorkspaceAssessmentRequest(WorkspaceAssessmentRequest assessmentRequest, WorkspaceEntity workspaceEntity, UserEntity studentEntity) {
+    
+    // #7000: Requesting assessment sets supplementation request handled so this is vice versa
+    
+    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+        studentEntity.getId(),
+        workspaceEntity.getId(),
+        Boolean.FALSE);
+    if (supplementationRequest != null && Boolean.TRUE.equals(supplementationRequest.getHandled())) {
+      evaluationController.markSupplementationRequestUnhandled(supplementationRequest);
+    }
+    
+    // Archive assessment request
+    
     return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled());
   }
 

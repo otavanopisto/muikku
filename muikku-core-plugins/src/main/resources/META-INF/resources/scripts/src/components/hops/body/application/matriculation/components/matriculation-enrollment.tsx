@@ -69,13 +69,13 @@ const MatriculationEnrollmentLink = (
       </div>
       <div className="application-sub-panel__notification-footer">
         <MatriculationExaminationWizardDialog
-          examId={exam.id}
+          exam={exam}
           compulsoryEducationEligible={exam.compulsoryEducationEligible}
           formType="initial"
         >
           <Button buttonModifiers={["info"]} disabled={useCase === "GUARDIAN"}>
             {t("actions.signUp", {
-              ns: "studies",
+              ns: "hops_new",
               dueDate: new Date(exam.ends).toLocaleDateString("fi-Fi"),
             })}
           </Button>
@@ -115,7 +115,7 @@ const MatriculationSubmittedEnrollment = (
       return (
         <div key={exam.id}>
           <MatriculationWizardSummaryDialog
-            examId={exam.id}
+            exam={exam}
             compulsoryEducationEligible={exam.compulsoryEducationEligible}
             formType="readonly"
           >
@@ -135,15 +135,16 @@ const MatriculationSubmittedEnrollment = (
         case MatriculationExamStudentStatus.Pending:
         case MatriculationExamStudentStatus.SupplementationRequest:
         case MatriculationExamStudentStatus.Supplemented:
+        case MatriculationExamStudentStatus.Confirmed:
           return (
             <div key={exam.id}>
               <MatriculationWizardSummaryDialog
-                examId={exam.id}
+                exam={exam}
                 compulsoryEducationEligible={exam.compulsoryEducationEligible}
                 formType="readonly"
               >
                 <Button buttonModifiers={["info"]} disabled={past}>
-                  {t("actions.supplementRegistration", {
+                  {t("actions.showSummary", {
                     ns: "hops_new",
                   })}
                 </Button>
@@ -163,7 +164,7 @@ const MatriculationSubmittedEnrollment = (
         return (
           <div key={exam.id}>
             <MatriculationWizardSummaryDialog
-              examId={exam.id}
+              exam={exam}
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="readonly"
             >
@@ -180,7 +181,7 @@ const MatriculationSubmittedEnrollment = (
         return (
           <div key={exam.id}>
             <MatriculationExaminationWizardDialog
-              examId={exam.id}
+              exam={exam}
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="editable"
             >
@@ -197,7 +198,7 @@ const MatriculationSubmittedEnrollment = (
         return (
           <div key={exam.id}>
             <MatriculationVerifyDialog
-              examId={exam.id}
+              exam={exam}
               compulsoryEducationEligible={exam.compulsoryEducationEligible}
               formType="readonly"
             >
@@ -231,7 +232,7 @@ const MatriculationSubmittedEnrollment = (
       dangerouslySetInnerHTML={{
         __html: t("content.matriculationEnrollmentDone", {
           ns: "hops_new",
-          term: termLocale,
+          term: termLocale.toLowerCase(),
         }),
       }}
     />
@@ -266,7 +267,11 @@ const MatriculationSubmittedEnrollment = (
         </ApplicationSubPanelItem>
 
         {exam.changeLogs[0] && exam.changeLogs[0].message !== null && (
-          <ApplicationSubPanelItem title={"Ohjaajan viesti"}>
+          <ApplicationSubPanelItem
+            title={t("labels.matriculationEnrollmentMessage", {
+              ns: "hops_new",
+            })}
+          >
             <ApplicationSubPanelItem.Content>
               {exam.changeLogs[0].message}
             </ApplicationSubPanelItem.Content>
@@ -274,7 +279,11 @@ const MatriculationSubmittedEnrollment = (
         )}
 
         {functionByStatus && (
-          <ApplicationSubPanelItem title="Toiminto">
+          <ApplicationSubPanelItem
+            title={t("labels.matriculationEnrollmentInfo", {
+              ns: "hops_new",
+            })}
+          >
             <ApplicationSubPanelItem.Content modifier="no-bg">
               {functionByStatus}
             </ApplicationSubPanelItem.Content>

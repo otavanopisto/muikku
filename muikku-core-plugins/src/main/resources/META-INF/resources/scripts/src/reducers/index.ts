@@ -42,7 +42,6 @@ export interface StateType {
   locales: LocaleState;
   status: StatusType;
   contacts: ContactsState;
-  title: string;
   websocket?: WebsocketStateType;
   yo?: MatriculationState;
   eligibilitySubjects?: MatriculationSubjectEligibilityState;

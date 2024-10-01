@@ -1,5 +1,4 @@
 import * as React from "react";
-import moment from "moment";
 import { Step4 } from "./steps";
 import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/wizard.scss";
@@ -15,15 +14,14 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-
-moment.locale("fi");
+import { MatriculationExam } from "~/generated/client";
 
 /**
  * MatriculationExaminationWizardProps
  */
 interface MatriculationWizardSummaryProps {
   hops: HopsState;
-  examId: number;
+  exam: MatriculationExam;
   compulsoryEducationEligible: boolean;
   formType: MatriculationFormType;
   displayNotification: DisplayNotificationTriggerType;
@@ -36,14 +34,14 @@ interface MatriculationWizardSummaryProps {
 const MatriculationWizardSummary = (props: MatriculationWizardSummaryProps) => {
   const {
     compulsoryEducationEligible,
-    examId,
+    exam,
     hops,
     displayNotification,
     formType,
   } = props;
 
   const useMatriculationValues = useMatriculation(
-    examId,
+    exam,
     hops.currentStudentIdentifier,
     compulsoryEducationEligible,
     displayNotification,

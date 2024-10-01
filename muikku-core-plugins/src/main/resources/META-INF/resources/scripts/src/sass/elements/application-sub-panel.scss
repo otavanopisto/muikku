@@ -152,6 +152,11 @@
   }
 }
 
+.application-sub-panel--evaluation-cards {
+  margin: 0 0 15px;
+  padding: 0 0 15px;
+}
+
 .application-sub-panel--matriculation-plan-content,
 .application-sub-panel--matriculation-results-content {
   align-items: flex-start;
@@ -344,16 +349,6 @@
   }
 }
 
-.application-sub-panel__body--studies-yo-subjects {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-direction: row;
-  }
-}
-
 .application-sub-panel__body--guidance-relation {
   display: flex;
   flex-flow: wrap;
@@ -381,14 +376,6 @@
     &:last-child {
       margin: 0;
     }
-  }
-}
-
-.application-sub-panel__notification-body--studies-yo-subjects {
-  padding: 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 10px 0;
   }
 }
 

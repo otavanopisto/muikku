@@ -14,7 +14,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 
-public class CommunicatorMessageRecipientList {
+public class UserRecipientList {
   
   /**
    * Returns true if there is at least one recipient.
@@ -115,6 +115,9 @@ public class CommunicatorMessageRecipientList {
     return workspaceRecipient.getRecipients();
   }
   
+  public Set<Long> getRecipientIds(){
+    return this.recipientIds;
+  }
   private Set<Long> recipientIds = new HashSet<Long>();
   private List<UserEntity> recipients = new ArrayList<>();
   private Map<Long, UserGroupRecipient> userGroupRecipients = new HashMap<>();

@@ -55,7 +55,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
@@ -287,6 +287,40 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.ok().build();
   }
 
+  @GET
+  @Path("/sdi_paramconverter/{SDI}")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_path(@PathParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  @GET
+  @Path("/sdi_paramconverter_queryparam")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_schooldataidentifier_paramconverter_query(@QueryParam("SDI") SchoolDataIdentifier sdi) {
+    if (sdi != null) {
+      Object sdi_capsule = new Object() {
+        @SuppressWarnings("unused") public String identifier = sdi.getIdentifier();
+        @SuppressWarnings("unused") public String datasource = sdi.getDataSource();
+      };
+
+      return Response.ok().entity(sdi_capsule).build();
+    }
+    else {
+      return Response.noContent().build();
+    }
+  }
+
   @DELETE
   @Path("/communicator/messages")
   @RESTPermit (handling = Handling.UNSECURED)
@@ -376,7 +410,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(payload.getCategoryName());
     
-    CommunicatorMessageRecipientList recipientsList = new CommunicatorMessageRecipientList();
+    UserRecipientList recipientsList = new UserRecipientList();
     recipients.forEach(recipient -> recipientsList.addRecipient(recipient));
 
     fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipientsList, 

@@ -1,14 +1,8 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import ApplicationList, {
-  ApplicationListItem,
-  ApplicationListItemBody,
-  ApplicationListItemHeader,
-} from "~/components/general/application-list";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops/";
@@ -36,16 +30,7 @@ interface MatriculationEnrollmentProps {
 const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
   const { hops } = props;
 
-  const [showHistory, setShowHistory] = React.useState(false);
-
   const { t } = useTranslation(["hops", "guider", "common"]);
-
-  /**
-   * handleToggleHistoryClick
-   */
-  const handleToggleHistoryClick = () => {
-    setShowHistory(!showHistory);
-  };
 
   if (hops.hopsMatriculationStatus !== "READY") {
     return <div className="loader-empty" />;
@@ -79,20 +64,24 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
 
         {hops.hopsMatriculation.exams[0] && (
           <ApplicationSubPanel.Body>
-            <details className="details">
-              <summary className="details__summary">
-                {t("actions.showChangeLog", { ns: "hops_new" })}
-              </summary>
-              <div className="details__content">
-                {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
-                  <div className="loader-empty" />
-                ) : (
-                  <ChangeLog
-                    entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
-                  />
-                )}
+            <div className="application-sub-panel__notification-item">
+              <div className="application-sub-panel__notification-body">
+                <details className="details">
+                  <summary className="details__summary">
+                    {t("actions.showChangeLog", { ns: "hops_new" })}
+                  </summary>
+                  <div className="details__content">
+                    {hops.hopsMatriculation.exams[0].status === "LOADING" ? (
+                      <div className="loader-empty" />
+                    ) : (
+                      <ChangeLog
+                        entryLogs={hops.hopsMatriculation.exams[0].changeLogs}
+                      />
+                    )}
+                  </div>
+                </details>
               </div>
-            </details>
+            </div>
           </ApplicationSubPanel.Body>
         )}
 
@@ -113,7 +102,7 @@ const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
             ns: "hops_new",
           })}
         </ApplicationSubPanel.Header>
-        <ApplicationSubPanel.Body modifier="studies-yo-subjects">
+        <ApplicationSubPanel.Body>
           <MatriculationPastEnrollmentList>
             {hops.hopsMatriculation.pastExams.map((e) => (
               <MatriculationPastListItem key={e.id} exam={e} />

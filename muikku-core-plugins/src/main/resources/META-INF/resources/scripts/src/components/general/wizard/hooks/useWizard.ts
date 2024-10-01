@@ -7,8 +7,13 @@ import { WizardStep } from "..";
 export interface UseWizardProps {
   preventNextIfInvalid: boolean;
   steps: WizardStep[];
+  preventStepperNavigation?: boolean;
   onStepChange?: (step: WizardStep) => void;
 }
+
+const defaultUseWizardProps: Partial<UseWizardProps> = {
+  preventStepperNavigation: false,
+};
 
 export type UseWizardType = ReturnType<typeof useWizard>;
 
@@ -19,7 +24,10 @@ export type UseWizardType = ReturnType<typeof useWizard>;
  * @returns wizard method and state values
  */
 export const useWizard = (props: UseWizardProps) => {
-  const { preventNextIfInvalid, onStepChange } = props;
+  props = { ...defaultUseWizardProps, ...props };
+
+  const { preventNextIfInvalid, onStepChange, preventStepperNavigation } =
+    props;
 
   const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(0);
   const [steps, setSteps] = React.useState<WizardStep[]>(props.steps);
@@ -117,5 +125,6 @@ export const useWizard = (props: UseWizardProps) => {
     isInvalid,
     preventNextIfInvalid,
     disabledSteps,
+    preventStepperNavigation,
   };
 };

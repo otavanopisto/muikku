@@ -341,7 +341,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
                 // Check for courses that contains multiple coursemodules. WorkspaceActivitySubjectIdentifier should match assessmentState's workspaceSubjectIdentifier
                 if (activity.getId() != null) {
-                  if (!assessmentState.getWorkspaceSubjectIdentifier().equals(workspaceActivitySubject.getIdentifier())) {
+                  if (!StringUtils.equals(assessmentState.getSubjectIdentifier(), workspaceActivitySubject.getIdentifier())) {
                     continue;
                   }
                 }
@@ -482,12 +482,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/hopseligibility/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifierString) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierString);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
+  public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier) {
     if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.NOT_FOUND).build();
     }

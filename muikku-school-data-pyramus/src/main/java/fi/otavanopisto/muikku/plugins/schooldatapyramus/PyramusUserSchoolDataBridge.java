@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
@@ -1469,6 +1470,42 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     return response;
+  }
+  
+  @Override
+  public BridgeResponse<StudentContactLogWithRecipientsRestModel> createMultipleStudentContactLogEntries(List<SchoolDataIdentifier> recipients, StudentContactLogEntryRestModel payload){
+    StudentContactLogWithRecipientsRestModel entry = new StudentContactLogWithRecipientsRestModel();
+    entry.setEntryDate(payload.getEntryDate());
+    entry.setText(payload.getText());
+    entry.setType(payload.getType());
+    
+    List<Long> recipientList = new ArrayList<>();
+    if (!recipients.isEmpty()) {
+      for (SchoolDataIdentifier studentIdentifier : recipients) {
+        recipientList.add(identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier()));
+      }
+    }
+    
+    entry.setRecipients(recipientList);
+    BridgeResponse<StudentContactLogWithRecipientsRestModel> response =  pyramusClient.responsePost(String.format("/students/students/contactLogEntries/batch"), Entity.entity(entry, MediaType.APPLICATION_JSON), StudentContactLogWithRecipientsRestModel.class);
+    
+    if (response.getEntity() != null) {
+        
+        if (response.getEntity().getCreatorId() != null) {
+          response.getEntity().setCreatorId(toUserEntityId(response.getEntity().getCreatorId()));
+
+          boolean hasImage = false;
+          UserEntity userEntity = userEntityController.findUserEntityById(response.getEntity().getCreatorId());
+          
+          if (userEntity != null) {
+            hasImage = userEntityFileController.hasProfilePicture(userEntity);
+          }
+            
+          response.getEntity().setHasImage(hasImage);
+        }
+    }
+      
+    return new BridgeResponse<StudentContactLogWithRecipientsRestModel>(response.getStatusCode(), response.getEntity());
   }
 
   @Override

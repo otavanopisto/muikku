@@ -155,6 +155,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
               focusTrapOptions={{
                 allowOutsideClick: true,
                 clickOutsideDeactivates: true,
+                // There are some issues with the focus trap and the dialog that causes scrolling issues e.g evaluation dialog
+                // because there is multiple FocusTrap components in the same page
+                preventScroll: true,
               }}
             >
               <div
