@@ -167,7 +167,16 @@ public class RestAssessmentRequest {
     this.state = state;
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
   private Long id;
+  private String identifier; // for assessment requests
   private Long userEntityId;
   private String firstName;
   private String lastName;
