@@ -3087,14 +3087,14 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: "#/components/requestBodies/EvaluationUpdateWorkspaceUserAssessmentRequestLockRequestBody"
+        $ref: "#/components/schemas/EvaluationAssessmentRequest"
       responses:
         "200":
           description: Workspace user assessment lock updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AssessmentRequest"
+                $ref: "#/components/schemas/EvaluationAssessmentRequest"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -11011,23 +11011,6 @@ components:
               workspaceSubjectIdentifier:
                 type: string
     
-    EvaluationUpdateWorkspaceUserAssessmentRequestLockRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: EvaluationUpdateWorkspaceUserAssessmentRequestLockRequestBody object
-            required:
-              - id
-              - locked
-            properties:
-              id:
-                type: integer
-                format: int64
-              locked:
-                type: boolean
-
     EvaluationSaveSupplementationRequestRequestBody:
       required: true
       content:
