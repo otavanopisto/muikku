@@ -1425,7 +1425,7 @@ public class EvaluationRESTService extends PluginRESTService {
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    if (payload.getId() == null) {
+    if (StringUtils.isEmpty(payload.getIdentifier())) {
       return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
     }
 
