@@ -197,8 +197,15 @@ export const evaluations: Reducer<EvaluationState> = (
       let updateList = false;
 
       const updatedRequests = state.evaluationRequests.data?.map((request) => {
+        // Either one of these will be null depending of the evaluation state so we need check agains
+        // one of them to find the correct request
+        const checkAgainsIdentifier = request.identifier !== null;
+        const checkAgainsId = request.id !== null;
+
         if (
-          request.id === action.payload.id &&
+          ((checkAgainsIdentifier &&
+            request.identifier === action.payload.identifier) ||
+            (checkAgainsId && request.id === action.payload.id)) &&
           !_.isEqual(request, action.payload)
         ) {
           updateList = true;

@@ -137,6 +137,11 @@ class WorkspaceMaterial extends React.Component<
       "pending_pass",
     ];
 
+    // Check if any of the assessment requests are in currently being evaluated
+    const isEvaluatedAtTheMoment = this.props.workspace.assessmentRequests.some(
+      (assessmentRequest) => assessmentRequest.locked
+    );
+
     if (this.props.workspace.activity) {
       // Get the number of modules
       const valueToCheck =
@@ -186,7 +191,11 @@ class WorkspaceMaterial extends React.Component<
             material={this.props.materialContentNode}
             workspace={this.props.workspace}
             compositeReplies={this.props.compositeReplies}
-            answerable={this.props.status.loggedIn && !isDisabled}
+            answerable={
+              this.props.status.loggedIn &&
+              !isDisabled &&
+              !isEvaluatedAtTheMoment
+            }
             readOnly={!this.props.status.loggedIn || isDisabled}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
