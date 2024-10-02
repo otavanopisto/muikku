@@ -470,7 +470,8 @@ public class PyramusSchoolDataEntityFactory {
       assessmentRequest.getCourseEnrollmentDate(),
       assessmentRequest.getAssessmentRequestDate(),
       assessmentRequest.getEvaluationDate(),
-      assessmentRequest.getPassing());
+      assessmentRequest.getPassing(),
+      assessmentRequest.getLocked());
   }
 
   public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {

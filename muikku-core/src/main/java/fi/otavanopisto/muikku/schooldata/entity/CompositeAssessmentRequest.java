@@ -18,6 +18,7 @@ public interface CompositeAssessmentRequest extends SchoolDataEntity {
   public Date getCourseEnrollmentDate();
   public Date getAssessmentRequestDate();
   public Date getEvaluationDate();
-  public Boolean getPassing();
+  public boolean getPassing();
+  public boolean getLocked();
 
 }
