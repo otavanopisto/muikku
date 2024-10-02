@@ -194,7 +194,7 @@ public interface GradingSchoolDataBridge {
       String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled);
 
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestLock(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, Boolean locked);
+      String workspaceIdentifier, String studentIdentifier, boolean locked);
 
   public void deleteWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier, String studentIdentifier);
   

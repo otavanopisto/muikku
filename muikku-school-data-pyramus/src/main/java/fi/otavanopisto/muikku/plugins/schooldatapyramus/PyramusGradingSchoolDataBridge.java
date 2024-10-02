@@ -733,7 +733,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestLock(String identifier,
       String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
-      String studentIdentifier, Boolean locked) {
+      String studentIdentifier, boolean locked) {
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);

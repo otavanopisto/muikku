@@ -313,7 +313,7 @@ public class GradingController {
   }
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentLock(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, Boolean locked) {
+      String workspaceIdentifier, String studentIdentifier, boolean locked) {
     return gradingSchoolDataController.updateWorkspaceAssessmentRequestLock(
         schoolDataSource,
         identifier,

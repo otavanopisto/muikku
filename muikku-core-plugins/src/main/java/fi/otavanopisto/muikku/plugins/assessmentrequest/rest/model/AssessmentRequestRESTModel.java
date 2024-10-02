@@ -7,7 +7,7 @@ public class AssessmentRequestRESTModel {
   public AssessmentRequestRESTModel() {
   }
 
-  public AssessmentRequestRESTModel(String id, String userIdentifier, String workspaceUserIdentifier, Long workspaceEntityId, Long userEntityId, String requestText, Date date, Boolean locked) {
+  public AssessmentRequestRESTModel(String id, String userIdentifier, String workspaceUserIdentifier, Long workspaceEntityId, Long userEntityId, String requestText, Date date, boolean locked) {
     this.id = id;
     this.userIdentifier = userIdentifier;
     this.workspaceUserIdentifier = workspaceUserIdentifier;
@@ -74,11 +74,11 @@ public class AssessmentRequestRESTModel {
     this.userEntityId = userEntityId;
   }
 
-  public Boolean getLocked() {
+  public boolean getLocked() {
     return locked;
   }
 
-  public void setLocked(Boolean locked) {
+  public void setLocked(boolean locked) {
     this.locked = locked;
   }
 
@@ -89,5 +89,5 @@ public class AssessmentRequestRESTModel {
   private Date date;
   private Long workspaceEntityId;
   private Long userEntityId;
-  private Boolean locked;
+  private boolean locked;
 }
