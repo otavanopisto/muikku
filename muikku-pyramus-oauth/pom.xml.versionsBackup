@@ -1,25 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>fi.otavanopisto.muikku</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.1.239-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
+  <parent>
+    <groupId>fi.otavanopisto.muikku</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.1.238-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-	<artifactId>timed-notifications-plugin</artifactId>
-	<packaging>jar</packaging>
-	<name>Muikku timed notifications plugin</name>
-	<description>Muikku timed notifications plugin</description>
-  
+  <artifactId>pyramus-oauth-plugin</artifactId>
+  <packaging>jar</packaging>
+  <name>Muikku Pyramus OAuth plugin</name>
+  <description>Plugin that provides Pyramus OAuth login support </description>
+
   <dependencies>
+    <!-- Servlet -->
+
     <dependency>
-      <groupId>org.jboss.spec.javax.annotation</groupId>
-      <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
-  
+
+    <!-- Jackson -->
+    
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
     <!-- CDI -->
 
     <dependency>
@@ -42,32 +53,29 @@
       <scope>provided</scope>
     </dependency>
 
-   <!-- Hibernate -->
-    
+    <!-- Faces -->
+
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
+      <groupId>org.jboss.spec.javax.faces</groupId>
+      <artifactId>jboss-jsf-api_2.3_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
+
     <!-- Muikku -->
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
-    
+
+    <!-- Pyramus -->
+
     <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>core-plugins</artifactId>
+      <groupId>fi.otavanopisto.pyramus</groupId>
+      <artifactId>rest-model</artifactId>
+      <version>0.7.221-SNAPSHOT</version>
     </dependency>
-    
+
   </dependencies>
 
 </project>
