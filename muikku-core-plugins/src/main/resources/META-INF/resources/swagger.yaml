@@ -3094,7 +3094,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AssessmentRequest"
+                $ref: "#/components/schemas/EvaluationAssessmentRequest"
         "400":
           description: Invalid request was sent to the server
         "403":
