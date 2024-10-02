@@ -1824,7 +1824,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     return restAssessmentRequest;
   }
@@ -1898,7 +1898,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     
     return restAssessmentRequest;
@@ -1972,7 +1972,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     
     return restAssessmentRequest;
