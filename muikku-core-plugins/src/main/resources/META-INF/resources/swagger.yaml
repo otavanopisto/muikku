@@ -3071,7 +3071,7 @@ paths:
       summary: Lock workspace user evaluation request
       description: Lock workspace user evaluation request
       tags:
-        - Evaluation request
+        - Evaluation
       parameters:
         - name: workspaceUserEntityId
           in: path
@@ -3101,7 +3101,7 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
-          
+
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
       operationId: archiveWorkspaceUserEvaluationRequest
@@ -4663,7 +4663,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-          
+
   /rest/guider/students/contactLogEntries/batch:
     post:
       operationId: createMultipleContactLogEvents
@@ -11010,7 +11010,7 @@ components:
                 type: string
               workspaceSubjectIdentifier:
                 type: string
-    
+
     EvaluationUpdateWorkspaceUserAssessmentRequestLockRequestBody:
       required: true
       content:
@@ -11192,7 +11192,7 @@ components:
                 type: string
               entryDate:
                 type: string
-                
+
     ContactLogCreateMultipleEventRequestBody:
       required: true
       content:
@@ -13064,7 +13064,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ContactLogEventComment"
-    
+
     ContactLogMultipleEvents:
       type: object
       description: GuiderContactLogMultipleEvents object
@@ -13122,7 +13122,7 @@ components:
           $ref: "#/components/schemas/ContactLogRecipientList"
         contactLogEvent:
           $ref: "#/components/schemas/ContactLogEvent"
-    
+
     ContactLogRecipientList:
       type: object
       description: ContactLogRecipientList
@@ -13146,7 +13146,7 @@ components:
           type: array
           items:
             type: integer
-    
+
     Curriculum:
       type: object
       description: Curriculum object
@@ -13494,6 +13494,7 @@ components:
         - workspaceUserIdentifier
         - hasPedagogyForm
         - state
+        - locked
       properties:
         id:
           type: integer
@@ -13548,6 +13549,9 @@ components:
           type: boolean
         state:
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
+        locked:
+          type: boolean
+          nullable: true
 
     EvaluationSupplementationRequest:
       type: object
@@ -15595,7 +15599,7 @@ components:
         urlName:
           description: The url of the workspace
           type: string
-          
+
     RecordsWorkspace:
       allOf:
         - $ref: "#/components/schemas/Workspace"
@@ -18007,4 +18011,3 @@ components:
           format: int32
         message:
           type: string
-          
