@@ -167,6 +167,12 @@
   justify-content: center;
 }
 
+.evaluation-modal__content-lock-switch {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
 // Evaluation assessment events
 .evaluation-modal__event {
   background: $color-default;

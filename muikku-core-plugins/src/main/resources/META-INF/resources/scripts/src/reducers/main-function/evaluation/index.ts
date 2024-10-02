@@ -17,6 +17,7 @@ import {
   MaterialCompositeReply,
   WorkspaceJournal,
 } from "~/generated/client";
+import _ from "lodash";
 
 /**
  * EvaluationStateAndData
@@ -77,6 +78,8 @@ export const initialState: EvaluationState = {
     notEvaluated: false,
     assessmentRequest: false,
     supplementationRequest: false,
+    interimRequest: false,
+    interimEvaluation: false,
   },
   evaluationAssessmentEvents: {
     state: "LOADING",
@@ -189,11 +192,43 @@ export const evaluations: Reducer<EvaluationState> = (
           : [],
       };
 
-    case "EVALUATION_ASSESSMENT_UPDATE":
-      return {
+    case "EVALUATION_ASSESSMENT_UPDATE": {
+      // Helper variable to determine if the list needs to be updated because the selected assessment was updated
+      let updateList = false;
+
+      const updatedRequests = state.evaluationRequests.data?.map((request) => {
+        if (
+          request.id === action.payload.id &&
+          !_.isEqual(request, action.payload)
+        ) {
+          updateList = true;
+          return action.payload;
+        }
+        return request;
+      });
+
+      // Create new state
+      let newState = {
         ...state,
+      };
+
+      // Update list if needed
+      if (updateList) {
+        newState = {
+          ...state,
+          evaluationRequests: {
+            ...state.evaluationRequests,
+            data: updatedRequests,
+          },
+        };
+      }
+
+      // Update new state with assessment
+      return {
+        ...newState,
         evaluationSelectedAssessmentId: action.payload,
       };
+    }
 
     case "EVALUATION_OPENED_ASSIGNMENT_UPDATE":
       return {

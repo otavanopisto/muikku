@@ -19,6 +19,8 @@ import {
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationAssessmentEventsFromServer,
+  lockAssessmentRequest,
+  LockAssessmentRequest,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
@@ -52,6 +54,10 @@ interface EvaluationDrawerProps extends WithTranslation {
    * Loader action for loading assessment events
    */
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
+  /**
+   * Lock assessment request action
+   */
+  lockAssessmentRequest: LockAssessmentRequest;
 }
 
 /**
@@ -412,6 +418,16 @@ export class Evaluation extends React.Component<
   };
 
   /**
+   * Handles start evaluation
+   */
+  handleStartEvaluation = () => {
+    this.props.lockAssessmentRequest({
+      assessment: this.props.selectedAssessment,
+      locked: !this.props.selectedAssessment.locked,
+    });
+  };
+
+  /**
    * Component render method
    *
    * @returns JSX.Element
@@ -625,6 +641,8 @@ export class Evaluation extends React.Component<
         ...this.props.currentWorkspace,
       } as WorkspaceDataType);
     }
+
+    const locked = true;
 
     return (
       <div className="evaluation-modal">
@@ -918,6 +936,20 @@ export class Evaluation extends React.Component<
                     })}
                   </Button>
                 </div>
+                <div className="evaluation-modal__content-lock-switch">
+                  <Button
+                    onClick={this.handleStartEvaluation}
+                    buttonModifiers={
+                      this.props.selectedAssessment.locked
+                        ? ["evaluation-lock", "evaluation-lock-active"]
+                        : ["evaluation-lock"]
+                    }
+                  >
+                    {this.props.selectedAssessment.locked
+                      ? "Päätä arviointi"
+                      : "Aloita arviointi"}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -956,6 +988,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       loadEvaluationAssessmentRequestsFromServer,
       loadEvaluationAssessmentEventsFromServer,
+      lockAssessmentRequest,
     },
     dispatch
   );
