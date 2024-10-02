@@ -485,7 +485,8 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(), courseAssessmentRequest.getHandled());
+        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(),
+        courseAssessmentRequest.getHandled(), courseAssessmentRequest.getLocked());
   }
 
   public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {
