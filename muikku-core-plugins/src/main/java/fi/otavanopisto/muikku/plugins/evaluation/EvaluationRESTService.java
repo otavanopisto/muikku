@@ -1790,6 +1790,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceName(compositeAssessmentRequest.getCourseName());
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
+    restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
     if (!resolvedState) {
       if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
         if (passing) {
