@@ -8,9 +8,10 @@ import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 
 public class PyramusCompositeAssessmentRequest implements CompositeAssessmentRequest {
   
-  public PyramusCompositeAssessmentRequest(String courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
+  public PyramusCompositeAssessmentRequest(String identifier, String courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
       String studyProgramme, String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate,
       Date assessmentRequestDate, Date evaluationDate, Boolean passing) {
+    this.identifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.courseStudentIdentifier = new SchoolDataIdentifier(courseStudentIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.userIdentifier = new SchoolDataIdentifier(userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.firstName = firstName;
@@ -28,6 +29,11 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+  }
+
+  @Override
+  public SchoolDataIdentifier getIdentifier() {
+    return identifier;
   }
 
   @Override
@@ -90,6 +96,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
     return passing;
   }
 
+  private final SchoolDataIdentifier identifier;
   private final SchoolDataIdentifier courseStudentIdentifier;
   private final SchoolDataIdentifier userIdentifier;
   private final String firstName;

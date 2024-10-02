@@ -13476,6 +13476,7 @@ components:
       description: EvaluationAssessmentRequest object
       required:
         - id
+        - identifier
         - subjects
         - enrollmentDate
         - evaluationDate
@@ -13499,6 +13500,9 @@ components:
         id:
           type: integer
           format: int64
+          nullable: true
+        identifier:
+          type: string
           nullable: true
         subjects:
           type: array
