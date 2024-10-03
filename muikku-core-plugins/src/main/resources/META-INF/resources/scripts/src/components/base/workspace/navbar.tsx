@@ -55,6 +55,7 @@ interface WorkspaceNavbarProps extends WithTranslation {
   workspaceUrl: string;
   currentWorkspace: WorkspaceDataType;
   workspaceEditMode: WorkspaceEditModeStateType;
+  workspaceIsBeingEvaluated: boolean;
   updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType;
 }
 
@@ -105,8 +106,14 @@ class WorkspaceNavbar extends React.Component<
   /**
    * onRequestEvaluationOrCancel
    * @param canCancel canCancel
+   * @param isBeingEvaluated isBeingEvaluated
    */
-  onRequestEvaluationOrCancel(canCancel: boolean) {
+  onRequestEvaluationOrCancel(canCancel: boolean, isBeingEvaluated: boolean) {
+    // If workspace is being evaluated, just return
+    if (isBeingEvaluated) {
+      return;
+    }
+
     if (canCancel) {
       this.setState({
         requestCancelOpen: true,
@@ -263,6 +270,7 @@ class WorkspaceNavbar extends React.Component<
                 modifier="assessment"
                 content={getTextForAssessmentState(
                   canCancelRequest,
+                  this.props.workspaceIsBeingEvaluated,
                   assessmentState.state
                 )}
               >
@@ -271,10 +279,12 @@ class WorkspaceNavbar extends React.Component<
                   as="span"
                   onClick={this.onRequestEvaluationOrCancel.bind(
                     this,
-                    canCancelRequest
+                    canCancelRequest,
+                    this.props.workspaceIsBeingEvaluated
                   )}
                   aria-label={getTextForAssessmentState(
                     canCancelRequest,
+                    this.props.workspaceIsBeingEvaluated,
                     assessmentState.state
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
@@ -301,7 +311,11 @@ class WorkspaceNavbar extends React.Component<
           )}`}
         />
         <span className="link--menu-text">
-          {getTextForAssessmentState(canCancelRequest, assessmentState.state)}
+          {getTextForAssessmentState(
+            canCancelRequest,
+            this.props.workspaceIsBeingEvaluated,
+            assessmentState.state
+          )}
         </span>
       </Link>
     ) : null;
@@ -466,6 +480,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     currentWorkspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
+    workspaceIsBeingEvaluated: state.workspaces.workspaceIsBeingEvaluated,
   };
 }
 
@@ -485,14 +500,21 @@ export default withTranslation(["workspace", "users", "common"])(
  * Get text by assessment state
  *
  * @param canCancelRequest canCancelRequest
+ * @param isBeingEvaluated isBeingEvaluated
  * @param state state
  * @returns localized text
  */
 function getTextForAssessmentState(
   canCancelRequest: boolean,
+  isBeingEvaluated: boolean,
   state: WorkspaceAssessmentStateType
 ) {
   let text;
+
+  if (isBeingEvaluated) {
+    return "Arviointi käynnissä, ei voida peruuttaa";
+  }
+
   switch (state) {
     case "interim_evaluation":
     case "interim_evaluation_request":
