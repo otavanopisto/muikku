@@ -420,7 +420,7 @@ export class Evaluation extends React.Component<
   /**
    * Handles start evaluation
    */
-  handleStartEvaluation = () => {
+  handleLockChange = () => {
     this.props.lockAssessmentRequest({
       assessment: this.props.selectedAssessment,
       locked: !this.props.selectedAssessment.locked,
@@ -642,8 +642,6 @@ export class Evaluation extends React.Component<
       } as WorkspaceDataType);
     }
 
-    const locked = true;
-
     return (
       <div className="evaluation-modal">
         <div
@@ -670,6 +668,31 @@ export class Evaluation extends React.Component<
           <header className="evaluation-modal__header evaluation-modal__header--workspace">
             <div className="evaluation-modal__header-title">
               {this.props.selectedAssessment.workspaceName}
+
+              {(this.props.selectedAssessment.state === "pending" ||
+                this.props.selectedAssessment.state === "pending_fail" ||
+                this.props.selectedAssessment.state === "pending_pass") && (
+                <span key="edit-mode-switch">
+                  <label
+                    htmlFor="editingMasterSwitch"
+                    className="visually-hidden"
+                  >
+                    {t("wcag.editingMasterSwitch", { ns: "workspace" })}
+                  </label>
+                  <input
+                    id="editingMasterSwitch"
+                    key="3"
+                    type="checkbox"
+                    className={`button-pill button-pill--editing-master-switch ${
+                      this.props.selectedAssessment.locked
+                        ? "button-pill--editing-master-switch-active"
+                        : ""
+                    }`}
+                    onChange={this.handleLockChange}
+                    checked={this.props.selectedAssessment.locked}
+                  />
+                </span>
+              )}
             </div>
           </header>
           <div className="evaluation-modal__content-wrapper">
@@ -934,20 +957,6 @@ export class Evaluation extends React.Component<
                     {t("actions.askSupplementation", {
                       ns: "evaluation",
                     })}
-                  </Button>
-                </div>
-                <div className="evaluation-modal__content-lock-switch">
-                  <Button
-                    onClick={this.handleStartEvaluation}
-                    buttonModifiers={
-                      this.props.selectedAssessment.locked
-                        ? ["evaluation-lock", "evaluation-lock-active"]
-                        : ["evaluation-lock"]
-                    }
-                  >
-                    {this.props.selectedAssessment.locked
-                      ? "Päätä arviointi"
-                      : "Aloita arviointi"}
                   </Button>
                 </div>
               </div>
