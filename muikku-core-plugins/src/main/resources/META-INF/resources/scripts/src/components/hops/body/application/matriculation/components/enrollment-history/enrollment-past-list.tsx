@@ -1,5 +1,4 @@
 import * as React from "react";
-import ApplicationList from "~/components/general/application-list";
 
 /**
  * MatriculationPastEnrollmentListProps
