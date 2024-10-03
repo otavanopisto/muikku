@@ -556,7 +556,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
         }
 
-        if (!communicatorController.isActiveUser(recipient)) {
+        if (!userEntityController.isActiveUserEntity(recipient)) {
           logger.log(Level.WARNING, String.format("Inactive student passed as recipient %d", recipientId));
           return Response.status(Status.BAD_REQUEST).entity("One or more of the recipients are inactive and the message cannot be sent to them. Contact support for help.").build();
         }
@@ -740,7 +740,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
         }
         
-        if (!communicatorController.isActiveUser(recipient)) {
+        if (!userEntityController.isActiveUserEntity(recipient)) {
           logger.log(Level.WARNING, String.format("Inactive student passed as recipient %d", recipientId));
           return Response.status(Status.BAD_REQUEST).entity("One or more of the recipients are inactive and the message cannot be sent to them. Contact support for help.").build();
         }
