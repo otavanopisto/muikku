@@ -1706,6 +1706,7 @@ public class EvaluationRESTService extends PluginRESTService {
 
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
     boolean resolvedState = false;
+    Date requestDate = compositeAssessmentRequest.getAssessmentRequestDate();
     
     // An active workspace supplementation request will override graded, passing, and evaluationDate
     
@@ -1713,12 +1714,13 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluationDate = compositeAssessmentRequest.getEvaluationDate();
     Boolean graded = evaluationDate != null;
     if (userEntity != null) {
-      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
+      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
           userEntity.getId(),
           workspaceEntity.getId(),
-          Boolean.FALSE,
           Boolean.FALSE);
-      if (supplementationRequest != null && (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate()))) {
+      if (supplementationRequest != null &&
+          (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate())) &&
+          (requestDate == null || requestDate.before(supplementationRequest.getRequestDate()))) {
         graded = Boolean.FALSE;
         passing = Boolean.FALSE;
         evaluationDate = supplementationRequest.getRequestDate();
@@ -1729,7 +1731,6 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
     
-    Date requestDate = compositeAssessmentRequest.getAssessmentRequestDate();
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
