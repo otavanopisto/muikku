@@ -58,6 +58,7 @@ export interface CKEditorEventInfo {
   editor: any;
   data: {
     dataValue: string;
+    preventDefault: () => void;
   };
   /**
    * cancel method
@@ -101,6 +102,10 @@ const extraConfig = (props: CKEditorProps) => ({
   /* eslint-disable camelcase */
   startupFocus: props.autofocus,
   title: props.editorTitle ? props.editorTitle : "",
+  versionCheck: false,
+  delayIfDetached: false,
+  delayIfDetached_callback: "undefined",
+  delayIfDetached_interval: 50,
 
   /**
    * We allow style attribute for every element that can be pasted/added to the CKEditor.
@@ -344,16 +349,19 @@ export default class CKEditor extends React.Component<
         setTimeout(this.onDataChange, 3000);
       });
 
-      ev.editor.document.on("paste", (event: CKEditorEventInfo) => {
-        if (this.props.onPaste && (props.maxChars || props.maxWords)) {
-          props.onPaste();
+      getCKEDITOR().instances[this.name].on(
+        "paste",
+        (event: CKEditorEventInfo) => {
+          if (this.props.onPaste && (props.maxChars || props.maxWords)) {
+            props.onPaste();
+          }
+          // Same as above. When pasting an image, onDataChange doesn't fire at all because text hasn't changed.
+          // Also, the image has to be uploaded to the server first, hence these timeout shenanigans
+          setTimeout(this.onDataChange, 1000);
+          setTimeout(this.onDataChange, 2000);
+          setTimeout(this.onDataChange, 3000);
         }
-        // Same as above. When pasting an image, onDataChange doesn't fire at all because text hasn't changed.
-        // Also, the image has to be uploaded to the server first, hence these timeout shenanigans
-        setTimeout(this.onDataChange, 1000);
-        setTimeout(this.onDataChange, 2000);
-        setTimeout(this.onDataChange, 3000);
-      });
+      );
 
       const instance = getCKEDITOR().instances[this.name];
       this.enableCancelChangeTrigger();
