@@ -2053,6 +2053,7 @@
       "grade_overall": "Grade overall",
       "grade_workspace": "Course grade",
       "improveGrade": "Improve grade",
+      "lockEvalRequest": "Lock evalution request",
       "markNonImportant": "Mark as less important",
       "markImportant": "Mark as important",
       "openAll": "Open all",
@@ -2061,7 +2062,8 @@
       "remove_evaluation": "Remove evaluation",
       "remove_evaluationRequest": "Delete the evaluation request",
       "remove_interimEvaluationRequest": "Delete the interim evaluation request",
-      "remove_supplementationRequest": "Delete the supplementation request"
+      "remove_supplementationRequest": "Delete the supplementation request",
+      "unlockEvalRequest": "Unlock evaluation request"
     },
     "content": {
       "archive_student": "Do you wish to archive the student <b>{{studentName}}</b> from the workspace?",
@@ -2191,7 +2193,8 @@
       "evaluationAssessmentFailed": "Failed assessment",
       "evaluationAssessmentPassed": "Passed assessment",
       "evaluationAssessmentIncomplete": "Incomplete assessment",
-      "evaluationAssessmentUnassessed": "Unassessed assessment"
+      "evaluationAssessmentUnassessed": "Unassessed assessment",
+      "evalRequestLockSwitch": "Evaluation request locking"
     }
   },
   "calendar": {

@@ -331,9 +331,9 @@ class WorkspaceNavbar extends React.Component<
             id="editingMasterSwitch"
             key="3"
             type="checkbox"
-            className={`button-pill button-pill--editing-master-switch ${
+            className={`button-pill button-pill--switch-vertical ${
               this.props.workspaceEditMode.active
-                ? "button-pill--editing-master-switch-active"
+                ? "button-pill--switch-vertical-active"
                 : ""
             }`}
             onChange={this.toggleEditModeActive}
