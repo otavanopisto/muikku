@@ -291,7 +291,11 @@ class WorkspaceNavbar extends React.Component<
                     assessmentState.state
                   )} link--workspace-navbar icon-assessment-${getIconForAssessmentState(
                     assessmentState.state
-                  )}`}
+                  )} ${
+                    this.props.workspaceIsBeingEvaluated
+                      ? "link--workspace-is-being-evaluated"
+                      : ""
+                  }`}
                   role="menuitem"
                 ></Link>
               </Dropdown>
@@ -512,7 +516,7 @@ function getTextForAssessmentState(
   let text;
 
   if (isBeingEvaluated) {
-    return "Arviointi käynnissä, ei voida peruuttaa";
+    return i18n.t("labels.evaluationInProgress", { ns: "workspace" });
   }
 
   switch (state) {

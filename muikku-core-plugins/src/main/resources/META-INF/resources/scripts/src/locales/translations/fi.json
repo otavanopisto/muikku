@@ -1774,6 +1774,7 @@
       "evaluated_withPassedGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_withNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
       "evaluationHasFee": "Maksullinen arviointi",
+      "evaluationInProgress": "Kurssin opettja on aloittanut arvioinnin joten arviointipyynnön peruuttaminen ei ole mahdollista.",
       "evaluationRequestMessage": "Vapaaehtoinen viesti kurssin opettajalle",
       "failed": "Keskeytynyt",
       "goto": "Siirry kurssille",
