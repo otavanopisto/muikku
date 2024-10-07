@@ -14,8 +14,8 @@ import org.apache.commons.codec.binary.StringUtils;
 public class AlternativeStudyOptions {
 
   public static final Set<String> MATH_OPTIONS = Set.of("MAA", "MAB");
-  public static final Set<String> NATIVE_LANGUAGE_OPTIONS = Set.of("MAA", "MAB");
-  public static final Set<String> RELIGION_OPTIONS = Set.of("MAA", "MAB");
+  public static final Set<String> NATIVE_LANGUAGE_OPTIONS = Set.of("ÄI", "S2");
+  public static final Set<String> RELIGION_OPTIONS = Set.of("UE", "UO", "UI", "UK", "UJ", "UX", "ET");
   
   public static AlternativeStudyOptions from(List<String> alternativeStudyOptions) {
     AlternativeStudyOptions obj = new AlternativeStudyOptions();
