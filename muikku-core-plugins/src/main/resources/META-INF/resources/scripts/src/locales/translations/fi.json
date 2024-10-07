@@ -1708,7 +1708,7 @@
       "empty_instructions": "Kurssilla ei ole ohjeita",
       "evaluationHasFee": "Tämän kurssin arviointi on maksullinen. Jos olet jo maksanut, tämä ilmoitus on aiheeton.",
       "evaluationFee": "Tämän kurssin arviointi maksaa sinulle {{price}} euroa. Kun olet maksanut arvioinnin, opettaja saa automaattisesti tiedon arviointipyynnöstäsi.",
-      "evaluationInProgress": "Kurssi on arvioitavana. Tänä aikana arviointipyynnö peruutus ei ole mahdollista sekä kurssin materiaalit on käytettävissä vain lukutilassa.",
+      "evaluationInProgress": "Kurssi on arvioitavana. Tänä aikana arviointipyynnön peruutus ei ole mahdollista sekä kurssin materiaalit ovat käytettävissä vain lukutilassa.",
       "evaluationPaymentProcessor": "Maksu suoritetaan Mikkelin kaupungin verkkokaupassa. ",
       "logInGuidingInformation": "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.",
       "mustBePublished": "Huomaa, että kurssi täytyy erikseen julkaista, ennen kuin se näkyy opiskelijoille kurssipoimurissa. Kurssin alkamispäivämäärä ei vaikuta kurssin näkymiseen. Päivämääriä ei ole pakko asettaa.",
