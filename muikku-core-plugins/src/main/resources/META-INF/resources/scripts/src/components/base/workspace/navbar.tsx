@@ -265,7 +265,7 @@ class WorkspaceNavbar extends React.Component<
             modifier: "assessment-request",
             item: (
               <Dropdown
-                openByHover
+                // openByHover
                 key="assessment-request"
                 modifier="assessment"
                 content={getTextForAssessmentState(
@@ -516,7 +516,7 @@ function getTextForAssessmentState(
   let text;
 
   if (isBeingEvaluated) {
-    return i18n.t("labels.evaluationInProgress", { ns: "workspace" });
+    return i18n.t("content.evaluationInProgress", { ns: "workspace" });
   }
 
   switch (state) {

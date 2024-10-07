@@ -36,7 +36,11 @@ const BeingEvaluatedPanel = (props: BeingEvaluatedPanelProps) => {
           <span className="panel__header-icon-text">i</span>
         </div>
 
-        <h2 className="panel__header-title">Arvioitavana</h2>
+        <h2 className="panel__header-title">
+          {t("labels.evaluationInProgress", {
+            ns: "workspace",
+          })}
+        </h2>
       </div>
       <div className="panel__body">
         <div
