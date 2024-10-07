@@ -44,8 +44,9 @@ const BeingEvaluatedPanel = (props: BeingEvaluatedPanelProps) => {
         >
           <div className="workspace-assessment__literal">
             <div className="workspace-assessment__literal-data">
-              Työtilaa on arvioitavana. Tänä aikana työtilan materiaalit on
-              käytettävissä vain lukutilassa.
+              {t("content.evaluationInProgress", {
+                ns: "workspace",
+              })}
             </div>
           </div>
         </div>
