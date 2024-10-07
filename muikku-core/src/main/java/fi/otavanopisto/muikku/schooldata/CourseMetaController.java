@@ -185,4 +185,12 @@ public class CourseMetaController {
     return result;
   }
 
+  public String getCurriculumName(SchoolDataIdentifier curriculumIdentifier) {
+    if (curriculumIdentifier != null) {
+      Curriculum curriculum = findCurriculum(curriculumIdentifier);
+      return curriculum == null ? null : curriculum.getName();
+    }
+    return null;
+  }
+
 }

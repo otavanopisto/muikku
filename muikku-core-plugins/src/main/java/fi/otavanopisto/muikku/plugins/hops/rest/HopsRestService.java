@@ -40,7 +40,6 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
@@ -131,8 +130,6 @@ public class HopsRestService {
   @Inject
   private UserController userController;
 
-  @Inject 
-  private GuiderController guiderController;
   @GET
   @Path("/isHopsAvailable/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
@@ -650,7 +647,7 @@ public class HopsRestService {
   private String getCurriculumName(Map<SchoolDataIdentifier, String> curriculumNameCache, SchoolDataIdentifier curriculumIdentifier){
 
     if (!curriculumNameCache.containsKey(curriculumIdentifier)) {
-      curriculumNameCache.put(curriculumIdentifier, guiderController.getCurriculumName(curriculumIdentifier));
+      curriculumNameCache.put(curriculumIdentifier, courseMetaController.getCurriculumName(curriculumIdentifier));
     }
 
     return curriculumNameCache.get(curriculumIdentifier);
@@ -957,7 +954,7 @@ public class HopsRestService {
         student.getStudyProgrammeEducationType(),
         student.getStudyTimeEnd(),
         counselorList,
-        student.getCurriculumIdentifier() != null ? guiderController.getCurriculumName(student.getCurriculumIdentifier()) : null
+        student.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(student.getCurriculumIdentifier()) : null
 
     )).build();
   }
