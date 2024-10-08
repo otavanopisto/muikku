@@ -81,7 +81,7 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
                 {assessmentIsIncomplete && (
                   <>
                     <span
-                      id={assessment.workspaceSubjectIdentifier}
+                      id={assessment.subject.identifier}
                       className="panel__header-icon-text"
                     >
                       T
@@ -91,13 +91,13 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
                 {isCombinationWorkspace && (
                   <>
                     <label
-                      htmlFor={assessment.workspaceSubjectIdentifier}
+                      htmlFor={assessment.subject.identifier}
                       className="visually-hidden"
                     >
                       {t("labels.grade")}
                     </label>
                     <span
-                      id={assessment.workspaceSubjectIdentifier}
+                      id={assessment.subject.identifier}
                       className="panel__header-icon-text"
                     >
                       {assessment.grade}
@@ -110,8 +110,7 @@ const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
                 {isCombinationWorkspace &&
                   props.subjects.find(
                     (subject) =>
-                      subject.identifier ===
-                      assessment.workspaceSubjectIdentifier
+                      subject.identifier === assessment.subject.identifier
                   ).subject.name + " "}
 
                 {assessmentIsIncomplete
