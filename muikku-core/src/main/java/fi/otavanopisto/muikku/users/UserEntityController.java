@@ -303,11 +303,61 @@ public class UserEntityController implements Serializable {
     return userProfilePictureController.hasProfilePicture(userEntity);
   }
   
-  public boolean isActiveUser(UserEntity userEntity) {
-    return isActiveUser(userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier()));
+  /**
+   * Returns true if given UserEntity is an active user. Essentially
+   * checks if the default UserSchoolDataIdentifier of the UserEntity
+   * is active or not.
+   * 
+   * @param userEntity UserEntity
+   * @return true if userEntity is an active user
+   * @throws IllegalArgumentException if userEntity is null
+   */
+  public boolean isActiveUserEntity(UserEntity userEntity) throws IllegalArgumentException {
+    if (userEntity == null) {
+      throw new IllegalArgumentException("UserEntity was not specified");
+    }
+    
+    if (Boolean.TRUE.equals(userEntity.getArchived())) {
+      // Archived UserEntity can never be active
+      return false;
+    }
+
+    // Find the currently active UserSchoolDataIdentifier
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier());
+    
+    // findUserSchoolDataIdentifierBySchoolDataIdentifier returns only unarchived UserSchoolDataIdentifiers, so if we get null, return false.
+    return userSchoolDataIdentifier != null ? isActiveUserSchoolDataIdentifier(userSchoolDataIdentifier) : false;
   }
   
-  private boolean isActiveUser(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+  /**
+   * Returns true if the given UserSchoolDataIdentifier is considered to be active.
+   * 
+   * Requirements:
+   * - UserSchoolDataIdentifier cannot be archived
+   * - UserEntity the UserSchoolDataIdentifier points to must exist and cannot be archived
+   * - The given UserSchoolDataIdentifier must be the default identifier of the UserEntity
+   * 
+   * @param userSchoolDataIdentifier
+   * @return true if userSchoolDataIdentifier is considered to be active
+   * @throws IllegalArgumentException if userSchoolDataIdentifier is null
+   */
+  public boolean isActiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    if (userSchoolDataIdentifier == null) {
+      throw new IllegalArgumentException("UserSchoolDataIdentifier was not specified");
+    }
+    
+    UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
+    
+    // Return false if userEntity is missing or either are archived
+    if (Boolean.TRUE.equals(userSchoolDataIdentifier.getArchived()) || userEntity == null || Boolean.TRUE.equals(userEntity.getArchived())) {
+      return false;
+    }
+
+    // Return false if identifier is not default identifier
+    if (!userSchoolDataIdentifier.schoolDataIdentifier().equals(userEntity.defaultSchoolDataIdentifier())) {
+      return false;
+    }
+    
     EnvironmentRoleArchetype[] staffRoles = {
         EnvironmentRoleArchetype.ADMINISTRATOR, 
         EnvironmentRoleArchetype.MANAGER, 
@@ -323,6 +373,7 @@ public class UserEntityController implements Serializable {
         return searchResult.getTotalHitCount() > 0;
       }
     }
+    
     return true;
   }
   
