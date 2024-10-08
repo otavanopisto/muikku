@@ -14,6 +14,7 @@ import { TFunction } from "i18next";
 import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
+import { localize } from "~/locales/i18n";
 
 /**
  * MatriculationEnrollmentProps
@@ -76,7 +77,7 @@ const MatriculationEnrollmentLink = (
           <Button buttonModifiers={["info"]} disabled={useCase === "GUARDIAN"}>
             {t("actions.signUp", {
               ns: "hops_new",
-              dueDate: new Date(exam.ends).toLocaleDateString("fi-Fi"),
+              dueDate: localize.date(new Date(exam.ends)),
             })}
           </Button>
         </MatriculationExaminationWizardDialog>
@@ -223,9 +224,7 @@ const MatriculationSubmittedEnrollment = (
     year: exam.year,
   });
 
-  const date = new Date(exam.enrollment.enrollmentDate).toLocaleDateString(
-    "fi-Fi"
-  );
+  const date = localize.date(new Date(exam.enrollment.enrollmentDate));
 
   const enrollmentTitle = (
     <span
@@ -253,7 +252,7 @@ const MatriculationSubmittedEnrollment = (
           })}
         >
           <ApplicationSubPanelItem.Content>
-            {new Date(exam.ends).toLocaleDateString("fi-Fi")}
+            {localize.date(new Date(exam.ends))}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
         <ApplicationSubPanelItem

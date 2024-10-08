@@ -7,6 +7,7 @@ import { SavingDraftInfo } from "../saving-draft-info";
 import { Textarea } from "../textarea";
 import { TextField } from "../textfield";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * MatriculationExaminationEnrollmentAct
@@ -176,9 +177,7 @@ const MatriculationExaminationEnrollmentAct = () => {
           <div className="matriculation__form-element-container">
             <TextField
               label={t("labels.date")}
-              value={`${examinationInformation.enrollmentDate.getDate()}.${
-                examinationInformation.enrollmentDate.getMonth() + 1
-              }.${examinationInformation.enrollmentDate.getFullYear()}`}
+              value={localize.date(examinationInformation.enrollmentDate)}
               type="text"
               readOnly
               className="matriculation__input"

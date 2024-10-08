@@ -17,6 +17,7 @@ import {
   MatriculationExamDegreeType,
   MatriculationExamSchoolType,
 } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 
 /**
  * MatriculationExaminationEnrollmentSummaryProps
@@ -451,9 +452,7 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
           <div className="matriculation__form-element-container">
             <TextField
               label={t("labels.date")}
-              value={`${enrollmentDate.getDate()}.${
-                enrollmentDate.getMonth() + 1
-              }.${enrollmentDate.getFullYear()}`}
+              value={localize.date(enrollmentDate)}
               type="text"
               readOnly
               className="matriculation__input"

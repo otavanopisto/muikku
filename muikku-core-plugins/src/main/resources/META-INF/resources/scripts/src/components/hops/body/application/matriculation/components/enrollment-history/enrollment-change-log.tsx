@@ -1,8 +1,8 @@
-import moment from "moment";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import Avatar from "~/components/general/avatar";
 import { MatriculationExamChangeLogEntry } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/hops.scss";
 
 /**
@@ -158,7 +158,7 @@ export const ChangeLogItem: React.FC<ChangeLogItemProps> = (props) => {
             {changeTypeString()}
           </span>
           <span className="hops-container__history-event-date">
-            {moment(logEntry.timestamp).format("l")}
+            {localize.date(logEntry.timestamp)}
           </span>
         </div>
 

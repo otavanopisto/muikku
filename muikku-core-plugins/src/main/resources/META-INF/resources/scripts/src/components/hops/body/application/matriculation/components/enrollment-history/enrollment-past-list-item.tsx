@@ -1,14 +1,8 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
 import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import ApplicationList, {
-  ApplicationListItem,
-  ApplicationListItemBody,
-  ApplicationListItemHeader,
-} from "~/components/general/application-list";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { MatriculationExamWithHistory } from "~/reducers/hops";
@@ -36,14 +30,6 @@ const MatriculationPastListItem = (props: MatriculationPastListItemProps) => {
 
   const { t } = useTranslation(["hops_new", "common"]);
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [showHistory, setShowHistory] = React.useState(false);
-
-  const headerTitle = t(`matriculationTerms.${exam.term}`, {
-    ns: "hops_new",
-    year: exam.year,
-  });
-
   /**
    * toggleDrawer
    */
@@ -51,16 +37,12 @@ const MatriculationPastListItem = (props: MatriculationPastListItemProps) => {
     if (exam.status === "IDLE") {
       loadMatriculationExamHistory(exam.id);
     }
-
-    setIsOpen(!isOpen);
   };
 
-  /**
-   * handleToggleHistoryClick
-   */
-  const handleToggleHistoryClick = () => {
-    setShowHistory(!showHistory);
-  };
+  const headerTitle = t(`matriculationTerms.${exam.term}`, {
+    ns: "hops_new",
+    year: exam.year,
+  });
 
   return (
     <div className="application-sub-panel__notification-item">
@@ -76,7 +58,10 @@ const MatriculationPastListItem = (props: MatriculationPastListItemProps) => {
               </ApplicationSubPanel>
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Body>
-                  <details className="details">
+                  <details
+                    className="details"
+                    onClick={handleToggleDrawerClick}
+                  >
                     <summary className="details__summary">
                       {t("actions.showChangeLog", { ns: "hops_new" })}
                     </summary>
