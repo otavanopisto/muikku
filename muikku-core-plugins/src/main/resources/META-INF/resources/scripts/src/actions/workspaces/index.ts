@@ -2403,7 +2403,7 @@ const updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType =
 //HELPERS methods
 
 /**
- * isBeingEvaluated
+ * Returns true if the workspace is being evaluated.
  * @param activity activity
  * @param assessmentRequests assessmentRequests
  */
@@ -2446,7 +2446,7 @@ const isBeingEvaluated = (
 };
 
 /**
- * isWorkspaceEvaluated
+ * Returns true if the materials should be disabled.
  * @param activity activity
  */
 const shouldMaterialsBeDisabled = (activity?: WorkspaceActivity) => {

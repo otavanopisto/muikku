@@ -2188,6 +2188,7 @@
       "saveError_supplementationRequest": "Saving the supplementation request failed: {{error}}",
       "updateError": "$t(common:notifications.updateError)",
       "updateError_evaluation": "Updating the evaluation failed: {{error}}",
+      "updateError_locking": "Locking the evaluation request failed: {{error}}",
       "updateError_pricing": "Updating the course pricing information failed: {{error}}",
       "updateError_sorting": "Updating the sorting information failed: {{error}}"
     },
