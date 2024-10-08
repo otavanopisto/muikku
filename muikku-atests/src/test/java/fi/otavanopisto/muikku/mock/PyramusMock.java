@@ -960,7 +960,6 @@ public class PyramusMock {
         assessmentRequest.setAssessmentRequestDate(Date.from(courseAssessmentRequest.getCreated().toInstant()));
         assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));
         assessmentRequest.setEvaluationDate(null);
-        assessmentRequest.setPassing(null);
         assessmentRequest.setCourseId(courseId);
         assessmentRequest.setCourseName(course.getName());
         assessmentRequest.setCourseNameExtension(course.getNameExtension());
@@ -968,6 +967,7 @@ public class PyramusMock {
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
         assessmentRequest.setUserId(courseStudent.getId());
+        assessmentRequest.setLocked(courseAssessmentRequest.getLocked());
                 
         if(pmock.compositeCourseAssessmentRequests.containsKey(courseId)){
           pmock.compositeCourseAssessmentRequests.get(courseId).add(assessmentRequest);
@@ -1014,6 +1014,7 @@ public class PyramusMock {
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
         assessmentRequest.setUserId(courseStudent.getId());
+        assessmentRequest.setLocked(false);
         List<CompositeAssessmentRequest> existingRequests = pmock.compositeStaffAssessmentRequests.get(staffMemberId);
         List<CompositeAssessmentRequest> toRemove = new ArrayList<>();
         if(existingRequests != null) {

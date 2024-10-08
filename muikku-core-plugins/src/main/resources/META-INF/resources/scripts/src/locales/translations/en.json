@@ -1708,6 +1708,7 @@
       "empty_instructions": "The course does not have instructions yet",
       "evaluationHasFee": "Evaluation of this course has a fee. If you have already paid, please disregard this notice.",
       "evaluationFee": "Evaluation fee for this course is {{price}} euros. When you have completed the payment, teacher will receive automatic notification of your evaluation request.",
+      "evaluationInProgress": "Evaluation is in progress. During this time evaluation request cannot be withdrawn and course's materials are available in read mode only.",
       "evaluationPaymentProcessor": "The payment will be made at the Mikkeli city online store. ",
       "logInGuidingInformation": "Would you like to sign up for this course? See your options to do so on Muikku's front page.",
       "mustBePublished": "Please note that the course must be published before it appears in the Coursepicker - regardless of the set start date. The dates are not mandatory.",
@@ -1774,6 +1775,7 @@
       "evaluated_withPassedGrade": "Evaluated with a passing grade",
       "evaluated_withNonPassingGrade": "Evaluated with a failing grade",
       "evaluationHasFee": "Evaluation has a fee",
+      "evaluationInProgress": "Course is being evaluated",
       "evaluationRequestMessage": "Additional message to the course teacher",
       "failed": "Failed",
       "goto": "Go to course",
@@ -2053,6 +2055,7 @@
       "grade_overall": "Grade overall",
       "grade_workspace": "Course grade",
       "improveGrade": "Improve grade",
+      "lockEvalRequest": "Lock evalution request",
       "markNonImportant": "Mark as less important",
       "markImportant": "Mark as important",
       "openAll": "Open all",
@@ -2061,7 +2064,8 @@
       "remove_evaluation": "Remove evaluation",
       "remove_evaluationRequest": "Delete the evaluation request",
       "remove_interimEvaluationRequest": "Delete the interim evaluation request",
-      "remove_supplementationRequest": "Delete the supplementation request"
+      "remove_supplementationRequest": "Delete the supplementation request",
+      "unlockEvalRequest": "Unlock evaluation request"
     },
     "content": {
       "archive_student": "Do you wish to archive the student <b>{{studentName}}</b> from the workspace?",
@@ -2191,7 +2195,8 @@
       "evaluationAssessmentFailed": "Failed assessment",
       "evaluationAssessmentPassed": "Passed assessment",
       "evaluationAssessmentIncomplete": "Incomplete assessment",
-      "evaluationAssessmentUnassessed": "Unassessed assessment"
+      "evaluationAssessmentUnassessed": "Unassessed assessment",
+      "evalRequestLockSwitch": "Evaluation request locking"
     }
   },
   "calendar": {

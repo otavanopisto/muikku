@@ -40,7 +40,6 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancellation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
@@ -1425,7 +1424,7 @@ public class EvaluationRESTService extends PluginRESTService {
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    if (payload.getId() == null) {
+    if (StringUtils.isEmpty(payload.getIdentifier())) {
       return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
     }
 
@@ -1456,15 +1455,9 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    WorkspaceAssessmentRequest request = gradingController.updateWorkspaceAssessmentLock(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), workspaceUserEntity.getIdentifier(), payload.getLocked());
-    
-    RestAssessmentRequest restAssessment = new RestAssessmentRequest();
-    
-    restAssessment.setAssessmentRequestDate(request.getDate());
-    
-    AssessmentRequestRESTModel restModel = assessmentRequestController.restModel(request);
+    gradingController.updateWorkspaceAssessmentLock(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), workspaceUserEntity.getIdentifier(), payload.getLocked());
 
-    return Response.ok(restModel).build();
+    return Response.ok(payload).build();
   }
   
   @PUT
@@ -1784,6 +1777,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
     
+    restAssessmentRequest.setIdentifier(compositeAssessmentRequest.getIdentifier().toId());
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
@@ -1799,6 +1793,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setWorkspaceName(compositeAssessmentRequest.getCourseName());
     restAssessmentRequest.setWorkspaceNameExtension(compositeAssessmentRequest.getCourseNameExtension());
     restAssessmentRequest.setWorkspaceUrlName(workspaceEntity == null ? null : workspaceEntity.getUrlName());
+    restAssessmentRequest.setLocked(compositeAssessmentRequest.getLocked());
     if (!resolvedState) {
       if (graded && (requestDate == null || evaluationDate.after(requestDate))) {
         if (passing) {
@@ -1833,7 +1828,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     return restAssessmentRequest;
   }
@@ -1907,7 +1902,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     
     return restAssessmentRequest;
@@ -1981,7 +1976,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    Boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     
     return restAssessmentRequest;

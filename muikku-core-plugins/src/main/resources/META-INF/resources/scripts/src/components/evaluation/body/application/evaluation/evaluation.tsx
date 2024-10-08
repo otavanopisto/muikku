@@ -19,6 +19,8 @@ import {
   LoadEvaluationAssessmentEvent,
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationAssessmentEventsFromServer,
+  lockAssessmentRequest,
+  LockAssessmentRequest,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import "~/sass/elements/assignment.scss";
 import "~/sass/elements/empty.scss";
@@ -52,6 +54,10 @@ interface EvaluationDrawerProps extends WithTranslation {
    * Loader action for loading assessment events
    */
   loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent;
+  /**
+   * Lock assessment request action
+   */
+  lockAssessmentRequest: LockAssessmentRequest;
 }
 
 /**
@@ -412,6 +418,16 @@ export class Evaluation extends React.Component<
   };
 
   /**
+   * Handles start evaluation
+   */
+  handleLockChange = () => {
+    this.props.lockAssessmentRequest({
+      assessment: this.props.selectedAssessment,
+      locked: !this.props.selectedAssessment.locked,
+    });
+  };
+
+  /**
    * Component render method
    *
    * @returns JSX.Element
@@ -634,7 +650,13 @@ export class Evaluation extends React.Component<
         ></div>
 
         <section className="evaluation-modal__container">
-          <header className="evaluation-modal__header evaluation-modal__header--student">
+          <header
+            className={`evaluation-modal__header evaluation-modal__header--student ${
+              this.props.selectedAssessment.locked
+                ? "evaluation-modal__header--eval-request-locked"
+                : ""
+            }`}
+          >
             <div className="evaluation-modal__header-title">{`${this.props.selectedAssessment.lastName}, ${this.props.selectedAssessment.firstName} (${this.props.selectedAssessment.studyProgramme})`}</div>
           </header>
 
@@ -649,8 +671,14 @@ export class Evaluation extends React.Component<
           </div>
         </section>
         <section className="evaluation-modal__container">
-          <header className="evaluation-modal__header evaluation-modal__header--workspace">
-            <div className="evaluation-modal__header-title">
+          <header
+            className={`evaluation-modal__header evaluation-modal__header--workspace ${
+              this.props.selectedAssessment.locked
+                ? "evaluation-modal__header--eval-request-locked"
+                : ""
+            }`}
+          >
+            <div className="evaluation-modal__header-title evaluation-modal__header-title--workspace">
               {this.props.selectedAssessment.workspaceName}
             </div>
           </header>
@@ -878,6 +906,35 @@ export class Evaluation extends React.Component<
                   ) : null}
                 </div>
                 <div className="evaluation-modal__content-buttonset">
+                  {(this.props.selectedAssessment.state === "pending" ||
+                    this.props.selectedAssessment.state === "pending_fail" ||
+                    this.props.selectedAssessment.state === "pending_pass") && (
+                    <>
+                      <label
+                        htmlFor="evalRequestLockSwitch"
+                        className="visually-hidden"
+                      >
+                        {t("wcag.evalRequestLockSwitch", { ns: "evaluation" })}
+                      </label>
+                      <Button
+                        className={
+                          this.props.selectedAssessment.locked
+                            ? "button--evaluation-unlock-request"
+                            : "button--evaluation-lock-request"
+                        }
+                        onClick={this.handleLockChange}
+                        // checked={this.props.selectedAssessment.locked}
+                      >
+                        {this.props.selectedAssessment.locked
+                          ? t("actions.unlockEvalRequest", {
+                              ns: "evaluation",
+                            })
+                          : t("actions.lockEvalRequest", {
+                              ns: "evaluation",
+                            })}
+                      </Button>
+                    </>
+                  )}
                   <Button
                     onClick={this.handleOpenWorkspaceEvaluationDrawer}
                     buttonModifiers={["evaluation-add-assessment"]}
@@ -956,6 +1013,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
     {
       loadEvaluationAssessmentRequestsFromServer,
       loadEvaluationAssessmentEventsFromServer,
+      lockAssessmentRequest,
     },
     dispatch
   );
