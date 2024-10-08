@@ -9,8 +9,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -22,7 +20,6 @@ import org.jsoup.safety.Safelist;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
-import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -55,8 +52,6 @@ import fi.otavanopisto.muikku.plugins.communicator.model.VacationNotifications;
 import fi.otavanopisto.muikku.plugins.search.CommunicatorMessageIndexer;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -121,10 +116,6 @@ public class CommunicatorController {
   
   @Inject
   private WorkspaceController workspaceController;
-  
-  @Inject
-  @Any
-  private Instance<SearchProvider> searchProviders;
   
   private String clean(String html) {
     Document doc = Jsoup.parseBodyFragment(html);
@@ -692,38 +683,6 @@ public class CommunicatorController {
     return communicatorMessageDAO.findNewerThreadId(userEntity, threadId, type, label);
   }
 
-  private SearchProvider getProvider(String name) {
-    for (SearchProvider searchProvider : searchProviders) {
-      if (name.equals(searchProvider.getName())) {
-        return searchProvider;
-      }
-    }
-    return null;
-  }
-  
-  public boolean isActiveUser(UserEntity userEntity) {
-    return isActiveUser(userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier()));
-  }
-  
-  private boolean isActiveUser(UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    EnvironmentRoleArchetype[] staffRoles = {
-        EnvironmentRoleArchetype.ADMINISTRATOR, 
-        EnvironmentRoleArchetype.MANAGER, 
-        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
-        EnvironmentRoleArchetype.STUDY_GUIDER,
-        EnvironmentRoleArchetype.TEACHER
-    };
-    
-    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
-      SearchProvider searchProvider = getProvider("elastic-search");
-      if (searchProvider != null) {
-        SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
-        return searchResult.getTotalHitCount() > 0;
-      }
-    }
-    return true;
-  }
- 
   public Set<String> tagIdsToStr(Set<Long> tagIds) {
     Set<String> tagsStr = new HashSet<String>();
     for (Long tagId : tagIds) {

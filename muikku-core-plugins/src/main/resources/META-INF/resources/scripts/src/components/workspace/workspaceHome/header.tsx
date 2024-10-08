@@ -264,10 +264,10 @@ class WorkspaceHomeHeader extends React.Component<
             <div className="hero__workspace-assessment-container">
               <div className="hero__workspace-assessment">
                 <label
-                  htmlFor={assessmentState.workspaceSubjectIdentifier}
+                  htmlFor={assessmentState.subject.identifier}
                   className="visually-hidden"
                 >
-                  <span id={assessmentState.workspaceSubjectIdentifier}>
+                  <span id={assessmentState.subject.identifier}>
                     {t("labels.evaluated", {
                       ns: "workspace",
                       context: "in",
