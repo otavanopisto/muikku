@@ -62,6 +62,7 @@ const SlideDrawer = React.forwardRef<
       focusTrapOptions={{
         allowOutsideClick: true,
         clickOutsideDeactivates: true,
+        preventScroll: true,
       }}
     >
       <section
