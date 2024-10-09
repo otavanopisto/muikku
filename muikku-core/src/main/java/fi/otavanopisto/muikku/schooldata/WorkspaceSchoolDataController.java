@@ -60,29 +60,6 @@ public class WorkspaceSchoolDataController {
     return null;
   }
 
-  public List<Workspace> listWorkspaces(String schoolDataSource) {
-    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
-    if (workspaceBridge != null) {
-      return workspaceBridge.listWorkspaces();
-    } else {
-      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
-    }
-   
-    return null;
-  }
-  
-  public List<Workspace> listWorkspaces() {
-    // TODO: This method WILL cause performance problems, replace with something more sensible 
-    
-    List<Workspace> result = new ArrayList<>();
-    
-    for (WorkspaceSchoolDataBridge workspaceBridge : getWorkspaceBridges()) {
-      result.addAll(workspaceBridge.listWorkspaces());
-    }
-    
-    return result;
-  }
-
   public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier) {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
     if (workspaceBridge != null) {

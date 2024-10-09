@@ -26,8 +26,6 @@ public interface WorkspaceSchoolDataBridge {
 
   public Workspace findWorkspace(String identifier);
 
-  public List<Workspace> listWorkspaces();
-
   public Workspace updateWorkspace(Workspace workspace);
   
   /* Workspace Types */

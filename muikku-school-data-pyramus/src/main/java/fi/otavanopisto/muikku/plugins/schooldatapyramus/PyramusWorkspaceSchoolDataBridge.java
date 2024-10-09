@@ -189,18 +189,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<Workspace> listWorkspaces() {
-    List<Workspace> result = new ArrayList<Workspace>();
-    Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
-    if (courses != null) {
-      for (Course course : courses) {
-        result.add(createWorkspaceEntity(course));
-      }
-    }
-    return result;
-  }
-
-  @Override
   public Workspace updateWorkspace(Workspace workspace) {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
     if (pyramusCourseId == null) {

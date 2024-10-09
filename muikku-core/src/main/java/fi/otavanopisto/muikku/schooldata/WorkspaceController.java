@@ -81,14 +81,6 @@ public class WorkspaceController {
     return workspaceSchoolDataController.findWorkspace(schoolDataSource, identifier);
   }
 
-  public List<Workspace> listWorkspaces() {
-    return workspaceSchoolDataController.listWorkspaces();
-  }
-
-  public List<Workspace> listWorkspaces(String schoolDataSource) {
-    return workspaceSchoolDataController.listWorkspaces(schoolDataSource);
-  }
-  
   public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier) {
     return workspaceSchoolDataController.copyWorkspace(workspaceIdentifier, name, nameExtension, description, destinationOrganizationIdentifier);
   }
