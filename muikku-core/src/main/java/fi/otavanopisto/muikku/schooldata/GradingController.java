@@ -14,7 +14,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.grading.GradingScaleItemEntity;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
@@ -63,10 +62,6 @@ public class GradingController {
   
   /* GradingScaleItem */
 
-  public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, GradingScaleItemEntity entity) {
-    return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), gradingScale, entity.getIdentifier());
-  }
-  
   public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
     return gradingSchoolDataController.findGradingScaleItem(schoolDataSource, gradingScale, identifier);
   }
