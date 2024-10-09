@@ -30,8 +30,6 @@ public interface WorkspaceSchoolDataBridge {
 
   public Workspace updateWorkspace(Workspace workspace);
   
-  public void removeWorkspace(SchoolDataIdentifier identifier);
-  
   /* Workspace Types */
   
   public WorkspaceType findWorkspaceType(String identifier);

@@ -14,7 +14,6 @@ import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceMaterialProducerDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -46,9 +45,6 @@ public class WorkspaceController {
 
   @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
-
-  @Inject
-  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -105,15 +101,6 @@ public class WorkspaceController {
     workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
   }
 
-  public void deleteWorkspace(SchoolDataIdentifier workspaceIdentifier) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
-    if (workspaceEntity != null) {
-      deleteWorkspaceEntity(workspaceEntity);
-    }
-
-    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
-  }
-  
   /* WorkspaceType */
 
   public WorkspaceType findWorkspaceType(SchoolDataIdentifier identifier) {
@@ -164,25 +151,6 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByPublished(Boolean.TRUE);
   }
   
-  private void deleteWorkspaceEntity(WorkspaceEntity workspaceEntity) {
-
-    // Delete settings
-
-    WorkspaceSettings workspaceSettings = findWorkspaceSettings(workspaceEntity);
-    if (workspaceSettings != null) {
-      workspaceSettingsDAO.delete(workspaceSettings);
-    }
-
-    // Workspace Users
-    
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByWorkspaceEntity(workspaceEntity);
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      workspaceUserEntityDAO.delete(workspaceUserEntity);
-    }
-
-    workspaceEntityDAO.delete(workspaceEntity);
-  }
-
   /* WorkspaceUsers */
 
   public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role) {

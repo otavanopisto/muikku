@@ -13,10 +13,7 @@ import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.dao.grading.GradingScaleEntityDAO;
-import fi.otavanopisto.muikku.dao.grading.GradingScaleItemEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.grading.GradingScaleEntity;
 import fi.otavanopisto.muikku.model.grading.GradingScaleItemEntity;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
@@ -38,12 +35,6 @@ public class GradingController {
   @Inject
   private GradingSchoolDataController gradingSchoolDataController;
 
-  @Inject
-  private GradingScaleEntityDAO gradingScaleEntityDAO;
-  
-  @Inject
-  private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
-  
   /* Workspace activity */
   
   public WorkspaceActivityInfo listWorkspaceActivities(String schoolDataSource, String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits) {
@@ -56,39 +47,7 @@ public class GradingController {
     return gradingSchoolDataController.listCompositeGradingScales();
   }
 
-  /* GradingScaleEntity */
-
-  public GradingScaleEntity findGradingScaleEntityById(Long id) {
-    return gradingScaleEntityDAO.findById(id);
-  }
-  
-  public GradingScaleEntity findGradingScaleEntityById(SchoolDataSource schoolDataSource, String identifier) {
-    return gradingScaleEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
-  }
-  
-  public List<GradingScaleEntity> listGradingScaleEntities() {
-    return gradingScaleEntityDAO.listAll();
-  }
-
-  /* GradingScaleItemEntity */
-
-  public GradingScaleItemEntity findGradingScaleItemEntityById(Long id) {
-    return gradingScaleItemEntityDAO.findById(id);
-  }
-  
-  public GradingScaleItemEntity findGradingScaleItemEntityById(SchoolDataSource schoolDataSource, String identifier) {
-    return gradingScaleItemEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
-  }
-  
-  public List<GradingScaleItemEntity> listGradingScaleItemEntities() {
-    return gradingScaleItemEntityDAO.listAll();
-  }
-
   /* GradingScale */
-
-  public GradingScale findGradingScale(GradingScaleEntity entity) {
-    return gradingSchoolDataController.findGradingScale(entity.getDataSource(), entity.getIdentifier());
-  }
 
   public GradingScale findGradingScale(String schoolDataSource, String identifier) {
     return gradingSchoolDataController.findGradingScale(schoolDataSource, identifier);

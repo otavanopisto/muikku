@@ -233,15 +233,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public void removeWorkspace(SchoolDataIdentifier schoolDataIdentifier) {
-    if (!StringUtils.isNumeric(schoolDataIdentifier.getIdentifier())) {
-      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
-    }
-
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
   public WorkspaceType findWorkspaceType(String identifier) {
     if (identifier == null) {
       return null;

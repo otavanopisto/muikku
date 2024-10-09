@@ -105,17 +105,6 @@ public class WorkspaceSchoolDataController {
     return null;
   }
 
-  public void removeWorkspace(SchoolDataIdentifier workspaceIdentifier) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceIdentifier.getDataSource());
-
-    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
-    if (workspaceBridge != null) {
-      workspaceBridge.removeWorkspace(workspaceIdentifier);
-    } else {
-      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
-    }
-  }
-
   /* Workspace Entities */
   
   public WorkspaceEntity findWorkspaceEntity(SchoolDataIdentifier workspaceIdentifier) {
