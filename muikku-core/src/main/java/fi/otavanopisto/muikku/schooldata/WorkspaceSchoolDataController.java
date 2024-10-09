@@ -218,21 +218,6 @@ public class WorkspaceSchoolDataController {
     return null;
   }
   
-  @Deprecated
-  public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listWorkspaceUsers(workspace.getIdentifier());
-      } else {
-        logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
-      }
-    }
-
-    return null;
-  }
-  
   public void updateWorkspaceStudentActivity(WorkspaceUser workspaceUser, boolean activity) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserIdentifier().getDataSource());
     if (schoolDataSource != null) {

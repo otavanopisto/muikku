@@ -313,19 +313,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     return null;
   }
   
-  @Override
-  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    
-    CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
-    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
-    
-    List<WorkspaceUser> result = entityFactory.createEntity(staffMembers);
-    result.addAll(entityFactory.createEntity(courseStudents));
-    
-    return result;
-  }
-  
   private Workspace createWorkspaceEntity(Course course) {
     if (course == null) {
       return null;

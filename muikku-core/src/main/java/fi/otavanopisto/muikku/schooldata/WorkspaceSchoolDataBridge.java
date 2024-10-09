@@ -46,9 +46,6 @@ public interface WorkspaceSchoolDataBridge {
   
   public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier);
   
-  @Deprecated
-  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier);
-  
   public List<WorkspaceUser> listWorkspaceStaffMembers(String workspaceIdentifier);
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier);
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier, boolean active);

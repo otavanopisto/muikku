@@ -20,7 +20,6 @@ import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
@@ -36,7 +35,6 @@ import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemTemplateRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistSummaryItemRestModel;
-
 
 public interface UserSchoolDataBridge {
     
@@ -119,26 +117,12 @@ public interface UserSchoolDataBridge {
   // TODO: Search / findUsers
 
   /**
-   * Lists all users
-   * 
-   * @return list of all users managed by school data bridge.
-   */    
-  public List<User> listUsers();
-  
-  /**
    * Updates user
    * 
    * @param user
    * @return updated user
    */
   public User updateUser(User user);
-  
-  /**
-   * Removes a user
-   * 
-   * @param identifier user's identifier to be removed
-   */
-  public void removeUser(String identifier);
   
   /**
    * Returns contact info of the given student.
@@ -171,87 +155,12 @@ public interface UserSchoolDataBridge {
   /* User Email */
 
   /**
-   * Creates new email address for user
-   * 
-   * @param userIdentifier user's identifier
-   * @param address email address
-   * @return created UserEmail
-   */
-  public UserEmail createUserEmail(String userIdentifier, String address);
-  
-  /**
-   * Finds user email by identifier
-   * 
-   * @param identifier user email identifier
-   * @return user email or null if does not exist
-   */
-  public UserEmail findUserEmail(String identifier);
-  
-  /**
    * Lists user's email addresses
    * 
    * @param userIdentifier user's identififer
    * @return list of user's emails
    */
   public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier);
-  
-  /**
-   * Updates user email
-   * 
-   * @param userEmail new user email object
-   * @return updated user email object
-   */
-  public UserEmail updateUserEmail(UserEmail userEmail);
-  
-  /**
-   * Removes user email
-   * 
-   * @param identifier identifier of user email
-   */
-  public void removeUserEmail(String identifier);
-  
-  /* User Image */
-  
-  /**
-   * Creates a user image
-   * 
-   * @param userIdentifier identifier of user
-   * @param contentType content type of image
-   * @param content image data
-   * @return created image
-   */
-  public UserImage createUserImage(String userIdentifier, String contentType, byte[] content);
-  
-  /**
-   * Finds a user image by identifier
-   * 
-   * @param identifier identifier of image
-   * @return user image or null if image does not exist
-   */
-  public UserImage findUserImage(String identifier);
-  
-  /**
-   * Lists all user images 
-   * 
-   * @param userIdentifier identifier of user
-   * @return list of user's images
-   */
-  public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier);
-  
-  /**
-   * Updates user image
-   * 
-   * @param userImage image update object 
-   * @return updated image object
-   */
-  public UserImage updateUserImage(UserImage userImage);
-  
-  /**
-   * Removes user's image by identifier
-   * 
-   * @param identifier identifier of image to be removed
-   */
-  public void removeUserImage(String identifier);
   
   /* User Properties */
   

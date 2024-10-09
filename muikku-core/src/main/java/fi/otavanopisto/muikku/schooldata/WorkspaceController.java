@@ -105,15 +105,6 @@ public class WorkspaceController {
     workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
   }
 
-  public void archiveWorkspace(SchoolDataIdentifier workspaceIdentifier) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
-    if (workspaceEntity != null) {
-      archiveWorkspaceEntity(workspaceEntity);
-    }
-
-    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
-  }
-
   public void deleteWorkspace(SchoolDataIdentifier workspaceIdentifier) {
     WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
     if (workspaceEntity != null) {
@@ -138,10 +129,6 @@ public class WorkspaceController {
   }
 
   /* Workspace Entity */
-
-  public WorkspaceEntity findWorkspaceEntity(SchoolDataIdentifier workspaceIdentifier) {
-    return workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
-  }
 
   public WorkspaceEntity findWorkspaceEntityById(Long workspaceId) {
     return workspaceEntityDAO.findById(workspaceId);
@@ -177,25 +164,6 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByPublished(Boolean.TRUE);
   }
   
-  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource != null) {
-      return listWorkspaceEntitiesBySchoolDataSource(dataSource);
-    } else {
-      logger.log(Level.SEVERE, "Could not find school data source '" + schoolDataSource
-          + "' while listing workspaceEntities by school data source");
-      return null;
-    }
-  }
-
-  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(SchoolDataSource schoolDataSource) {
-    return workspaceEntityDAO.listByDataSource(schoolDataSource);
-  }
-
-  public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
-    return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
-  }
-
   private void deleteWorkspaceEntity(WorkspaceEntity workspaceEntity) {
 
     // Delete settings

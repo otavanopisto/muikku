@@ -11,12 +11,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserImageImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.entities.LocalUserPropertyImpl;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
-import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
@@ -41,7 +39,6 @@ import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
@@ -151,25 +148,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
    * {@inheritDoc}
    */
   @Override
-  public List<User> listUsers() {
-    List<User> result = new ArrayList<>();
-
-    for (LocalUser localUser : localUserSchoolDataController.listUsers()) {
-      User user = toLocalUserImpl(localUser);
-      if (user != null) {
-        result.add(user);
-      } else {
-        throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUsers");
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public User updateUser(User user) {
     if (StringUtils.isNotBlank(user.getFirstName())) {
       throw new SchoolDataBridgeInternalException("firstName is required");
@@ -187,48 +165,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUser");
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeUser(String identifier) {
-    LocalUser localUser = localUserSchoolDataController.findUser(identifier);
-    if (localUser != null) {
-      localUserSchoolDataController.removeUser(localUser);
-    } else {
-      throw new SchoolDataBridgeInternalException("Failed to remove user because it does not exist");
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public UserEmail createUserEmail(String userIdentifier, String address) {
-    if (!StringUtils.isNumeric(userIdentifier)) {
-      throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
-    }
-
-    UserEmail userEmail = toLocalUserEmailImpl(localUserSchoolDataController.createUserEmail(userIdentifier, address));
-    if (userEmail != null) {
-      return userEmail;
-    }
-
-    throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUserEmail");
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public UserEmail findUserEmail(String identifier) {
-    if (!StringUtils.isNumeric(identifier)) {
-      throw new SchoolDataBridgeInternalException("identifier is invalid");
-    }
-
-    return toLocalUserEmailImpl(localUserSchoolDataController.findUserEmail(identifier));
   }
 
   /**
@@ -253,102 +189,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     return result;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public UserEmail updateUserEmail(UserEmail userEmail) {
-    throw new SchoolDataBridgeInternalException("Unexpected error occured while updating LocalUserEmail");
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeUserEmail(String identifier) {
-    LocalUserEmail localUserEmail = localUserSchoolDataController.findUserEmail(identifier);
-    if (localUserEmail == null) {
-      throw new SchoolDataBridgeInternalException("UserEmail can not be removed because it does not exist");
-    }
-
-    localUserSchoolDataController.removeUserEmail(localUserEmail);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public UserImage createUserImage(String userIdentifier, String contentType, byte[] content) {
-    if (!StringUtils.isNumeric(userIdentifier)) {
-      throw new SchoolDataBridgeInternalException("userIdentifier is invalid");
-    }
-
-    UserImage userImage = toLocalUserImageImpl(localUserSchoolDataController.createUserImage(userIdentifier, contentType, content));
-    if (userImage != null) {
-      return userImage;
-    }
-
-    throw new SchoolDataBridgeInternalException("Unexpected error occured while creating LocalUserImage");
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public UserImage findUserImage(String identifier) {
-    if (!StringUtils.isNumeric(identifier)) {
-      throw new SchoolDataBridgeInternalException("identifier is invalid");
-    }
-
-    return toLocalUserImageImpl(localUserSchoolDataController.findUserImage(identifier));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier) {
-    List<UserImage> result = new ArrayList<>();
-
-    List<LocalUserImage> images = localUserSchoolDataController.listUserImagesByUserIdentifier(userIdentifier);
-    for (LocalUserImage image : images) {
-      UserImage userImage = toLocalUserImageImpl(image);
-      if (userImage != null) {
-        result.add(userImage);
-      } else {
-        throw new SchoolDataBridgeInternalException("Unexpected error occured while listing LocalUserImages");
-      }
-    }
-
-    return result;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public UserImage updateUserImage(UserImage userImage) {
-    UserImage image = toLocalUserImageImpl(localUserSchoolDataController.updateUserImage(userImage.getIdentifier(), userImage.getContentType(), userImage.getContent()));
-    if (image != null) {
-      return image;
-    }
-
-    throw new SchoolDataBridgeInternalException("Unexpected error occured while updating LocalUserImage");
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeUserImage(String identifier) {
-    LocalUserImage localUserImage = localUserSchoolDataController.findUserImage(identifier);
-    if (localUserImage == null) {
-      throw new SchoolDataBridgeInternalException("UserImage can not be removed because it does not exist");
-    }
-
-    localUserSchoolDataController.removeUserImage(localUserImage);
   }
 
   /**
@@ -439,14 +279,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   private UserEmail toLocalUserEmailImpl(LocalUserEmail localUserEmail) {
-    return null;
-  }
-
-  private UserImage toLocalUserImageImpl(LocalUserImage localUserImage) {
-    if (localUserImage != null) {
-      return new LocalUserImageImpl(localUserImage.getId().toString(), localUserImage.getUser().getId().toString(), localUserImage.getContentType(), localUserImage.getContent());
-    }
-
     return null;
   }
 
