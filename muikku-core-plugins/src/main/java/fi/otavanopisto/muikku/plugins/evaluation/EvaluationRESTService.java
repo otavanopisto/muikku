@@ -1501,7 +1501,8 @@ public class EvaluationRESTService extends PluginRESTService {
           request.getRequestText(),
           request.getDate(),
           Boolean.TRUE, // archived
-          request.getHandled());
+          request.getHandled(),
+          request.getLocked());
       }
       
       UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
