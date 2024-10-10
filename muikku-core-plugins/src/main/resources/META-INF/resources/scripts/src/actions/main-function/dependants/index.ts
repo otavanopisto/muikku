@@ -14,7 +14,6 @@ import { SummaryStatusType } from "~/reducers/main-function/records/summary";
 import { AllStudentUsersDataStatusType } from "~/reducers/main-function/records";
 import { LoadingState } from "~/@types/shared";
 import { HOPSStatusType } from "~/reducers/main-function/hops";
-import { MatriculationSubjectEligibilityStatusType } from "~/reducers/main-function/records/yo";
 
 export type DEPENDANTS_UPDATE = SpecificActionType<
   "DEPENDANTS_UPDATE",
@@ -79,14 +78,6 @@ const clearDependantState: clearDependantTriggerType =
       dispatch({
         type: "UPDATE_HOPS_STATUS",
         payload: <HOPSStatusType>"WAIT",
-      });
-      dispatch({
-        type: "UPDATE_STUDIES_YO_STATUS",
-        payload: "WAIT",
-      });
-      dispatch({
-        type: "UPDATE_STUDIES_SUBJECT_ELIGIBILITY_STATUS",
-        payload: <MatriculationSubjectEligibilityStatusType>"WAIT",
       });
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
