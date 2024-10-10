@@ -14,6 +14,7 @@ import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
 import {
   User,
+  Student,
   UserGroup,
   UserStaff,
   WorkspaceBasicInfo,
@@ -25,7 +26,7 @@ import MApi from "~/api/api";
  * InputContactsAutofillLoaders
  */
 export interface InputContactsAutofillLoaders {
-  studentsLoader?: (searchString: string) => () => Promise<User[]>;
+  studentsLoader?: (searchString: string) => () => Promise<User[] | Student[]>;
   staffLoader?: (searchString: string) => () => Promise<UserStaffSearchResult>;
   userGroupsLoader?: (searchString: string) => () => Promise<UserGroup[]>;
   workspacesLoader?: (
@@ -214,7 +215,7 @@ export default class c extends React.Component<
     const getStudentsLoader = () =>
       loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
-        : () => new Promise<User[]>(() => []);
+        : () => new Promise<User[] | Student[]>(() => []);
 
     /**
      * getUserGroupsLoader
@@ -282,15 +283,20 @@ export default class c extends React.Component<
      * userItems
      */
     const userItems: ContactRecipientType[] = searchResults[0].map(
-      (item: User): ContactRecipientType => ({
-        type: "user",
-        value: {
-          id: item.id,
-          name: getName(item, this.props.showFullNames),
-          email: item.email,
-          studyProgrammeName: item.studyProgrammeName,
-        },
-      })
+      (item: User | Student): ContactRecipientType => {
+        // Yeah, this happens sometimes. The API returns a user with id that is a string.
+        const id = typeof item.id === "number" ? item.id : item.userEntityId;
+
+        return {
+          type: "user",
+          value: {
+            id: id,
+            name: getName(item, this.props.showFullNames),
+            email: item.email,
+            studyProgrammeName: item.studyProgrammeName,
+          },
+        };
+      }
     );
 
     /**

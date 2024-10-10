@@ -21,6 +21,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.codec.binary.StringUtils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -227,10 +229,16 @@ public class WhoAmIRESTService extends AbstractRESTService {
      */
     boolean environmentForumAvailable = forumController.isEnvironmentForumActive() && sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
 
+    /*
+     * Hops - the NEW Hops view availability
+     */
+    boolean hopsAvailable = user != null && StringUtils.equals("lukio", user.getStudyProgrammeEducationType());
+    
     UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
         chatAvailable,
         worklistAvailable,
-        environmentForumAvailable
+        environmentForumAvailable,
+        hopsAvailable
     );
     
     // Result object

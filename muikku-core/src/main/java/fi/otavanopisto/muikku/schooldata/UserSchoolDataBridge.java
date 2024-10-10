@@ -6,6 +6,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
@@ -13,7 +14,6 @@ import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -68,6 +68,8 @@ public interface UserSchoolDataBridge {
   
   public BridgeResponse<StudentContactLogEntryBatch> listStudentContactLogEntriesByStudent(SchoolDataIdentifier userIdentifier, Integer firstResult, Integer maxResults);
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload);
+  public BridgeResponse<StudentContactLogWithRecipientsRestModel> createMultipleStudentContactLogEntries(List<SchoolDataIdentifier> userRecipients, StudentContactLogEntryRestModel payload);
+
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload);
   public void removeStudentContactLogEntry(SchoolDataIdentifier studentIdentifier, Long contactLogEntryId);
   
@@ -335,14 +337,6 @@ public interface UserSchoolDataBridge {
   
   public BridgeResponse<CredentialResetPayload> resetCredentials(CredentialResetPayload payload);
 
-  /**
-   * Returns student eligibility to participate matriculation exams
-   * 
-   * @param studentIdentifier student's identifier
-   * @param subjectCode subject code
-   * @return student eligibility to participate matriculation exams
-   */
-  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode);
   fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats getStudentCourseStats(
       SchoolDataIdentifier studentIdentifier,
       String educationTypeCode,

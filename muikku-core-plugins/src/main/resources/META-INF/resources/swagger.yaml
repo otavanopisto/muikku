@@ -2648,7 +2648,6 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  #/rest/evaluation/workspace/{workspaceId}/interimEvaluationRequest:
   /rest/evaluation/workspace/{workspaceId}/interimEvaluationRequests:
     get:
       operationId: getWorkspaceInterimEvaluationRequests
@@ -3068,9 +3067,9 @@ paths:
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
-      operationId: archiveEvaluationWorkspaceUser
+      operationId: archiveWorkspaceUserEvaluationRequest
       summary: Archive workspace user evaluation
-      description: Archive workspace user evaluation
+      description: Archive workspace user evaluation request
       tags:
         - Evaluation
       parameters:
@@ -3203,7 +3202,8 @@ paths:
           description: Supplementation request id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "204":
           description: Workspace user supplementation request deleted successfully
@@ -3214,7 +3214,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/workspaceassessment/{workspaceAssessmentId}:
+  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/workspaceassessment/{workspaceAssessmentIdentifier}:
     delete:
       operationId: deleteWorkspaceUserWorkspaceAssessment
       summary: Delete workspace user workspace assessment
@@ -3229,9 +3229,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: workspaceAssessmentId
+        - name: workspaceAssessmentIdentifier
           in: path
-          description: Workspace assessment id
+          description: Workspace assessment identifier
           required: true
           schema:
             type: string
@@ -4626,6 +4626,27 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+          
+  /rest/guider/students/contactLogEntries/batch:
+    post:
+      operationId: createMultipleContactLogEvents
+      summary: Create contact log event for multiple students or student group
+      description: Create contact log event for multiple students or student group
+      tags:
+        - Guider
+      requestBody:
+        $ref: "#/components/requestBodies/ContactLogCreateMultipleEventRequestBody"
+      responses:
+        "200":
+          description: Contact log event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactLogEvent"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   /rest/guider/student/{studentId}/contactLog/{entryId}:
     put:
@@ -5940,13 +5961,107 @@ paths:
           description: Internal server error
 
   #MATRICULATION
-  /rest/matriculation/exams:
+  /rest/matriculation/students/{studentIdentifier}/plan:
     get:
-      operationId: getExams
-      summary: Get exams
-      description: Get exams
+      operationId: getStudentMatriculationPlan
+      summary: Get student's matriculation plan
+      description: Get student's matriculation plan
       tags:
         - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matriculation Plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatriculationPlan"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+    put:
+      operationId: setStudentMatriculationPlan
+      summary: Set student's matriculation plan
+      description: Set student's matriculation plan
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/MatriculationPlanUpdateRequestBody"
+      responses:
+        "200":
+          description: Matriculation Plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatriculationPlan"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/matriculation/students/{studentIdentifier}/results:
+    get:
+      operationId: getStudentMatriculationResults
+      summary: Get student's matriculation results
+      description: Get student's matriculation results
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matriculation Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatriculationResults"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/matriculation/students/{studentIdentifier}/exams:
+    get:
+      operationId: getStudentExams
+      summary: Get students' exams
+      description: Get students' exams
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter for the query
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/MatriculationExamListFilter"
+            default: ALL
       responses:
         "200":
           description: Exams
@@ -5955,7 +6070,106 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MatriculationEnrollment"
+                  $ref: "#/components/schemas/MatriculationExam"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/matriculation/students/{studentIdentifier}/exams/{examId}/enrollment:
+    get:
+      operationId: getStudentExamEnrollment
+      summary: Get student's exam enrollment
+      description: Get student's exam enrollment
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam enrollment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatriculationExamEnrollment"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/matriculation/students/{studentIdentifier}/exams/{examId}/enrollment/changelog:
+    get:
+      operationId: getStudentExamEnrollmentChangeLog
+      summary: Get students' exam enrollment's change log
+      description: Get students' exam enrollment's change log
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam enrollment's change log entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatriculationExamChangeLogEntry"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/matriculation/students/{studentIdentifier}/exams/{examId}/enrollment/state:
+    put:
+      operationId: setStudentExamEnrollmentState
+      summary: Set students' exam enrollment state
+      description: Set students' exam enrollment state
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/MatriculationEnrollmentStateUpdateRequestBody"
+      responses:
+        "204":
+          description: OK
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5986,7 +6200,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/matriculation/exams/{examId}/initialData/{userIdentifier}:
+  /rest/matriculation/students/{studentIdentifier}/initialData:
     get:
       operationId: getInitialData
       summary: Get initial data
@@ -5994,27 +6208,51 @@ paths:
       tags:
         - Matriculation
       parameters:
-        - name: examId
+        - name: studentIdentifier
           in: path
-          description: Exam id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: userIdentifier
-          in: path
-          description: User id
+          description: Student Identifier
           required: true
           schema:
             type: string
-            format: int64
       responses:
         "200":
           description: Initial data in JSON format
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MatriculationStudentData"
+                $ref: "#/components/schemas/MatriculationStudent"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/matriculation/students/{studentIdentifier}/matriculationEligibility:
+    get:
+      operationId: getMatriculationSubjectEligibility
+      summary: Get matriculation eligibility
+      description: Get matriculation eligibility
+      tags:
+        - Matriculation
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: subjectCode
+          in: query
+          description: Subject code
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matriculation eligibility
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MatriculationSubjectEligibilityOPS2021"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6022,7 +6260,7 @@ paths:
 
   /rest/matriculation/exams/{examId}/savedEnrollments/{userIdentifier}:
     get:
-      operationId: getSavedEnrollments
+      operationId: getSavedEnrollmentDraft
       summary: Get saved enrollments
       description: Get saved enrollments
       tags:
@@ -6047,7 +6285,43 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MatriculationStudentExamination"
+                type: string
+        "400":
+          description: Invalid request was sent to the server
+        "404":
+          description: Saved enrollments not found
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updateEnrollmentDraft
+      summary: Update enrollment draft
+      description: Update enrollment draft
+      tags:
+        - Matriculation
+      parameters:
+        - name: examId
+          in: path
+          description: Exam id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userIdentifier
+          in: path
+          description: identifier of user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/MatriculationEnrollmentDraftUpdateRequestBody"
+      responses:
+        "200":
+          description: Saved enrollments
+          content:
+            application/json:
+              schema:
+                type: object
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6826,38 +7100,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HopsEligibility"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-  /rest/records/students/{studentIdentifier}/matriculationEligibility:
-    get:
-      operationId: getMatriculationSubjectEligibility
-      summary: Get matriculation eligibility
-      description: Get matriculation eligibility
-      tags:
-        - Records
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-        - name: subjectCode
-          in: query
-          description: Subject code
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Matriculation eligibility
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MatriculationSubjectEligibility"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10896,6 +11138,22 @@ components:
                 type: string
               entryDate:
                 type: string
+                
+    ContactLogCreateMultipleEventRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: MultipleContactLogCreateEventRequestBody object
+            required:
+              - recipients
+              - contactLogEntry
+            properties:
+              recipients:
+                $ref: "#/components/schemas/ContactLogRecipientList"
+              contactLogEntry:
+                $ref: "#/components/schemas/ContactLogMultipleEvents"
 
     ContactLogUpdateEventRequestBody:
       required: true
@@ -11167,11 +11425,24 @@ components:
               name:
                 type: string
 
+    MatriculationPlanUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/MatriculationPlan"
+
     MatriculationEnrollmentsCreateRequestBody:
       content:
         application/json:
           schema:
-            description: MatriculationEnrollmentsCreateRequestBody object
+            $ref: "#/components/schemas/MatriculationExamEnrollment"
+
+    MatriculationEnrollmentDraftUpdateRequestBody:
+      content:
+        application/json:
+          schema:
             type: string
 
     LocalizationSetRequestBody:
@@ -11787,10 +12058,10 @@ components:
               description:
                 type: string
               price:
-                type: number
+                type: integer
                 format: double
               factor:
-                type: number
+                type: integer
                 format: double
               billingNumber:
                 type: integer
@@ -12101,6 +12372,19 @@ components:
             properties:
               state:
                 $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+
+    MatriculationEnrollmentStateUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: MatriculationEnrollmentStateUpdateRequestBody object
+            required:
+              - state
+            properties:
+              state:
+                $ref: "#/components/schemas/MatriculationExamStudentStatus"
 
   #SCHEMAS
   schemas:
@@ -12723,6 +13007,21 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ContactLogEventComment"
+    
+    ContactLogMultipleEvents:
+      type: object
+      description: GuiderContactLogMultipleEvents object
+      required:
+        - entryDate
+        - type
+        - text
+      properties:
+        entryDate:
+          type: string
+        type:
+          $ref: "#/components/schemas/ContactType"
+        text:
+          type: string
 
     ContactLogEventComment:
       type: object
@@ -12755,6 +13054,42 @@ components:
         hasImage:
           type: boolean
 
+    ContactLogMultipleEvent:
+      type: object
+      description: GuiderContactLogMultipleEvent object
+      required:
+        - contactLogRecipientList
+        - contactLogEvent
+      properties:
+        contactLogRecipientList:
+          $ref: "#/components/schemas/ContactLogRecipientList"
+        contactLogEvent:
+          $ref: "#/components/schemas/ContactLogEvent"
+    
+    ContactLogRecipientList:
+      type: object
+      description: ContactLogRecipientList
+      required:
+        - recipientIds
+        - recipientGroupIds
+        - recipientStudentsWorkspaceIds
+      properties:
+        recipientIds:
+          description: The list of userEntityIds
+          type: array
+          items:
+            type: integer
+        recipientGroupIds:
+          description: The list of studentGroupIds
+          type: array
+          items:
+            type: integer
+        recipientStudentsWorkspaceIds:
+          description: The list of workspaceIds
+          type: array
+          items:
+            type: integer
+    
     Curriculum:
       type: object
       description: Curriculum object
@@ -13090,9 +13425,6 @@ components:
         - assessmentRequestDate
         - assignmentsDone
         - assignmentsTotal
-        - graded
-        - passing
-        - interimEvaluationRequest
         - userEntityId
         - firstName
         - lastName
@@ -13104,30 +13436,33 @@ components:
         - workspaceUserEntityId
         - workspaceUserIdentifier
         - hasPedagogyForm
+        - state
       properties:
         id:
           type: integer
           format: int64
+          nullable: true
         subjects:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceSubject"
         enrollmentDate:
           type: string
+          format: date-time
+          nullable: true
         evaluationDate:
           type: string
+          format: date-time
+          nullable: true
         assessmentRequestDate:
           type: string
+          format: date-time
+          nullable: true
         assignmentsDone:
           type: integer
+          nullable: true
         assignmentsTotal:
           type: integer
-        graded:
-          type: boolean
-        passing:
-          type: boolean
-        interimEvaluationRequest:
-          type: boolean
         userEntityId:
           type: integer
           format: int64
@@ -13144,6 +13479,7 @@ components:
           type: string
         workspaceNameExtension:
           type: string
+          nullable: true
         workspaceUrlName:
           type: string
         workspaceUserEntityId:
@@ -13153,6 +13489,8 @@ components:
           type: string
         hasPedagogyForm:
           type: boolean
+        state:
+          $ref: "#/components/schemas/WorkspaceAssessmentStateType"
 
     EvaluationSupplementationRequest:
       type: object
@@ -13660,6 +13998,7 @@ components:
         - coursesRequired
         - creditPoints
         - creditPointsRequired
+        - personHasCourseAssessments
       properties:
         status:
           $ref: "#/components/schemas/MatriculationEligibilityStatus"
@@ -13671,35 +14010,31 @@ components:
           type: number
         creditPointsRequired:
           type: number
+        personHasCourseAssessments:
+          description: True, if the person has ever completed a course
+          type: boolean
 
-    MatriculationSubjectEligibility:
+    MatriculationSubjectEligibilityOPS2021:
       type: object
       description: Matriculation eligibility by subject
       required:
         - eligible
-        - requirePassingGrades
-        - acceptedCourseCount
-        - acceptedTransferCreditCount
-        - schoolDataSource
+        - requiredPassingGradeCourseCreditPoints
+        - passingGradeCourseCreditPoints
       properties:
         eligible:
           description: If the subject is eligible for matriculation exam
           type: boolean
-        requirePassingGrades:
-          description: Number of required passing grades
+        requiredPassingGradeCourseCreditPoints:
+          description: Number of required passing credit points for the subject
           type: number
+          format: double
           nullable: true
-        acceptedCourseCount:
-          description: Number of accepted courses
+        passingGradeCourseCreditPoints:
+          description: Number of passing credit points for the subject the student has
           type: number
+          format: double
           nullable: true
-        acceptedTransferCreditCount:
-          description: Number of accepted transfer credits
-          type: number
-          nullable: true
-        schoolDataSource:
-          description: Data source of the school
-          type: string
 
     MatriculationSubject:
       type: object
@@ -13713,130 +14048,188 @@ components:
         subjectCode:
           type: string
 
+    MatriculationExamDegreeType:
+      type: string
+      enum:
+        - MATRICULATIONEXAMINATION
+        - MATRICULATIONEXAMINATIONSUPPLEMENT
+        - SEPARATEEXAM
+
     MatriculationExamDegreeStructure:
       type: string
       enum:
         - PRE2022
         - POST2022
 
-    MatriculationExamApplication:
+    MatriculationExamSchoolType:
+      type: string
+      enum:
+        - UPPERSECONDARY
+        - VOCATIONAL
+        - UPPERSECONDARYANDVOCATIONAL
+        - UNKNOWN
+
+    MatriculationExamEnrollment:
       type: object
-      description: MatriculationExamApplication object
+      description: MatriculationExamEnrollment object
       required:
         - examId
-        - name
-        - ssn
-        - email
-        - phone
-        - address
-        - postalCode
-        - city
+        - studentIdentifier
         - guider
         - enrollAs
         - degreeType
         - restartExam
         - numMandatoryCourses
         - location
+        - contactInfoChange
         - message
         - degreeStructure
-        - studentIdentifier
         - canPublishName
         - state
         - attendances
       properties:
+        id:
+          type: integer
+          format: int64
         examId:
-          type: string
-        name:
-          type: string
-        ssn:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        address:
-          type: string
-        postalCode:
-          type: string
-        city:
+          type: integer
+          format: int64
+        studentIdentifier:
           type: string
         guider:
           type: string
         enrollAs:
-          type: string
+          $ref: "#/components/schemas/MatriculationExamSchoolType"
         degreeType:
-          type: string
+          $ref: "#/components/schemas/MatriculationExamDegreeType"
         restartExam:
           type: boolean
         numMandatoryCourses:
           type: integer
         location:
           type: string
+        contactInfoChange:
+          type: string
         message:
           type: string
         degreeStructure:
-          $ref: "#/components/schemas/AudioAssessment"
-        studentIdentifier:
-          type: string
+          $ref: "#/components/schemas/MatriculationExamDegreeStructure"
         canPublishName:
           type: boolean
         state:
-          type: string
+          $ref: "#/components/schemas/MatriculationExamStudentStatus"
         attendances:
           type: array
           items:
-            $ref: "#/components/schemas/AnyValue"
+            $ref: "#/components/schemas/MatriculationExamAttendance"
+        enrollmentDate:
+          type: string
+          format: date-time
 
-    MatriculationEnrollment:
+    MatriculationExamStudentStatus:
+      description: Status of a student in relation to an matriculation exam
+      type: string
+      enum:
+        - NOT_ELIGIBLE
+        - ELIGIBLE
+        - PENDING
+        - SUPPLEMENTATION_REQUEST
+        - SUPPLEMENTED
+        - APPROVED
+        - REJECTED
+        - CONFIRMED
+
+    MatriculationExamTerm:
+      description: Matriculation exam term, either autumn or spring
+      type: string
+      enum:
+        - AUTUMN
+        - SPRING
+
+    MatriculationExamListFilter:
+      type: string
+      enum:
+        - ALL
+        - ELIGIBLE
+        - PAST
+
+    MatriculationExamEnrollmentChangeLogType:
+      type: string
+      enum:
+        - ENROLLMENT_CREATED
+        - ENROLLMENT_UPDATED
+        - STATE_CHANGED
+
+    MatriculationExam:
       type: object
-      description: MatriculationEnrollment object
+      description: MatriculationExam object
       required:
         - id
-        - enrolled
-        - enrollmentDate
-        - eligible
         - starts
         - ends
         - compulsoryEducationEligible
+        - studentStatus
       properties:
         id:
           type: integer
           format: int64
-        enrolled:
-          type: boolean
-        enrollmentDate:
-          type: string
-        eligible:
-          type: boolean
+        year:
+          type: integer
+        term:
+          $ref: "#/components/schemas/MatriculationExamTerm"
         starts:
           type: string
         ends:
           type: string
         compulsoryEducationEligible:
           type: boolean
+        studentStatus:
+          $ref: "#/components/schemas/MatriculationExamStudentStatus"
+        enrollment:
+          $ref: "#/components/schemas/MatriculationExamEnrollment"
 
-    MatriculationStudentData:
+    MatriculationExamChangeLogEntry:
+      type: object
+      description: MatriculationExamChangeLogEntry object
+      required:
+        - timestamp
+        - changeType
+        - newState
+        - message
+      properties:
+        modifier:
+          $ref: "#/components/schemas/UserBasicInfo"
+        timestamp:
+          type: string
+          format: date-time
+        changeType:
+          $ref: "#/components/schemas/MatriculationExamEnrollmentChangeLogType"
+        newState:
+          $ref: "#/components/schemas/MatriculationExamStudentStatus"
+          nullable: true
+        message:
+          type: string
+          nullable: true
+
+    MatriculationStudent:
       type: object
       description: MatriculationStudent object
       required:
         - address
         - email
-        - enrollmentSent
         - guidanceCounselor
         - locality
         - name
         - phone
         - postalCode
-        - ssn
         - studentIdentifier
       properties:
         address:
           type: string
         email:
           type: string
-        enrollmentSent:
-          type: boolean
         guidanceCounselor:
+          description: Name of the student's guidance counselor
           type: string
         locality:
           type: string
@@ -13846,10 +14239,11 @@ components:
           type: string
         postalCode:
           type: string
-        ssn:
-          type: string
         studentIdentifier:
           type: string
+        completedCreditPointsCount:
+          description: Number of completed credit points
+          type: double
 
     MatriculationAttendanceStatusType:
       type: string
@@ -13865,6 +14259,44 @@ components:
         - COMPULSORYEDUCATION_FREE
         - COMPULSORYEDUCATION_FREE_RETRY
 
+    MatriculationExamGrade:
+      type: string
+      enum:
+        - IMPROBATUR
+        - APPROBATUR
+        - LUBENTER_APPROBATUR
+        - CUM_LAUDE_APPROBATUR
+        - MAGNA_CUM_LAUDE_APPROBATUR
+        - EXIMIA_CUM_LAUDE_APPROBATUR
+        - LAUDATUR
+        - UNKNOWN
+        - NO_RIGHT_TO_PARTICIPATE
+        - INVALIDATED
+        - K
+
+    MatriculationGrade:
+      type: object
+      description: MatriculationEvaluatedSubject object
+      required:
+        - subject
+        - grade
+        - gradeDate
+        - term
+        - year
+      properties:
+        subject:
+          type: string
+          description: Subject code. Example "AI" etc...
+        grade:
+          $ref: "#/components/schemas/MatriculationExamGrade"
+        gradeDate:
+          type: string
+          format: date
+        term:
+          $ref: "#/components/schemas/MatriculationExamTerm"
+        year:
+          type: integer
+
     MatriculationExamEnrolledSubject:
       type: object
       description: MatriculationExamEnrolledSubject object
@@ -13873,14 +14305,21 @@ components:
         - mandatory
         - repeat
         - status
-        - refType
+        - funding
       properties:
+        id:
+          type: integer
+          format: int64
+          description: Id of the subject.
         subject:
           type: string
+          description: Subject code. Example "AI" etc...
         mandatory:
-          type: string
+          type: boolean
+          description: Is the subject mandatory.
         repeat:
-          type: string
+          type: boolean
+          description: If exam for that specific subject is already done before.
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
@@ -13888,23 +14327,34 @@ components:
 
     MatriculationExamFinishedSubject:
       type: object
-      description: MatriculationExamEnrolledSubject object
+      description: MatriculationExamFinishedSubject object
       required:
         - term
+        - year
         - subject
         - mandatory
         - grade
         - status
-        - refType
       properties:
+        id:
+          type: integer
+          format: int64
+          description: Id of the subject.
         term:
-          $ref: "#/components/schemas/AnyValue"
+          type: string
+          description: Term of the exam. Example "AUTUMN" or "SPRING"
+        year:
+          type: integer
+          description: Year of the exam.
         subject:
           type: string
+          description: Subject code. Example "AI" etc...
         mandatory:
-          type: string
+          type: boolean
+          description: Is the subject mandatory.
         grade:
           type: string
+          description: Grade of the exam.
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
@@ -13912,85 +14362,87 @@ components:
 
     MatriculationExamPlannedSubject:
       type: object
-      description: MatriculationExamEnrolledSubject object
+      description: MatriculationExamPlannedSubject object
       required:
         - term
+        - year
         - subject
         - mandatory
         - status
       properties:
+        id:
+          type: integer
+          format: int64
+          description: Id of the subject.
         term:
-          $ref: "#/components/schemas/AnyValue"
+          type: string
+          description: Term of the exam. Example "AUTUMN" or "SPRING"
+        year:
+          type: integer
+          description: Year of the exam.
         subject:
           type: string
+          description: Subject code. Example "AI" etc...
         mandatory:
-          type: string
+          type: boolean
+          description: Is the subject mandatory.
         status:
           $ref: "#/components/schemas/MatriculationAttendanceStatusType"
         funding:
           $ref: "#/components/schemas/MatriculationExamFundingType"
 
-    MatriculationExamSubject:
+    MatriculationExamAttendance:
+      discriminator:
+        propertyName: status
+        mapping:
+          ENROLLED: "#/components/schemas/MatriculationExamEnrolledSubject"
+          FINISHED: "#/components/schemas/MatriculationExamFinishedSubject"
+          PLANNED: "#/components/schemas/MatriculationExamPlannedSubject"
       oneOf:
         - $ref: "#/components/schemas/MatriculationExamEnrolledSubject"
         - $ref: "#/components/schemas/MatriculationExamFinishedSubject"
         - $ref: "#/components/schemas/MatriculationExamPlannedSubject"
 
-    MatriculationStudentExamination:
+    MatriculationPlan:
       type: object
-      description: MatriculationStudentExamination object
+      description: MatriculationPlan object
       required:
-        - canPublishName
-        - changedContactInfo
-        - degreeType
-        - enrollAs
-        - enrolledAttendances
-        - finishedAttendances
-        - plannedAttendances
-        - guider
-        - initialized
-        - location
-        - message
-        - numMandatoryCourses
-        - restartExam
-        - degreeStructure
+        - goalMatriculationExam
+        - plannedSubjects
       properties:
-        canPublishName:
+        goalMatriculationExam:
           type: boolean
-        changedContactInfo:
-          type: boolean
-        degreeType:
-          type: string
-        enrollAs:
-          type: string
-        enrolledAttendances:
+        plannedSubjects:
           type: array
           items:
-            $ref: "#/components/schemas/MatriculationExamEnrolledSubject"
-        finishedAttendances:
-          type: array
-          items:
-            $ref: "#/components/schemas/MatriculationExamFinishedSubject"
-        plannedAttendances:
-          type: array
-          items:
-            $ref: "#/components/schemas/MatriculationExamPlannedSubject"
-        guider:
+            $ref: "#/components/schemas/MatriculationPlanSubject"
+
+    MatriculationPlanSubject:
+      type: object
+      description: MatriculationPlanSubject object
+      required:
+        - subject
+      properties:
+        subject:
           type: string
-        initialized:
-          type: boolean
-        location:
-          type: string
-        message:
-          type: string
-        numMandatoryCourses:
+        term:
+          $ref: "#/components/schemas/MatriculationExamTerm"
+        year:
           type: integer
-        restartExam:
-          description: Value is either boolean or string
-          allOf:
-            - $ref: "#/components/schemas/AnyValue"
-        degreeStructure:
-          $ref: "#/components/schemas/MatriculationExamDegreeStructure"
+
+    MatriculationResults:
+      type: object
+      description: MatriculationResults object
+      required:
+        - subjectCode
+        - grades
+      properties:
+        subjectCode:
+          type: string
+        grades:
+          type: array
+          items:
+            $ref: "#/components/schemas/MatriculationGrade"
 
     MaterialReply:
       type: object
@@ -15086,7 +15538,7 @@ components:
         urlName:
           description: The url of the workspace
           type: string
-
+          
     RecordsWorkspace:
       allOf:
         - $ref: "#/components/schemas/Workspace"
@@ -15701,6 +16153,30 @@ components:
         firstResult:
           type: integer
 
+    UserBasicInfo:
+      type: object
+      description: User object
+      required:
+        - id
+        - identifier
+        - firstName
+        - lastName
+        - hasImage
+      properties:
+        id:
+          type: integer
+          format: int64
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickName:
+          type: string
+        hasImage:
+          type: boolean
+
     User:
       type: object
       description: User object
@@ -15780,6 +16256,18 @@ components:
         latestLogin:
           type: string
           format: date-time
+          nullable: true
+        studyStartDate:
+          type: string
+          format: date
+          nullable: true
+        studyTimeEnd:
+          type: string
+          format: date
+          nullable: true
+        studyEndDate:
+          type: string
+          format: date
           nullable: true
 
     UserGuardiansDependantWorkspace:
@@ -15980,6 +16468,7 @@ components:
       required:
         - chat
         - environmentForum
+        - hops
         - worklist
       properties:
         chat:
@@ -15990,6 +16479,13 @@ components:
             isAvailable:
               type: boolean
         environmentForum:
+          type: object
+          required:
+            - isAvailable
+          properties:
+            isAvailable:
+              type: boolean
+        hops:
           type: object
           required:
             - isAvailable
@@ -16576,7 +17072,6 @@ components:
         - gradeDate
         - passingGrade
         - text
-        - workspaceSubjectIdentifier
         - subject
       properties:
         date:
@@ -16599,10 +17094,6 @@ components:
           nullable: true
         text:
           description: The text (description) of the assessment
-          type: string
-          nullable: true
-        workspaceSubjectIdentifier:
-          description: The identifier of the workspace subject
           type: string
           nullable: true
         subject:
@@ -17352,6 +17843,9 @@ components:
         chatEnabled:
           description: Is the workspace chat room enabled
           type: boolean
+        externalViewLink:
+          description: View the workspace in an external location
+          type: string
         subjectIdentifier:
           description: The identifier of the subject
           type: string
@@ -17456,3 +17950,4 @@ components:
           format: int32
         message:
           type: string
+          

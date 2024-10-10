@@ -125,7 +125,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
           // Find subject data, that contains basic information about that subject
           const subjectData = credit.activity.subjects.find(
-            (s) => s.identifier === a.workspaceSubjectIdentifier
+            (s) => s.identifier === a.subject.identifier
           );
 
           // If not found, return nothing
@@ -143,7 +143,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           if (assessmentIsInterim) {
             return (
               <div
-                key={a.workspaceSubjectIdentifier}
+                key={a.subject.identifier}
                 className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
               >
                 <div
@@ -185,7 +185,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             ) {
               return (
                 <div
-                  key={a.workspaceSubjectIdentifier}
+                  key={a.subject.identifier}
                   className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
                 >
                   <div
@@ -241,7 +241,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
             } else {
               return (
                 <div
-                  key={a.workspaceSubjectIdentifier}
+                  key={a.subject.identifier}
                   className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
                 >
                   <div
@@ -340,7 +340,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
              * Find subject data, that contains basic information about that subject
              */
             const subjectData = credit.activity.subjects.find(
-              (s) => s.identifier === a.workspaceSubjectIdentifier
+              (s) => s.identifier === a.subject.identifier
             );
 
             /**
@@ -358,7 +358,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
             return (
               <div
-                key={a.workspaceSubjectIdentifier}
+                key={a.subject.identifier}
                 className="application-list__item-content-single-item"
               >
                 <span className="application-list__item-content-single-item-primary">

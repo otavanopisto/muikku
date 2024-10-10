@@ -20,6 +20,8 @@ import fi.otavanopisto.muikku.jade.JadeController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamEnrollment;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 
 /**
  * Controller for matriculation plugin notifications
@@ -34,6 +36,9 @@ public class MatriculationNotificationController {
 
   @Inject
   private MatriculationJadeTemplateLoader matriculationJadeTemplateLoader;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
   private Mailer mailer;
@@ -42,16 +47,19 @@ public class MatriculationNotificationController {
    * Sends an email notification about matriculation enrollment
    * 
    * @param enrollment enrollment
+   * @param studentIdentifier the enrollee
    * @throws IOException thrown when some resources failed to load
    */
-  public void sendEnrollmentNotification(MatriculationExamEnrollment enrollment) throws IOException {
+  public void sendEnrollmentNotification(MatriculationExamEnrollment enrollment, SchoolDataIdentifier studentIdentifier) throws IOException {
     Map<String, Object> templateModel = new HashMap<>();
     templateModel.put("enrollment", enrollment);
     templateModel.put("subjects", readSubjectMap());
     String content = renderJadeTemplate("enrollment-notification", templateModel);
     
-    if (StringUtils.isNotBlank(enrollment.getEmail())) {
-      List<String> to = Arrays.asList(enrollment.getEmail());
+    String email = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
+    
+    if (StringUtils.isNotBlank(email)) {
+      List<String> to = Arrays.asList(email);
       List<String> cc = new ArrayList<>();
       List<String> bcc = Arrays.asList("yo-ilmoittautumiset@otavia.fi");
       mailer.sendMail(MailType.HTML, to, cc, bcc, "Ilmoittautuminen ylioppilaskirjoituksiin", content);

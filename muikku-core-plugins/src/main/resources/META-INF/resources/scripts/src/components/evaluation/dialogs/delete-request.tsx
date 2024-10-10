@@ -10,6 +10,8 @@ import {
   DeleteAssessmentRequest,
   deleteInterimEvaluationRequest,
   DeleteInterimEvaluationRequest,
+  DeleteSupplementationRequest,
+  deleteSupplementationRequest,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import { EvaluationAssessmentRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -17,15 +19,15 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * ArchiveDialogProps
  */
-interface DeleteRequestDialogProps
-  extends EvaluationAssessmentRequest,
-    WithTranslation {
+interface DeleteRequestDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: React.ReactElement<any>;
+  evaluationAssessmentRequest: EvaluationAssessmentRequest;
   isOpen?: boolean;
   onClose?: () => void;
   deleteAssessmentRequest: DeleteAssessmentRequest;
   deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest;
+  deleteSupplementationRequest: DeleteSupplementationRequest;
 }
 
 /**
@@ -64,13 +66,21 @@ class DeleteRequestDialog extends React.Component<
    * @param closeDialog closeDialog
    */
   deleteRequest(closeDialog: () => void) {
-    if (this.props.interimEvaluationRequest) {
+    const { state, id, workspaceUserEntityId } =
+      this.props.evaluationAssessmentRequest;
+
+    if (state === "interim_evaluation_request") {
       this.props.deleteInterimEvaluationRequest({
-        interimEvaluatiomRequestId: this.props.id,
+        interimEvaluatiomRequestId: id,
+      });
+    } else if (state === "incomplete") {
+      this.props.deleteSupplementationRequest({
+        workspaceUserEntityId: workspaceUserEntityId,
+        supplementationRequestId: id,
       });
     } else {
       this.props.deleteAssessmentRequest({
-        workspaceUserEntityId: this.props.workspaceUserEntityId,
+        workspaceUserEntityId: workspaceUserEntityId,
       });
     }
 
@@ -82,8 +92,13 @@ class DeleteRequestDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { firstName, lastName, workspaceName, workspaceNameExtension } =
-      this.props;
+    const {
+      firstName,
+      lastName,
+      workspaceName,
+      workspaceNameExtension,
+      state,
+    } = this.props.evaluationAssessmentRequest;
 
     const studentNameString = `${lastName}, ${firstName}`;
 
@@ -91,6 +106,20 @@ class DeleteRequestDialog extends React.Component<
 
     if (workspaceNameExtension) {
       workspaceNameString = `${workspaceName} (${workspaceNameExtension})`;
+    }
+
+    let deleteButtonLocale = this.props.t("actions.remove", {
+      context: "evaluationRequest",
+    });
+
+    if (state === "interim_evaluation_request") {
+      deleteButtonLocale = this.props.t("actions.remove", {
+        context: "interimEvaluationRequest",
+      });
+    } else if (state === "incomplete") {
+      deleteButtonLocale = this.props.t("actions.remove", {
+        context: "supplementationRequest",
+      });
     }
 
     /**
@@ -103,13 +132,7 @@ class DeleteRequestDialog extends React.Component<
           buttonModifiers={["fatal", "standard-ok"]}
           onClick={this.deleteRequest.bind(this, closeDialog)}
         >
-          {this.props.interimEvaluationRequest
-            ? this.props.t("actions.remove", {
-                context: "interimEvaluationRequest",
-              })
-            : this.props.t("actions.remove", {
-                context: "evaluationRequest",
-              })}{" "}
+          {deleteButtonLocale}
         </Button>
         <Button
           buttonModifiers={["cancel", "standard-cancel"]}
@@ -124,31 +147,58 @@ class DeleteRequestDialog extends React.Component<
      * content
      * @param closeDialog closeDialog
      */
-    const content = (closeDialog: () => void) => (
-      <div
-        dangerouslySetInnerHTML={this.createHtmlMarkup(
-          this.props.t("content.removing", {
-            context: this.props.interimEvaluationRequest
-              ? "interimRequest"
-              : "evaluationRequest",
-            student: studentNameString,
-            workspace: workspaceNameString,
-          })
-        )}
-      />
-    );
+    const content = (closeDialog: () => void) => {
+      let localeString = this.props.t("content.removing", {
+        context: "evaluationRequest",
+        student: studentNameString,
+        workspace: workspaceNameString,
+      });
+
+      if (state === "interim_evaluation_request") {
+        localeString = this.props.t("content.removing", {
+          context: "interimRequest",
+          student: studentNameString,
+          workspace: workspaceNameString,
+        });
+      } else if (state === "incomplete") {
+        localeString = this.props.t("content.removing", {
+          context: "supplementationRequest",
+          student: studentNameString,
+          workspace: workspaceNameString,
+        });
+      }
+
+      return (
+        <div dangerouslySetInnerHTML={this.createHtmlMarkup(localeString)} />
+      );
+    };
+
+    let titleLocale = this.props.t("labels.remove", {
+      context: "evaluationRequest",
+      student: studentNameString,
+      workspace: workspaceNameString,
+    });
+
+    if (state === "interim_evaluation_request") {
+      titleLocale = this.props.t("labels.remove", {
+        context: "interimEvaluationRequest",
+        student: studentNameString,
+        workspace: workspaceNameString,
+      });
+    } else if (state === "incomplete") {
+      titleLocale = this.props.t("labels.remove", {
+        context: "supplementationRequest",
+        student: studentNameString,
+        workspace: workspaceNameString,
+      });
+    }
+
     return (
       <Dialog
         isOpen={this.props.isOpen}
         onClose={this.props.onClose}
         modifier="evaluation-archive-request"
-        title={this.props.t("labels.remove", {
-          context: this.props.interimEvaluationRequest
-            ? "interimEvaluationRequest"
-            : "evaluationRequest",
-          student: studentNameString,
-          workspace: workspaceNameString,
-        })}
+        title={titleLocale}
         content={content}
         footer={footer}
       >
@@ -164,7 +214,11 @@ class DeleteRequestDialog extends React.Component<
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
   return bindActionCreators(
-    { deleteAssessmentRequest, deleteInterimEvaluationRequest },
+    {
+      deleteAssessmentRequest,
+      deleteInterimEvaluationRequest,
+      deleteSupplementationRequest,
+    },
     dispatch
   );
 }

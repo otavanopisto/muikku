@@ -71,6 +71,10 @@ export interface DropdownProps {
    */
   alignSelfVertically?: "top" | "bottom";
   /**
+   * Id for the tooltip so accessibility software can read it's content when used with aria-describedby attribute
+   */
+  tooltipId?: string;
+  /**
    * onOpen
    */
   onOpen?: () => any;
@@ -563,7 +567,8 @@ export default class Dropdown extends React.Component<
             }}
           ></span>
           {(this.props.content || this.props.items) && (
-            <div className="dropdown__container">
+            // We use tooltipId prop here so we can attach tooltip's trigger button's [aria-describedby] attibute directly to the content of the tooltip
+            <div className="dropdown__container" id={this.props.tooltipId}>
               {this.props.content ? this.props.content : null}
               {this.props.items
                 ? this.props.items.map((item, index) => {

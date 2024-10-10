@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
+import java.time.LocalDate;
+
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public interface GuardiansDependent {
@@ -20,4 +22,9 @@ public interface GuardiansDependent {
   
   String getAddress();
   
+  LocalDate getStudyStartDate();
+  
+  LocalDate getStudyTimeEnd();
+  
+  LocalDate getStudyEndDate();
 }

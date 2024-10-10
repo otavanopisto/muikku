@@ -42,11 +42,9 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
-import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPermissions;
@@ -62,14 +60,9 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
@@ -151,9 +144,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Any
   private Instance<SearchProvider> searchProviders;
   
-  @Inject
-  private GuiderController guiderController;
-
   @GET
   @Path("/students/{STUDENTIDENTIFIER}/students")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -306,109 +296,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     // Activity data
 
-    WorkspaceActivityInfo activityInfo = evaluationController.listWorkspaceActivities(
-        studentIdentifier,
-        workspaceIdentifier,
-        includeTransferCredits,
+    WorkspaceActivityInfo activityInfo = evaluationController.getWorkspaceActivityInfoWithSummary(
+        studentIdentifier, 
+        workspaceIdentifier, 
+        includeTransferCredits, 
         includeAssignmentStatistics);
-    
-    Integer allCourseCredits = 0;
-    Integer mandatoryCourseCredits = 0;
-    boolean showCredits = false;
-    
-    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
-    
-    // Find student's curriculum to tell whether the score will be shown to the user
-    
-    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
-    
-    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
-      showCredits = true;
-    }
-    
-    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-
-    SearchProvider searchProvider = getProvider("elastic-search");
-    
-    if (showCredits) {
-      for (WorkspaceActivity activity : activityInfo.getActivities()) {
-        
-        List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
-        
-        if (!assessmentStatesList.isEmpty()) {
-          for(WorkspaceAssessmentState assessmentState : assessmentStatesList) {
-            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-              for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
-    
-                // Check for courses that contains multiple coursemodules. WorkspaceActivitySubjectIdentifier should match assessmentState's workspaceSubjectIdentifier
-                if (activity.getId() != null) {
-                  if (!assessmentState.getWorkspaceSubjectIdentifier().equals(workspaceActivitySubject.getIdentifier())) {
-                    continue;
-                  }
-                }
-                
-                if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
-                  
-                  for (WorkspaceActivityCurriculum curriculum : activity.getCurriculums()) {
-                    if (curriculum.getName().equals("OPS 2021")) {
-                      int units = workspaceActivitySubject.getCourseLength().intValue();
-                      
-                      // All completed courses
-                      allCourseCredits = Integer.sum(units, allCourseCredits);
-                      
-                      // Mandatority for transferred courses
-                      // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
-                      if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-                        Mandatority mandatority = activity.getMandatority();
-                        if (mandatority != null && mandatority == Mandatority.MANDATORY) {
-                          mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                       }
-                      }
-                      
-                      // Search for finding out course mandatority
-                      
-                      if (searchProvider != null && activity.getId() != null) {
-                        
-                        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
-                        workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-                        SearchResult sr = searchProvider.findWorkspace(workspaceIdentifier);
-                        
-                        List<Map<String, Object>> results = sr.getResults();
-                        for (Map<String, Object> result : results) {
-                          
-                          String educationTypeId = (String) result.get("educationTypeIdentifier");
-    
-                          Mandatority mandatority = null;
-    
-                          if (StringUtils.isNotBlank(educationTypeId)) {
-                            SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
-                                                        
-                            mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
-                                ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
-                            
-                          }
-                          if (mandatority != null) {
-                            if (mandatority == Mandatority.MANDATORY) {
-                              mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                            }
-                            activity.setMandatority(mandatority);
-                          }
-                        }
-                      } 
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    
-    activityInfo.setCompletedCourseCredits(allCourseCredits);
-    activityInfo.setMandatoryCourseCredits(mandatoryCourseCredits);
-    activityInfo.setShowCredits(showCredits);
-    
     return Response.ok(activityInfo).build();
   }
   
@@ -483,12 +375,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/hopseligibility/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifierString) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierString);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
+  public Response retrieveHopsEligibility(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier) {
     if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -596,6 +483,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     double creditPoints = studentCourseStats.getSumMandatoryCompletedCreditPoints();
     double creditPointsRequired = transcriptOfRecordsController.getMandatoryCreditPointsRequiredForMatriculation();
 
+    result.setPersonHasCourseAssessments(studentCourseStats.getPersonHasCourseAssessments());
     result.setCoursesCompleted(coursesCompleted);
     result.setCoursesRequired(coursesRequired);
     result.setCreditPoints(creditPoints);
@@ -622,22 +510,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listMatriculationSubjects() {
     return Response.ok(transcriptOfRecordsController.listMatriculationSubjects()).build();
-  }
-
-  @GET
-  @Path("/students/{STUDENTIDENTIFIER}/matriculationEligibility")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findMatriculationEligibility(
-      @PathParam("STUDENTIDENTIFIER") String studentIdentifierParam,
-      @QueryParam ("subjectCode") String subjectCode) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    StudentMatriculationEligibility result = userController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
-
-    return Response.ok(result).build();
   }
 
   @GET

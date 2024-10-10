@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class WorkspaceAssessmentState {
 
   public static final String UNASSESSED = "unassessed";                                   // no request, no grade
@@ -55,16 +57,6 @@ public class WorkspaceAssessmentState {
     this.gradeDate = gradeDate;
   }
 
-  @Deprecated
-  public String getWorkspaceSubjectIdentifier() {
-    return workspaceSubjectIdentifier;
-  }
-
-  @Deprecated
-  public void setWorkspaceSubjectIdentifier(String workspaceSubjectIdentifier) {
-    this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
-  }
-
   public Boolean isPassingGrade() {
     return passingGrade;
   }
@@ -80,6 +72,11 @@ public class WorkspaceAssessmentState {
   public void setSubject(WorkspaceActivitySubject subject) {
     this.subject = subject;
   }
+  
+  @JsonIgnore
+  public String getSubjectIdentifier() {
+    return subject == null ? null : subject.getIdentifier();
+  }
 
   private Date date;
   private String state;
@@ -87,8 +84,6 @@ public class WorkspaceAssessmentState {
   private Boolean passingGrade;
   private Date gradeDate;
   private String text;
-  // TODO Refactor front-end to make use of subject instead
-  private String workspaceSubjectIdentifier;
   private WorkspaceActivitySubject subject;
   
 }

@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Depcrecated refs should be refactored
- */
-
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Materials from "./materials";
@@ -91,8 +85,6 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
       }),
       draftId,
     };
-
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
 
   /**
@@ -107,14 +99,6 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         this.state.draftId
       ),
     });
-  }
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.refs.content as any).getWrappedInstance().refresh();
   }
 
   /**
@@ -134,7 +118,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         id: "table-of-contents",
         type: "workspace-table-of-contents",
         name: this.props.t("labels.tableOfContents", { ns: "materials" }),
-        component: <TableOfContentsComponent ref="content" />,
+        component: <TableOfContentsComponent />,
       },
     ];
 
@@ -164,6 +148,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
     return (
       <div>
         <WorkspaceNavbar
+          title={this.props.t("labels.materials", { ns: "materials" })}
           activeTrail="materials"
           workspaceUrl={this.props.workspaceUrl}
         />
@@ -177,9 +162,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         />
         <MaterialEditor locationPage="Materials" />
         <Materials
-          onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent}
-          ref="materials"
           onActiveNodeIdChange={this.props.onActiveNodeIdChange}
         />
       </div>

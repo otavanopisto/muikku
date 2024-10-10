@@ -202,6 +202,7 @@
   position: fixed;
   right: 0;
   top: 0;
+  width: auto;
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 10px;
@@ -211,14 +212,15 @@
     position: fixed;
     right: 20px;
     top: 20px;
-    width: auto;
   }
 
   .dialog__content {
+    display: flex;
     flex-basis: auto;
     flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
+    max-height: 100%;
   }
 
   .multi-step {
@@ -416,6 +418,12 @@
     }
   }
 
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
+}
+
+.dialog__header--matriculation {
   .button-icon--dialog-close {
     color: $color-default-contrast;
   }

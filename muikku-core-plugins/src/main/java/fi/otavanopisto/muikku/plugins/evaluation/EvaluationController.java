@@ -6,13 +6,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,11 +28,13 @@ import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestCancellationDAO;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorMessageRecipientList;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -60,6 +66,7 @@ import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
@@ -68,11 +75,15 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -95,6 +106,9 @@ public class EvaluationController {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private SessionController sessionController;
@@ -159,6 +173,10 @@ public class EvaluationController {
   @Inject
   private InterimEvaluationRequestDAO interimEvaluationRequestDAO;
 
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+  
   /* Workspace activity */
 
   public WorkspaceActivityInfo listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
@@ -208,9 +226,7 @@ public class EvaluationController {
       // Supplementation request, if one exists and is newer than activity date so far
 
       for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
-        SchoolDataIdentifier workspaceSubjectIdentifier = assessment.getWorkspaceSubjectIdentifier() == null
-            ? null
-            : SchoolDataIdentifier.fromId(assessment.getWorkspaceSubjectIdentifier());
+        SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(assessment.getSubjectIdentifier());
         SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
             userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
         if (supplementationRequest != null && supplementationRequest.getRequestDate().after(assessment.getDate())) {
@@ -309,6 +325,127 @@ public class EvaluationController {
         activity.setEvaluablesAnswered(evaluablesAnswered);
       }
     }
+    return activityInfo;
+  }
+
+  /**
+   * Returns WorkspaceActivityInfo where the summary fields are filled.
+   * 
+   * @param studentIdentifier
+   * @param workspaceIdentifier
+   * @param includeTransferCredits
+   * @param includeAssignmentStatistics
+   * @return
+   */
+  public WorkspaceActivityInfo getWorkspaceActivityInfoWithSummary(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceIdentifier, boolean includeTransferCredits, boolean includeAssignmentStatistics) {
+    WorkspaceActivityInfo activityInfo = listWorkspaceActivities(
+        studentIdentifier,
+        workspaceIdentifier,
+        includeTransferCredits,
+        includeAssignmentStatistics);
+    
+    Integer allCourseCredits = 0;
+    Integer mandatoryCourseCredits = 0;
+    boolean showCredits = false;
+    
+    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+    
+    // Find student's curriculum to tell whether the score will be shown to the user
+    
+    String curriculumName = courseMetaController.getCurriculumName(user.getCurriculumIdentifier());
+    
+    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
+      showCredits = true;
+    }
+    
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    
+    List<String> alternativeStudyOptionsList = userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier);
+    AlternativeStudyOptions alternativeStudyOptions = AlternativeStudyOptions.from(alternativeStudyOptionsList);
+
+    SearchProvider searchProvider = getProvider("elastic-search");
+    
+    if (showCredits) {
+      for (WorkspaceActivity activity : activityInfo.getActivities()) {
+        
+        List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
+        
+        if (!assessmentStatesList.isEmpty()) {
+          for (WorkspaceAssessmentState assessmentState : assessmentStatesList) {
+            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+              for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
+
+                // Check for courses that contains multiple coursemodules. WorkspaceActivitySubjectIdentifier should match assessmentState's workspaceSubjectIdentifier
+                if (activity.getId() != null) {
+                  if (!StringUtils.equals(assessmentState.getSubjectIdentifier(), workspaceActivitySubject.getIdentifier())) {
+                    continue;
+                  }
+                }
+
+                // Skip subjects which are mutually exclusive and not selected
+                if (!alternativeStudyOptions.isSelectedSubject(workspaceActivitySubject.getSubjectCode())) {
+                  continue;
+                }
+                
+                if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
+                  for (WorkspaceActivityCurriculum curriculum : activity.getCurriculums()) {
+                    if (curriculum.getName().equals("OPS 2021")) {
+                      int units = workspaceActivitySubject.getCourseLength().intValue();
+                      
+                      // All completed courses
+                      allCourseCredits = Integer.sum(units, allCourseCredits);
+                      
+                      // Mandatority for transferred courses
+                      // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
+                      if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
+                        Mandatority mandatority = activity.getMandatority();
+                        if (mandatority != null && mandatority == Mandatority.MANDATORY) {
+                          mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                       }
+                      }
+                      
+                      // Search for finding out course mandatority
+                      
+                      if (searchProvider != null && activity.getId() != null) {
+                        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
+                        SearchResult sr = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
+                        
+                        List<Map<String, Object>> results = sr.getResults();
+                        for (Map<String, Object> result : results) {
+                          
+                          String educationTypeId = (String) result.get("educationTypeIdentifier");
+    
+                          Mandatority mandatority = null;
+    
+                          if (StringUtils.isNotBlank(educationTypeId)) {
+                            SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                                                        
+                            mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
+                                ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
+                            
+                          }
+                          if (mandatority != null) {
+                            if (mandatority == Mandatority.MANDATORY) {
+                              mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
+                            }
+                            activity.setMandatority(mandatority);
+                          }
+                        }
+                      } 
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    activityInfo.setCompletedCourseCredits(allCourseCredits);
+    activityInfo.setMandatoryCourseCredits(mandatoryCourseCredits);
+    activityInfo.setShowCredits(showCredits);
+    
     return activityInfo;
   }
 
@@ -422,6 +559,30 @@ public class EvaluationController {
     handleSupplementationNotifications(supplementationRequest);
     return supplementationRequest;
   }
+  
+  public void markSupplementationRequestHandled(Long studentEntityId, Long workspaceEntityId) {
+    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, Boolean.FALSE, Boolean.FALSE);
+    for (SupplementationRequest supplementationRequest : supplementationRequests) {
+      supplementationRequestDAO.updateHandled(supplementationRequest, Boolean.TRUE);
+    }
+  }
+
+  public void markSupplementationRequestHandled(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier) {
+    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectAndHandledAndArchived(
+        studentEntityId,
+        workspaceEntityId,
+        workspaceSubjectIdentifier.toId(),
+        Boolean.FALSE,
+        Boolean.FALSE);
+        
+    for (SupplementationRequest supplementationRequest : supplementationRequests) {
+      supplementationRequestDAO.updateHandled(supplementationRequest, Boolean.TRUE);
+    }
+  }
+  
+  public void markSupplementationRequestUnhandled(SupplementationRequest supplementationRequest ) {
+    supplementationRequestDAO.updateHandled(supplementationRequest, Boolean.FALSE);
+  }
 
   public AssessmentRequestCancellation createAssessmentRequestCancellation(Long studentEntityId, Long workspaceEntityId, Date cancellationDate) {
     AssessmentRequestCancellation assessmentRequestCancellation = assessmentRequestCancellationDAO.createAssessmentRequestCancellation(
@@ -485,7 +646,7 @@ public class EvaluationController {
 
       CommunicatorMessageCategory category = communicatorController.persistCategory("interimEvaluationRequests");
       
-      CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+      UserRecipientList recipients = new UserRecipientList();
       recipients.addRecipient(student);
       
       CommunicatorMessage communicatorMessage = communicatorController.createMessage(
@@ -530,16 +691,24 @@ public class EvaluationController {
     return supplementationRequestDAO.findById(supplementationRequestId);
   }
 
+  public List<SupplementationRequest> listSupplementationRequestsByWorkspaceAndHandledAndArchived(Long workspaceEntityId, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.listByWorkspaceAndHandledAndArchived(workspaceEntityId, handled, archived);
+  }
+
   public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
   }
 
-  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
-    return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
+  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndSubjectAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectAndHandledAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier.toId(), handled, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  }
+
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
@@ -575,7 +744,7 @@ public class EvaluationController {
   
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
     SchoolDataIdentifier workspaceSubjectIdentifier = supplementationRequest.getWorkspaceSubjectIdentifier() != null ? SchoolDataIdentifier.fromId(supplementationRequest.getWorkspaceSubjectIdentifier()) : null;
-    supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(
+    supplementationRequest = supplementationRequestDAO.update(
         supplementationRequest,
         userEntityId,
         supplementationRequest.getStudentEntityId(),
@@ -777,7 +946,7 @@ public class EvaluationController {
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
 
-    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    UserRecipientList recipients = new UserRecipientList();
     recipients.addRecipient(student);
     
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(
@@ -904,7 +1073,7 @@ public class EvaluationController {
 
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
 
-    CommunicatorMessageRecipientList recipients = new CommunicatorMessageRecipientList();
+    UserRecipientList recipients = new UserRecipientList();
     recipients.addRecipient(student);
     
     CommunicatorMessage communicatorMessage = communicatorController.createMessage(
@@ -1051,4 +1220,16 @@ public class EvaluationController {
         messageBody,
         teachers);
   }
+  
+  private SearchProvider getProvider(String name) {
+    Iterator<SearchProvider> i = searchProviders.iterator();
+    while (i.hasNext()) {
+      SearchProvider provider = i.next();
+      if (name.equals(provider.getName())) {
+        return provider;
+      }
+    }
+    return null;
+  }
+  
 }

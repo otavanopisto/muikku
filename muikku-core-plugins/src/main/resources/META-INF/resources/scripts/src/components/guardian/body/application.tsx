@@ -5,7 +5,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import Records from "./application/records";
 import Summary from "./application/summary";
 import Hops from "./application/hops";
-import YO from "./application/yo";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import {
@@ -55,7 +54,6 @@ type StudiesTab =
   | "CURRENT_RECORD"
   | "HOPS"
   | "SUMMARY"
-  | "YO"
   | "STUDY_INFO"
   | "PEDAGOGY_FORM";
 
@@ -146,7 +144,6 @@ class DependantApplication extends React.Component<
             this.props.hops.eligibility.upperSecondarySchoolCurriculum === true)
         );
       case "VOPS":
-      case "YO":
         return (
           this.props.status.isActiveUser &&
           this.props.hops.value &&
@@ -187,10 +184,7 @@ class DependantApplication extends React.Component<
    * @param id id
    * @param hash hash
    */
-  onTabChange = (
-    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO" | "PEDAGOGY_FORM",
-    hash?: string | Tab
-  ) => {
+  onTabChange = (id: StudiesTab, hash?: string | Tab) => {
     if (hash) {
       const user = window.location.hash.replace("#", "").split("/")[0];
       if (typeof hash === "string" || hash instanceof String) {
@@ -318,11 +312,6 @@ class DependantApplication extends React.Component<
           activeTab: "HOPS",
         });
         break;
-      case "yo":
-        this.setState({
-          activeTab: "YO",
-        });
-        break;
       case "pedagogy-form":
         this.setState({
           activeTab: "PEDAGOGY_FORM",
@@ -347,6 +336,7 @@ class DependantApplication extends React.Component<
       count: this.props.dependants ? this.props.dependants.list.length : 0,
     });
     const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
+
     const dependants = this.props.dependants
       ? this.props.dependants.list.map((student) => ({
           label: getName(student, true),
@@ -431,17 +421,6 @@ class DependantApplication extends React.Component<
         component: (
           <ApplicationPanelBody modifier="tabs">
             {hopsComponent}
-          </ApplicationPanelBody>
-        ),
-      },
-      {
-        id: "YO",
-        name: t("labels.matriculationExams", { ns: "studies" }),
-        hash: "yo",
-        type: "yo",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            <YO />
           </ApplicationPanelBody>
         ),
       },

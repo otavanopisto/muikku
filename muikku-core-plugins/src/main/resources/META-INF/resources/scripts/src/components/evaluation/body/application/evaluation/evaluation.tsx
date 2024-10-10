@@ -926,7 +926,7 @@ export class Evaluation extends React.Component<
           isOpen={this.state.archiveStudentDialog}
           onClose={this.handleCloseArchiveStudentDialog}
           place="modal"
-          {...this.props.selectedAssessment}
+          evaluationAssessmentRequest={this.props.selectedAssessment}
         />
       </div>
     );

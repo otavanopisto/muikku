@@ -20,7 +20,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./material";
-import { ButtonPill, IconButton } from "~/components/general/button";
+import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { bindActionCreators } from "redux";
@@ -37,11 +37,7 @@ import {
   SetWorkspaceMaterialEditorStateTriggerType,
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
-import {
-  useTranslation,
-  withTranslation,
-  WithTranslation,
-} from "react-i18next";
+import { withTranslation, WithTranslation } from "react-i18next";
 import ReadSpeakerReader from "~/components/general/readspeaker";
 import {
   displayNotification,
@@ -51,6 +47,7 @@ import {
   MaterialCompositeReply,
   MaterialViewRestriction,
 } from "~/generated/client";
+import { BackToToc } from "~/components/general/toc";
 
 /**
  * WorkspaceMaterialsProps
@@ -66,8 +63,6 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   workspaceEditMode: WorkspaceEditModeStateType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation: () => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -93,6 +88,8 @@ class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsState
 > {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  private contentPanelRef = React.createRef<ContentPanel>();
+
   /**
    * constructor
    * @param props props
@@ -105,7 +102,6 @@ class WorkspaceMaterials extends React.Component<
       redirect: null,
     };
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
@@ -371,13 +367,6 @@ class WorkspaceMaterials extends React.Component<
   handleOpenMaterialExtraToolsDrawerClick = () => {
     this.props.materialShowOrHideExtraTools();
   };
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    this.props.onOpenNavigation();
-  }
 
   /**
    * onScroll
@@ -779,6 +768,10 @@ class WorkspaceMaterials extends React.Component<
                   anchorItem={
                     <BackToToc
                       tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
                     />
                   }
                 />
@@ -852,6 +845,10 @@ class WorkspaceMaterials extends React.Component<
                     ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
                     : `tocTopic-${section.workspaceMaterialId}`
                 }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
               />
             </div>
           </h2>
@@ -883,7 +880,6 @@ class WorkspaceMaterials extends React.Component<
     return (
       <ContentPanel
         aside={progressData}
-        onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-materials"
         navigation={this.props.navigation}
         title={t("labels.materials", { ns: "materials" })}
@@ -893,7 +889,10 @@ class WorkspaceMaterials extends React.Component<
             readParameters={readSpeakerParameters}
           />
         }
-        ref="content-panel"
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
       >
         {results}
         {emptyMessage}
@@ -945,38 +944,3 @@ const componentWithTranslation = withTranslation(
 export default connect(mapStateToProps, mapDispatchToProps, null, {
   withRef: true,
 })(componentWithTranslation);
-
-/**
- * BackToTocProps
- */
-interface BackToTocProps {
-  tocElementId: string;
-}
-
-/**
- * BackToToc
- * @param props props
- */
-const BackToToc = (props: BackToTocProps) => {
-  const { t } = useTranslation(["materials"]);
-
-  /**
-   * handleLinkClick
-   */
-  const handleLinkClick = () => {
-    const tocElement = document.getElementById(props.tocElementId);
-
-    if (tocElement) {
-      tocElement.focus();
-    }
-  };
-
-  return (
-    <IconButton
-      icon="forward"
-      onClick={handleLinkClick}
-      buttonModifiers={["back-to-toc rs_skip_always"]}
-      aria-label={t("wcag.focusToToc", { ns: "materials" })}
-    />
-  );
-};

@@ -2,7 +2,6 @@ import { easyToUse } from "./easy-to-use-functions/index";
 import { notifications } from "./base/notifications";
 import { locales } from "./base/locales";
 import status from "./base/status";
-import { title } from "./base/title";
 import websocket from "./util/websocket";
 import { messages } from "./main-function/messages";
 import { workspaces } from "./workspaces";
@@ -28,6 +27,7 @@ import { ceepos } from "./main-function/ceepos";
 import { organizationWorkspaces } from "./workspaces/organization";
 import { contacts } from "./base/contacts";
 import { dependants } from "./main-function/dependants";
+import { hopsNew } from "./hops/index";
 export default combineReducers({
   announcements,
   ceepos,
@@ -50,11 +50,11 @@ export default combineReducers({
   status,
   studyprogrammes,
   summary,
-  title,
   userGroups,
   userIndex,
   userSelect,
   websocket,
   workspaces,
   yo,
+  hopsNew,
 });

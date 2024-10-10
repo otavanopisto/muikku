@@ -128,6 +128,12 @@ class WorkspaceHomeHeader extends React.Component<
    */
   render() {
     const { t } = this.props;
+    const hasPassingGrade =
+      this.props.workspace &&
+      this.props.workspace.activity &&
+      !!this.props.workspace.activity.assessmentStates.find(
+        (state) => state.passingGrade === true
+      );
 
     if (!this.props.workspace) {
       return null;
@@ -150,6 +156,14 @@ class WorkspaceHomeHeader extends React.Component<
      * name/s default to undefined if additionalInfo is not present
      */
     let workspaceSubjectNameOrNames: undefined | JSX.Element;
+
+    /**
+     * First assessmenState for when it's not a a combinationWorkspace - makes the code cleaner
+     */
+    const assessmentState =
+      this.props.workspace &&
+      this.props.workspace.activity &&
+      this.props.workspace.activity.assessmentStates[0];
 
     if (this.props.workspace.additionalInfo) {
       const { subjects } = this.props.workspace.additionalInfo;
@@ -241,23 +255,45 @@ class WorkspaceHomeHeader extends React.Component<
     return (
       <header className="hero hero--workspace">
         <div
-          className="hero__wrapper hero__wrapper--workspace"
+          className={`hero__wrapper hero__wrapper--workspace ${
+            hasPassingGrade && !isCombinationWorkspace ? "STATE-passed" : ""
+          }`}
           style={{ backgroundImage: headerBackgroundImage }}
         >
+          {hasPassingGrade && !isCombinationWorkspace && (
+            <div className="hero__workspace-assessment-container">
+              <div className="hero__workspace-assessment">
+                <label
+                  htmlFor={assessmentState.subject.identifier}
+                  className="visually-hidden"
+                >
+                  <span id={assessmentState.subject.identifier}>
+                    {t("labels.evaluated", {
+                      ns: "workspace",
+                      context: "in",
+                      date: localize.date(assessmentState.date),
+                    })}
+                    {t("labels.grade", { ns: "workspace" })}
+                  </span>
+                </label>
+                {assessmentState.grade}
+              </div>
+            </div>
+          )}
           <h1 className="hero__workspace-title">{this.props.workspace.name}</h1>
-          {this.props.workspace.nameExtension ? (
+          {this.props.workspace.nameExtension && (
             <div className="hero__workspace-name-extension">
               <span>{this.props.workspace.nameExtension}</span>
             </div>
-          ) : null}
+          )}
           {this.props.workspace.additionalInfo &&
-          this.props.workspace.additionalInfo.educationType ? (
-            <div className="hero__workspace-education-type">
-              <span>
-                {this.props.workspace.additionalInfo.educationType.name}
-              </span>
-            </div>
-          ) : null}
+            this.props.workspace.additionalInfo.educationType && (
+              <div className="hero__workspace-education-type">
+                <span>
+                  {this.props.workspace.additionalInfo.educationType.name}
+                </span>
+              </div>
+            )}
         </div>
         <div className="meta meta--workspace">
           <div className="meta__item">
@@ -299,9 +335,7 @@ class WorkspaceHomeHeader extends React.Component<
               </span>
             </div>
           ) : null}
-
           {this.renderMandatorityDescription()}
-
           {this.props.workspace.activity ? (
             <div className="meta__item meta__item--progress-data">
               <ProgressData

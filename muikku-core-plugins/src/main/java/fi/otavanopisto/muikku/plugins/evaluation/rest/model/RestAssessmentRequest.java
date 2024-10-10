@@ -103,14 +103,6 @@ public class RestAssessmentRequest {
     this.evaluationDate = evaluationDate;
   }
 
-  public Boolean getPassing() {
-    return passing;
-  }
-
-  public void setPassing(Boolean passing) {
-    this.passing = passing;
-  }
-
   public Long getUserEntityId() {
     return userEntityId;
   }
@@ -135,28 +127,12 @@ public class RestAssessmentRequest {
     this.workspaceUserIdentifier = workspaceUserIdentifier;
   }
 
-  public Boolean getGraded() {
-    return graded;
-  }
-
-  public void setGraded(Boolean graded) {
-    this.graded = graded;
-  }
-
   public List<WorkspaceSubjectRestModel> getSubjects() {
     return subjects;
   }
 
   public void setSubjects(List<WorkspaceSubjectRestModel> subjects) {
     this.subjects = subjects;
-  }
-
-  public boolean isInterimEvaluationRequest() {
-    return isInterimEvaluationRequest;
-  }
-
-  public void setInterimEvaluationRequest(boolean isInterimEvaluationRequest) {
-    this.isInterimEvaluationRequest = isInterimEvaluationRequest;
   }
 
   public Long getId() {
@@ -175,6 +151,14 @@ public class RestAssessmentRequest {
     this.hasPedagogyForm = hasPedagogyForm;
   }
 
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
+
   private Long id;
   private Long userEntityId;
   private String firstName;
@@ -186,15 +170,13 @@ public class RestAssessmentRequest {
   private String workspaceName;
   private String workspaceNameExtension;
   private String workspaceUrlName;
-  private boolean isInterimEvaluationRequest;
   private Date enrollmentDate;
   private Date assessmentRequestDate;
   private Date evaluationDate;
-  private Boolean graded;
-  private Boolean passing;
   private Long assignmentsDone;
   private Long assignmentsTotal;
-
   private List<WorkspaceSubjectRestModel> subjects;
   private Boolean hasPedagogyForm;
+  private String state; // essentially state string of WorkspaceAssessmentState
+
 }

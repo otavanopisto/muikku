@@ -293,6 +293,11 @@ export async function loadCurrentWorkspaceJournalsHelper(
           userEntityId === currentJournalState.userEntityId
             ? currentJournalState.commentsLoaded
             : [],
+        // Same as above, but for currentJournal
+        currentJournal:
+          userEntityId === currentJournalState.userEntityId
+            ? currentJournalState.currentJournal
+            : null,
         state: journalNextstate,
       },
     },
