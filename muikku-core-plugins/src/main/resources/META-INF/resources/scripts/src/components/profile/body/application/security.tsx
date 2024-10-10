@@ -62,7 +62,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase

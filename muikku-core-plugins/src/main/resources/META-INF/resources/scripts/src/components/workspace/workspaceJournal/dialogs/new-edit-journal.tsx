@@ -68,10 +68,10 @@ class NewEditJournal extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: NewEditJournalProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: NewEditJournalProps) {
     if (nextProps.journal && !equals(this.props.journal, nextProps.journal)) {
       this.setState(
         this.getRecoverStoredState(

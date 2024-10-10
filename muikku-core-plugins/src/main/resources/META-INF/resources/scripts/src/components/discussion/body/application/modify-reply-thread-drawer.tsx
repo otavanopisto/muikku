@@ -83,10 +83,10 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ModifyThreadReplyDrawerProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ModifyThreadReplyDrawerProps) {
     if (nextProps.reply.id !== this.props.reply.id) {
       this.setState(
         this.getRecoverStoredState(

@@ -41,11 +41,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: HopsProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: HopsProps) {
     const nextData = nextProps.data || nextProps.defaultData;
     if (nextData !== this.state.hops) {
       this.setState({ hops: nextData });
