@@ -78,6 +78,11 @@ export type EVALUATION_REQUESTS_LOAD = SpecificActionType<
   EvaluationAssessmentRequest[]
 >;
 
+export type EVALUATION_UDATE_SELECTED_ASSESSMENT_REQUEST = SpecificActionType<
+  "EVALUATION_UDATE_SELECTED_ASSESSMENT_REQUEST",
+  EvaluationAssessmentRequest
+>;
+
 export type EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE = SpecificActionType<
   "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE",
   EvaluationStateType
@@ -403,6 +408,16 @@ export interface RemoveWorkspaceEvent {
     eventType: EvaluationEventType;
     onSuccess?: () => void;
     onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * LockAssessmentRequest
+ */
+export interface LockAssessmentRequest {
+  (data: {
+    assessment: EvaluationAssessmentRequest;
+    locked: boolean;
   }): AnyActionType;
 }
 
@@ -2011,10 +2026,10 @@ const updateBillingToServer: UpdateEvaluationEvent =
   };
 
 /**
- * Updates selected assessment
+ * Updates selected assessment and loads events
  * @param data data
  */
-const updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
+const setSelectedAssessmentAndLoadEvents: UpdateEvaluationSelectedAssessment =
   function updateSelectedAssessment(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
@@ -2029,6 +2044,22 @@ const updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
           assessment: data.assessment,
         })
       );
+    };
+  };
+
+/**
+ * Updates selected assessment
+ * @param data data
+ */
+const updateSelectedAassessment: UpdateEvaluationSelectedAssessment =
+  function updateSelectedAssessment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+    ) => {
+      dispatch({
+        type: "EVALUATION_ASSESSMENT_UPDATE",
+        payload: data.assessment,
+      });
     };
   };
 
@@ -2709,6 +2740,53 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
     };
   };
 
+/**
+ * lockAssessmentRequest
+ * @param data data
+ */
+const lockAssessmentRequest: LockAssessmentRequest =
+  function lockAssessmentRequest(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const { assessment, locked } = data;
+
+      const evaluationApi = MApi.getEvaluationApi();
+
+      try {
+        const updatedAssessmentRequest =
+          await evaluationApi.lockWorkspaceUserEvaluationRequest({
+            workspaceUserEntityId: assessment.workspaceUserEntityId,
+            assessmentRequestIdentifier: assessment.identifier,
+            lockWorkspaceUserEvaluationRequestRequest: {
+              ...assessment,
+              locked,
+            },
+          });
+
+        dispatch(
+          updateSelectedAassessment({ assessment: updatedAssessmentRequest })
+        );
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "locking",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2728,7 +2806,7 @@ export {
   updateEvaluationSearch,
   updateNeedsReloadEvaluationRequests,
   updateImportance,
-  updateSelectedAssessment,
+  setSelectedAssessmentAndLoadEvents,
   updateCurrentStudentCompositeRepliesData,
   updateOpenedAssignmentEvaluation,
   loadEvaluationAssessmentEventsFromServer,
@@ -2745,4 +2823,5 @@ export {
   createOrUpdateEvaluationJournalFeedback,
   deleteEvaluationJournalFeedback,
   deleteSupplementationRequest,
+  lockAssessmentRequest,
 };

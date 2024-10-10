@@ -908,7 +908,8 @@ public class EvaluationController {
           assessmentRequest.getRequestText(),
           assessmentRequest.getDate(),
           assessmentRequest.getArchived(),
-          Boolean.TRUE); // handled
+          Boolean.TRUE, // handled
+          assessmentRequest.getLocked());
     }
   }
 

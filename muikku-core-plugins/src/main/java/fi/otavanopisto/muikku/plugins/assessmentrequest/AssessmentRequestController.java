@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -142,7 +143,7 @@ public class AssessmentRequestController {
     
     // Archive assessment request
     
-    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled());
+    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled(), assessmentRequest.getLocked());
   }
 
   public CommunicatorMessageId findCommunicatorMessageId(WorkspaceUserEntity workspaceUserEntity) {
@@ -169,6 +170,36 @@ public class AssessmentRequestController {
       assessmentRequestMessageIdDAO.create(workspaceUserEntity, communicatorMessageId);
     else
       assessmentRequestMessageIdDAO.updateMessageId(requestMessageId, communicatorMessageId);
+  }
+  
+  public AssessmentRequestRESTModel restModel(WorkspaceAssessmentRequest workspaceAssessmentRequest) {
+
+    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
+        workspaceAssessmentRequest.getWorkspaceUserIdentifier(),
+        workspaceAssessmentRequest.getWorkspaceUserSchoolDataSource());
+
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+    if (workspaceUserEntity != null) {
+      SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
+          workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+      SchoolDataIdentifier workspaceAssessmentRequestIdentifier = new SchoolDataIdentifier(
+          workspaceAssessmentRequest.getIdentifier(), workspaceAssessmentRequest.getSchoolDataSource());
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+      
+      AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
+          workspaceAssessmentRequestIdentifier.toId(), 
+          userIdentifier.toId(),
+          workspaceUserIdentifier.toId(),
+          workspaceEntity.getId(), 
+          userEntity.getId(), 
+          workspaceAssessmentRequest.getRequestText(), 
+          workspaceAssessmentRequest.getDate(),
+          workspaceAssessmentRequest.getLocked());
+  
+      return restAssessmentRequest;
+    }
+    return null;
   }
 
 

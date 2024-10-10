@@ -1603,6 +1603,24 @@
   margin: 5px;
 }
 
+.button--evaluation-lock-request {
+  background-color: $color-info;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-unlock-request {
+  background-color: $color-default-contrast;
+  color: $color-default;
+  margin: 5px;
+}
+
+.button--evaluation-add-assessment {
+  background-color: $color-execute;
+  color: $color-default;
+  margin: 5px;
+}
+
 .button--evaluation-add-supplementation {
   background-color: $color-grade-incomplete;
   color: $color-default;
@@ -1941,13 +1959,15 @@
   }
 }
 
-.button-pill--editing-master-switch {
+// Vertical switch
+.button-pill--switch-vertical {
   align-items: center;
   appearance: none;
   background: $color-default;
   border: 2px solid $color-default;
   border-radius: 10px; // This is half of the whole width of the switch
   display: flex;
+  height: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
   justify-content: center;
   margin-right: 15px;
   position: relative;
@@ -1970,6 +1990,7 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
+    height: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
     width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
@@ -1979,30 +2000,27 @@
   }
 }
 
-.button-pill--editing-master-switch-active {
+.button-pill--switch-vertical-active {
   &::after {
     background: $color-fatal;
     border-radius: 100%;
     content: " ";
-    height: $generic-mobile-switch-size;
     position: absolute;
     top: calc(100% - #{$generic-mobile-switch-size} * 2);
     transform: translateY(100%);
-    width: $generic-mobile-switch-size;
   }
 
   @include breakpoint($breakpoint-pad) {
     width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
-      height: $generic-desktop-switch-size;
       top: calc(100% - #{$generic-desktop-switch-size} * 2);
-      width: $generic-desktop-switch-size;
     }
   }
 }
 
-.button-pill--autoreply-switch {
+// Horizontal switch
+.button-pill--switch-horizontal {
   align-items: center;
   appearance: none;
   background: $color-default;
@@ -2010,11 +2028,11 @@
   border-radius: 10px; // This is half of the whole width of the switch
   box-shadow: 0 0 0 1px $color-default-helper;
   display: flex;
+  height: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
   justify-content: center;
-  margin: 0 20px;
+  margin: 0;
   position: relative;
-  rotate: (-90deg);
-  width: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
+  width: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
 
   &::after {
     background: $color-default-helper;
@@ -2022,7 +2040,7 @@
     content: " ";
     height: $generic-mobile-switch-size;
     position: absolute;
-    top: 0;
+    left: 0;
     transition: 0.3s;
     width: $generic-mobile-switch-size;
   }
@@ -2037,7 +2055,8 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
-    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    width: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
 
     &::after {
       height: $generic-desktop-switch-size;
@@ -2046,7 +2065,7 @@
   }
 }
 
-.button-pill--autoreply-switch-active {
+.button-pill--switch-horizontal-active {
   background: lighten($color-success, 45%);
   border-color: lighten($color-success, 45%);
   box-shadow: 0 0 0 1px $color-success;
@@ -2055,11 +2074,10 @@
     background: $color-success;
     border-radius: 100%;
     content: " ";
-    height: $generic-mobile-switch-size;
+    left: unset;
     position: absolute;
-    top: calc(100% - #{$generic-mobile-switch-size} * 2);
-    transform: translateY(100%);
-    width: $generic-mobile-switch-size;
+    right: $generic-mobile-switch-size;
+    transform: translateX(100%);
   }
 
   &:hover {
@@ -2067,14 +2085,16 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
-      height: $generic-desktop-switch-size;
-      top: calc(100% - #{$generic-desktop-switch-size} * 2);
-      width: $generic-desktop-switch-size;
+      right: $generic-desktop-switch-size;
     }
   }
+}
+
+.button-pill--signup-switch {
+  margin: 0 20px;
 }
 
 // Teacher's Worklist

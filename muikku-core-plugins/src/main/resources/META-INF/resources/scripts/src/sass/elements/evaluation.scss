@@ -58,6 +58,7 @@
 
 .evaluation-modal__header {
   background: $color-info;
+  height: 3.5rem;
   min-height: 30px;
   padding: 10px 0;
   position: fixed;
@@ -65,10 +66,18 @@
   white-space: nowrap;
   width: 100%;
   z-index: 60;
+
+  &.evaluation-modal__header--eval-request-locked {
+    background: $color-default-contrast;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 50%;
+  }
 }
 
 .evaluation-modal__header--workspace {
-  display: none;
+ display: none;
 
   @include breakpoint($breakpoint-desktop) {
     display: block;
@@ -80,6 +89,7 @@
   color: $color-default;
   display: inline-block;
   font-size: 1.25rem;
+  height: 2.25rem;
   line-height: 2rem;
   overflow: hidden;
   padding: 0 50px 0 10px;

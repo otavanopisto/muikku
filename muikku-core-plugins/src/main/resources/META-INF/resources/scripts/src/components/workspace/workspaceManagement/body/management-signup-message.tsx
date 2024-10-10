@@ -102,9 +102,9 @@ const ManagementSignupMessage = (props: ManagementSignupMessageProps) => {
             <input
               id="enable-workspace-signup-message"
               type="checkbox"
-              className={`button-pill button-pill--autoreply-switch ${
+              className={`button-pill button-pill--switch-horizontal button-pill--signup-switch ${
                 workspaceSignupMessage.enabled
-                  ? "button-pill--autoreply-switch-active"
+                  ? "button-pill--switch-horizontal-active"
                   : ""
               }`}
               checked={workspaceSignupMessage.enabled}

@@ -3065,6 +3065,43 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/assessment/{assessmentRequestIdentifier}/lock:
+    put:
+      operationId: lockWorkspaceUserEvaluationRequest
+      summary: Lock workspace user evaluation request
+      description: Lock workspace user evaluation request
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceUserEntityId
+          in: path
+          description: Workspace user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: assessmentRequestIdentifier
+          in: path
+          description: Assessment request identifier (like PYRAMUS-103)
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/EvaluationUpdateLockAssessmentRequestBody"
+      responses:
+        "200":
+          description: Workspace user assessment lock updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationAssessmentRequest"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "500":
+          description: Internal server error
+
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/evaluationrequestarchive:
     put:
       operationId: archiveWorkspaceUserEvaluationRequest
@@ -4626,7 +4663,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-          
+
   /rest/guider/students/contactLogEntries/batch:
     post:
       operationId: createMultipleContactLogEvents
@@ -10974,6 +11011,14 @@ components:
               workspaceSubjectIdentifier:
                 type: string
 
+    EvaluationUpdateLockAssessmentRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/EvaluationAssessmentRequest"
+
     EvaluationSaveSupplementationRequestRequestBody:
       required: true
       content:
@@ -11138,7 +11183,7 @@ components:
                 type: string
               entryDate:
                 type: string
-                
+
     ContactLogCreateMultipleEventRequestBody:
       required: true
       content:
@@ -12609,6 +12654,7 @@ components:
         - workspaceEntityId
         - requestText
         - date
+        - locked
       properties:
         id:
           type: integer
@@ -12628,6 +12674,8 @@ components:
         date:
           type: string
           format: date-time
+        locked:
+          type: boolean
 
     BilledPrice:
       type: object
@@ -13007,7 +13055,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ContactLogEventComment"
-    
+
     ContactLogMultipleEvents:
       type: object
       description: GuiderContactLogMultipleEvents object
@@ -13065,7 +13113,7 @@ components:
           $ref: "#/components/schemas/ContactLogRecipientList"
         contactLogEvent:
           $ref: "#/components/schemas/ContactLogEvent"
-    
+
     ContactLogRecipientList:
       type: object
       description: ContactLogRecipientList
@@ -13089,7 +13137,7 @@ components:
           type: array
           items:
             type: integer
-    
+
     Curriculum:
       type: object
       description: Curriculum object
@@ -13419,6 +13467,7 @@ components:
       description: EvaluationAssessmentRequest object
       required:
         - id
+        - identifier
         - subjects
         - enrollmentDate
         - evaluationDate
@@ -13437,10 +13486,14 @@ components:
         - workspaceUserIdentifier
         - hasPedagogyForm
         - state
+        - locked
       properties:
         id:
           type: integer
           format: int64
+          nullable: true
+        identifier:
+          type: string
           nullable: true
         subjects:
           type: array
@@ -13491,6 +13544,8 @@ components:
           type: boolean
         state:
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
+        locked:
+          type: boolean
 
     EvaluationSupplementationRequest:
       type: object
@@ -15538,7 +15593,7 @@ components:
         urlName:
           description: The url of the workspace
           type: string
-          
+
     RecordsWorkspace:
       allOf:
         - $ref: "#/components/schemas/Workspace"
@@ -17950,4 +18005,3 @@ components:
           format: int32
         message:
           type: string
-          

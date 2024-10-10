@@ -143,14 +143,22 @@ public class RestAssessmentRequest {
     this.id = id;
   }
 
-  public Boolean getHasPedagogyForm() {
+  public boolean getHasPedagogyForm() {
     return hasPedagogyForm;
   }
 
-  public void setHasPedagogyForm(Boolean hasPedagogyForm) {
+  public void setHasPedagogyForm(boolean hasPedagogyForm) {
     this.hasPedagogyForm = hasPedagogyForm;
   }
 
+  public boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }      
+  
   public String getState() {
     return state;
   }
@@ -159,7 +167,16 @@ public class RestAssessmentRequest {
     this.state = state;
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+
   private Long id;
+  private String identifier; // for assessment requests
   private Long userEntityId;
   private String firstName;
   private String lastName;
@@ -176,7 +193,7 @@ public class RestAssessmentRequest {
   private Long assignmentsDone;
   private Long assignmentsTotal;
   private List<WorkspaceSubjectRestModel> subjects;
-  private Boolean hasPedagogyForm;
+  private boolean hasPedagogyForm;
+  private boolean locked;
   private String state; // essentially state string of WorkspaceAssessmentState
-
 }
