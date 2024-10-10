@@ -4,7 +4,7 @@ import Websocket from "~/util/websocket";
 import { Action } from "redux";
 import { updateUnreadMessageThreadsCount } from "~/actions/main-function/messages";
 import { StateType } from "~/reducers";
-import { Store } from "redux";
+import { Store } from "react-redux";
 import {
   loadEnviromentalForumAreaPermissions,
   loadStatus,

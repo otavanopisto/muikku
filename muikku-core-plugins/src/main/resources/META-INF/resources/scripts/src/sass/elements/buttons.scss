@@ -1596,6 +1596,14 @@
 }
 
 // Evaluation related
+.button--evaluation-add-assessment {
+  background-color: $color-info;
+  border: 0;
+  color: $color-default;
+  margin: 5px;
+}
+
+// Automatic sign-up message
 .button--add-signup-message {
   background-color: $color-info;
   border: 0;

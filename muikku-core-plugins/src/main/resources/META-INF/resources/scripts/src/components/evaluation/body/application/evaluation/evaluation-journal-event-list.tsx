@@ -1,9 +1,9 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
-import { connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import EvaluationJournalEvent from "./evaluation-journal-event";
 import Link from "~/components/general/link";

@@ -2,8 +2,8 @@
 // After more easy-to-use functions are added
 
 import * as React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import {
   OpenReadingRuler,

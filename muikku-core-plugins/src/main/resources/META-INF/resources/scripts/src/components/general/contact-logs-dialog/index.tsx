@@ -21,8 +21,8 @@ import {
 } from "~/actions/base/notifications";
 
 import { AnyActionType } from "~/actions";
-import { connect } from "react-redux";
-import { Dispatch, bindActionCreators } from "redux";
+import { connect, Dispatch } from "react-redux";
+import { bindActionCreators } from "redux";
 
 /**
  * NewContactEventProps

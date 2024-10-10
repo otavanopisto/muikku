@@ -504,7 +504,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
         } else if (value.failed) {
           // if the value failed we add a message, you can get the value name there so use it to say which file
           return (
-            <span className="audiofield__file-container">
+            <span className="audiofield__file-container" key={index}>
               <span className="audiofield__file audiofield__file--FAILED-TO-UPLOAD">
                 {t("notifications.saveError", {
                   ns: "materials",
@@ -656,7 +656,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                     onClick={this.stop}
                   >
                     <span className="audiofield__stop-record-label">
-                      {t("actions.start", { ns: "materials" })}
+                      {t("actions.stop", { ns: "materials" })}
                     </span>
                   </Link>
                 )}

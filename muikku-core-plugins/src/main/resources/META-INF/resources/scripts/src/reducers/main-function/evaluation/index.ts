@@ -77,6 +77,8 @@ export const initialState: EvaluationState = {
     notEvaluated: false,
     assessmentRequest: false,
     supplementationRequest: false,
+    interimRequest: false,
+    interimEvaluation: false,
   },
   evaluationAssessmentEvents: {
     state: "LOADING",
