@@ -69,7 +69,7 @@ class GuiderLabelShareDialog extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   UNSAFE_componentWillReceiveProps(nextProps: GuiderLabelShareDialogProps) {

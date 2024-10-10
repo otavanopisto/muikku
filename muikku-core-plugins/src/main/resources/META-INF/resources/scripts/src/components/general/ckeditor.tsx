@@ -231,10 +231,10 @@ export default class CKEditor extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: CKEditorProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: CKEditorProps) {
     if (this.timeoutProps) {
       this.timeoutProps = nextProps;
       return;
@@ -259,7 +259,7 @@ export default class CKEditor extends React.Component<
    * @returns boolean
    */
   shouldComponentUpdate() {
-    //this element is managed from componentWillReceiveProps
+    //this element is managed from UNSAFE_componentWillReceiveProps
     return false;
   }
 

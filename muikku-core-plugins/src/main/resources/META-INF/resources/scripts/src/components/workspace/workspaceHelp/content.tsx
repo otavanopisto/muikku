@@ -100,11 +100,11 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: ContentProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
     // If materials have changed, specifically length, reset elementRefs
     if (this.props.materials.length !== nextProps.materials.length) {
       this.elementRefs = nextProps.materials.reduce<TocElementRef>(
