@@ -189,18 +189,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public List<Workspace> listWorkspaces() {
-    List<Workspace> result = new ArrayList<Workspace>();
-    Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
-    if (courses != null) {
-      for (Course course : courses) {
-        result.add(createWorkspaceEntity(course));
-      }
-    }
-    return result;
-  }
-
-  @Override
   public Workspace updateWorkspace(Workspace workspace) {
     Long pyramusCourseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
     if (pyramusCourseId == null) {
@@ -230,15 +218,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     }
     
     return createWorkspaceEntity(updatedCourse);
-  }
-
-  @Override
-  public void removeWorkspace(SchoolDataIdentifier schoolDataIdentifier) {
-    if (!StringUtils.isNumeric(schoolDataIdentifier.getIdentifier())) {
-      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
-    }
-
-    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
@@ -311,19 +290,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       logger.severe(String.format("null courseId %d or userId %d", courseId, userId));
     }
     return null;
-  }
-  
-  @Override
-  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) {
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    
-    CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
-    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
-    
-    List<WorkspaceUser> result = entityFactory.createEntity(staffMembers);
-    result.addAll(entityFactory.createEntity(courseStudents));
-    
-    return result;
   }
   
   private Workspace createWorkspaceEntity(Course course) {

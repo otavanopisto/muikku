@@ -74,10 +74,6 @@ public class UserController {
     return findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
   }
 
-  public List<User> listUsers() {
-    return userSchoolDataController.listUsers();
-  }
-  
   public List<StudyProgramme> listStudyProgrammes() {
     return userSchoolDataController.listStudyProgrammes();
   }

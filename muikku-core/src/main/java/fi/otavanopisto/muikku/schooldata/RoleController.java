@@ -43,26 +43,6 @@ public class RoleController {
   @Inject
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
   
-  /* Roles */
-
-  public void setRoleEntity(String schoolDataSource, String identifier, RoleEntity roleEntity) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource != null) {
-      RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
-      if (roleSchoolDataIdentifier != null) {
-        if (roleEntity != null) {
-          roleSchoolDataIdentifierDAO.updateRoleEntity(roleSchoolDataIdentifier, roleEntity);
-        } else {
-          roleSchoolDataIdentifierDAO.delete(roleSchoolDataIdentifier);
-        }
-      } else {
-        if (roleEntity != null) {
-          roleSchoolDataIdentifierDAO.create(dataSource, identifier, roleEntity);
-        }        
-      }
-    }
-  }
-
   /* Role Entities */
 
   public RoleEntity findRoleEntityById(Long id) {

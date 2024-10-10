@@ -26,11 +26,7 @@ public interface WorkspaceSchoolDataBridge {
 
   public Workspace findWorkspace(String identifier);
 
-  public List<Workspace> listWorkspaces();
-
   public Workspace updateWorkspace(Workspace workspace);
-  
-  public void removeWorkspace(SchoolDataIdentifier identifier);
   
   /* Workspace Types */
   
@@ -45,9 +41,6 @@ public interface WorkspaceSchoolDataBridge {
   public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier);
   
   public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier);
-  
-  @Deprecated
-  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier);
   
   public List<WorkspaceUser> listWorkspaceStaffMembers(String workspaceIdentifier);
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier);

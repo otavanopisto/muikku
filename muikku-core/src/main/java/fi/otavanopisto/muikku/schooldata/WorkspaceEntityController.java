@@ -25,7 +25,6 @@ import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupUserEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -38,8 +37,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 
@@ -50,19 +47,10 @@ public class WorkspaceEntityController {
   private Logger logger;
   
   @Inject
-  private SessionController sessionController;
-
-  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
-  @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
-
-  @Inject
-  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -118,10 +106,6 @@ public class WorkspaceEntityController {
     return workspaceEntityDAO.findByUrlName(urlName);
   }
 
-  public WorkspaceEntity findWorkspaceByUrlNameAndArchived(String urlName, Boolean archived) {
-    return workspaceEntityDAO.findByUrlNameAndArchived(urlName, archived);
-  }
-
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }
@@ -154,17 +138,6 @@ public class WorkspaceEntityController {
     return listWorkspaceEntitiesByDataSource(schoolDataSource, firstResult, maxResults); 
   }
   
-  public List<WorkspaceEntity> listWorkspaceEntitiesByCurrentUser() {
-    UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    if (usdi == null) {
-      logger.severe("UserSchoolDataIdentifier not found for " + sessionController.getLoggedUser());
-      return null;
-    }
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndActiveAndArchived(
-        usdi, Boolean.TRUE, Boolean.FALSE);
-    return workspaceUserEntities.stream().map(WorkspaceUserEntity::getWorkspaceEntity).collect(Collectors.toList()); 
-  }
-
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
   }

@@ -87,11 +87,6 @@ public class RoleSchoolDataIdentifierDAO extends CoreDAO<RoleSchoolDataIdentifie
     return entityManager.createQuery(criteria).getResultList();
   }
 
-	public RoleSchoolDataIdentifier updateRoleEntity(RoleSchoolDataIdentifier roleSchoolDataIdentifier, RoleEntity roleEntity) {
-		roleSchoolDataIdentifier.setRoleEntity(roleEntity);
-		return persist(roleSchoolDataIdentifier);
-	}
-	
 	@Override
 	public void delete(RoleSchoolDataIdentifier roleSchoolDataIdentifier) {
 		super.delete(roleSchoolDataIdentifier);
