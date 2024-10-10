@@ -1708,7 +1708,7 @@
       "empty_instructions": "Kurssilla ei ole ohjeita",
       "evaluationHasFee": "Tämän kurssin arviointi on maksullinen. Jos olet jo maksanut, tämä ilmoitus on aiheeton.",
       "evaluationFee": "Tämän kurssin arviointi maksaa sinulle {{price}} euroa. Kun olet maksanut arvioinnin, opettaja saa automaattisesti tiedon arviointipyynnöstäsi.",
-      "evaluationInProgress": "Kurssi on arvioitavana. Tänä aikana arviointipyynnön peruutus ei ole mahdollista sekä kurssin materiaalit ovat käytettävissä vain lukutilassa.",
+      "evaluationInProgress": "Kurssi on arvioitavana. Et voi tehdä tehtäviä tai perua arviointipyyntöä arvioinnin aikana.",
       "evaluationPaymentProcessor": "Maksu suoritetaan Mikkelin kaupungin verkkokaupassa. ",
       "logInGuidingInformation": "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.",
       "mustBePublished": "Huomaa, että kurssi täytyy erikseen julkaista, ennen kuin se näkyy opiskelijoille kurssipoimurissa. Kurssin alkamispäivämäärä ei vaikuta kurssin näkymiseen. Päivämääriä ei ole pakko asettaa.",
@@ -2188,6 +2188,7 @@
       "saveError_supplementationRequest": "Virhe täydennyspyynnön tallennuksessa: {{error}}",
       "updateError": "$t(common:notifications.updateError)",
       "updateError_evaluation": "Virhe arvioinnin päivittämisessä: {{error}}",
+      "updateError_locking": "Virhe arviointipyynnön lukitsemisessa: {{error}}",
       "updateError_pricing": "Virhe kurssin maksutietojen päivittämisessä: {{error}}",
       "updateError_sorting": "Virhe lajittelutietojen päivittämisessä: {{error}}"
     },

@@ -2773,16 +2773,16 @@ const lockAssessmentRequest: LockAssessmentRequest =
           throw err;
         }
 
-        // dispatch(
-        //   notificationActions.displayNotification(
-        //     i18n.t("notifications.lockError", {
-        //       ns: "evaluation",
-        //       context: "evaluationRequest",
-        //       error: err.message,
-        //     }),
-        //     "error"
-        //   )
-        // );
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "locking",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
       }
     };
   };
