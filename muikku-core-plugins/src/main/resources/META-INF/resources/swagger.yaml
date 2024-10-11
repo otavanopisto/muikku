@@ -4906,7 +4906,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/guider/students/{studentId}:
+  /rest/guider/students/{studentIdentifier}:
     get:
       operationId: getGuiderStudent
       summary: Get student
@@ -4914,9 +4914,9 @@ paths:
       tags:
         - Guider
       parameters:
-        - name: studentId
+        - name: studentIdentifier
           in: path
-          description: Student id
+          description: Student identifier
           required: true
           schema:
             type: string
@@ -4927,6 +4927,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Student"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/guider/students/{studentIdentifier}/students:
+    get:
+      operationId: getGuiderStudentWithEducationLevels
+      summary: Get student with educational level categories
+      description: Get student with educational level categories
+      tags:
+        - Guider
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GuiderStudentWithEducationalLevels"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -13762,6 +13788,17 @@ components:
           type: boolean
         properties:
           $ref: "#/components/schemas/AnyValue"
+
+    GuiderStudentWithEducationalLevels:
+      type: object
+      description: GuiderStudentWithEducationalLevels object
+      properties:
+        grammarSchool:
+          $ref: "#/components/schemas/Student"
+        highSchool:
+          $ref: "#/components/schemas/Student"
+        other:
+          $ref: "#/components/schemas/Student"
 
     GuiderStudentNotification:
       type: object

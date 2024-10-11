@@ -78,6 +78,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
+import fi.otavanopisto.muikku.rest.model.GuiderEducationalLevelStudent;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -590,6 +591,111 @@ public class GuiderRESTService extends PluginRESTService {
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
+  }
+
+  @GET
+  @Path("/students/{STUDENTIDENTIFIER}/students")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listStudentsStudents(
+      @PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier sourceStudentIdentifier
+      ) {
+
+    if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // TODO All the permission checks!!!!!!!!!!!!!
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sourceStudentIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %s", sourceStudentIdentifier)).build();
+    }
+
+    List<UserSchoolDataIdentifier> userSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+
+    GuiderStudentRestModel grammarSchoolStudent = null;
+    GuiderStudentRestModel highSchoolStudent = null;
+    
+    for (UserSchoolDataIdentifier userSchoolDataIdentifier : userSchoolDataIdentifiers) {
+      SchoolDataIdentifier studentIdentifier = userSchoolDataIdentifier.schoolDataIdentifier();
+      User user = userController.findUserByIdentifier(studentIdentifier);
+      
+      String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
+      Date studyStartDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
+      Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
+      Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
+
+      OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
+      OrganizationRESTModel organizationRESTModel = null;
+      if (organizationEntity != null) {
+        organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
+      }
+      
+      GuiderStudentRestModel student = new GuiderStudentRestModel(
+          studentIdentifier.toId(),
+          user.getFirstName(),
+          user.getLastName(),
+          user.getNickName(),
+          user.getStudyProgrammeName(),
+          user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
+          false,
+          user.getNationality(),
+          user.getLanguage(),
+          user.getMunicipality(),
+          user.getSchool(),
+          emailAddress,
+          studyStartDate,
+          studyEndDate,
+          studyTimeEnd,
+          userEntity == null ? null : userEntity.getLastLogin(),
+          user.getCurriculumIdentifier() != null ? user.getCurriculumIdentifier().toId() : null,
+          userEntity == null ? false : userEntity.getUpdatedByStudent(),
+          userEntity == null ? -1 : userEntity.getId(),
+          null,
+          organizationRESTModel,
+          user.getMatriculationEligibility(),
+          pedagogyController.getHasPedagogyForm(studentIdentifier.toId()),
+          user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null
+      );
+      
+      if (StringUtils.equals(user.getStudyProgrammeEducationType(), "peruskoulu")) {
+        grammarSchoolStudent = chooseMoreRecentStudent(grammarSchoolStudent, student);
+      }
+      else if (StringUtils.equals(user.getStudyProgrammeEducationType(), "lukio")) {
+        highSchoolStudent = chooseMoreRecentStudent(highSchoolStudent, student);
+      }
+      else {
+        // At the moment we're not interested in other types
+      }
+    }
+
+    GuiderEducationalLevelStudent result = new GuiderEducationalLevelStudent();
+    result.setGrammarSchoolStudent(grammarSchoolStudent);
+    result.setHighSchoolStudent(highSchoolStudent);
+
+    return Response.ok(result).build();
+  }
+
+  private GuiderStudentRestModel chooseMoreRecentStudent(GuiderStudentRestModel student1,
+      GuiderStudentRestModel student2) {
+    if (student1 == null) {
+      return student2;
+    }
+    if (student2 == null) {
+      return student1;
+    }
+
+    Date studyStartDate1 = student1.getStudyStartDate();
+    Date studyStartDate2 = student2.getStudyStartDate();
+    
+    if (studyStartDate1 == null) {
+      return student2;
+    }
+    if (studyStartDate2 == null) {
+      return student1;
+    }
+    
+    return studyStartDate1.after(studyStartDate2) ? student1 : student2;
   }
 
   @GET
