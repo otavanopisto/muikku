@@ -77,7 +77,7 @@
 }
 
 .evaluation-modal__header--workspace {
- display: none;
+  display: none;
 
   @include breakpoint($breakpoint-desktop) {
     display: block;
