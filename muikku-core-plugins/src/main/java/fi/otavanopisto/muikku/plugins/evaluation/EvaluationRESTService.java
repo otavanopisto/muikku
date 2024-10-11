@@ -1434,11 +1434,7 @@ public class EvaluationRESTService extends PluginRESTService {
     if (workspaceUserEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUser(workspaceUserEntity);
-    if (workspaceUser == null) {
-      logger.warning(String.format("Workspace user for workspaceUserEntityId %d not found", workspaceUserEntityId));
-      return Response.status(Status.NOT_FOUND).build();
-    }
+    
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
@@ -1448,7 +1444,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
 
-    WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceEntity.schoolDataIdentifier(), workspaceUser.getUserIdentifier());
+    WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceEntity.schoolDataIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
     
     if (assessmentRequest == null) {
       logger.warning(String.format("Workspace assessment request for workspaceUserEntityId %d not found", workspaceUserEntityId));
