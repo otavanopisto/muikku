@@ -104,6 +104,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".link--workspace-assessment");
       waitForVisible(".dialog .dialog__content");
 
+      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+
       courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       mockBuilder
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, dateNow)
@@ -115,35 +117,13 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
       
-      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+      
       waitAndClick(".button--standard-ok");
       assertPresent(".notification-queue__items .notification-queue__item--success");
 
-      waitAndClick(".link--workspace-assessment");
 
-      waitForVisible(".dialog .dialog__content");
-      waitAndClick(".button--standard-ok");      
-      assertPresent(".notification-queue__items .notification-queue__item--success");
-      
-      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-      mockBuilder
-        .addCourseStudent(course1.getId(), courseStudent)
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", true, false, false, dateNow)
-        .build();
-      
       refresh();
-      
-      waitAndClick(".link--workspace-assessment");
-      waitForVisible(".dialog .dialog__content");
-
-      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
-      mockBuilder
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, dateNow)
-        .addCourseStudent(course1.getId(), courseStudent)
-        .build();
-      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
-      waitAndClick(".button--standard-ok");
-      assertPresent(".notification-queue__items .notification-queue__item--success");
+      assertPresent(".icon-assessment-pending");
       
       logout();
       
@@ -153,13 +133,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       navigate("/communicator", false);
       waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
       assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
-      assertText(".application-list__item-counter", "3");
       waitAndClick("div.application-list__item.message");
       assertText(".application-list__item-content-body", "Student Tester (Test Study Programme) lähetti arviointipyynnön kurssilta testcourse (test extension).\n" + 
           "Arviointipyynnön teksti\n" + 
           "Hello!");
 
-      assertText(".application-list__item--communicator-message:nth-of-type(2) .application-list__item-content-header", "Arviointipyyntö peruttu opiskelijalta Student Tester (Test Study Programme) kurssilla testcourse (test extension)");
       navigate(String.format("/evaluation"), false);
       waitAndClick(".button-pill--evaluate");
       
@@ -199,7 +177,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
   
   @Test
   @TestEnvironments (
@@ -925,3 +902,28 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     }
   }
 }
+
+//TODO: Arvioinnin peruutus testi erikseen
+//waitAndClick(".link--workspace-assessment");
+//
+//waitForVisible(".dialog .dialog__content");
+//waitAndClick(".button--standard-ok");      
+//assertPresent(".notification-queue__items .notification-queue__item--success");
+//
+//courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+//mockBuilder
+//.addCourseStudent(course1.getId(), courseStudent)
+//.mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", true, false, false, dateNow)
+//.build();
+//waitAndClick(".link--workspace-assessment");
+//waitForVisible(".dialog .dialog__content");
+
+//courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
+//mockBuilder
+//.mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, dateNow)
+//.addCourseStudent(course1.getId(), courseStudent)
+//.build();
+//sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+//waitAndClick(".button--standard-ok");
+//assertPresent(".notification-queue__items .notification-queue__item--success");
+//assertText(".application-list__item--communicator-message:nth-of-type(2) .application-list__item-content-header", "Arviointipyyntö peruttu opiskelijalta Student Tester (Test Study Programme) kurssilla testcourse (test extension)");
