@@ -115,11 +115,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
 
   /**
-   * componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
+   * UNSAFE_componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
    * @param nextProps nextProps
    */
   // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: BaseProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: BaseProps) {
     if (nextProps.html !== this.props.html) {
       const elements = preprocessor(
         $(nextProps.html)

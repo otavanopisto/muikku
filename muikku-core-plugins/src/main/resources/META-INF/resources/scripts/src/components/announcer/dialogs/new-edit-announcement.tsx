@@ -130,10 +130,10 @@ class NewEditAnnouncement extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: NewEditAnnouncementProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: NewEditAnnouncementProps) {
     if (
       (this.props.announcement &&
         nextProps.announcement &&

@@ -66,6 +66,7 @@ import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
@@ -105,6 +106,9 @@ public class EvaluationController {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private SessionController sessionController;
@@ -355,6 +359,9 @@ public class EvaluationController {
     }
     
     EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    
+    List<String> alternativeStudyOptionsList = userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier);
+    AlternativeStudyOptions alternativeStudyOptions = AlternativeStudyOptions.from(alternativeStudyOptionsList);
 
     SearchProvider searchProvider = getProvider("elastic-search");
     
@@ -364,7 +371,7 @@ public class EvaluationController {
         List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
         
         if (!assessmentStatesList.isEmpty()) {
-          for(WorkspaceAssessmentState assessmentState : assessmentStatesList) {
+          for (WorkspaceAssessmentState assessmentState : assessmentStatesList) {
             if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
               for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
 
@@ -373,6 +380,11 @@ public class EvaluationController {
                   if (!StringUtils.equals(assessmentState.getSubjectIdentifier(), workspaceActivitySubject.getIdentifier())) {
                     continue;
                   }
+                }
+
+                // Skip subjects which are mutually exclusive and not selected
+                if (!alternativeStudyOptions.isSelectedSubject(workspaceActivitySubject.getSubjectCode())) {
+                  continue;
                 }
                 
                 if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {

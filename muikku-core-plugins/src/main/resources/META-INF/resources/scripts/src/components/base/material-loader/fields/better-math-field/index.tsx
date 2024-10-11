@@ -91,10 +91,10 @@ export default class MathField extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: MathFieldProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: MathFieldProps) {
     this.checkLoadingOfAceAndMQ(nextProps);
   }
 

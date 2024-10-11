@@ -67,10 +67,10 @@ public class UserRecipientController {
     for (UserEntity recipient : userRecipients) {
       // #3758: Only send messages to active users
       
-      Boolean isActiveUser = userEntityController.isActiveUser(recipient);
+      boolean isActiveUser = userEntityController.isActiveUserEntity(recipient);
       if (roles != null) {
         UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(recipient);
-        Boolean recipientRole = hasAnyRole(roles, usdi);
+        boolean recipientRole = hasAnyRole(roles, usdi);
         
         if (isActiveUser && (roles.isEmpty() || recipientRole)) {
           preparedRecipientList.addRecipient(recipient);
@@ -89,23 +89,23 @@ public class UserRecipientController {
         if (!CollectionUtils.isEmpty(groupUsers)) {
           for (UserGroupUserEntity groupUser : groupUsers) {
             UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-            UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             // #3758: Only send messages to active students
             // #4920: Only message students' current study programmes
-            Boolean isActiveUser = userEntityController.isActiveUser(recipient);
+            boolean isActiveUser = userEntityController.isActiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
 
             if (!isActiveUser) {
               continue;
             }
             
             if (roles != null) {
-              Boolean recipientRole = hasAnyRole(roles, userSchoolDataIdentifier);
+              boolean recipientRole = hasAnyRole(roles, userSchoolDataIdentifier);
               
               if (!recipientRole) {
                 continue;
               }
             }
             
+            UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               preparedRecipientList.addUserGroupRecipient(userGroup, recipient);
             }
@@ -123,7 +123,13 @@ public class UserRecipientController {
         if (!CollectionUtils.isEmpty(workspaceUsers)) {
           for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
             UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
-            UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
+            // #3758: Only send messages to active students
+            // #4920: Only message students' current study programmes
+            boolean isActiveUser = userEntityController.isActiveUserSchoolDataIdentifier(userSchoolDataIdentifier);
+
+            if (!isActiveUser) {
+              continue;
+            }
             
             if (roles != null) {
               Boolean recipientRole = hasAnyRole(roles, userSchoolDataIdentifier);
@@ -133,13 +139,7 @@ public class UserRecipientController {
               }
             }
             
-            // #3758: Only send messages to active students
-            // #4920: Only message students' current study programmes
-            Boolean isActiveUser = userEntityController.isActiveUser(recipient);
-
-            if (!isActiveUser) {
-              continue;
-            }
+            UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               preparedRecipientList.addWorkspaceStudentRecipient(workspaceEntity, recipient);
             }
@@ -175,16 +175,10 @@ public class UserRecipientController {
     return preparedRecipientList;
   }
   
-  
-  
-  private boolean hasAnyRole (List<EnvironmentRoleArchetype> roles, UserSchoolDataIdentifier userSchoolDataIdentifier) { 
-
+  private boolean hasAnyRole(List<EnvironmentRoleArchetype> roles, UserSchoolDataIdentifier userSchoolDataIdentifier) { 
     EnvironmentRoleArchetype[] roleArray = roles.toArray(new EnvironmentRoleArchetype[0]);
-    
     return userSchoolDataIdentifier.hasAnyRole(roleArray);
   }
-  
-  
   
   /**
    * Cleans list of UserEntities so that there are no duplicates present. Returns the original list.

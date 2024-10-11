@@ -94,11 +94,12 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   }
 
   /**
-   * componentWillUpdate
+   * UNSAFE_componentWillUpdate
    * @param nextProps nextProps
    * @param nextState nextState
    */
-  componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {
     if (
       nextProps.isOpen === true &&
       !this.props.isOpen &&

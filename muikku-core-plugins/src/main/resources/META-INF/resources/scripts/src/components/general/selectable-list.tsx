@@ -92,10 +92,10 @@ export default class SelectableList extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: SelectableListProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: SelectableListProps) {
     //if the next state is loading or if the elements that are selected have dissapeared
     if (
       nextProps.dataState === "LOADING" ||
