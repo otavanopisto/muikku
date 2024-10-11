@@ -236,7 +236,8 @@ public class GradingController {
           latestRequest.getRequestText(),
           latestRequest.getDate(),
           latestRequest.getArchived(),
-          Boolean.FALSE); // not handled
+          Boolean.FALSE, // not handled
+          latestRequest.getLocked());
     }
   }
 
@@ -298,7 +299,7 @@ public class GradingController {
   }
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled) {
+      String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled, Boolean locked) {
     return gradingSchoolDataController.updateWorkspaceAssessmentRequest(
         schoolDataSource,
         identifier,
@@ -309,7 +310,20 @@ public class GradingController {
         requestText,
         date,
         archived,
-        handled);
+        handled,
+        locked);
+  }
+  
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentLock(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
+      String workspaceIdentifier, String studentIdentifier, boolean locked) {
+    return gradingSchoolDataController.updateWorkspaceAssessmentRequestLock(
+        schoolDataSource,
+        identifier,
+        workspaceUserIdentifier,
+        workspaceUserSchoolDataSource,
+        workspaceIdentifier,
+        studentIdentifier,
+        locked);
   }
 
   public void deleteWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {

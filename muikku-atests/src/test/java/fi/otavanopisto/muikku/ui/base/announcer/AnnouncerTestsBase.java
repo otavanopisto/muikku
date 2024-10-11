@@ -33,13 +33,13 @@ public class AnnouncerTestsBase extends AbstractUITest {
         navigate("/announcer", false);
         waitAndClick(".application-panel__actions-aside  > a.button--primary-function");
         waitForPresent(".cke_contents");
-        waitForPresent(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input");
-        selectAllAndClear(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input");
-        sendKeys(".env-dialog__row--dates .env-dialog__form-element-container:nth-child(2) input", "21.12.2025");
+        waitForPresent(".env-dialog__input--date-picker");
+        click(".env-dialog__input--date-picker");
+        waitForPresent(".react-datepicker-popper");
         waitAndClick(".env-dialog__header");
-        waitForNotVisible(".react-datepicker");
+        waitForNotVisible(".react-datepicker-popper");
         sleep(500);
-        sendKeys(".env-dialog__form-element-container--title input", "Test title");
+        sendKeys(".env-dialog__form-element-container--title>input", "Test title");
         sleep(500);
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".button--dialog-execute");
