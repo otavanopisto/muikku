@@ -11,8 +11,7 @@ import { SummaryType } from "~/reducers/main-function/records/summary";
 import { HOPSState } from "~/reducers/main-function/hops";
 import { ContactsState } from "~/reducers/base/contacts";
 import { StateType } from "~/reducers";
-import MainChart from "~/components/general/graph/main-chart";
-import CurrentStudentStatistics from "~/components/general/graph2/";
+import MainChart from "~/components/general/graph2/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import moment from "moment";
@@ -400,10 +399,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 {this.props.summary.data.graphData.activity &&
                 this.props.summary.data.graphData.workspaces ? (
                   <>
-                    <CurrentStudentStatistics
-                      workspaces={this.props.summary.data.graphData.workspaces}
-                      activityLogs={this.props.summary.data.graphData.activity}
-                    />
                     <MainChart
                       workspaces={this.props.summary.data.graphData.workspaces}
                       activityLogs={this.props.summary.data.graphData.activity}

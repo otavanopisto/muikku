@@ -555,7 +555,7 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
   ];
 
   return (
-    <>
+    <div className="application-sub-panel__body">
       <div className="chart-legend">
         <div className="filter filter--graph-filter">
           {dropdownFilters}
@@ -581,7 +581,7 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
           height: "500px",
         }}
       />
-    </>
+    </div>
   );
 };
 

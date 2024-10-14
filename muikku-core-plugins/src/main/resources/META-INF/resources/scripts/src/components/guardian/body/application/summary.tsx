@@ -11,7 +11,7 @@ import { SummaryType } from "~/reducers/main-function/records/summary";
 import { HOPSState } from "~/reducers/main-function/hops";
 import { ContactsState } from "~/reducers/base/contacts";
 import { StateType } from "~/reducers";
-import MainChart from "~/components/general/graph2/";
+import MainChart from "~/components/general/graph2/main-chart";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
 import moment from "moment";
