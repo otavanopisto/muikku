@@ -3,7 +3,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 // eslint-disable-next-line camelcase
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { Graph, GraphFilterEnum } from "./types";
+import { MainChartFilter } from "./types";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { ActivityLogEntry } from "~/generated/client";
 import { useTranslation } from "react-i18next";
@@ -26,20 +26,23 @@ interface SeriesConfig {
   /**
    * The field name in the data object
    */
-  field: GraphFilterEnum;
+  field: MainChartFilter;
   /**
    * The name to be displayed in the legend/filter list
    */
   name: string;
   /**
-   * The color of the series
+   * The color of the series, amcharts color
    */
   color: string;
   /**
-   * This one is weird as it is not one to one with values in GraphFilterEnum and MainChartData.
-   * But it still has some functionality with styles
+   * Style modifier
    */
-  graph: Graph;
+  modifier: string;
+  /**
+   * The type of series (line or column)
+   */
+  type: string;
 }
 
 /**
@@ -57,82 +60,91 @@ interface MainChartProps {
  */
 const seriesConfig = (t: TFunction): SeriesConfig[] => [
   {
-    field: GraphFilterEnum.SESSION_LOGGEDIN,
+    field: "SESSION_LOGGEDIN",
     name: t("labels.graph", { ns: "guider", context: "logins" }),
     color: "#2c2c2c",
-    graph: Graph.SESSION_LOGGEDIN,
+    modifier: "logins",
+    type: "line",
   },
   {
-    field: GraphFilterEnum.MATERIAL_ASSIGNMENTDONE,
+    field: "MATERIAL_ASSIGNMENTDONE",
     name: t("labels.graph", {
       ns: "guider",
       context: "assignments",
     }),
     color: "#ce01bd",
-    graph: Graph.MATERIAL_ASSIGNMENTDONE,
+    modifier: "assignments",
+    type: "column",
   },
   {
-    field: GraphFilterEnum.MATERIAL_EXERCISEDONE,
+    field: "MATERIAL_EXERCISEDONE",
     name: t("labels.graph", {
       ns: "guider",
       context: "exercises",
     }),
     color: "#ff9900",
-    graph: Graph.MATERIAL_EXERCISEDONE,
+    modifier: "exercises",
+    type: "column",
   },
   {
-    field: GraphFilterEnum.WORKSPACE_VISIT,
+    field: "WORKSPACE_VISIT",
     name: t("labels.graph", {
       ns: "guider",
       context: "visits",
     }),
     color: "#43cd80",
-    graph: Graph.WORKSPACE_VISIT,
+    modifier: "visits",
+    type: "line",
   },
   {
-    field: GraphFilterEnum.FORUM_NEWMESSAGE,
+    field: "FORUM_NEWMESSAGE",
     name: t("labels.graph", {
       ns: "guider",
       context: "discussionMessages",
     }),
     color: "#62c3eb",
-    graph: Graph.FORUM_NEWMESSAGE,
+    modifier: "discussionMessages",
+    type: "column",
   },
   {
-    field: GraphFilterEnum.EVALUATION_REQUESTED,
+    field: "EVALUATION_REQUESTED",
     name: t("labels.graph", {
       ns: "guider",
       context: "evaluationRequest",
     }),
     color: "#009fe3",
-    graph: Graph.EVALUATION_REQUESTED,
+    modifier: "evaluationRequest",
+    type: "line",
   },
   {
-    field: GraphFilterEnum.EVALUATION_INCOMPLETED,
+    field: "EVALUATION_GOTINCOMPLETED",
     name: t("labels.graph", {
       ns: "guider",
       context: "incomplete",
     }),
     color: "#ea7503",
-    graph: Graph.EVALUATION_INCOMPLETED,
+    modifier: "incomplete",
+    type: "line",
   },
   {
-    field: GraphFilterEnum.EVALUATION_PASSED,
+    field: "EVALUATION_GOTPASSED",
     name: t("labels.graph", {
       ns: "guider",
       context: "passed",
     }),
     color: "#24c118",
-    graph: Graph.EVALUATION_PASSED,
+    modifier: "passed",
+    type: "line",
   },
   {
-    field: GraphFilterEnum.EVALUATION_FAILED,
+    field: "EVALUATION_GOTFAILED",
     name: t("labels.graph", {
       ns: "guider",
       context: "failed",
     }),
     color: "#de3211",
-    graph: Graph.EVALUATION_FAILED,
+    modifier: "failed",
+    type: "line",
   },
 ];
 
@@ -143,16 +155,16 @@ const seriesConfig = (t: TFunction): SeriesConfig[] => [
  */
 const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
   const chartRef = useRef<am4charts.XYChart | null>(null);
-  const [visibleSeries, setVisibleSeries] = useState<GraphFilterEnum[]>([
-    GraphFilterEnum.SESSION_LOGGEDIN,
-    GraphFilterEnum.MATERIAL_ASSIGNMENTDONE,
-    GraphFilterEnum.MATERIAL_EXERCISEDONE,
-    GraphFilterEnum.WORKSPACE_VISIT,
-    GraphFilterEnum.FORUM_NEWMESSAGE,
-    GraphFilterEnum.EVALUATION_REQUESTED,
-    GraphFilterEnum.EVALUATION_PASSED,
-    GraphFilterEnum.EVALUATION_FAILED,
-    GraphFilterEnum.EVALUATION_INCOMPLETED,
+  const [visibleSeries, setVisibleSeries] = useState<MainChartFilter[]>([
+    "SESSION_LOGGEDIN",
+    "MATERIAL_ASSIGNMENTDONE",
+    "MATERIAL_EXERCISEDONE",
+    "WORKSPACE_VISIT",
+    "FORUM_NEWMESSAGE",
+    "EVALUATION_REQUESTED",
+    "EVALUATION_GOTPASSED",
+    "EVALUATION_GOTFAILED",
+    "EVALUATION_GOTINCOMPLETED",
   ]);
 
   const [visibleWorkspaceData, setVisibleWorkspaceData] = useState<number[]>(
@@ -292,18 +304,32 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
      * @param field - The field name in the data object
      * @param name - The name to be displayed in the legend/filter list
      * @param color - The color of the series
+     * @param type - The type of series (line or column)
      * @returns The created series
      */
-    const createSeries = (field: string, name: string, color: string) => {
-      const series = chart.series.push(new am4charts.LineSeries());
+    const createSeries = (
+      field: string,
+      name: string,
+      color: string,
+      type = "line"
+    ) => {
+      let series;
+      if (type === "column") {
+        series = chart.series.push(new am4charts.ColumnSeries());
+        series.columns.template.width = am4core.percent(70);
+        series.columns.template.tooltipText = "{name}: [bold]{valueY}[/]";
+      } else {
+        series = chart.series.push(new am4charts.LineSeries());
+        series.tooltipText = "{name}: [bold]{valueY}[/]";
+      }
+
       series.dataFields.valueY = field;
       series.dataFields.dateX = "date";
       series.name = name;
-      series.strokeWidth = 2;
       series.stroke = am4core.color(color);
+      series.fill = am4core.color(color);
 
       // Customize tooltip
-      series.tooltipText = "{name}: [bold]{valueY}[/]";
       series.tooltip.pointerOrientation = "vertical";
       series.tooltip.background.cornerRadius = 4;
       series.tooltip.background.fillOpacity = 0.8;
@@ -313,17 +339,17 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
       series.tooltip.background.stroke = am4core.color(color);
       series.tooltip.label.fill = am4core.color("#000000");
 
-      const bullet = series.bullets.push(new am4charts.CircleBullet());
-      bullet.circle.strokeWidth = 2;
-      bullet.circle.radius = 4;
-      bullet.circle.fill = am4core.color("#fff");
+      if (type === "line") {
+        series.strokeWidth = 2;
+        // ... existing bullet configuration for line series ...
+      }
 
       return series;
     };
 
     // Use the seriesConfig to create series
-    memoizedSeriesConfig.forEach(({ field, name, color }) => {
-      createSeries(field, name, color);
+    memoizedSeriesConfig.forEach(({ field, name, color, type }) => {
+      createSeries(field, name, color, type);
     });
 
     // Add cursor
@@ -369,9 +395,9 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
 
   /**
    * Handles toggling the visibility of a series in the chart.
-   * @param {GraphFilterEnum} field - The field to toggle
+   * @param {MainChartFilter} field - The field to toggle
    */
-  const handleSeriesToggle = useCallback((field: GraphFilterEnum) => {
+  const handleSeriesToggle = useCallback((field: MainChartFilter) => {
     const chart = chartRef.current;
     if (chart) {
       chart.series.each((series) => {
@@ -450,22 +476,22 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
 
   const filterList = (
     <div className={"filter-items filter-items--graph-filter"}>
-      {memoizedSeriesConfig.map(({ name, field, graph }) => {
+      {memoizedSeriesConfig.map(({ name, field, modifier }) => {
         const ifChecked = visibleSeries.includes(field);
         return (
           <div
-            className={"filter-item filter-item--" + graph}
-            key={"l-" + graph}
+            className={"filter-item filter-item--" + modifier}
+            key={"l-" + field}
           >
             <input
-              id={`filter-` + graph}
+              id={`filter-` + field}
               type="checkbox"
               onClick={() => {
                 handleSeriesToggle(field);
               }}
               defaultChecked={ifChecked}
             />
-            <label htmlFor={`filter-` + graph} className="filter-item__label">
+            <label htmlFor={`filter-` + field} className="filter-item__label">
               {name}
             </label>
           </div>
@@ -478,20 +504,20 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     <Dropdown
       persistent
       modifier={"graph-filter"}
-      items={memoizedSeriesConfig.map(({ field, graph, name }) => {
+      items={memoizedSeriesConfig.map(({ field, modifier, name }) => {
         const isChecked = visibleSeries.includes(field);
         return (
           <div
-            className={"filter-item filter-item--" + graph}
-            key={"w-" + graph}
+            className={"filter-item filter-item--" + modifier}
+            key={"w-" + field}
           >
             <input
-              id={`filter-` + graph}
+              id={`filter-` + field}
               type="checkbox"
               onClick={() => handleSeriesToggle(field)}
               defaultChecked={isChecked}
             />
-            <label htmlFor={`filter-` + graph} className="filter-item__label">
+            <label htmlFor={`filter-` + field} className="filter-item__label">
               {name}
             </label>
           </div>
