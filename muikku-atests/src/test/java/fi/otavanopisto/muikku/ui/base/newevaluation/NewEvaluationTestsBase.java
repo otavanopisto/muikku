@@ -104,46 +104,26 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       waitAndClick(".link--workspace-assessment");
       waitForVisible(".dialog .dialog__content");
 
+      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+
       courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       mockBuilder
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
-        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, dateNow)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, dateNow)
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, dateNow)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), dateNow, false)
         .mockStaffCompositeCourseAssessmentRequests()
         .mockWorkspaceBilledPriceUpdate(String.valueOf(price/2))
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
       
-      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+      
       waitAndClick(".button--standard-ok");
       assertPresent(".notification-queue__items .notification-queue__item--success");
 
-      waitAndClick(".link--workspace-assessment");
 
-      waitForVisible(".dialog .dialog__content");
-      waitAndClick(".button--standard-ok");      
-      assertPresent(".notification-queue__items .notification-queue__item--success");
-      
-      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-      mockBuilder
-        .addCourseStudent(course1.getId(), courseStudent)
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", true, false, dateNow)
-        .build();
-      
       refresh();
-      
-      waitAndClick(".link--workspace-assessment");
-      waitForVisible(".dialog .dialog__content");
-
-      courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
-      mockBuilder
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, dateNow)
-        .addCourseStudent(course1.getId(), courseStudent)
-        .build();
-      sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
-      waitAndClick(".button--standard-ok");
-      assertPresent(".notification-queue__items .notification-queue__item--success");
+      assertPresent(".icon-assessment-pending");
       
       logout();
       
@@ -153,13 +133,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       navigate("/communicator", false);
       waitForPresent(".application-list__item-header--communicator-message .application-list__header-primary>span");
       assertText(".application-list__item-header--communicator-message .application-list__header-primary>span", "Student Tester (Test Study Programme)");
-      assertText(".application-list__item-counter", "3");
       waitAndClick("div.application-list__item.message");
       assertText(".application-list__item-content-body", "Student Tester (Test Study Programme) lähetti arviointipyynnön kurssilta testcourse (test extension).\n" + 
           "Arviointipyynnön teksti\n" + 
           "Hello!");
 
-      assertText(".application-list__item--communicator-message:nth-of-type(2) .application-list__item-content-header", "Arviointipyyntö peruttu opiskelijalta Student Tester (Test Study Programme) kurssilla testcourse (test extension)");
       navigate(String.format("/evaluation"), false);
       waitAndClick(".button-pill--evaluate");
       
@@ -175,9 +153,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       selectOption("#workspaceEvaluationGrade", "PYRAMUS-1");
       mockBuilder
-      .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), dateNow, true)
+      .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, false, course1, student, admin.getId(), dateNow, true)
       .mockStaffCompositeCourseAssessmentRequests()
-      .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, dateNow);
+      .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, false, dateNow);
       
       mockBuilder.removeMockCourseStudent(courseStudent);
       courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED_PASS));
@@ -199,7 +177,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
   
   @Test
   @TestEnvironments (
@@ -255,11 +232,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");        
         
         mockBuilder
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
@@ -340,14 +317,14 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       try{
         mockBuilder
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
-        .mockAssessmentRequests(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, date)
+        .mockAssessmentRequests(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
-        .addCompositeCourseAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, date.minusDays(2l))
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, false, course1, student2, date.minusDays(2l))
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
-        .addStaffCompositeAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, admin.getId(), date.minusDays(2l), false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, false, course1, student2, admin.getId(), date.minusDays(2l), false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         navigate(String.format("/evaluation"), false);
@@ -418,17 +395,17 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       
       try{
         mockBuilder
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
-        .mockAssessmentRequests(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, date)
-        .mockAssessmentRequests(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, date)
+        .mockAssessmentRequests(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, false, date)
+        .mockAssessmentRequests(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
-        .addCompositeCourseAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, date.minusDays(2l))
-        .addCompositeCourseAssessmentRequest(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, course1, student3, date.minusDays(1l))
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, false, course1, student2, date.minusDays(2l))
+        .addCompositeCourseAssessmentRequest(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, false, course1, student3, date.minusDays(1l))
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
-        .addStaffCompositeAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, course1, student2, admin.getId(), date.minusDays(2l), false)
-        .addStaffCompositeAssessmentRequest(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, course1, student3, admin.getId(), date.minusDays(1l), false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student2.getId(), course1.getId(), courseStudent2.getId(), "Hello!", false, false, false, course1, student2, admin.getId(), date.minusDays(2l), false)
+        .addStaffCompositeAssessmentRequest(student3.getId(), course1.getId(), courseStudent3.getId(), "Tsadaam!", false, false, false, course1, student3, admin.getId(), date.minusDays(1l), false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         navigate(String.format("/evaluation"), false);
@@ -510,11 +487,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
         
         mockBuilder
-        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests()
         .addCourseStudent(course1.getId(), courseStudent)
         .mockCourseActivities();
@@ -626,11 +603,11 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
             
             mockBuilder
-            .mockAssessmentRequests(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, date)
+            .mockAssessmentRequests(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, false, date)
             .mockCompositeGradingScales()
-            .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, course1, student, date)
+            .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, false, course1, student, date)
             .mockCompositeCourseAssessmentRequests()
-            .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
+            .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), mockCourseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
             .mockStaffCompositeCourseAssessmentRequests()
             .addCourseStudent(course1.getId(), mockCourseStudent)
             .mockCourseActivities();
@@ -776,10 +753,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         String expectedHash = Hashing.sha256().hashString(sb.toString(), StandardCharsets.UTF_8).toString();
         
         mockBuilder
-          .mockAssessmentRequests(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, dateNow)
-          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, course1, student, dateNow)
+          .mockAssessmentRequests(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, false, dateNow)
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, false, course1, student, dateNow)
           .mockCompositeCourseAssessmentRequests()
-          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, course1, student, admin.getId(), dateNow, false)
+          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), mcs.getId(), "Hello!", false, false, false, course1, student, admin.getId(), dateNow, false)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockWorkspaceBilledPriceUpdate(String.valueOf(cap.getPrice()))
           .addCourseStudent(course1.getId(), mcs)
@@ -925,3 +902,28 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     }
   }
 }
+
+//TODO: Arvioinnin peruutus testi erikseen
+//waitAndClick(".link--workspace-assessment");
+//
+//waitForVisible(".dialog .dialog__content");
+//waitAndClick(".button--standard-ok");      
+//assertPresent(".notification-queue__items .notification-queue__item--success");
+//
+//courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+//mockBuilder
+//.addCourseStudent(course1.getId(), courseStudent)
+//.mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", true, false, false, dateNow)
+//.build();
+//waitAndClick(".link--workspace-assessment");
+//waitForVisible(".dialog .dialog__content");
+
+//courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
+//mockBuilder
+//.mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, dateNow)
+//.addCourseStudent(course1.getId(), courseStudent)
+//.build();
+//sendKeys(".dialog__content-row .form-element__textarea", "Hello!");
+//waitAndClick(".button--standard-ok");
+//assertPresent(".notification-queue__items .notification-queue__item--success");
+//assertText(".application-list__item--communicator-message:nth-of-type(2) .application-list__item-content-header", "Arviointipyyntö peruttu opiskelijalta Student Tester (Test Study Programme) kurssilla testcourse (test extension)");

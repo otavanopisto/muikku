@@ -45,6 +45,10 @@ public class PyramusIdentifierMapper {
     return WORKSPACE_STUDENT_PREFIX + id.toString();
   }
   
+  public SchoolDataIdentifier getAssessmentRequestIdentifier(Long id) {
+    return id == null ? null : new SchoolDataIdentifier(id.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
+  
   public SchoolDataIdentifier getGradeIdentifier(Long gradeId) {
     if (gradeId == null) {
       return null;
