@@ -1,6 +1,7 @@
+import { TFunction } from "i18next";
 import { ActivityLogEntry } from "~/generated/client";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { MainChartData } from "./types";
+import { MainChartData, SeriesConfig } from "./types";
 
 /**
  * Processes the activity logs and workspace data into a format suitable for the chart.
@@ -81,3 +82,176 @@ export const processChartData = (
 
   return chartData;
 };
+
+/**
+ * Creates the configuration for main chart series based on the provided translation function.
+ * @param t - Translation function
+ * @returns Array of SeriesConfig objects
+ */
+export const mainChartSeriesConfig = (t: TFunction): SeriesConfig[] => [
+  {
+    field: "SESSION_LOGGEDIN",
+    name: t("labels.graph", { ns: "guider", context: "logins" }),
+    color: "#2c2c2c",
+    modifier: "logins",
+    type: "line",
+  },
+  {
+    field: "MATERIAL_ASSIGNMENTDONE",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "assignments",
+    }),
+    color: "#ce01bd",
+    modifier: "assignments",
+    type: "column",
+  },
+  {
+    field: "MATERIAL_EXERCISEDONE",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "exercises",
+    }),
+    color: "#ff9900",
+    modifier: "exercises",
+    type: "column",
+  },
+  {
+    field: "WORKSPACE_VISIT",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "visits",
+    }),
+    color: "#43cd80",
+    modifier: "visits",
+    type: "line",
+  },
+  {
+    field: "FORUM_NEWMESSAGE",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "discussionMessages",
+    }),
+    color: "#62c3eb",
+    modifier: "discussionMessages",
+    type: "column",
+  },
+  {
+    field: "EVALUATION_REQUESTED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "evaluationRequest",
+    }),
+    color: "#009fe3",
+    modifier: "evaluationRequest",
+    type: "line",
+  },
+  {
+    field: "EVALUATION_GOTINCOMPLETED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "incomplete",
+    }),
+    color: "#ea7503",
+    modifier: "incomplete",
+    type: "line",
+  },
+  {
+    field: "EVALUATION_GOTPASSED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "passed",
+    }),
+    color: "#24c118",
+    modifier: "passed",
+    type: "line",
+  },
+  {
+    field: "EVALUATION_GOTFAILED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "failed",
+    }),
+    color: "#de3211",
+    modifier: "failed",
+    type: "line",
+  },
+];
+
+/**
+ * Creates the configuration for workspace chart series based on the provided translation function.
+ * @param t - Translation function
+ * @returns Array of SeriesConfig objects
+ */
+export const workspaceChartSeriesConfig = (t: TFunction): SeriesConfig[] => [
+  {
+    field: "MATERIAL_ASSIGNMENTDONE",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "assignments",
+    }),
+    color: "#ce01bd",
+    modifier: "assignments",
+    type: "column",
+  },
+  {
+    field: "MATERIAL_EXERCISEDONE",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "exercises",
+    }),
+    color: "#ff9900",
+    modifier: "exercises",
+    type: "column",
+  },
+  {
+    field: "WORKSPACE_VISIT",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "visits",
+    }),
+    color: "#43cd80",
+    modifier: "visits",
+    type: "line",
+  },
+  {
+    field: "EVALUATION_REQUESTED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "evaluationRequest",
+    }),
+    color: "#009fe3",
+    modifier: "evaluationRequest",
+    type: "line",
+  },
+  {
+    field: "EVALUATION_GOTINCOMPLETED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "incomplete",
+    }),
+    color: "#ea7503",
+    modifier: "incomplete",
+    type: "line",
+  },
+  {
+    field: "EVALUATION_GOTPASSED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "passed",
+    }),
+    color: "#24c118",
+    modifier: "passed",
+    type: "line",
+  },
+  {
+    field: "EVALUATION_GOTFAILED",
+    name: t("labels.graph", {
+      ns: "guider",
+      context: "failed",
+    }),
+    color: "#de3211",
+    modifier: "failed",
+    type: "line",
+  },
+];

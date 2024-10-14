@@ -5,7 +5,6 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import { MainChartFilter } from "./types";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { ActivityLogEntry } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 // eslint-disable-next-line camelcase
 import am4lang_en_US from "@amcharts/amcharts4/lang/en_US";
@@ -13,7 +12,7 @@ import am4lang_en_US from "@amcharts/amcharts4/lang/en_US";
 import am4lang_fi_FI from "@amcharts/amcharts4/lang/fi_FI";
 import { localize } from "~/locales/i18n";
 import Dropdown from "../dropdown";
-import { mainChartSeriesConfig, processChartData } from "./helper";
+import { workspaceChartSeriesConfig, processChartData } from "./helper";
 import "~/sass/elements/chart.scss";
 import "~/sass/elements/filter.scss";
 
@@ -24,37 +23,31 @@ am4core.useTheme(am4themes_animated);
  * Props for the MainChart component.
  */
 interface MainChartProps {
-  activityLogs?: Array<ActivityLogEntry>;
-  workspaces?: WorkspaceDataType[];
+  workspace?: WorkspaceDataType;
 }
+
+// Filters that are accessible
+const visibleFilters: MainChartFilter[] = [
+  "MATERIAL_ASSIGNMENTDONE",
+  "MATERIAL_EXERCISEDONE",
+  "WORKSPACE_VISIT",
+];
 
 /**
  * MainChart component for displaying activity data in a chart format.
  * @param {MainChartProps} props - The component props
  * @returns {React.FC} A React functional component
  */
-const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
+const WorkspaceChart: React.FC<MainChartProps> = ({ workspace }) => {
   const chartRef = useRef<am4charts.XYChart | null>(null);
-  const [visibleSeries, setVisibleSeries] = useState<MainChartFilter[]>([
-    "SESSION_LOGGEDIN",
-    "MATERIAL_ASSIGNMENTDONE",
-    "MATERIAL_EXERCISEDONE",
-    "WORKSPACE_VISIT",
-    "FORUM_NEWMESSAGE",
-    "EVALUATION_REQUESTED",
-    "EVALUATION_GOTPASSED",
-    "EVALUATION_GOTFAILED",
-    "EVALUATION_GOTINCOMPLETED",
-  ]);
+  const [visibleSeries, setVisibleSeries] =
+    useState<MainChartFilter[]>(visibleFilters);
 
-  const [visibleWorkspaceData, setVisibleWorkspaceData] = useState<number[]>(
-    workspaces.map((workspace) => workspace.id)
-  );
   const { t } = useTranslation(["common"]);
   const { lang } = localize;
 
   const memoizedSeriesConfig = React.useMemo(
-    () => mainChartSeriesConfig(t),
+    () => workspaceChartSeriesConfig(t),
     [t]
   );
 
@@ -68,11 +61,7 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     chart.language.locale = locale;
 
     // Lets process the data first
-    const chartData = processChartData(
-      activityLogs,
-      workspaces,
-      workspaces.map((workspace) => workspace.id)
-    );
+    const chartData = processChartData([], [workspace], [workspace.id]);
 
     chart.data = chartData;
 
@@ -331,7 +320,7 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     return () => {
       chart.dispose();
     };
-  }, [activityLogs, lang, memoizedSeriesConfig, t, workspaces]);
+  }, [lang, memoizedSeriesConfig, t, workspace]);
 
   /**
    * Handles toggling the visibility of a series in the chart.
@@ -356,87 +345,31 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     );
   }, []);
 
-  /**
-   * Handles changing the visibility of a workspace in the chart.
-   * @param {number} visibleWorkspaceId - The ID of the workspace to toggle
-   */
-  const handleWorkspaceFilterChange = useCallback(
-    (visibleWorkspaceId: number) => {
-      setVisibleWorkspaceData((prev) =>
-        prev.includes(visibleWorkspaceId)
-          ? prev.filter((id) => id !== visibleWorkspaceId)
-          : [...prev, visibleWorkspaceId]
-      );
-
-      const updatedVisibleWorkspaceData = [...visibleWorkspaceData];
-
-      if (updatedVisibleWorkspaceData.includes(visibleWorkspaceId)) {
-        updatedVisibleWorkspaceData.splice(
-          updatedVisibleWorkspaceData.indexOf(visibleWorkspaceId),
-          1
-        );
-      } else {
-        updatedVisibleWorkspaceData.push(visibleWorkspaceId);
-      }
-
-      const chart = chartRef.current;
-      if (chart) {
-        chart.data = processChartData(
-          activityLogs,
-          workspaces,
-          updatedVisibleWorkspaceData
-        );
-      }
-    },
-    [activityLogs, workspaces, visibleWorkspaceData]
-  );
-
-  /**
-   * Toggles between showing all workspaces and hiding all workspaces.
-   */
-  const toggleAllWorkspaces = useCallback(() => {
-    let workspaceIds: number[] = [];
-    // All workspaces are visible
-    if (visibleWorkspaceData.length === workspaces.length) {
-      // Hide all workspaces
-      workspaceIds = [];
-      setVisibleWorkspaceData([]);
-    } else {
-      workspaceIds = workspaces.map((workspace) => workspace.id);
-      // Show all workspaces
-      setVisibleWorkspaceData(workspaces.map((workspace) => workspace.id));
-    }
-
-    // Update chart data
-    const chart = chartRef.current;
-    if (chart) {
-      chart.data = processChartData(activityLogs, workspaces, workspaceIds);
-    }
-  }, [visibleWorkspaceData, workspaces, activityLogs]);
-
   const filterList = (
     <div className={"filter-items filter-items--graph-filter"}>
-      {memoizedSeriesConfig.map(({ name, field, modifier }) => {
-        const ifChecked = visibleSeries.includes(field);
-        return (
-          <div
-            className={"filter-item filter-item--" + modifier}
-            key={"l-" + field}
-          >
-            <input
-              id={`filter-` + field}
-              type="checkbox"
-              onClick={() => {
-                handleSeriesToggle(field);
-              }}
-              defaultChecked={ifChecked}
-            />
-            <label htmlFor={`filter-` + field} className="filter-item__label">
-              {name}
-            </label>
-          </div>
-        );
-      })}
+      {memoizedSeriesConfig
+        .filter(({ field }) => visibleFilters.includes(field))
+        .map(({ name, field, modifier }) => {
+          const ifChecked = visibleSeries.includes(field);
+          return (
+            <div
+              className={"filter-item filter-item--" + modifier}
+              key={"l-" + field}
+            >
+              <input
+                id={`filter-` + field}
+                type="checkbox"
+                onClick={() => {
+                  handleSeriesToggle(field);
+                }}
+                defaultChecked={ifChecked}
+              />
+              <label htmlFor={`filter-` + field} className="filter-item__label">
+                {name}
+              </label>
+            </div>
+          );
+        })}
     </div>
   );
 
@@ -444,25 +377,27 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     <Dropdown
       persistent
       modifier={"graph-filter"}
-      items={memoizedSeriesConfig.map(({ field, modifier, name }) => {
-        const isChecked = visibleSeries.includes(field);
-        return (
-          <div
-            className={"filter-item filter-item--" + modifier}
-            key={"w-" + field}
-          >
-            <input
-              id={`filter-` + field}
-              type="checkbox"
-              onClick={() => handleSeriesToggle(field)}
-              defaultChecked={isChecked}
-            />
-            <label htmlFor={`filter-` + field} className="filter-item__label">
-              {name}
-            </label>
-          </div>
-        );
-      })}
+      items={memoizedSeriesConfig
+        .filter(({ field }) => visibleFilters.includes(field))
+        .map(({ field, modifier, name }) => {
+          const isChecked = visibleSeries.includes(field);
+          return (
+            <div
+              className={"filter-item filter-item--" + modifier}
+              key={"w-" + field}
+            >
+              <input
+                id={`filter-` + field}
+                type="checkbox"
+                onClick={() => handleSeriesToggle(field)}
+                defaultChecked={isChecked}
+              />
+              <label htmlFor={`filter-` + field} className="filter-item__label">
+                {name}
+              </label>
+            </div>
+          );
+        })}
     >
       <span
         className={
@@ -472,77 +407,18 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     </Dropdown>
   );
 
-  let workspaceFilterItems = workspaces.map((workspace) => {
-    const modificator = workspace.activityLogs.length === 0 ? "-empty" : "";
-
-    return (
-      <div
-        className={"filter-item filter-item--workspaces" + modificator}
-        key={workspace.name}
-      >
-        <input
-          id={`filterWorkspace` + workspace.id}
-          type="checkbox"
-          onClick={() => {
-            handleWorkspaceFilterChange(workspace.id);
-          }}
-          checked={visibleWorkspaceData.includes(workspace.id)}
-        />
-        <label
-          htmlFor={`filterWorkspace` + workspace.id}
-          className="filter-item__label"
-        >
-          {workspace.name}
-        </label>
-      </div>
-    );
-  });
-
-  workspaceFilterItems = [
-    <div className="filter-category" key="activeWorkspaces">
-      <span className="filter-category__label">
-        {t("labels.workspaces", {
-          ns: "workspace",
-          context: "active",
-        })}
-      </span>
-      <a
-        className="filter-category__link"
-        onClick={() => {
-          toggleAllWorkspaces();
-        }}
-      >
-        {visibleWorkspaceData.length !== workspaces.length
-          ? t("actions.showAll")
-          : t("actions.hideAll")}
-      </a>
-    </div>,
-    ...workspaceFilterItems,
-  ];
-
   return (
-    <div className="application-sub-panel__body">
+    <>
       <div className="chart-legend">
         <div className="filter filter--graph-filter">
           {dropdownFilters}
           {filterList}
         </div>
-
-        <div className="filter filter--workspace-filter">
-          <Dropdown
-            persistent
-            closeOnOutsideClick
-            modifier="workspace-filter"
-            items={workspaceFilterItems}
-          >
-            <span className="icon-books filter__activator filter__activator--workspace-filter"></span>
-          </Dropdown>
-        </div>
       </div>
 
-      <div id="chartdiv" className="chart chart--main-chart" />
-    </div>
+      <div id="chartdiv" className="chart chart--workspace-chart" />
+    </>
   );
 };
 
-export default MainChart;
+export default WorkspaceChart;

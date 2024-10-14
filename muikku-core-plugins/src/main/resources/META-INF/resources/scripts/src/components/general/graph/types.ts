@@ -23,3 +23,29 @@ export interface MainChartData {
  * The filter type for the main chart, key values of MainChartData
  */
 export type MainChartFilter = keyof MainChartData;
+
+/**
+ * Configuration for each series in the chart.
+ */
+export interface SeriesConfig {
+  /**
+   * The field name in the data object
+   */
+  field: MainChartFilter;
+  /**
+   * The name to be displayed in the legend/filter list
+   */
+  name: string;
+  /**
+   * The color of the series, amcharts color
+   */
+  color: string;
+  /**
+   * Style modifier
+   */
+  modifier: string;
+  /**
+   * The type of series (line or column)
+   */
+  type: string;
+}
