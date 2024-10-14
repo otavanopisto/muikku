@@ -398,10 +398,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </div>
                 {this.props.summary.data.graphData.activity &&
                 this.props.summary.data.graphData.workspaces ? (
-                  <MainChart
-                    workspaces={this.props.summary.data.graphData.workspaces}
-                    activityLogs={this.props.summary.data.graphData.activity}
-                  />
+                  <>
+                    <MainChart
+                      workspaces={this.props.summary.data.graphData.workspaces}
+                      activityLogs={this.props.summary.data.graphData.activity}
+                    />
+                  </>
                 ) : null}
               </div>
             </div>

@@ -50,8 +50,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         .build();
       try {
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".button-pill--editing-master-switch");
-        click(".button-pill--editing-master-switch");
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
         waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
         waitAndClickAndConfirm(".material-admin-panel--chapter-functions .icon-pencil", ".material-editor--visible .form-element__input--material-editor-title", 5, 3000);
@@ -110,8 +110,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
@@ -171,8 +171,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
@@ -232,8 +232,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
@@ -292,8 +292,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
@@ -349,8 +349,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
             + "Vestibulum porta nunc sed est efficitur, sodales dictum est rutrum. Suspendisse felis nisi, rhoncus sit amet tincidunt et, pellentesque ut purus. Vivamus id sem non neque gravida egestas. "
             + "Nulla consectetur quam mi.";
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-        waitForPresent(".button-pill--editing-master-switch");
-        click(".button-pill--editing-master-switch");
+        waitForPresent("#editingMasterSwitch");
+        click("#editingMasterSwitch");
         waitForPresent(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
         waitForPresent(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
@@ -413,8 +413,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
             "EXERCISE");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           selectFinnishLocale();
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
           waitForClickable(".form-element__input--add-material-producer");
@@ -472,8 +472,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
             "EXERCISE");
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
-          waitForPresent(".button-pill--editing-master-switch");
-          click(".button-pill--editing-master-switch");
+          waitForPresent("#editingMasterSwitch");
+          click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           
           waitAndClick(".material-editor__buttonset-primary .button-pill--material-editor-change-page-type");

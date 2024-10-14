@@ -458,6 +458,7 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     return new PyramusCompositeAssessmentRequest(
+      assessmentRequest.getId() == null ? null : identifierMapper.getAssessmentRequestIdentifier(assessmentRequest.getId()).getIdentifier(),
       identifierMapper.getWorkspaceStudentIdentifier(assessmentRequest.getCourseStudentId()),
       assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()).getIdentifier(),
       assessmentRequest.getFirstName(),
@@ -469,7 +470,8 @@ public class PyramusSchoolDataEntityFactory {
       assessmentRequest.getCourseEnrollmentDate(),
       assessmentRequest.getAssessmentRequestDate(),
       assessmentRequest.getEvaluationDate(),
-      assessmentRequest.getPassing());
+      assessmentRequest.getPassing(),
+      assessmentRequest.getLocked());
   }
 
   public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {
@@ -485,7 +487,8 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(), courseAssessmentRequest.getHandled());
+        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(),
+        courseAssessmentRequest.getHandled(), courseAssessmentRequest.getLocked());
   }
 
   public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {
