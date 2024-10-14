@@ -14,7 +14,6 @@ import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceMaterialProducerDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceSettingsDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -46,9 +45,6 @@ public class WorkspaceController {
 
   @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
-
-  @Inject
-  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -85,14 +81,6 @@ public class WorkspaceController {
     return workspaceSchoolDataController.findWorkspace(schoolDataSource, identifier);
   }
 
-  public List<Workspace> listWorkspaces() {
-    return workspaceSchoolDataController.listWorkspaces();
-  }
-
-  public List<Workspace> listWorkspaces(String schoolDataSource) {
-    return workspaceSchoolDataController.listWorkspaces(schoolDataSource);
-  }
-  
   public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier) {
     return workspaceSchoolDataController.copyWorkspace(workspaceIdentifier, name, nameExtension, description, destinationOrganizationIdentifier);
   }
@@ -105,24 +93,6 @@ public class WorkspaceController {
     workspaceSchoolDataController.updateWorkspaceStudentActivity(workspaceUser, active);
   }
 
-  public void archiveWorkspace(SchoolDataIdentifier workspaceIdentifier) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
-    if (workspaceEntity != null) {
-      archiveWorkspaceEntity(workspaceEntity);
-    }
-
-    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
-  }
-
-  public void deleteWorkspace(SchoolDataIdentifier workspaceIdentifier) {
-    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
-    if (workspaceEntity != null) {
-      deleteWorkspaceEntity(workspaceEntity);
-    }
-
-    workspaceSchoolDataController.removeWorkspace(workspaceIdentifier);
-  }
-  
   /* WorkspaceType */
 
   public WorkspaceType findWorkspaceType(SchoolDataIdentifier identifier) {
@@ -138,10 +108,6 @@ public class WorkspaceController {
   }
 
   /* Workspace Entity */
-
-  public WorkspaceEntity findWorkspaceEntity(SchoolDataIdentifier workspaceIdentifier) {
-    return workspaceSchoolDataController.findWorkspaceEntity(workspaceIdentifier);
-  }
 
   public WorkspaceEntity findWorkspaceEntityById(Long workspaceId) {
     return workspaceEntityDAO.findById(workspaceId);
@@ -177,44 +143,6 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByPublished(Boolean.TRUE);
   }
   
-  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource != null) {
-      return listWorkspaceEntitiesBySchoolDataSource(dataSource);
-    } else {
-      logger.log(Level.SEVERE, "Could not find school data source '" + schoolDataSource
-          + "' while listing workspaceEntities by school data source");
-      return null;
-    }
-  }
-
-  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(SchoolDataSource schoolDataSource) {
-    return workspaceEntityDAO.listByDataSource(schoolDataSource);
-  }
-
-  public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
-    return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
-  }
-
-  private void deleteWorkspaceEntity(WorkspaceEntity workspaceEntity) {
-
-    // Delete settings
-
-    WorkspaceSettings workspaceSettings = findWorkspaceSettings(workspaceEntity);
-    if (workspaceSettings != null) {
-      workspaceSettingsDAO.delete(workspaceSettings);
-    }
-
-    // Workspace Users
-    
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByWorkspaceEntity(workspaceEntity);
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      workspaceUserEntityDAO.delete(workspaceUserEntity);
-    }
-
-    workspaceEntityDAO.delete(workspaceEntity);
-  }
-
   /* WorkspaceUsers */
 
   public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role) {

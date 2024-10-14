@@ -486,17 +486,6 @@ public class EvaluationController {
     return requests.get(0);
   }
 
-  public InterimEvaluationRequest findLatestInterimEvaluationRequest(UserEntity userEntity, WorkspaceMaterial workspaceMaterial, Boolean archived) {
-    List<InterimEvaluationRequest> requests = interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), archived);
-    if (requests.size() == 0) {
-      return null;
-    }
-    else if (requests.size() > 1) {
-      requests.sort(Comparator.comparing(InterimEvaluationRequest::getRequestDate).reversed());
-    }
-    return requests.get(0);
-  }
-
   public List<InterimEvaluationRequest> listInterimEvaluationRequests(Long workspaceEntityId, Boolean archived) {
     return interimEvaluationRequestDAO.listByWorkspaceAndArchived(workspaceEntityId, archived);
   }
@@ -705,10 +694,6 @@ public class EvaluationController {
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
     return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
-  }
-
-  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
-    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
   }
 
   public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
