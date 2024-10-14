@@ -17,7 +17,7 @@ import {
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { useTranslation } from "react-i18next";
 import RecordsGroup from "~/components/general/records-history/records-group";
-import MainChart from "~/components/general/graph2/main-chart";
+import MainChart from "~/components/general/graph/main-chart";
 import { breakpoints } from "~/util/breakpoints";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
 
