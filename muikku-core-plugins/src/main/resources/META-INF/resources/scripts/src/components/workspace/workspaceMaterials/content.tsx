@@ -1179,8 +1179,6 @@ const componentWithTranslation = withTranslation(["materials", "common"], {
   withRef: true,
 })(ContentComponent);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  null
-)(componentWithTranslation);
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(componentWithTranslation);
