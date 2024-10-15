@@ -910,7 +910,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     Course course1 = new CourseBuilder().name("testcourse").id((long) 2).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     try{
-      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
+      mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
 
       Double price = 0d;
       CourseAssessmentPrice courseBasePrice = new CourseAssessmentPrice(price);
