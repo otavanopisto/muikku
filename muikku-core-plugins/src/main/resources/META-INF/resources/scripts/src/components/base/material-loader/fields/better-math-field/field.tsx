@@ -147,10 +147,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: FieldProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: FieldProps) {
     if (nextProps.className !== this.props.className) {
       (this.refs.input as HTMLElement).className = nextProps.className;
     }
