@@ -11,7 +11,7 @@
 
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
@@ -27,7 +27,7 @@ import TocTopic, {
   TocTopicRef,
 } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
 import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
@@ -1168,7 +1168,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials },
     dispatch
@@ -1179,6 +1179,8 @@ const componentWithTranslation = withTranslation(["materials", "common"], {
   withRef: true,
 })(ContentComponent);
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
-})(componentWithTranslation);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  null
+)(componentWithTranslation);

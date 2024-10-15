@@ -7,7 +7,7 @@
 
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
@@ -23,7 +23,7 @@ import WorkspaceMaterial from "./material";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -921,7 +921,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,
@@ -942,5 +942,5 @@ const componentWithTranslation = withTranslation(
 )(WorkspaceMaterials);
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);
