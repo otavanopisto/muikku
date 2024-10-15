@@ -76,17 +76,6 @@ public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationReq
     return requests.get(0);
   }
 
-  public SupplementationRequest findLatestByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
-    List<SupplementationRequest> requests = listByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
-    if (requests.isEmpty()) {
-      return null;
-    }
-    else if (requests.size() > 1) {
-      requests.sort(Comparator.comparing(SupplementationRequest::getRequestDate).reversed());
-    }
-    return requests.get(0);
-  }
-
   public SupplementationRequest findLatestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
     List<SupplementationRequest> requests = listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
     if (requests.isEmpty()) {

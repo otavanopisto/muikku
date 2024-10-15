@@ -61,7 +61,6 @@ import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
-import fi.otavanopisto.muikku.schooldata.entity.UserImage;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
@@ -514,14 +513,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public List<User> listUsers() throws SchoolDataBridgeInternalException {
-    List<User> result = new ArrayList<User>();
-    result.addAll(createStudentEntities(pyramusClient.get("/students/students", Student[].class)));
-    result.addAll(entityFactory.createEntity(pyramusClient.get("/staff/members", StaffMember[].class)));
-    return result;
-  }
-
-  @Override
   public User updateUser(User user) {
     Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
 
@@ -549,26 +540,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     pyramusClient.put(String.format("/students/students/%d", studentId), student);
     return user;
-  }
-
-  @Override
-  public void removeUser(String identifier) {
-    if (!NumberUtils.isNumber(identifier)) {
-      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
-    }
-
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
-  public UserEmail createUserEmail(String userIdentifier, String address) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
-
-  }
-
-  @Override
-  public UserEmail findUserEmail(String identifier) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
@@ -607,42 +578,6 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     return Collections.emptyList();
-  }
-
-  @Override
-  public UserEmail updateUserEmail(UserEmail userEmail) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
-  public void removeUserEmail(String identifier) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
-  public UserImage createUserImage(String userIdentifier, String contentType,
-      byte[] content) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
-  public UserImage findUserImage(String identifier) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
-  public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
-  public UserImage updateUserImage(UserImage userImage) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
-  }
-
-  @Override
-  public void removeUserImage(String identifier) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
   }
 
   @Override
