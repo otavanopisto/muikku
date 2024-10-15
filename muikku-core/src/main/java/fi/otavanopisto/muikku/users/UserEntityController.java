@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.users;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -272,31 +271,6 @@ public class UserEntityController implements Serializable {
       userEntities.put(userEntity.getId(), userEntity);
     }
     return userEntities.values();
-  }
-
-  public List<String> listUserEntityIdentifiersByDataSource(SchoolDataSource dataSource) {
-    List<String> result = new ArrayList<>();
-
-    List<UserSchoolDataIdentifier> identifiers = listUserSchoolDataIdentifiersByDataSource(dataSource);
-    for (UserSchoolDataIdentifier indentifier : identifiers) {
-      result.add(indentifier.getIdentifier());
-    }
-
-    return result;
-  }
-
-  public List<String> listUserEntityIdentifiersByDataSource(String dataSource) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
-    if (schoolDataSource == null) {
-      logger.severe("Could not find school data source: " + dataSource);
-      return null;
-    } else {
-      return listUserEntityIdentifiersByDataSource(schoolDataSource);
-    }
-  }
-  
-  public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
-    return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
   }
 
   public boolean hasProfilePicture(UserEntity userEntity) {

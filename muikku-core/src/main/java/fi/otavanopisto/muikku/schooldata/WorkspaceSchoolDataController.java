@@ -60,29 +60,6 @@ public class WorkspaceSchoolDataController {
     return null;
   }
 
-  public List<Workspace> listWorkspaces(String schoolDataSource) {
-    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
-    if (workspaceBridge != null) {
-      return workspaceBridge.listWorkspaces();
-    } else {
-      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
-    }
-   
-    return null;
-  }
-  
-  public List<Workspace> listWorkspaces() {
-    // TODO: This method WILL cause performance problems, replace with something more sensible 
-    
-    List<Workspace> result = new ArrayList<>();
-    
-    for (WorkspaceSchoolDataBridge workspaceBridge : getWorkspaceBridges()) {
-      result.addAll(workspaceBridge.listWorkspaces());
-    }
-    
-    return result;
-  }
-
   public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description, SchoolDataIdentifier destinationOrganizationIdentifier) {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceIdentifier.getDataSource());
     if (workspaceBridge != null) {
@@ -103,17 +80,6 @@ public class WorkspaceSchoolDataController {
     }
     
     return null;
-  }
-
-  public void removeWorkspace(SchoolDataIdentifier workspaceIdentifier) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceIdentifier.getDataSource());
-
-    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
-    if (workspaceBridge != null) {
-      workspaceBridge.removeWorkspace(workspaceIdentifier);
-    } else {
-      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
-    }
   }
 
   /* Workspace Entities */
@@ -215,21 +181,6 @@ public class WorkspaceSchoolDataController {
       logger.log(Level.SEVERE, "School Data Bridge not found: " + workspaceIdentifier.getDataSource());
     }
     
-    return null;
-  }
-  
-  @Deprecated
-  public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listWorkspaceUsers(workspace.getIdentifier());
-      } else {
-        logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
-      }
-    }
-
     return null;
   }
   
