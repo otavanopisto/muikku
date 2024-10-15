@@ -2,8 +2,7 @@ import * as React from "react";
 import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarLine = require("react-progress-bar.js").Line;
-import moment from "moment";
+import { Line } from "rc-progress";
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
@@ -521,34 +520,9 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
               key={index}
             >
               <span className="audiofield__file audiofield__file--uploading">
-                <ProgressBarLine
-                  containerClassName="audiofield__file-upload-progressbar"
-                  options={{
-                    strokeWidth: 1,
-                    duration: 1000,
-                    color: "#72d200",
-                    trailColor: "#f5f5f5",
-                    trailWidth: 1,
-                    svgStyle: { width: "100%", height: "4px" },
-                    text: {
-                      className: "audiofield__file-upload-percentage",
-                      style: {
-                        right: "100%",
-                      },
-                    },
-                  }}
-                  strokeWidth={1}
-                  easing="easeInOut"
-                  duration={1000}
-                  color="#72d200"
-                  trailColor="#f5f5f5"
-                  trailWidth={1}
-                  svgStyle={{ width: "100%", height: "4px" }}
-                  text={t("notifications.uploading", {
-                    ns: "files",
-                    progress: Math.round(value.progress * 100),
-                  })}
-                  progress={value.progress}
+                <Line
+                  className="audiofield__file-upload-progressbar"
+                  percent={value.progress * 100}
                 />
               </span>
             </span>
@@ -562,41 +536,11 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
         ? (recordingInContainer = (
             <span className="audiofield__file-container audiofield__file-container--recording">
               <span className="audiofield__file audiofield__file--recording">
-                <ProgressBarLine
-                  containerClassName="audiofield__file-record-progressbar"
-                  options={{
-                    strokeWidth: 1,
-                    duration: 1000,
-                    color: "#de3211",
-                    trailColor: "#f5f5f5",
-                    trailWidth: 1,
-                    svgStyle: { width: "100%", height: "4px" },
-                    text: {
-                      className: "audiofield__file-record-percentage",
-                      style: {
-                        right: "100%",
-                      },
-                    },
-                  }}
-                  strokeWidth={1}
-                  easing="easeInOut"
-                  duration={1000}
-                  color="#de3211"
-                  trailColor="#f5f5f5"
-                  trailWidth={1}
-                  svgStyle={{ width: "100%", height: "4px" }}
-                  text={t("notifications.recording", {
-                    ns: "materials",
-                    currentLength: moment("2015-01-01")
-                      .startOf("day")
-                      .seconds(this.state.time)
-                      .format("mm:ss"),
-                    maxLength: moment("2015-01-01")
-                      .startOf("day")
-                      .seconds(MAX_RECORDING_TIME_IN_SECONDS)
-                      .format("mm:ss"),
-                  })}
-                  progress={this.state.time / MAX_RECORDING_TIME_IN_SECONDS}
+                <Line
+                  className="audiofield__file-record-progressbar"
+                  percent={
+                    (this.state.time / MAX_RECORDING_TIME_IN_SECONDS) * 100
+                  }
                 />
               </span>
             </span>

@@ -8,9 +8,7 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "./dialogs/delete-warning";
 import { AudioPoolComponent } from "../audio-pool-component";
 import { useTranslation } from "react-i18next";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarLine = require("react-progress-bar.js").Line;
+import { Line } from "rc-progress";
 
 /**
  * RecordProps
@@ -82,31 +80,9 @@ function Record(props: RecordProps) {
       <AnimateHeight height={open ? "auto" : 0}>
         {record.uploading ? (
           <div style={{ margin: "0 10px" }}>
-            <ProgressBarLine
-              containerClassName="voice-recorder__file-record-progressbar"
-              options={{
-                strokeWidth: 1,
-                duration: 1000,
-                color: "#de3211",
-                trailColor: "#f5f5f5",
-                trailWidth: 1,
-                svgStyle: { width: "100%", height: "4px" },
-                text: {
-                  className: "voice-recorder__file-record-percentage",
-                  style: {
-                    right: "100%",
-                  },
-                },
-              }}
-              strokeWidth={1}
-              easing="easeInOut"
-              duration={1000}
-              color="#de3211"
-              trailColor="#f5f5f5"
-              trailWidth={1}
-              svgStyle={{ width: "100%", height: "4px" }}
-              text={`${Math.round(record.progress * 100)}%`}
-              progress={record.progress}
+            <Line
+              className="voice-recorder__file-record-progressbar"
+              percent={record.progress * 100}
             />
           </div>
         ) : null}

@@ -14,7 +14,7 @@ import "~/sass/elements/voice-recorder.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarLine = require("react-progress-bar.js").Line;
+import { Line } from "rc-progress";
 
 /**
  * RecorderProps
@@ -87,41 +87,9 @@ function Recorder(props: RecorderProps) {
 
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
         <span className="voice-recorder__file-container voice-recorder__file-container--recording">
-          <ProgressBarLine
-            containerClassName="voice-recorder__file-record-progressbar"
-            options={{
-              strokeWidth: 1,
-              duration: 1000,
-              color: "#de3211",
-              trailColor: "#f5f5f5",
-              trailWidth: 1,
-              svgStyle: { width: "100%", height: "4px" },
-              text: {
-                className: "voice-recorder__file-record-percentage",
-                style: {
-                  right: "100%",
-                },
-              },
-            }}
-            strokeWidth={1}
-            easing="easeInOut"
-            duration={1000}
-            color="#de3211"
-            trailColor="#f5f5f5"
-            trailWidth={1}
-            svgStyle={{ width: "100%", height: "4px" }}
-            text={props.t("notifications.recording", {
-              ns: "materials",
-              currentLength: moment("2015-01-01")
-                .startOf("day")
-                .seconds(seconds)
-                .format("mm:ss"),
-              maxLength: moment("2015-01-01")
-                .startOf("day")
-                .seconds(300)
-                .format("mm:ss"),
-            })}
-            progress={seconds / 300}
+          <Line
+            className="voice-recorder__file-record-progressbar"
+            percent={(seconds / 300) * 100}
           />
         </span>
       </AnimateHeight>

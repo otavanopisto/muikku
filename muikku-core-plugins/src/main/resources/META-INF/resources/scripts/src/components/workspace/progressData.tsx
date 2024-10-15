@@ -1,7 +1,6 @@
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarCircle = require("react-progress-bar.js").Circle;
+import { Circle } from "rc-progress";
 import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/wcag.scss";
 import { WorkspaceActivity } from "~/generated/client";
@@ -130,34 +129,14 @@ class ProgressData extends React.Component<
               }
             >
               <div tabIndex={0}>
-                <ProgressBarCircle
-                  containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
-                  options={{
-                    strokeWidth: 10,
-                    duration: 0,
-                    color: "#ce01bd",
-                    trailColor: "#ebebeb",
-                    easing: "easeInOut",
-                    trailWidth: 10,
-                    svgStyle: {
-                      flexBasis: "25px",
-                      flexGrow: "0",
-                      flexShrink: "0",
-                      height: "25px",
-                    },
-                    text: {
-                      style: null,
-                      className:
-                        "workspace-activity__progressbar-label workspace-activity__progressbar-label--assignment  workspace-activity__progressbar-label--workspace",
-                      value:
-                        evaluablesDone +
-                        "/" +
-                        this.props.activity.evaluablesTotal,
-                    },
-                  }}
-                  progress={
-                    evaluablesDone / this.props.activity.evaluablesTotal
+                <Circle
+                  className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
+                  percent={
+                    (evaluablesDone / this.props.activity.evaluablesTotal) * 100
                   }
+                  strokeWidth={10}
+                  trailColor="#ebebeb"
+                  strokeColor="#ce01bd"
                 />
               </div>
             </Dropdown>
@@ -189,35 +168,16 @@ class ProgressData extends React.Component<
               }
             >
               <div tabIndex={0}>
-                <ProgressBarCircle
-                  containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
-                  options={{
-                    strokeWidth: 10,
-                    duration: 0,
-                    color: "#ff9900",
-                    trailColor: "#ebebeb",
-                    easing: "easeInOut",
-                    trailWidth: 10,
-                    svgStyle: {
-                      flexBasis: "25px",
-                      flexGrow: "0",
-                      flexShrink: "0",
-                      height: "25px",
-                    },
-                    text: {
-                      style: null,
-                      className:
-                        "workspace-activity__progressbar-label workspace-activity__progressbar-label--exercise workspace-activity__progressbar-label--workspace",
-                      value:
-                        this.props.activity.exercisesAnswered +
-                        "/" +
-                        this.props.activity.exercisesTotal,
-                    },
-                  }}
-                  progress={
-                    this.props.activity.exercisesAnswered /
-                    this.props.activity.exercisesTotal
+                <Circle
+                  className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
+                  percent={
+                    (this.props.activity.exercisesAnswered /
+                      this.props.activity.exercisesTotal) *
+                    100
                   }
+                  strokeWidth={10}
+                  trailColor="#ebebeb"
+                  strokeColor="#ff9900"
                 />
               </div>
             </Dropdown>

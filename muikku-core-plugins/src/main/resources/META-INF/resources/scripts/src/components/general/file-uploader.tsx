@@ -3,16 +3,17 @@ import $ from "~/lib/jquery";
 import "~/sass/elements/file-uploader.scss";
 import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarLine = require("react-progress-bar.js").Line;
 import { v4 as uuidv4 } from "uuid";
 import { UploadingValue } from "../../@types/shared";
+import { Line } from "rc-progress";
+import { AnyActionType } from "~/actions";
 
 /**
  * FileUploaderProps
@@ -427,33 +428,9 @@ class FileUploader extends React.Component<
 
         return (
           <span className="file-uploader__item" key={index}>
-            <ProgressBarLine
-              containerClassName="file-uploader__item-upload-progressbar"
-              options={{
-                strokeWidth: 1,
-                duration: 1000,
-                color: "#72d200",
-                trailColor: "#f5f5f5",
-                trailWidth: 1,
-                svgStyle: { width: "100%", height: "4px" },
-                text: {
-                  className: "file-uploader__item-upload-percentage",
-                  style: {
-                    right: "100%",
-                  },
-                },
-              }}
-              strokeWidth={1}
-              easing="easeInOut"
-              duration={1000}
-              color="#72d200"
-              trailColor="#f5f5f5"
-              trailWidth={1}
-              svgStyle={{ width: "100%", height: "4px" }}
-              text={this.props.uploadingTextProcesser(
-                Math.round(uploadingFile.progress * 100)
-              )}
-              progress={uploadingFile.progress}
+            <Line
+              className="file-uploader__item-upload-progressbar"
+              percent={uploadingFile.progress * 100}
             />
           </span>
         );
@@ -589,7 +566,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
