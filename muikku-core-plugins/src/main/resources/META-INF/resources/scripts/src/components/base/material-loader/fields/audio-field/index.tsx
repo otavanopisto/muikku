@@ -1,8 +1,6 @@
 import * as React from "react";
 import Link from "~/components/general/link";
 import $ from "~/lib/jquery";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-import { Line } from "rc-progress";
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
@@ -13,6 +11,8 @@ import { createFieldSavedStateClass } from "../../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import "~/sass/elements/audiofield.scss";
+import ProgressBar from "@ramonak/react-progress-bar";
+import moment from "moment";
 
 // so we use the media recorder
 // the media recorder is polyfilled
@@ -520,9 +520,18 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
               key={index}
             >
               <span className="audiofield__file audiofield__file--uploading">
-                <Line
+                <ProgressBar
                   className="audiofield__file-upload-progressbar"
-                  percent={value.progress * 100}
+                  completed={value.progress * 100}
+                  maxCompleted={100}
+                  customLabel={t("notifications.uploading", {
+                    ns: "files",
+                    progress: Math.round(value.progress * 100),
+                  })}
+                  labelAlignment="left"
+                  bgColor="#72d200"
+                  baseBgColor="#f5f5f5"
+                  height="4px"
                 />
               </span>
             </span>
@@ -536,11 +545,26 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
         ? (recordingInContainer = (
             <span className="audiofield__file-container audiofield__file-container--recording">
               <span className="audiofield__file audiofield__file--recording">
-                <Line
-                  className="audiofield__file-record-progressbar"
-                  percent={
+                <ProgressBar
+                  className="audiofield__file-upload-progressbar"
+                  completed={
                     (this.state.time / MAX_RECORDING_TIME_IN_SECONDS) * 100
                   }
+                  maxCompleted={100}
+                  customLabel={t("notifications.recording", {
+                    ns: "materials",
+                    currentLength: moment("2015-01-01")
+                      .startOf("day")
+                      .seconds(this.state.time)
+                      .format("mm:ss"),
+                    maxLength: moment("2015-01-01")
+                      .startOf("day")
+                      .seconds(MAX_RECORDING_TIME_IN_SECONDS)
+                      .format("mm:ss"),
+                  })}
+                  bgColor="#de3211"
+                  baseBgColor="#f5f5f5"
+                  height="4px"
                 />
               </span>
             </span>

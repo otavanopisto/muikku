@@ -98,6 +98,14 @@
   margin: 5px;
   padding: 0 5px;
 
+  .file-uploader__item-upload-progressbar-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+
   &.file-uploader__item--failed-to-upload {
     .file-uploader__item-title {
       color: $color-fatal;

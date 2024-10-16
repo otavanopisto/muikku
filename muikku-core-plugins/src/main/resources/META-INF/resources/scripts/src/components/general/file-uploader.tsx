@@ -12,7 +12,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import { v4 as uuidv4 } from "uuid";
 import { UploadingValue } from "../../@types/shared";
-import { Line } from "rc-progress";
+import ProgressBar from "@ramonak/react-progress-bar";
 import { AnyActionType } from "~/actions";
 
 /**
@@ -428,10 +428,22 @@ class FileUploader extends React.Component<
 
         return (
           <span className="file-uploader__item" key={index}>
-            <Line
-              className="file-uploader__item-upload-progressbar"
-              percent={uploadingFile.progress * 100}
-            />
+            <span className="file-uploader__item-upload-progressbar-wrapper">
+              <ProgressBar
+                className="file-uploader__item-upload-progressbar"
+                completed={uploadingFile.progress * 100}
+                maxCompleted={100}
+                isLabelVisible={false}
+                bgColor="#72d200"
+                baseBgColor="#f5f5f5"
+                height="4px"
+              />
+              <span className="file-uploader__item-upload-percentage">
+                {this.props.uploadingTextProcesser(
+                  Math.round(uploadingFile.progress * 100)
+                )}
+              </span>
+            </span>
           </span>
         );
       }

@@ -12,8 +12,7 @@ import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-import { Line } from "rc-progress";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 /**
  * RecorderProps
@@ -86,9 +85,11 @@ function Recorder(props: RecorderProps) {
 
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
         <span className="voice-recorder__file-container voice-recorder__file-container--recording">
-          <Line
+          <ProgressBar
             className="voice-recorder__file-record-progressbar"
-            percent={(seconds / 300) * 100}
+            completed={(seconds / 300) * 100}
+            maxCompleted={100}
+            customLabel={`${Math.round((seconds / 300) * 100)}%`}
           />
         </span>
       </AnimateHeight>

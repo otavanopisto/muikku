@@ -8,7 +8,7 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "./dialogs/delete-warning";
 import { AudioPoolComponent } from "../audio-pool-component";
 import { useTranslation } from "react-i18next";
-import { Line } from "rc-progress";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 /**
  * RecordProps
@@ -80,9 +80,14 @@ function Record(props: RecordProps) {
       <AnimateHeight height={open ? "auto" : 0}>
         {record.uploading ? (
           <div style={{ margin: "0 10px" }}>
-            <Line
+            <ProgressBar
               className="voice-recorder__file-record-progressbar"
-              percent={record.progress * 100}
+              completed={record.progress * 100}
+              maxCompleted={100}
+              customLabel={`${Math.round(record.progress * 100)}%`}
+              bgColor="#de3211"
+              baseBgColor="#f5f5f5"
+              height="4px"
             />
           </div>
         ) : null}

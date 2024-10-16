@@ -1,10 +1,11 @@
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-import { Circle } from "rc-progress";
 import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/wcag.scss";
 import { WorkspaceActivity } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 /**
  * ProgressDataProps
@@ -129,15 +130,25 @@ class ProgressData extends React.Component<
               }
             >
               <div tabIndex={0}>
-                <Circle
-                  className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
-                  percent={
-                    (evaluablesDone / this.props.activity.evaluablesTotal) * 100
-                  }
-                  strokeWidth={10}
-                  trailColor="#ebebeb"
-                  strokeColor="#ce01bd"
-                />
+                <div className="workspace-activity__progressbar-circle-wrapper">
+                  <CircularProgressbar
+                    value={evaluablesDone / this.props.activity.evaluablesTotal}
+                    maxValue={this.props.activity.evaluablesTotal}
+                    strokeWidth={10}
+                    styles={{
+                      ...buildStyles({
+                        // Colors
+                        pathColor: `#ce01bd`,
+                        trailColor: "#ebebeb",
+                        backgroundColor: "#3e98c7",
+                      }),
+                    }}
+                    className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
+                  />
+                  <div className="workspace-activity__progressbar-label workspace-activity__progressbar-label--assignment  workspace-activity__progressbar-label--workspace">
+                    {`${evaluablesDone} / ${this.props.activity.evaluablesTotal}`}
+                  </div>
+                </div>
               </div>
             </Dropdown>
           ) : null}
@@ -168,17 +179,26 @@ class ProgressData extends React.Component<
               }
             >
               <div tabIndex={0}>
-                <Circle
-                  className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
-                  percent={
-                    (this.props.activity.exercisesAnswered /
-                      this.props.activity.exercisesTotal) *
-                    100
-                  }
-                  strokeWidth={10}
-                  trailColor="#ebebeb"
-                  strokeColor="#ff9900"
-                />
+                <div className="workspace-activity__progressbar-circle-wrapper">
+                  <CircularProgressbar
+                    className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
+                    value={
+                      this.props.activity.exercisesAnswered /
+                      this.props.activity.exercisesTotal
+                    }
+                    maxValue={this.props.activity.exercisesTotal}
+                    strokeWidth={10}
+                    styles={buildStyles({
+                      // Colors
+                      pathColor: "#ff9900",
+                      trailColor: "#ebebeb",
+                      backgroundColor: "#3e98c7",
+                    })}
+                  />
+                  <div className="workspace-activity__progressbar-label workspace-activity__progressbar-label--exercise workspace-activity__progressbar-label--workspace">
+                    {`${this.props.activity.exercisesAnswered} / ${this.props.activity.exercisesTotal}`}
+                  </div>
+                </div>
               </div>
             </Dropdown>
           ) : null}

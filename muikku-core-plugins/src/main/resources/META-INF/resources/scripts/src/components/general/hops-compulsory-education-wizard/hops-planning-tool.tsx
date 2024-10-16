@@ -25,9 +25,10 @@ import { useStudyProgressContextState } from "../study-progress/context";
 import StudyProgress from "../study-progress";
 import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
 import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
-import { Line, Circle } from "rc-progress";
 import { Action, Dispatch } from "redux";
-
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import ProgressBar from "@ramonak/react-progress-bar";
+import "react-circular-progressbar/dist/styles.css";
 /**
  * StudyToolProps
  */
@@ -672,12 +673,20 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 </div>
               }
             >
-              <div tabIndex={0}>
-                <Line
-                  className="hops-container__activity-progressbar hops-container__activity-progressbar--line"
-                  percent={
+              <div
+                tabIndex={0}
+                className="hops-container__activity-progressbar-line-wrapper"
+              >
+                <ProgressBar
+                  completed={
                     proggressOfStudies > 1 ? 100 : proggressOfStudies * 100
                   }
+                  maxCompleted={100}
+                  customLabel={`${Math.round(proggressOfStudies * 100)}%`}
+                  labelAlignment="left"
+                  bgColor="#24c118"
+                  baseBgColor="#ffffff"
+                  height="20px"
                 />
               </div>
             </Dropdown>
@@ -688,14 +697,37 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               <h3 className="hops-container__subheader hops-container__subheader--activity-title">
                 Suoritetut pakolliset opinnot:
               </h3>
-              <Circle
-                className="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
-                percent={
-                  mandatoryCourseProggress > 1
-                    ? 100
-                    : mandatoryCourseProggress * 100
-                }
-              />
+
+              <div className="hops-container__activity-progressbar-wrapper">
+                <CircularProgressbar
+                  value={
+                    mandatoryCourseProggress > 1
+                      ? 100
+                      : mandatoryCourseProggress * 100
+                  }
+                  maxValue={100}
+                  strokeWidth={13}
+                  styles={{
+                    ...buildStyles({
+                      // Colors
+                      pathColor: `#24c118`,
+                      trailColor: "#ffffff",
+                      backgroundColor: "#3e98c7",
+                    }),
+                    root: {
+                      flexBasis: "72px",
+                      flexGrow: 0,
+                      flexShrink: "0",
+                      height: "72px",
+                      margin: "4px",
+                    },
+                  }}
+                  className="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                />
+                <div className="hops-container__activity-label hops-container__activity-label--progressbar-circle">
+                  {`${updatedCompletedMandatoryCourses} / ${numberOfMandatoryCoursesInTotal}`}
+                </div>
+              </div>
             </div>
 
             <div className="hops__form-element-container hops__form-element-container--progressbar">
@@ -703,14 +735,36 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 Suoritetut valinnaisopinnot:
               </h3>
 
-              <Circle
-                className="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
-                percent={
-                  optionalCourseProggress > 1
-                    ? 100
-                    : optionalCourseProggress * 100
-                }
-              />
+              <div className="hops-container__activity-progressbar-wrapper">
+                <CircularProgressbar
+                  value={
+                    optionalCourseProggress > 1
+                      ? 100
+                      : optionalCourseProggress * 100
+                  }
+                  maxValue={100}
+                  strokeWidth={13}
+                  styles={{
+                    ...buildStyles({
+                      // Colors
+                      pathColor: `#24c118`,
+                      trailColor: "#ffffff",
+                      backgroundColor: "#3e98c7",
+                    }),
+                    root: {
+                      flexBasis: "72px",
+                      flexGrow: 0,
+                      flexShrink: "0",
+                      height: "72px",
+                      margin: "4px",
+                    },
+                  }}
+                  className="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                />
+                <div className="hops-container__activity-label hops-container__activity-label--progressbar-circle">
+                  {`${updatedCompletedOptionalCourses} / ${neededOptionalStudies}`}
+                </div>
+              </div>
             </div>
 
             <div className="hops__form-element-container hops__form-element-container--progressbar">
