@@ -436,7 +436,7 @@ class FileUploader extends React.Component<
                 isLabelVisible={false}
                 bgColor="#72d200"
                 baseBgColor="#f5f5f5"
-                height="4px"
+                height="5px"
               />
               <span className="file-uploader__item-upload-percentage">
                 {this.props.uploadingTextProcesser(

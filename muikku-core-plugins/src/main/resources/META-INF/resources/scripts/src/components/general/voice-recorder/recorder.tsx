@@ -90,6 +90,9 @@ function Recorder(props: RecorderProps) {
             completed={(seconds / 300) * 100}
             maxCompleted={100}
             customLabel={`${Math.round((seconds / 300) * 100)}%`}
+            bgColor="#de3211"
+            baseBgColor="#f5f5f5"
+            height="5px"
           />
         </span>
       </AnimateHeight>

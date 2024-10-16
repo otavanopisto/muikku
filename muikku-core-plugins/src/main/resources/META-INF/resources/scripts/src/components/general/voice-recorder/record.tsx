@@ -87,7 +87,7 @@ function Record(props: RecordProps) {
               customLabel={`${Math.round(record.progress * 100)}%`}
               bgColor="#de3211"
               baseBgColor="#f5f5f5"
-              height="4px"
+              height="5px"
             />
           </div>
         ) : null}

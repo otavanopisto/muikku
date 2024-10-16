@@ -524,15 +524,17 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                   className="audiofield__file-upload-progressbar"
                   completed={value.progress * 100}
                   maxCompleted={100}
-                  customLabel={t("notifications.uploading", {
-                    ns: "files",
-                    progress: Math.round(value.progress * 100),
-                  })}
-                  labelAlignment="left"
+                  isLabelVisible={false}
                   bgColor="#72d200"
                   baseBgColor="#f5f5f5"
-                  height="4px"
+                  height="5px"
                 />
+                <span className="audiofield__file-record-percentage audiofield__file-record-percentage--uploading">
+                  {t("content.statusUploading", {
+                    ns: "materials",
+                    progress: Math.round(value.progress * 100),
+                  })}
+                </span>
               </span>
             </span>
           );
@@ -551,7 +553,13 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                     (this.state.time / MAX_RECORDING_TIME_IN_SECONDS) * 100
                   }
                   maxCompleted={100}
-                  customLabel={t("notifications.recording", {
+                  isLabelVisible={false}
+                  bgColor="#de3211"
+                  baseBgColor="#f5f5f5"
+                  height="5px"
+                />
+                <span className="audiofield__file-record-percentage audiofield__file-record-percentage--recording">
+                  {t("notifications.recording", {
                     ns: "materials",
                     currentLength: moment("2015-01-01")
                       .startOf("day")
@@ -562,10 +570,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                       .seconds(MAX_RECORDING_TIME_IN_SECONDS)
                       .format("mm:ss"),
                   })}
-                  bgColor="#de3211"
-                  baseBgColor="#f5f5f5"
-                  height="4px"
-                />
+                </span>
               </span>
             </span>
           ))
