@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import Websocket from "~/util/websocket";
-import { Action } from "redux";
+import { Action, Store } from "redux";
 import { updateUnreadMessageThreadsCount } from "~/actions/main-function/messages";
 import { StateType } from "~/reducers";
-import { Store } from "react-redux";
 import {
   loadEnviromentalForumAreaPermissions,
   loadStatus,

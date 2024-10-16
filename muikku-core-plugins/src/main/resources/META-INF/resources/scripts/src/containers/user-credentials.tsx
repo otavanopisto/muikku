@@ -1,9 +1,8 @@
 import Notifications from "../components/base/notifications";
 import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { StateType } from "~/reducers";
-import { Store } from "react-redux";
 import { loadCredentials } from "~/actions/base/credentials";
-import { Action } from "redux";
+import { Action, Store } from "redux";
 import Body from "../components/credentials/body";
 import * as React from "react";
 import "~/sass/util/base.scss";
