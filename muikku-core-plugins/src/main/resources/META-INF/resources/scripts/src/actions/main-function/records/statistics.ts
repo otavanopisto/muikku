@@ -30,7 +30,7 @@ export interface UpdateStatisticsTriggerType {
 const updateStatistics: UpdateStatisticsTriggerType =
   function updateStatistics() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       try {

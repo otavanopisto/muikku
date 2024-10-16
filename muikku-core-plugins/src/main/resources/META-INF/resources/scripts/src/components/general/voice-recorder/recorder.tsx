@@ -1,14 +1,13 @@
 import * as React from "react";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { UseRecorder } from "../../../@types/recorder";
 import useRecorder from "./hooks/use-recorder";
 import RecorderControls from "./recorder-controls";
 import RecordingsList from "./recordings-list";
 import { AnyActionType } from "../../../actions/index";
 import { StateType } from "../../../reducers/index";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "../../../reducers/base/status";
-import moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -115,7 +114,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

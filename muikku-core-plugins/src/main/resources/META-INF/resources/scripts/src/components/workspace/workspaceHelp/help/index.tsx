@@ -860,8 +860,6 @@ const componentWithTranslation = withTranslation(
   }
 )(Help);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  null
-)(componentWithTranslation);
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(componentWithTranslation);

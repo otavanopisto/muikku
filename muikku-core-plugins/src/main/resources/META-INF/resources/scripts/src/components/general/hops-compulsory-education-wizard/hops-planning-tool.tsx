@@ -8,7 +8,7 @@ import {
   SKILL_AND_ART_SUBJECTS,
 } from "../../../hooks/useStudentActivity";
 import { StateType } from "reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { WebsocketStateType } from "../../../reducers/util/websocket";
 import {
   displayNotification,
@@ -26,6 +26,7 @@ import StudyProgress from "../study-progress";
 import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
 import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
 import { Line, Circle } from "rc-progress";
+import { Action, Dispatch } from "redux";
 
 /**
  * StudyToolProps
@@ -775,7 +776,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

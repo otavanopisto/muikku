@@ -2,7 +2,7 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import { UserStatusType } from "reducers/main-function/users";
 import notificationActions from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import {
@@ -62,7 +62,9 @@ export interface LoadDependantWorkspacesTriggerType {
  */
 const clearDependantState: clearDependantTriggerType =
   function clearDependantState() {
-    return (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+    return (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
       dispatch({
         type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"WAITING",
@@ -93,7 +95,9 @@ const clearDependantState: clearDependantTriggerType =
  * loadDependants thunk function
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
-  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
     const meApi = MApi.getMeApi();
 
     try {
@@ -148,7 +152,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
 const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
   function loadDependantWorkspaces(dependantIdentifier: string) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const dependant = getState().dependants.list.find(

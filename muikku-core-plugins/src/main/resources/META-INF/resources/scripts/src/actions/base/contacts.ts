@@ -3,7 +3,7 @@ import { StateType } from "~/reducers";
 import { ContactGroup, ContactGroupNames } from "~/reducers/base/contacts";
 import { LoadingState } from "~/@types/shared";
 import notificationActions from "~/actions/base/notifications";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 
@@ -49,7 +49,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
   userIdentifier
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();

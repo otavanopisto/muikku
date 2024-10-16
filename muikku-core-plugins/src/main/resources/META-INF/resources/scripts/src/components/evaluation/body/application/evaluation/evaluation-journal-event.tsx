@@ -3,10 +3,10 @@ import AnimateHeight from "react-animate-height";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Link from "~/components/general/link";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import JournalCommentEditor from "./editors/journal-comment-editor";
 import SlideDrawer from "./slide-drawer";
 import EvaluationJournalEventComment from "./evaluation-journal-event-comment";
@@ -401,7 +401,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadEvaluationJournalCommentsFromServer,

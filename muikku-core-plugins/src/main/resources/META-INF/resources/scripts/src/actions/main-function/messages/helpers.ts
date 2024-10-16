@@ -13,7 +13,7 @@ import {
   MessageThreadLabel,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 
 //HELPERS
 
@@ -65,7 +65,7 @@ export async function loadMessagesHelper(
   location: string | null,
   query: string | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   //Remove the current message
@@ -278,7 +278,7 @@ export async function loadMessagesHelper(
 export async function setLabelStatusCurrentMessage(
   label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   const state = getState();
@@ -357,7 +357,7 @@ export async function setLabelStatusCurrentMessage(
 export function setLabelStatusSelectedMessages(
   label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   const state = getState();
