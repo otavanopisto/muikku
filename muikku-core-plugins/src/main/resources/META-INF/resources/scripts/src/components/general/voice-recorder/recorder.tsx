@@ -88,8 +88,8 @@ function Recorder(props: RecorderProps) {
       <RecorderControls recorderState={recorderState} handlers={handlers} />
 
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
-        <span className="voice-recorder__file-container voice-recorder__file-container--recording">
-          <span className="audiofield__file audiofield__file--recording">
+        <div className="voice-recorder__file-container voice-recorder__file-container--recording">
+          <div className="voice-recorder__file voice-recorder__file--recording">
             <ProgressBar
               className="voice-recorder__file-record-progressbar"
               completed={(seconds / 300) * 100}
@@ -99,7 +99,7 @@ function Recorder(props: RecorderProps) {
               baseBgColor="#f5f5f5"
               height="5px"
             />
-            <span className="audiofield__file-record-percentage audiofield__file-record-percentage--recording">
+            <div className="voice-recorder__file-record-percentage voice-recorder__file-record-percentage--recording">
               {t("notifications.recording", {
                 ns: "materials",
                 currentLength: moment("2015-01-01")
@@ -111,9 +111,9 @@ function Recorder(props: RecorderProps) {
                   .seconds(MAX_RECORDING_TIME_IN_SECONDS)
                   .format("mm:ss"),
               })}
-            </span>
-          </span>
-        </span>
+            </div>
+          </div>
+        </div>
       </AnimateHeight>
       <RecordingsList
         records={recorderState.values}

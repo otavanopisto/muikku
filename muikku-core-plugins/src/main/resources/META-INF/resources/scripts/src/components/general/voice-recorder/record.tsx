@@ -79,22 +79,24 @@ function Record(props: RecordProps) {
       </div>
       <AnimateHeight height={open ? "auto" : 0}>
         {record.uploading ? (
-          <div style={{ margin: "0 10px" }}>
-            <ProgressBar
-              className="voice-recorder__file-record-progressbar"
-              completed={record.progress * 100}
-              maxCompleted={100}
-              isLabelVisible={false}
-              bgColor="#de3211"
-              baseBgColor="#f5f5f5"
-              height="5px"
-            />
-            <span className="audiofield__file-record-percentage audiofield__file-record-percentage--uploading">
-              {t("content.statusUploading", {
-                ns: "materials",
-                progress: Math.round(record.progress * 100),
-              })}
-            </span>
+          <div className="voice-recorder__file-container voice-recorder__file-container--uploading">
+            <div className="voice-recorder__file voice-recorder__file--uploading">
+              <ProgressBar
+                className="voice-recorder__file-record-progressbar"
+                completed={record.progress * 100}
+                maxCompleted={100}
+                isLabelVisible={false}
+                bgColor="#72d200"
+                baseBgColor="#f5f5f5"
+                height="5px"
+              />
+              <div className="voice-recorder__file-record-percentage voice-recorder__file-record-percentage--uploading">
+                {t("content.statusUploading", {
+                  ns: "materials",
+                  progress: Math.round(record.progress * 100),
+                })}
+              </div>
+            </div>
           </div>
         ) : null}
         {record.failed ? (
